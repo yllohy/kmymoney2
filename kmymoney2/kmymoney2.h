@@ -1261,5 +1261,15 @@ private:
 
 extern  KMyMoney2App *kmymoney2;
 
+class KMStatus
+{
+public:
+  KMStatus (const QString &text);
+  ~KMStatus();
+private:
+  QString m_prevText;
+};
+
+#define KMSTATUS(msg) KMStatus _thisStatus(msg)
 
 #endif // KMYMONEY2_H

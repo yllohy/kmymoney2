@@ -736,7 +736,7 @@ void KMyMoney2App::slotPerformanceTest(void)
 
 void KMyMoney2App::slotFileNew(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
+  KMSTATUS(i18n("Creating new document..."));
 
   slotFileClose();
 
@@ -809,7 +809,6 @@ void KMyMoney2App::slotFileNew(void)
 
     emit fileLoaded(m_fileName);
   }
-  slotStatusMsg(prevMsg);
 }
 
 KURL KMyMoney2App::selectFile(const QString& title, const QString& _path, const QString& mask, KFile::Mode mode)
@@ -834,7 +833,7 @@ KURL KMyMoney2App::selectFile(const QString& title, const QString& _path, const 
 // General open
 void KMyMoney2App::slotFileOpen(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Open a file."));
+  KMSTATUS(i18n("Open a file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
                             i18n("%1|KMyMoney files\n%2|All files (*.*)").arg("*.kmy *.xml").arg("*"),
@@ -845,22 +844,17 @@ void KMyMoney2App::slotFileOpen(void)
     slotFileOpenRecent(dialog->selectedURL());
   }
   delete dialog;
-
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotOpenDatabase(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Open a file."));
+  KMSTATUS(i18n("Open a file."));
   KSelectDatabaseDlg dialog;
   dialog.setMode(IO_ReadWrite);
 
   if(dialog.exec() == QDialog::Accepted) {
     slotFileOpenRecent(dialog.selectedURL());
   }
-
-  slotStatusMsg(prevMsg);
-
 }
 
 bool KMyMoney2App::isImportableFile( const KURL& url )
@@ -895,7 +889,7 @@ bool KMyMoney2App::isImportableFile( const KURL& url )
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
-  QString prevMsg = slotStatusMsg(i18n("Loading file..."));
+  KMSTATUS(i18n("Loading file..."));
   KURL lastFile = m_fileName;
 
   // check if there are other instances which might have this file open
@@ -953,7 +947,6 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   } else {
     KMessageBox::sorry(this, QString("<p>")+i18n("File <b>%1</b> is already opened in another instance of KMyMoney").arg(url.prettyURL(0, KURL::StripFileProtocol)), i18n("Duplicate open"));
   }
-  slotStatusMsg(prevMsg);
 }
 
 const bool KMyMoney2App::slotFileSave(void)
@@ -964,13 +957,11 @@ const bool KMyMoney2App::slotFileSave(void)
 
   bool rc = false;
 
-  QString prevMsg = slotStatusMsg(i18n("Saving file..."));
+  KMSTATUS(i18n("Saving file..."));
 
-  if (m_fileName.isEmpty()) {
-    rc = slotFileSaveAs();
-    slotStatusMsg(prevMsg);
-    return rc;
-  }
+  if (m_fileName.isEmpty())
+    return slotFileSaveAs();
+  
   /*if (myMoneyView->isDatabase()) {
     rc = myMoneyView->saveDatabase(m_fileName);
     // the 'save' function is no longer relevant for a database*/
@@ -980,7 +971,6 @@ const bool KMyMoney2App::slotFileSave(void)
 
   m_autoSaveTimer->stop();
 
-  slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
 }
@@ -1022,7 +1012,7 @@ const bool KMyMoney2App::slotFileSaveAs(void)
   // in event of it being a database, ensure that all data is read into storage for saveas
   if (myMoneyView->isSyncDatabase())
         dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
-  QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
+  KMSTATUS(i18n("Saving file with a new filename..."));
   QString prevDir= ""; // don't prompt file name if not a native file
   if (myMoneyView->isNativeFile())
     prevDir = readLastUsedDir();
@@ -1148,7 +1138,6 @@ const bool KMyMoney2App::slotFileSaveAs(void)
     }
   }
 
-  slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
 }
@@ -1160,7 +1149,7 @@ const bool KMyMoney2App::slotSaveAsDatabase(void)
   // in event of it being a database, ensure that all data is read into storage for saveas
   if (myMoneyView->isSyncDatabase())
     dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
-  QString prevMsg = slotStatusMsg(i18n("Saving file to database..."));
+  KMSTATUS(i18n("Saving file to database..."));
   KSelectDatabaseDlg dialog;
   dialog.setMode(IO_WriteOnly);
   KURL oldUrl = m_fileName.isEmpty() ? lastOpenedURL() : m_fileName;
@@ -1181,27 +1170,22 @@ const bool KMyMoney2App::slotSaveAsDatabase(void)
   }
   if (rc) writeLastUsedFile(url.prettyURL(0, KURL::StripFileProtocol));
   m_autoSaveTimer->stop();
-  slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
 }
 
 void KMyMoney2App::slotFileCloseWindow(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Closing window..."));
+  KMSTATUS(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
-    if (answer == KMessageBox::Cancel) {
-      slotStatusMsg(prevMsg);
+    if (answer == KMessageBox::Cancel)
       return;
-    } else if (answer == KMessageBox::Yes)
+    else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
-
   close();
-
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileClose(void)
@@ -1306,7 +1290,6 @@ const QString KMyMoney2App::slotStatusMsg(const QString &text)
     m_statusMsg = i18n("Ready.");
   statusBar()->clear();
   statusBar()->changeItem(text, ID_STATUS_MSG);
-
   return msg;
 }
 
@@ -1366,7 +1349,7 @@ void KMyMoney2App::slotFileViewPersonal(void)
     return;
   }
 
-  QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
+  KMSTATUS(i18n("Viewing personal data..."));
 
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyPayee user = file->user();
@@ -1393,8 +1376,6 @@ void KMyMoney2App::slotFileViewPersonal(void)
       delete e;
     }
   }
-
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileFileInfo(void)
@@ -1414,7 +1395,7 @@ void KMyMoney2App::slotFileFileInfo(void)
 
 void KMyMoney2App::slotLoadAccountTemplates(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
+  KMSTATUS(i18n("Importing account templates."));
 
   int rc;
   KLoadTemplateDlg* dlg = new KLoadTemplateDlg();
@@ -1434,12 +1415,11 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
     }
   }
   delete dlg;
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotSaveAccountTemplates(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Exporting account templates."));
+  KMSTATUS(i18n("Exporting account templates."));
 
   QString newName = KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
                                                i18n("*.kmt|KMyMoney template files\n"
@@ -1475,7 +1455,6 @@ void KMyMoney2App::slotSaveAccountTemplates(void)
       templ.saveTemplate(newName);
     }
   }
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotQifImport(void)
@@ -1486,7 +1465,7 @@ void KMyMoney2App::slotQifImport(void)
     KImportDlg* dlg = new KImportDlg(0);
 
     if(dlg->exec()) {
-      slotStatusMsg(i18n("Importing file..."));
+      KMSTATUS(i18n("Importing file..."));
       m_qifReader = new MyMoneyQifReader;
       connect(m_qifReader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
 
@@ -1541,7 +1520,6 @@ void KMyMoney2App::slotQifImportFinished(void)
     myMoneyView->slotRefreshViews();
     updateCaption();
 
-    // slotStatusMsg(prevMsg);
     delete m_qifReader;
     m_qifReader = 0;
   }
@@ -1570,7 +1548,7 @@ void KMyMoney2App::slotGncImport(void)
     }
   }
 
-  QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
+  KMSTATUS(i18n("Importing a Gnucash file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
                             i18n("%1|Gnucash files\n%2|All files (*.*)").arg("*").arg("*"),
@@ -1592,7 +1570,6 @@ void KMyMoney2App::slotGncImport(void)
   }
   delete dialog;
 
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotAccountChart(void)
@@ -1614,7 +1591,7 @@ void KMyMoney2App::slotAccountChart(void)
 void KMyMoney2App::slotStatementImport(void)
 {
   bool result = false;
-  QString prevMsg = slotStatusMsg(i18n("Importing an XML Statement."));
+  KMSTATUS(i18n("Importing an XML Statement."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
                             i18n("%1|XML files\n%2|All files (*.*)").arg("*.xml").arg("*.*"),
@@ -1656,7 +1633,6 @@ void KMyMoney2App::slotStatementImport(void)
     {
       QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path()).arg(error), QMessageBox::Ok, 0 );
 
-      slotStatusMsg(prevMsg);
     }*/
   }
   delete dialog;
@@ -1666,7 +1642,6 @@ void KMyMoney2App::slotStatementImport(void)
     // re-enable all standard widgets
     setEnabled(true);
   }
-  slotStatusMsg(prevMsg);
 }
 
 bool KMyMoney2App::slotStatementImport(const QString& url)
@@ -1715,7 +1690,7 @@ void KMyMoney2App::slotStatementImportFinished(void)
 
 void KMyMoney2App::slotQifExport(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Exporting file..."));
+  KMSTATUS(i18n("Exporting file..."));
 
   KExportDlg* dlg = new KExportDlg(0);
 
@@ -1730,8 +1705,6 @@ void KMyMoney2App::slotQifExport(void)
     }
   }
   delete dlg;
-
-  slotStatusMsg(prevMsg);
 }
 
 bool KMyMoney2App::okToWriteFile(const KURL& url)
@@ -2608,72 +2581,74 @@ void KMyMoney2App::slotAccountDelete(void)
       return; // the user aborted the dialog, so let's abort as well
 
     MyMoneyAccount newCategory = file->account(categoryId);
-    QString prevMsg = slotStatusMsg(i18n("Adjusting transactions ..."));
     try {
-      /*
-        m_selectedAccount.id() is the old id, categoryId the new one
-        Now search all transactions and schedules that reference m_selectedAccount.id()
-        and replace that with categoryId.
-      */
-      // get the list of all transactions that reference the old account
-      MyMoneyTransactionFilter filter(m_selectedAccount.id());
-      filter.setReportAllSplits(false);
-      QValueList<MyMoneyTransaction> tlist;
-      QValueList<MyMoneyTransaction>::iterator it_t;
-      file->transactionList(tlist, filter);
-
-      slotStatusProgressBar(0, tlist.count());
-      int cnt = 0;
-      for(it_t = tlist.begin(); it_t != tlist.end(); ++it_t) {
-        slotStatusProgressBar(++cnt, 0);
-        MyMoneyTransaction t = (*it_t);
-        if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId))
-          file->modifyTransaction(t);
+      {
+        KMSTATUS(i18n("Adjusting transactions ..."));
+        /*
+          m_selectedAccount.id() is the old id, categoryId the new one
+          Now search all transactions and schedules that reference m_selectedAccount.id()
+          and replace that with categoryId.
+        */
+        // get the list of all transactions that reference the old account
+        MyMoneyTransactionFilter filter(m_selectedAccount.id());
+        filter.setReportAllSplits(false);
+        QValueList<MyMoneyTransaction> tlist;
+        QValueList<MyMoneyTransaction>::iterator it_t;
+        file->transactionList(tlist, filter);
+    
+        slotStatusProgressBar(0, tlist.count());
+        int cnt = 0;
+        for(it_t = tlist.begin(); it_t != tlist.end(); ++it_t) {
+          slotStatusProgressBar(++cnt, 0);
+          MyMoneyTransaction t = (*it_t);
+          if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId))
+            file->modifyTransaction(t);
+        }
+        slotStatusProgressBar(tlist.count(), 0);
       }
-      slotStatusProgressBar(tlist.count(), 0);
-
       // now fix all schedules
-      slotStatusMsg(i18n("Adjusting schedules ..."));
-      QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
-      QValueList<MyMoneySchedule>::iterator it_s;
-
-      cnt = 0;
-      slotStatusProgressBar(0, slist.count());
-      for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
-        slotStatusProgressBar(++cnt, 0);
-        MyMoneyTransaction t = (*it_s).transaction();
-        if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId)) {
-          (*it_s).setTransaction(t);
-          file->modifySchedule(*it_s);
+      {
+        KMSTATUS(i18n("Adjusting schedules ..."));
+        QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
+        QValueList<MyMoneySchedule>::iterator it_s;
+  
+        int cnt = 0;
+        slotStatusProgressBar(0, slist.count());
+        for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
+          slotStatusProgressBar(++cnt, 0);
+          MyMoneyTransaction t = (*it_s).transaction();
+          if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId)) {
+            (*it_s).setTransaction(t);
+            file->modifySchedule(*it_s);
+          }
         }
+        slotStatusProgressBar(slist.count(), 0);
       }
-      slotStatusProgressBar(slist.count(), 0);
-
       // now fix all budgets
-      slotStatusMsg(i18n("Adjusting budgets ..."));
-      QValueList<MyMoneyBudget> blist = file->budgetList();
-      QValueList<MyMoneyBudget>::const_iterator it_b;
-      for(it_b = blist.begin(); it_b != blist.end(); ++it_b) {
-        if((*it_b).hasReferenceTo(m_selectedAccount.id())) {
-          MyMoneyBudget b = (*it_b);
-          MyMoneyBudget::AccountGroup fromBudget = b.account(m_selectedAccount.id());
-          MyMoneyBudget::AccountGroup toBudget = b.account(categoryId);
-          toBudget += fromBudget;
-          b.setAccount(toBudget, toBudget.id());
-          b.removeReference(m_selectedAccount.id());
-          file->modifyBudget(b);
-
+      {
+        KMSTATUS(i18n("Adjusting budgets ..."));
+        QValueList<MyMoneyBudget> blist = file->budgetList();
+        QValueList<MyMoneyBudget>::const_iterator it_b;
+        for(it_b = blist.begin(); it_b != blist.end(); ++it_b) {
+          if((*it_b).hasReferenceTo(m_selectedAccount.id())) {
+            MyMoneyBudget b = (*it_b);
+            MyMoneyBudget::AccountGroup fromBudget = b.account(m_selectedAccount.id());
+            MyMoneyBudget::AccountGroup toBudget = b.account(categoryId);
+            toBudget += fromBudget;
+            b.setAccount(toBudget, toBudget.id());
+            b.removeReference(m_selectedAccount.id());
+            file->modifyBudget(b);
+  
+          }
         }
+        slotStatusProgressBar(blist.count(), 0);
       }
-      slotStatusProgressBar(blist.count(), 0);
-
     } catch(MyMoneyException  *e) {
       KMessageBox::error( this, i18n("Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3").arg(m_selectedAccount.name()).arg(newCategory.name()).arg(e->what()));
       delete e;
       exit = true;
     }
     slotStatusProgressBar(-1, -1);
-    slotStatusMsg(prevMsg);
   }
 
   if(exit)
@@ -4084,9 +4059,8 @@ void KMyMoney2App::slotTransactionsDelete(void)
     msg = i18n("Do you really want to delete all %1 selected transactions?").arg(m_selectedTransactions.count());
   }
   if(KMessageBox::questionYesNo(this, msg, i18n("Delete transaction")) == KMessageBox::Yes) {
-    QString prevMsg = slotStatusMsg(i18n("Deleting transactions"));
+    KMSTATUS(i18n("Deleting transactions"));
     doDeleteTransactions();
-    slotStatusMsg(prevMsg);
   }
 }
 
@@ -4100,7 +4074,7 @@ void KMyMoney2App::slotTransactionDuplicate(void)
 
     int i = 0;
     int cnt = m_selectedTransactions.count();
-    QString prevMsg = slotStatusMsg(i18n("Duplicating transactions"));
+    KMSTATUS(i18n("Duplicating transactions"));
     slotStatusProgressBar(0, cnt);
     MyMoneyFileTransaction ft;
     MyMoneyTransaction lt;
@@ -4135,7 +4109,6 @@ void KMyMoney2App::slotTransactionDuplicate(void)
     }
     // switch off the progress bar
     slotStatusProgressBar(-1, -1);
-    slotStatusMsg(prevMsg);
   }
 }
 
@@ -5324,7 +5297,7 @@ void KMyMoney2App::slotPriceDialog(void)
 
 void KMyMoney2App::slotFileConsitencyCheck(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Running consistency check..."));
+  KMSTATUS(i18n("Running consistency check..."));
 
   QStringList msg;
   MyMoneyFileTransaction ft;
@@ -5338,7 +5311,6 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 
   KMessageBox::warningContinueCancelList(0, "Result", msg, i18n("Consistency check result"));
 
-  slotStatusMsg(prevMsg);
   updateCaption();
 }
 
@@ -5346,7 +5318,7 @@ void KMyMoney2App::slotCheckSchedules(void)
 {
   if(KMyMoneyGlobalSettings::checkSchedule() == true) {
 
-    QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
+    KMSTATUS(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
     QDate checkDate = QDate::currentDate().addDays(KMyMoneyGlobalSettings::checkSchedulePreview());
 
@@ -5371,7 +5343,6 @@ void KMyMoney2App::slotCheckSchedules(void)
         }
       }
     }
-    slotStatusMsg(prevMsg);
     updateCaption();
   }
 }
@@ -5489,7 +5460,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
   // only continue if the user really did open a file.
   if ( myMoneyView->fileOpen() )
   {
-    QString prevMsg = slotStatusMsg(i18n("Importing a statement via Web Connect"));
+    KMSTATUS(i18n("Importing a statement via Web Connect"));
 
     QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
     while ( it_plugin != m_importerPlugins.end() )
@@ -5514,7 +5485,6 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
       if ( MyMoneyStatement::isStatementFile( url ) )
         slotStatementImport(url);
 
-    slotStatusMsg(prevMsg);
   }
 }
 
@@ -5598,7 +5568,7 @@ void KMyMoney2App::slotAutoSave(void)
 {
   if(!m_inAutoSaving) {
     m_inAutoSaving = true;
-    QString prevMsg = slotStatusMsg(i18n("Auto saving ..."));
+    KMSTATUS(i18n("Auto saving ..."));
 
     //calls slotFileSave if needed, and restart the timer
     //it the file is not saved, reinitializes the countdown.
@@ -5608,7 +5578,6 @@ void KMyMoney2App::slotAutoSave(void)
       }
     }
 
-    slotStatusMsg(prevMsg);
     m_inAutoSaving = false;
   }
 }
@@ -5714,6 +5683,16 @@ void KMyMoney2App::slotAccountUpdateOnline(void)
     // plugin found, call it
     (*it_p)->updateAccount(m_selectedAccount);
   }
+}
+
+KMStatus::KMStatus (const QString &text)
+{
+  m_prevText = kmymoney2->slotStatusMsg(text);
+}
+
+KMStatus::~KMStatus()
+{
+  kmymoney2->slotStatusMsg(m_prevText);
 }
 
 #include "kmymoney2.moc"
