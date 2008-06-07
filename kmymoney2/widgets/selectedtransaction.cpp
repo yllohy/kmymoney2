@@ -41,7 +41,7 @@ int SelectedTransaction::warnLevel() const
   
 SelectedTransactions::SelectedTransactions(const Register* r)
 {
-  r->selectedTransactions(this);
+  r->selectedTransactions(*this);
 }
 
 int SelectedTransactions::warnLevel() const

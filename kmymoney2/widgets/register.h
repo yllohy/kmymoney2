@@ -272,7 +272,7 @@ public:
     *
     * @param list reference to QValueList receiving the SelectedTransaction()'s
     */
-  void selectedTransactions(SelectedTransactions*  list) const;
+  void selectedTransactions(SelectedTransactions&  list) const;
 
   QString text(int row, int col) const;
   QWidget* createEditor(int row, int col, bool initFromCell) const;
