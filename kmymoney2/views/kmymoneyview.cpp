@@ -337,6 +337,21 @@ bool KMyMoneyView::canModifyTransactions(const KMyMoneyRegister::SelectedTransac
   return rc;
 }
 
+bool KMyMoneyView::canDuplicateTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
+{
+  // we can only duplicate transactions in the ledger view so
+  // we check that this is the active page
+
+  bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
+
+  if(rc) {
+    rc = m_ledgerView->canDuplicateTransactions(list, tooltip);
+  } else {
+    tooltip = i18n("Duplicating transactions can only be performed in the ledger view");
+  }
+  return rc;
+}
+
 bool KMyMoneyView::canEditTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
 {
   bool rc;

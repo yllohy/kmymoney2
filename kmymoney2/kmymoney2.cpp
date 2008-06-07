@@ -4063,20 +4063,30 @@ void KMyMoney2App::slotTransactionsDelete(void)
 {
   // since we may jump here via code, we have to make sure to react only
   // if the action is enabled
-  if(kmymoney2->action("transaction_delete")->isEnabled()) {
-    if(m_selectedTransactions.count() > 0) {
-      QString prevMsg = slotStatusMsg(i18n("Deleting transactions"));
-      QString msg;
-      if(m_selectedTransactions.count() == 1) {
-        msg = i18n("Do you really want to delete the selected transaction?");
-      } else {
-        msg = i18n("Do you really want to delete all %1 selected transactions?").arg(m_selectedTransactions.count());
-      }
-      if(KMessageBox::questionYesNo(this, msg, i18n("Delete transaction")) == KMessageBox::Yes) {
-        doDeleteTransactions();
-      }
-      slotStatusMsg(prevMsg);
-    }
+  if(!kmymoney2->action("transaction_delete")->isEnabled())
+    return;
+  if(m_selectedTransactions.count() == 0)
+    return;
+  if(m_selectedTransactions.warnLevel() == 1) {
+    if(KMessageBox::warningContinueCancel(0,
+        i18n(
+            "At least one split of the selected transactions has been reconciled. "
+            "Do you wish to delete the transactions anyway?"
+            ),
+            i18n("Transaction already reconciled"), KStdGuiItem::cont(),
+                "DeleteReconciledTransaction") == KMessageBox::Cancel)
+                 return;
+  }
+  QString msg;
+  if(m_selectedTransactions.count() == 1) {
+    msg = i18n("Do you really want to delete the selected transaction?");
+  } else {
+    msg = i18n("Do you really want to delete all %1 selected transactions?").arg(m_selectedTransactions.count());
+  }
+  if(KMessageBox::questionYesNo(this, msg, i18n("Delete transaction")) == KMessageBox::Yes) {
+    QString prevMsg = slotStatusMsg(i18n("Deleting transactions"));
+    doDeleteTransactions();
+    slotStatusMsg(prevMsg);
   }
 }
 
@@ -4955,9 +4965,11 @@ void KMyMoney2App::slotUpdateActions(void)
     action("transaction_delete")->setToolTip(tooltip);
 
     if(!m_transactionEditor) {
+      tooltip = i18n("Duplicate the current selected transactions");
+      action("transaction_duplicate")->setEnabled(myMoneyView->canDuplicateTransactions(m_selectedTransactions, tooltip) && !m_selectedTransactions[0].transaction().id().isEmpty());
+      action("transaction_duplicate")->setToolTip(tooltip);
       if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
         action("transaction_edit")->setEnabled(true);
-        action("transaction_duplicate")->setEnabled(true);
         // editing splits is allowed only if we have one transaction selected
         if(m_selectedTransactions.count() == 1) {
           action("transaction_editsplits")->setEnabled(true);

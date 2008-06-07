@@ -167,6 +167,8 @@ public:
     */
   bool canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
+  bool canDuplicateTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
+  
   /**
     * Checks if the list of transactions can be edited in the current context
     *
@@ -405,6 +407,9 @@ signals:
     * be marked different
     */
   void toggleReconciliationFlag(void);
+  
+private:
+  bool canProcessTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 };
 
 #endif

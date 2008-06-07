@@ -381,7 +381,9 @@ public:
     */
   bool canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
-  /**
+  bool canDuplicateTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
+
+      /**
     * check if the current view allows to edit the selected transactions
     *
     * @param list list of selected transactions
