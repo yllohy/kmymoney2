@@ -984,15 +984,12 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     {
       if ( s.value().isPositive() ) {
         buys += CashFlowListItem( (*it_transaction).postDate(), -value );
-        returnInvestment += value;
-        //convert to lowest fraction
-        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       } else {
         sells += CashFlowListItem( (*it_transaction).postDate(), -value );
-        returnInvestment += value;
-        //convert to lowest fraction
-        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
+      returnInvestment += value;
+        //convert to lowest fraction
+      returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
     }
     else if ( action == MyMoneySplit::ActionReinvestDividend )
     {
