@@ -988,7 +988,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       } else {
-        sells += CashFlowListItem( (*it_transaction).postDate(), value );
+        sells += CashFlowListItem( (*it_transaction).postDate(), -value );
         returnInvestment += value;
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
