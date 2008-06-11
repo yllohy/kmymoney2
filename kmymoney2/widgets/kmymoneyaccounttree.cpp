@@ -614,28 +614,16 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   if(account.id() != m_account.id())
     return;
 
-  QString icon;
   QPixmap checkMark = QPixmap(KGlobal::iconLoader()->loadIcon("ok", KIcon::Small));
   MyMoneyMoney vatRate;
 
-  switch (m_account.accountGroup())
-  {
-    case MyMoneyAccount::Income:
-      icon = "account-types_income";
-      break;
-    case MyMoneyAccount::Expense:
-      icon = "account-types_expense";
-      break;
-    case MyMoneyAccount::Liability:
-      icon = "account-types_liability";
-      break;
-    case MyMoneyAccount::Asset:
-      icon = "account-types_asset";
-      break;
-    default:
-      icon = "account";
-      break;
-  }
+  setPixmap(KMyMoneyAccountTree::NameColumn, m_account.accountGroupPixmap(m_reconcileFlag));
+
+  setText(KMyMoneyAccountTree::NameColumn, account.name());
+#ifndef KMM_DESIGNER
+  if(!MyMoneyFile::instance()->isStandardAccount(m_account.id()))
+    setText(KMyMoneyAccountTree::TypeColumn, KMyMoneyUtils::accountTypeToString(account.accountType()));
+#endif
 
   switch(m_account.accountType()) {
     case MyMoneyAccount::Income:
@@ -654,22 +642,8 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
       break;
   }
 
-  QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
-  if(m_account.isClosed()) {
-    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
-    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-  } else if(m_reconcileFlag) {
-    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_reconcile.png")));
-    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-  }
-  setPixmap(KMyMoneyAccountTree::NameColumn, pic);
-
-  setText(KMyMoneyAccountTree::NameColumn, account.name());
-#ifndef KMM_DESIGNER
-  if(!MyMoneyFile::instance()->isStandardAccount(m_account.id()))
-    setText(KMyMoneyAccountTree::TypeColumn, KMyMoneyUtils::accountTypeToString(account.accountType()));
-#endif
-
+  
+  
   // make sure we have the right parent object
   // for the extended features
   KMyMoneyAccountTree* lv = listView();
@@ -685,6 +659,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   switch(m_account.accountGroup()) {
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Liability:
+      if(m_balance)
       m_balance = -m_balance;
       break;
 

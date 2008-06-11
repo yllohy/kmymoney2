@@ -125,32 +125,8 @@ void KMyMoneyAccountTreeBudgetItem::updateAccount(const MyMoneyAccount& account,
   if(account.id() != m_account.id())
     return;
 
-  QString icon;
-  switch (m_account.accountGroup())
-  {
-    case MyMoneyAccount::Income:
-      icon = "account-types_income";
-      break;
-    case MyMoneyAccount::Expense:
-      icon = "account-types_expense";
-      break;
-    case MyMoneyAccount::Liability:
-      icon = "account-types_liability";
-      break;
-    case MyMoneyAccount::Asset:
-      icon = "account-types_asset";
-      break;
-    default:
-      icon = "account";
-  }
-  if(m_account.isClosed()) {
-    QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
-    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
-    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(0, pic);
-  } else
-    setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
-
+  setPixmap(0, m_account.accountGroupPixmap(false));
+  
   setText(KMyMoneyAccountTree::NameColumn, account.name());
 
   // make sure we have the right parent object

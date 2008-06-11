@@ -20,6 +20,8 @@
 // QT Includes
 
 #include <qregexp.h>
+#include <kstandarddirs.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -585,4 +587,89 @@ void MyMoneyAccount::adjustBalance(const MyMoneySplit& s, bool reverse)
       m_balance += s.shares();
   }
 
+}
+  
+QPixmap MyMoneyAccount::accountPixmap(bool reconcileFlag) const
+{
+  QString pixmap;
+
+  switch(accountType()) {
+    default:
+      if(accountGroup() == MyMoneyAccount::Asset)
+        pixmap = "account-types_asset";
+      else
+        pixmap = "account-types_liability";
+      break;
+
+    case MyMoneyAccount::Investment:
+      pixmap = "account-types_investments";
+      break;
+
+    case MyMoneyAccount::Checkings:
+      pixmap = "account-types_checking";
+      break;
+    case MyMoneyAccount::Savings:
+      pixmap = "account-types_savings";
+      break;
+
+    case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Loan:
+      pixmap = "account-types_loan";
+      break;
+
+    case MyMoneyAccount::CreditCard:
+      pixmap = "account-types_credit-card";
+      break;
+
+    case MyMoneyAccount::Asset:
+      pixmap = "account-types_asset";
+      break;
+
+    case MyMoneyAccount::Cash:
+      pixmap = "account-types_cash";
+      break;
+  }
+
+  QPixmap result = DesktopIcon(pixmap);
+  if(isClosed()) {
+    QPixmap overlay = DesktopIcon("account-types_closed");
+    bitBlt(&result, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
+  } else if(reconcileFlag) {
+    QPixmap overlay = DesktopIcon("account-types_reconcile");
+    bitBlt(&result, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
+  }
+  return result;
+}
+  
+QPixmap MyMoneyAccount::accountGroupPixmap(bool reconcileFlag) const
+{
+  QString icon;
+  switch (accountGroup())
+  {
+    case MyMoneyAccount::Income:
+      icon = "account-types_income";
+      break;
+    case MyMoneyAccount::Expense:
+      icon = "account-types_expense";
+      break;
+    case MyMoneyAccount::Liability:
+      icon = "account-types_liability";
+      break;
+    case MyMoneyAccount::Asset:
+      icon = "account-types_asset";
+      break;
+    default:
+      icon = "account";
+      break;
+  }
+
+  QPixmap result = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
+  if(isClosed()) {
+    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
+    bitBlt(&result, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
+  } else if(reconcileFlag) {
+    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_reconcile.png")));
+    bitBlt(&result, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
+  }
+  return result;
 }

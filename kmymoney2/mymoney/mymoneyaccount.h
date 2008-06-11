@@ -30,6 +30,7 @@
 #include <qvaluelist.h>
 #include <qstringlist.h>
 #include <qdom.h>
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -516,7 +517,17 @@ public:
    */
   QString brokerageName(void) const;
 
-private:
+  /**
+   * @return a pixmap using IconDesktop for the account type
+   */
+  QPixmap accountPixmap(bool reconcileFlag) const;
+  
+  /**
+   * @return a 22x22 pixmap for the account group type
+   */
+  QPixmap accountGroupPixmap(bool reconcileFlag) const;
+  
+  private:
   /**
     * This member variable identifies the type of account
     */

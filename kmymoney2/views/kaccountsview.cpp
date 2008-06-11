@@ -65,54 +65,7 @@ void KMyMoneyAccountIconItem::setReconciliation(bool on)
 
 void KMyMoneyAccountIconItem::updateAccount(const MyMoneyAccount& account)
 {
-  QString pixmap;
-
-  switch(account.accountType()) {
-    default:
-      if(account.accountGroup() == MyMoneyAccount::Asset)
-        pixmap = "account-types_asset";
-      else
-        pixmap = "account-types_liability";
-      break;
-
-    case MyMoneyAccount::Investment:
-      pixmap = "account-types_investments";
-      break;
-
-    case MyMoneyAccount::Checkings:
-      pixmap = "account-types_checking";
-      break;
-    case MyMoneyAccount::Savings:
-      pixmap = "account-types_savings";
-      break;
-
-    case MyMoneyAccount::AssetLoan:
-    case MyMoneyAccount::Loan:
-      pixmap = "account-types_loan";
-      break;
-
-    case MyMoneyAccount::CreditCard:
-      pixmap = "account-types_credit-card";
-      break;
-
-    case MyMoneyAccount::Asset:
-      pixmap = "account-types_asset";
-      break;
-
-    case MyMoneyAccount::Cash:
-      pixmap = "account-types_cash";
-      break;
-  }
-
-  QPixmap pic = DesktopIcon(pixmap);
-  if(m_account.isClosed()) {
-    QPixmap overlay = DesktopIcon("account-types_closed");
-    bitBlt(&pic, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
-  } else if(m_reconcileFlag) {
-    QPixmap overlay = DesktopIcon("account-types_reconcile");
-    bitBlt(&pic, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
-  }
-  setPixmap(pic);
+  setPixmap(account.accountPixmap(m_reconcileFlag));
 }
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name) :
