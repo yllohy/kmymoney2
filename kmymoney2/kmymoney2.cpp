@@ -2778,12 +2778,12 @@ void KMyMoney2App::slotAccountEdit(void)
         bool category = false;
         switch(MyMoneyAccount::accountGroup(m_selectedAccount.accountType())) {
           default:
-            caption = i18n("Edit an account");
+            caption = i18n("Edit account '%1'").arg(m_selectedAccount.name());
             break;
 
           case MyMoneyAccount::Expense:
           case MyMoneyAccount::Income:
-            caption = i18n("Edit a category");
+            caption = i18n("Edit category '%1'").arg(m_selectedAccount.name());
             category = true;
             break;
         }
