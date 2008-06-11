@@ -5,6 +5,7 @@
 
 2008-06-07  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * Edit category / account: Show old name in caption
+  * Fix VAT percentage and a few typos in german template file skr03.kmt
 
 2008-06-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reduce duplicate code
