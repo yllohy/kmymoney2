@@ -240,10 +240,15 @@ void KAccountsView::loadIconView(void)
     accountMap[(*it_a).name()] = *it_a;
   }
 
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked()
+      || !KMyMoneyGlobalSettings::hideClosedAccounts();
+  
   // parse list and add all asset and liability accounts
   QMap<QString, MyMoneyAccount>::const_iterator it;
   QPoint loc;
   for(it = accountMap.begin(); it != accountMap.end(); ++it) {
+    if((*it).isClosed() && !showClosedAccounts)
+      continue;
     const QString& pos = (*it).value("kmm-iconpos");
     KMyMoneyAccountIconItem* item;
     switch((*it).accountGroup()) {
