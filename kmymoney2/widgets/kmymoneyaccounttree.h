@@ -296,7 +296,7 @@ public:
   ~KMyMoneyAccountTreeItem();
 
   /**
-    * This method is loads new information into the item and updates the fields
+    * This method loads new information into the item and updates the fields
     *
     * @param account the account data for the object to be updated
     * @param forceTotalUpdate set to true to force update of total values

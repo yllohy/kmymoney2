@@ -43,15 +43,6 @@ public:
   KMyMoneyAccountTreeBudget(QWidget* parent = 0, const char *name = 0);
   virtual ~KMyMoneyAccountTreeBudget() {};
 
-  /**
-    * overridden from base class implementation to return a pointer
-    * to a KMyMoneyAccountTreeItem.
-    *
-    * @return pointer to currently selected item
-    */
-  KMyMoneyAccountTreeBudgetItem* selectedItem(void) const;
-  KMyMoneyAccountTreeBudgetItem* findItem(const QCString& id);
-
 public slots:
   void slotSelectObject(const QListViewItem* i);
 
@@ -101,7 +92,7 @@ public:
 
 protected:
   /**
-    * This method is loads new information into the item and updates the fields
+    * This method loads new information into the item and updates the fields
     *
     * @param account the account data for the object to be updated
     * @param forceTotalUpdate set to true to force update of total values

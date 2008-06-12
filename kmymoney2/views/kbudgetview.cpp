@@ -337,7 +337,7 @@ void KBudgetView::loadAccounts(void)
   }
 
   // remember the id of the current selected item
-  KMyMoneyAccountTreeBudgetItem *item = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
 
   // keep a map of all 'expanded' accounts

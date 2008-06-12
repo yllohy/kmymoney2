@@ -45,11 +45,6 @@ KMyMoneyAccountTreeBudget::KMyMoneyAccountTreeBudget(QWidget* parent, const char
 {
 }
 
-KMyMoneyAccountTreeBudgetItem* KMyMoneyAccountTreeBudget::selectedItem(void) const
-{
-  return dynamic_cast<KMyMoneyAccountTreeBudgetItem *>(KMyMoneyAccountTree::selectedItem());
-}
-
 void KMyMoneyAccountTreeBudget::slotSelectObject(const QListViewItem* i)
 {
   emit selectObject(MyMoneyInstitution());
@@ -59,34 +54,6 @@ void KMyMoneyAccountTreeBudget::slotSelectObject(const QListViewItem* i)
   if(item) {
     emit KMyMoneyAccountTree::openObject(item->itemObject());
   }
-}
-
-
-KMyMoneyAccountTreeBudgetItem* KMyMoneyAccountTreeBudget::findItem(const QCString& id)
-{
-  // tried to use a  QListViewItemIterator  but that does not fit
-  // with the constness of this method. Arghhh.
-
-  QListViewItem* p = firstChild();
-  while(p) {
-    // item found, check for the id
-    KMyMoneyAccountTreeBudgetItem* item = dynamic_cast<KMyMoneyAccountTreeBudgetItem*>(p);
-    if(item && item->id() == id)
-      break;
-
-    // item did not match, search the next one
-    QListViewItem* next = p->firstChild();
-    if(!next) {
-      while((next = p->nextSibling()) == 0) {
-        p = p->parent();
-        if(!p)
-          break;
-      }
-    }
-    p = next;
-  }
-
-  return dynamic_cast<KMyMoneyAccountTreeBudgetItem*>(p);
 }
 
 
