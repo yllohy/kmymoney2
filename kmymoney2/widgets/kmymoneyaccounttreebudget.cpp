@@ -86,68 +86,34 @@ void KMyMoneyAccountTreeBudgetItem::setBudget(const MyMoneyBudget& budget)
   updateAccount(m_account);
 }
 
-void KMyMoneyAccountTreeBudgetItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
+void KMyMoneyAccountTreeBudgetItem::fillColumns(const MyMoneyAccount& account)
 {
-  // make sure it's for the same object
-  if(account.id() != m_account.id())
-    return;
-
-  setPixmap(0, m_account.accountGroupPixmap(false));
-  
-  setText(KMyMoneyAccountTree::NameColumn, account.name());
-
+  KMyMoneyAccountTreeItem::fillColumns(account);
   // make sure we have the right parent object
   // for the extended features
   KMyMoneyAccountTree* lv = listView();
   if(!lv)
     return;
 
-  MyMoneyMoney oldValue = m_value;
-  m_account = account;
+}
+
+MyMoneyMoney KMyMoneyAccountTreeBudgetItem::balance( const MyMoneyAccount& account ) const
+{
+  MyMoneyMoney result = MyMoneyMoney();
   // find out if the account is budgeted
   MyMoneyBudget::AccountGroup budgetAccount = m_budget.account( account.id() );
-  m_balance = MyMoneyMoney();
   if ( budgetAccount.id() == account.id() )
-    m_balance = budgetAccount.balance();
+    result = budgetAccount.balance();
 
   switch(budgetAccount.budgetLevel()) {
     case MyMoneyBudget::AccountGroup::eMonthly:
-      m_balance = m_balance * 12;
+      result = result * 12;
       break;
 
     default:
       break;
   }
-
-  // calculate the new value by running down the price list
-  m_value = m_balance;
-
-  QValueList<MyMoneyPrice>::const_iterator it_p;
-  QCString security = m_security.id();
-  for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
-    m_value = m_value * (MyMoneyMoney(1,1) / (*it_p).rate(security));
-    if((*it_p).from() == security)
-      security = (*it_p).to();
-    else
-      security = (*it_p).from();
-  }
-
-  // check if we need to update the display of values
-  if(parent() && (isOpen() || m_account.accountList().count() == 0)) {
-    if(m_security.id() != listView()->baseCurrency().id())
-    {
-      QString strAmount = m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())) + "  ";
-      setText(KMyMoneyAccountTree::BalanceColumn, strAmount);
-    }
-    setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(),   MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
-  }
-
-  // check if we need to tell upstream account objects in the tree
-  // that the value has changed
-  if(oldValue != m_value || forceTotalUpdate) {
-    adjustTotalValue(m_value - oldValue);
-    lv->emitValueChanged();
-  }
+  return result;
 }
 
 #include "kmymoneyaccounttreebudget.moc"

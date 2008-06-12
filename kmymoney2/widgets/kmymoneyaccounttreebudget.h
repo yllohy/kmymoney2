@@ -91,19 +91,9 @@ public:
   void setBudget(const MyMoneyBudget& budget);
 
 protected:
-  /**
-    * This method loads new information into the item and updates the fields
-    *
-    * @param account the account data for the object to be updated
-    * @param forceTotalUpdate set to true to force update of total values
-    *                         (used in constructor, should not be necessary to
-    *                          be set by application code)
-    *
-    * @note if account.id() is not equal to the current account id
-    *       then this method returns immediately
-    */
-  void updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate = false);
-
+  void fillColumns(const MyMoneyAccount& account);
+  MyMoneyMoney balance( const MyMoneyAccount& account ) const;
+  
 private:
   MyMoneyBudget m_budget;
 };

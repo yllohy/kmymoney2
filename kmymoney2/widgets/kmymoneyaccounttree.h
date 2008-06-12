@@ -295,6 +295,8 @@ public:
 
   ~KMyMoneyAccountTreeItem();
 
+  virtual void fillColumns(const MyMoneyAccount& account);
+
   /**
     * This method loads new information into the item and updates the fields
     *
@@ -420,13 +422,14 @@ protected:
     * This is a virtual function, to allow subclasses to calculate
     * the balance in different ways.
     *
+    * Parent items in the tree will only be recomputed if balance() for
+    * a son changes value.
     * @param account Account to get the balance for
-    * @retval Balance of this account
+    * @return Balance of this account
     */
   virtual MyMoneyMoney balance( const MyMoneyAccount& account ) const;
 
 protected:
-  MyMoneyMoney                      m_balance;
   MyMoneyMoney                      m_value;
   QValueList<MyMoneyPrice>          m_price;
   MyMoneySecurity                   m_security;

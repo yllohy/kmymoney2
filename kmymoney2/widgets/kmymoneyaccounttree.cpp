@@ -608,12 +608,8 @@ void KMyMoneyAccountTreeItem::setReconciliation(bool on)
   updateAccount(m_account);
 }
 
-void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
+void KMyMoneyAccountTreeItem::fillColumns(const MyMoneyAccount& account)
 {
-  // make sure it's for the same object
-  if(account.id() != m_account.id())
-    return;
-
   QPixmap checkMark = QPixmap(KGlobal::iconLoader()->loadIcon("ok", KIcon::Small));
   MyMoneyMoney vatRate;
 
@@ -644,31 +640,28 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
 
   
   
+}
+
+void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
+{
+  // make sure it's for the same object
+  if(account.id() != m_account.id())
+    return;
+
+  MyMoneyMoney oldValue = m_value;
+  m_account = account;
+  
+  fillColumns(account);
+  
   // make sure we have the right parent object
   // for the extended features
   KMyMoneyAccountTree* lv = listView();
   if(!lv)
     return;
 
-  MyMoneyMoney oldValue = m_value;
-  m_account = account;
-
-  m_balance = balance(account);
-
-  // for income and liability accounts, we reverse the sign
-  switch(m_account.accountGroup()) {
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Liability:
-      if(m_balance)
-      m_balance = -m_balance;
-      break;
-
-    default:
-      break;
-  }
 
   // calculate the new value by running down the price list
-  m_value = m_balance;
+  m_value = balance(account);
   QValueList<MyMoneyPrice>::const_iterator it_p;
   QCString security = m_security.id();
   for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
@@ -683,7 +676,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   // check if we need to update the display of values
   if(parent() && (isOpen() || m_account.accountList().count() == 0)) {
     if(m_security.id() != listView()->baseCurrency().id()) {
-      setText(KMyMoneyAccountTree::BalanceColumn, m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
+      setText(KMyMoneyAccountTree::BalanceColumn, balance(m_account).formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
     }
     setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
   }
@@ -692,17 +685,30 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   // that the value has changed
   if(oldValue != m_value || forceTotalUpdate) {
     adjustTotalValue(m_value - oldValue);
+    KMyMoneyAccountTree* lv = listView();
     lv->emitValueChanged();
   }
 }
 
 MyMoneyMoney KMyMoneyAccountTreeItem::balance( const MyMoneyAccount& account ) const
 {
+  MyMoneyMoney result;
   // account.balance() is not compatable with stock accounts
   if ( account.isInvest() )
-    return MyMoneyFile::instance()->balance(account.id());
+    result = MyMoneyFile::instance()->balance(account.id());
   else
-    return account.balance();
+    result = account.balance();
+  // for income and liability accounts, we reverse the sign
+  switch(account.accountGroup()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Liability:
+        result = -result;
+      break;
+
+    default:
+      break;
+  }
+  return result;
 }
 
 void KMyMoneyAccountTreeItem::setOpen(bool open)
@@ -717,7 +723,7 @@ void KMyMoneyAccountTreeItem::setOpen(bool open)
 
       // only show the balance, if its a different security/currency
       if(m_security.id() != listView()->baseCurrency().id()) {
-        setText(KMyMoneyAccountTree::BalanceColumn, m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
+        setText(KMyMoneyAccountTree::BalanceColumn, balance(m_account).formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
       }
       setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
 
