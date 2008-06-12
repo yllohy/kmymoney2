@@ -128,16 +128,14 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
 
   int error = m_job->error();
 
+  if ( m_tmpfile )
+  {
+    m_tmpfile->close();
+  }
+
   if ( error )
   {
     m_job->showErrorDialog();
-
-    if ( m_tmpfile )
-    {
-      m_tmpfile->close();
-      delete m_tmpfile;
-    }
-    m_tmpfile = 0;
   }
   else if ( m_job->isErrorPage() )
   {
@@ -158,17 +156,15 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
   }
   else if ( m_tmpfile )
   {
-    m_tmpfile->close();
 
     emit statementReady(m_tmpfile->name());
 
 // TODO (Ace) unlink this file, when I'm sure this is all really working.
 // in the meantime, I'll leave the file around to assist people in debugging.
 //     m_tmpfile->unlink();
-    delete m_tmpfile;
-    m_tmpfile = 0;
-
   }
+  delete m_tmpfile;
+  m_tmpfile = 0;
   hide();
 }
 

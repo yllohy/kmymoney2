@@ -298,7 +298,7 @@ public:
   void updateCell(int /* row */, int /* col */) {}
 
   RegisterItem* focusItem(void) const { return m_focusItem; }
-  
+
   /**
     * set focus to specific item.
     * @return true if the item got focus
@@ -435,6 +435,7 @@ public:
   void setSelectionMode(SelectionMode mode) { m_selectionMode = mode; }
 
 protected:
+
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 
   void contentsMouseReleaseEvent( QMouseEvent *e );
@@ -457,10 +458,10 @@ protected:
     * The height to scroll is determined by visibleHeight()
     *
     * @param key Qt::Page_Up or Qt::Page_Down depending on the direction to scroll
-    *
-    * @return pointer to selectable register item
+    * @param state state of Qt::ShiftButton, Qt::ControlButton, Qt::AltButton and
+    *              Qt::MetaButton.
     */
-  RegisterItem* scrollPage(int key);
+  void scrollPage(int key, ButtonState state);
 
   /**
     * This method determines the pointer to a RegisterItem
@@ -480,6 +481,10 @@ protected:
   bool focusNextPrevChild(bool next);
 
   bool eventFilter(QObject* o, QEvent* e);
+
+  void handleItemChange(RegisterItem* old, bool shift, bool control);
+
+  void selectRange(RegisterItem* from, RegisterItem* to, bool invert, bool includeFirst, bool clearSel);
 
 protected slots:
   void resize(void);

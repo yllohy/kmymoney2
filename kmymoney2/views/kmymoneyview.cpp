@@ -894,7 +894,7 @@ bool KMyMoneyView::initializeStorage()
       // Check if we have to modify the file before we allow to work with it
       IMyMoneyStorage* s = MyMoneyFile::instance()->storage();
       while (s->fileFixVersion() < s->currentFixVersion()) {
-        qDebug(QString("testing %1 < %2").arg(s->fileFixVersion()).arg(s->currentFixVersion()));
+        qDebug("%s", (QString("testing fileFixVersion %1 < %2").arg(s->fileFixVersion()).arg(s->currentFixVersion())).data());
         switch (s->fileFixVersion()) {
           case 0:
             fixFile_0();

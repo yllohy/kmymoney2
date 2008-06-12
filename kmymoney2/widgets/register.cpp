@@ -1902,18 +1902,97 @@ RegisterItem* Register::itemById(const QCString& id) const
   return 0;
 }
 
-RegisterItem* Register::scrollPage(int key)
+void Register::handleItemChange(RegisterItem* old, bool shift, bool control)
 {
+  if(m_selectionMode == Multi) {
+    if(shift) {
+      selectRange(m_selectAnchor ? m_selectAnchor : old,
+                  m_focusItem, false, true, (m_selectAnchor && !control) ? true : false);
+    } else if(!control) {
+      selectItem(m_focusItem, false);
+    }
+  }
+}
+
+void Register::selectRange(RegisterItem* from, RegisterItem* to, bool invert, bool includeFirst, bool clearSel)
+{
+  if(!from || !to)
+    return;
+  if(from == to && !includeFirst)
+    return;
+  bool swap = false;
+  if(to == from->prevItem())
+    swap = true;
+
+  RegisterItem* item;
+  if(!swap && from != to && from != to->prevItem()) {
+    bool found = false;
+    for(item = from; item; item = item->nextItem()) {
+      if(item == to) {
+        found = true;
+        break;
+      }
+    }
+    if(!found)
+      swap = true;
+  }
+
+  if(swap) {
+    item = from;
+    from = to;
+    to = item;
+    if(!includeFirst)
+      to = to->prevItem();
+
+  } else if(!includeFirst) {
+    from = from->nextItem();
+  }
+
+  bool changed = false;
+  if(clearSel) {
+    for(item = firstItem(); item; item = item->nextItem()) {
+      if(item->isSelected() && item->isVisible()) {
+        item->setSelected(false);
+        changed = true;
+      }
+    }
+  }
+
+  for(item = from; item; item = item->nextItem()) {
+    if(item->isSelectable()) {
+      if(!invert) {
+        if(!item->isSelected() && item->isVisible()) {
+          item->setSelected(true);
+          changed = true;
+        }
+      } else {
+        bool sel = !item->isSelected();
+        if(item->isSelected() != sel && sel || !sel) {
+          if(item->isVisible()) {
+            item->setSelected(sel);
+            changed = true;
+          }
+        }
+      }
+    }
+    if(item == to)
+      break;
+  }
+}
+
+void Register::scrollPage(int key, ButtonState state)
+{
+  RegisterItem* oldFocusItem = m_focusItem;
+
   // make sure we have a focus item
   if(!m_focusItem)
     setFocusItem(m_firstItem);
   if(!m_focusItem && m_firstItem)
     setFocusItem(m_firstItem->nextItem());
   if(!m_focusItem)
-    return 0;
+    return;
 
   RegisterItem* item = m_focusItem;
-  RegisterItem* newItem = item;
   int height = 0;
 
   switch(key) {
@@ -1924,8 +2003,6 @@ RegisterItem* Register::scrollPage(int key)
           if(item->isVisible())
             height += item->rowHeightHint();
         } while((!item->isSelectable() || !item->isVisible()) && item->prevItem());
-        if(item)
-          newItem = item;
       }
       break;
     case Qt::Key_PageDown:
@@ -1935,8 +2012,6 @@ RegisterItem* Register::scrollPage(int key)
             height += item->rowHeightHint();
           item = item->nextItem();
         } while((!item->isSelectable() || !item->isVisible()) && item->nextItem());
-        if(item)
-          newItem = item;
       }
       break;
 
@@ -1945,8 +2020,6 @@ RegisterItem* Register::scrollPage(int key)
         do {
           item = item->prevItem();
         } while((!item->isSelectable() || !item->isVisible()) && item->prevItem());
-        if(item)
-          newItem = item;
       }
       break;
 
@@ -1955,8 +2028,6 @@ RegisterItem* Register::scrollPage(int key)
         do {
           item = item->nextItem();
         } while((!item->isSelectable() || !item->isVisible()) && item->nextItem());
-        if(item)
-          newItem = item;
       }
       break;
 
@@ -1964,26 +2035,35 @@ RegisterItem* Register::scrollPage(int key)
       item = m_firstItem;
       while((!item->isSelectable() || !item->isVisible()) && item->nextItem())
         item = item->nextItem();
-      if(item)
-        newItem = item;
       break;
 
     case Qt::Key_End:
       item = m_lastItem;
       while((!item->isSelectable() || !item->isVisible()) && item->prevItem())
         item = item->prevItem();
-      if(item)
-        newItem = item;
       break;
   }
 
   // make sure to avoid selecting a possible empty transaction at the end
-  Transaction* t = dynamic_cast<Transaction*>(newItem);
+  Transaction* t = dynamic_cast<Transaction*>(item);
   if(t && t->transaction().id().isEmpty()) {
-    if(t->prevItem())
-      newItem = t->prevItem();
+    if(t->prevItem()) {
+      item = t->prevItem();
+    }
   }
-  return newItem;
+
+  if(!(state & ShiftButton) || !m_selectAnchor)
+    m_selectAnchor = item;
+
+  setFocusItem(item);
+
+  if(item->isSelectable()) {
+    handleItemChange(oldFocusItem, state & Qt::ShiftButton, state & Qt::ControlButton);
+  }
+
+  if(m_focusItem && !m_focusItem->isSelected() && m_selectionMode == Single)
+    selectItem(item);
+
 }
 
 void Register::keyPressEvent(QKeyEvent* ev)
@@ -2005,10 +2085,7 @@ void Register::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_End:
     case Qt::Key_Down:
     case Qt::Key_Up:
-      setFocusItem(scrollPage(ev->key()));
-      ensureItemVisible(m_focusItem);
-      if(m_selectionMode == Single)
-        selectItem(m_focusItem);
+      scrollPage(ev->key(), ev->state());
       break;
 
     default:
