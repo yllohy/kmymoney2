@@ -520,12 +520,12 @@ public:
   /**
    * @return a pixmap using IconDesktop for the account type
    */
-  QPixmap accountPixmap(bool reconcileFlag) const;
+  QPixmap accountPixmap(bool reconcileFlag = false) const;
   
   /**
    * @return a 22x22 pixmap for the account group type
    */
-  QPixmap accountGroupPixmap(bool reconcileFlag) const;
+  QPixmap accountGroupPixmap(bool reconcileFlag = false) const;
   
   private:
   /**

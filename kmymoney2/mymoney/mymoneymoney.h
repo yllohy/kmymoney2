@@ -134,6 +134,12 @@ public:
 
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
+   * about currency symbol and precision out of the MyMoneySecurity object @a sec.
+   */
+  const QString formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
+  
+  /**
+   * This is a convenience method. It behaves exactly as the above one, but takes the information
    * about precision out of the denomination @a denom. No currency symbol is shown. If you want
    * to see a currency symbol, please use formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator)
    * instead.

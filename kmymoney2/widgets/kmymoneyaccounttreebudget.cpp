@@ -16,32 +16,11 @@
  ***************************************************************************/
 
 // ----------------------------------------------------------------------------
-// QT Includes
-
-#include <qpoint.h>
-#include <qevent.h>
-#include <qdragobject.h>
-#include <qtimer.h>
-#include <qcursor.h>
-#include <qheader.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qstyle.h>
-
-// ----------------------------------------------------------------------------
-// KDE Includes
-
-#include <kmessagebox.h>
-#include <klocale.h>
-#include <kglobal.h>
-#include <kstandarddirs.h>
-
-// ----------------------------------------------------------------------------
 // Project Includes
 #include <kmymoneyaccounttreebudget.h>
 
 KMyMoneyAccountTreeBudget::KMyMoneyAccountTreeBudget(QWidget* parent, const char* name) :
-  KMyMoneyAccountTree::KMyMoneyAccountTree(parent, name)
+  KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(parent, name)
 {
 }
 
@@ -50,29 +29,24 @@ void KMyMoneyAccountTreeBudget::slotSelectObject(const QListViewItem* i)
   emit selectObject(MyMoneyInstitution());
   emit selectObject(MyMoneyAccount());
 
-  const KMyMoneyAccountTreeItem* item = dynamic_cast<const KMyMoneyAccountTreeItem*>(i);
+  const KMyMoneyAccountTreeBaseItem* item = dynamic_cast<const KMyMoneyAccountTreeBaseItem*>(i);
   if(item) {
-    emit KMyMoneyAccountTree::openObject(item->itemObject());
+    emit KMyMoneyAccountTreeBase::openObject(item->itemObject());
   }
 }
 
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-KMyMoneyAccountTreeBudgetItem::KMyMoneyAccountTreeBudgetItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& name) :
-  KMyMoneyAccountTreeItem(parent, account, security, name),
+KMyMoneyAccountTreeBudgetItem::KMyMoneyAccountTreeBudgetItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget  &budget, const MyMoneySecurity& security, const QString& name) :
+  KMyMoneyAccountTreeBaseItem(parent, account, security, name),
   m_budget(budget)
 {
-  updateAccount(account, true);
+  updateAccount(true);
 }
 
 KMyMoneyAccountTreeBudgetItem::KMyMoneyAccountTreeBudgetItem(KMyMoneyAccountTreeBudgetItem *parent, const MyMoneyAccount& account, const MyMoneyBudget& budget, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
-  KMyMoneyAccountTreeItem(parent, account, price, security),
+  KMyMoneyAccountTreeBaseItem(parent, account, price, security),
   m_budget(budget)
 {
-  updateAccount(account, true);
+  updateAccount(true);
 }
 
 
@@ -83,35 +57,24 @@ KMyMoneyAccountTreeBudgetItem::~KMyMoneyAccountTreeBudgetItem()
 void KMyMoneyAccountTreeBudgetItem::setBudget(const MyMoneyBudget& budget)
 {
   m_budget = budget;
-  updateAccount(m_account);
+  updateAccount();
 }
 
-void KMyMoneyAccountTreeBudgetItem::fillColumns(const MyMoneyAccount& account)
-{
-  KMyMoneyAccountTreeItem::fillColumns(account);
-  // make sure we have the right parent object
-  // for the extended features
-  KMyMoneyAccountTree* lv = listView();
-  if(!lv)
-    return;
-
-}
-
-MyMoneyMoney KMyMoneyAccountTreeBudgetItem::balance( const MyMoneyAccount& account ) const
+MyMoneyMoney KMyMoneyAccountTreeBudgetItem::balance() const
 {
   MyMoneyMoney result = MyMoneyMoney();
   // find out if the account is budgeted
-  MyMoneyBudget::AccountGroup budgetAccount = m_budget.account( account.id() );
-  if ( budgetAccount.id() == account.id() )
+  MyMoneyBudget::AccountGroup budgetAccount = m_budget.account( m_account.id() );
+  if ( budgetAccount.id() == m_account.id() ) {
     result = budgetAccount.balance();
-
-  switch(budgetAccount.budgetLevel()) {
-    case MyMoneyBudget::AccountGroup::eMonthly:
-      result = result * 12;
-      break;
-
-    default:
-      break;
+    switch(budgetAccount.budgetLevel()) {
+      case MyMoneyBudget::AccountGroup::eMonthly:
+        result = result * 12;
+        break;
+  
+      default:
+        break;
+    }
   }
   return result;
 }

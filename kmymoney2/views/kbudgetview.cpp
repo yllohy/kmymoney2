@@ -180,10 +180,6 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
     m_accountTree->setResizeMode(QListView::AllColumns);
   }
 
-  // FIXME hide unused columns. Apparently, this does not really
-  // hide them, so for now we just leave it in
-  // m_accountTree->hideColumn(KMyMoneyAccountTree::TaxReportColumn);
-
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
 }
 
@@ -337,13 +333,13 @@ void KBudgetView::loadAccounts(void)
   }
 
   // remember the id of the current selected item
-  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
 
   // keep a map of all 'expanded' accounts
   QListViewItemIterator it_lvi(m_accountTree);
   while(it_lvi.current()) {
-    item = dynamic_cast<KMyMoneyAccountTreeBudgetItem*>(it_lvi.current());
+    item = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(it_lvi.current());
     if(item && item->isOpen()) {
       isOpen[item->id()] = true;
     }
@@ -397,7 +393,7 @@ void KBudgetView::loadAccounts(void)
   // expanded and re-select the one that was probably selected before
   it_lvi = QListViewItemIterator(m_accountTree);
   while(it_lvi.current()) {
-    item = dynamic_cast<KMyMoneyAccountTreeBudgetItem*>(it_lvi.current());
+    item = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(it_lvi.current());
     if(item) {
       if(item->id() == selectedItemId)
         m_accountTree->setSelected(item, true);

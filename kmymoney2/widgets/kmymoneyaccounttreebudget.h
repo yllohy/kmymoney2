@@ -36,7 +36,7 @@ class QDragObject;
 
 class KMyMoneyAccountTreeBudgetItem;
 
-class KMyMoneyAccountTreeBudget : public KMyMoneyAccountTree
+class KMyMoneyAccountTreeBudget : public KMyMoneyAccountTreeBase
 {
   Q_OBJECT
 public:
@@ -48,7 +48,7 @@ public slots:
 
 };
 
-class KMyMoneyAccountTreeBudgetItem : public KMyMoneyAccountTreeItem
+class KMyMoneyAccountTreeBudgetItem : public KMyMoneyAccountTreeBaseItem
 {
 public:
 
@@ -84,15 +84,25 @@ public:
     * @param name name of the account to be used instead of the one stored with @p account
     *               If empty, the one stored with @p account will be used. Default: empty
     */
-   KMyMoneyAccountTreeBudgetItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security = MyMoneySecurity(), const QString& name = QString());
+  KMyMoneyAccountTreeBudgetItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security = MyMoneySecurity(), const QString& name = QString());
 
   ~KMyMoneyAccountTreeBudgetItem();
 
   void setBudget(const MyMoneyBudget& budget);
 
 protected:
-  void fillColumns(const MyMoneyAccount& account);
-  MyMoneyMoney balance( const MyMoneyAccount& account ) const;
+   /**
+    * Returns the current balance of this account.
+    *
+    * This is a pure virtual function, to allow subclasses to calculate
+    * the balance in different ways.
+    *
+    * Parent items in the tree will only be recomputed if the balance() for
+    * a son changes.
+    * @param account Account to get the balance for
+    * @return Balance of this account
+    */
+  MyMoneyMoney balance() const;
   
 private:
   MyMoneyBudget m_budget;

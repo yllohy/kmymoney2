@@ -27,6 +27,7 @@
 #include <qstring.h>
 #include <qmap.h>
 #include <qstringlist.h>
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -152,6 +153,8 @@ public:
     * @retval false This object does not reference the object with id @p id.
     */
   virtual bool hasReferenceTo(const QCString& id) const;
+  
+  QPixmap pixmap() const;
 
 private:
   // Bank 'fields'

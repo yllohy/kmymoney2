@@ -164,7 +164,7 @@ void KAccountsView::slotTabChanged(QWidget* _tab)
       break;
   }
 
-  KMyMoneyAccountTreeItem* treeItem = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeBaseItem* treeItem = m_accountTree->selectedItem();
   KMyMoneyAccountIconItem* iconItem = selectedIcon();
 
   emit selectObject(MyMoneyAccount());
@@ -307,7 +307,7 @@ void KAccountsView::loadListView(void)
 
   ::timetrace("start load accounts list view");
   // remember the id of the current selected item
-  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
 
   // keep a map of all 'expanded' accounts

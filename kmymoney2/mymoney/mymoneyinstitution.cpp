@@ -20,6 +20,11 @@
 // QT Includes
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+#include <kglobal.h>
+#include <kstandarddirs.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
 
 #include "mymoneyinstitution.h"
@@ -169,5 +174,9 @@ bool MyMoneyInstitution::hasReferenceTo(const QCString& /* id */) const
 {
   bool rc = false;
   return rc;
+}
+
+QPixmap MyMoneyInstitution::pixmap() const {
+  return QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank")));
 }
 

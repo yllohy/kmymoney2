@@ -73,7 +73,7 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
   m_collapseButton->setGuiItem(collapseGuiItem);
   m_expandButton->setGuiItem(expandGuiItem);
 
-  m_accountTree->setSectionHeader(KMyMoneyAccountTree::NameColumn, i18n("Category"));
+  m_accountTree->setSectionHeader(i18n("Category"));
 
   connect(m_accountTree, SIGNAL(selectObject(const MyMoneyObject&)), this, SIGNAL(selectObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(openContextMenu(const MyMoneyObject&)), this, SIGNAL(openContextMenu(const MyMoneyObject&)));
@@ -110,7 +110,7 @@ void KCategoriesView::show(void)
   KCategoriesViewDecl::show();
 
   // if we have a selected account, let the application know about it
-  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
   if(item) {
     emit selectObject(item->itemObject());
   }
@@ -133,7 +133,7 @@ void KCategoriesView::loadAccounts(void)
 
   ::timetrace("start load categories view");
   // remember the id of the current selected item
-  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
+  KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
 
   // keep a map of all 'expanded' accounts
