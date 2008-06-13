@@ -575,7 +575,9 @@ MyMoneyMoney KMyMoneyAccountTreeBaseItem::value() const
     else
       security = (*it_p).from();
   }
-  return result.convert(listView()->baseCurrency().smallestAccountFraction());
+  if (listView())
+    result = result.convert(listView()->baseCurrency().smallestAccountFraction());
+  return result;
 }
 
 void KMyMoneyAccountTreeBaseItem::setName()
