@@ -528,7 +528,7 @@ void KAccountsView::slotUpdateNetWorth(void)
     s += "<b><font color=\"red\">";
   }
   const MyMoneySecurity& sec = MyMoneyFile::instance()->baseCurrency();
-  QString v(netWorth.formatMoney(sec.tradingSymbol(), MyMoneyMoney::denomToPrec(sec.smallestAccountFraction())));
+  QString v(netWorth.formatMoney(sec));
   s += v.replace(QString(" "), QString("&nbsp;"));
   if(netWorth.isNegative()) {
     s += "</font></b>";

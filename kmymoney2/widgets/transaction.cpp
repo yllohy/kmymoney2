@@ -1582,7 +1582,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
         case ValueColumn2:
           align |= Qt::AlignRight;
           if((fieldEditable = haveAmount()) == true) {
-            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency);
           }
       }
       break;
@@ -1649,10 +1649,10 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
         case ValueColumn:
           align |= Qt::AlignRight;
           if(haveAmount()) {
-            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency);
 
           } else if(haveInterest()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_interestAmount.abs().formatMoney(m_currency);
           }
           break;
 
@@ -1686,11 +1686,11 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
         case AmountColumn:
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
-            // txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            // txt = m_interestAmount.abs().formatMoney(m_currency);
           } else if(haveInterest() && m_interestSplits.count()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_interestAmount.abs().formatMoney(m_currency);
           } else if(haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_feeAmount.abs().formatMoney(m_currency);
           }
           break;
 
@@ -1716,9 +1716,9 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_interestAmount.abs().formatMoney(m_currency);
           } else if(haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_feeAmount.abs().formatMoney(m_currency);
           }
           break;
 
@@ -1744,7 +1744,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()
           && haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            txt = m_feeAmount.abs().formatMoney(m_currency);
           }
           break;
 
