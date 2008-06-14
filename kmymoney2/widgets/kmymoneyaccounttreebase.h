@@ -181,8 +181,8 @@ private:
   QListViewItem*      m_dropItem;
   QRect               m_lastDropHighlighter;
   int                 m_queuedSort;
-  int                 m_typeColumn;
   int                 m_nameColumn;
+  int                 m_typeColumn;
   int                 m_valueColumn;
   int                 m_balanceColumn;
 
@@ -192,6 +192,9 @@ public:
   int BalanceColumn() const { return m_balanceColumn; }
   int ValueColumn() const { return m_valueColumn; }
 
+  void showType(void);
+  void showValue(void);
+  
   
 signals:
   /**
@@ -292,11 +295,11 @@ public:
   KMyMoneyAccountTreeBaseItem(KMyMoneyAccountTreeBaseItem *parent, const MyMoneyAccount& account, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
 
   ~KMyMoneyAccountTreeBaseItem();
-
+    
   /**
-   * populates the columns. Derived classes should override this. The
-   * name column is already filled and should not be changed.
-   */
+    * populates the columns. Derived classes should override this. The
+    * name column is already filled and should not be changed.
+    */
   virtual void fillColumns();
 
   /**
@@ -307,7 +310,7 @@ public:
     *                          be set by application code)
     *
     */
-  virtual void updateAccount(bool forceTotalUpdate = false);
+  void updateAccount(bool forceTotalUpdate = false);
 
   /**
     * This method checks, if the item contains an account or not.
@@ -417,7 +420,7 @@ protected:
     * @param account Account to get the balance for
     * @return Balance of this account
    */
-  virtual MyMoneyMoney balance() const = 0;
+  virtual MyMoneyMoney balance() const { return MyMoneyMoney(0); }
 
   /**
    * Computes and returns the current value of the account held by this item.

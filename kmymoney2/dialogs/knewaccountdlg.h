@@ -39,7 +39,7 @@
 #include <kmymoney/kmymoneyedit.h>
 
 #include "../dialogs/knewaccountdlgdecl.h"
-class KMyMoneyAccountTreeItem;
+class KMyMoneyAccountTreeBaseItem;
 namespace reports {
   class KReportChartView;
 };
@@ -56,8 +56,8 @@ private:
   MyMoneyAccount m_parentAccount;
   bool m_bSelectedParentAccount;
 
-  KMyMoneyAccountTreeItem *m_parentItem;
-  KMyMoneyAccountTreeItem *m_accountItem;
+  KMyMoneyAccountTreeBaseItem *m_parentItem;
+  KMyMoneyAccountTreeBaseItem *m_accountItem;
   bool m_categoryEditor;
   bool m_isEditing;
 
@@ -67,7 +67,7 @@ private:
   int m_idPropMinBalance;
 
   void initParentWidget(QCString parentId, const QCString& accountId);
-  void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem, const QCString& parentId, const QCString& accountId);
+  void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadVatAccounts(void);
   void storeKVP(const QCString& key, kMyMoneyEdit* widget);
   void storeKVP(const QCString& key, KLineEdit* widget);

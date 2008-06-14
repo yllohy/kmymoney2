@@ -22,6 +22,8 @@
 KMyMoneyAccountTreeBudget::KMyMoneyAccountTreeBudget(QWidget* parent, const char* name) :
   KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(parent, name)
 {
+  showType();
+  showValue();
 }
 
 void KMyMoneyAccountTreeBudget::slotSelectObject(const QListViewItem* i)

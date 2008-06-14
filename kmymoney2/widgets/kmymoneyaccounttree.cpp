@@ -49,6 +49,8 @@
 KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char *name) :
     KMyMoneyAccountTreeBase(parent,name)
 {
+  showType();
+  showValue();
   m_taxReportColumn = addColumn(i18n("Column heading for category in tax report", "Tax"));
   setColumnWidthMode(m_taxReportColumn, QListView::Manual);
   setColumnAlignment(m_taxReportColumn, Qt::AlignHCenter);
@@ -91,6 +93,8 @@ void KMyMoneyAccountTreeItem::fillColumns()
   switch(m_account.accountType()) {
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::Liability:
       if(m_account.value("Tax").lower() == "yes")
         setPixmap(lv->TaxReportColumn(), checkMark);
       if(!m_account.value("VatAccount").isEmpty()) {

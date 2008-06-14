@@ -30,7 +30,7 @@ public:
   KMyMoneyAccountTree(QWidget* parent = 0, const char *name = 0);
   int TaxReportColumn() const { return m_taxReportColumn; }
   int VatCategoryColumn() const { return m_vatCategoryColumn; }
-protected:
+private:
   int m_taxReportColumn;
   int m_vatCategoryColumn;
 };

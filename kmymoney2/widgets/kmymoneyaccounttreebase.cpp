@@ -57,18 +57,10 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
 
   m_nameColumn = addColumn(i18n("Account"));
   setColumnWidthMode(m_nameColumn, QListView::Manual);
-
-  m_typeColumn = addColumn(i18n("Type"));
-  setColumnWidthMode(m_typeColumn, QListView::Manual);
-  setColumnAlignment(m_typeColumn, Qt::AlignLeft);
-
-  m_balanceColumn = addColumn(i18n("Total Balance"));
-  setColumnWidthMode(m_balanceColumn, QListView::Manual);
-  setColumnAlignment(m_balanceColumn, Qt::AlignRight);
-
-  m_valueColumn = addColumn(i18n("Total Value"));
-  setColumnWidthMode(m_valueColumn, QListView::Manual);
-  setColumnAlignment(m_valueColumn, Qt::AlignRight);
+  
+  m_typeColumn = -1;
+  m_balanceColumn = -1;
+  m_valueColumn = -1;
 
   setMultiSelection(false);
 
@@ -97,6 +89,24 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
   connect( &m_autoopenTimer, SIGNAL( timeout() ), this, SLOT( slotOpenFolder() ) );
   connect( &m_autoscrollTimer, SIGNAL( timeout() ), this, SLOT( slotAutoScroll() ) );
 
+}
+
+void KMyMoneyAccountTreeBase::showType()
+{
+  m_typeColumn = addColumn(i18n("Type"));
+  setColumnWidthMode(m_typeColumn, QListView::Manual);
+  setColumnAlignment(m_typeColumn, Qt::AlignLeft);
+}
+
+void KMyMoneyAccountTreeBase::showValue()
+{
+  m_balanceColumn = addColumn(i18n("Total Balance"));
+  setColumnWidthMode(m_balanceColumn, QListView::Manual);
+  setColumnAlignment(m_balanceColumn, Qt::AlignRight);
+  
+  m_valueColumn = addColumn(i18n("Total Value"));
+  setColumnWidthMode(m_valueColumn, QListView::Manual);
+  setColumnAlignment(m_valueColumn, Qt::AlignRight);
 }
 
 void KMyMoneyAccountTreeBase::connectNotify(const char * /* s */)
@@ -592,7 +602,7 @@ void KMyMoneyAccountTreeBaseItem::setName()
     setPixmap(lv->NameColumn(), m_account.accountGroupPixmap());
     setText(lv->NameColumn(), m_account.name());
 #ifndef KMM_DESIGNER
-    if(!MyMoneyFile::instance()->isStandardAccount(m_account.id()))
+    if(lv->TypeColumn()>=0 && !MyMoneyFile::instance()->isStandardAccount(m_account.id()))
       setText(lv->TypeColumn(), KMyMoneyUtils::accountTypeToString(m_account.accountType()));
 #endif
   }
@@ -602,6 +612,8 @@ void KMyMoneyAccountTreeBaseItem::fillColumns()
 {
   KMyMoneyAccountTreeBase* lv = dynamic_cast<KMyMoneyAccountTreeBase*>(listView());
   if (!lv)
+    return;
+  if (lv->ValueColumn()<0)
     return;
   // show the top accounts always in total value
   if((isOpen() || m_account.accountList().count() == 0) && parent()) {

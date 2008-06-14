@@ -505,7 +505,7 @@
                             <string>Subaccount</string>
                         </property>
                     </widget>
-                    <widget class="KListView">
+                    <widget class="KMyMoneyAccountTreeBase">
                         <property name="name">
                             <cstring>m_qlistviewParentAccounts</cstring>
                         </property>
@@ -975,6 +975,22 @@
     <customwidget>
         <class>kMyMoneyAccountSelector</class>
         <header location="global">../widgets/kmymoneyaccountselector.h</header>
+        <sizehint>
+            <width>80</width>
+            <height>80</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>kMyMoneyAccountTreeBase</class>
+        <header location="global">../widgets/kmymoneyaccounttreebase.h</header>
         <sizehint>
             <width>80</width>
             <height>80</height>

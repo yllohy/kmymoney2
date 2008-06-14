@@ -62,7 +62,7 @@
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/kmymoneyaccounttree.h>
+#include <kmymoney/kmymoneyaccounttreebase.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/kguiutils.h>
@@ -100,7 +100,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   m_qlistviewParentAccounts->setRootIsDecorated(true);
   m_qlistviewParentAccounts->setAllColumnsShowFocus(true);
-  m_qlistviewParentAccounts->addColumn(columnName);
+  m_qlistviewParentAccounts->setSectionHeader(columnName);
   m_qlistviewParentAccounts->setMultiSelection(false);
   m_qlistviewParentAccounts->header()->setResizeEnabled(true);
   m_qlistviewParentAccounts->setColumnWidthMode(0, QListView::Maximum);
@@ -179,10 +179,20 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   else
   {
     // get rid of the tabs that are not used for accounts
-    QWidget* tab = m_tab->page(m_tab->indexOf(m_taxTab));
-    if(tab)
-      m_tab->removePage(tab);
-
+    QWidget* taxtab = m_tab->page(m_tab->indexOf(m_taxTab));
+    if (taxtab) {
+      switch(m_account.accountType()) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          m_vatCategory->setText(i18n( "VAT account"));
+          m_vatAssignmentFrame->hide();
+          m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
+          break;
+        default:
+          m_tab->removePage(taxtab);
+      }
+    }
+    
     switch(m_account.accountType()) {
       case MyMoneyAccount::Savings:
       case MyMoneyAccount::Cash:
@@ -200,7 +210,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
       default:
         // no limit available, so we might get rid of the tab
-        tab = m_tab->page(m_tab->indexOf(m_limitsTab));
+        QWidget* tab = m_tab->page(m_tab->indexOf(m_limitsTab));
         if(tab)
           m_tab->removePage(tab);
         // don't try to hide the widgets we just wiped
@@ -321,7 +331,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       }
     }
 
-    m_qcheckboxTax->hide();
+//    m_qcheckboxTax->hide(); TODO should only be visible for VAT category/account
   }
 
   m_currency->setSecurity(file->currency(account.currencyId()));
@@ -414,24 +424,22 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       slotAccountTypeChanged(KMyMoneyUtils::accountTypeToString(type));
     }
   } else {
-    if(categoryEditor) {
-      if(!m_account.value("VatRate").isEmpty()) {
-        m_vatCategory->setChecked(true);
-        m_vatRate->setValue(MyMoneyMoney(m_account.value("VatRate"))*MyMoneyMoney(100,1));
-      } else {
-        if(!m_account.value("VatAccount").isEmpty()) {
-          QCString accId = m_account.value("VatAccount").latin1();
-          try {
-            // make sure account exists
-            MyMoneyFile::instance()->account(accId);
-            m_vatAssignment->setChecked(true);
-            m_vatAccount->setSelected(accId);
-            m_grossAmount->setChecked(true);
-            if(m_account.value("VatAmount") == "Net")
-              m_netAmount->setChecked(true);
-          } catch(MyMoneyException *e) {
-            delete e;
-          }
+    if(!m_account.value("VatRate").isEmpty()) {
+      m_vatCategory->setChecked(true);
+      m_vatRate->setValue(MyMoneyMoney(m_account.value("VatRate"))*MyMoneyMoney(100,1));
+    } else {
+      if(!m_account.value("VatAccount").isEmpty()) {
+        QCString accId = m_account.value("VatAccount").latin1();
+        try {
+          // make sure account exists
+          MyMoneyFile::instance()->account(accId);
+          m_vatAssignment->setChecked(true);
+          m_vatAccount->setSelected(accId);
+          m_grossAmount->setChecked(true);
+          if(m_account.value("VatAmount") == "Net")
+            m_netAmount->setChecked(true);
+        } catch(MyMoneyException *e) {
+          delete e;
         }
       }
     }
@@ -602,25 +610,22 @@ void KNewAccountDlg::okClicked()
     }
   }
 
-  if (m_categoryEditor)
-  {
-    if ( m_qcheckboxTax->isChecked())
-      m_account.setValue("Tax", "Yes");
-    else
-      m_account.deletePair("Tax");
+  if ( m_qcheckboxTax->isChecked())
+    m_account.setValue("Tax", "Yes");
+  else
+    m_account.deletePair("Tax");
 
-    m_account.deletePair("VatAccount");
-    m_account.deletePair("VatAmount");
-    m_account.deletePair("VatRate");
+  m_account.deletePair("VatAccount");
+  m_account.deletePair("VatAmount");
+  m_account.deletePair("VatRate");
 
-    if(m_vatCategory->isChecked()) {
-      m_account.setValue("VatRate", (m_vatRate->value().abs() / MyMoneyMoney(100,1)).toString());
-    } else {
-      if(m_vatAssignment->isChecked()) {
-        m_account.setValue("VatAccount", m_vatAccount->selectedItems().first());
-        if(m_netAmount->isChecked())
-          m_account.setValue("VatAmount", "Net");
-      }
+  if(m_vatCategory->isChecked()) {
+    m_account.setValue("VatRate", (m_vatRate->value().abs() / MyMoneyMoney(100,1)).toString());
+  } else {
+    if(m_vatAssignment->isChecked()) {
+      m_account.setValue("VatAccount", m_vatAccount->selectedItems().first());
+      if(m_netAmount->isChecked())
+        m_account.setValue("VatAmount", "Net");
     }
   }
 
@@ -763,7 +768,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Asset || type == MyMoneyAccount::Loan) {
         // Asset
-        KMyMoneyAccountTreeItem *assetTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, assetAccount);
+        KMyMoneyAccountTreeBaseItem *assetTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts, assetAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = assetAccount;
@@ -783,7 +788,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
           if(acc.isClosed())
             continue;
 
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(assetTopLevelAccount, acc);
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(assetTopLevelAccount, acc);
 
           if(parentId == acc.id()) {
             m_parentItem = accountItem;
@@ -803,7 +808,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Liability) {
         // Liability
-        KMyMoneyAccountTreeItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, liabilityAccount);
+        KMyMoneyAccountTreeBaseItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts, liabilityAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = liabilityAccount;
@@ -823,7 +828,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
           if(acc.isClosed())
             continue;
 
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(liabilityTopLevelAccount, acc);
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(liabilityTopLevelAccount, acc);
 
           if(parentId == acc.id()) {
             m_parentItem = accountItem;
@@ -845,7 +850,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Income) {
         // Income
-        KMyMoneyAccountTreeItem *incomeTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeBaseItem *incomeTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts,
                           incomeAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -862,7 +867,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != incomeAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(incomeTopLevelAccount,
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(incomeTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -884,7 +889,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Expense) {
         // Expense
-        KMyMoneyAccountTreeItem *expenseTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeBaseItem *expenseTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts,
                           expenseAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -901,7 +906,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != expenseAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(expenseTopLevelAccount,
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(expenseTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -940,14 +945,14 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   m_qlistviewParentAccounts->setEnabled(true);
 }
 
-void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem,
+void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem,
                                      const QCString& parentId, const QCString& accountId)
 {
   MyMoneyFile *file = MyMoneyFile::instance();
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
-    KMyMoneyAccountTreeItem *accountItem  = new KMyMoneyAccountTreeItem(parentItem,
+    KMyMoneyAccountTreeBaseItem *accountItem  = new KMyMoneyAccountTreeBaseItem(parentItem,
           file->account(*it));
 
     QCString id = file->account(*it).id();
@@ -977,7 +982,7 @@ void KNewAccountDlg::resizeEvent(QResizeEvent* e)
 
 void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
 {
-  KMyMoneyAccountTreeItem *accountItem = dynamic_cast<KMyMoneyAccountTreeItem*>(item);
+  KMyMoneyAccountTreeBaseItem *accountItem = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(item);
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
@@ -1140,7 +1145,13 @@ void KNewAccountDlg::slotVatChanged(bool state)
     m_vatAssignmentFrame->hide();
   } else {
     m_vatCategoryFrame->hide();
-    m_vatAssignmentFrame->show();
+    switch(m_account.accountType()) {
+      case MyMoneyAccount::Asset:
+      case MyMoneyAccount::Liability:
+        break;
+      default:
+        m_vatAssignmentFrame->show();
+    }
   }
 }
 
