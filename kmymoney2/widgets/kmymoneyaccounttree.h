@@ -28,8 +28,8 @@ class KMyMoneyAccountTree : public KMyMoneyAccountTreeBase
   Q_OBJECT
 public:
   KMyMoneyAccountTree(QWidget* parent = 0, const char *name = 0);
-  int TaxReportColumn() const { return m_taxReportColumn; }
-  int VatCategoryColumn() const { return m_vatCategoryColumn; }
+  int taxReportColumn(void) const { return m_taxReportColumn; }
+  int vatCategoryColumn(void) const { return m_vatCategoryColumn; }
 private:
   int m_taxReportColumn;
   int m_vatCategoryColumn;
@@ -48,7 +48,7 @@ public:
  *               the KListView entry is constructed
    */
   KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyInstitution& institution);
-  
+
   /**
    * Constructor to be used to construct a standard account entry object (e.g. Asset,
    * Liability, etc.).
@@ -63,7 +63,7 @@ public:
    *               If empty, the one stored with @p account will be used. Default: empty
    */
   KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneySecurity& security = MyMoneySecurity(), const QString& name = QString());
-  
+
   /**
    * Constructor to be used to construct an account entry
    * object.

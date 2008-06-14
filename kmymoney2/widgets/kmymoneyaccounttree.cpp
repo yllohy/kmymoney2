@@ -50,14 +50,14 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char *name) :
     KMyMoneyAccountTreeBase(parent,name)
 {
   showType();
-  showValue();
   m_taxReportColumn = addColumn(i18n("Column heading for category in tax report", "Tax"));
   setColumnWidthMode(m_taxReportColumn, QListView::Manual);
   setColumnAlignment(m_taxReportColumn, Qt::AlignHCenter);
-  
+
   m_vatCategoryColumn = addColumn(i18n("Column heading for VAT category", "VAT"));
   setColumnWidthMode(m_vatCategoryColumn, QListView::Manual);
   setColumnAlignment(m_vatCategoryColumn, Qt::AlignHCenter);
+  showValue();
 };
 
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneySecurity& security , const QString& name) :
@@ -89,20 +89,20 @@ void KMyMoneyAccountTreeItem::fillColumns()
   QPixmap checkMark = QPixmap(KGlobal::iconLoader()->loadIcon("ok", KIcon::Small));
   MyMoneyMoney vatRate;
   if (!isInstitution())
-    setPixmap(lv->NameColumn(), m_account.accountGroupPixmap(m_reconcileFlag));
+    setPixmap(lv->nameColumn(), m_account.accountGroupPixmap(m_reconcileFlag));
   switch(m_account.accountType()) {
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
       if(m_account.value("Tax").lower() == "yes")
-        setPixmap(lv->TaxReportColumn(), checkMark);
+        setPixmap(lv->taxReportColumn(), checkMark);
       if(!m_account.value("VatAccount").isEmpty()) {
-        setPixmap(lv->VatCategoryColumn(), checkMark);
+        setPixmap(lv->vatCategoryColumn(), checkMark);
       }
       if(!m_account.value("VatRate").isEmpty()) {
         vatRate = MyMoneyMoney(m_account.value("VatRate")) * MyMoneyMoney(100,1);
-        setText(lv->VatCategoryColumn(), QString("%1 %").arg(vatRate.formatMoney("", 1)));
+        setText(lv->vatCategoryColumn(), QString("%1 %").arg(vatRate.formatMoney("", 1)));
       }
       break;
     default:

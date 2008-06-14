@@ -33,7 +33,7 @@ void KMyMoneyAccountTreeBudget::slotSelectObject(const QListViewItem* i)
 
   const KMyMoneyAccountTreeBaseItem* item = dynamic_cast<const KMyMoneyAccountTreeBaseItem*>(i);
   if(item) {
-    emit KMyMoneyAccountTreeBase::openObject(item->itemObject());
+    emit openObject(item->itemObject());
   }
 }
 
@@ -73,7 +73,7 @@ MyMoneyMoney KMyMoneyAccountTreeBudgetItem::balance() const
       case MyMoneyBudget::AccountGroup::eMonthly:
         result = result * 12;
         break;
-  
+
       default:
         break;
     }

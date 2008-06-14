@@ -57,7 +57,7 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
 
   m_nameColumn = addColumn(i18n("Account"));
   setColumnWidthMode(m_nameColumn, QListView::Manual);
-  
+
   m_typeColumn = -1;
   m_balanceColumn = -1;
   m_valueColumn = -1;
@@ -91,19 +91,19 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
 
 }
 
-void KMyMoneyAccountTreeBase::showType()
+void KMyMoneyAccountTreeBase::showType(void)
 {
   m_typeColumn = addColumn(i18n("Type"));
   setColumnWidthMode(m_typeColumn, QListView::Manual);
   setColumnAlignment(m_typeColumn, Qt::AlignLeft);
 }
 
-void KMyMoneyAccountTreeBase::showValue()
+void KMyMoneyAccountTreeBase::showValue(void)
 {
   m_balanceColumn = addColumn(i18n("Total Balance"));
   setColumnWidthMode(m_balanceColumn, QListView::Manual);
   setColumnAlignment(m_balanceColumn, Qt::AlignRight);
-  
+
   m_valueColumn = addColumn(i18n("Total Value"));
   setColumnWidthMode(m_valueColumn, QListView::Manual);
   setColumnAlignment(m_valueColumn, Qt::AlignRight);
@@ -129,7 +129,7 @@ void KMyMoneyAccountTreeBase::disconnectNotify(const char * /* s */)
 
 void KMyMoneyAccountTreeBase::setSectionHeader(const QString& txt)
 {
-  header()->setLabel(NameColumn(), txt);
+  header()->setLabel(nameColumn(), txt);
 }
 
 KMyMoneyAccountTreeBaseItem* KMyMoneyAccountTreeBase::selectedItem(void) const
@@ -596,14 +596,14 @@ void KMyMoneyAccountTreeBaseItem::setName()
   if (!lv)
     return;
   if (isInstitution()) {
-    setPixmap(lv->NameColumn(), m_institution.pixmap());
-    setText(lv->NameColumn(), m_institution.name());
+    setPixmap(lv->nameColumn(), m_institution.pixmap());
+    setText(lv->nameColumn(), m_institution.name());
   } else {
-    setPixmap(lv->NameColumn(), m_account.accountGroupPixmap());
-    setText(lv->NameColumn(), m_account.name());
+    setPixmap(lv->nameColumn(), m_account.accountGroupPixmap());
+    setText(lv->nameColumn(), m_account.name());
 #ifndef KMM_DESIGNER
-    if(lv->TypeColumn()>=0 && !MyMoneyFile::instance()->isStandardAccount(m_account.id()))
-      setText(lv->TypeColumn(), KMyMoneyUtils::accountTypeToString(m_account.accountType()));
+    if(lv->typeColumn()>=0 && !MyMoneyFile::instance()->isStandardAccount(m_account.id()))
+      setText(lv->typeColumn(), KMyMoneyUtils::accountTypeToString(m_account.accountType()));
 #endif
   }
 }
@@ -613,23 +613,23 @@ void KMyMoneyAccountTreeBaseItem::fillColumns()
   KMyMoneyAccountTreeBase* lv = dynamic_cast<KMyMoneyAccountTreeBase*>(listView());
   if (!lv)
     return;
-  if (lv->ValueColumn()<0)
+  if (lv->valueColumn()<0)
     return;
   // show the top accounts always in total value
   if((isOpen() || m_account.accountList().count() == 0) && parent()) {
 
       // only show the balance, if its a different security/currency
     if(m_security.id() != listView()->baseCurrency().id()) {
-      setText(lv->BalanceColumn(), balance().formatMoney(m_security));
+      setText(lv->balanceColumn(), balance().formatMoney(m_security));
     }
-    setText(lv->ValueColumn(), m_value.formatMoney(listView()->baseCurrency()) + "  ");
+    setText(lv->valueColumn(), m_value.formatMoney(listView()->baseCurrency()) + "  ");
 
   } else {
-    setText(lv->BalanceColumn(), " ");
+    setText(lv->balanceColumn(), " ");
     if(parent())
-      setText(lv->ValueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()) + "  ");
+      setText(lv->valueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()) + "  ");
     else
-      setText(lv->ValueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()));
+      setText(lv->valueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()));
   }
 }
 
@@ -669,15 +669,15 @@ void KMyMoneyAccountTreeBaseItem::adjustTotalValue(const MyMoneyMoney& diff)
   // or it is currently not open
   // we need to display the value of it
   KMyMoneyAccountTreeBase* lv = dynamic_cast<KMyMoneyAccountTreeBase*>(listView());
-  if(!lv) 
+  if(!lv)
     return;
   if(!firstChild() || !parent() || (!isOpen() && firstChild())) {
     if(firstChild())
-      setText(lv->BalanceColumn(), " ");
+      setText(lv->balanceColumn(), " ");
     if(parent())
-      setText(lv->ValueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()) + "  ");
+      setText(lv->valueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()) + "  ");
     else
-      setText(lv->ValueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()));
+      setText(lv->valueColumn(), m_totalValue.formatMoney(listView()->baseCurrency()));
   }
 
   // now make sure, the upstream accounts also get notified about the value change
@@ -698,10 +698,10 @@ int KMyMoneyAccountTreeBaseItem::compare(QListViewItem* i, int col, bool ascendi
   // in all other cases use the standard sorting
   KMyMoneyAccountTreeBase* lv = dynamic_cast<KMyMoneyAccountTreeBase*>(listView());
   if(lv && item) {
-    if (col == lv->NameColumn()) {
+    if (col == lv->nameColumn()) {
       if(m_account.accountGroup() != item->m_account.accountGroup())
         return (m_account.accountGroup() - item->m_account.accountGroup());
-    } else if (col == lv->BalanceColumn() || col == lv->ValueColumn()) {
+    } else if (col == lv->balanceColumn() || col == lv->valueColumn()) {
       MyMoneyMoney result = MyMoneyMoney(text(col)) - MyMoneyMoney(item->text(col));
       if(result.isNegative())
         return -1;
@@ -761,7 +761,7 @@ void KMyMoneyAccountTreeBase::slotCollapseAll(void)
 
 void KMyMoneyAccountTreeBase::queueSort(void)
 {
-  if (sortColumn() == BalanceColumn() || sortColumn() == ValueColumn()) {
+  if (sortColumn() == balanceColumn() || sortColumn() == valueColumn()) {
     ++m_queuedSort;
     QTimer::singleShot(100, this, SLOT(slotActivateSort()));
   }

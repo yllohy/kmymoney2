@@ -3,12 +3,18 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Simplified code
+  * Changed function names to follow coding standards
+  * Keep KMyMoneyAccountTreeBaseItem a pure virtual class
+  * Fix default order of columns in account tree
+
 2008-06-14  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * Asset/Liability accounts can now be defined as VAT accounts.
     They cannot yet be used as such however.
   * edit account/category: make hierarchy display work again after
     refactoring the AccountTree classes
-    
+
 2008-06-13  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * Accounts view, icon tab: Do not show closed accounts if not wanted
   * "show closed accounts" now also shows/hides closed stock

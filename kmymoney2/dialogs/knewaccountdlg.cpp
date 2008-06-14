@@ -62,7 +62,7 @@
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/kmymoneyaccounttreebase.h>
+#include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/kguiutils.h>
@@ -181,18 +181,15 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     // get rid of the tabs that are not used for accounts
     QWidget* taxtab = m_tab->page(m_tab->indexOf(m_taxTab));
     if (taxtab) {
-      switch(m_account.accountType()) {
-        case MyMoneyAccount::Asset:
-        case MyMoneyAccount::Liability:
-          m_vatCategory->setText(i18n( "VAT account"));
-          m_vatAssignmentFrame->hide();
-          m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
-          break;
-        default:
-          m_tab->removePage(taxtab);
+      if(m_account.isAssetLiability()) {
+        m_vatCategory->setText(i18n( "VAT account"));
+        m_vatAssignmentFrame->hide();
+        m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
+      } else {
+        m_tab->removePage(taxtab);
       }
     }
-    
+
     switch(m_account.accountType()) {
       case MyMoneyAccount::Savings:
       case MyMoneyAccount::Cash:
@@ -768,7 +765,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Asset || type == MyMoneyAccount::Loan) {
         // Asset
-        KMyMoneyAccountTreeBaseItem *assetTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts, assetAccount);
+        KMyMoneyAccountTreeBaseItem *assetTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, assetAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = assetAccount;
@@ -788,7 +785,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
           if(acc.isClosed())
             continue;
 
-          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(assetTopLevelAccount, acc);
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(assetTopLevelAccount, acc);
 
           if(parentId == acc.id()) {
             m_parentItem = accountItem;
@@ -808,7 +805,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Liability) {
         // Liability
-        KMyMoneyAccountTreeBaseItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts, liabilityAccount);
+        KMyMoneyAccountTreeBaseItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, liabilityAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = liabilityAccount;
@@ -828,7 +825,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
           if(acc.isClosed())
             continue;
 
-          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(liabilityTopLevelAccount, acc);
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(liabilityTopLevelAccount, acc);
 
           if(parentId == acc.id()) {
             m_parentItem = accountItem;
@@ -850,7 +847,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Income) {
         // Income
-        KMyMoneyAccountTreeBaseItem *incomeTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeBaseItem *incomeTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           incomeAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -867,7 +864,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != incomeAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(incomeTopLevelAccount,
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(incomeTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -889,7 +886,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Expense) {
         // Expense
-        KMyMoneyAccountTreeBaseItem *expenseTopLevelAccount = new KMyMoneyAccountTreeBaseItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeBaseItem *expenseTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           expenseAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -906,7 +903,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != expenseAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeBaseItem(expenseTopLevelAccount,
+          KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(expenseTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -952,7 +949,7 @@ void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeB
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
-    KMyMoneyAccountTreeBaseItem *accountItem  = new KMyMoneyAccountTreeBaseItem(parentItem,
+    KMyMoneyAccountTreeBaseItem *accountItem  = new KMyMoneyAccountTreeItem(parentItem,
           file->account(*it));
 
     QCString id = file->account(*it).id();
@@ -1145,11 +1142,7 @@ void KNewAccountDlg::slotVatChanged(bool state)
     m_vatAssignmentFrame->hide();
   } else {
     m_vatCategoryFrame->hide();
-    switch(m_account.accountType()) {
-      case MyMoneyAccount::Asset:
-      case MyMoneyAccount::Liability:
-        break;
-      default:
+    if(!m_account.isAssetLiability()) {
         m_vatAssignmentFrame->show();
     }
   }

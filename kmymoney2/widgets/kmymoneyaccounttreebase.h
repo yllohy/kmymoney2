@@ -71,7 +71,7 @@ public:
   const MyMoneySecurity& baseCurrency(void) const { return m_baseCurrency; };
 
   void emitValueChanged(void) { emit valueChanged(); };
-  
+
 public slots:
   /** autoscroll support */
   void slotStartAutoScroll(void);
@@ -187,15 +187,15 @@ private:
   int                 m_balanceColumn;
 
 public:
-  int TypeColumn() const { return m_typeColumn; }
-  int NameColumn() const { return m_nameColumn; }
-  int BalanceColumn() const { return m_balanceColumn; }
-  int ValueColumn() const { return m_valueColumn; }
+  int typeColumn(void) const { return m_typeColumn; }
+  int nameColumn(void) const { return m_nameColumn; }
+  int balanceColumn(void) const { return m_balanceColumn; }
+  int valueColumn(void) const { return m_valueColumn; }
 
   void showType(void);
   void showValue(void);
-  
-  
+
+
 signals:
   /**
     * This signal is emitted whenever an object in the view is selected
@@ -295,7 +295,7 @@ public:
   KMyMoneyAccountTreeBaseItem(KMyMoneyAccountTreeBaseItem *parent, const MyMoneyAccount& account, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
 
   ~KMyMoneyAccountTreeBaseItem();
-    
+
   /**
     * populates the columns. Derived classes should override this. The
     * name column is already filled and should not be changed.
@@ -416,11 +416,11 @@ protected:
     * the balance in different ways.
     *
     * Parent items in the tree will only be recomputed if the balance() for
-    * a son changes.
+    * a child changes.
     * @param account Account to get the balance for
     * @return Balance of this account
    */
-  virtual MyMoneyMoney balance() const { return MyMoneyMoney(0); }
+  virtual MyMoneyMoney balance() const = 0;
 
   /**
    * Computes and returns the current value of the account held by this item.
@@ -430,7 +430,7 @@ protected:
    * @return value of the account held by this item
    */
   MyMoneyMoney value() const;
-  
+
 protected:
   MyMoneyMoney                      m_value;
   QValueList<MyMoneyPrice>          m_price;
@@ -443,7 +443,7 @@ private:
   MyMoneyInstitution                m_institution;
 
   KMyMoneyAccountTreeItemType       m_type;
-  
+
   /**
    * fills the name column with text and pixmap
    */
