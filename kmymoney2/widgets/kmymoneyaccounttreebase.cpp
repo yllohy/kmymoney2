@@ -50,8 +50,7 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
   KListView(parent, name),
   m_accountConnections(false),
   m_institutionConnections(false),
-  m_queuedSort(0),
-  m_configGroup(0)
+  m_queuedSort(0)
 {
   setRootIsDecorated(true);
   setAllColumnsShowFocus(true);
@@ -94,13 +93,13 @@ KMyMoneyAccountTreeBase::KMyMoneyAccountTreeBase(QWidget* parent, const char* na
 
 KMyMoneyAccountTreeBase::~KMyMoneyAccountTreeBase()
 {
-  if (m_configGroup)
-    KListView::saveLayout(KGlobal::config(), m_configGroup);
+  if (!m_configGroup.isEmpty())
+    saveLayout(KGlobal::config(), m_configGroup);
 }
 
-void KMyMoneyAccountTreeBase::restoreLayout(const char *group)
+void KMyMoneyAccountTreeBase::restoreLayout(const QString& group)
 {
-  Q_ASSERT(strlen(group));
+  Q_ASSERT(!group.isEmpty());
   m_configGroup = group;
   // make sure to use the previous settings. If no settings are found
   // we use equal distribution of all fields as an initial setting
