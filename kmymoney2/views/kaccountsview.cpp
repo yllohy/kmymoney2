@@ -115,20 +115,11 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name) :
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 
-  // make sure to use the previous settings. If no settings are found
-  // we use equal distribution of all fields as an initial setting
-  // For some reason, if the view is never selected with this code, it
-  // stores a value of 32 for the columns. We have to detect that as well.
-  m_accountTree->setColumnWidth(0, 0);
-  m_accountTree->restoreLayout(KGlobal::config(), "Account View Settings");
-  if(m_accountTree->columnWidth(0) < 60) {
-    m_accountTree->setResizeMode(QListView::AllColumns);
-  }
+  m_accountTree->restoreLayout("Account View Settings");
 }
 
 KAccountsView::~KAccountsView()
 {
-  m_accountTree->saveLayout(KGlobal::config(), "Account View Settings");
 }
 
 void KAccountsView::slotLoadAccounts(void)

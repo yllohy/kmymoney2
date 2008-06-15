@@ -47,7 +47,7 @@ class KMyMoneyAccountTreeBase : public KListView
   Q_OBJECT
 public:
   KMyMoneyAccountTreeBase(QWidget* parent = 0, const char *name = 0);
-  virtual ~KMyMoneyAccountTreeBase() {};
+  virtual ~KMyMoneyAccountTreeBase();
 
   /**
     * Modify the text shown in the header of the name column.
@@ -71,6 +71,14 @@ public:
   const MyMoneySecurity& baseCurrency(void) const { return m_baseCurrency; };
 
   void emitValueChanged(void) { emit valueChanged(); };
+  
+  /**
+    * restores the layout from the config file
+    * @param group the group to be used from the config file.
+    * At destruction time, we will use this group name to save
+    * the layout.
+    */
+  void restoreLayout(const char *group);
 
 public slots:
   /** autoscroll support */
@@ -185,6 +193,7 @@ private:
   int                 m_typeColumn;
   int                 m_valueColumn;
   int                 m_balanceColumn;
+  const char *        m_configGroup;
 
 public:
   int typeColumn(void) const { return m_typeColumn; }

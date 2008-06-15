@@ -170,22 +170,13 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_renameButton->setEnabled(kmymoney2->action("budget_rename")->isEnabled());
   m_deleteButton->setEnabled(kmymoney2->action("budget_delete")->isEnabled());
 
-  // make sure to use the previous settings. If no settings are found
-  // we use equal distribution of all fields as an initial setting
-  // For some reason, if the view is never selected with this code, it
-  // stores a value of 32 for the columns. We have to detect that as well.
-  m_accountTree->setColumnWidth(0, 0);
-  m_accountTree->restoreLayout(KGlobal::config(), "Budget Account View Settings");
-  if(m_accountTree->columnWidth(0) < 60) {
-    m_accountTree->setResizeMode(QListView::AllColumns);
-  }
-
+  m_accountTree->restoreLayout("Budget Account View Settings");
+  
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
 }
 
 KBudgetView::~KBudgetView()
 {
-  m_accountTree->saveLayout(KGlobal::config(), "Budget Account View Settings");
 }
 
 void KBudgetView::show()
