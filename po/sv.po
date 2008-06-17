@@ -1,23 +1,25 @@
+# translation of sv.po to
 # Swedish translation for KMyMoney.
 # This file is put in the public domain.
-# Stefan Nilsen <stefan.nilsen@millnet.se>, 2007.
 #
-#, fuzzy
+# Stefan Nilsen <stefan.nilsen@millnet.se>, 2007.
+# Konrad Skeri <konrad@skeri.com>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: sv\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-14 08:10+0200\n"
-"PO-Revision-Date: 2007-06-04 13:23+0200\n"
-"Last-Translator: Stefan Nilsen <stefan.nilsen@millnet.se>\n"
-"Language-Team: Swedish <sv@li.org>\n"
+"PO-Revision-Date: 2008-06-13 11:59+0200\n"
+"Last-Translator: Konrad Skeri <konrad@skeri.com>\n"
+"Language-Team:  <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: dialogs/investactivities.cpp:168
 msgid "%1 (Brokerage)"
-msgstr ""
+msgstr "%1 (Kontantdepå)"
 
 #: dialogs/investactivities.cpp:192 dialogs/investactivities.cpp:275
 #: dialogs/investactivities.cpp:415 dialogs/investtransactioneditor.cpp:217
@@ -46,11 +48,10 @@ msgstr "Konto"
 #: dialogs/investactivities.cpp:537 dialogs/investtransactioneditor.cpp:241
 #: reports/querytable.cpp:1194 widgets/rc.cpp:102 widgets/transaction.cpp:1445
 msgid "Shares"
-msgstr ""
+msgstr "Andelar"
 
 #: dialogs/investactivities.cpp:195 dialogs/investactivities.cpp:280
 #: dialogs/investactivities.cpp:418 widgets/transaction.cpp:1480
-#, fuzzy
 msgid "Price/share"
 msgstr "Kurs"
 
@@ -75,7 +76,7 @@ msgstr "Kurs"
 #: views/kforecastview.cpp:414 views/kforecastview.cpp:703
 #: views/kforecastview.cpp:764 views/rc.cpp:22 widgets/transaction.cpp:1575
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: dialogs/investactivities.cpp:276 dialogs/investactivities.cpp:358
 #: dialogs/investactivities.cpp:416 dialogs/investtransactioneditor.cpp:227
@@ -99,7 +100,7 @@ msgstr "Belopp"
 
 #: dialogs/investactivities.cpp:579
 msgid "Ratio 1/"
-msgstr ""
+msgstr "Förhållande 1/"
 
 #: dialogs/kcurrencycalculator.cpp:282
 msgid "User"
@@ -121,38 +122,41 @@ msgstr "Kategori"
 #: reports/querytable.cpp:1187 widgets/rc.cpp:100 widgets/transaction.cpp:961
 #: widgets/transaction.cpp:1560
 msgid "Memo"
-msgstr ""
+msgstr "Anteckning"
 
 #: dialogs/kmymoneysplittable.cpp:98
 msgid "Split Options"
-msgstr ""
+msgstr "Split-alternativ"
 
 #: dialogs/kmymoneysplittable.cpp:99 widgets/kmymoneypriceview.cpp:149
 msgid "Edit ..."
-msgstr ""
+msgstr "Ändra ..."
 
 #: dialogs/kmymoneysplittable.cpp:100
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicera"
 
 #: dialogs/kmymoneysplittable.cpp:102 widgets/kmymoneypriceview.cpp:157
 msgid "Delete ..."
-msgstr ""
+msgstr "Ta bort  ..."
 
 #: dialogs/kmymoneysplittable.cpp:270
 msgid ""
 "_: Duplicate split\n"
 "CTRL+c"
 msgstr ""
+"_: Duplicera split\n"
+"CTRL+c"
 
 #: dialogs/kmymoneysplittable.cpp:539
 msgid "will be calculated"
-msgstr ""
+msgstr "kommer att beräknas"
 
 #: dialogs/kmymoneysplittable.cpp:625
 msgid ""
 "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
+"Du är på väg att radera den markerade spliten. Vill du verkligen fortsätta?"
 
 #: dialogs/kmymoneysplittable.cpp:627 dialogs/ksplittransactiondlg.cpp:272
 #: main.cpp:98
@@ -161,61 +165,63 @@ msgstr "KMyMoney"
 
 #: dialogs/konlinebankingsetupwizard.cpp:61
 msgid "Loading banklist"
-msgstr ""
+msgstr "Laddar banklista"
 
 #: dialogs/konlinebankingsetupwizard.cpp:61
 msgid ""
 "Getting list of banks from http://moneycentral.msn.com/\n"
 "This may take some time depending on the available bandwidth."
 msgstr ""
+"Laddar lista på banker från http://moneycentral.msn.com/\n"
+"Detta kan ta lite tid beroende på internetanslutningens hastighet."
 
 #: dialogs/konlinebankingsetupwizard.cpp:81
 msgid ""
 "Reading the bank list failed with the following error: '%1'. The console "
 "output may have more information."
 msgstr ""
+"Försöket att läsa banklistan returnerade följande fel: '%1'. "
+"Konsollutskriften kan innehålla ytterligare information."
 
 #: dialogs/konlinebankingsetupwizard.cpp:81
 msgid "XMLPP error"
-msgstr ""
+msgstr "XMLPP error"
 
 #: dialogs/konlinebankingsetupwizard.cpp:143
 msgid "Supports online statements<br>"
-msgstr ""
+msgstr "Stöder online kontoutdrag<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:145
-#, fuzzy
 msgid "Supports investments<br>"
-msgstr "Typ av investering"
+msgstr "Stöder värdepapper<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:147
 msgid "Supports bill payment (but not supported by KMyMoney yet)<br>"
-msgstr ""
+msgstr "Stöder betalning av räkningar (stöds dock inte av KMyMoney än)<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:151
 msgid "Does not support online banking</p>"
-msgstr ""
+msgstr "Saknar bank-onlinefunktioner</p>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:161
 msgid "Please choose a bank."
-msgstr ""
+msgstr "Vänligen välj en bank."
 
 #: dialogs/konlinebankingsetupwizard.cpp:241
 msgid "No suitable accounts were found at this bank."
-msgstr ""
+msgstr "Inga lämpliga konton hittades för denna bank."
 
 #: dialogs/konlinebankingsetupwizard.cpp:253
-#, fuzzy
 msgid "Please choose an account"
-msgstr "Välj ett föräldrakonto."
+msgstr "Välj ett konto"
 
 #: dialogs/konlinebankingsetupwizard.cpp:273
 msgid "CHECKING"
-msgstr ""
+msgstr "LÖNE/TRANSAKTIONSKONTO"
 
 #: dialogs/konlinebankingsetupwizard.cpp:276
 msgid "SAVINGS"
-msgstr ""
+msgstr "SPARKONTO"
 
 #: dialogs/konlinebankingsetupwizard.cpp:279
 msgid "MONEY MARKET"
@@ -223,7 +229,7 @@ msgstr ""
 
 #: dialogs/konlinebankingsetupwizard.cpp:282
 msgid "CREDIT LINE"
-msgstr ""
+msgstr "KREDIT"
 
 #: dialogs/konlinebankingsetupwizard.cpp:285
 msgid "CMA"
@@ -231,58 +237,61 @@ msgstr ""
 
 #: dialogs/konlinebankingsetupwizard.cpp:288
 msgid "CREDIT CARD"
-msgstr ""
+msgstr "KREDITKORT"
 
 #: dialogs/konlinebankingsetupwizard.cpp:291
 msgid "INVESTMENT"
-msgstr ""
+msgstr "VÄRDEPAPPER"
 
 #: dialogs/konlinebankingsetupwizard.cpp:294
 msgid "UNKNOWN"
-msgstr ""
+msgstr "OKÄNT"
 
 #: dialogs/konlinebankingsetupwizard.cpp:342
 msgid "Server message: %1\n"
-msgstr ""
+msgstr "Servermeddelande: %1\n"
 
 #: dialogs/konlinebankingsetupwizard.cpp:350
 msgid "Your bank returned warnings when signing on"
-msgstr ""
+msgstr "Din bank returnerade varningar vid inloggning"
 
 #: dialogs/konlinebankingsetupwizard.cpp:350
 #, c-format
 msgid "WARNING %1"
-msgstr ""
+msgstr "VARNING %1"
 
 #: dialogs/konlinebankingsetupwizard.cpp:353
 msgid "Error signing onto your bank"
-msgstr ""
+msgstr "Fel vid inloggning till din bank"
 
 #: dialogs/konlinebankingsetupwizard.cpp:353
 #, c-format
 msgid "ERROR %1"
-msgstr ""
+msgstr "FEL %1"
 
 #: dialogs/knewfiledlg.cpp:120 wizards/newuserwizard/knewuserwizard.cpp:185
 msgid ""
 "Unable to load data, because no contact has been associated with the owner "
 "of the standard addressbook."
 msgstr ""
+"Kan ej ladda data då ingen kontakt associerats med ägaren till "
+"standardadressboken."
 
 #: dialogs/knewfiledlg.cpp:120 wizards/newuserwizard/knewuserwizard.cpp:185
 msgid "Addressbook import"
-msgstr ""
+msgstr "Import av adressbok"
 
 #: dialogs/kpayeereassigndlg.cpp:75
 msgid ""
 "This dialog does not allow to create new payees. Please pick a payee from "
 "the list."
 msgstr ""
+"Denna dialogruta tillåter ej skapandet av nya betalningsmottagare. Vänligen "
+"välj en betalningsmottagare från listan."
 
 #: dialogs/kpayeereassigndlg.cpp:75
-#, fuzzy
 msgid "Payee creation"
-msgstr "Betalningsinformation"
+msgstr "Skapa betalningsmottagare"
 
 #: dialogs/kaccountselectdlg.cpp:76 dialogs/kbackupdlg.cpp:58
 #: dialogs/kbalancechartdlg.cpp:205 dialogs/kcommodityeditordecl.cpp:161
@@ -296,57 +305,61 @@ msgstr "&OK"
 
 #: dialogs/keditequityentrydlg.cpp:72 dialogs/knewequityentrydlg.cpp:58
 msgid "Accepts the value and stores them"
-msgstr ""
+msgstr "Godkänn och spara värdet"
 
 #: dialogs/keditequityentrydlg.cpp:73 dialogs/knewequityentrydlg.cpp:59
 msgid "Use this to accept all values and close the dialog."
-msgstr ""
+msgstr "Använd detta för att acceptera alla värden och stäng dialogrutan."
 
 #: dialogs/keditequityentrydlg.cpp:78 dialogs/knewequityentrydlg.cpp:64
 msgid "Cancel the operation"
-msgstr ""
+msgstr "Avbryt"
 
 #: dialogs/keditequityentrydlg.cpp:79 dialogs/knewequityentrydlg.cpp:65
 msgid "Use this to dismiss all the changes made in this dialog."
-msgstr ""
+msgstr "Använd denna för att ångra alla ändringar gjorda i denna dialogruta."
 
 #: dialogs/kbalancechartdlg.cpp:59
-#, fuzzy, c-format
+#, c-format
 msgid "Balance of %1"
-msgstr "Balans"
+msgstr "Balans för %1"
 
 #: dialogs/kbalancechartdlg.cpp:70
 msgid "%1 Balance History"
-msgstr ""
+msgstr "Balanshistorik för %1"
 
 #: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3397 views/khomeview.cpp:266
 #: views/khomeview.cpp:1334 views/kreportsview.cpp:604
-#, fuzzy
 msgid "Generated Report"
-msgstr "Radera rapport?"
+msgstr "Genererad rapport"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:65
 msgid "Account and transfer account are the same.  Please change one."
-msgstr ""
+msgstr "Till- och frånkonto är detsamma. Vänligen ändra en av dem."
 
 #: dialogs/kconfirmmanualenterdlg.cpp:84
 msgid "Payee changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
+"Betalningsmottagare ändrad.<br>&nbsp;&nbsp;&nbsp;Gammal: <b>%1</b>, Ny: <b>%"
+"2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:92
 #: dialogs/kconfirmmanualenterdlg.cpp:100
 msgid "Account changed.  Old: \"%1\", New: \"%2\""
-msgstr ""
+msgstr "Konto ändrat.  Gammalt: \"%1\", Nytt: \"%2\""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:107
 msgid "Account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
+"Konto ändrat.<br>&nbsp;&nbsp;&nbsp;Gammalt: <b>%1</b>, Nytt: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:115
 msgid ""
 "Transfer account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</"
 "b><p>"
 msgstr ""
+"Konto för överföring ändrat.<br>&nbsp;&nbsp;&nbsp;Gammalt: <b>%1</b>, Nytt: "
+"<b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:123
 #: dialogs/kconfirmmanualenterdlg.cpp:133 views/kpayeesview.cpp:664
@@ -357,47 +370,53 @@ msgid ""
 "_: Split transaction (category replacement)\n"
 "Split transaction"
 msgstr ""
+"_: Split-transaktion (kategoribyte)\n"
+"Split-transaktion"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
 msgid ""
 "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
+"Kategori bytt.<br>&nbsp;&nbsp;&nbsp;Gammal: <b>%1</b>, Ny: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:151
 #: dialogs/kconfirmmanualenterdlg.cpp:153
 msgid "empty"
-msgstr ""
+msgstr "tom"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:157
 msgid "Memo changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
+"Anteckning ändrad.<br>&nbsp;&nbsp;&nbsp;Gammal: <b>%1</b>, Ny: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:166
 msgid "Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
+"Belopp ändrat.<br>&nbsp;&nbsp;&nbsp;Gammalt: <b>%1</b>, Nytt: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:175
 msgid ""
 "Reconciliation flag changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%"
 "2</b><p>"
 msgstr ""
+"Avstämningsflagga ändrad.<br>&nbsp;&nbsp;&nbsp;Gammal: <b>%1</b>, Ny: <b>%2</"
+"b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:182
 msgid "Fatal error in determining data: "
-msgstr ""
+msgstr "Fatalt fel vid bestämmande av data: "
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:160
-#, fuzzy
 msgid "Advanced Institution Settings"
-msgstr "Institution"
+msgstr "Avancerade institutionsinställningar"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:161
 msgid "OFX Direct Connect Settings"
-msgstr ""
+msgstr "OFX direktanslutningsinställningar"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:162
 msgid "Enable OFX Direct Connect"
-msgstr ""
+msgstr "Aktivera OFX direktanslutning"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:163 dialogs/settings/rc.cpp:113
 #: widgets/rc.cpp:46
@@ -426,7 +445,7 @@ msgstr "Användarnamn"
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:168 dialogs/rc.cpp:692
 #: dialogs/rc.cpp:759
 msgid "Password"
-msgstr "Lösen"
+msgstr "Lösenord"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:170 dialogs/rc.cpp:96
 #: dialogs/rc.cpp:277 dialogs/rc.cpp:310 dialogs/rc.cpp:704
@@ -435,7 +454,7 @@ msgstr "F1"
 
 #: dialogs/kofxdirectconnectdlg.cpp:158
 msgid "The HTTP request failed."
-msgstr "HTTP anropet misslyckades."
+msgstr "HTTP-anropet misslyckades."
 
 #: dialogs/kofxdirectconnectdlg.cpp:158
 msgid "Failed"
@@ -443,7 +462,7 @@ msgstr "Misslyckades"
 
 #: dialogs/kenterscheduledlg.cpp:120 kmymoneyutils.cpp:686
 msgid "Unable to load schedule details"
-msgstr ""
+msgstr "Kunde inte ladda schemadetaljer"
 
 #: dialogs/kenterscheduledlg.cpp:168
 msgid ""
@@ -453,16 +472,20 @@ msgid ""
 "(You will be asked what you intend after pressing OK in the following dialog)"
 "</p>"
 msgstr ""
+"<p>Vänligen kontroller att alla detaljer i följande dialogruta är korrekta "
+"och klicka sedan på OK.</p><p>Redigerbar data kan ändras och kan antingen "
+"användas på bara detta tillfälle eller på alla kommande händelser för denna "
+"schemapost.  (Du kommer att tillfrågas vilket du avser efter att du klickar "
+"på OK i följande dialogruta.)</p>"
 
 #: dialogs/kenterscheduledlg.cpp:168
-#, fuzzy
 msgid "Enter scheduled transaction"
 msgstr "Registrera schemalagd transaktion"
 
 #: dialogs/kgncpricesourcedlg.cpp:48
 #, c-format
 msgid "Investment: %1"
-msgstr "Investering: %1"
+msgstr "Värdepapper: %1"
 
 #: dialogs/kgncpricesourcedlg.cpp:49
 #, c-format
@@ -472,11 +495,11 @@ msgstr "Kurs-källa: %1"
 #: dialogs/keditequityentrydlg.cpp:84 dialogs/kmymoneypricedlg.cpp:62
 #: dialogs/ksecuritylisteditor.cpp:69
 msgid "Delete this entry"
-msgstr "Ta bort denna posten"
+msgstr "Ta bort post"
 
 #: dialogs/kmymoneypricedlg.cpp:63
 msgid "Remove this price item from the file"
-msgstr ""
+msgstr "Ta bort denna kurs från filen"
 
 #: dialogs/kmymoneypricedlg.cpp:66 dialogs/mymoneyqifprofileeditor.cpp:113
 #: dialogs/rc.cpp:336 dialogs/rc.cpp:844 dialogs/settings/rc.cpp:114
@@ -496,7 +519,7 @@ msgstr ""
 #: dialogs/keditequityentrydlg.cpp:96 dialogs/kmymoneypricedlg.cpp:74
 #: dialogs/ksecuritylisteditor.cpp:81
 msgid "Modify the selected entry"
-msgstr ""
+msgstr "Ändra markerad post"
 
 #: dialogs/kmymoneypricedlg.cpp:75
 msgid "Change the details of selected price information."
@@ -504,7 +527,7 @@ msgstr ""
 
 #: dialogs/kmymoneypricedlg.cpp:80 dialogs/ksecuritylisteditor.cpp:87
 msgid "Close the dialog"
-msgstr "Stäng dialogen"
+msgstr "Stäng dialogrutan"
 
 #: dialogs/kmymoneypricedlg.cpp:81 dialogs/ksecuritylisteditor.cpp:88
 msgid "Use this to close the dialog and return to the application."
@@ -520,7 +543,7 @@ msgstr ""
 
 #: dialogs/keditloanwizard.cpp:56
 msgid "Edit loan wizard"
-msgstr "Redigera lån-\"wizard\""
+msgstr "Redigera lån-guide"
 
 #: dialogs/keditloanwizard.cpp:58
 msgid ""
@@ -594,9 +617,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:542
-#, fuzzy
 msgid "Storing transactions"
-msgstr "Justeringstransaktion"
+msgstr "Sparar transaktioner"
 
 #: dialogs/transactioneditor.cpp:588 widgets/kmymoneybriefschedule.cpp:64
 msgid "&Enter"
@@ -614,9 +636,8 @@ msgid "Use this to enter the transaction into the ledger."
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:592
-#, fuzzy
 msgid "&Schedule"
-msgstr "Schema"
+msgstr "&Schema"
 
 #: dialogs/transactioneditor.cpp:594
 msgid "Accepts the entered data and stores it as schedule"
@@ -665,9 +686,8 @@ msgid "Payer/Receiver"
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:723
-#, fuzzy
 msgid "Category/Account"
-msgstr "Kategori"
+msgstr "Kategori/Konto"
 
 #: dialogs/keditscheduledlg.cpp:478 dialogs/rc.cpp:696
 #: dialogs/transactioneditor.cpp:758 dialogs/transactioneditor.cpp:821
@@ -702,9 +722,8 @@ msgid "Transfer to"
 msgstr "Överför till"
 
 #: dialogs/transactioneditor.cpp:1206
-#, fuzzy
 msgid "Select autofill transaction"
-msgstr "Datum för sista betalning:"
+msgstr "Välj autofyllnadstransaktion"
 
 #: dialogs/kselectdatabasedlg.cpp:67
 msgid ""
@@ -780,9 +799,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/kequitypriceupdatedlg.cpp:386
-#, fuzzy
 msgid "Price Update  Failed"
-msgstr "\"Online\"-kursuppdatering ..."
+msgstr "Kursuppdatering misslyckades"
 
 #: dialogs/kequitypriceupdatedlg.cpp:388
 msgid ""
@@ -791,9 +809,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/kequitypriceupdatedlg.cpp:388 dialogs/kequitypriceupdatedlg.cpp:408
-#, fuzzy
 msgid "Price Update Failed"
-msgstr "\"Online\"-kursuppdatering ..."
+msgstr "Kursuppdatering misslyckades"
 
 #: dialogs/kequitypriceupdatedlg.cpp:408
 msgid "Cannot update security <b>%1</b>: %2"
@@ -893,9 +910,8 @@ msgid "Found %1 matching transactions (D %2 / P %3 = %4)"
 msgstr ""
 
 #: dialogs/kfindtransactiondlg.cpp:734
-#, fuzzy
 msgid "Found %1 matching transactions"
-msgstr "Uppdelad transaktion"
+msgstr "Hittade %1 matchande transaktioner"
 
 #: dialogs/kchooseimportexportdlg.cpp:46
 msgid ""
@@ -1016,9 +1032,8 @@ msgid "Mount this directory before backing up."
 msgstr ""
 
 #: dialogs/rc.cpp:15
-#, fuzzy
 msgid "Reassign categories"
-msgstr "Dolda kategorier"
+msgstr "Omfördela kategorier"
 
 #: dialogs/rc.cpp:16
 msgid ""
@@ -1028,9 +1043,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/rc.cpp:17
-#, fuzzy
 msgid "Available categories:"
-msgstr "Dolda kategorier"
+msgstr "Tillgängliga kategorier:"
 
 #: dialogs/rc.cpp:19 dialogs/rc.cpp:714
 msgid "Ca&ncel"
@@ -1069,7 +1083,7 @@ msgstr "AMEX"
 
 #: dialogs/kcommodityeditordecl.cpp:149 dialogs/rc.cpp:30 dialogs/rc.cpp:445
 msgid "EUREX"
-msgstr "EUROX"
+msgstr "EUREX"
 
 #: dialogs/kcommodityeditordecl.cpp:150 dialogs/rc.cpp:31 dialogs/rc.cpp:446
 msgid "FUND"
@@ -1093,9 +1107,8 @@ msgstr "Typ"
 
 #: dialogs/kcommodityeditordecl.cpp:154 dialogs/kcommodityeditordecl.cpp:156
 #: dialogs/rc.cpp:35 dialogs/rc.cpp:37
-#, fuzzy
 msgid "1/"
-msgstr "1 /"
+msgstr "1/"
 
 #: dialogs/kcommodityeditordecl.cpp:155 dialogs/rc.cpp:36 dialogs/rc.cpp:746
 msgid "Cash Fraction"
@@ -1110,9 +1123,8 @@ msgid "Full name"
 msgstr ""
 
 #: dialogs/kcommodityeditordecl.cpp:160 dialogs/rc.cpp:41
-#, fuzzy
 msgid "Account Fraction"
-msgstr "Val av konto"
+msgstr "Kontoandel"
 
 #: dialogs/kcommodityeditordecl.cpp:162 dialogs/rc.cpp:43
 msgid "Alt+O"
@@ -1210,9 +1222,8 @@ msgid "0 of 0"
 msgstr ""
 
 #: dialogs/rc.cpp:68
-#, fuzzy
 msgid "Exchange Rate/Price  Editor"
-msgstr "Växlingskurs / kurs"
+msgstr "Växlingskursredigerare"
 
 #: dialogs/rc.cpp:70 dialogs/rc.cpp:72 dialogs/rc.cpp:75 dialogs/rc.cpp:78
 #: dialogs/rc.cpp:765 dialogs/rc.cpp:766 dialogs/rc.cpp:776 widgets/rc.cpp:6
@@ -1225,9 +1236,8 @@ msgid "xxx"
 msgstr "xxx"
 
 #: dialogs/rc.cpp:73
-#, fuzzy
 msgid "Convert from"
-msgstr "Överför från"
+msgstr "Konvertera från"
 
 #: dialogs/kcurrencyeditdlg.cpp:62 dialogs/rc.cpp:74 dialogs/rc.cpp:77
 #: dialogs/rc.cpp:93 dialogs/rc.cpp:744 dialogs/rc.cpp:795
@@ -1245,7 +1255,6 @@ msgid "Convert to"
 msgstr ""
 
 #: dialogs/rc.cpp:79
-#, fuzzy
 msgid "To &amount"
 msgstr "Till belopp"
 
@@ -1354,12 +1363,10 @@ msgid "&Add"
 msgstr ""
 
 #: dialogs/rc.cpp:115
-#, fuzzy
 msgid "Edit Schedule"
-msgstr "Redigera schema för räkning"
+msgstr "Redigera schema"
 
 #: dialogs/rc.cpp:116
-#, fuzzy
 msgid "Schedule name:"
 msgstr "Namn på schema:"
 
@@ -1368,7 +1375,6 @@ msgid "Frequency:"
 msgstr "Betalningsfrekvens:"
 
 #: dialogs/rc.cpp:118
-#, fuzzy
 msgid "Payment information"
 msgstr "Betalningsinformation"
 
@@ -1415,7 +1421,6 @@ msgid "Balance"
 msgstr "Balans"
 
 #: dialogs/rc.cpp:130
-#, fuzzy
 msgid "Do nothing"
 msgstr "Gör ingenting"
 
@@ -1432,17 +1437,15 @@ msgid "If this schedule occurs on the weekend:"
 msgstr "Om denna betalning infaller på ett veckoslut:"
 
 #: dialogs/rc.cpp:134
-#, fuzzy
 msgid "The amount is an estimate because it varies for each payment"
-msgstr "Uppskattning eftersom beloppet kan variera"
+msgstr ""
+"Beloppet är en uppskattning då det varierar mellan olika betalningstillfällen"
 
 #: dialogs/rc.cpp:135
-#, fuzzy
 msgid "Enter this schedule into the register automatically when it is due"
-msgstr "Registrera denna betalning automatiskt"
+msgstr "Registrera denna betalning automatiskt på förfallodagen"
 
 #: dialogs/rc.cpp:136
-#, fuzzy
 msgid "This schedule will end at some time"
 msgstr "Antalet betalningar är begränsat"
 
@@ -1612,9 +1615,8 @@ msgid "Charges"
 msgstr "Avgifter"
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Enter Schedule"
-msgstr "Nytt schema"
+msgstr "Registrera schema"
 
 #: dialogs/rc.cpp:172
 msgid "Schedule Details"
@@ -1721,9 +1723,8 @@ msgid "Define your search criteria"
 msgstr ""
 
 #: dialogs/rc.cpp:204
-#, fuzzy
 msgid "Te&xt"
-msgstr "Text"
+msgstr "Te&xt"
 
 #: dialogs/rc.cpp:205
 msgid "Search transactions containing the following text"
@@ -1742,11 +1743,12 @@ msgid "Range"
 msgstr ""
 
 #: dialogs/rc.cpp:211
-#, fuzzy
 msgid ""
 "_: To (Date)\n"
 "To"
-msgstr "Datum"
+msgstr ""
+"_: Till (datum)\n"
+"Till"
 
 #: dialogs/rc.cpp:212
 msgid ""
@@ -1763,18 +1765,20 @@ msgid "Search amount in the range"
 msgstr ""
 
 #: dialogs/rc.cpp:216
-#, fuzzy
 msgid ""
 "_: to (amount)\n"
 "to"
-msgstr "Till belopp"
+msgstr ""
+"_: till (belopp)\n"
+"till"
 
 #: dialogs/rc.cpp:217
-#, fuzzy
 msgid ""
 "_: from (amount)\n"
 "from"
-msgstr "Till belopp"
+msgstr ""
+"_: från (belopp)\n"
+"från"
 
 #: dialogs/rc.cpp:221
 msgid "Select transactions without payees"
@@ -1877,9 +1881,8 @@ msgid "warning"
 msgstr ""
 
 #: dialogs/rc.cpp:245
-#, fuzzy
 msgid "Result"
-msgstr "Återställ"
+msgstr "Resultat"
 
 #: dialogs/rc.cpp:255
 msgid "F"
@@ -1918,9 +1921,8 @@ msgid "Prompt for an investment account for each stock"
 msgstr ""
 
 #: dialogs/rc.cpp:266
-#, fuzzy
 msgid "Online price quotes"
-msgstr "\"Online\"-kursuppdatering ..."
+msgstr "Onlineuppdatering av kurser"
 
 #: dialogs/rc.cpp:267
 msgid "Use Finance::Quote for share price quotes"
@@ -1935,9 +1937,8 @@ msgid "Drop suspect scheduled transactions"
 msgstr ""
 
 #: dialogs/rc.cpp:270
-#, fuzzy
 msgid "Decoding option"
-msgstr "Beskrivning"
+msgstr "Avkodningsinställning"
 
 #: dialogs/rc.cpp:271
 msgid "Decode using"
@@ -2030,23 +2031,20 @@ msgid "MyDialog"
 msgstr ""
 
 #: dialogs/rc.cpp:308
-#, fuzzy
 msgid "File Information"
-msgstr "Betalningsinformation"
+msgstr "Filinformation"
 
 #: dialogs/rc.cpp:314
 msgid "Last modified on"
 msgstr ""
 
 #: dialogs/rc.cpp:317
-#, fuzzy
 msgid "Base currency"
-msgstr "Valuta"
+msgstr "Basvaluta"
 
 #: dialogs/rc.cpp:320
-#, fuzzy
 msgid "Created on"
-msgstr "&Skapa"
+msgstr "Skapad"
 
 #: dialogs/rc.cpp:321 views/kmymoneyview.cpp:144 views/rc.cpp:55
 msgid "Institutions"
@@ -2063,19 +2061,16 @@ msgid "Transactions"
 msgstr ""
 
 #: dialogs/rc.cpp:326
-#, fuzzy
 msgid "Prices"
-msgstr "Kurs"
+msgstr "Kurser"
 
 #: dialogs/rc.cpp:328
-#, fuzzy
 msgid "Accounts/Categories"
-msgstr "Kategorier"
+msgstr "Konton/Kategorier"
 
 #: dialogs/rc.cpp:331
-#, fuzzy
 msgid "Closed"
-msgstr "Färger"
+msgstr "Stängd"
 
 #: dialogs/rc.cpp:334
 msgid "Price Editor"
@@ -2102,9 +2097,8 @@ msgid "General"
 msgstr "Generellt"
 
 #: dialogs/rc.cpp:345
-#, fuzzy
 msgid "Opening information"
-msgstr "Betalningsinformation"
+msgstr "Öppningsinformation"
 
 #: dialogs/rc.cpp:346
 msgid "Currency:"
@@ -2115,9 +2109,8 @@ msgid "Date:"
 msgstr "Datum:"
 
 #: dialogs/rc.cpp:349
-#, fuzzy
 msgid "Balance:"
-msgstr "Balans"
+msgstr "Balans:"
 
 #: dialogs/rc.cpp:351
 msgid "Last check number:"
@@ -2132,7 +2125,6 @@ msgid "No auto-VAT-assignment"
 msgstr ""
 
 #: dialogs/rc.cpp:354 dialogs/rc.cpp:451
-#, fuzzy
 msgid "Price entry"
 msgstr "Kursredigerare"
 
@@ -2184,9 +2176,8 @@ msgid "Subaccount"
 msgstr "Underkonto"
 
 #: dialogs/rc.cpp:370
-#, fuzzy
 msgid "Limits"
-msgstr "siffror"
+msgstr "Gränser"
 
 #: dialogs/rc.cpp:371
 msgid ""
@@ -2195,9 +2186,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/rc.cpp:373
-#, fuzzy
 msgid "Absolute limit"
-msgstr "Kontoavgränsare"
+msgstr "Absolut gräns"
 
 #: dialogs/rc.cpp:374
 msgid "Maximum credit limit"
@@ -2278,12 +2268,10 @@ msgid "Routing Number:"
 msgstr ""
 
 #: dialogs/rc.cpp:399
-#, fuzzy
 msgid "New Budget"
-msgstr "siffror"
+msgstr "Ny budget"
 
 #: dialogs/rc.cpp:401 views/rc.cpp:18
-#, fuzzy
 msgid "Year"
 msgstr "År"
 
@@ -2422,9 +2410,8 @@ msgid "Use Finance::Quote"
 msgstr ""
 
 #: dialogs/rc.cpp:460
-#, fuzzy
 msgid "Factor"
-msgstr "kategori"
+msgstr "Faktor"
 
 #: dialogs/rc.cpp:461
 msgid "New Loan Wizard"
@@ -3006,14 +2993,12 @@ msgid "Please select your financial institution from the list below..."
 msgstr ""
 
 #: dialogs/rc.cpp:688
-#, fuzzy
 msgid "Financial Institution"
 msgstr "Institution"
 
 #: dialogs/rc.cpp:689
-#, fuzzy
 msgid "Enter Login Details"
-msgstr "Transaktionsdetaljer"
+msgstr "Ange inloggningsinformation"
 
 #: dialogs/rc.cpp:690
 msgid ""
@@ -3023,14 +3008,12 @@ msgid ""
 msgstr ""
 
 #: dialogs/rc.cpp:693
-#, fuzzy
 msgid "Connection Details"
-msgstr "Transaktionsdetaljer"
+msgstr "Anslutningsdetaljer"
 
 #: dialogs/rc.cpp:694
-#, fuzzy
 msgid "Select Account"
-msgstr "Välj konto:"
+msgstr "Välj konto"
 
 #: dialogs/rc.cpp:695
 msgid ""
@@ -3043,9 +3026,8 @@ msgid "Bank"
 msgstr ""
 
 #: dialogs/rc.cpp:699
-#, fuzzy
 msgid "Branch"
-msgstr "Balans"
+msgstr ""
 
 #: dialogs/rc.cpp:700
 msgid "WizardPage"
@@ -3093,9 +3075,8 @@ msgid "PlugIn"
 msgstr ""
 
 #: dialogs/rc.cpp:718
-#, fuzzy
 msgid "Feature"
-msgstr "&Skapa"
+msgstr ""
 
 #: dialogs/rc.cpp:719 widgets/transaction.cpp:990 widgets/transaction.cpp:1590
 msgid "Status"
@@ -3204,12 +3185,10 @@ msgid "Database Name"
 msgstr ""
 
 #: dialogs/rc.cpp:757
-#, fuzzy
 msgid "Host Name"
-msgstr "Kontonamn"
+msgstr "Värdnamn"
 
 #: dialogs/rc.cpp:758
-#, fuzzy
 msgid "User Name"
 msgstr "Användarnamn"
 
@@ -3218,9 +3197,8 @@ msgid "Preload all data"
 msgstr ""
 
 #: dialogs/rc.cpp:762
-#, fuzzy
 msgid "Generate SQL"
-msgstr "Generellt"
+msgstr "Generera SQL"
 
 #: dialogs/rc.cpp:770 widgets/rc.cpp:168
 msgid "Sort options"
@@ -3317,7 +3295,6 @@ msgid "Description"
 msgstr "Beskrivning"
 
 #: dialogs/rc.cpp:807
-#, fuzzy
 msgid "Attempt to match similar transactions"
 msgstr "Försök matcha liknande transaktioner"
 
@@ -3507,7 +3484,6 @@ msgid ""
 msgstr ""
 
 #: dialogs/knewaccountdlg.cpp:126 dialogs/knewinvestmentwizard.cpp:106
-#, fuzzy
 msgid "Price per share"
 msgstr "Kurs"
 
@@ -3640,9 +3616,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/kcategoryreassigndlg.cpp:100
-#, fuzzy
 msgid "Category creation"
-msgstr "Kategori"
+msgstr "Kategoriskapande"
 
 #: dialogs/ksplittransactiondlg.cpp:80
 msgid "Accept splits and return to transaction form"
@@ -3738,9 +3713,8 @@ msgstr ""
 #: dialogs/keditscheduledlg.cpp:111 kmymoneyutils.cpp:276
 #: mymoney/storage/mymoneystoragedump.cpp:509
 #: wizards/newaccountwizard/knewaccountwizard.cpp:553
-#, fuzzy
 msgid "Bank transfer"
-msgstr "Överföring"
+msgstr "Banköverföring"
 
 #: dialogs/keditscheduledlg.cpp:112 kmymoneyutils.cpp:270
 #: mymoney/storage/mymoneystoragedump.cpp:503
@@ -3755,9 +3729,8 @@ msgid "Other"
 msgstr "Annan"
 
 #: dialogs/keditscheduledlg.cpp:278
-#, fuzzy
 msgid "Next due date"
-msgstr "Nästa förfallodatum:"
+msgstr "Nästa förfallodatum"
 
 #: dialogs/kaccountselectdlg.cpp:70 dialogs/knewloanwizard.cpp:122
 #: dialogs/knewloanwizard.cpp:136
@@ -4017,14 +3990,13 @@ msgid ""
 msgstr ""
 
 #: dialogs/knewloanwizard.cpp:992 kmymoney2.cpp:2431
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to add account: %1"
-msgstr "Kunde inte justera schema: "
+msgstr "Kunde inte skapa konto: %1"
 
 #: dialogs/kmergetransactionsdlg.cpp:39
-#, fuzzy
 msgid "Merge Transactions"
-msgstr "Uppdelad transaktion"
+msgstr "Slå ihop transaktioner"
 
 #: dialogs/kmergetransactionsdlg.cpp:40
 msgid "Are you sure you wish to merge these transactions?"
@@ -4089,18 +4061,16 @@ msgid "Foreground"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:3
-#, fuzzy
 msgid "Text colors"
-msgstr "Använd systemfonter"
+msgstr "Textfärger"
 
 #: dialogs/settings/rc.cpp:4
 msgid "Grid color"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:5
-#, fuzzy
 msgid "Erronous transaction"
-msgstr "Justeringstransaktion"
+msgstr "Felaktig transaktion"
 
 #: dialogs/settings/rc.cpp:6
 msgid "Value with missing conversion rate"
@@ -4111,14 +4081,12 @@ msgid "Negative value"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:8
-#, fuzzy
 msgid "Background"
-msgstr "Säkerhetskopia"
+msgstr "Bakgrund"
 
 #: dialogs/settings/rc.cpp:9 rc.cpp:62
-#, fuzzy
 msgid "Use system colors"
-msgstr "Använd systemfonter"
+msgstr "Använd systemfärger"
 
 #: dialogs/settings/rc.cpp:10
 msgid "List background colors"
@@ -4145,14 +4113,12 @@ msgid "Required field"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:16
-#, fuzzy
 msgid "Imported transaction"
-msgstr "Uppdelad transaktion"
+msgstr "Importerad transaktion"
 
 #: dialogs/settings/rc.cpp:17
-#, fuzzy
 msgid "Matched transaction"
-msgstr "Registrera schemalagd transaktion"
+msgstr "Matchad transaktion"
 
 #: dialogs/settings/rc.cpp:18
 msgid "Font settings"
@@ -4187,19 +4153,16 @@ msgid "Day of Month to start Forecast:"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:26
-#, fuzzy
 msgid "Number of Days to Forecast:"
-msgstr "Antal kvarvarande betalningar:"
+msgstr "Antal dagar att förutspå:"
 
 #: dialogs/settings/rc.cpp:27
-#, fuzzy
 msgid "Forecast Method"
-msgstr "Betalningsmetod"
+msgstr "Beräkningsmetod"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled &and Future Transactions"
-msgstr "Registrera schemalagd transaktion"
+msgstr "Schemalagda och framtida transaktioner"
 
 #: dialogs/settings/rc.cpp:29
 msgid "History-&based"
@@ -4214,9 +4177,8 @@ msgid "Number of Cycles to use in Forecast:"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:32 views/rc.cpp:39
-#, fuzzy
 msgid "History Forecast Method"
-msgstr "Betalningsmetod"
+msgstr "Historikbaserad förutsägelse"
 
 #: dialogs/settings/rc.cpp:33 views/rc.cpp:40
 msgid "Simple Moving Average"
@@ -4239,7 +4201,6 @@ msgid "Startup page options"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:38
-#, fuzzy
 msgid "Start with homepage"
 msgstr "Börja med hemsida"
 
@@ -4276,9 +4237,8 @@ msgid "Fiscal Year"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:47
-#, fuzzy
 msgid "Your fiscal year starts on"
-msgstr "Aktuell ränta"
+msgstr "Ditt räkenskapsår börjar"
 
 #: dialogs/settings/rc.cpp:48
 msgid "January"
@@ -4317,19 +4277,16 @@ msgid "September"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:57
-#, fuzzy
 msgid "October"
-msgstr "Annan"
+msgstr "Oktober"
 
 #: dialogs/settings/rc.cpp:58
-#, fuzzy
 msgid "November"
-msgstr "Nummer:"
+msgstr "November"
 
 #: dialogs/settings/rc.cpp:59
-#, fuzzy
 msgid "December"
-msgstr "Minska"
+msgstr "December"
 
 #: dialogs/settings/rc.cpp:60
 msgid "Views"
@@ -4366,9 +4323,8 @@ msgid "Large (64px)"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:69
-#, fuzzy
 msgid "Accounts / Categories"
-msgstr "Kategorier"
+msgstr "Konton / Kategorier"
 
 #: dialogs/settings/rc.cpp:70
 msgid "Don't show unused categories"
@@ -4403,14 +4359,12 @@ msgid "This option hides all finished schedules in the schedules view."
 msgstr ""
 
 #: dialogs/settings/rc.cpp:78
-#, fuzzy
 msgid "Don't show transactions prior to"
-msgstr "Datum för sista betalning:"
+msgstr "Visa inte transaktioner före"
 
 #: dialogs/settings/rc.cpp:79
-#, fuzzy
 msgid "Don't show reconciled transactions"
-msgstr "Datum för sista betalning:"
+msgstr "Visa inte avstämda transaktioner"
 
 #: dialogs/settings/rc.cpp:80
 msgid "This option hides all reconciled transactions in the ledger view."
@@ -4489,14 +4443,12 @@ msgid "Homepage Settings"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:93
-#, fuzzy
 msgid "Up"
-msgstr "&Upp"
+msgstr "Upp"
 
 #: dialogs/settings/rc.cpp:94
-#, fuzzy
 msgid "Down"
-msgstr "&Ner"
+msgstr "Ner"
 
 #: dialogs/settings/rc.cpp:95
 msgid ""
@@ -4671,9 +4623,8 @@ msgid "Use Enter to move between fields"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:141
-#, fuzzy
 msgid "Schedule Settings"
-msgstr "Schemainformation"
+msgstr "Schemainställningar"
 
 #: dialogs/settings/rc.cpp:142
 msgid "Startup options"
@@ -4846,9 +4797,8 @@ msgid "Adding New Institution"
 msgstr ""
 
 #: dialogs/kselecttransactionsdlg.cpp:44
-#, fuzzy
 msgid "Select Transaction"
-msgstr "Uppdelad transaktion"
+msgstr "Välj transaktion"
 
 #: dialogs/kselecttransactionsdlg.cpp:45
 msgid ""
@@ -4904,12 +4854,10 @@ msgid "Import File..."
 msgstr ""
 
 #: dialogs/investtransactioneditor.cpp:211
-#, fuzzy
 msgid "Asset account"
 msgstr "Tillgångar"
 
 #: dialogs/investtransactioneditor.cpp:1028
-#, fuzzy
 msgid "Price/Share"
 msgstr "Kurs"
 
@@ -5135,9 +5083,8 @@ msgid "Favorite reports"
 msgstr ""
 
 #: kmymoneyutils.cpp:381
-#, fuzzy
 msgid "Forecast (schedule)"
-msgstr "Skapa schema..."
+msgstr "Förutsägelse (schema)"
 
 #: kmymoneyutils.cpp:382
 msgid "Networth forecast"
@@ -5149,9 +5096,8 @@ msgstr ""
 
 #: kmymoneyutils.cpp:385 reports/pivottable.cpp:1563
 #: reports/pivottable.cpp:1568 widgets/rc.cpp:70
-#, fuzzy
 msgid "Budget"
-msgstr "siffror"
+msgstr "Budget"
 
 #: kmymoneyutils.cpp:710 widgets/register.cpp:444
 msgid ""
@@ -5240,15 +5186,14 @@ msgstr ""
 
 #: reports/pivottable.cpp:1563 reports/pivottable.cpp:1568
 #: views/khomeview.cpp:1357
-#, fuzzy
 msgid "Difference"
-msgstr "Skillnad:"
+msgstr "Skillnad"
 
 #: reports/pivottable.cpp:2073 reports/pivottable.cpp:2167
 #: reports/pivottable.cpp:2251
 #, fuzzy
 msgid "Budget "
-msgstr "siffror"
+msgstr "Budget"
 
 #: reports/pivottable.cpp:2314 reports/pivottable.cpp:2369
 #, fuzzy
@@ -5267,7 +5212,6 @@ msgstr ""
 
 #: reports/querytable.cpp:620 reports/querytable.cpp:768
 #: reports/querytable.cpp:876
-#, fuzzy
 msgid "No Institution"
 msgstr "<Ingen institution>"
 
@@ -5276,9 +5220,8 @@ msgid "[Empty Payee]"
 msgstr ""
 
 #: reports/querytable.cpp:662
-#, fuzzy
 msgid "[Split Transaction]"
-msgstr "Uppdelad transaktion"
+msgstr "[Uppdelad transaktion]"
 
 #: reports/querytable.cpp:663 reports/querytable.cpp:664
 msgid "Split"
@@ -5359,9 +5302,8 @@ msgid "Annualized Return"
 msgstr ""
 
 #: reports/querytable.cpp:1205
-#, fuzzy
 msgid "Return On Investment"
-msgstr "Investering"
+msgstr "Avkastning"
 
 #: reports/querytable.cpp:1405
 msgid "Initial Market Value"
@@ -5372,15 +5314,13 @@ msgid "Ending Market Value"
 msgstr ""
 
 #: reports/querytable.cpp:1409 reports/querytabletest.cpp:616
-#, fuzzy
 msgid "Opening Balance"
-msgstr "Öppningsbalanser"
+msgstr "Öppningsbalans"
 
 #: reports/querytable.cpp:1410 reports/querytabletest.cpp:617
 #: reports/querytabletest.cpp:618
-#, fuzzy
 msgid "Closing Balance"
-msgstr "Slutbalans:"
+msgstr "Slutbalans"
 
 #: reports/querytabletest.cpp:446 views/kreportsview.cpp:1105
 msgid "Investment Transactions"
@@ -5443,14 +5383,12 @@ msgid "More ..."
 msgstr "Mera ..."
 
 #: views/khomeview.cpp:530
-#, fuzzy
 msgid " (%1 payments)"
-msgstr "en betalning"
+msgstr " (%1 betalningar)"
 
 #: views/khomeview.cpp:652
-#, fuzzy
 msgid "To Minimum Balance"
-msgstr "Slutbalans:"
+msgstr "Till minsta balans"
 
 #: views/khomeview.cpp:782 views/kreportsview.cpp:451
 msgid "Favorite Reports"
@@ -5547,7 +5485,7 @@ msgstr "siffror"
 #: views/khomeview.cpp:1351
 #, fuzzy
 msgid "Budgeted"
-msgstr "siffror"
+msgstr "Budget"
 
 #: views/khomeview.cpp:1413
 msgid "No Budget Categories have been overrun"
@@ -5582,9 +5520,8 @@ msgid "Reports"
 msgstr "Rapporter"
 
 #: views/kreportsview.cpp:409 views/kreportsview.cpp:445
-#, fuzzy
 msgid "Charts"
-msgstr "Avgifter"
+msgstr "Diagram"
 
 #: views/kreportsview.cpp:469
 msgid "Old Customized Reports"
@@ -5607,9 +5544,8 @@ msgid ""
 msgstr ""
 
 #: views/kreportsview.cpp:576
-#, fuzzy
 msgid "Export as"
-msgstr "Rapporter"
+msgstr "Exportera som"
 
 #: views/kreportsview.cpp:604 views/kreportsview.cpp:645
 #: views/kreportsview.cpp:927 views/kreportsview.cpp:935
@@ -5680,14 +5616,12 @@ msgid "Income and Expenses This Year"
 msgstr "Inkomster och utgifter aktuellt år"
 
 #: views/kreportsview.cpp:944
-#, fuzzy
 msgid "Income and Expenses Graph"
-msgstr "Inkomster och utgifter"
+msgstr "Inkomst och utgiftsgraf"
 
 #: views/kreportsview.cpp:957
-#, fuzzy
 msgid "Income and Expenses Pie Chart"
-msgstr "Inkomster och utgifter aktuellt år"
+msgstr "Inkomst och utgifts-tårtdiagram"
 
 #: views/kreportsview.cpp:976
 msgid "Net Worth By Month"
@@ -5738,9 +5672,8 @@ msgid "Transactions by Week"
 msgstr ""
 
 #: views/kreportsview.cpp:1090
-#, fuzzy
 msgid "Loan Transactions"
-msgstr "Uppdelad transaktion"
+msgstr "Låntransaktioner"
 
 #: views/kmymoneyview.cpp:220 views/kreportsview.cpp:1098 views/rc.cpp:59
 msgid "Investments"
@@ -5759,28 +5692,24 @@ msgid "Investment Performance by Type"
 msgstr ""
 
 #: views/kreportsview.cpp:1155
-#, fuzzy
 msgid "Investment Holdings Pie"
-msgstr "Investeringstyp"
+msgstr ""
 
 #: views/kreportsview.cpp:1169
-#, fuzzy
 msgid "Investment Worth Graph"
-msgstr "Investeringstyp"
+msgstr ""
 
 #: views/kreportsview.cpp:1183
 msgid "Taxes"
 msgstr "Skatter"
 
 #: views/kreportsview.cpp:1190
-#, fuzzy
 msgid "Tax Transactions by Category"
-msgstr "Transaktionsdetaljer"
+msgstr "Skattetransaktioner per kategori"
 
 #: views/kreportsview.cpp:1199
-#, fuzzy
 msgid "Tax Transactions by Payee"
-msgstr "Uppdelad transaktion"
+msgstr "Skattetransaktioner per mottagare"
 
 #: views/kreportsview.cpp:1208
 msgid "Tax Transactions by Category Last Fiscal Year"
@@ -5791,9 +5720,8 @@ msgid "Tax Transactions by Payee Last Fiscal Year"
 msgstr ""
 
 #: views/kreportsview.cpp:1224
-#, fuzzy
 msgid "Budgeting"
-msgstr "siffror"
+msgstr "Budget"
 
 #: views/kreportsview.cpp:1231
 msgid "Budgeted vs. Actual This Year"
@@ -5804,14 +5732,12 @@ msgid "Yearly Budgeted vs. Actual"
 msgstr ""
 
 #: views/kreportsview.cpp:1263
-#, fuzzy
 msgid "Monthly Budget"
-msgstr "siffror"
+msgstr "Månaktlig budget"
 
 #: views/kreportsview.cpp:1273
-#, fuzzy
 msgid "Yearly Budget"
-msgstr "siffror"
+msgstr "Årlig budget"
 
 #: views/kreportsview.cpp:1284
 msgid "Yearly Budgeted vs Actual Graph"
@@ -5860,18 +5786,16 @@ msgid "Unable to filter account"
 msgstr ""
 
 #: views/kforecastview.cpp:76
-#, fuzzy
 msgid "Scheduled"
-msgstr "Schema"
+msgstr "Schemalagda"
 
 #: views/kforecastview.cpp:81
 msgid "History"
 msgstr ""
 
 #: views/kforecastview.cpp:186 views/kforecastview.cpp:319
-#, fuzzy
 msgid "Current"
-msgstr "Valuta"
+msgstr "Nuvarande"
 
 #: views/kforecastview.cpp:194 views/kforecastview.cpp:334
 msgid "Total variation"
@@ -5915,9 +5839,8 @@ msgstr ""
 
 #: converter/mymoneygncreader.cpp:2051 views/kmymoneyview.cpp:235
 #: views/rc.cpp:9
-#, fuzzy
 msgid "Budgets"
-msgstr "siffror"
+msgstr "Budget"
 
 #: kmymoney2.cpp:1934 views/kmymoneyview.cpp:244 views/rc.cpp:30
 #: views/rc.cpp:42
@@ -5933,9 +5856,8 @@ msgid "Modifying transactions can only be performed in the ledger view"
 msgstr ""
 
 #: views/kmymoneyview.cpp:349
-#, fuzzy
 msgid "Edit the current selected transactions"
-msgstr "Datum för sista betalning:"
+msgstr "Redigera markerade transaktioner"
 
 #: converter/mymoneyqifreader.cpp:219 converter/mymoneytemplate.cpp:73
 #: views/kmymoneyview.cpp:551
@@ -6101,12 +6023,10 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:3980 views/kmymoneyview.cpp:1230
-#, fuzzy
 msgid "Cannot set %1 as base currency: %2"
-msgstr "Välj som basvaluta"
+msgstr "Kan inte välja %1 som basvaluta: %2"
 
 #: kmymoney2.cpp:3980 views/kmymoneyview.cpp:1230
-#, fuzzy
 msgid "Set base currency"
 msgstr "Välj som basvaluta"
 
@@ -6885,9 +6805,8 @@ msgid "Balance: %1"
 msgstr ""
 
 #: views/kgloballedgerview.cpp:628
-#, fuzzy
 msgid "Investment value: %1%2"
-msgstr "Investering: %1"
+msgstr "Värde: %1%2"
 
 #: views/kgloballedgerview.cpp:894
 msgid ""
@@ -6968,71 +6887,60 @@ msgid "Total Profits:"
 msgstr ""
 
 #: views/rc.cpp:11
-#, fuzzy
 msgid "Your budgets"
-msgstr "siffror"
+msgstr "Din budget"
 
 #: views/rc.cpp:13
-#, fuzzy
 msgid "&Ren"
-msgstr "Öppna"
+msgstr "Namn"
 
 #: views/rc.cpp:14
-#, fuzzy
 msgid "Del"
-msgstr "Detaljer"
+msgstr "Radera"
 
 #: views/rc.cpp:15
-#, fuzzy
 msgid "Res"
 msgstr "Återställ"
 
 #: views/rc.cpp:16
-#, fuzzy
 msgid "Upd"
-msgstr "&Upp"
+msgstr "Uppdat."
 
 #: views/rc.cpp:19
-#, fuzzy
 msgid "Hide unused budget categories"
-msgstr "Dolda kategorier"
+msgstr "Dölj oanvända budgetkategorier"
 
 #: views/rc.cpp:20
 msgid "Assignments"
 msgstr ""
 
 #: views/rc.cpp:23
-#, fuzzy
 msgid "Incl&ude subaccounts"
-msgstr "Är ett underkonto"
+msgstr "Inkludera underkonton"
 
 #: views/rc.cpp:33
 msgid "Days of Accounts Cycle:"
 msgstr ""
 
 #: views/rc.cpp:35
-#, fuzzy
 msgid "Days to Forecast:"
-msgstr "Antal kvarvarande betalningar:"
+msgstr "Dagar att förutspå:"
 
 #: views/rc.cpp:36
 msgid "Historic Cycles:"
 msgstr ""
 
 #: views/rc.cpp:37
-#, fuzzy
 msgid "Current Forecast Method:"
-msgstr "Betalningsmetod"
+msgstr "Nuvarande förutsägningsmetod:"
 
 #: views/rc.cpp:38
-#, fuzzy
 msgid "method"
-msgstr "Betalningssätt:"
+msgstr "metod"
 
 #: views/rc.cpp:44
-#, fuzzy
 msgid "S&ummary"
-msgstr "Summering"
+msgstr "S&ummering"
 
 #: views/rc.cpp:46
 msgid "0 days"
@@ -7059,18 +6967,16 @@ msgid "New Item"
 msgstr ""
 
 #: views/rc.cpp:52
-#, fuzzy
 msgid "Det&ail"
-msgstr "Detaljer"
+msgstr "Det&aljer"
 
 #: views/rc.cpp:53
 msgid "Adva&nced"
 msgstr ""
 
 #: views/rc.cpp:54
-#, fuzzy
 msgid "Budget Forecast"
-msgstr "siffror"
+msgstr ""
 
 #: views/rc.cpp:58
 msgid "Investment Summary"
@@ -7115,14 +7021,12 @@ msgid "Address:"
 msgstr ""
 
 #: views/rc.cpp:78
-#, fuzzy
 msgid "Transaction Matching"
-msgstr "Transaktionsdetaljer"
+msgstr "Transaktionsmatchning"
 
 #: views/rc.cpp:79
-#, fuzzy
 msgid "No matching"
-msgstr "Gör ingenting"
+msgstr "Inga matchningar"
 
 #: views/rc.cpp:80
 msgid "Match on Payee name"
@@ -7133,9 +7037,8 @@ msgid "Match on key:"
 msgstr ""
 
 #: views/rc.cpp:82
-#, fuzzy
 msgid "Ignore Case"
-msgstr "Öka"
+msgstr "Ignorera"
 
 #: views/rc.cpp:86
 msgid "New Schedule"
@@ -7154,27 +7057,24 @@ msgid "Calendar View"
 msgstr "Kalendervy"
 
 #: views/kbudgetview.cpp:109
-#, fuzzy
 msgid "Creates a new budget"
-msgstr "Skapa ett nytt konto"
+msgstr "Skapa en ny budget"
 
 #: views/kbudgetview.cpp:110
 msgid "Use this to create a new emtpy budget."
 msgstr ""
 
 #: views/kbudgetview.cpp:116
-#, fuzzy
 msgid "Rename the current selected budget"
-msgstr "Datum för sista betalning:"
+msgstr "Döp om markerad budget"
 
 #: views/kbudgetview.cpp:117
 msgid "Use this to start renaming the selected budget."
 msgstr ""
 
 #: views/kbudgetview.cpp:123
-#, fuzzy
 msgid "Delete the current selected budget"
-msgstr "Datum för sista betalning:"
+msgstr "Radera markerad budget"
 
 #: views/kbudgetview.cpp:124
 msgid "Use this to delete the selected budget."
@@ -7201,9 +7101,8 @@ msgid "Do you want to save the changes for <b>%1</b>"
 msgstr ""
 
 #: views/kbudgetview.cpp:503 views/kpayeesview.cpp:503
-#, fuzzy
 msgid "Save changes"
-msgstr "Besparingar"
+msgstr "Spara ändringar"
 
 #: views/kbudgetview.cpp:604
 msgid ""
@@ -7213,9 +7112,8 @@ msgid ""
 msgstr ""
 
 #: views/kbudgetview.cpp:629 views/kbudgetview.cpp:736
-#, fuzzy
 msgid "Unable to modify budget"
-msgstr "Kunde inte justera schema: "
+msgstr "Kunde inte ändra budget"
 
 #: converter/mymoneyqifreader.cpp:348 converter/mymoneyqifreader.cpp:751
 #: converter/mymoneystatementreader.cpp:528 kmymoney2.cpp:3892
@@ -7226,14 +7124,12 @@ msgid "thrown in"
 msgstr ""
 
 #: views/kbudgetview.cpp:723
-#, fuzzy
 msgid "Unable to reset budget"
-msgstr "Kunde inte justera schema: "
+msgstr "Kunde inte nollställa budget"
 
 #: views/kinstitutionsview.cpp:43
-#, fuzzy
 msgid "Institution/Account"
-msgstr "Institution"
+msgstr "Institution/Konto"
 
 #: views/kinstitutionsview.cpp:164
 msgid "Accounts with no institution assigned"
@@ -7278,18 +7174,16 @@ msgid "Finished"
 msgstr ""
 
 #: views/kstocktransactionviewdecl.cpp:67
-#, fuzzy
 msgid "TextLabel2"
-msgstr "TextLabel6"
+msgstr ""
 
 #: views/kstocktransactionviewdecl.cpp:68
 msgid "YTD:"
 msgstr ""
 
 #: views/kstocktransactionviewdecl.cpp:70
-#, fuzzy
 msgid "TextLabel4"
-msgstr "TextLabel6"
+msgstr ""
 
 #: views/kcategoriesview.cpp:278
 msgid "Profit: "
@@ -7340,9 +7234,8 @@ msgid "Dump Memory"
 msgstr ""
 
 #: kmymoney2.cpp:311
-#, fuzzy
 msgid "File-Information..."
-msgstr "Betalningsinformation"
+msgstr ""
 
 #: kmymoney2.cpp:317
 msgid "Find transaction..."
@@ -7353,34 +7246,28 @@ msgid "Show Transaction Detail"
 msgstr ""
 
 #: kmymoney2.cpp:323 rc.cpp:54
-#, fuzzy
 msgid "Hide reconciled transactions"
-msgstr "Datum för sista betalning:"
+msgstr "Dölj avstämda transaktioner"
 
 #: kmymoney2.cpp:324 rc.cpp:51
-#, fuzzy
 msgid "Hide unused categories"
-msgstr "Dolda kategorier"
+msgstr "Dölj oanvända kategorier"
 
 #: kmymoney2.cpp:325
-#, fuzzy
 msgid "Show all accounts"
-msgstr "Är ett underkonto"
+msgstr "Visa alla konton"
 
 #: kmymoney2.cpp:330
-#, fuzzy
 msgid "New institution..."
-msgstr "<Ingen institution>"
+msgstr "Ny institution..."
 
 #: kmymoney2.cpp:331
-#, fuzzy
 msgid "Edit institution..."
-msgstr "Redigera transaktioner..."
+msgstr "Redigera institution..."
 
 #: kmymoney2.cpp:332
-#, fuzzy
 msgid "Delete institution..."
-msgstr "Institution"
+msgstr "Radera institution..."
 
 #: kmymoney2.cpp:337
 msgid "New account..."
@@ -7395,38 +7282,32 @@ msgid "Reconcile..."
 msgstr ""
 
 #: kmymoney2.cpp:341
-#, fuzzy
 msgid "Finish reconciliation"
-msgstr "Datum för sista betalning:"
+msgstr "Avsluta avstämning"
 
 #: kmymoney2.cpp:342
 msgid "Postpone reconciliation"
-msgstr ""
+msgstr "Uppskjut avstämning"
 
 #: kmymoney2.cpp:343
-#, fuzzy
 msgid "Edit account..."
-msgstr "Redigera transaktioner..."
+msgstr "Redigera konto..."
 
 #: kmymoney2.cpp:344
-#, fuzzy
 msgid "Delete account..."
-msgstr "Välj konto:"
+msgstr "Radera konto..."
 
 #: kmymoney2.cpp:345
-#, fuzzy
 msgid "Close account"
-msgstr "motkonto"
+msgstr "Avsluta konto"
 
 #: kmymoney2.cpp:346
-#, fuzzy
 msgid "Reopen account"
-msgstr "motkonto"
+msgstr "Återöppna konto"
 
 #: kmymoney2.cpp:347
-#, fuzzy
 msgid "Transaction report"
-msgstr "Transaktionsdetaljer"
+msgstr "Transaktionsrapport"
 
 #: kmymoney2.cpp:349
 msgid "Show balance chart..."
@@ -7437,14 +7318,12 @@ msgid "New category..."
 msgstr ""
 
 #: kmymoney2.cpp:356
-#, fuzzy
 msgid "Edit category..."
-msgstr "Momskategori"
+msgstr "Redigera kategori..."
 
 #: kmymoney2.cpp:357
-#, fuzzy
 msgid "Delete category..."
-msgstr "Räntekategori:"
+msgstr "Radera kategori..."
 
 #: kmymoney2.cpp:361
 msgid "Online update using OFX..."
@@ -7702,9 +7581,8 @@ msgid "Rename budget"
 msgstr ""
 
 #: kmymoney2.cpp:441
-#, fuzzy
 msgid "Delete budget"
-msgstr "Radera rapport?"
+msgstr "Radera budget?"
 
 #: kmymoney2.cpp:442
 #, fuzzy
@@ -11855,133 +11733,3 @@ msgid ""
 "<p>All information is optional and only used to personalize your KMyMoney "
 "file.</p>"
 msgstr ""
-
-#, fuzzy
-#~ msgid "Forcecast"
-#~ msgstr "Totalt belopp"
-
-#, fuzzy
-#~ msgid "Pa&yee"
-#~ msgstr "Betalningsmottagare"
-
-#, fuzzy
-#~ msgid "Summar&y"
-#~ msgstr "Summering"
-
-#~ msgid "one month"
-#~ msgstr "en månad"
-
-#~ msgid "one year"
-#~ msgstr "ett år"
-
-#~ msgid "one payment"
-#~ msgstr "en betalning"
-
-#, fuzzy
-#~ msgid "Ne&w"
-#~ msgstr "&Nytt"
-
-#, fuzzy
-#~ msgid "Convert 'em!!"
-#~ msgstr "Överför från"
-
-#~ msgid "Outbox"
-#~ msgstr "Utkorg"
-
-#~ msgid "Abort"
-#~ msgstr "Avbryt"
-
-#~ msgid "Check"
-#~ msgstr "Check"
-
-#~ msgid "Ready"
-#~ msgstr "Klar"
-
-#~ msgid "Edit Transfer Schedule"
-#~ msgstr "Redigera schema för överföring"
-
-#~ msgid "Edit Loan Payment Schedule"
-#~ msgstr "Redigera schema för betalning"
-
-#~ msgid "Edit Deposit Schedule"
-#~ msgstr "Redigera schema för insättning"
-
-#~ msgid "Direct Debit"
-#~ msgstr "Direktdebitering"
-
-#~ msgid "Direct Deposit"
-#~ msgstr "Direktinsättning"
-
-#~ msgid "Manual Deposit"
-#~ msgstr "Manuell insättning"
-
-#~ msgid "Write Check"
-#~ msgstr "Skriv check"
-
-#, fuzzy
-#~ msgid "Please fill in the From account field."
-#~ msgstr "Välj konto."
-
-#, fuzzy
-#~ msgid "Please fill in the To account field."
-#~ msgstr "Välj konto."
-
-#~ msgid "Withdrawal or Transfer"
-#~ msgstr "Uttag eller överföring"
-
-#~ msgid "Verify category type"
-#~ msgstr "Kontrollera kategori"
-
-#~ msgid "Bill or Transfer"
-#~ msgstr "Räkning eller överföring"
-
-#~ msgid "Edit Scheduled Transfer"
-#~ msgstr "Redigera schemalagd överföring"
-
-#~ msgid "Pay to:"
-#~ msgstr "Betala till:"
-
-#~ msgid "From:"
-#~ msgstr "Från:"
-
-#~ msgid "To:"
-#~ msgstr "Till:"
-
-#~ msgid "Amount:"
-#~ msgstr "Belopp:"
-
-#~ msgid "Category:"
-#~ msgstr "Kategori:"
-
-#~ msgid "Memo:"
-#~ msgstr "Notering:"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Namn:</b>"
-
-#~ msgid "<b>Type:</b>"
-#~ msgstr "<b>Typ:</b>"
-
-#~ msgid "<b>Payee:</b>"
-#~ msgstr "<b>Betalningsmottagare:</b>"
-
-#~ msgid "<b>Category:</b>"
-#~ msgstr "<b>Kategori:</b>"
-
-#~ msgid "New Account"
-#~ msgstr "Nytt konto"
-
-#~ msgid "What is the account number?"
-#~ msgstr "Vad är kontonummret?"
-
-#~ msgid "Please select the account."
-#~ msgstr "Välj konto."
-
-#~ msgid "Account with that name already exists."
-#~ msgstr "Ett konto med det namnet finns redan."
-
-#~ msgid "Category with that name already exists."
-#~ msgstr "En kategori med det namnet finns redan."
-
-#~ msgid "Exiting..."
-#~ msgstr "Avslutar..."
