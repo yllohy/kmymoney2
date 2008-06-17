@@ -791,7 +791,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   connect(m_editCategory, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
   connect(m_editCategory, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
 
-  m_editMemo = new kMyMoneyLineEdit(0, 0, AlignLeft|AlignVCenter);
+  m_editMemo = new kMyMoneyLineEdit(0, 0, false, AlignLeft|AlignVCenter);
   m_editMemo->setHint(i18n("Memo"));
   m_editMemo->setFont(cellFont);
 

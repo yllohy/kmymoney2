@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-06-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch supplied by Colin Wright adding a missing parameter
+
 2008-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Simplified code
   * Changed function names to follow coding standards
