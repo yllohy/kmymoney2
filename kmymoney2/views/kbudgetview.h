@@ -83,6 +83,14 @@ public:
   KBudgetView(QWidget *parent=0, const char *name=0);
   ~KBudgetView();
   void show();
+  
+  /**
+   * Override the base class behaviour to restore the layout. Do not
+   * do this in show() because show() itself may change the layout
+   * in undesired ways.
+   */
+  void polish(void);
+  
   /**
     * This method is used to suppress updates for specific times
     * (e.g. during creation of a new MyMoneyFile object when the

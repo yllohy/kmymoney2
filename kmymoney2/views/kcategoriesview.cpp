@@ -83,7 +83,6 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 
-  m_accountTree->restoreLayout("Category View Settings");
 }
 
 KCategoriesView::~KCategoriesView()
@@ -105,8 +104,14 @@ void KCategoriesView::show(void)
   if(item) {
     emit selectObject(item->itemObject());
   }
+}
 
+void KCategoriesView::polish(void)
+{
+  KCategoriesViewDecl::polish();
   m_accountTree->setResizeMode(QListView::LastColumn);
+  m_accountTree->restoreLayout("Category View Settings");
+
 }
 
 void KCategoriesView::slotLoadAccounts(void)

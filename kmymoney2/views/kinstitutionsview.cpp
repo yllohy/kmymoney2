@@ -49,8 +49,6 @@ KInstitutionsView::KInstitutionsView(QWidget *parent, const char *name) :
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
-
-  m_accountTree->restoreLayout("Institution View Settings");
 }
 
 KInstitutionsView::~KInstitutionsView()
@@ -72,8 +70,13 @@ void KInstitutionsView::show(void)
   if(item) {
     emit selectObject(item->itemObject());
   }
+}
 
+void KInstitutionsView::polish(void)
+{
+  KInstitutionsViewDecl::polish();
   m_accountTree->setResizeMode(QListView::LastColumn);
+  m_accountTree->restoreLayout("Institution View Settings");
 }
 
 void KInstitutionsView::slotLoadAccounts(void)

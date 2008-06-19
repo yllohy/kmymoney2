@@ -170,8 +170,6 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_renameButton->setEnabled(kmymoney2->action("budget_rename")->isEnabled());
   m_deleteButton->setEnabled(kmymoney2->action("budget_delete")->isEnabled());
 
-  m_accountTree->restoreLayout("Budget Account View Settings");
-  
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
 }
 
@@ -186,6 +184,12 @@ void KBudgetView::show()
   if(m_needReload) {
     slotRefreshView();
   }
+}
+
+void KBudgetView::polish()
+{
+  KBudgetViewDecl::polish();
+  m_accountTree->restoreLayout("Budget Account View Settings");
 }
 
 void KBudgetView::slotRearrange(void)

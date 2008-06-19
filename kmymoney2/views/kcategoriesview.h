@@ -75,6 +75,13 @@ public slots:
     * happened in the meantime.
     */
   void show(void);
+  
+  /**
+   * Override the base class behaviour to restore the layout. Do not
+   * do this in show() because show() itself may change the layout
+   * in undesired ways.
+   */
+  void polish(void);
 
 protected:
   void loadAccounts(void);

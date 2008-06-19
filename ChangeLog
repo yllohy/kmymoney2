@@ -17,6 +17,9 @@
   * Added patch supplied by Colin Wright adding a missing parameter
   * Updated Swedish translation from Konrad Skeri
 
+2008-06-16  Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * fixed restoring the layout in some tree views
+
 2008-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Simplified code
   * Changed function names to follow coding standards

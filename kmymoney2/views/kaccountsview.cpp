@@ -115,7 +115,6 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name) :
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 
-  m_accountTree->restoreLayout("Account View Settings");
 }
 
 KAccountsView::~KAccountsView()
@@ -183,7 +182,14 @@ void KAccountsView::show(void)
   // don't forget base class implementation
   KAccountsViewDecl::show();
   slotTabChanged(m_tab->currentPage());
+}
+
+void KAccountsView::polish(void)
+{
+  // don't forget base class implementation
+  KAccountsViewDecl::polish();
   m_accountTree->setResizeMode(QListView::LastColumn);
+  m_accountTree->restoreLayout("Account View Settings");
 }
 
 void KAccountsView::loadAccounts(AccountsViewTab tab)

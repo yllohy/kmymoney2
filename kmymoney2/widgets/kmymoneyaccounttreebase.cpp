@@ -99,19 +99,13 @@ KMyMoneyAccountTreeBase::~KMyMoneyAccountTreeBase()
 
 void KMyMoneyAccountTreeBase::restoreLayout(const QString& group)
 {
-  Q_ASSERT(!group.isEmpty());
-  m_configGroup = group;
+  if (!m_configGroup.isEmpty())
+    return; // already done
   // make sure to use the previous settings. If no settings are found
   // we use equal distribution of all fields as an initial setting
-  // For some reason, if the view is never selected with this code, it
-  // stores a value of 32 for the columns. We have to detect that as well.
-//  setColumnWidth(0, 0);
+  // TODO this only makes the first column invisible if settings exist setColumnWidth(0, 0);
+  m_configGroup = group;
   KListView::restoreLayout(KGlobal::config(), m_configGroup);
-#if 0
-  if(columnWidth(0) < 60) {
-    setResizeMode(QListView::AllColumns);
-  }
-#endif
 }
 
 void KMyMoneyAccountTreeBase::showType(void)
