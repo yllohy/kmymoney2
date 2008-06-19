@@ -50,6 +50,7 @@
 #include "kloanschedulepagedecl.h"
 #include "kloanpayoutpagedecl.h"
 #include "khierarchypagedecl.h"
+#include "../widgets/kmymoneyaccounttreebase.h"
 #include "kaccountsummarypagedecl.h"
 
 class Wizard;
@@ -293,7 +294,7 @@ public:
 
 private:
   KMyMoneyAccountTreeItem* buildAccountTree
-      ( KListView* parent
+      ( KMyMoneyAccountTreeBase* parent
       , const MyMoneyAccount& account
       , bool open = false ) const;
   KMyMoneyAccountTreeItem* buildAccountTree

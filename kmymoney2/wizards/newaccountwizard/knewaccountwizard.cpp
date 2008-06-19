@@ -1393,7 +1393,7 @@ void HierarchyPage::enterPage(void)
 }
 
 KMyMoneyAccountTreeItem* HierarchyPage::buildAccountTree
-    ( KListView* parent
+    ( KMyMoneyAccountTreeBase* parent
     , const MyMoneyAccount& account
     , bool open ) const
 {

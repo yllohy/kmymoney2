@@ -460,7 +460,7 @@ void KNewAccountDlg::timerDone(void)
   if(m_accountItem) m_qlistviewParentAccounts->ensureItemVisible(m_accountItem);
   if(m_parentItem) m_qlistviewParentAccounts->ensureItemVisible(m_parentItem);
   // KNewAccountDlgDecl::resizeEvent(0);
-  m_qlistviewParentAccounts->setColumnWidth(0, m_qlistviewParentAccounts->visibleWidth());
+  m_qlistviewParentAccounts->setColumnWidth(m_qlistviewParentAccounts->nameColumn(), m_qlistviewParentAccounts->visibleWidth());
   m_qlistviewParentAccounts->repaintContents(false);
 }
 

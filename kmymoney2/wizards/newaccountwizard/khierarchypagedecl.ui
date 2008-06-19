@@ -43,7 +43,8 @@
                 <string>Subaccount of</string>
             </property>
         </widget>
-        <widget class="KListView">
+        <widget class="KMyMoneyAccountTreeBase">
+            <header location="global">../widgets/kmymoneyaccounttreebase.h</header>
             <property name="name">
                 <cstring>m_qlistviewParentAccounts</cstring>
             </property>
