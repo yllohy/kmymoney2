@@ -367,115 +367,114 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="KListView">
-                        <column>
-                            <property name="text">
-                                <string>Account</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <column>
-                            <property name="text">
-                                <string>0 days</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <column>
-                            <property name="text">
-                                <string>30 days</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <column>
-                            <property name="text">
-                                <string>60 days</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <column>
-                            <property name="text">
-                                <string>90 days</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
+                    <hbox>
                         <property name="name">
-                            <cstring>m_summaryList</cstring>
+                            <cstring>unnamed</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>2</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="midLineWidth">
-                            <number>1</number>
-                        </property>
-                        <property name="resizePolicy">
-                            <enum>AutoOneFit</enum>
-                        </property>
-                    </widget>
-                    <widget class="KListView">
-                        <column>
-                            <property name="text">
-                                <string>Column 1</string>
+                        <widget class="KListView">
+                            <column>
+                                <property name="text">
+                                    <string>Account</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property name="text">
+                                    <string>0 days</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property name="text">
+                                    <string>30 days</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property name="text">
+                                    <string>60 days</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property name="text">
+                                    <string>90 days</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <property name="name">
+                                <cstring>m_summaryList</cstring>
                             </property>
-                            <property name="clickable">
-                                <bool>true</bool>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>7</vsizetype>
+                                    <horstretch>2</horstretch>
+                                    <verstretch>1</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property name="resizable">
-                                <bool>true</bool>
+                            <property name="midLineWidth">
+                                <number>1</number>
                             </property>
-                        </column>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
-                    </item>
+                            <property name="resizePolicy">
+                                <enum>AutoOneFit</enum>
+                            </property>
+                        </widget>
+                        <widget class="QTextEdit">
+                            <item>
+                                <property name="text">
+                                    <string>New Item</string>
+                                </property>
+                                <property name="pixmap">
+                                    <pixmap></pixmap>
+                                </property>
+                            </item>
+                                <property name="name">
+                                    <cstring>m_adviceText</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>7</vsizetype>
+                                        <horstretch>1</horstretch>
+                                        <verstretch>1</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="resizePolicy">
+                                    <enum>AutoOneFit</enum>
+                                </property>
+                        </widget>
+                    </hbox>
+                    <hbox>
                         <property name="name">
-                            <cstring>m_adviceList</cstring>
+                            <cstring>unnamed</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>1</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="resizePolicy">
-                            <enum>AutoOneFit</enum>
-                        </property>
-                    </widget>
+                    </hbox>
                 </vbox>
             </widget>
             <widget class="QWidget">

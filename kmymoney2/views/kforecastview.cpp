@@ -21,6 +21,7 @@
 #include <qspinbox.h>
 #include <qlabel.h>
 #include <qbuttongroup.h>
+#include <qtextedit.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -62,7 +63,7 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
 
   m_forecastList->setAllColumnsShowFocus(true);
   m_summaryList->setAllColumnsShowFocus(true);
-  m_adviceList->setAllColumnsShowFocus(true);
+  //m_adviceList->setAllColumnsShowFocus(true);
   m_advancedList->setAllColumnsShowFocus(true);
 
   loadForecastSettings();
@@ -294,7 +295,6 @@ void KForecastView::loadSummaryView(void)
   QMap<QDate, MyMoneyMoney> cycleBalance;
   int dropMinimum;
   int dropZero;
-  bool negative = false;
   int daysToBeginDay;
 
   MyMoneySecurity baseCurrency = file->baseCurrency();
@@ -326,15 +326,11 @@ void KForecastView::loadSummaryView(void)
     m_summaryList->removeColumn(0);
   }
 
-  //clear the list, including columns
-  m_adviceList->clear();
-  for(;m_adviceList->columns() > 0;) {
-    m_adviceList->removeColumn(0);
-  }
+  //clear the advices
+  m_adviceText->clear();
 
-  //add first column of both lists
+  //add first column
   int accountColumn = m_summaryList->addColumn(i18n("Account"), -1);
-  m_adviceList->addColumn("", -1);
 
   //add cycle interval columns
   m_summaryList->addColumn(i18n("Current"), -1);
@@ -359,11 +355,10 @@ void KForecastView::loadSummaryView(void)
     m_summaryList->setColumnAlignment(i, Qt::AlignRight);
   }
 
+  //disable sorting
   m_summaryList->setSorting(-1);
-  m_adviceList->setSorting(-1);
 
   KMyMoneyForecastListViewItem *summaryItem = 0;
-  KMyMoneyForecastListViewItem *adviceItem = 0;
 
   QMap<QCString, QCString>::ConstIterator it_nc;
   for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
@@ -476,7 +471,6 @@ void KForecastView::loadSummaryView(void)
     //Check if the account is going to be below zero in the future
     dropZero = forecast.daysToZeroBalance(acc);
 
-
     // spit out possible warnings
     QString msg;
 
@@ -491,17 +485,18 @@ void KForecastView::loadSummaryView(void)
         case -1:
           break;
         case 0:
-          msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency));
-          negative = true;
+          msg = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+          msg += i18n("The balance of %2 is below the minimum balance %3 today.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency));
+          msg += QString("</font>");
           break;
         default:
-          msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency)).arg(dropMinimum-1);
-          negative = true;
+          msg = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+          msg += i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency)).arg(dropMinimum-1);
+          msg += QString("</font>");
       }
 
       if(!msg.isEmpty()) {
-        adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
-        adviceItem->setText(0, msg);
+        m_adviceText->append(msg);
       }
     }
 
@@ -512,48 +507,47 @@ void KForecastView::loadSummaryView(void)
         break;
       case 0:
         if(acc.accountGroup() == MyMoneyAccount::Asset) {
-          msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
-          negative = true;
+          msg = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+          msg += i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
+          msg += QString("</font>");
           break;
         }
         if(acc.accountGroup() == MyMoneyAccount::Liability) {
           msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
-          negative = false;
           break;
         }
         break;
       default:
         if(acc.accountGroup() == MyMoneyAccount::Asset) {
-          msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
-          negative = true;
+          msg = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+          msg += i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
+          msg += QString("</font>");
           break;
         }
         if(acc.accountGroup() == MyMoneyAccount::Liability) {
           msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
-          negative = false;
           break;
         }
     }
     if(!msg.isEmpty()) {
-      adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
-      adviceItem->setText(0, msg);
+      m_adviceText->append(msg);
     }
 
     //advice about trends
     msg = QString();
     MyMoneyMoney accCycleVariation = forecast.accountCycleVariation(acc);
     if (accCycleVariation < MyMoneyMoney(0, 1)) {
-      msg = i18n("The account %1 is decreasing %2 per cycle.").arg(acc.name()).arg(accCycleVariation.formatMoney(acc, currency));
-      negative = true;
+      msg = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+      msg += i18n("The account %1 is decreasing %2 per cycle.").arg(acc.name()).arg(accCycleVariation.formatMoney(acc, currency));
+      msg += QString("</font>");
     }
 
     if(!msg.isEmpty()) {
-      adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
-      adviceItem->setText(0, msg);
+      m_adviceText->append(msg);
     }
   }
   m_summaryList->show();
-  m_adviceList->show();
+  m_adviceText->show();
 }
 
 void KForecastView::loadAdvancedView(void)

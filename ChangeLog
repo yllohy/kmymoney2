@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-06-17 Alvaro Soliverez <asoliverez@gmail.com>
+  * Modified layout of summary tab in forecast view
+
 2008-06-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Pretend to be Quicken 2008 during OFX download
 
