@@ -44,7 +44,7 @@
             </property>
         </widget>
         <widget class="KMyMoneyAccountTreeBase">
-            <header location="global">../widgets/kmymoneyaccounttreebase.h</header>
+            <header location="global">kmymoney/kmymoneyaccounttreebase.h</header>
             <property name="name">
                 <cstring>m_qlistviewParentAccounts</cstring>
             </property>

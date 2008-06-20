@@ -50,7 +50,7 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char *name) :
     KMyMoneyAccountTreeBase(parent,name)
 {
   showType();
-  showValue();
+
   m_taxReportColumn = addColumn(i18n("Column heading for category in tax report", "Tax"));
   setColumnWidthMode(m_taxReportColumn, QListView::Manual);
   setColumnAlignment(m_taxReportColumn, Qt::AlignHCenter);
@@ -58,7 +58,9 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char *name) :
   m_vatCategoryColumn = addColumn(i18n("Column heading for VAT category", "VAT"));
   setColumnWidthMode(m_vatCategoryColumn, QListView::Manual);
   setColumnAlignment(m_vatCategoryColumn, Qt::AlignHCenter);
-};
+
+  showValue();
+}
 
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneySecurity& security , const QString& name) :
     KMyMoneyAccountTreeBaseItem(parent,account,security,name),

@@ -39,6 +39,7 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneyaccounttreebase.h>
 
 #include "kinstitutionpagedecl.h"
 #include "kaccounttypepagedecl.h"
@@ -50,7 +51,6 @@
 #include "kloanschedulepagedecl.h"
 #include "kloanpayoutpagedecl.h"
 #include "khierarchypagedecl.h"
-#include "../widgets/kmymoneyaccounttreebase.h"
 #include "kaccountsummarypagedecl.h"
 
 class Wizard;
