@@ -1263,12 +1263,12 @@ void KHomeView::showSummary(void)
   m_part->write("</tr>");
 
   //Add all schedules for this month
-  MyMoneyMoney scheduledIncome;
-  MyMoneyMoney scheduledExpense;
-  QValueList<MyMoneySchedule> schedule;
+  MyMoneyMoney scheduledIncome = MyMoneyMoney(0,1);
+  MyMoneyMoney scheduledExpense = MyMoneyMoney(0,1);
+  MyMoneyMoney scheduledTransfer = MyMoneyMoney(0,1);
 
   //get overdues and schedules until the end of this month
-  schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
+  QValueList<MyMoneySchedule> schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
                                 MyMoneySchedule::OCCUR_ANY,
                                 MyMoneySchedule::STYPE_ANY,
                                 QDate(),
@@ -1307,12 +1307,21 @@ void KHomeView::showSummary(void)
       MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
       MyMoneyMoney value = (sp.value()*cnt);
+
+      //calculate foreign currency if necessary
       if(acc.currencyId() != file->baseCurrency().id()) {
         ReportAccount repAcc = ReportAccount(acc.id());
         MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
         value = value * curPrice;
       }
-      if(sp.value().isNegative()) {
+
+      //check if transfer
+      if((*t_it).type() == MyMoneySchedule::TYPE_TRANSFER )
+      {
+        //use absolute value because transfers are both positive and negative depending on which account we are looking at
+        scheduledTransfer -= value;
+      } else if(sp.value().isNegative()) {
+        //add to scheduled income or expense based on sign
         scheduledExpense += value;
       } else {
         scheduledIncome += value;
@@ -1324,10 +1333,12 @@ void KHomeView::showSummary(void)
   //format the currency strings
   QString amountScheduledIncome = scheduledIncome.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   QString amountScheduledExpense = scheduledExpense.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountScheduledTransfer = scheduledTransfer.formatMoney(file->baseCurrency().tradingSymbol(), prec);
 
   amountScheduledIncome.replace(" ","&nbsp;");
   amountScheduledExpense.replace(" ","&nbsp;");
 
+  //add row with banding
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
   //print the scheduled income
@@ -1339,6 +1350,17 @@ void KHomeView::showSummary(void)
   //print the scheduled expenses
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Expenses This Month")).arg(showColoredAmount(amountScheduledExpense,  true)));
   m_part->write("</tr>");
+
+  //add row with banding
+  m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+
+  //print scheduled transfers
+  m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Transfers This Month")).arg(amountScheduledTransfer));
+
+  //leave the rest blank and end the row
+  m_part->write("<td></td><td></td><td></td>");
+  m_part->write("</tr>");
+
   m_part->write("</table>");
 }
 
