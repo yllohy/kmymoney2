@@ -360,32 +360,28 @@ void MyMoneyForecastTest::testIsForecastAccount()
 
 void MyMoneyForecastTest::testDoFutureScheduledForecast()
 {
-   
-  
   //set up future transactions
   MyMoneyForecast a;
-    
+
   MyMoneyAccount a_cash = file->account(acCash);
   TransactionHelper t1( QDate::currentDate().addDays(1), MyMoneySplit::ActionDeposit, -moT1, acCash, acParent );
   TransactionHelper t2( QDate::currentDate().addDays(2), MyMoneySplit::ActionDeposit, -moT2, acCash, acParent );
   TransactionHelper t3( QDate::currentDate().addDays(3), MyMoneySplit::ActionDeposit, -moT3, acCash, acParent );
   TransactionHelper t4( QDate::currentDate().addDays(10), MyMoneySplit::ActionDeposit, -moT4, acCash, acParent );
-  
+
   a.setForecastMethod(0);
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
   a.doForecast();
-  
+
   MyMoneyMoney b_cash = file->balance(a_cash.id(), QDate::currentDate());
-  
+
   //test valid results
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate())==b_cash);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(1))==b_cash+moT1);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(2))==b_cash+moT1+moT2);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(3))==b_cash+moT1+moT2+moT3);
-  
-  //TODO test for schedules should be added  
 }
 
 void MyMoneyForecastTest::testScheduleForecast()
@@ -403,10 +399,6 @@ void MyMoneyForecastTest::testScheduleForecast()
                                           QDate(),
                                               true,
                                               true);
-
-  //sch.setLastPayment(QDate::currentDate());
-  //sch.recordPayment(QDate::currentDate().addDays(1));
-  //sch.setId("SCH0001");
 
   MyMoneyTransaction t;
   t.setPostDate(QDate::currentDate().addDays(1));
@@ -879,6 +871,7 @@ void MyMoneyForecastTest::testCreateBudget()
   TransactionHelper t8( QDate(2006, 9, 15), MyMoneySplit::ActionWithdrawal, this->moT4, acCash, acParent);
 
   a.setHistoryMethod(0);
+  a.setForecastMethod(1);
   a.createBudget(budget, QDate(2005, 1, 1), QDate(2006, 12, 31), QDate(2007, 1, 1), QDate(2007, 12, 31), true);
 
   //test
@@ -896,14 +889,69 @@ void MyMoneyForecastTest::testCreateBudget()
   CPPUNIT_ASSERT(budget.account(a_parent.id()).period(QDate(2007, 9, 1)).amount() == ((moT4)/MyMoneyMoney(2, 1)));
 
   //setup test for a length lower than a year
+  b.setForecastMethod(1);
   b.setHistoryMethod(0);
   b.createBudget(budget, QDate(2005, 1, 1), QDate(2005, 6, 30), QDate(2007, 1, 1), QDate(2007, 6, 30), true);
-  
+
   //test
   CPPUNIT_ASSERT(b.forecastBalance(a_solo, QDate(2007, 1, 1)) == (moT1+moT3));
   CPPUNIT_ASSERT(b.forecastBalance(a_parent, QDate(2007, 1, 1)) == (moT2));
   CPPUNIT_ASSERT(b.forecastBalance(a_solo, QDate(2007, 4, 1)) == (moT1));
   CPPUNIT_ASSERT(b.forecastBalance(a_parent, QDate(2007, 5, 1)) == (MyMoneyMoney(0, 1)));
-  
-  
+
+  //set up schedule environment for testing
+  MyMoneyAccount a_cash = file->account(acCash);
+
+  MyMoneyFileTransaction ft;
+  MyMoneySchedule sch( "A Name",
+                       MyMoneySchedule::TYPE_BILL,
+                       MyMoneySchedule::OCCUR_MONTHLY,
+                       MyMoneySchedule::STYPE_DIRECTDEBIT,
+                       QDate::currentDate(),
+                                          QDate(),
+                                              true,
+                                              true);
+
+  MyMoneyTransaction t10;
+  t10.setPostDate(QDate::currentDate().addMonths(1));
+  t10.setEntryDate(QDate::currentDate().addMonths(1));
+  //t.setId("T000000000000000001");
+  t10.setBankID("BID");
+  t10.setMemo("Wohnung:Miete");
+  t10.setCommodity("USD");
+  t10.setValue("key", "value");
+
+  MyMoneySplit s;
+  s.setPayeeId("P000001");
+  s.setShares(moT2);
+  s.setValue(moT2);
+  s.setAccountId(a_parent.id());
+  s.setBankID("SPID1");
+  s.setReconcileFlag(MyMoneySplit::Reconciled);
+  t10.addSplit(s);
+
+  s.setPayeeId("P000001");
+  s.setShares(-moT2);
+  s.setValue(-moT2);
+  s.setAccountId(a_cash.id());
+  s.setBankID("SPID2");
+  s.setReconcileFlag(MyMoneySplit::Cleared);
+  s.clearId();
+  t10.addSplit(s);
+
+  sch.setTransaction(t10);
+
+  file->addSchedule(sch);
+  ft.commit();
+
+  //run forecast
+  MyMoneyForecast c;
+  c.setForecastMethod(0);
+  c.setForecastCycles(1);
+  c.createBudget(budget, QDate::currentDate().addYears(-2), QDate::currentDate().addYears(-1), QDate::currentDate().addMonths(-2), QDate::currentDate().addMonths(6), true);
+
+  MyMoneyMoney c_parent = c.forecastBalance(a_parent, QDate(QDate::currentDate().year(), QDate::currentDate().month()+1, 1) );
+
+  //test valid results
+  CPPUNIT_ASSERT(c.forecastBalance(a_parent, QDate(QDate::currentDate().year(), QDate::currentDate().month()+1, 1) ) == (moT2));
 }

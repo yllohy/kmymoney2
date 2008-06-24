@@ -191,12 +191,17 @@ private:
   /**
    * calculate daily forecast balance based on historic transactions
    */
-  void calculateDailyBalances(void);
+  void calculateHistoricDailyBalances(void);
 
   /**
    * calculate monthly budget balance based on historic transactions
    */
-  void calculateMonthlyBalances();
+  void calculateHistoricMonthlyBalances();
+
+  /**
+   * calculate monthly budget balance based on historic transactions
+   */
+  void calculateScheduledMonthlyBalances();
 
   /**
    * calculate forecast based on future and scheduled transactions
@@ -204,17 +209,27 @@ private:
   void doFutureScheduledForecast(void);
 
   /**
+   * calculate daily forecast balance based on future and scheduled transactions
+   */
+  void calculateScheduledDailyBalances(void);
+
+  /**
+   * set the starting balance for an accounts
+   */
+  void setStartingBalance(const MyMoneyAccount& acc);
+
+  /**
    * Returns the day moving average for the account @a acc based on the daily balances of a given number of @p forecastTerms
    * It returns the moving average for a given @p trendDay of the forecastTerm
    * With a term of 1 month and 3 terms, it calculates the trend taking the transactions occured
    * at that day and the day before,for the last 3 months
    */
-  MyMoneyMoney accountMovingAverage(const MyMoneyAccount acc, const int trendDay, const int forecastTerms);
+  MyMoneyMoney accountMovingAverage(const MyMoneyAccount& acc, const int trendDay, const int forecastTerms);
 
   /**
    * Returns the weighted moving average for a given @p trendDay
    */
-  MyMoneyMoney accountWeightedMovingAverage(const MyMoneyAccount acc, const int trendDay, const int totalWeight);
+  MyMoneyMoney accountWeightedMovingAverage(const MyMoneyAccount& acc, const int trendDay, const int totalWeight);
 
   /**
    * calculate daily forecast trend based on historic transactions
