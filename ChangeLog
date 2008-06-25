@@ -8,6 +8,7 @@
     transactions
   * Cleaned up schedule forecast code
   * Added unit test for scheduled forecast budget
+  * Removed the dependency of occurenceToString of KMyMoneyFrequencyCombo
 
 2008-06-17 Alvaro Soliverez <asoliverez@gmail.com>
   * In summary of the home page, show scheduled transfers

@@ -39,7 +39,6 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
-#include <kmymoney/kmymoneycombo.h>
 
 #include "kmymoneyutils.h"
 
@@ -243,9 +242,43 @@ const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString
 
 const QString KMyMoneyUtils::occurenceToString(const MyMoneySchedule::occurenceE occurence)
 {
-  KMyMoneyFrequencyCombo combo;
-  combo.setCurrentItem(occurence);
-  return combo.currentText();
+  QString occurenceString = i18n("Any");
+
+  if(occurence == MyMoneySchedule::OCCUR_ONCE)
+    occurenceString = i18n("Once");
+  else if(occurence == MyMoneySchedule::OCCUR_DAILY)
+    occurenceString = i18n("Daily");
+  else if(occurence == MyMoneySchedule::OCCUR_WEEKLY)
+    occurenceString = i18n("Weekly");
+  else if(occurence == MyMoneySchedule::OCCUR_FORTNIGHTLY)
+    occurenceString = i18n("Fortnightly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERWEEK)
+    occurenceString = i18n("Every other week");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)
+    occurenceString = i18n("Every three weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURWEEKS)
+    occurenceString = i18n("Every four weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS)
+    occurenceString = i18n("Every thirty days");
+  else if(occurence == MyMoneySchedule::OCCUR_MONTHLY)
+    occurenceString = i18n("Monthly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS)
+    occurenceString = i18n("Every eight weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERMONTH)
+    occurenceString = i18n("Every two months");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEMONTHS)
+    occurenceString = i18n("Every three months");
+  else if(occurence == MyMoneySchedule::OCCUR_QUARTERLY)
+    occurenceString = i18n("Quarterly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURMONTHS)
+    occurenceString = i18n("Every four months");
+  else if(occurence == MyMoneySchedule::OCCUR_TWICEYEARLY)
+    occurenceString = i18n("Twice yearly");
+  else if(occurence == MyMoneySchedule::OCCUR_YEARLY)
+    occurenceString = i18n("Yearly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERYEAR)
+    occurenceString = i18n("Every other year");
+  return occurenceString;
 }
 
 const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)
