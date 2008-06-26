@@ -4,6 +4,10 @@
 --------------------------------------------------------------------
 
 2008-06-24 Alvaro Soliverez <asoliverez@gmail.com>
+  * Changed KMyMoneyFrequencyCombo to get the text from KMyMoneyUtils
+    to avoid code duplication
+
+2008-06-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Implemented creation of budget based on scheduled and future
     transactions
   * Cleaned up schedule forecast code

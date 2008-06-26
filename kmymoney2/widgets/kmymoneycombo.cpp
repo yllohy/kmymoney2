@@ -35,13 +35,13 @@
 // Project Includes
 
 #include "kmymoneycombo.h"
+#include "kmymoneyselector.h"
 #include <kmymoney/kmymoneycompletion.h>
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/mymoneysplit.h>
 #include <kmymoney/registeritem.h>
 #include <kmymoney/mymoneyscheduled.h>
-
-#include "kmymoneyselector.h"
+#include "../kmymoneyutils.h"
 
 KMyMoneyCombo::KMyMoneyCombo(QWidget *w, const char *name) :
   KComboBox(w, name),
@@ -726,23 +726,23 @@ void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end, MyMoneyTransactionFilt
 KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name) :
   KMyMoneyGeneralCombo(parent, name)
 {
-  insertItem(i18n("Once"), MyMoneySchedule::OCCUR_ONCE);
-  insertItem(i18n("Daily"), MyMoneySchedule::OCCUR_DAILY);
-  insertItem(i18n("Weekly"), MyMoneySchedule::OCCUR_WEEKLY);
-  insertItem(i18n("Fortnightly"), MyMoneySchedule::OCCUR_FORTNIGHTLY);
-  insertItem(i18n("Every other week"), MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
-  insertItem(i18n("Every three weeks"), MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
-  insertItem(i18n("Every thirty days"), MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS);
-  insertItem(i18n("Every four weeks"), MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
-  insertItem(i18n("Monthly"), MyMoneySchedule::OCCUR_MONTHLY);
-  insertItem(i18n("Every eight weeks"), MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
-  insertItem(i18n("Every two months"), MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
-  insertItem(i18n("Every three months"), MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
-  insertItem(i18n("Quarterly"), MyMoneySchedule::OCCUR_QUARTERLY);
-  insertItem(i18n("Every four months"), MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
-  insertItem(i18n("Twice yearly"), MyMoneySchedule::OCCUR_TWICEYEARLY);
-  insertItem(i18n("Yearly"), MyMoneySchedule::OCCUR_YEARLY);
-  insertItem(i18n("Every other year"), MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_ONCE), MyMoneySchedule::OCCUR_ONCE);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_DAILY), MyMoneySchedule::OCCUR_DAILY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY), MyMoneySchedule::OCCUR_WEEKLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY), MyMoneySchedule::OCCUR_FORTNIGHTLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK), MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS), MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS), MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS), MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY), MyMoneySchedule::OCCUR_MONTHLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS), MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH), MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS), MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY), MyMoneySchedule::OCCUR_QUARTERLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS), MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY), MyMoneySchedule::OCCUR_TWICEYEARLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_YEARLY), MyMoneySchedule::OCCUR_YEARLY);
+  insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERYEAR), MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
 }
 
 MyMoneySchedule::occurenceE KMyMoneyFrequencyCombo::currentItem(void) const
