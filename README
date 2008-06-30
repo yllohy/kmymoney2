@@ -11,6 +11,18 @@ libraries) of these two projects.  KMyMoney is based on min QT 3.2
 and KDE 3.2
 
 ---------------------------------
+Prior to installation
+---------------------------------
+
+To compile, you will need the development headers for KDE libs and all additional
+you install (libofx, aqbanking, etc)
+Also, you will need the compile tools. This includes make and gcc
+
+Example for K/Ubuntu:
+
+sudo apt-get install kdelibs4-dev build-essential
+
+---------------------------------
 Compiling and installing KMyMoney
 ---------------------------------
 
@@ -52,18 +64,16 @@ from.
      RedHat 8/9        |  omit this parameter    | /usr
      Fedora 1/2	       |  omit this parameter    | /usr
      Mandriva 2006     |  omit this parameter    | /usr
-     
-     Distribution      | --mandir                | --program-prefix
-     ------------------+-------------------------+---------------------------
-     SuSE >= 8.1       |  /usr/share/man         | omit this parameter
-     Mandrake 9.0      |  ???                    | 
-     Slackware >= 9.0  |  /usr/share/man         | 
-     MEPIS             |  omit this parameter    | omit this parameter
-     Mandriva 2006     |  /usr/share/man         | /usr
+     Debian            |  omit this parameter    | omit this parameter
+     K/X/Ubuntu        |  omit this parameter    | omit this parameter 
 
      so for SuSE 9.1 the command is:
 
            ./configure --mandir=/usr/share/man 
+
+      and for Debian/Ubuntu the command is:
+
+           ./configure
 
      Please tell us the values for other distributions, so we can add
      them to this list. Send an e-mail to the developers mailing list.
@@ -81,6 +91,9 @@ from.
 
      and provide the necessary password to become 'root'.
 
+     (You can skip this step and step 6 if your distribution uses sudo, and just prefix 
+      sudo the command in the next step. eg, sudo make install)
+
 5)   Install the application
 
      Run the command
@@ -97,6 +110,9 @@ from.
 
      to become the normal user again. This concludes the installation
      process of KMyMoney.
+
+
+
 
 
 Please read INSTALL for generic instructions on how to use configure.

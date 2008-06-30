@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-06-29 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added some information to README file on how to compile and
+    necessary packages
+
 2008-06-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed KMyMoneyFrequencyCombo to get the text from KMyMoneyUtils
     to avoid code duplication
