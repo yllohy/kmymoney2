@@ -223,7 +223,7 @@ class MyMoneyDbTable {
     m_fields(ifields),
     m_initVersion(initVersion) {};
     MyMoneyDbTable (void) {};
-    
+
     inline const QString& name(void) const {return (m_name);}
     inline const QString& insertString(void) const {return (m_insertString);};
     inline const QString selectAllString(bool terminate = true) const
@@ -359,7 +359,7 @@ public:
    *
    */
   bool writeFile(void);
-  
+
   // check database type
   bool isDb2() const { return (m_dbType == Db2);};
   bool isInterbase() const { return (m_dbType == Interbase);};
@@ -469,6 +469,15 @@ public:
   long long unsigned incrementScheduleId();
   long long unsigned incrementSecurityId();
   long long unsigned incrementTransactionId();
+
+  void loadAccountId(const unsigned long long id);
+  void loadTransactionId(const unsigned long long id);
+  void loadPayeeId(const unsigned long long id);
+  void loadInstitutionId(const unsigned long long id);
+  void loadScheduleId(const unsigned long long id);
+  void loadSecurityId(const unsigned long long id);
+  void loadReportId(const unsigned long long id);
+  void loadBudgetId(const unsigned long long id);
 
 private:
   // a function to build a comprehensive error message

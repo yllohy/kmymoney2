@@ -117,10 +117,11 @@ class MyMoneyFilePrivate;
   * the currency selected by the user as base currency. If a currency
   * reference is emtpy, it will usually be interpreted as baseCurrency().
   *
-  * The methods liability(), asset(), expense() and income() are used to
-  * retrieve the four standard accounts. isStandardAccount() checks if a
-  * given accountId references one of the or not. setAccountName() is used
-  * to specify a name for the standard accounts from the GUI.
+  * The methods liability(), asset(), expense(), income() and equity() are
+  * used to retrieve the five standard accounts. isStandardAccount()
+  * checks if a given accountId references one of the or not.
+  * setAccountName() is used to specify a name for the standard accounts 
+  * from the GUI.
   *
   * The MyMoneyFile object emits the dataChanged() signal when data
   * has been changed.

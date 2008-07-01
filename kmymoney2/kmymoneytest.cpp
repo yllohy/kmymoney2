@@ -44,6 +44,7 @@
 #include "mymoney/mymoneyaccounttest.h"
 #include "mymoney/mymoneytransactiontest.h"
 #include "mymoney/storage/mymoneyseqaccessmgrtest.h"
+#include "mymoney/storage/mymoneydatabasemgrtest.h"
 #include "mymoney/mymoneyfiletest.h"
 #include "mymoney/mymoneykeyvaluecontainertest.h"
 #include "mymoney/mymoneyscheduletest.h"
@@ -124,6 +125,7 @@ int main(int testargc, char** testargv)
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyAccountTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySeqAccessMgrTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyDatabaseMgrTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);

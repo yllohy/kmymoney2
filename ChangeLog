@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-06-21 Fernando Vilas <fvilas@iname.com>
+  * Added database unit test
+  * Modified database code to pass unit test
+  * Corrected some documentation in mymoneyfile.h
 
 2008-06-29 Alvaro Soliverez <asoliverez@gmail.com>
   * Added some information to README file on how to compile and
