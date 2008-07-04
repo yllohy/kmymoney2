@@ -1263,9 +1263,9 @@ void KHomeView::showSummary(void)
   m_part->write("</tr>");
 
   //Add all schedules for this month
-  MyMoneyMoney scheduledIncome = MyMoneyMoney(0,1);
-  MyMoneyMoney scheduledExpense = MyMoneyMoney(0,1);
-  MyMoneyMoney scheduledTransfer = MyMoneyMoney(0,1);
+  MyMoneyMoney scheduledIncome;
+  MyMoneyMoney scheduledExpense;
+  MyMoneyMoney scheduledTransfer;
 
   //get overdues and schedules until the end of this month
   QValueList<MyMoneySchedule> schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,

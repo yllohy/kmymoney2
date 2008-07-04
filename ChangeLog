@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-07-04 Alvaro Soliverez <asoliverez@gmail.com>
+  * Cleaned MyMoneyMoney objects init in KHomeView
+
 2008-06-21 Fernando Vilas <fvilas@iname.com>
   * Added database unit test
   * Modified database code to pass unit test
