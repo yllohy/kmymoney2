@@ -147,6 +147,8 @@ try {
       }
       break;
     case IO_WriteOnly:   // SaveAs Database - if exists, must be empty, if not will create
+      // Try to open the database.
+      // If that fails, try to create the database, then try to open it again.
       if (!QSqlDatabase::open()) {
         if (createDatabase(url) != 0) {
           rc = 1;
@@ -2263,7 +2265,7 @@ const QMap<QCString, MyMoneyAccount> MyMoneyStorageSql::fetchAccounts (const QSt
 
 void MyMoneyStorageSql::readAccounts(void) {
   m_storage->loadAccounts(fetchAccounts());
-  m_storage->loadTransactionId(m_hiIdAccounts);
+  m_storage->loadAccountId(m_hiIdAccounts);
 }
 
 const QMap<QCString, MyMoneyMoney> MyMoneyStorageSql::fetchBalance(const QCStringList& idList, const QDate& date) const {
