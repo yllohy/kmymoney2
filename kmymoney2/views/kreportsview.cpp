@@ -70,6 +70,7 @@
 
 #include "kreportsview.h"
 #include "../reports/querytable.h"
+#include "../reports/objectinfotable.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "../kmymoneyutils.h"
 
@@ -216,6 +217,8 @@ void KReportsView::KReportTab::updateReport(void)
     m_table = new PivotTable(m_report);
   } else if ( m_report.reportType() == MyMoneyReport::eQueryTable ) {
     m_table = new QueryTable(m_report);
+  } else if ( m_report.reportType() == MyMoneyReport::eInfoTable ) {
+    m_table = new ObjectInfoTable(m_report);
   }
 
   m_part->begin();
@@ -1346,7 +1349,19 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 #endif
     groups.push_back(list);
   }
+  {
+    ReportGroup list("Information", i18n("General Information"));
 
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eSchedule,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::next12Months,
+      false,
+      i18n("Schedule Information"),
+      i18n("Default Report")
+    ));
+    groups.push_back(list);
+  }
 }
 
 // Make sure, that these definitions are only used within this file

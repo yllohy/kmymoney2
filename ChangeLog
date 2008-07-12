@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-04 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added report to list all schedules
+
 2008-07-06 Fernando Vilas <fvilas@iname.com>
   * Fixed unit tests to be less annoying in the absence of a db
   * Fixed an error in the last db code commit
