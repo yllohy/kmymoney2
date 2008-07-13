@@ -30,7 +30,7 @@
 // Project Includes
 
 #include "../mymoney/mymoneyreport.h"
-#include "reporttable.h"
+#include "listtable.h"
 
 namespace reports {
 
@@ -49,61 +49,16 @@ class ReportAccount;
   * @short
 **/
 
-class QueryTable : public ReportTable
+class QueryTable : public ListTable
 {
-public:
-  QueryTable(const MyMoneyReport&);
-  QString renderHTML( void ) const;
-  QString renderCSV( void ) const;
-  void drawChart( KReportChartView& ) const {}
-  void dump( const QString& file, const QString& context=QString() ) const;
-  void init(void);
-
-public:
-  /**
-    * Contains a single row in the table.
-    *
-    * Each column is a key/value pair, both strings.  This class is just
-    * a QMap with the added ability to specify which columns you'd like to
-    * use as a sort key when you qHeapSort a list of these TableRows
-    */
-  class TableRow: public QMap<QString,QString>
-  {
   public:
-    bool operator<( const TableRow& ) const;
-    bool operator<=( const TableRow& ) const;
-    bool operator>( const TableRow& ) const;
-    bool operator==( const TableRow& ) const;
+    QueryTable(const MyMoneyReport&);
+    void init(void);
 
-    static void setSortCriteria( const QString& _criteria ) { m_sortCriteria = QStringList::split(",",_criteria); }
-  private:
-    static QStringList m_sortCriteria;
-  };
-
-protected:
-  void render( QString&, QString& ) const;
-  void constructAccountTable(void);
-  void constructTransactionTable(void);
-  void constructPerformanceRow( const ReportAccount& account, TableRow& result, const MyMoneyMoney& ) const;
-
-private:
-  QValueList<TableRow> m_transactions;
-  const MyMoneyReport& m_config;
-  QString m_group;
-  /**
-    * Comma-separated list of columns to place BEFORE the subtotal column
-    */
-  QString m_columns;
-  /**
-    * Name of the subtotal column
-    */
-  QString m_subtotal;
-  /**
-    * Comma-separated list of columns to place AFTER the subtotal column
-    */
-  QString m_postcolumns;
-  QString m_summarize;
-  QString m_propagate;
+  protected:
+    void constructAccountTable(void);
+    void constructTransactionTable(void);
+    void constructPerformanceRow( const ReportAccount& account, TableRow& result ) const;
 
 };
 
@@ -134,14 +89,14 @@ private:
 
 class CashFlowList: public QValueList<CashFlowListItem>
 {
-public:
-  CashFlowList(void) {}
-  MyMoneyMoney NPV(double rate) const;
-  double IRR(void) const;
-  MyMoneyMoney total(void) const;
-  void dumpDebug(void) const;
-protected:
-  const CashFlowListItem& mostRecent(void) const;
+  public:
+    CashFlowList(void) {}
+    MyMoneyMoney NPV(double rate) const;
+    double IRR(void) const;
+    MyMoneyMoney total(void) const;
+    void dumpDebug(void) const;
+  protected:
+    const CashFlowListItem& mostRecent(void) const;
 };
 
 }

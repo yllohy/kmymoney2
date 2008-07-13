@@ -3,7 +3,14 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
-2008-07-04 Alvaro Soliverez <asoliverez@gmail.com>
+2008-07-13 Alvaro Soliverez <asoliverez@gmail.com>
+  * Removed AccountTypeToString method from PivotTable. Have it use
+    KMyMoneyUtils method
+  * Created ListTable to handle common method and data for QueryTable
+    and ObjectInfoTable classes
+  * Modified QueryTable test cases for the new class hierarchy
+
+2008-07-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Added report to list all schedules
 
 2008-07-06 Fernando Vilas <fvilas@iname.com>

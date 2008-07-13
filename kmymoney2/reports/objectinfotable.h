@@ -32,7 +32,7 @@
 // Project Includes
 
 #include "../mymoney/mymoneyreport.h"
-#include "reporttable.h"
+#include "listtable.h"
 
 namespace reports {
 
@@ -51,59 +51,14 @@ class ReportAccount;
   * @short
 **/
 
-class ObjectInfoTable : public ReportTable
+class ObjectInfoTable : public ListTable
 {
 public:
   ObjectInfoTable(const MyMoneyReport&);
-  QString renderHTML( void ) const;
-  QString renderCSV( void ) const;
-  void drawChart( KReportChartView& ) const {}
-  void dump( const QString& file, const QString& context=QString() ) const;
   void init(void);
 
-public:
-  /**
-    * Contains a single row in the table.
-    *
-    * Each column is a key/value pair, both strings.  This class is just
-    * a QMap with the added ability to specify which columns you'd like to
-    * use as a sort key when you qHeapSort a list of these TableRows
-    */
-  class TableRow: public QMap<QString,QString>
-  {
-  public:
-    bool operator<( const TableRow& ) const;
-    bool operator<=( const TableRow& ) const;
-    bool operator>( const TableRow& ) const;
-    bool operator==( const TableRow& ) const;
-
-    static void setSortCriteria( const QString& _criteria ) { m_sortCriteria = QStringList::split(",",_criteria); }
-  private:
-    static QStringList m_sortCriteria;
-  };
-
 protected:
-  void render( QString&, QString& ) const;
   void constructScheduleTable(void);
-
-private:
-  QValueList<TableRow> m_rows;
-  const MyMoneyReport& m_config;
-  QString m_group;
-  /**
-    * Comma-separated list of columns to place BEFORE the subtotal column
-    */
-  QString m_columns;
-  /**
-    * Name of the subtotal column
-    */
-  QString m_subtotal;
-  /**
-    * Comma-separated list of columns to place AFTER the subtotal column
-    */
-  QString m_postcolumns;
-  QString m_summarize;
-  QString m_propagate;
 
 };
 

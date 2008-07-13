@@ -119,13 +119,16 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_1(filter);
 
     writeTabletoHTML(qtbl_1,"Transactions by Category.html");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["postdate"]=="2004-02-01");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["postdate"]=="2005-01-01");
+    
+    QValueList<ListTable::TableRow> rows = qtbl_1.rows();
+    
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(rows[0]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-02-01");
+    CPPUNIT_ASSERT(rows[11]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(rows[11]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-01-01");
 
     QString html = qtbl_1.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Parent") == -(moParent1 + moParent2) * 3 );
@@ -141,16 +144,19 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_2(filter);
 
     writeTabletoHTML(qtbl_2,"Transactions by Top Category.html");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["topcategory"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["postdate"]=="2004-02-01");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["topcategory"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["postdate"]=="2005-09-01");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["topcategory"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["postdate"]=="2005-01-01");
+
+    rows = qtbl_2.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(rows[0]["topcategory"]=="Parent");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-02-01");
+    CPPUNIT_ASSERT(rows[8]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(rows[8]["topcategory"]=="Parent");
+    CPPUNIT_ASSERT(rows[8]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(rows[11]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(rows[11]["topcategory"]=="Solo");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-01-01");
 
     html = qtbl_2.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Parent") == -(moParent1 + moParent2 + moChild) * 3 );
@@ -166,22 +172,25 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_3(filter);
 
     writeTabletoHTML(qtbl_3,"Transactions by Account.html");
+
+    rows = qtbl_3.rows();
+
 #if 1
-    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 16);
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(rows.count() == 16);
+    CPPUNIT_ASSERT(rows[1]["account"]=="Checking Account");
+    CPPUNIT_ASSERT(rows[1]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[1]["postdate"]=="2004-01-01");
+    CPPUNIT_ASSERT(rows[14]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(rows[14]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[14]["postdate"]=="2005-09-01");
 #else
-    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["account"]=="Checking Account");
+    CPPUNIT_ASSERT(rows[0]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-01-01");
+    CPPUNIT_ASSERT(rows[11]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(rows[11]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-09-01");
 #endif
 
     html = qtbl_3.renderHTML();
@@ -197,16 +206,19 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_4(filter);
 
     writeTabletoHTML(qtbl_4,"Transactions by Payee.html");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[8]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[8]["category"]=="Parent: Child");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[8]["postdate"]=="2004-11-07");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["postdate"]=="2005-09-01");
+
+    rows = qtbl_4.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[0]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-01-01");
+    CPPUNIT_ASSERT(rows[8]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[8]["category"]=="Parent: Child");
+    CPPUNIT_ASSERT(rows[8]["postdate"]=="2004-11-07");
+    CPPUNIT_ASSERT(rows[11]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[11]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-09-01");
 
     html = qtbl_4.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Test Payee") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
@@ -220,16 +232,19 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_5(filter);
 
     writeTabletoHTML(qtbl_5,"Transactions by Month.html");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["category"]=="Parent: Child");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["postdate"]=="2004-11-07");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["postdate"]=="2005-09-01");
+
+    rows = qtbl_5.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[0]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-01-01");
+    CPPUNIT_ASSERT(rows[8]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[8]["category"]=="Parent: Child");
+    CPPUNIT_ASSERT(rows[8]["postdate"]=="2004-11-07");
+    CPPUNIT_ASSERT(rows[11]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[11]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-09-01");
 
     html = qtbl_5.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Month of 2004-01-01") == -moSolo );
@@ -245,13 +260,16 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_6(filter);
 
     writeTabletoHTML(qtbl_6,"Transactions by Week.html");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions.count() == 12);
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["postdate"]=="2005-09-01");
+
+    rows = qtbl_6.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 12);
+    CPPUNIT_ASSERT(rows[0]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[0]["category"]=="Solo");
+    CPPUNIT_ASSERT(rows[0]["postdate"]=="2004-01-01");
+    CPPUNIT_ASSERT(rows[11]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(rows[11]["category"]=="Parent");
+    CPPUNIT_ASSERT(rows[11]["postdate"]=="2005-09-01");
 
     html = qtbl_6.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Week of 2003-12-29") == -moSolo );
@@ -333,13 +351,16 @@ void QueryTableTest::testAccountQuery()
     QueryTable qtbl_1(filter);
 
     writeTabletoHTML(qtbl_1,"Accounts by Institution (No transactions).html");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 2);
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_1.m_transactions[0]["value"])==moCheckingOpen);
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["equitytype"].isEmpty());
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_1.m_transactions[1]["value"])==moCreditOpen);
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[1]["equitytype"].isEmpty());
+
+    QValueList<ListTable::TableRow> rows = qtbl_1.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 2);
+    CPPUNIT_ASSERT(rows[0]["account"]=="Checking Account");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["value"])==moCheckingOpen);
+    CPPUNIT_ASSERT(rows[0]["equitytype"].isEmpty());
+    CPPUNIT_ASSERT(rows[1]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["value"])==moCreditOpen);
+    CPPUNIT_ASSERT(rows[1]["equitytype"].isEmpty());
 
     QString html = qtbl_1.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" None") == moCheckingOpen+moCreditOpen );
@@ -369,11 +390,13 @@ void QueryTableTest::testAccountQuery()
     XMLandback(filter);
     QueryTable qtbl_2(filter);
 
-    CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 2);
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_2.m_transactions[0]["value"])==(moCheckingOpen-moSolo*3));
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_2.m_transactions[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
+    rows = qtbl_2.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 2);
+    CPPUNIT_ASSERT(rows[0]["account"]=="Checking Account");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["value"])==(moCheckingOpen-moSolo*3));
+    CPPUNIT_ASSERT(rows[1]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
 
     html = qtbl_2.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == moCheckingOpen+moCreditOpen-(moParent1 + moParent2 + moSolo + moChild) * 3 );
@@ -387,11 +410,13 @@ void QueryTableTest::testAccountQuery()
     XMLandback(filter);
     QueryTable qtbl_3(filter);
 
-    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 2);
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_3.m_transactions[0]["value"])==(moCheckingOpen-moSolo*3));
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_3.m_transactions[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
+    rows = qtbl_3.rows();
+
+    CPPUNIT_ASSERT(rows.count() == 2);
+    CPPUNIT_ASSERT(rows[0]["account"]=="Checking Account");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["value"])==(moCheckingOpen-moSolo*3));
+    CPPUNIT_ASSERT(rows[1]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
 
     html = qtbl_3.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" "+i18n("Checking")) == moCheckingOpen-moSolo*3 );
@@ -453,64 +478,67 @@ void QueryTableTest::testInvestment(void)
 
 #if 1
   writeTabletoHTML(invtran,"investment_transactions_test.html");
-  CPPUNIT_ASSERT(invtran.m_transactions.count()==17);
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["value"])==MyMoneyMoney(100000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(110000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["value"])==MyMoneyMoney(-24000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["value"])==MyMoneyMoney(-20000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(  5000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney(  4000.00));
+
+  QValueList<ListTable::TableRow> rows = invtran.rows();
+
+  CPPUNIT_ASSERT(rows.count()==17);
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["value"])==MyMoneyMoney(100000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[2]["value"])==MyMoneyMoney(110000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[3]["value"])==MyMoneyMoney(-24000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[4]["value"])==MyMoneyMoney(-20000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[5]["value"])==MyMoneyMoney(  5000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[6]["value"])==MyMoneyMoney(  4000.00));
   // need to fix these... fundamentally different from the original test
-  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["value"])==MyMoneyMoney( -1000.00));
-  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[11]["value"])==MyMoneyMoney( -1200.00));
-  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[14]["value"])==MyMoneyMoney( -1100.00));
+  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_rows[8]["value"])==MyMoneyMoney( -1000.00));
+  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_rows[11]["value"])==MyMoneyMoney( -1200.00));
+  //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_rows[14]["value"])==MyMoneyMoney( -1100.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["price"])==MyMoneyMoney(120.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["price"])==MyMoneyMoney(  0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[10]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[3]["price"])==MyMoneyMoney(120.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[5]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[7]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[10]["price"])==MyMoneyMoney(  0.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["shares"])==MyMoneyMoney(1000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["shares"])==MyMoneyMoney(-200.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["shares"])==MyMoneyMoney(  50.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["shares"])==MyMoneyMoney(   0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[11]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[2]["shares"])==MyMoneyMoney(1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[4]["shares"])==MyMoneyMoney(-200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[6]["shares"])==MyMoneyMoney(  50.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[8]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[11]["shares"])==MyMoneyMoney(   0.00));
 
-  CPPUNIT_ASSERT(invtran.m_transactions[1]["action"]=="Buy");
-  CPPUNIT_ASSERT(invtran.m_transactions[3]["action"]=="Sell");
-  CPPUNIT_ASSERT(invtran.m_transactions[5]["action"]=="Reinvest");
-  CPPUNIT_ASSERT(invtran.m_transactions[7]["action"]=="Dividend");
-  CPPUNIT_ASSERT(invtran.m_transactions[13]["action"]=="Yield");
+  CPPUNIT_ASSERT(rows[1]["action"]=="Buy");
+  CPPUNIT_ASSERT(rows[3]["action"]=="Sell");
+  CPPUNIT_ASSERT(rows[5]["action"]=="Reinvest");
+  CPPUNIT_ASSERT(rows[7]["action"]=="Dividend");
+  CPPUNIT_ASSERT(rows[13]["action"]=="Yield");
 #else
-  CPPUNIT_ASSERT(invtran.m_transactions.count()==9);
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["value"])==MyMoneyMoney(100000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["value"])==MyMoneyMoney(110000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(-24000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["value"])==MyMoneyMoney(-20000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["value"])==MyMoneyMoney(  5000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(  4000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney( -1000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["value"])==MyMoneyMoney( -1200.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["value"])==MyMoneyMoney( -1100.00));
+  CPPUNIT_ASSERT(rows.count()==9);
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["value"])==MyMoneyMoney(100000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["value"])==MyMoneyMoney(110000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[2]["value"])==MyMoneyMoney(-24000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[3]["value"])==MyMoneyMoney(-20000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[4]["value"])==MyMoneyMoney(  5000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[5]["value"])==MyMoneyMoney(  4000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[6]["value"])==MyMoneyMoney( -1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[7]["value"])==MyMoneyMoney( -1200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[8]["value"])==MyMoneyMoney( -1100.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["price"])==MyMoneyMoney(120.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["price"])==MyMoneyMoney(  0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[2]["price"])==MyMoneyMoney(120.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[4]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[6]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[8]["price"])==MyMoneyMoney(  0.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["shares"])==MyMoneyMoney(1000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["shares"])==MyMoneyMoney(-200.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["shares"])==MyMoneyMoney(  50.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["shares"])==MyMoneyMoney(   0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["shares"])==MyMoneyMoney(1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[3]["shares"])==MyMoneyMoney(-200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[5]["shares"])==MyMoneyMoney(  50.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[7]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[8]["shares"])==MyMoneyMoney(   0.00));
 
-  CPPUNIT_ASSERT(invtran.m_transactions[0]["action"]=="Buy");
-  CPPUNIT_ASSERT(invtran.m_transactions[2]["action"]=="Sell");
-  CPPUNIT_ASSERT(invtran.m_transactions[4]["action"]=="Reinvest");
-  CPPUNIT_ASSERT(invtran.m_transactions[6]["action"]=="Dividend");
-  CPPUNIT_ASSERT(invtran.m_transactions[8]["action"]=="Yield");
+  CPPUNIT_ASSERT(rows[0]["action"]=="Buy");
+  CPPUNIT_ASSERT(rows[2]["action"]=="Sell");
+  CPPUNIT_ASSERT(rows[4]["action"]=="Reinvest");
+  CPPUNIT_ASSERT(rows[6]["action"]=="Dividend");
+  CPPUNIT_ASSERT(rows[8]["action"]=="Yield");
 #endif
 
   QString html = invtran.renderHTML();
@@ -540,15 +568,17 @@ void QueryTableTest::testInvestment(void)
   XMLandback(invhold_r);
   QueryTable invhold(invhold_r);
 
-  CPPUNIT_ASSERT(invhold.m_transactions.count()==2);
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("669/10000"));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["buys"])==MyMoneyMoney(210000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["sells"])==MyMoneyMoney(-44000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["reinvestincome"])==MyMoneyMoney(9000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["cashincome"])==MyMoneyMoney(3300.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["shares"])==MyMoneyMoney(1700.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[1]["return"]).isZero());
+  rows = invhold.rows();
+
+  CPPUNIT_ASSERT(rows.count()==2);
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["return"])==MyMoneyMoney("669/10000"));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["buys"])==MyMoneyMoney(210000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["sells"])==MyMoneyMoney(-44000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["reinvestincome"])==MyMoneyMoney(9000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["cashincome"])==MyMoneyMoney(3300.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["shares"])==MyMoneyMoney(1700.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[0]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["return"]).isZero());
 
   html = invhold.renderHTML();
   CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(170000.00) );
@@ -608,8 +638,11 @@ void QueryTableTest::testInvestment(void)
       writeTabletoHTML(qtbl_3,"Transactions by Account.html");
 
       QString html = qtbl_3.renderHTML();
-      CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 16);
-      
+
+      QValueList<ListTable::TableRow> rows = qtbl_3.rows();
+
+      CPPUNIT_ASSERT(rows.count() == 16);
+
       //this is to make sure that the dates of closing and opening balances and the balance numbers are ok
       QString openingDate = KGlobal::locale()->formatDate(QDate(2004,1,1), true);
       QString closingDate = KGlobal::locale()->formatDate(QDate(2005,9,1), true);
@@ -646,8 +679,10 @@ void QueryTableTest::testTaxReport()
 
     writeTabletoHTML(qtbl_3,"Tax Transactions.html");
 
+    QValueList<ListTable::TableRow> rows = qtbl_3.rows();
+
     QString html = qtbl_3.renderHTML();
-    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 1);
+    CPPUNIT_ASSERT(rows.count() == 1);
   } catch(MyMoneyException *e) {
     CPPUNIT_FAIL(e->what());
     delete e;
