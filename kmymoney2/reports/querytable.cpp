@@ -1051,7 +1051,7 @@ void QueryTable::constructAccountTable(void)
       // it's an expensive calculation done for no reason
       if ( account.isInvest() )
       {
-        qDebug("calculation performance for account " + account.name());
+        qDebug("calculation performance for account '%s'", account.name().data());
         constructPerformanceRow( account, qaccountrow );
       }
       else
