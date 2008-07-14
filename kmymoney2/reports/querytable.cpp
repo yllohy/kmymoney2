@@ -957,6 +957,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
   try
   {
+    qDebug("running IRR");
     MyMoneyMoney annualReturn = MyMoneyMoney(all.IRR(),10000);
     result["return"] = annualReturn.toString();
     result["returninvestment"] = returnInvestment.toString();
@@ -1050,6 +1051,7 @@ void QueryTable::constructAccountTable(void)
       // it's an expensive calculation done for no reason
       if ( account.isInvest() )
       {
+        qDebug("calculation performance for account " + account.name());
         constructPerformanceRow( account, qaccountrow );
       }
       else

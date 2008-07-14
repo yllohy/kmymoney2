@@ -1360,6 +1360,16 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Schedule Information"),
       i18n("Default Report")
     ));
+    list.back().setDetailLevel(MyMoneyReport::eDetailAll);
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eSchedule,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::next12Months,
+      false,
+      i18n("Schedule Summary Information"),
+      i18n("Default Report")
+    ));
+    list.back().setDetailLevel(MyMoneyReport::eDetailTop);
     groups.push_back(list);
   }
 }

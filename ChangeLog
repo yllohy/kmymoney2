@@ -3,6 +3,12 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added missing classes to CVS
+  * Added split information to Schedules report
+  * Added Schedule report filter by account
+  * Added new Schedule report without splits
+
 2008-07-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Removed AccountTypeToString method from PivotTable. Have it use
     KMyMoneyUtils method

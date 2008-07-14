@@ -392,7 +392,8 @@ namespace reports {
                         || *it_column == "shares"
                         || *it_column == "price"
                         || *it_column == "balance"
-                        || *it_column == "account")
+                        || *it_column == "account"
+                        || *it_column == "name")
                  data = "";
              }
 
