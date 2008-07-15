@@ -57,6 +57,7 @@ void MyMoneyTransactionTest::testConstructor() {
 void MyMoneyTransactionTest::testCopyConstructor() {
 	testConstructor();
 	MyMoneyTransaction a("ID", *m);
+	a.setValue("Key", "Value");
 
 	MyMoneyTransaction n(a);
 
@@ -64,12 +65,13 @@ void MyMoneyTransactionTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
-	
+	CPPUNIT_ASSERT(n.value("Key") == "Value");
 }
 
 void MyMoneyTransactionTest::testAssignmentConstructor() {
 	testConstructor();
 	MyMoneyTransaction a("ID", *m);
+	a.setValue("Key", "Value");
 
 	MyMoneyTransaction n;
 
@@ -79,6 +81,7 @@ void MyMoneyTransactionTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
+	CPPUNIT_ASSERT(n.value("Key") == "Value");
 }
 
 void MyMoneyTransactionTest::testEquality() {
@@ -96,6 +99,11 @@ void MyMoneyTransactionTest::testInequality() {
 	MyMoneyTransaction n(*m);
 
 	n.setPostDate(QDate(1,1,1));
+	CPPUNIT_ASSERT(!(n == *m));
+	CPPUNIT_ASSERT(n != *m);
+
+	n = *m;
+	n.setValue("key", "value");
 	CPPUNIT_ASSERT(!(n == *m));
 	CPPUNIT_ASSERT(n != *m);
 }

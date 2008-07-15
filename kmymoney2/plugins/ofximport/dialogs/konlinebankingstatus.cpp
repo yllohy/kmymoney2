@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qlabel.h>
+#include <qpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -48,11 +49,11 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
 #ifdef USE_OFX_DIRECTCONNECT
   // Set up online banking settings if applicable
   MyMoneyKeyValueContainer settings = acc.onlineBankingSettings();
-  m_textOnlineStatus->setText(i18n("STATUS: Enabled & configured"));
+  m_textOnlineStatus->setText(i18n("Enabled & configured"));
   m_ledOnlineStatus->on();
 
-  QString account = i18n("ACCOUNT: %1").arg(settings.value("accountid"));
-  QString bank = i18n("BANK/BROKER: %1").arg(settings.value("bankname"));
+  QString account = settings.value("accountid");
+  QString bank = settings.value("bankname");
   QString bankid = QString("%1 %2").arg(settings.value("bankid")).arg(settings.value("branchid"));
   if ( bankid.length() > 1 )
     bank += QString(" (%1)").arg(bankid);
@@ -60,7 +61,7 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_textOnlineAccount->setText(account);
 
 #else
-  m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
+  m_textOnlineStatus->setText(i18n("Disabled. No online banking services are available"));
 #endif
 }
 

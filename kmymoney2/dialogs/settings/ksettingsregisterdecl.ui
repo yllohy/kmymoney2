@@ -267,7 +267,7 @@
                                     <cstring>m_percentageFrame</cstring>
                                 </property>
                                 <property name="frameShape">
-                                    <enum>StyledPanel</enum>
+                                    <enum>NoFrame</enum>
                                 </property>
                                 <property name="frameShadow">
                                     <enum>Raised</enum>
@@ -348,6 +348,64 @@
                             <string>Use Enter to move between fields</string>
                         </property>
                     </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel2_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Default reconciliation state</string>
+                                </property>
+                            </widget>
+                            <widget class="KComboBox">
+                                <item>
+                                    <property name="text">
+                                        <string>Not reconciled</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Cleared</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Reconciled</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>kcfg_defaultReconciliationState</cstring>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Default reconciliation state for transactions entered during reconciliation of an account</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer15</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>31</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </hbox>
+                    </widget>
                     <spacer>
                         <property name="name">
                             <cstring>spacer4</cstring>
@@ -362,6 +420,88 @@
                             <size>
                                 <width>20</width>
                                 <height>30</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Matching</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout4</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Match transactions within days</string>
+                                </property>
+                            </widget>
+                            <widget class="KIntSpinBox">
+                                <property name="name">
+                                    <cstring>kcfg_matchInterval</cstring>
+                                </property>
+                                <property name="buttonSymbols">
+                                    <enum>UpDownArrows</enum>
+                                </property>
+                                <property name="maxValue">
+                                    <number>99</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>0</number>
+                                </property>
+                                <property name="value">
+                                    <number>4</number>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer13</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>61</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </hbox>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer14</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>31</height>
                             </size>
                         </property>
                     </spacer>

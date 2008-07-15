@@ -416,6 +416,10 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
     s.m_strAccountName = data.account_name;
     s.m_strAccountNumber = data.account_id;
   }
+  if(data.bank_id_valid == true)
+  {
+    s.m_strRoutingNumber = data.bank_id;
+  }
   if(data.currency_valid==true)
   {
     s.m_strCurrency = data.currency;

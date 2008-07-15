@@ -51,7 +51,7 @@
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
 
-static char attentionSign[] = {
+static unsigned char attentionSign[] = {
   0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,
   0x00,0x00,0x00,0x0D,0x49,0x48,0x44,0x52,
   0x00,0x00,0x00,0x14,0x00,0x00,0x00,0x14,
@@ -145,8 +145,7 @@ Transaction::Transaction(Register *parent, const MyMoneyTransaction& transaction
   m_erronous(false),
   m_inEdit(false),
   m_inRegisterEdit(false),
-  m_showBalance(true),
-  m_matchMark(false)
+  m_showBalance(true)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -204,11 +203,8 @@ void Transaction::markAsErronous(QPainter* painter, int /* row */, int /* col */
   QRect cr(QPoint(r.topRight().x() - h - m, m), QSize(h, h));
 
   painter->save();
-  QByteArray a;
-  a.setRawData(attentionSign, sizeof(attentionSign));
   QPixmap attention;
-  attention.loadFromData(a);
-  a.resetRawData(attentionSign, sizeof(attentionSign));
+  attention.loadFromData(attentionSign, sizeof(attentionSign), 0, 0);
 
   if(attention.height() > h) {
     attention.resize(h, h);
@@ -218,19 +214,12 @@ void Transaction::markAsErronous(QPainter* painter, int /* row */, int /* col */
 
 }
 
-void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QRect& cellRect, QRect& textRect, QColorGroup& cg)
+bool Transaction::paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush)
 {
   if(m_alternate)
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
-
-  if(m_transaction.isImported()) {
-    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::importedTransactionColor());
-  }
-  if(m_matchMark) {
-    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::matchedTransactionColor());
-  }
 
   cellRect.setX(0);
   cellRect.setY(0);
@@ -239,17 +228,13 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
 
   textRect = cellRect;
   textRect.setX(2);
-  // textRect.setY(0);
   textRect.setWidth(textRect.width()-4);
-  // textRect.setHeight(m_parent->rowHeight(m_startRow + row));
 
   if(m_selected) {
-    QBrush backgroundBrush(cg.highlight());
-    painter->fillRect(cellRect, backgroundBrush);
+    brush = QBrush(cg.highlight());
     painter->setPen(cg.highlightedText());
   } else {
-    QBrush backgroundBrush(cg.base());
-    painter->fillRect(cellRect, backgroundBrush);
+    brush = QBrush(cg.base());
     painter->setPen(cg.text());
   }
 
@@ -257,6 +242,7 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
   if(m_erronous && m_parent->markErronousTransactions()) {
     painter->setPen(KMyMoneyGlobalSettings::listErronousTransactionColor());
   }
+  return true;
 }
 
 void Transaction::paintRegisterCellFocus(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg)
@@ -384,34 +370,68 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
   QColorGroup cg(_cg);
   QRect cellRect(r);
   QRect textRect;
+  QBrush backgroundBrush;
 
-  paintRegisterCellSetup(painter, row, col, cellRect, textRect, cg);
+  painter->save();
 
-  int align = Qt::AlignVCenter;
-  QString txt;
-  if(m_transaction != MyMoneyTransaction() && !m_inRegisterEdit) {
-    registerCellText(txt, align, row, col, painter);
+  if(paintRegisterCellSetup(painter, row, col, cellRect, textRect, cg, backgroundBrush)) {
+    // construct the text for the cell
+    int align = Qt::AlignVCenter;
+    QString txt;
+    if(m_transaction != MyMoneyTransaction() && !m_inRegisterEdit) {
+      registerCellText(txt, align, row, col, painter);
+    }
+
+    paintRegisterCellBackground(painter, row, col, cellRect, backgroundBrush);
+
+    // and paint it
+    paintRegisterCellText(painter, row, col, textRect, cg, align, txt);
+
+    // paint the grid
+    paintRegisterGrid(painter, row, col, cellRect, cg);
+
+    // and the focus
+    paintRegisterCellFocus(painter, row, col, cellRect, cg);
   }
+
+  painter->restore();
+}
+
+void Transaction::paintRegisterCellBackground(QPainter* painter, int row, int col, const QRect& r, const QBrush& backgroundBrush)
+{
+  Q_UNUSED(row);
+  Q_UNUSED(col);
+
+  // fill the background
+  painter->fillRect(r, backgroundBrush);
+}
+
+void Transaction::paintRegisterGrid(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& _cg) const
+{
+  Q_UNUSED(_cg);
+
+  // if a grid is selected, we paint it right away
+  if (KMyMoneyGlobalSettings::showGrid()) {
+    painter->setPen(KMyMoneyGlobalSettings::listGridColor());
+    if(col != 0)
+      painter->drawLine(r.x(), 0, r.x(), r.height()-1);
+    if(row == numRowsRegister()-1)
+      painter->drawLine(r.x(), r.height()-1, r.width(), r.height()-1);
+  }
+}
+
+void Transaction::paintRegisterCellText(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& _cg, int align, const QString& txt)
+{
+  Q_UNUSED(row);
+  Q_UNUSED(col);
+  Q_UNUSED(r);
+  Q_UNUSED(_cg);
 
   // make sure, we clear the cell
   if(txt.isEmpty())
-    painter->drawText(textRect, align, " ");
+    painter->drawText(r, align, " ");
   else
-    painter->drawText(textRect, align, txt);
-
-    // if a grid is selected, we paint it right away
-  if (KMyMoneyGlobalSettings::showGrid()) {
-    painter->save();
-    painter->setPen(KMyMoneyGlobalSettings::listGridColor());
-    if(col != 0)
-      painter->drawLine(cellRect.x(), 0, cellRect.x(), cellRect.height()-1);
-    if(row == numRowsRegister()-1)
-      painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
-    painter->restore();
-  }
-
-  // take care of standard stuff (e.g. focus)
-  paintRegisterCellFocus(painter, row, col, cellRect, cg);
+    painter->drawText(r, align, txt);
 }
 
 int Transaction::formRowHeight(int /*row*/)
@@ -758,14 +778,6 @@ void Transaction::setSelected(bool selected)
 {
   if(!selected || (selected && isVisible()))
     m_selected = selected;
-}
-
-void Transaction::setMatchMark(bool mark)
-{
-  bool prevMark = m_matchMark;
-  m_matchMark = mark;
-  if(prevMark != mark && m_parent)
-    m_parent->updateContents();
 }
 
 StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
@@ -2028,6 +2040,7 @@ bool InvestTransaction::haveInterest(void) const
 {
   bool rc = false;
   switch(m_transactionType) {
+    case MyMoneySplit::BuyShares:
     case MyMoneySplit::SellShares:
     case MyMoneySplit::Dividend:
     case MyMoneySplit::ReinvestDividend:

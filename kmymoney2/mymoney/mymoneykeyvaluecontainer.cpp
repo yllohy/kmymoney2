@@ -103,16 +103,18 @@ const bool MyMoneyKeyValueContainer::operator == (const MyMoneyKeyValueContainer
 
 void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& parent) const
 {
-  QDomElement el = document.createElement("KEYVALUEPAIRS");
+  if(m_kvp.count() != 0) {
+    QDomElement el = document.createElement("KEYVALUEPAIRS");
 
-  QMap<QCString, QString>::ConstIterator it;
-  for(it = m_kvp.begin(); it != m_kvp.end(); ++it)
-  {
-    QDomElement pair = document.createElement("PAIR");
-    pair.setAttribute("key", it.key());
-    pair.setAttribute("value", it.data());
-    el.appendChild(pair);
+    QMap<QCString, QString>::ConstIterator it;
+    for(it = m_kvp.begin(); it != m_kvp.end(); ++it)
+    {
+      QDomElement pair = document.createElement("PAIR");
+      pair.setAttribute("key", it.key());
+      pair.setAttribute("value", it.data());
+      el.appendChild(pair);
+    }
+
+    parent.appendChild(el);
   }
-
-  parent.appendChild(el);
 }

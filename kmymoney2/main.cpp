@@ -104,15 +104,17 @@ int main(int argc, char *argv[])
   aboutData.addAuthor("Michael Edwardes.", I18N_NOOP("Initial idea, much initial source code, Project admin"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Core engine, Release Manager, Project admin"), "ipwizard@users.sourceforge.net");
   aboutData.addAuthor("Ace Jones", I18N_NOOP("Reporting logic, OFX Import"), "acejones@users.sourceforge.net");
-  aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Initial investment support"), "ktambascio@users.sourceforge.net");
+  aboutData.addAuthor("Tony Bloomfield", I18N_NOOP("Database backend, maintainer stable branch"), "tonybloom@users.sourceforge.net");
+  aboutData.addAuthor("Alvaro Soliverez", I18N_NOOP("Forecast, Reports"), "asoliverez@gmail.com");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
+  aboutData.addAuthor("Fernando Vilas", I18N_NOOP("Database backend"), "fvilas@iname.com");
 
+  aboutData.addCredit("Kevin Tambascio", I18N_NOOP("Initial investment support"), "ktambascio@users.sourceforge.net");
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
-  aboutData.addCredit("Tony Bloomfield", I18N_NOOP("GnuCash Importer"), "tonybloom@users.sourceforge.net");
   aboutData.addCredit("Robert Wadley", I18N_NOOP("Icons & splash screen"), "rob@robntina.fastmail.us");
   aboutData.addCredit("Laurent Montel", I18N_NOOP("Patches"), "montel@kde.org");
-  aboutData.addCredit("Alvaro Soliverez", I18N_NOOP("Forecast view"), "asoliverez@gmail.com");
+  aboutData.addCredit("Wolfgang Rohdewald", I18N_NOOP("Patches"), "woro@users.sourceforge.net");
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.

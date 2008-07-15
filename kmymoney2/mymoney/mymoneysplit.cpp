@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include "mymoneysplit.h"
+#include "mymoneytransaction.h"
 
 const char MyMoneySplit::ActionCheck[] = "Check";
 const char MyMoneySplit::ActionDeposit[] = "Deposit";
@@ -44,7 +45,8 @@ MyMoneySplit::MyMoneySplit()
 }
 
 MyMoneySplit::MyMoneySplit(const QDomElement& node) :
-  MyMoneyObject(node, false)
+  MyMoneyObject(node, false),
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
 {
   if("SPLIT" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not SPLIT");
@@ -78,6 +80,7 @@ MyMoneySplit::~MyMoneySplit()
 bool MyMoneySplit::operator == (const MyMoneySplit& right) const
 {
   return MyMoneyObject::operator==(right) &&
+    MyMoneyKeyValueContainer::operator==(right) &&
     m_account == right.m_account &&
     m_payee == right.m_payee &&
     m_memo == right.m_memo &&
@@ -212,11 +215,58 @@ void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("number", m_number);
   el.setAttribute("bankid", m_bankID);
 
+  MyMoneyKeyValueContainer::writeXML(document, el);
+
   parent.appendChild(el);
 }
 
 bool MyMoneySplit::hasReferenceTo(const QCString& id) const
 {
-  return (id == m_account) || (id == m_payee);
+  bool rc = false;
+  if(isMatched()) {
+    rc = matchedTransaction().hasReferenceTo(id);
+  }
+  return rc || (id == m_account) || (id == m_payee);
 }
+
+bool MyMoneySplit::isMatched(void) const
+{
+  return !(value("kmm-matched-tx").isEmpty());
+}
+
+void MyMoneySplit::addMatch(const MyMoneyTransaction& _t)
+{
+  if(_t.isImported() && !isMatched()) {
+    MyMoneyTransaction t(_t);
+    t.clearId();
+    QDomDocument doc("MATCH");
+    QDomElement el = doc.createElement("CONTAINER");
+    doc.appendChild(el);
+    t.writeXML(doc, el);
+    QString xml = doc.toString();
+    xml.replace("<", "&lt;");
+    setValue("kmm-matched-tx", xml);
+  }
+}
+
+void MyMoneySplit::removeMatch(void)
+{
+  deletePair("kmm-matched-tx");
+}
+
+MyMoneyTransaction MyMoneySplit::matchedTransaction(void) const
+{
+  QString xml = value("kmm-matched-tx");
+  if(!xml.isEmpty()) {
+    xml.replace("&lt;", "<");
+    QDomDocument doc;
+    QDomElement node;
+    doc.setContent(xml);
+    node = doc.documentElement().firstChild().toElement();
+    MyMoneyTransaction t(node, false);
+    return t;
+  }
+  return MyMoneyTransaction();
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:

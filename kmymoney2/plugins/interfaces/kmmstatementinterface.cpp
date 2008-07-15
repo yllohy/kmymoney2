@@ -29,6 +29,7 @@
 #include "kmmstatementinterface.h"
 #include "../../kmymoney2.h"
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 
 KMyMoneyPlugin::KMMStatementInterface::KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name) :
   StatementInterface(parent, name),
@@ -45,6 +46,11 @@ bool KMyMoneyPlugin::KMMStatementInterface::import(const MyMoneyStatement& s)
 const MyMoneyAccount& KMyMoneyPlugin::KMMStatementInterface::account(const QString& key, const QString& value) const
 {
   return m_app->account(key, value);
+}
+
+void KMyMoneyPlugin::KMMStatementInterface::setAccountOnlineParameters(const MyMoneyAccount& acc, const MyMoneyKeyValueContainer& kvps) const
+{
+  m_app->setAccountOnlineParameters(acc, kvps);
 }
 
 #include "kmmstatementinterface.moc"

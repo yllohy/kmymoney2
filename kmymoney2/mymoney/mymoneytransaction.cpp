@@ -33,9 +33,7 @@ MyMoneyTransaction::MyMoneyTransaction() :
   m_postDate = QDate();
 }
 
-// MyMoneyTransaction::MyMoneyTransaction(MyMoneyFile *file,
-MyMoneyTransaction::MyMoneyTransaction(const QCString id,
-                                       const MyMoneyTransaction& transaction) :
+MyMoneyTransaction::MyMoneyTransaction(const QCString id, const MyMoneyTransaction& transaction) :
   MyMoneyObject(id)
 {
   *this = transaction;
@@ -78,6 +76,7 @@ MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool force
         qDebug("Dropped split because it did not have an account id");
     }
   }
+
   m_bankID = QString();
 }
 
@@ -88,6 +87,7 @@ MyMoneyTransaction::~MyMoneyTransaction()
 bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
   return (MyMoneyObject::operator==(right) &&
+      MyMoneyKeyValueContainer::operator==(right) &&
       (m_commodity == right.m_commodity) &&
       ((m_memo.length() == 0 && right.m_memo.length() == 0) || (m_memo == right.m_memo)) &&
       (m_splits == right.m_splits) &&
@@ -309,16 +309,23 @@ const MyMoneySplit& MyMoneyTransaction::amortizationSplit(void) const
   return nullSplit;
 }
 
-const unsigned long MyMoneyTransaction::hash(const QString& txt) const
+unsigned long MyMoneyTransaction::hash(const QString& txt, unsigned long h)
 {
-  unsigned long   h = 0,
-                  g;
+  unsigned long g;
 
   for(unsigned i=0; i < txt.length(); ++i) {
-    h = (h << 4) + txt[i].latin1();
-    if( (g = (h & 0xf0000000)) ) {
-      h = h ^ (g >> 24);
-      h = h ^ g;
+    unsigned short uc = txt[i].unicode();
+    for(unsigned j = 0; j < 2; ++j) {
+      unsigned char c = uc & 0xff;
+      // if either the cell or the row of the Unicode char is 0, stop processing
+      if(!c)
+        break;
+      h = (h << 4) + c;
+      if( (g = (h & 0xf0000000)) ) {
+        h = h ^ (g >> 24);
+        h = h ^ g;
+      }
+      uc >>= 8;
     }
   }
   return h;
@@ -403,7 +410,6 @@ bool MyMoneyTransaction::hasReferenceTo(const QCString& id) const
   for(it = m_splits.begin(); rc == false && it != m_splits.end(); ++it) {
     rc = (*it).hasReferenceTo(id);
   }
-
   return rc;
 }
 

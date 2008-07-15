@@ -1,7 +1,7 @@
 /***************************************************************************
-                          stdtransactiondownloaded.h
+                          stdtransactionmatched.h
                              -------------------
-    begin                : Sun May 11 2008
+    begin                : Sat May 31 2008
     copyright            : (C) 2008 by Thomas Baumgart
     email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef STDTRANSACTIONDOWNLOADED_H
-#define STDTRANSACTIONDOWNLOADED_H
+#ifndef STDTRANSACTIONMATCHED_H
+#define STDTRANSACTIONMATCHED_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qbrush.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -35,13 +36,15 @@ namespace KMyMoneyTransactionForm {
 
 namespace KMyMoneyRegister {
 
-class StdTransactionDownloaded : public StdTransaction
+class StdTransactionMatched : public StdTransaction
 {
-public:
-  StdTransactionDownloaded(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
-  virtual ~StdTransactionDownloaded() {};
+  static const int m_additionalRows = 3;
 
-  virtual const char* className(void) { return "StdTransactionDownloaded"; }
+public:
+  StdTransactionMatched(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
+  virtual ~StdTransactionMatched() {};
+
+  virtual const char* className(void) { return "StdTransactionMatched"; }
 
   /**
    * This method sets the general paramaters required for the painting of a cell
@@ -65,11 +68,12 @@ public:
    */
   virtual bool paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush);
 
+  virtual void paintRegisterGrid(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg) const;
+
 #if 0
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
   bool formCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
-  void registerCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
 
   int numColsForm(void) const { return 4; }
 
@@ -81,10 +85,15 @@ public:
   int numRowsRegister(bool expanded) const;
 #endif
 
+  void registerCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
+
   /**
-    * Provided for internal reasons. No API change. See RegisterItem::numRowsRegister()
+    * Provided for internal reasons. No API change. See RegisterItem::numRowsRegister(bool)
     */
-  int numRowsRegister(void) const { return StdTransaction::numRowsRegister(); }
+  int numRowsRegister(bool expanded) const { return StdTransaction::numRowsRegister(expanded) + m_additionalRows; }
+
+private:
+  unsigned int         m_drawCounter;
 };
 
 }; // namespace

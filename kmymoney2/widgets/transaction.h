@@ -123,7 +123,7 @@ public:
     * @param textRect ref to QRect object receiving the area information for the text
     * @param cg ref to QColorGroup object receiving the color information to be used
     */
-  void paintRegisterCellSetup(QPainter* painter, int row, int col, QRect& cellRect, QRect& textRect, QColorGroup& cg);
+  virtual bool paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush);
 
   /**
     * paints the focus if the current cell defined by (@a row, @a col) has the focus.
@@ -137,8 +137,8 @@ public:
   void paintRegisterCellFocus(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg);
 
   /**
-    * paints a cell of the register for the transaction. Uses paintRegisterCellSetup(), paintRegisterCell()
-    * and paintRegisterCellFocus() to actually do the job.
+    * paints a cell of the register for the transaction. Uses paintRegisterCellSetup(), paintRegisterCellText()
+    * paintRegisterGrid() and paintRegisterCellFocus() to actually do the job.
     *
     * @param painter pointer to the QPainter object
     * @param row vertical index of cell in register
@@ -149,6 +149,9 @@ public:
     *
     */
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
+  virtual void paintRegisterCellText(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg, int align, const QString& txt);
+  virtual void paintRegisterCellBackground(QPainter* painter, int row, int col, const QRect& r, const QBrush& backgroundBrush);
+  virtual void paintRegisterGrid(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg) const;
 
   virtual void paintFormCell(QPainter* /* painter */, int /* row */, int /* col */, const QRect& /* r */, bool /* selected */, const QColorGroup& /* cg */);
 
@@ -220,9 +223,6 @@ public:
 
   virtual void setShowBalance(bool showBalance);
 
-  virtual void setMatchMark(bool mark);
-  bool hasMatchMark(void) const { return m_matchMark; }
-
   /**
     * Return information if @a row should be shown (@a true )
     * or hidden (@a false ) in the form. Default is true.
@@ -277,7 +277,6 @@ protected:
   bool                    m_inEdit;
   bool                    m_inRegisterEdit;
   bool                    m_showBalance;
-  bool                    m_matchMark;
 };
 
 class StdTransaction : public Transaction

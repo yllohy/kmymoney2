@@ -43,6 +43,7 @@
 #include <kmymoney/register.h>
 #include <kmymoney/transactionform.h>
 #include <kmymoney/stdtransactiondownloaded.h>
+#include <kmymoney/stdtransactionmatched.h>
 
 #include "../kmymoneyutils.h"
 #include "../kmymoneyglobalsettings.h"
@@ -66,7 +67,7 @@ static QString sortOrderText[] = {
 
 using namespace KMyMoneyRegister;
 
-static char fancymarker_bg_image[] = {
+static unsigned char fancymarker_bg_image[] = {
 /* 200x49 */
   0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,
   0x00,0x00,0x00,0x0D,0x49,0x48,0x44,0x52,
@@ -235,10 +236,7 @@ GroupMarker::GroupMarker(Register *parent) :
   // convert the backgroud once
   if(m_bg == 0) {
     m_bg = new QPixmap;
-    QByteArray a;
-    a.setRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
-    m_bg->loadFromData(a);
-    a.resetRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+    m_bg->loadFromData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
 
     // for now, we can't simply resize the m_bg member as Qt does not support
     // alpha resizing. So we take the (slow) detour through a QImage object
@@ -2120,6 +2118,8 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
         s.setAccountId(parent->account().id());
       if(transaction.isImported())
         t = new KMyMoneyRegister::StdTransactionDownloaded(parent, transaction, s, uniqueId);
+      else if(s.isMatched())
+        t = new KMyMoneyRegister::StdTransactionMatched(parent, transaction, s, uniqueId);
       else
         t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
       break;

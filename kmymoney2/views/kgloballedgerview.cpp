@@ -220,6 +220,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   kmymoney2->action("transaction_edit")->plug(m_buttonbar);
   kmymoney2->action("transaction_enter")->plug(m_buttonbar);
   kmymoney2->action("transaction_cancel")->plug(m_buttonbar);
+  kmymoney2->action("transaction_accept")->plug(m_buttonbar);
+  kmymoney2->action("transaction_match")->plug(m_buttonbar);
 
   // create the transaction form frame
   m_formFrame = new QFrame(this);
@@ -316,8 +318,6 @@ void KGlobalLedgerView::loadView(void)
   // no transaction selected
   KMyMoneyRegister::SelectedTransactions list;
   emit transactionsSelected(list);
-  // no match transaction selected
-  m_matchTransaction = MyMoneyTransaction();
 
   QMap<QCString, bool> isSelected;
   QCString focusItemId;
@@ -336,11 +336,6 @@ void KGlobalLedgerView::loadView(void)
     // remember the item that has the focus
     if(m_register->focusItem())
       focusItemId = m_register->focusItem()->id();
-
-    // remember if a transaction has a match mark
-    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(item);
-    if(t && t->hasMatchMark())
-      m_matchTransaction = t->transaction();
 
     // remember the upper left corner of the viewport
     if(!d->m_inLoading)
@@ -467,9 +462,6 @@ void KGlobalLedgerView::loadView(void)
         if(isSelected.contains(t->id()))
           t->setSelected(true);
 
-        if(t->transaction().id() == m_matchTransaction.id())
-          t->setMatchMark(true);
-
         if(t->id() == focusItemId)
           focusItem = t;
 
@@ -503,6 +495,9 @@ void KGlobalLedgerView::loadView(void)
     // leave some information about the current account
     MyMoneySplit split;
     split.setReconcileFlag(MyMoneySplit::NotReconciled);
+    // make sure to use the value specified in the option during reconciliation
+    if(isReconciliationAccount())
+      split.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(KMyMoneyGlobalSettings::defaultReconciliationState()));
     KMyMoneyRegister::Register::transactionFactory(m_register, MyMoneyTransaction(), split, 0);
 
     m_register->updateRegister(true);
@@ -542,32 +537,6 @@ void KGlobalLedgerView::loadView(void)
 
   // and tell everyone what's selected
   emit accountSelected(m_account);
-  emit matchTransactionSelected(m_matchTransaction);
-}
-
-void KGlobalLedgerView::slotStartMatchTransaction(const MyMoneyTransaction& tr)
-{
-  KMyMoneyRegister::RegisterItem* p = m_register->firstItem();
-
-  emit matchTransactionSelected(MyMoneyTransaction());
-
-  while(p) {
-    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-    if(t) {
-      bool matches = (t->transaction().id() == tr.id()) && (!tr.id().isEmpty());
-      t->setMatchMark(matches);
-      if(matches) {
-        m_matchTransaction = t->transaction();
-        emit matchTransactionSelected(m_matchTransaction);
-      }
-    }
-    p = p->nextItem();
-  }
-}
-
-void KGlobalLedgerView::slotCancelMatchTransaction(void)
-{
-  slotStartMatchTransaction(MyMoneyTransaction());
 }
 
 void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& actBalance, const QMap<QCString, MyMoneyMoney>& clearedBalance)
@@ -871,7 +840,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::Selected
 
   int warnLevel = list.warnLevel();
   Q_ASSERT(warnLevel<2);  // otherwise the edit action should not be enabled
-  
+
   switch(warnLevel) {
     case 0:
       break;
@@ -887,7 +856,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::Selected
         warnLevel = 2;
       }
       break;
-    
+
     case 2:
       KMessageBox::sorry(0,
             i18n("At least one split of the selected transactions has been frozen. "
@@ -1087,7 +1056,6 @@ void KGlobalLedgerView::show(void)
     emit accountSelected(m_account);
     KMyMoneyRegister::SelectedTransactions list(m_register);
     emit transactionsSelected(list);
-    emit matchTransactionSelected(m_matchTransaction);
   }
 
   // don't forget base class implementation
@@ -1230,12 +1198,12 @@ bool KGlobalLedgerView::canEditTransactions(const KMyMoneyRegister::SelectedTran
   if(!canProcessTransactions(list, tooltip))
     return false;
   // check for c)
-  if (list.warnLevel() == 2) {  
+  if (list.warnLevel() == 2) {
     tooltip = i18n("Cannot edit transactions with frozen splits.");
     return false;
   }
 
-  
+
   bool rc = true;
   int investmentTransactions = 0;
   int normalTransactions = 0;

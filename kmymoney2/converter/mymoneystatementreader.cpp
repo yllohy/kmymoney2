@@ -83,35 +83,49 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   m_account = MyMoneyAccount();
 
-  m_account.setName(s.m_strAccountName);
-  m_account.setNumber(s.m_strAccountNumber);
-
-  switch ( s.m_eType )
-  {
-    case MyMoneyStatement::etCheckings:
-      m_account.setAccountType(MyMoneyAccount::Checkings);
-      break;
-    case MyMoneyStatement::etSavings:
-      m_account.setAccountType(MyMoneyAccount::Savings);
-      break;
-    case MyMoneyStatement::etInvestment:
-      //testing support for investment statements!
-      //m_userAbort = true;
-      //KMessageBox::error(kmymoney2, i18n("This is an investment statement.  These are not supported currently."), i18n("Critical Error"));
-      m_account.setAccountType(MyMoneyAccount::Investment);
-      break;
-    case MyMoneyStatement::etCreditCard:
-      m_account.setAccountType(MyMoneyAccount::CreditCard);
-      break;
-    default:
-      m_account.setAccountType(MyMoneyAccount::Checkings);
-      break;
-  }
-
   m_ft = new MyMoneyFileTransaction();
 
-  if ( !m_userAbort )
-    m_userAbort = ! selectOrCreateAccount(Select, m_account);
+  // if the statement source left some information about
+  // the account, we use it to get the current data of it
+  if(!s.m_accountId.isEmpty()) {
+    try {
+      m_account = MyMoneyFile::instance()->account(s.m_accountId);
+    } catch(MyMoneyException* e) {
+      qDebug("Received reference '%s' to unknown account in statement", s.m_accountId.data());
+      delete e;
+    }
+  }
+
+  if(m_account.id().isEmpty()) {
+    m_account.setName(s.m_strAccountName);
+    m_account.setNumber(s.m_strAccountNumber);
+
+    switch ( s.m_eType )
+    {
+      case MyMoneyStatement::etCheckings:
+        m_account.setAccountType(MyMoneyAccount::Checkings);
+        break;
+      case MyMoneyStatement::etSavings:
+        m_account.setAccountType(MyMoneyAccount::Savings);
+        break;
+      case MyMoneyStatement::etInvestment:
+        //testing support for investment statements!
+        //m_userAbort = true;
+        //KMessageBox::error(kmymoney2, i18n("This is an investment statement.  These are not supported currently."), i18n("Critical Error"));
+        m_account.setAccountType(MyMoneyAccount::Investment);
+        break;
+      case MyMoneyStatement::etCreditCard:
+        m_account.setAccountType(MyMoneyAccount::CreditCard);
+        break;
+      default:
+        m_account.setAccountType(MyMoneyAccount::Checkings);
+        break;
+    }
+
+
+    if ( !m_userAbort )
+      m_userAbort = ! selectOrCreateAccount(Select, m_account);
+  }
 
   m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
   if ( s.m_dateEnd.isValid() ) {

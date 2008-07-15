@@ -731,7 +731,16 @@ void InvestTransactionEditor::totalAmount(MyMoneyMoney& amount) const
   }
 
   if(interestEdit->isVisible()) {
-    amount += interestEdit->value().abs();
+    MyMoneyMoney interest = interestEdit->value().abs();
+    MyMoneyMoney factor(1,1);
+    switch(activityCombo->activity()) {
+      case MyMoneySplit::BuyShares:
+        factor = MyMoneyMoney(-1,1);
+        break;
+      default:
+        break;
+    }
+    amount += (interest * factor);
   }
 }
 

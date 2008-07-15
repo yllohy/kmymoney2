@@ -25,7 +25,7 @@ SET(kmymoney_STAT_HEADERS
     kmymoneychecklistitem.h kmymoneylistviewitem.h kmymoneyselector.h
     kmymoneyaccountcompletion.h kmymoneycompletion.h kmymoneycombo.h 
     kbudgetvalues.h kaccounttemplateselector.h stdtransactiondownloaded.h
-    kmymoneyaccounttreebase.h
+    stdtransactionmatched.h kmymoneyaccounttreebase.h
 )
 
 KMM_CREATE_LINKS( ${kmymoney_STAT_HEADERS} )
@@ -50,7 +50,7 @@ kmymoneyaccounttree.cpp klistviewsearchline.cpp registersearchline.cpp
 kbudgetvalues.cpp kmymoneyforecastlistviewitem.cpp
 kaccounttemplateselector.cpp transactionsortoption.cpp 
 kbudgetvaluesdecl.cpp selectedtransaction.cpp stdtransactiondownloaded.cpp
-kmymoneyaccounttreebase.cpp
+stdtransactionmatched.cpp kmymoneyaccounttreebase.cpp
 # we have to check, if we can add the generated file in a different way
 kbudgetvaluesdecl.moc.cpp
 kaccounttemplateselectordecl.cpp

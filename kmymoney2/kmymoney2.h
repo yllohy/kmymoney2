@@ -527,6 +527,12 @@ public:
    */
   const MyMoneyAccount& account(const QString& key, const QString& value) const;
 
+  /**
+   * This method set the online parameters stored in @a kvps with the
+   * account referenced by @a acc.
+   */
+  void setAccountOnlineParameters(const MyMoneyAccount& acc, const MyMoneyKeyValueContainer& kvps);
+
   KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode);
 
 k_dcop:
@@ -650,6 +656,16 @@ protected:
     *                    the institution to be created.
     */
   void createInstitution(MyMoneyInstitution& institution);
+
+  /**
+   * This method unmatches the currently selected transactions
+   */
+  void transactionUnmatch(void);
+
+  /**
+   * This method matches the currently selected transactions
+   */
+  void transactionMatch(void);
 
 public slots:
   void slotFileInfoDialog(void);
@@ -947,13 +963,9 @@ public slots:
 
   void slotSelectTransactions(const KMyMoneyRegister::SelectedTransactions& list);
 
-  void slotSelectMatchTransaction(const MyMoneyTransaction& t);
-
   void slotSelectCurrency(const MyMoneySecurity& currency = MyMoneySecurity());
 
-  void slotStartMatch(void);
-
-  void slotEndMatch(void);
+  void slotTransactionMatch(void);
 
   /**
     * Brings up the new account wizard and saves the information.
@@ -1026,12 +1038,6 @@ private:
     * delete all selected transactions w/o further questions
     */
   void doDeleteTransactions(void);
-
-  /**
-    * Returns @a true if at least one of the selected transactions has
-    * the status flag 'imported' set, @a false otherwise
-    */
-  bool haveImportedTransactionSelected(void) const;
 
   /**
     * Exchanges all references in transaction @a _t to account @a fromId
@@ -1232,8 +1238,6 @@ private:
   QValueList<MyMoneyPayee>  m_selectedPayees;
   QValueList<MyMoneyBudget> m_selectedBudgets;
   KMyMoneyRegister::SelectedTransactions m_selectedTransactions;
-
-  MyMoneyTransaction    m_matchTransaction;
 
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;

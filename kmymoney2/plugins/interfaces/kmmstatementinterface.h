@@ -33,6 +33,7 @@
 
 class KMyMoney2App;
 class MyMoneyAccount;
+class MyMoneyKeyValueContainer;
 
 #include "../statementinterface.h"
 
@@ -61,6 +62,12 @@ public:
    * is returned.
    */
   const MyMoneyAccount& account(const QString& key, const QString& value) const;
+
+  /**
+   * This method stores the online parameters in @kvps used by the plugin
+   * with the account @a acc.
+   */
+  void setAccountOnlineParameters(const MyMoneyAccount&acc, const MyMoneyKeyValueContainer& kvps) const;
 
 private:
   KMyMoney2App*    m_app;

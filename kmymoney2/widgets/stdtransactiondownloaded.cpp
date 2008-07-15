@@ -28,6 +28,8 @@
 // Project Includes
 
 #include <stdtransactiondownloaded.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/register.h>
 
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
@@ -36,5 +38,19 @@ StdTransactionDownloaded::StdTransactionDownloaded(Register *parent, const MyMon
   StdTransaction(parent, transaction, split, uniqueId)
 {
 }
+
+bool StdTransactionDownloaded::paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush)
+
+{
+  bool rc = Transaction::paintRegisterCellSetup(painter, row, col, cellRect, textRect, cg, brush);
+  // if not selected paint in selected background color
+  if(!isSelected()) {
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::importedTransactionColor());
+    brush = QBrush(cg.base());
+  }
+  return rc;
+}
+
+
 
 

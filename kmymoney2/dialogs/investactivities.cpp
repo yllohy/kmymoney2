@@ -182,6 +182,9 @@ void Buy::showWidgets(void) const
 {
   KMyMoneyCategory* cat;
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
+  cat->parentWidget()->show();
+  cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
+  cat->parentWidget()->show();
   kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
   shareEdit->show();
   shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
@@ -190,6 +193,8 @@ void Buy::showWidgets(void) const
   haveWidget("price")->show();
   haveWidget("total")->show();
   setLabelText("fee-label", i18n("Fees"));
+  setLabelText("interest-label", i18n("Interest"));
+  setLabelText("interest-amount-label", i18n("Amount"));
   setLabelText("asset-label", i18n("Account"));
   setLabelText("shares-label", i18n("Shares"));
   setLabelText("price-label", i18n("Price/share"));
@@ -201,6 +206,7 @@ bool Buy::isComplete(void) const
   bool rc = Activity::isComplete();
   rc &= haveAssetAccount();
   rc &= haveFees(true);
+  rc &= haveInterest(true);
   rc &= haveShares();
   rc &= havePrice();
 
@@ -245,6 +251,8 @@ bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
+    return false;
+  if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount")), MyMoneyMoney(-1,1), interestSplits, m_interestSplits))
     return false;
 
   createAssetAccountSplit(assetAccountSplit, s0);

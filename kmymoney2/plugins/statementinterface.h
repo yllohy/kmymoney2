@@ -34,6 +34,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneystatement.h>
+#include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/export.h>
 
 namespace KMyMoneyPlugin {
@@ -60,6 +61,10 @@ public:
    * is returned.
    */
   virtual const MyMoneyAccount& account(const QString& key, const QString& value) const = 0;
+
+  /**
+   */
+  virtual void setAccountOnlineParameters(const MyMoneyAccount& acc, const MyMoneyKeyValueContainer& kvps) const = 0;
 
 };
 

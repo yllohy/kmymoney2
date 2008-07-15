@@ -223,12 +223,12 @@ void MyMoneyStatement::writeXMLFile( const MyMoneyStatement& _s, const QString& 
   _s.write(eroot,doc);
 
   QFile g( filename );
-  g.open( IO_WriteOnly );
-
-  QTextStream stream(&g);
-  stream.setEncoding(QTextStream::UnicodeUTF8);
-  stream << doc->toString();
-  g.close();
+  if(g.open( IO_WriteOnly )) {
+    QTextStream stream(&g);
+    stream.setEncoding(QTextStream::UnicodeUTF8);
+    stream << doc->toString();
+    g.close();
+  }
 
   delete doc;
 }

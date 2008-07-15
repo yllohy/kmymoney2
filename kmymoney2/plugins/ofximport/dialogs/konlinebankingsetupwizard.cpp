@@ -325,6 +325,13 @@ int KOnlineBankingSetupWizard::ofxAccountCallback(struct OfxAccountData data, vo
   if ( item )
     kvps.setValue("bankname",item->text(0));
 
+  if(!kvps.value("bankid").isEmpty()
+  && !kvps.value("accountid")) {
+
+  kvps.setValue("kmmofx-acc-ref", QString("%1-%2").arg(kvps.value("bankid"), kvps.value("accountid")));
+  } else {
+    qDebug("Cannot setup kmmofx-acc-ref for '%s'", kvps.value("bankname").data());
+  }
   kvps.setValue("protocol","OFX");
 
   new ListViewItem( pthis->m_listAccount, kvps );

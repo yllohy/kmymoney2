@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="31" name="kmymoney2" >
+<kpartgui version="32" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
@@ -89,9 +89,7 @@
    <Action name="transaction_goto_payee"/>
    <Action name="transaction_create_schedule"/>
    <Separator />
-   <Action name="transaction_start_match" />
-   <Action name="transaction_end_match" />
-   <Action name="transaction_cancel_match" />
+   <Action name="transaction_match" />
    <Action name="transaction_accept" />
    <Action name="transaction_combine" />
    <Separator />
@@ -228,9 +226,7 @@
   <Action name="transaction_goto_payee"/>
   <Action name="transaction_create_schedule"/>
   <Separator />
-  <Action name="transaction_start_match" />
-  <Action name="transaction_end_match" />
-  <Action name="transaction_cancel_match" />
+  <Action name="transaction_match" />
   <Action name="transaction_accept" />
   <Action name="transaction_combine" />
  </Menu>

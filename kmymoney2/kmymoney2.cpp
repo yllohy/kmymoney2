@@ -116,6 +116,7 @@
 #include "dialogs/kplugindlg.h"
 #include "dialogs/kloadtemplatedlg.h"
 #include "dialogs/kgpgkeyselectiondlg.h"
+#include "dialogs/transactionmatcher.h"
 #include "wizards/newuserwizard/knewuserwizard.h"
 #include "wizards/newaccountwizard/knewaccountwizard.h"
 
@@ -340,8 +341,8 @@ void KMyMoney2App::initActions(void)
   // note : action "category_new" is included in this menu but defined below
   new KAction(i18n("Open ledger"), "account", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
   new KAction(i18n("Reconcile..."), "reconcile", KShortcut("Ctrl+Shift+R"), this, SLOT(slotAccountReconcileStart()), actionCollection(), "account_reconcile");
-  new KAction(i18n("Finish reconciliation"), "player_end", 0, this, SLOT(slotAccountReconcileFinish()), actionCollection(), "account_reconcile_finish");
-  new KAction(i18n("Postpone reconciliation"), "player_pause", 0, this, SLOT(slotAccountReconcilePostpone()), actionCollection(), "account_reconcile_postpone");
+  new KAction(i18n("Finish reconciliation", "Finish"), "player_end", 0, this, SLOT(slotAccountReconcileFinish()), actionCollection(), "account_reconcile_finish");
+  new KAction(i18n("Postpone reconciliation", "Postpone"), "player_pause", 0, this, SLOT(slotAccountReconcilePostpone()), actionCollection(), "account_reconcile_postpone");
   new KAction(i18n("Edit account..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "account_edit");
   new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
   new KAction(i18n("Close account"), "", 0, this, SLOT(slotAccountClose()), actionCollection(), "account_close");
@@ -403,14 +404,14 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", 0, this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
   new KAction(i18n("Delete transaction", "Delete"), "delete", 0, this, SLOT(slotTransactionsDelete()), actionCollection(), "transaction_delete");
   new KAction(i18n("Duplicate transaction", "Duplicate"), "editcopy", 0, this, SLOT(slotTransactionDuplicate()), actionCollection(), "transaction_duplicate");
-  new KAction(i18n("Match Transaction..."), "", 0, this, SLOT(slotStartMatch()), actionCollection(), "transaction_start_match");
-  new KAction(i18n("Cancel Match"), "", 0, this, SIGNAL(cancelMatchTransaction()), actionCollection(), "transaction_cancel_match");
-  new KAction(i18n("Match With This Transaction"), "", 0, this, SLOT(slotEndMatch()), actionCollection(), "transaction_end_match");
+
+  new KAction(i18n("Button text for match transaction", "Match"), "stop", 0, this, SLOT(slotTransactionMatch()), actionCollection(), "transaction_match");
+  new KAction(i18n("Accept 'imported' and 'matched' transaction", "Accept"), "apply", 0, this, SLOT(slotTransactionsAccept()), actionCollection(), "transaction_accept");
+
   new KAction(i18n("Toggle reconciliation flag", "Toggle"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotToggleReconciliationFlag()), actionCollection(), "transaction_mark_toggle");
   new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Alt+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
   new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
   new KAction(i18n("Mark transaction not reconciled", "Not reconciled"), "", 0, this, SLOT(slotMarkTransactionNotReconciled()), actionCollection(), "transaction_mark_notreconciled");
-  new KAction(i18n("Remove 'import' flag from transaction", "Accept"), "", 0, this, SLOT(slotTransactionsAccept()), actionCollection(), "transaction_accept");
   new KAction(i18n("Select all transactions", "Select all"), 0, KShortcut("Ctrl+A"), this, SIGNAL(selectAllTransactions()), actionCollection(), "transaction_select_all");
 
   new KAction(i18n("Goto account"), "goto", 0, this, SLOT(slotTransactionGotoAccount()), actionCollection(), "transaction_goto_account");
@@ -961,7 +962,7 @@ const bool KMyMoney2App::slotFileSave(void)
 
   if (m_fileName.isEmpty())
     return slotFileSaveAs();
-  
+
   /*if (myMoneyView->isDatabase()) {
     rc = myMoneyView->saveDatabase(m_fileName);
     // the 'save' function is no longer relevant for a database*/
@@ -1212,7 +1213,6 @@ void KMyMoney2App::slotFileClose(void)
   slotSelectInvestment();
   slotSelectSchedule();
   slotSelectCurrency();
-  slotSelectMatchTransaction(MyMoneyTransaction());
   slotSelectBudget(QValueList<MyMoneyBudget>());
   slotSelectPayees(QValueList<MyMoneyPayee>());
   slotSelectTransactions(KMyMoneyRegister::SelectedTransactions());
@@ -1659,6 +1659,9 @@ bool KMyMoney2App::slotStatementImport(const QString& url)
 bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
 {
   bool result = false;
+
+  // keep a copy of the statement
+  MyMoneyStatement::writeXMLFile(s, "/home/thb/kmm-statement.txt");
 
   m_smtReader = new MyMoneyStatementReader;
   connect(m_smtReader, SIGNAL(importFinished()), this, SLOT(slotStatementImportFinished()));
@@ -2595,7 +2598,7 @@ void KMyMoney2App::slotAccountDelete(void)
         QValueList<MyMoneyTransaction> tlist;
         QValueList<MyMoneyTransaction>::iterator it_t;
         file->transactionList(tlist, filter);
-    
+
         slotStatusProgressBar(0, tlist.count());
         int cnt = 0;
         for(it_t = tlist.begin(); it_t != tlist.end(); ++it_t) {
@@ -2611,7 +2614,7 @@ void KMyMoney2App::slotAccountDelete(void)
         KMSTATUS(i18n("Adjusting schedules ..."));
         QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
         QValueList<MyMoneySchedule>::iterator it_s;
-  
+
         int cnt = 0;
         slotStatusProgressBar(0, slist.count());
         for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
@@ -2638,7 +2641,7 @@ void KMyMoney2App::slotAccountDelete(void)
             b.setAccount(toBudget, toBudget.id());
             b.removeReference(m_selectedAccount.id());
             file->modifyBudget(b);
-  
+
           }
         }
         slotStatusProgressBar(blist.count(), 0);
@@ -4086,6 +4089,7 @@ void KMyMoney2App::slotTransactionDuplicate(void)
         for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
           (*it_s).setReconcileFlag(MyMoneySplit::NotReconciled);
           (*it_s).setReconcileDate(QDate());
+          (*it_s).setBankID(QString());
         }
         // clear invalid data
         t.setEntryDate(QDate());
@@ -4271,12 +4275,6 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(bool& okToSelect)
   }
 }
 
-void KMyMoney2App::slotSelectMatchTransaction(const MyMoneyTransaction& t)
-{
-  m_matchTransaction = t;
-  slotUpdateActions();
-}
-
 void KMyMoney2App::slotToggleReconciliationFlag(void)
 {
   markTransaction(MyMoneySplit::Unknown);
@@ -4371,8 +4369,9 @@ void KMyMoney2App::slotTransactionsAccept(void)
   MyMoneyFileTransaction ft;
   try {
     for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-      MyMoneyTransaction t = (*it_t).transaction();
-      if(t.value("Imported").lower() == "true") {
+      // reload transaction in case it got changed during the course of this loop
+      MyMoneyTransaction t = MyMoneyFile::instance()->transaction((*it_t).transaction().id());
+      if(t.isImported()) {
         t.deletePair("Imported");
         if(!m_selectedAccount.id().isEmpty()) {
           QValueList<MyMoneySplit> list = t.splits();
@@ -4388,6 +4387,12 @@ void KMyMoney2App::slotTransactionsAccept(void)
           }
         }
         MyMoneyFile::instance()->modifyTransaction(t);
+      }
+      else if((*it_t).split().isMatched()) {
+        // reload split in case it got changed during the course of this loop
+        MyMoneySplit s = t.splitById((*it_t).split().id());
+        TransactionMatcher matcher(m_selectedAccount);
+        matcher.accept(t, s);
       }
       slotStatusProgressBar(i++, 0);
     }
@@ -4529,171 +4534,80 @@ void KMyMoney2App::slotUpdateMoveToAccountMenu(void)
   }
 }
 
-void KMyMoney2App::slotStartMatch(void)
+void KMyMoney2App::slotTransactionMatch(void)
 {
-  if(m_selectedTransactions.count() > 0)
-    emit startMatchTransaction(m_selectedTransactions[0].transaction());
+  if(action("transaction_match")->text() == i18n("Button text for match transaction", "Match"))
+    transactionMatch();
+  else
+    transactionUnmatch();
 }
 
-void KMyMoney2App::slotEndMatch(void)
+void KMyMoney2App::transactionUnmatch(void)
 {
-  MyMoneyTransaction startMatchTransaction = m_matchTransaction;
-  MyMoneyTransaction endMatchTransaction = m_selectedTransactions[0].transaction();
+  KMyMoneyRegister::SelectedTransactions::const_iterator it;
+  MyMoneyFileTransaction ft;
+  try {
+    for(it = m_selectedTransactions.begin(); it != m_selectedTransactions.end(); ++it) {
+      if((*it).split().isMatched()) {
+        TransactionMatcher matcher(m_selectedAccount);
+        matcher.unmatch((*it).transaction(), (*it).split());
+      }
+    }
+    ft.commit();
 
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to unmatch the selected transactions"), e->what() );
+    delete e;
+  }
+}
+
+void KMyMoney2App::transactionMatch(void)
+{
+  if(m_selectedTransactions.count() != 2)
+    return;
+
+  MyMoneyTransaction startMatchTransaction;
+  MyMoneyTransaction endMatchTransaction;
+  MyMoneySplit startSplit;
+  MyMoneySplit endSplit;
+
+  KMyMoneyRegister::SelectedTransactions::const_iterator it;
+  KMyMoneyRegister::SelectedTransactions toBeDeleted;
+  for(it = m_selectedTransactions.begin(); it != m_selectedTransactions.end(); ++it) {
+    if((*it).transaction().isImported()) {
+      endMatchTransaction = (*it).transaction();
+      endSplit = (*it).split();
+      toBeDeleted << *it;
+    } else if(!(*it).split().isMatched()) {
+      startMatchTransaction = (*it).transaction();
+      startSplit = (*it).split();
+    }
+  }
+
+#if 0
   KMergeTransactionsDlg dlg(m_selectedAccount);
   dlg.addTransaction(startMatchTransaction);
   dlg.addTransaction(endMatchTransaction);
   if (dlg.exec() == QDialog::Accepted)
+#endif
   {
-    const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_selectedAccount.currencyId());
-
-    // Now match the transactions.
-    //
-    // 'Matching' the transactions entails DELETING the end transaction,
-    // and MODIFYING the start transaction as needed.
-    //
-    // There are a variety of ways that a transaction can conflict.
-    // Post date, splits, amount are the ones that seem to matter.
-    // TODO: Handle these conflicts intelligently, at least warning
-    // the user, or better yet letting the user choose which to use.
-    //
-    // For now, we will just use the transaction details from the start
-    // transaction.  The only thing we'll take from the end transaction
-    // are the bank ID's.
-    //
-    // What we have to do here is iterate over the splits in the end
-    // transaction, and find the corresponding split in the start
-    // transaction.  If there is a bankID in the end split but not the
-    // start split, add it to the start split.  If there is a bankID
-    // in BOTH, then this transaction cannot be merged (both transactions
-    // were imported!!)  If the corresponding start split cannot  be
-    // found and the end split has a bankID, we should probably just fail.
-    // Although we could ADD it to the transaction.
-
-    // ipwizard: Don't know if iterating over the transactions is a good idea.
-    // In case of a split transaction recorded with KMyMoney and the transaction
-    // data being imported consisting only of a single category assignment, this
-    // does not make much sense. The same applies for investment transactions
-    // stored in KMyMoney against imported transactions. I think a better solution
-    // is to just base the match on the splits referencing the same (currently
-    // selected) account.
-
     MyMoneyFileTransaction ft;
     try
     {
-      // the match is based on the current selected account, so we look for the splits
-      // in both transactions for this account and match it based on that.
+      if(startMatchTransaction.id().isEmpty())
+        throw new MYMONEYEXCEPTION(i18n("No manually entered transaction selected for matching"));
+      if(endMatchTransaction.id().isEmpty())
+        throw new MYMONEYEXCEPTION(i18n("No imported transaction selected for matching"));
 
-      MyMoneySplit startSplit = startMatchTransaction.splitByAccount(m_selectedAccount.id());
-      MyMoneySplit endSplit = m_selectedTransactions[0].split();
-
-      // verify that the amounts are the same, otherwise we should not be matching!
-      if ( startSplit.shares() != endSplit.shares() ) {
-        throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(m_selectedAccount.name()).arg(startSplit.shares().formatMoney(m_selectedAccount, sec),endSplit.shares().formatMoney(m_selectedAccount, sec)));
-      }
-
-      // ipwizard: I took over the code to keep the bank id found in the endMatchTransaction
-      // This won't work for HBCI nor QIF imports as they don't setup this information. It sure
-      // makes sense for OFX.
-      const QString& bankID = endSplit.bankID();
-      if ( ! bankID.isEmpty() ) {
-        try {
-          if ( startSplit.bankID().isEmpty() ) {
-            startSplit.setBankID( bankID );
-            startMatchTransaction.modifySplit(startSplit);
-          } else {
-            throw new MYMONEYEXCEPTION(i18n("Both of these transactions have been imported into %1.  Therefore they cannot be matched.  Matching works with one imported transaction and one non-imported transaction.").arg(m_selectedAccount.name()));
-          }
-        } catch(MyMoneyException *e) {
-          QString estr = e->what();
-          delete e;
-          throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
-        }
-      }
-      // TODO (Ace) Add in another error to catch the case where a user
-      // tries to match two hand-entered transactions.
-
-#if 0 // Ace's original code
-      QValueList<MyMoneySplit> endSplits = endMatchTransaction.splits();
-      QValueList<MyMoneySplit>::const_iterator it_split = endSplits.begin();
-      while (it_split != endSplits.end())
-      {
-        // find the corresponding split in the start transaction
-        MyMoneySplit startSplit;
-        QCString accountid = (*it_split).accountId();
-        try
-        {
-          startSplit = startMatchTransaction.splitByAccount( accountid );
-        }
-        // only exception is thrown if we cannot find a split like this
-        catch(MyMoneyException *e)
-        {
-          delete e;
-          startSplit = (*it_split);
-          startSplit.clearId();
-          startMatchTransaction.addSplit(startSplit);
-        }
-
-        // verify that the amounts are the same, otherwise we should not be
-        // matching!
-        if ( (*it_split).value() != startSplit.value() )
-        {
-          QString accountname = MyMoneyFile::instance()->account(accountid).name();
-          throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(accountname).arg((*it_split).value().formatMoney(),startSplit.value().formatMoney()));
-        }
-
-        QString bankID = (*it_split).bankID();
-        if ( ! bankID.isEmpty() )
-        {
-          try
-          {
-            if ( startSplit.bankID().isEmpty() )
-            {
-              startSplit.setBankID( bankID );
-              startMatchTransaction.modifySplit(startSplit);
-            }
-            else
-            {
-              QString accountname = MyMoneyFile::instance()->account(accountid).name();
-              throw new MYMONEYEXCEPTION(i18n("Both of these transactions have been imported into %1.  Therefore they cannot be matched.  Matching works with one imported transaction and one non-imported transaction.").arg(accountname));
-            }
-          }
-          catch(MyMoneyException *e)
-          {
-            QString estr = e->what();
-            delete e;
-            throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
-          }
-        }
-        // TODO (Ace) Add in another error to catch the case where a user
-        // tries to match two hand-entered transactions.
-
-        ++it_split;
-      }
-#endif
-
-      // mark the split as cleared if it does not have a reconciliation information yet
-      if(startSplit.reconcileFlag() == MyMoneySplit::NotReconciled) {
-        startSplit.setReconcileFlag(MyMoneySplit::Cleared);
-        startMatchTransaction.modifySplit(startSplit);
-      }
-
-      bool enabled = MyMoneyFile::instance()->signalsBlocked();
-      MyMoneyFile::instance()->blockSignals(true);
-      MyMoneyFile::instance()->modifyTransaction(startMatchTransaction);
-      MyMoneyFile::instance()->blockSignals(enabled);
-
-      // Delete the end transaction (which is the current transaction)
-      doDeleteTransactions();
+      TransactionMatcher matcher(m_selectedAccount);
+      matcher.match(startMatchTransaction, startSplit, endMatchTransaction, endSplit);
       ft.commit();
     }
     catch(MyMoneyException *e)
     {
-      KMessageBox::detailedSorry(0, i18n("Unable to match these transactions"), e->what() );
+      KMessageBox::detailedSorry(0, i18n("Unable to match the selected transactions"), e->what() );
       delete e;
     }
-
-    emit cancelMatchTransaction();
   }
 }
 
@@ -4895,9 +4809,11 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_enter")->setEnabled(false);
   action("transaction_cancel")->setEnabled(false);
   action("transaction_delete")->setEnabled(false);
-  action("transaction_start_match")->setEnabled(false);
-  action("transaction_cancel_match")->setEnabled(false);
-  action("transaction_end_match")->setEnabled(false);
+  action("transaction_match")->setEnabled(false);
+  action("transaction_match")->setText("Match");
+  action("transaction_match")->setIcon("connect_creating");
+
+  action("transaction_accept")->setEnabled(false);
   action("transaction_duplicate")->setEnabled(false);
   action("transaction_mark_toggle")->setEnabled(false);
   action("transaction_mark_cleared")->setEnabled(false);
@@ -4906,7 +4822,6 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_goto_account")->setEnabled(false);
   action("transaction_goto_payee")->setEnabled(false);
   action("transaction_assign_number")->setEnabled(false);
-  action("transaction_accept")->setEnabled(false);
   action("transaction_create_schedule")->setEnabled(false);
   action("transaction_combine")->setEnabled(false);
   action("transaction_select_all")->setEnabled(false);
@@ -4933,9 +4848,7 @@ void KMyMoney2App::slotUpdateActions(void)
   //       can select at least a single transaction
   action("transaction_select_all")->setEnabled(true);
   if(!m_selectedTransactions.isEmpty()) {
-    tooltip = i18n("Delete the current selected transactions");
-    action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip) && !m_selectedTransactions[0].transaction().id().isEmpty());
-    action("transaction_delete")->setToolTip(tooltip);
+    action("transaction_delete")->setEnabled(m_selectedTransactions.count() != 0);
 
     if(!m_transactionEditor) {
       tooltip = i18n("Duplicate the current selected transactions");
@@ -4967,16 +4880,30 @@ void KMyMoney2App::slotUpdateActions(void)
       if(!m_payeeGoto.isEmpty())
         action("transaction_goto_payee")->setEnabled(true);
 
-      if(m_selectedTransactions.count() == 1 /* && action("transaction_edit")->isEnabled() */) {
-        if(m_matchTransaction.id().isEmpty()) {
-          action("transaction_start_match")->setEnabled(true);
-        } else {
-          action("transaction_cancel_match")->setEnabled(true);
-          if(m_selectedTransactions[0].transaction().id() != m_matchTransaction.id())
-            action("transaction_end_match")->setEnabled(true);
+      // Matching is enabled as soon as one regular and one imported transaction is selected
+      int matchedCount = 0;
+      int importedCount = 0;
+      KMyMoneyRegister::SelectedTransactions::const_iterator it;
+      for(it = m_selectedTransactions.begin(); it != m_selectedTransactions.end(); ++it) {
+        if((*it).transaction().isImported())
+          ++importedCount;
+        if((*it).split().isMatched())
+          ++matchedCount;
+      }
+
+      if(m_selectedTransactions.count() == 2 /* && action("transaction_edit")->isEnabled() */) {
+        if(importedCount == 1 && matchedCount == 0) {
+          action("transaction_match")->setEnabled(true);
         }
       }
-      action("transaction_accept")->setEnabled(haveImportedTransactionSelected());
+      if(importedCount != 0 || matchedCount != 0)
+        action("transaction_accept")->setEnabled(true);
+      if(matchedCount != 0) {
+        action("transaction_match")->setEnabled(true);
+        action("transaction_match")->setText("Unmatch");
+        action("transaction_match")->setIcon("stop");
+      }
+
       if(m_selectedTransactions.count() > 1) {
         action("transaction_combine")->setEnabled(true);
       }
@@ -5125,16 +5052,6 @@ void KMyMoney2App::slotResetSelections(void)
   slotSelectBudget(QValueList<MyMoneyBudget>());
   slotSelectTransactions(KMyMoneyRegister::SelectedTransactions());
   slotUpdateActions();
-}
-
-bool KMyMoney2App::haveImportedTransactionSelected(void) const
-{
-  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
-  for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
-    if((*it_t).transaction().value("Imported").lower() == "true")
-      return true;
-  }
-  return false;
 }
 
 void KMyMoney2App::slotSelectCurrency(const MyMoneySecurity& currency)
@@ -5604,6 +5521,21 @@ const MyMoneyAccount& KMyMoney2App::account(const QString& key, const QString& v
 
   // return reference to empty element
   return MyMoneyFile::instance()->account(QCString());
+}
+
+void KMyMoney2App::setAccountOnlineParameters(const MyMoneyAccount& _acc, const MyMoneyKeyValueContainer& kvps)
+{
+  MyMoneyFileTransaction ft;
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(_acc.id());
+    acc.setOnlineBankingSettings(kvps);
+    MyMoneyFile::instance()->modifyAccount(acc);
+    ft.commit();
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to setup online parameters for account ''%1'").arg(_acc.name()), e->what() );
+    delete e;
+  }
 }
 
 void KMyMoney2App::slotAccountMapOnline(void)

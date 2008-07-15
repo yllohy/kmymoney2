@@ -168,7 +168,7 @@ public:
   bool canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
   bool canDuplicateTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
-  
+
   /**
     * Checks if the list of transactions can be edited in the current context
     *
@@ -230,18 +230,6 @@ public slots:
    *                Default ist 0.
    */
   void slotSetReconcileAccount(const MyMoneyAccount& account = MyMoneyAccount(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
-
-  /**
-    * Mark the transaction referenced by @p t for transaction matching
-    * If another transaction is already marked, the mark will be removed
-    * there.
-    */
-  void slotStartMatchTransaction(const MyMoneyTransaction& t);
-
-  /**
-    * Remove all matching marks from all transactions in the register.
-    */
-  void slotCancelMatchTransaction(void);
 
   /**
     * Select all transactions in the ledger that are not hidden.
@@ -359,8 +347,6 @@ private:
     */
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  m_transactionList;
 
-  MyMoneyTransaction              m_matchTransaction;
-
   QLabel*                         m_leftSummaryLabel;
   QLabel*                         m_centerSummaryLabel;
   QLabel*                         m_rightSummaryLabel;
@@ -376,7 +362,6 @@ private:
 signals:
   void accountSelected(const MyMoneyObject&);
   void transactionsSelected(const KMyMoneyRegister::SelectedTransactions&);
-  void matchTransactionSelected(const MyMoneyTransaction&);
   void newTransaction(void);
   void startEdit(void);
   void endEdit(void);
@@ -407,7 +392,7 @@ signals:
     * be marked different
     */
   void toggleReconciliationFlag(void);
-  
+
 private:
   bool canProcessTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 };

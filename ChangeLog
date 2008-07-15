@@ -5,6 +5,20 @@
 
 2008-07-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Vincenzo Reale
+  * Added option to specify the default reconciliation state for
+    transactions entered during reconciliation
+  * Added capability to enter interest splits for a buy share transaction
+  * Allow deletion of transactions even if the transaction carrying the focus
+    is currently not selected
+  * Added KVPs to MyMoneySplit
+  * Don't write empty KVPs to the file
+  * Added initial implementation of TransactionMatcher
+  * Fixed MyMoneyTransaction::operator == to include the KVPs
+  * Added some testcases for that
+  * Try to avoid asking for an account if clear for which data is imported
+    (tested for HBCI, not OFX)
+  * No need for Fees in Reinvest Dividend transaction
+  * Updated About KMyMoney info dialog
 
 2008-07-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing classes to CVS

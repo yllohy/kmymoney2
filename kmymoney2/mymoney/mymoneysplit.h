@@ -41,6 +41,8 @@
 #include "mymoneymoney.h"
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneyobject.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
+class MyMoneyTransaction;
 
 /**
   * @author Thomas Baumgart
@@ -49,7 +51,7 @@
 /**
   * This class represents a split of a transaction.
   */
-class KMYMONEY_EXPORT MyMoneySplit : public MyMoneyObject
+class KMYMONEY_EXPORT MyMoneySplit : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
 public:
   /**
@@ -125,6 +127,17 @@ public:
   MyMoneyMoney actualPrice(void) const { return m_price; }
 
   const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
+
+  /**
+   * Required to have (direct) access to the MyMoneyKeyValueContainer::value() method.
+   */
+  const QString& value(const QCString& key) const { return MyMoneyKeyValueContainer::value(key); }
+
+  /**
+   * Required to have (direct) access to the MyMoneyKeyValueContainer::setValue() method.
+   */
+  void setValue(const QCString& key, const QString& value) { MyMoneyKeyValueContainer::setValue(key, value); }
+
   const QCString& accountId(void) const { return m_account; }
   const QString& memo(void) const { return m_memo; }
   reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; }
@@ -166,6 +179,31 @@ public:
   void setNumber(const QString& number);
   void setBankID(const QString& bankID) { m_bankID = bankID; };
   void setTransactionId(const QCString& id) { m_transactionId = id; }
+
+    /**
+   * returns @a true if this its a transaction matched against an imported
+   * transaction. The imported and matched transaction can be extracted
+   * using matchedTransaction() and can be removed using removeMatch().
+     */
+  bool isMatched(void) const;
+
+  /**
+   * add an imported transaction @p t as matching transaction. Any previously
+   * added transaction will be overridden. @p t.isImported() must return true,
+   * otherwise the transaction is not stored.
+   */
+  void addMatch(const MyMoneyTransaction& t);
+
+  /**
+   * remove the data of the imported transaction added with addMatch().
+   */
+  void removeMatch(void);
+
+  /**
+   * Return the matching imported transaction. If no such transaction
+   * is available (isMatched() returns false) an empty transaction is returned.
+   */
+  MyMoneyTransaction matchedTransaction(void) const;
 
   static const char ActionCheck[];
   static const char ActionDeposit[];

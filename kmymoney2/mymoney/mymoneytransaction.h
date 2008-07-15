@@ -268,24 +268,25 @@ public:
 
   QCString uniqueSortKey(void) const;
 
+  /**
+   * This module implements an algorithm used by P.J. Weinberger
+   * for fast hashing. Source: COMPILERS by Alfred V. Aho,
+   * pages 435-437.
+   *
+   * It converts the string passed in @p txt into a non-unique
+   * unsigned long integer value.
+   *
+   * @param txt the text to be hashed
+   * @param h initial hash value (default 0)
+   * @return non-unique hash value of the text @p txt
+   */
+  static unsigned long hash(const QString& txt, unsigned long h = 0);
+
 private:
   /**
     * This method returns the next id to be used for a split
     */
   const QCString nextSplitID(void);
-
-  /**
-    * This module implements an algorithm used by P.J. Weinberger
-    * for fast hashing. Source: COMPILERS by Alfred V. Aho,
-    * pages 435-437.
-    *
-    * It converts the string passed in @p txt into a non-unique
-    * unsigned long integer value.
-    *
-    * @param txt the text to be hashed
-    * @return non-unique hash value of the text @p txt
-    */
-  const unsigned long hash(const QString& txt) const;
 
 private:
   static const int SPLIT_ID_SIZE = 4;
