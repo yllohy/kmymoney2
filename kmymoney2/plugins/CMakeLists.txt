@@ -42,7 +42,7 @@ INSTALL(FILES  ${plugins_HEADERS}
 	DESTINATION include/kmymoney
 )
 INSTALL(FILES  kmymoneyplugin.desktop kmymoneyimporterplugin.desktop
-        DESTINATION share/sevicetypes
+        DESTINATION share/servicetypes
 )
 
 
