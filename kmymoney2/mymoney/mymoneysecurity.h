@@ -124,6 +124,18 @@ public:
    */
   bool hasReferenceTo(const QCString& id) const;
 
+  /**
+   * This method is used to convert the internal representation of
+   * an security type into a human readable format
+   *
+   * @param securityType enumerated representation of the security type.
+   *                     For possible values, see MyMoneySecurity::eSECURITYTYPE
+   *
+   * @return QString representing the human readable form
+   */
+  static QString securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType);
+
+
 protected:
   QString               m_name;
   QString               m_tradingSymbol;

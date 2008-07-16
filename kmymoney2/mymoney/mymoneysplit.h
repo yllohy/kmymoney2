@@ -39,7 +39,6 @@
 #include "mymoneyexception.h"
 #include "mymoneyutils.h"
 #include "mymoneymoney.h"
-#include "mymoneykeyvaluecontainer.h"
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>

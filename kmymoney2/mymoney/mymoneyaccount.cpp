@@ -588,7 +588,7 @@ void MyMoneyAccount::adjustBalance(const MyMoneySplit& s, bool reverse)
   }
 
 }
-  
+
 QPixmap MyMoneyAccount::accountPixmap(bool reconcileFlag) const
 {
   QString pixmap;
@@ -640,7 +640,7 @@ QPixmap MyMoneyAccount::accountPixmap(bool reconcileFlag) const
   }
   return result;
 }
-  
+
 QPixmap MyMoneyAccount::accountGroupPixmap(bool reconcileFlag) const
 {
   QString icon;
@@ -672,4 +672,64 @@ QPixmap MyMoneyAccount::accountGroupPixmap(bool reconcileFlag) const
     bitBlt(&result, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
   }
   return result;
+}
+
+QString MyMoneyAccount::accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
+{
+  QString returnString;
+
+  switch (accountType) {
+    case MyMoneyAccount::Checkings:
+      returnString = i18n("Checking");
+      break;
+    case MyMoneyAccount::Savings:
+      returnString = i18n("Savings");
+      break;
+    case MyMoneyAccount::CreditCard:
+      returnString = i18n("Credit Card");
+      break;
+    case MyMoneyAccount::Cash:
+      returnString = i18n("Cash");
+      break;
+    case MyMoneyAccount::Loan:
+      returnString = i18n("Loan");
+      break;
+    case MyMoneyAccount::CertificateDep:
+      returnString = i18n("Certificate of Deposit");
+      break;
+    case MyMoneyAccount::Investment:
+      returnString = i18n("Investment");
+      break;
+    case MyMoneyAccount::MoneyMarket:
+      returnString = i18n("Money Market");
+      break;
+    case MyMoneyAccount::Asset:
+      returnString = i18n("Asset");
+      break;
+    case MyMoneyAccount::Liability:
+      returnString = i18n("Liability");
+      break;
+    case MyMoneyAccount::Currency:
+      returnString = i18n("Currency");
+      break;
+    case MyMoneyAccount::Income:
+      returnString = i18n("Income");
+      break;
+    case MyMoneyAccount::Expense:
+      returnString = i18n("Expense");
+      break;
+    case MyMoneyAccount::AssetLoan:
+      returnString = i18n("Investment Loan");
+      break;
+    case MyMoneyAccount::Stock:
+      returnString = i18n("Stock");
+      break;
+    case MyMoneyAccount::Equity:
+      returnString = i18n("Equity");
+      break;
+    default:
+      returnString = i18n("Unknown");
+  }
+
+  return returnString;
 }

@@ -21,6 +21,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klocale.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -1004,3 +1006,121 @@ bool MyMoneySchedule::hasReferenceTo(const QCString& id) const
 {
   return m_transaction.hasReferenceTo(id);
 }
+
+QString MyMoneySchedule::occurenceToString(occurenceE occurence)
+{
+  QString occurenceString = I18N_NOOP("Any");
+
+  if(occurence == MyMoneySchedule::OCCUR_ONCE)
+    occurenceString = I18N_NOOP("Once");
+  else if(occurence == MyMoneySchedule::OCCUR_DAILY)
+    occurenceString = I18N_NOOP("Daily");
+  else if(occurence == MyMoneySchedule::OCCUR_WEEKLY)
+    occurenceString = I18N_NOOP("Weekly");
+  else if(occurence == MyMoneySchedule::OCCUR_FORTNIGHTLY)
+    occurenceString = I18N_NOOP("Fortnightly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERWEEK)
+    occurenceString = I18N_NOOP("Every other week");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)
+    occurenceString = I18N_NOOP("Every three weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURWEEKS)
+    occurenceString = I18N_NOOP("Every four weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS)
+    occurenceString = I18N_NOOP("Every thirty days");
+  else if(occurence == MyMoneySchedule::OCCUR_MONTHLY)
+    occurenceString = I18N_NOOP("Monthly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS)
+    occurenceString = I18N_NOOP("Every eight weeks");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERMONTH)
+    occurenceString = I18N_NOOP("Every two months");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEMONTHS)
+    occurenceString = I18N_NOOP("Every three months");
+  else if(occurence == MyMoneySchedule::OCCUR_QUARTERLY)
+    occurenceString = I18N_NOOP("Quarterly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURMONTHS)
+    occurenceString = I18N_NOOP("Every four months");
+  else if(occurence == MyMoneySchedule::OCCUR_TWICEYEARLY)
+    occurenceString = I18N_NOOP("Twice yearly");
+  else if(occurence == MyMoneySchedule::OCCUR_YEARLY)
+    occurenceString = I18N_NOOP("Yearly");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERYEAR)
+    occurenceString = I18N_NOOP("Every other year");
+  return occurenceString;
+}
+
+QString MyMoneySchedule::scheduleTypeToString(MyMoneySchedule::typeE type)
+{
+  QString text;
+
+  switch (type) {
+    case MyMoneySchedule::TYPE_BILL:
+      text = I18N_NOOP("Bill");
+      break;
+    case MyMoneySchedule::TYPE_DEPOSIT:
+      text = I18N_NOOP("Deposit");
+      break;
+    case MyMoneySchedule::TYPE_TRANSFER:
+      text = I18N_NOOP("Transfer");
+      break;
+    case MyMoneySchedule::TYPE_LOANPAYMENT:
+      text = I18N_NOOP("Loan payment");
+      break;
+    case MyMoneySchedule::TYPE_ANY:
+    default:
+      text = I18N_NOOP("Unknown");
+  }
+  return text;
+}
+
+
+QString MyMoneySchedule::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)
+{
+  QString text;
+
+  switch (paymentType) {
+    case MyMoneySchedule::STYPE_DIRECTDEBIT:
+      text = I18N_NOOP("Direct debit");
+      break;
+    case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+      text = I18N_NOOP("Direct deposit");
+      break;
+    case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+      text = I18N_NOOP("Manual deposit");
+      break;
+    case MyMoneySchedule::STYPE_OTHER:
+      text = I18N_NOOP("Other");
+      break;
+    case MyMoneySchedule::STYPE_WRITECHEQUE:
+      text = I18N_NOOP("Write check");
+      break;
+    case MyMoneySchedule::STYPE_STANDINGORDER:
+      text = I18N_NOOP("Standing order");
+      break;
+    case MyMoneySchedule::STYPE_BANKTRANSFER:
+      text = I18N_NOOP("Bank transfer");
+      break;
+    case MyMoneySchedule::STYPE_ANY:
+      text = I18N_NOOP("Any (Error)");
+      break;
+  }
+  return text;
+}
+
+QString MyMoneySchedule::weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption)
+{
+  QString text;
+
+  switch (weekendOption) {
+    case MyMoneySchedule::MoveFriday:
+      text = I18N_NOOP("Change the date to the previous Friday");
+      break;
+    case MyMoneySchedule::MoveMonday:
+      text = I18N_NOOP("Change the date to the next Monday");
+      break;
+    case MyMoneySchedule::MoveNothing:
+      text = I18N_NOOP("Do Nothing");
+      break;
+  }
+  return text;
+}
+

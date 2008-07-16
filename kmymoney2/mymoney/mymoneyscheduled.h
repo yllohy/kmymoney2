@@ -418,6 +418,51 @@ public:
     */
   virtual bool hasReferenceTo(const QCString& id) const;
 
+  /**
+   * This method is used to convert the occurence type from it's
+   * internal representation into a human readable format.
+   *
+   * @param occurence numerical representation of the MyMoneySchedule
+   *                  occurence type
+   *
+   * @return QString representing the human readable format
+   */
+  static QString occurenceToString(occurenceE type);
+
+  /**
+   * This method is used to convert the payment type from it's
+   * internal representation into a human readable format.
+   *
+   * @param paymentType numerical representation of the MyMoneySchedule
+   *                  payment type
+   *
+   * @return QString representing the human readable format
+   */
+  static QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
+
+  /**
+   * This method is used to convert the schedule weekend option from it's
+   * internal representation into a human readable format.
+   *
+   * @param weekendOption numerical representation of the MyMoneySchedule
+   *                  weekend option
+   *
+   * @return QString representing the human readable format
+   */
+  static QString weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption);
+
+  /**
+   * This method is used to convert the schedule type from it's
+   * internal representation into a human readable format.
+   *
+   * @param type numerical representation of the MyMoneySchedule
+   *                  schedule type
+   *
+   * @return QString representing the human readable format
+   */
+  static QString scheduleTypeToString(MyMoneySchedule::typeE type);
+
+
 private:
   /**
     * This method forces the day of the passed @p date to

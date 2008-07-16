@@ -240,7 +240,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     }
     s << ")\n";
 
-    s << "    Type = " << securityTypeToString((*it_e).securityType()) << "\n";
+    s << "    Type = " << MyMoneySecurity::securityTypeToString((*it_e).securityType()) << "\n";
     s << "    smallest account fraction = " << (*it_e).smallestAccountFraction() << "\n";
 
     s << "    KVP: " << "\n";
@@ -295,9 +295,9 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "  Enddate   = " << (*it_s).endDate().toString(Qt::ISODate) << "\n";
     else
       s << "  Enddate   = not specified\n";
-    s << "  Occurence = " << occurenceToString((*it_s).occurence()) << "\n";
-    s << "  Type = " << scheduleTypeToString((*it_s).type()) << "\n";
-    s << "  Paymenttype = " << paymentMethodToString((*it_s).paymentType()) << "\n";
+    s << "  Occurence = " << MyMoneySchedule::occurenceToString((*it_s).occurence()) << "\n";
+    s << "  Type = " << MyMoneySchedule::scheduleTypeToString((*it_s).type()) << "\n";
+    s << "  Paymenttype = " << MyMoneySchedule::paymentMethodToString((*it_s).paymentType()) << "\n";
     s << "  Fixed = " << (*it_s).isFixed() << "\n";
     s << "  AutoEnter = " << (*it_s).autoEnter() << "\n";
 
@@ -392,133 +392,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
   s << "\n";
 }
 
-// the below code fragments are taken from KMyMoneyUtils. In order
-// to keep them compatible with the source, we redefine i18n() here
-// so that no translation will be necessary
-#define i18n(a) QString(a)
-
-const QString MyMoneyStorageDump::occurenceToString(const MyMoneySchedule::occurenceE occurence)
-{
-  QString text;
-
-  switch (occurence)
-  {
-    case MyMoneySchedule::OCCUR_ONCE:
-      text = i18n("Once");
-      break;
-    case MyMoneySchedule::OCCUR_DAILY:
-      text = i18n("Daily");
-      break;
-    case MyMoneySchedule::OCCUR_WEEKLY:
-      text = i18n("Weekly");
-      break;
-    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-      text = i18n("Fortnightly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
-      text = i18n("Every other week");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
-      text = i18n("Every three weeks");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
-      text = i18n("Every thirty days");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-      text = i18n("Every four weeks");
-      break;
-    case MyMoneySchedule::OCCUR_MONTHLY:
-      text = i18n("Monthly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
-      text = i18n("Every eight weeks");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      text = i18n("Every two months");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
-      text = i18n("Every three months");
-      break;
-    case MyMoneySchedule::OCCUR_QUARTERLY:
-      text = i18n("Quarterly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-      text = i18n("Every four months");
-      break;
-    case MyMoneySchedule::OCCUR_TWICEYEARLY:
-      text = i18n("Twice yearly");
-      break;
-    case MyMoneySchedule::OCCUR_YEARLY:
-      text = i18n("Yearly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
-      text = i18n("Every other year");
-      break;
-    case MyMoneySchedule::OCCUR_ANY:
-      text = i18n("Any (Error)");
-      break;
-  }
-  return text;
-}
-
-const QString MyMoneyStorageDump::scheduleTypeToString(MyMoneySchedule::typeE type)
-{
-  QString text;
-
-  switch (type)
-  {
-    case MyMoneySchedule::TYPE_BILL:
-      text = i18n("Bill");
-      break;
-    case MyMoneySchedule::TYPE_DEPOSIT:
-      text = i18n("Deposit");
-      break;
-    case MyMoneySchedule::TYPE_TRANSFER:
-      text = i18n("Transfer");
-      break;
-    case MyMoneySchedule::TYPE_LOANPAYMENT:
-      text = i18n("Loan payment");
-      break;
-    case MyMoneySchedule::TYPE_ANY:
-    default:
-      text = i18n("Unknown");
-  }
-  return text;
-}
-
-const QString MyMoneyStorageDump::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)
-{
-  QString text;
-
-  switch (paymentType)
-  {
-    case MyMoneySchedule::STYPE_DIRECTDEBIT:
-      text = i18n("Direct debit");
-      break;
-    case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
-      text = i18n("Direct deposit");
-      break;
-    case MyMoneySchedule::STYPE_MANUALDEPOSIT:
-      text = i18n("Manual deposit");
-      break;
-    case MyMoneySchedule::STYPE_OTHER:
-      text = i18n("Other");
-      break;
-    case MyMoneySchedule::STYPE_WRITECHEQUE:
-      text = i18n("Write check");
-      break;
-    case MyMoneySchedule::STYPE_STANDINGORDER:
-      text = i18n("Standing order");
-      break;
-    case MyMoneySchedule::STYPE_BANKTRANSFER:
-      text = i18n("Bank transfer");
-      break;
-    case MyMoneySchedule::STYPE_ANY:
-      text = i18n("Any (Error)");
-      break;
-  }
-  return text;
-}
+#define i18n QString
 
 const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE flag) const
 {
@@ -544,33 +418,6 @@ const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE
   return rc;
 }
 
-const QString MyMoneyStorageDump::securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType)
-{
-  QString returnString;
-
-  switch (securityType)
-  {
-  case MyMoneySecurity::SECURITY_STOCK:
-    returnString = i18n("Stock");
-    break;
-  case MyMoneySecurity::SECURITY_MUTUALFUND:
-    returnString = i18n("Mutual Fund");
-    break;
-  case MyMoneySecurity::SECURITY_BOND:
-    returnString = i18n("Bond");
-    break;
-  case MyMoneySecurity::SECURITY_CURRENCY:
-    returnString = i18n("Currency");
-    break;
-  case MyMoneySecurity::SECURITY_NONE:
-    returnString = i18n("None");
-    break;
-  default:
-    returnString = i18n("Unknown");
-  }
-
-  return returnString;
-}
 #if 0
 void MyMoneyStorageDump::dumpPriceHistory(QTextStream& s, const equity_price_history history)
 {

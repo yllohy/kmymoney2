@@ -521,13 +521,23 @@ public:
    * @return a pixmap using IconDesktop for the account type
    */
   QPixmap accountPixmap(bool reconcileFlag = false) const;
-  
+
   /**
    * @return a 22x22 pixmap for the account group type
    */
   QPixmap accountGroupPixmap(bool reconcileFlag = false) const;
-  
-  private:
+
+  /**
+   * This method is used to convert the internal representation of
+   * an account type into a human readable format
+   *
+   * @param accountType numerical representation of the account type.
+   *                    For possible values, see MyMoneyAccount::accountTypeE
+   * @return QString representing the human readable form
+   */
+  static QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType);
+
+private:
   /**
     * This member variable identifies the type of account
     */

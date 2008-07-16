@@ -52,63 +52,7 @@ KMyMoneyUtils::~KMyMoneyUtils()
 
 const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
 {
-  QString returnString;
-
-  switch (accountType)
-  {
-    case MyMoneyAccount::Checkings:
-      returnString = i18n("Checking");
-      break;
-    case MyMoneyAccount::Savings:
-      returnString = i18n("Savings");
-      break;
-    case MyMoneyAccount::CreditCard:
-      returnString = i18n("Credit Card");
-      break;
-    case MyMoneyAccount::Cash:
-      returnString = i18n("Cash");
-      break;
-    case MyMoneyAccount::Loan:
-      returnString = i18n("Loan");
-      break;
-    case MyMoneyAccount::CertificateDep:
-      returnString = i18n("Certificate of Deposit");
-      break;
-    case MyMoneyAccount::Investment:
-      returnString = i18n("Investment");
-      break;
-    case MyMoneyAccount::MoneyMarket:
-      returnString = i18n("Money Market");
-      break;
-    case MyMoneyAccount::Asset:
-      returnString = i18n("Asset");
-      break;
-    case MyMoneyAccount::Liability:
-      returnString = i18n("Liability");
-      break;
-    case MyMoneyAccount::Currency:
-      returnString = i18n("Currency");
-      break;
-    case MyMoneyAccount::Income:
-      returnString = i18n("Income");
-      break;
-    case MyMoneyAccount::Expense:
-      returnString = i18n("Expense");
-      break;
-    case MyMoneyAccount::AssetLoan:
-      returnString = i18n("Investment Loan");
-      break;
-    case MyMoneyAccount::Stock:
-      returnString = i18n("Stock");
-      break;
-    case MyMoneyAccount::Equity:
-      returnString = i18n("Equity");
-      break;
-    default:
-      returnString = i18n("Unknown");
-  }
-
-  return returnString;
+  return i18n(MyMoneyAccount::accountTypeToString(accountType));
 }
 
 const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QString& type)
@@ -171,30 +115,7 @@ const MyMoneySecurity::eSECURITYTYPE KMyMoneyUtils::stringToSecurity(const QStri
 
 const QString KMyMoneyUtils::securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType)
 {
-  QString returnString;
-
-  switch (securityType)
-  {
-  case MyMoneySecurity::SECURITY_STOCK:
-    returnString = i18n("Stock");
-    break;
-  case MyMoneySecurity::SECURITY_MUTUALFUND:
-    returnString = i18n("Mutual Fund");
-    break;
-  case MyMoneySecurity::SECURITY_BOND:
-    returnString = i18n("Bond");
-    break;
-  case MyMoneySecurity::SECURITY_CURRENCY:
-    returnString = i18n("Currency");
-    break;
-  case MyMoneySecurity::SECURITY_NONE:
-    returnString = i18n("None");
-    break;
-  default:
-    returnString = i18n("Unknown");
-  }
-
-  return returnString;
+  return i18n(MyMoneySecurity::securityTypeToString(securityType));
 }
 
 const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text)
@@ -242,120 +163,22 @@ const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString
 
 const QString KMyMoneyUtils::occurenceToString(const MyMoneySchedule::occurenceE occurence)
 {
-  QString occurenceString = i18n("Any");
-
-  if(occurence == MyMoneySchedule::OCCUR_ONCE)
-    occurenceString = i18n("Once");
-  else if(occurence == MyMoneySchedule::OCCUR_DAILY)
-    occurenceString = i18n("Daily");
-  else if(occurence == MyMoneySchedule::OCCUR_WEEKLY)
-    occurenceString = i18n("Weekly");
-  else if(occurence == MyMoneySchedule::OCCUR_FORTNIGHTLY)
-    occurenceString = i18n("Fortnightly");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERWEEK)
-    occurenceString = i18n("Every other week");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)
-    occurenceString = i18n("Every three weeks");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURWEEKS)
-    occurenceString = i18n("Every four weeks");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS)
-    occurenceString = i18n("Every thirty days");
-  else if(occurence == MyMoneySchedule::OCCUR_MONTHLY)
-    occurenceString = i18n("Monthly");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS)
-    occurenceString = i18n("Every eight weeks");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERMONTH)
-    occurenceString = i18n("Every two months");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEMONTHS)
-    occurenceString = i18n("Every three months");
-  else if(occurence == MyMoneySchedule::OCCUR_QUARTERLY)
-    occurenceString = i18n("Quarterly");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURMONTHS)
-    occurenceString = i18n("Every four months");
-  else if(occurence == MyMoneySchedule::OCCUR_TWICEYEARLY)
-    occurenceString = i18n("Twice yearly");
-  else if(occurence == MyMoneySchedule::OCCUR_YEARLY)
-    occurenceString = i18n("Yearly");
-  else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERYEAR)
-    occurenceString = i18n("Every other year");
-  return occurenceString;
+  return i18n(MyMoneySchedule::occurenceToString(occurence));
 }
 
 const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)
 {
-  QString text;
-
-  switch (paymentType)
-  {
-    case MyMoneySchedule::STYPE_DIRECTDEBIT:
-      text = i18n("Direct debit");
-      break;
-    case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
-      text = i18n("Direct deposit");
-      break;
-    case MyMoneySchedule::STYPE_MANUALDEPOSIT:
-      text = i18n("Manual deposit");
-      break;
-    case MyMoneySchedule::STYPE_OTHER:
-      text = i18n("Other");
-      break;
-    case MyMoneySchedule::STYPE_WRITECHEQUE:
-      text = i18n("Write check");
-      break;
-    case MyMoneySchedule::STYPE_STANDINGORDER:
-      text = i18n("Standing order");
-      break;
-    case MyMoneySchedule::STYPE_BANKTRANSFER:
-      text = i18n("Bank transfer");
-      break;
-    case MyMoneySchedule::STYPE_ANY:
-      text = i18n("Any (Error)");
-      break;
-  }
-  return text;
+  return i18n(MyMoneySchedule::paymentMethodToString(paymentType));
 }
+
 const QString KMyMoneyUtils::weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption)
 {
-  QString text;
-
-  switch (weekendOption)
-  {
-    case MyMoneySchedule::MoveFriday:
-      text = i18n("Change the date to the previous Friday");
-      break;
-    case MyMoneySchedule::MoveMonday:
-      text = i18n("Change the date to the next Monday");
-      break;
-    case MyMoneySchedule::MoveNothing:
-      text = i18n("Do Nothing");
-      break;
-  }
-  return text;
+  return i18n(MyMoneySchedule::weekendOptionToString(weekendOption));
 }
 
 const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
 {
-  QString text;
-
-  switch (type)
-  {
-    case MyMoneySchedule::TYPE_BILL:
-      text = i18n("Bill");
-      break;
-    case MyMoneySchedule::TYPE_DEPOSIT:
-      text = i18n("Deposit");
-      break;
-    case MyMoneySchedule::TYPE_TRANSFER:
-      text = i18n("Transfer");
-      break;
-    case MyMoneySchedule::TYPE_LOANPAYMENT:
-      text = i18n("Loan payment");
-      break;
-    case MyMoneySchedule::TYPE_ANY:
-    default:
-      text = i18n("Unknown");
-  }
-  return text;
+  return i18n(MyMoneySchedule::scheduleTypeToString(type));
 }
 
 KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)

@@ -39,7 +39,6 @@
 
 #include "mymoneystoragesql.h"
 #include "imymoneyserialize.h"
-#include "../../kmymoneyutils.h"
 #include <kmymoney/kmymoneyglobalsettings.h>
 
 #define TRY try {
@@ -1016,7 +1015,7 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery&
   q.bindValue(":openingDate", acc.openingDate());
   q.bindValue(":accountNumber", acc.number());
   q.bindValue(":accountType", acc.accountType());
-  q.bindValue(":accountTypeString", KMyMoneyUtils::accountTypeToString(acc.accountType()));
+  q.bindValue(":accountTypeString", MyMoneyAccount::accountTypeToString(acc.accountType()));
   if (acc.accountType() == MyMoneyAccount::Stock) {
     q.bindValue(":isStockAccount", "Y");
   } else {
@@ -1350,11 +1349,11 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":id", sch.id());
   q.bindValue(":name", sch.name());
   q.bindValue(":type", sch.type());
-  q.bindValue(":typeString", KMyMoneyUtils::scheduleTypeToString(sch.type()));
+  q.bindValue(":typeString", MyMoneySchedule::scheduleTypeToString(sch.type()));
   q.bindValue(":occurence", sch.occurence());
-  q.bindValue(":occurenceString", KMyMoneyUtils::occurenceToString(sch.occurence()));
+  q.bindValue(":occurenceString", MyMoneySchedule::occurenceToString(sch.occurence()));
   q.bindValue(":paymentType", sch.paymentType());
-  q.bindValue(":paymentTypeString", KMyMoneyUtils::paymentMethodToString(sch.paymentType()));
+  q.bindValue(":paymentTypeString", MyMoneySchedule::paymentMethodToString(sch.paymentType()));
   q.bindValue(":startDate", sch.startDate());
   q.bindValue(":endDate", sch.endDate());
   if (sch.isFixed()) {
@@ -1370,7 +1369,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":lastPayment", sch.lastPayment());
   q.bindValue(":nextPaymentDue", sch.nextDueDate());
   q.bindValue(":weekendOption", sch.weekendOption());
-  q.bindValue(":weekendOptionString", KMyMoneyUtils::weekendOptionToString(sch.weekendOption()));
+  q.bindValue(":weekendOptionString", MyMoneySchedule::weekendOptionToString(sch.weekendOption()));
   if (!q.exec()) throw buildError (q, __func__, QString("writing Schedules"));
 
   //store the payment history for this scheduled task.
@@ -1481,7 +1480,7 @@ void MyMoneyStorageSql::writeSecurity(const MyMoneySecurity& security, MyMoneySq
   q.bindValue(":name", security.name());
   q.bindValue(":symbol", security.tradingSymbol());
   q.bindValue(":type", static_cast<int>(security.securityType()));
-  q.bindValue(":typeString", KMyMoneyUtils::securityTypeToString(security.securityType()));
+  q.bindValue(":typeString", MyMoneySecurity::securityTypeToString(security.securityType()));
   q.bindValue(":smallestAccountFraction", security.smallestAccountFraction());
   q.bindValue(":tradingCurrency", security.tradingCurrency());
   q.bindValue(":tradingMarket", security.tradingMarket());
@@ -1653,7 +1652,7 @@ void MyMoneyStorageSql::writeCurrency(const MyMoneySecurity& currency, MyMoneySq
   q.bindValue(":ISOcode", currency.id());
   q.bindValue(":name", currency.name());
   q.bindValue(":type", static_cast<int>(currency.securityType()));
-  q.bindValue(":typeString", KMyMoneyUtils::securityTypeToString(currency.securityType()));
+  q.bindValue(":typeString", MyMoneySecurity::securityTypeToString(currency.securityType()));
   // writing the symbol as three short ints is a PITA, but the
   // problem is that database drivers have incompatible ways of declaring UTF8
   QString symbol = currency.tradingSymbol() + "   ";
@@ -2354,7 +2353,7 @@ const QMap<QCString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (c
   }
   if (!dateClause.isEmpty()) whereClause += QString(" and " + dateClause);
   MyMoneySqlQuery qs(const_cast <MyMoneyStorageSql*> (this));
-  QString splitQuery = QString(ts.selectAllString(false) + whereClause 
+  QString splitQuery = QString(ts.selectAllString(false) + whereClause
       + " ORDER BY transactionId, splitId;");
   qs.prepare (splitQuery);
   if (!qs.exec()) throw buildError (qs, __func__, "reading Splits");
@@ -2738,7 +2737,7 @@ const QMap<QCString, MyMoneySchedule> MyMoneyStorageSql::fetchSchedules (const Q
       else CASE(fixed) {boolChar = GETSTRING; s.setFixed (boolChar == "Y");}
       else CASE(autoEnter)  {boolChar = GETSTRING; s.setAutoEnter (boolChar == "Y");}
       else CASE(lastPayment)  s.setLastPayment (GETDATE);
-      else CASE(weekendOption)  
+      else CASE(weekendOption)
         s.setWeekendOption (static_cast<MyMoneySchedule::weekendOptionE>(GETINT));
       else CASE(nextPaymentDue) nextPaymentDue = GETDATE;
       ++ft; ++i;
@@ -2880,7 +2879,7 @@ const  MyMoneyPrice MyMoneyStorageSql::fetchSinglePrice (const QString& fromIdLi
 
   // Use bind variables, instead of just inserting the values in the queryString,
   // so that values containing a ':' will work.
-  queryString += " WHERE fromId = :fromId  AND toId = :toId AND priceDate " 
+  queryString += " WHERE fromId = :fromId  AND toId = :toId AND priceDate "
     + QString(exactDate ? "=" : "<=") + " :priceDate ORDER BY priceDate DESC;";
 
   q.prepare(queryString);

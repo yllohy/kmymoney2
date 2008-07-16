@@ -45,7 +45,6 @@
 #include <kmymoney/stdtransactiondownloaded.h>
 #include <kmymoney/stdtransactionmatched.h>
 
-#include "../kmymoneyutils.h"
 #include "../kmymoneyglobalsettings.h"
 
 const int LinesPerMemo = 3;

@@ -26,6 +26,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klocale.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -148,3 +150,31 @@ void MyMoneySecurity::writeXML(QDomDocument& document, QDomElement& parent) cons
 
   parent.appendChild(el);
 }
+
+QString MyMoneySecurity::securityTypeToString(const eSECURITYTYPE securityType)
+{
+  QString returnString;
+
+  switch (securityType) {
+    case MyMoneySecurity::SECURITY_STOCK:
+      returnString = I18N_NOOP("Stock");
+      break;
+    case MyMoneySecurity::SECURITY_MUTUALFUND:
+      returnString = I18N_NOOP("Mutual Fund");
+      break;
+    case MyMoneySecurity::SECURITY_BOND:
+      returnString = I18N_NOOP("Bond");
+      break;
+    case MyMoneySecurity::SECURITY_CURRENCY:
+      returnString = I18N_NOOP("Currency");
+      break;
+    case MyMoneySecurity::SECURITY_NONE:
+      returnString = I18N_NOOP("None");
+      break;
+    default:
+      returnString = I18N_NOOP("Unknown");
+  }
+
+  return returnString;
+}
+

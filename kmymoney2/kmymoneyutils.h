@@ -118,8 +118,10 @@ public:
     * an account type into a human readable format
     *
     * @param accountType numerical representation of the account type.
-                         For possible values, see MyMoneyAccount::accountTypeE
-    * @return QString representing the human readable form
+    *                    For possible values, see MyMoneyAccount::accountTypeE
+    * @return QString representing the human readable form translated according to the language cataglogue
+    *
+    * @sa MyMoneyAccount::accountTypeToString()
     */
   static const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType);
 
@@ -148,8 +150,10 @@ public:
     * an security type into a human readable format
     *
     * @param securityType enumerated representation of the security type.
-                         For possible values, see MyMoneySecurity::eSECURITYTYPE
-    * @return QString representing the human readable form
+    *                     For possible values, see MyMoneySecurity::eSECURITYTYPE
+    * @return QString representing the human readable form translated according to the language cataglogue
+    *
+    * @sa MyMoneySecurity::securityTypeToString()
     */
   static const QString securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType);
 
@@ -160,7 +164,9 @@ public:
     * @param occurence numerical representation of the MyMoneySchedule
     *                  occurence type
     *
-    * @return QString representing the human readable format
+    * @return QString representing the human readable format translated according to the language cataglogue
+    *
+    * @sa MyMoneySchedule::occurenceToString()
     */
   static const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
 
@@ -180,19 +186,23 @@ public:
     * @param paymentType numerical representation of the MyMoneySchedule
     *                  payment type
     *
-    * @return QString representing the human readable format
+    * @return QString representing the human readable format translated according to the language cataglogue
+    *
+    * @sa MyMoneySchedule::paymentMethodToString()
     */
   static const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
 
   /**
-   * This method is used to convert the schedule weekend option from it's
-   * internal representation into a human readable format.
-   *
-   * @param weekendOption numerical representation of the MyMoneySchedule
-   *                  weekend option
-   *
-   * @return QString representing the human readable format
-   */
+    * This method is used to convert the schedule weekend option from it's
+    * internal representation into a human readable format.
+    *
+    * @param weekendOption numerical representation of the MyMoneySchedule
+    *                  weekend option
+    *
+    * @return QString representing the human readable format translated according to the language cataglogue
+    *
+    * @sa MyMoneySchedule::weekendOptionToString()
+    */
   static const QString weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption);
 
   /**
@@ -202,7 +212,9 @@ public:
     * @param type numerical representation of the MyMoneySchedule
     *                  schedule type
     *
-    * @return QString representing the human readable format
+    * @return QString representing the human readable format translated according to the language cataglogue
+    *
+    * @sa MyMoneySchedule::scheduleTypeToString()
     */
   static const QString scheduleTypeToString(MyMoneySchedule::typeE type);
 

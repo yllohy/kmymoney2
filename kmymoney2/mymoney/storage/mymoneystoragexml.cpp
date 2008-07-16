@@ -38,7 +38,6 @@
 // Project Includes
 
 #include "mymoneystoragexml.h"
-#include "../../kmymoneyutils.h"
 #include "../mymoneyreport.h"
 #include "../mymoneybudget.h"
 #include "../mymoneyinstitution.h"
