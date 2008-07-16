@@ -770,6 +770,7 @@ void MyMoneyStorageSql::writeInstitution(const MyMoneyInstitution& i, MyMoneySql
   q.bindValue(":addressZipcode", i.postcode());
   q.bindValue(":telephone", i.telephone());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Institution"));
+  writeKeyValuePairs("OFXSETTINGS", i.id(), i.pairs());
   m_hiIdInstitutions = calcHighId(m_hiIdInstitutions, i.id());
 }
 
@@ -1162,6 +1163,11 @@ void MyMoneyStorageSql::deleteTransaction(const QString& id) {
   q.prepare("DELETE FROM kmmSplits WHERE transactionId = :transactionId;");
   q.bindValue(":transactionId", id);
   if (!q.exec()) throw buildError (q, __func__, "deleting Splits");
+
+  q.prepare ("DELETE FROM kmmKeyValuePairs WHERE kvpType = 'SPLIT' "
+             "AND kvpId LIKE '" + id + "%'");
+  if (!q.exec()) throw buildError (q, __func__, "deleting Splits KVP");
+
   m_splits -= q.numRowsAffected();
   deleteKeyValuePairs("TRANSACTION", id);
   q.prepare(m_db.m_tables["kmmTransactions"].deleteString());
@@ -1254,6 +1260,8 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":checkNumber", split.number());
   q.bindValue(":postDate", m_txPostDate); // FIXME: when Tom puts date into split object
   if (!q.exec()) throw buildError (q, __func__, QString("writing Split"));
+  deleteKeyValuePairs("SPLIT", txId + QString::number(splitId));
+  writeKeyValuePairs("SPLIT", txId + QString::number(splitId), split.pairs());
 }
 
 // **** Schedules ****

@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-07-15 Fernando Vilas <fvilas@iname.com>
+  * Added KVPs to splits in the db
+  * Updated (some) documentation of db functions
+  * Fixed MMInstitution to properly store KVP in the db
 
 2008-07-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Vincenzo Reale

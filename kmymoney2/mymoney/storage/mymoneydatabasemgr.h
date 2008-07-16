@@ -29,6 +29,18 @@
 #include "mymoneymap.h"
 #include "mymoneystoragesql.h"
 
+/**
+  * The MyMoneyDatabaseMgr class represents the storage engine for databases.
+  * The actual connection and internal storage is handled through the
+  * MyMoneyStorageSql interface.
+  *
+  * The MyMoneyDatabaseMgr must have a MyMoneyStorageSql connected to a
+  * database to be useful. Once connected, data will be loaded from/sent to the
+  * database synchronously. The method dirty() will always return false. Making
+  * this many trips to the database is not very fast, so when possible, the
+  * data cache in MyMoneyFile is used.
+  *
+  */
 class MyMoneyDatabaseMgr : public IMyMoneyStorage, public IMyMoneySerialize,
                             public MyMoneyKeyValueContainer
 {
@@ -245,7 +257,7 @@ public:
     * This method returns an indicator if the storage object has been
     * changed after it has last been saved to permanent storage.
     *
-    * @return true if changed, false if not
+    * @return true if changed, false if not (for a database, always false).
     */
   virtual bool dirty(void) const;
 
@@ -254,6 +266,9 @@ public:
     * storage object to be dirty. This is used e.g. when an upload
     * to an external destination failed but the previous storage
     * to a local disk was ok.
+    *
+    * Since the database is synchronized with the application, this method
+    * is a no-op.
     */
   virtual void setDirty(void);
 
@@ -363,8 +378,24 @@ public:
     */
   virtual const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
 
+  /**
+    * This method is the same as above, but instead of a return value, a
+    * parameter is used.
+    *
+    * @param list The set of transactions returned. The list passed in will
+    *             be cleared before filling with results.
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    */
   virtual void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
 
+  /**
+    * This method is the same as above, but the list contains pairs of
+    * transactions and splits.
+    *
+    * @param list The set of transactions returned. The list passed in will
+    *             be cleared before filling with results.
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    */
   virtual void transactionList(QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const;
 
   /**
@@ -395,7 +426,7 @@ public:
     * exception will be thrown.
     *
     * @param id id of transaction as QString.
-    * @return reference to the requested transaction
+    * @return the requested transaction
     */
   virtual const MyMoneyTransaction transaction(const QCString& id) const;
 
@@ -405,7 +436,7 @@ public:
     *
     * @param account id of the account as QString
     * @param idx number of transaction in this account
-    * @return reference to MyMoneyTransaction object
+    * @return MyMoneyTransaction object
     */
   virtual const MyMoneyTransaction transaction(const QCString& account, const int idx) const;
 
@@ -457,9 +488,9 @@ public:
   virtual const MyMoneyAccount equity(void) const;
 
   /**
-    * This method is used to create a new security object.  The ID will be created
-    * automatically. The object passed with the parameter @p security is modified
-    * to contain the assigned id.
+    * This method is used to create a new security object.  The ID will be
+    * created automatically. The object passed with the parameter @p security
+    * is modified to contain the assigned id.
     *
     * An exception will be thrown upon error conditions.
     *
