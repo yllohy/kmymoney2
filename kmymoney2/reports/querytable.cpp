@@ -480,6 +480,7 @@ void QueryTable::constructTransactionTable(void)
 #endif
 
     bool include_me = true;
+    bool transaction_text = false; //indicates whether a text should be considered as a match for the transaction or for a split only
     QString a_fullname = "";
     QString a_memo = "";
 
@@ -522,6 +523,8 @@ void QueryTable::constructTransactionTable(void)
         include_me = m_config.includes(a);
         a_fullname = a.fullName();
         a_memo = (* is).memo();
+
+        transaction_text = m_config.match(&(*is));
 
         if (m_config.isConvertCurrency() && a.isForeignCurrency()) {
           xr = a.baseCurrencyPrice((* it).postDate()).reduce();
@@ -660,7 +663,16 @@ void QueryTable::constructTransactionTable(void)
             }
 
             if (use_transfers || (a.isIncomeExpense() && m_config.includes(a)))
-              m_rows += qA;
+            {
+              if(qA["rank"] == "1"
+                 && !transaction_text ) {
+                if( m_config.match( &(*is) )  ) {
+                  m_rows += qA;
+                }
+              } else {
+                m_rows += qA;
+              }
+            }
           }
         }
 
@@ -692,7 +704,11 @@ void QueryTable::constructTransactionTable(void)
               ? qA["payee"]
               : file->payee(p).name().simplifyWhiteSpace();
 
-            m_rows += qS;
+            //check the specific split against the filter for text and amount
+            //TODO this should be done at the engine, but I have no clear idea how -- asoliverez
+            const MyMoneySplit* split = &(*is);
+            if(m_config.match( split ) )
+              m_rows += qS;
 
             // track accts that will need opening and closing balances
             accts.insert (a.id(), a);
@@ -957,7 +973,6 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
   try
   {
-    qDebug("running IRR");
     MyMoneyMoney annualReturn = MyMoneyMoney(all.IRR(),10000);
     result["return"] = annualReturn.toString();
     result["returninvestment"] = returnInvestment.toString();
@@ -1051,7 +1066,6 @@ void QueryTable::constructAccountTable(void)
       // it's an expensive calculation done for no reason
       if ( account.isInvest() )
       {
-        qDebug("calculation performance for account '%s'", account.name().data());
         constructPerformanceRow( account, qaccountrow );
       }
       else
