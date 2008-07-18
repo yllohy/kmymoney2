@@ -8,6 +8,7 @@
   * Keep memo for category memos in sync with the one visible
   * Added code for autofix after load (but not yet active)
     Needs further testing, esp. with the database backend
+  * Updated Italian translation from Vincenzo Reale
 
 2008-07-16 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed text filtering of splits in transaction reports
