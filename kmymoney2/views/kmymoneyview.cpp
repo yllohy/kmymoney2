@@ -902,6 +902,13 @@ bool KMyMoneyView::initializeStorage()
             s->setFileFixVersion(2);
             break;
 
+          case 2:
+            fixFile_2();
+            s->setFileFixVersion(3);
+            break;
+
+          // add new levels above. Don't forget to increase currentFixVersion() for all
+          // the storage backends this fix applies to
           default:
             throw new MYMONEYEXCEPTION(i18n("Unknown fix level in input file"));
         }
@@ -1634,6 +1641,53 @@ void KMyMoneyView::slotRememberPage(QWidget* w)
 /* DO NOT ADD code to this function or any of it's called ones.
    Instead, create a new function, fixFile_n, and modify the initializeStorage()
    logic above to call it */
+
+void KMyMoneyView::fixFile_2(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyTransactionFilter filter;
+  filter.setReportAllSplits( false );
+  QValueList<MyMoneyTransaction> transactionList;
+  file->transactionList(transactionList, filter);
+
+  // scan the transactions and modify transactions with two splits
+  // which reference an account and a category to have the memo text
+  // of the account.
+  QValueList<MyMoneyTransaction>::Iterator it_t;
+  int count = 0;
+  for(it_t = transactionList.begin(); it_t != transactionList.end(); ++it_t) {
+    if((*it_t).splitCount() == 2) {
+      QCString accountId;
+      QCString categoryId;
+      QString accountMemo;
+      QString categoryMemo;
+      const QValueList<MyMoneySplit>& splits = (*it_t).splits();
+      QValueList<MyMoneySplit>::const_iterator it_s;
+      for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+        MyMoneyAccount acc = file->account((*it_s).accountId());
+        if(acc.isIncomeExpense()) {
+          categoryId = (*it_s).id();
+          categoryMemo = (*it_s).memo();
+        } else {
+          accountId = (*it_s).id();
+          accountMemo = (*it_s).memo();
+        }
+      }
+
+      if(!accountId.isEmpty() && !categoryId.isEmpty()
+      && accountMemo != categoryMemo) {
+        MyMoneyTransaction t(*it_t);
+        MyMoneySplit s(t.splitById(categoryId));
+        s.setMemo(accountMemo);
+        t.modifySplit(s);
+        file->modifyTransaction(t);
+        ++count;
+      }
+    }
+  }
+  qDebug("%d transactions fixed in fixFile_2", count);
+}
+
 void KMyMoneyView::fixFile_1(void)
 {
   // we need to fix reports. If the account filter list contains
