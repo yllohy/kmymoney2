@@ -86,6 +86,7 @@ $country{"ru"} = "Russia";
 $country{"sk"} = "Slovakia";
 $country{"sl"} = "Slovenia";
 $country{"sv"} = "Sweden";
+$country{"tr"} = "Turkey";
 $country{"zh_CN"} = "China";
 
 $language{"ca"} = "Catalan";
@@ -107,6 +108,7 @@ $language{"ru"} = "Russian";
 $language{"sk"} = "Slovak";
 $language{"sl"} = "Slovenian";
 $language{"sv"} = "Swedish";
+$language{"tr"} = "Turkish";
 $language{"zh_CN"} = "Simplified Chinese";
 
 $flags{"es_AR"} = "ar";

@@ -2,9 +2,9 @@ KDE_OPTIONS = noautodist
 
 SUBDIRS = images
 
-HOMEPAGES = home.html home_fr.fr.html home_de.de.html home_ru.ru.html home_br.pt_BR.html home_gl.html home_it.html home_nl.html
+HOMEPAGES = home.html home_fr.fr.html home_de.de.html home_ru.ru.html home_br.pt_BR.html home_gl.html home_it.html home_nl.html home_tr.html
 
-WHATSNEWPAGES = whats_new.html whats_new_gl.html whats_new_de.html whats_new_it.html whats_new_fr.html whats_new_ru.html whats_new_nl.html
+WHATSNEWPAGES = whats_new.html whats_new_gl.html whats_new_de.html whats_new_it.html whats_new_fr.html whats_new_ru.html whats_new_nl.html whats_new_tr.html
 
 EXTRA_DIST = $(HOMEPAGES) $(WHATSNEWPAGES) kmymoney2.css welcome.css
 

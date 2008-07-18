@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added Turkish translation from Serdar Soytetir
+
 2008-07-16 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed text filtering of splits in transaction reports
 
