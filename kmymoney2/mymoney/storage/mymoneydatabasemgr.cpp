@@ -47,7 +47,7 @@ const QDate MyMoneyDatabaseMgr::lastModificationDate(void) const
 { return m_lastModificationDate; }
 
 const unsigned int MyMoneyDatabaseMgr::currentFixVersion(void) const
-{ return m_sql->currentVersion(); }
+{ return CURRENT_FIX_VERSION; }
 
 const unsigned int MyMoneyDatabaseMgr::fileFixVersion(void) const
 { return m_fileFixVersion; }
@@ -926,11 +926,11 @@ const MyMoneyMoney MyMoneyDatabaseMgr::balance(const QCString& id, const QDate& 
   QMap<QCString, MyMoneyAccount> accountList = m_sql->fetchAccounts(/*QString(id)*/);
   //QMap<QCString, MyMoneyAccount>::const_iterator accpos = accountList.find(id);
   if (date_ != QDate()) qDebug ("request balance for %s at %s", id.data(), date_.toString(Qt::ISODate).latin1());
-  if(!date_.isValid() && MyMoneyFile::instance()->account(id).accountType() != MyMoneyAccount::Stock) {
-    if(accountList.find(id) != accountList.end())
-      return accountList[id].balance();
-    return MyMoneyMoney(0);
-  }
+//  if(!date_.isValid() && MyMoneyFile::instance()->account(id).accountType() != MyMoneyAccount::Stock) {
+//    if(accountList.find(id) != accountList.end())
+//      return accountList[id].balance();
+//    return MyMoneyMoney(0);
+//  }
   if(/*m_balanceCache[id].valid == false || date != m_balanceCacheDate) || */ m_sql != 0) {
     QMap<QCString, MyMoneyMoney> balances;
     QMap<QCString, MyMoneyMoney>::ConstIterator it_b;

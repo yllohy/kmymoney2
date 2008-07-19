@@ -710,6 +710,30 @@ void MyMoneyDatabaseMgrTest::testBalance() {
   CPPUNIT_ASSERT(m->balance("A000001", QDate()).isZero());
   CPPUNIT_ASSERT(m->balance("A000002", QDate()) == MyMoneyMoney(1200));
   CPPUNIT_ASSERT(m->balance("A000003", QDate()) == MyMoneyMoney(400));
+  //Add a transaction to zero account A000003
+  MyMoneyTransaction t1;
+  MyMoneySplit s;
+
+  s.setAccountId("A000003");
+  s.setShares(-400);
+  s.setValue(-400);
+  CPPUNIT_ASSERT(s.id().isEmpty());
+  t1.addSplit(s);
+
+  s.setId(QCString());  // enable re-usage of split variable
+  s.setAccountId("A000002");
+  s.setShares(400);
+  s.setValue(400);
+  CPPUNIT_ASSERT(s.id().isEmpty());
+  t1.addSplit(s);
+
+  t1.setPostDate(QDate(2007,5,10));
+
+  m->addTransaction(t1);
+
+  qDebug ("Balance of A000003 is %s", m->balance("A000003", QDate()).toString().ascii());
+  CPPUNIT_ASSERT(m->balance("A000003", QDate()).isZero());
+
   CPPUNIT_ASSERT(m->totalBalance("A000001", QDate()) == MyMoneyMoney(1600));
   CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,9)) == MyMoneyMoney(-11600));
   CPPUNIT_ASSERT(m->balance("A000005", QDate(2002,5,10)) == MyMoneyMoney(-100000));

@@ -2,6 +2,12 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-07-19 Fernando Vilas <fvilas@iname.com>
+  * Added db support for new file fix version
+  * Fixed how file fix version is handled in db code
+  * Fixed incorrect balance when a transaction zeroes an account
+    in the db
+  * Added db test case for adding a transaction to zero an account
 
 2008-07-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Replaced IRR with XIRR from KOffice by Sascha Pfau,

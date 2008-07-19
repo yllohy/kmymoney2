@@ -46,7 +46,7 @@
 #define PASS } catch (MyMoneyException *e) { throw; }
 #define ECATCH }
 #define DBG(a)  // qDebug(a)
-//********************** THE CURRENT VERSION OF THE DATABASE LAYOUT **********************
+//***************** THE CURRENT VERSION OF THE DATABASE LAYOUT ****************
 unsigned int MyMoneyDbDef::m_currentVersion = 2;
 
 // subclass QSqlQuery for performance tracing

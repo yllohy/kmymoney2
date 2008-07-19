@@ -1152,5 +1152,10 @@ private:
   static const int REPORT_ID_SIZE = 6;
   static const int BUDGET_ID_SIZE = 6;
 
+  // Increment this to force an update in KMMView.
+  // This is different from the db schema version stored in
+  // MMStorageSql::m_majorVersion
+  static const int CURRENT_FIX_VERSION = 3;
+
 };
 #endif
