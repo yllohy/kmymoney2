@@ -4,6 +4,9 @@
 --------------------------------------------------------------------
 
 2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated German translation from yllohy
+
+2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added Turkish translation from Serdar Soytetir
   * Keep memo for category memos in sync with the one visible
   * Added code for autofix after load (but not yet active)
