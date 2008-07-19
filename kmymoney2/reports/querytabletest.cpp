@@ -568,6 +568,8 @@ void QueryTableTest::testInvestment(void)
   XMLandback(invhold_r);
   QueryTable invhold(invhold_r);
 
+  writeTabletoHTML(invhold,"Investment Performance by Account.html");
+
   rows = invhold.rows();
 
   CPPUNIT_ASSERT(rows.count()==2);

@@ -3,8 +3,16 @@
                          -------------------
     begin                : Fri Jul 23 2004
     copyright            : (C) 2004-2005 by Ace Jones
+                           (C) 2007 Sascha Pfau
     email                :  acejones@users.sourceforge.net
+                            MrPeacock@gmail.com
  ***************************************************************************/
+
+/****************************************************************************
+  Contains code from the func_xirr and related methods of financial.cpp 
+  - KOffice 1.6 by Sascha Pfau.  Sascha agreed to relicense those methods under
+  GPLv2 or later.
+*****************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -100,6 +108,96 @@ MyMoneyMoney CashFlowList::NPV( double _rate ) const
   return result;
 }
 
+double CashFlowList::calculateXIRR ( void ) const
+{
+  double resultRate = 0.00001;
+  
+  double resultZero = 0.00000;
+  //if ( args.count() > 2 )
+  //  resultRate = calc->conv()->asFloat ( args[2] ).asFloat();
+
+// check pairs and count >= 2 and guess > -1.0
+  //if ( args[0].count() != args[1].count() || args[1].count() < 2 || resultRate <= -1.0 )
+  //  return Value::errorVALUE();
+
+// define max epsilon
+  static const double maxEpsilon = 1e-5;
+
+// max number of iterations
+  static const int maxIter = 50;
+
+// Newton's method - try to find a res, with a accuracy of maxEpsilon
+  double rateEpsilon, newRate, resultValue; 
+  int i = 0;
+  bool contLoop;
+
+  do
+  {
+    resultValue = xirrResult ( resultRate );
+
+    double resultDerive = xirrResultDerive ( resultRate );
+
+    //check what happens if xirrResultDerive is zero
+    //Don't know if it is correct to dismiss the result
+    if( resultDerive != 0 ) {
+      newRate =  resultRate - resultValue / resultDerive;
+    } else {
+      
+      newRate =  resultRate - resultValue;
+    }
+
+    rateEpsilon = fabs ( newRate - resultRate );
+
+    resultRate = newRate;
+    contLoop = ( rateEpsilon > maxEpsilon ) && ( fabs ( resultValue ) > maxEpsilon );
+  }
+  while ( contLoop && ( ++i < maxIter ) );
+
+  if ( contLoop )
+    return resultZero;
+
+  return resultRate;
+}
+
+double CashFlowList::xirrResult ( double& rate ) const
+{
+  QDate date;
+
+  double r = rate + 1.0;
+  double res = 0.00000;//back().value().toDouble();
+
+  QValueList<CashFlowListItem>::const_iterator list_it = begin();
+  while( list_it != end() ) {
+    double e_i = ( (* list_it).today().daysTo ( (* list_it).date() ) ) / 365.0;
+    MyMoneyMoney val = (* list_it).value();
+
+    res += val.toDouble() / pow ( r, e_i );
+    ++list_it;
+  }
+
+  return res;
+}
+
+
+double CashFlowList::xirrResultDerive ( double& rate ) const
+{
+  QDate date;
+
+  double r = rate + 1.0;
+  double res = 0.00000;
+
+  QValueList<CashFlowListItem>::const_iterator list_it = begin();
+  while( list_it != end() ) {
+    double e_i = ( (* list_it).today().daysTo ( (* list_it).date() ) ) / 365.0;
+    MyMoneyMoney val = (* list_it).value();
+
+    res -= e_i * val.toDouble() / pow ( r, e_i + 1.0 );
+    ++list_it;
+  }
+
+  return res;
+}
+
 double CashFlowList::IRR( void ) const
 {
   double result = 0.0;
@@ -107,6 +205,10 @@ double CashFlowList::IRR( void ) const
   // set 'today', which is the most recent of all dates in the list
   CashFlowListItem::setToday( mostRecent().date() );
 
+  result = calculateXIRR();
+  return result;
+
+  /*
   double lobound = 0.0; // this is as low as we support
   double hibound = 1.00;
   double precision = 0.00001; // how precise do we want the answer?
@@ -178,6 +280,7 @@ double CashFlowList::IRR( void ) const
     }
   }
   return result;
+  */
 }
 
 MyMoneyMoney CashFlowList::total(void) const
@@ -960,8 +1063,8 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   all += buys;
   all += sells;
   all += cashincome;
-  all += CashFlowListItem(startingDate,-startingBal);
-  all += CashFlowListItem(endingDate,endingBal);
+  all += CashFlowListItem(startingDate, -startingBal);
+  all += CashFlowListItem(endingDate, endingBal);
 
   //check if no activity on that term
   if(!returnInvestment.isZero() && !endingBal.isZero()) {

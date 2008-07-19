@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-19 Alvaro Soliverez <asoliverez@gmail.com>
+  * Replaced IRR with XIRR from KOffice by Sascha Pfau,
+    modified to fit the way querytable works
+
 2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated German translation from yllohy
 

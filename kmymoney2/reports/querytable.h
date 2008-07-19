@@ -3,8 +3,16 @@
                          -------------------
     begin                : Fri Jul 23 2004
     copyright            : (C) 2004-2005 by Ace Jones
+                           (C) 2007 Sascha Pfau
     email                :  acejones@users.sourceforge.net
+                            MrPeacock@gmail.com
  ***************************************************************************/
+ 
+/****************************************************************************
+  Contains code from the func_xirr and related methods of financial.cpp 
+  - KOffice 1.6 by Sascha Pfau.  Sascha agreed to relicense those methods under
+  GPLv2 or later.
+*****************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -79,6 +87,7 @@ public:
   MyMoneyMoney NPV( double _rate ) const;
 
   static void setToday( const QDate& _today ) { m_sToday = _today; }
+  const QDate& today( void ) const { return m_sToday; }
 
 private:
   QDate m_date;
@@ -95,8 +104,36 @@ class CashFlowList: public QValueList<CashFlowListItem>
     double IRR(void) const;
     MyMoneyMoney total(void) const;
     void dumpDebug(void) const;
+
+    /**
+     * Function: XIRR
+     *
+     * Compute the internal rate of return for a non-periodic series of cash flows.
+     *
+     * XIRR ( Values; Dates; [ Guess = 0.1 ] )
+     **/
+    double calculateXIRR ( void ) const;
+
   protected:
     const CashFlowListItem& mostRecent(void) const;
+
+  private:
+        /**
+   * helper: xirrResult
+   *
+   * args[0] = values
+   * args[1] = dates
+         **/
+    double xirrResult ( double& rate ) const;
+
+        /**
+     *
+     * helper: xirrResultDerive
+     *
+     * args[0] = values
+     * args[1] = dates
+         **/
+    double xirrResultDerive ( double& rate ) const;
 };
 
 }
