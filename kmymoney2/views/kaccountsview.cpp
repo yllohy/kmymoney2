@@ -234,12 +234,12 @@ void KAccountsView::loadIconView(void)
   file->accountList(alist);
   QValueList<MyMoneyAccount>::const_iterator it_a;
   for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
-    accountMap[(*it_a).name()] = *it_a;
+    accountMap[QString("%1-%2").arg((*it_a).name()).arg((*it_a).id())] = *it_a;
   }
 
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked()
       || !KMyMoneyGlobalSettings::hideClosedAccounts();
-  
+
   // parse list and add all asset and liability accounts
   QMap<QString, MyMoneyAccount>::const_iterator it;
   QPoint loc;
