@@ -1642,7 +1642,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           txt = reconcileState(false);
           break;
 
-        case AmountColumn:
+        case QuantityColumn:
           align |= Qt::AlignRight;
           if(haveShares())
             txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
@@ -1695,7 +1695,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
             singleLineMemo(txt, m_split);
           break;
 
-        case AmountColumn:
+        case QuantityColumn:
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
             // txt = m_interestAmount.abs().formatMoney(m_currency);
@@ -1724,7 +1724,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
             singleLineMemo(txt, m_split);
           break;
 
-        case AmountColumn:
+        case QuantityColumn:
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()) {
@@ -1751,7 +1751,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
             singleLineMemo(txt, m_split);
           break;
 
-        case AmountColumn:
+        case QuantityColumn:
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()
@@ -1928,10 +1928,10 @@ void InvestTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWi
   arrangeWidget(m_parent, m_startRow + 2, DetailColumn, editWidgets["interest-account"]->parentWidget());
   arrangeWidget(m_parent, m_startRow + 3, DetailColumn, editWidgets["fee-account"]->parentWidget());
   arrangeWidget(m_parent, m_startRow + 4, DetailColumn, editWidgets["memo"]);
-  arrangeWidget(m_parent, m_startRow + 0, AmountColumn, editWidgets["shares"]);
+  arrangeWidget(m_parent, m_startRow + 0, QuantityColumn, editWidgets["shares"]);
   arrangeWidget(m_parent, m_startRow + 0, PriceColumn, editWidgets["price"]);
-  arrangeWidget(m_parent, m_startRow + 2, AmountColumn, editWidgets["interest-amount"]);
-  arrangeWidget(m_parent, m_startRow + 3, AmountColumn, editWidgets["fee-amount"]);
+  arrangeWidget(m_parent, m_startRow + 2, QuantityColumn, editWidgets["interest-amount"]);
+  arrangeWidget(m_parent, m_startRow + 3, QuantityColumn, editWidgets["fee-amount"]);
   arrangeWidget(m_parent, m_startRow + 0, ValueColumn, editWidgets["total"]);
   arrangeWidget(m_parent, m_startRow + 1, DateColumn, editWidgets["status"]);
 
@@ -1950,7 +1950,7 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
   // activity
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DetailColumn)));
   // shares
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, AmountColumn)));
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, QuantityColumn)));
   // price
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, PriceColumn)));
   // asset account
@@ -1967,7 +1967,7 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
     tabOrderWidgets.append(w);
 
   // interest amount
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 2, AmountColumn)));
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 2, QuantityColumn)));
 
   w = m_parent->cellWidget(m_startRow + 3, DetailColumn);    // fee account
   tabOrderWidgets.append(focusWidget(w));
@@ -1976,7 +1976,7 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
     tabOrderWidgets.append(w);
 
   // fee amount
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 3, AmountColumn)));
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 3, QuantityColumn)));
 
   // memo
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 4, DetailColumn)));

@@ -2,6 +2,11 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Renamed 'Amount' column in investment ledger to 'Quantity'
+  * Fixed a compile problem with libofx < 0.9 being used
+
 2008-07-19 Fernando Vilas <fvilas@iname.com>
   * Added db support for new file fix version
   * Fixed how file fix version is handled in db code

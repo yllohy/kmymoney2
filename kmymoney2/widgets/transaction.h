@@ -57,7 +57,7 @@ typedef enum {
   ReconcileFlagColumn,
   PaymentColumn,
   DepositColumn,
-  AmountColumn,
+  QuantityColumn,
   PriceColumn,
   ValueColumn,
   BalanceColumn,

@@ -536,7 +536,7 @@ Register::Register(QWidget *parent, const char *name ) :
   horizontalHeader()->setLabel(ReconcileFlagColumn, i18n("C"));
   horizontalHeader()->setLabel(PaymentColumn, i18n("Payment"));
   horizontalHeader()->setLabel(DepositColumn, i18n("Deposit"));
-  horizontalHeader()->setLabel(AmountColumn, i18n("Amount"));
+  horizontalHeader()->setLabel(AmountColumn, i18n("Quantity"));
   horizontalHeader()->setLabel(PriceColumn, i18n("Price"));
   horizontalHeader()->setLabel(ValueColumn, i18n("Value"));
   horizontalHeader()->setLabel(BalanceColumn, i18n("Balance"));
@@ -723,7 +723,7 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
 
     case MyMoneyAccount::Investment:
       showColumn(SecurityColumn);
-      showColumn(AmountColumn);
+      showColumn(QuantityColumn);
       showColumn(PriceColumn);
       showColumn(ValueColumn);
       break;
