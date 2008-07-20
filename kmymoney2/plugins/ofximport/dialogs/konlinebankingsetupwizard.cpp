@@ -50,6 +50,7 @@
 #include "konlinebankingsetupwizard.h"
 #include <../ofxpartner.h>
 #include <libxml++/exceptions/exception.h>
+#include <mymoneyofxconnector.h>
 
 using std::string;
 using std::vector;
