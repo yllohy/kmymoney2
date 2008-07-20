@@ -8,6 +8,7 @@
   * Fixed a compile problem with libofx < 0.9 being used
   * Show multiple accounts with the same name in account icon view
     as multiple icons
+  * Fixed placement of calculator to make sure it's not outside the desktop
 
 2008-07-19 Fernando Vilas <fvilas@iname.com>
   * Added db support for new file fix version

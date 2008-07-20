@@ -467,7 +467,7 @@ void kMyMoneyEdit::calculatorOpen(QKeyEvent* k)
   // usually, the calculator widget is shown underneath the MoneyEdit widget
   // if it does not fit on the screen, we show it above this widget
   QPoint p = mapToGlobal(QPoint(0,0));
-  if(p.y() + h > QApplication::desktop()->height())
+  if(p.y() + height() + h > QApplication::desktop()->height())
     p.setY(p.y() - h);
   else
     p.setY(p.y() + height());
