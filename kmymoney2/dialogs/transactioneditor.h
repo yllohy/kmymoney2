@@ -306,10 +306,10 @@ public:
   bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog = false);
 
 public slots:
-  void slotReloadEditWidgets(void);
   int slotEditSplits(void);
 
 protected slots:
+  void slotReloadEditWidgets(void);
   void slotUpdatePayment(const QString&);
   void slotUpdateDeposit(const QString&);
   void slotUpdateAmount(const QString&);

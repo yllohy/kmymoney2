@@ -102,6 +102,7 @@ protected slots:
 
   int slotEditInterestSplits(void);
   int slotEditFeeSplits(void);
+  void slotReloadEditWidgets(void);
 
   void slotUpdateActivity(MyMoneySplit::investTransactionTypeE);
   void slotUpdateSecurity(const QCString& stockId);

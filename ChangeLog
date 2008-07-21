@@ -3,7 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
-2008-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2008-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed investtransaction editor to work with newly created categories
+    and securities
+
+2008-07-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Renamed 'Amount' column in investment ledger to 'Quantity'
   * Fixed a compile problem with libofx < 0.9 being used
   * Show multiple accounts with the same name in account icon view

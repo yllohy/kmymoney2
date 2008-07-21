@@ -507,6 +507,32 @@ void InvestTransactionEditor::slotCreateInterestCategory(const QString& name, QC
   id = acc.id();
 }
 
+void InvestTransactionEditor::slotReloadEditWidgets(void)
+{
+  KMyMoneyCategory* interest = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
+  KMyMoneyCategory* fees = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
+  KMyMoneySecurity* security = dynamic_cast<KMyMoneySecurity*>(haveWidget("security"));
+
+  AccountSet aSet;
+  QCString id;
+
+  // interest-account
+  aSet.clear();
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.load(interest->selector());
+  setupCategoryWidget(interest, m_interestSplits, id, SLOT(slotEditInterestSplits()));
+
+  // fee-account
+  aSet.clear();
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  aSet.load(fees->selector());
+  setupCategoryWidget(fees, m_feeSplits, id, SLOT(slotEditFeeSplits()));
+
+  // security
+  aSet.clear();
+  aSet.load(security->selector(), i18n("Security"), m_account.accountList(), true);
+}
+
 void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action */)
 {
   QCString id;
