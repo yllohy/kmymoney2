@@ -3755,6 +3755,10 @@ void KMyMoney2App::slotPayeeDelete(void)
       file->removePayee(*it);
     }
 
+    // if we initially have no matching turned on, we just ignore the case (default)
+    if(matchType == MyMoneyPayee::matchDisabled)
+      ignorecase = true;
+
     // update the destination payee if this was requested by the user
     if(addToMatchList && deletedPayeeNames.count() > 0) {
       // add new names to the list
@@ -3763,7 +3767,17 @@ void KMyMoney2App::slotPayeeDelete(void)
       //       to the user himeself.
       QStringList::const_iterator it_n;
       for(it_n = deletedPayeeNames.begin(); it_n != deletedPayeeNames.end(); ++it_n) {
-        if(payeeNames.contains(*it_n) == 0)
+        if(matchType == MyMoneyPayee::matchKey) {
+          // make sure we really need it and it is not caught by an existing regexp
+          QStringList::const_iterator it_k;
+          for(it_k = payeeNames.begin(); it_k != payeeNames.end(); ++it_k) {
+            QRegExp exp(*it_k, ignorecase);
+            if(exp.search(*it_n) != -1)
+              break;
+          }
+          if(it_k == payeeNames.end())
+            payeeNames << (*it_n);
+        } else if(payeeNames.contains(*it_n) == 0)
           payeeNames << (*it_n);
       }
 
