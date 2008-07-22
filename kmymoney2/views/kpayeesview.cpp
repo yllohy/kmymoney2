@@ -741,6 +741,10 @@ void KPayeesView::slotPayeeDataChanged(void)
 
     if(m_matchType->selectedId() != MyMoneyPayee::matchDisabled) {
       checkMatchIgnoreCase->setEnabled(true);
+      // if we turn matching on, we default to 'ignore case'
+      // TODO maybe make the default a user option
+      if(type == MyMoneyPayee::matchDisabled && m_matchType->selectedId() != MyMoneyPayee::matchDisabled)
+        checkMatchIgnoreCase->setChecked(true);
       rc |= (ignorecase != checkMatchIgnoreCase->isChecked());
       if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
         matchKeyEditList->setEnabled(true);

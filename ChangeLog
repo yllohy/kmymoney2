@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Automatically add copy of deleted payee names to match list of
+    replacement payee 
+  * Default payee matching to ignore case when first turned on
+
 2008-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed investtransaction editor to work with newly created categories
     and securities

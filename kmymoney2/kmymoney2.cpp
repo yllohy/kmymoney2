@@ -3674,6 +3674,8 @@ void KMyMoney2App::slotPayeeDelete(void)
     }
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
 
+    MyMoneyPayee newPayee;
+    bool addToMatchList = false;
     // if at least one payee is still referenced, we need to reassign its transactions first
     if (!translist.isEmpty() || !used_schedules.isEmpty()) {
       // show error message if no payees remain
@@ -3687,9 +3689,12 @@ void KMyMoney2App::slotPayeeDelete(void)
       // show transaction reassignment dialog
       KPayeeReassignDlg * dlg = new KPayeeReassignDlg(this);
       QCString payee_id = dlg->show(remainingPayees);
+      addToMatchList = dlg->addToMatchList();
       delete dlg; // and kill the dialog
       if (payee_id.isEmpty())
         return; // the user aborted the dialog, so let's abort as well
+
+      newPayee = file->payee(payee_id);
 
       // TODO : check if we have a report that explicitely uses one of our payees
       //        and issue an appropriate warning
@@ -3736,10 +3741,36 @@ void KMyMoney2App::slotPayeeDelete(void)
       }
     } // if !translist.isEmpty()
 
+    bool ignorecase;
+    QStringList payeeNames;
+    MyMoneyPayee::payeeMatchType matchType = newPayee.matchData(ignorecase, payeeNames);
+    QStringList deletedPayeeNames;
+
     // now loop over all selected payees and remove them
     for (QValueList<MyMoneyPayee>::iterator it = m_selectedPayees.begin();
       it != m_selectedPayees.end(); ++it) {
+      if(addToMatchList) {
+        deletedPayeeNames << (*it).name();
+      }
       file->removePayee(*it);
+    }
+
+    // update the destination payee if this was requested by the user
+    if(addToMatchList && deletedPayeeNames.count() > 0) {
+      // add new names to the list
+      // TODO: it would be cool to somehow shrink the list to make better use
+      //       of regular expressions at this point. For now, we leave this task
+      //       to the user himeself.
+      QStringList::const_iterator it_n;
+      for(it_n = deletedPayeeNames.begin(); it_n != deletedPayeeNames.end(); ++it_n) {
+        if(payeeNames.contains(*it_n) == 0)
+          payeeNames << (*it_n);
+      }
+
+      // and update the payee in the engine context
+      // make sure to turn on matching for this payee in the right mode
+      newPayee.setMatchData(MyMoneyPayee::matchKey, ignorecase, payeeNames);
+      file->modifyPayee(newPayee);
     }
     ft.commit();
 

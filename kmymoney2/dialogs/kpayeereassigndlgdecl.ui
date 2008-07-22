@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>392</width>
-            <height>286</height>
+            <width>558</width>
+            <height>312</height>
         </rect>
     </property>
     <property name="caption">
@@ -85,10 +85,18 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_copyToMatchList</cstring>
+            </property>
+            <property name="text">
+                <string>Assign deleted names to the above selected payee's matching list</string>
+            </property>
+        </widget>
         <widget class="Line">
             <property name="name">
                 <cstring>line1</cstring>
