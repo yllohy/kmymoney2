@@ -2,6 +2,7 @@ Project(Dialogs)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/wizardpages )
+INCLUDE_DIRECTORIES( ${KMyMoney_SOURCE_DIR}/libkdchart)
 
 ADD_SUBDIRECTORY( settings ) 
 #ADD_SUBDIRECTORY( wizardpages )
@@ -28,7 +29,7 @@ kpayeereassigndlg.cpp kcategoryreassigndlg.cpp kconfirmmanualenterdlg.cpp
 transactioneditor.cpp investtransactioneditor.cpp investactivities.cpp kbalancechartdlg.cpp
 konlinebankingsetupwizard.cpp knewbudgetdlg.cpp kselecttransactionsdlg.cpp
 kmergetransactionsdlg.cpp kloadtemplatedlg.cpp kmymoneysplittable.cpp
-kgpgkeyselectiondlg.cpp
+kgpgkeyselectiondlg.cpp transactionmatcher.cpp
 )
 
 KDE3_AUTOMOC(${libdialogs_a_SOURCES})

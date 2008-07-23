@@ -461,6 +461,7 @@ class RegisterToolTip : public QToolTip
 public:
   RegisterToolTip(QWidget* parent, Register* reg);
   void maybeTip(const QPoint& pos);
+  virtual ~RegisterToolTip() {};
 private:
   Register* m_register;
 };

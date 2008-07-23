@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-07-23 Joerg Rodehueser <wampbier@users.sourceforge.net>
+ * Did some code cleaning to avoid compiler warnings
+ * Added the kdchar source to the cmake build
+ * Added missing files to CMakeLists.txt
 
 2008-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Escape special characters in payee names before adding to match list

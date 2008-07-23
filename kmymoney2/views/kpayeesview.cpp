@@ -703,7 +703,9 @@ void KPayeesView::slotKeyListChanged(void)
   bool rc = false;
   bool ignorecase = false;
   QStringList keys;
-  MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, keys);
+  // J.Rodehueser: delete unused variable 'type'
+  // orig:  MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, keys);
+  m_payee.matchData(ignorecase, keys);
   if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
     rc |= (keys != matchKeyEditList->items());
   }

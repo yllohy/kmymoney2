@@ -88,6 +88,7 @@ class MyMoneyStorageSql;
 class MyMoneySqlQuery : public QSqlQuery {
   public:
     MyMoneySqlQuery (MyMoneyStorageSql* db = 0);
+    virtual ~MyMoneySqlQuery() {};
     bool exec ();
     bool prepare ( const QString & query );
   private:
@@ -143,9 +144,10 @@ class MyMoneyDbDatetimeColumn : public MyMoneyDbColumn {
     MyMoneyDbDatetimeColumn (const QString& iname,
                              const bool iprimary = false,
                              const bool inotnull = false,
-             const QString &initVersion = "0.1"):
-      MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion)
-      {};
+			     const QString &initVersion = "0.1"):
+	    MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion)
+	    {};
+    virtual ~MyMoneyDbDatetimeColumn() {};
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbDatetimeColumn* clone () const;
   private:
@@ -165,6 +167,7 @@ class MyMoneyDbIntColumn : public MyMoneyDbColumn {
     m_type  (type),
     m_isSigned (isigned)
     {};
+    virtual ~MyMoneyDbIntColumn() {};
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbIntColumn* clone () const;
   private:
@@ -183,7 +186,7 @@ class MyMoneyDbTextColumn : public MyMoneyDbColumn {
         MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion),
     m_type  (type)
     {};
-
+    virtual ~MyMoneyDbTextColumn() {};
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbTextColumn* clone () const;
   private:
@@ -321,7 +324,7 @@ class MyMoneyStorageSql : public IMyMoneyStorageFormat, public QSqlDatabase, pub
 public:
 
   MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& = KURL());
-  ~MyMoneyStorageSql() {};
+  virtual ~MyMoneyStorageSql() {};
 
   const unsigned int currentVersion() const {return (m_db.currentVersion());};
 

@@ -278,7 +278,7 @@ void KDChartHiLoPainter::specificPaintData( QPainter* painter,
                                 - lowYPos
                                 + height/2
                                 + nLineWidth/2;
-                    } else
+                    }// else
                         ; // no way to draw it (really?)
                 }
                 lowText.draw( painter,
@@ -319,7 +319,7 @@ void KDChartHiLoPainter::specificPaintData( QPainter* painter,
                                 - highYPos
                                 + height/2
                                 - nLineWidth/2;
-                    } else
+                    } //else
                         ; // no way to draw it (really?)
                 }
                 highText.draw( painter,

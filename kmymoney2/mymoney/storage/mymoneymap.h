@@ -31,7 +31,7 @@ public:
   // typedef QMapConstIterator<Key, T> const_iterator;
 
   MyMoneyMap() : QMap<Key, T>() {}
-  ~MyMoneyMap() {}
+  virtual ~MyMoneyMap() {}
 
   void startTransaction(unsigned long* id = 0)
   {
@@ -173,6 +173,7 @@ private:
         m_obj(obj),
         m_key(key) {}
 
+      virtual ~MyMoneyMapAction() {};
       virtual void undo(void) = 0;
 
     protected:
@@ -191,13 +192,13 @@ private:
         if(id != 0)
           m_id = *id;
       }
-
+      virtual ~MyMoneyMapStart() {};
       void undo(void)
       {
         if(m_idPtr != 0)
           *m_idPtr = m_id;
       }
-
+      
     private:
       unsigned long* m_idPtr;
       unsigned long  m_id;
@@ -212,6 +213,7 @@ private:
         (*container)[key] = obj;
       }
 
+      virtual ~MyMoneyMapInsert() {};
       void undo(void)
       {
         // m_container->remove(m_key) does not work on GCC 4.0.2
@@ -228,7 +230,8 @@ private:
       {
         container->remove(key);
       }
-
+      
+      virtual ~MyMoneyMapRemove() {};
       void undo(void)
       {
         (*(this->m_container))[this->m_key] = this->m_obj;
@@ -244,6 +247,7 @@ private:
         (*container)[key] = obj;
       }
 
+      virtual ~MyMoneyMapModify() {};
       void undo(void)
       {
         (*(this->m_container))[this->m_key] = this->m_obj;

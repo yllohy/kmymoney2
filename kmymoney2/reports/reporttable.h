@@ -40,8 +40,8 @@ class ReportTable
 {
 protected:
     ReportTable() {}
-
 public:
+    virtual ~ReportTable() {}
     virtual QString renderHTML(void) const = 0;
     virtual QString renderCSV(void) const = 0;
     virtual void drawChart(KReportChartView& view) const = 0;

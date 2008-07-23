@@ -67,6 +67,11 @@ public:
     PivotTable( const MyMoneyReport& _config_f );
 
   /**
+    * virtual Destructur 
+    */
+    virtual ~PivotTable() {}; 
+
+  /**
     * Render the report to an HTML stream.
     *
     * @return QString HTML string representing the report

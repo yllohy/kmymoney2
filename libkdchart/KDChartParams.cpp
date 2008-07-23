@@ -9247,7 +9247,10 @@ void KDChartParams::insertDefaultAxisTitleBox( uint n,
                                 false, n );
 
    customBox.setParentAxisArea( n );
-   const uint id = insertCustomBox( customBox );
+   insertCustomBox( customBox );
+   // J.Rodehuser: delete the unused variable 'id'
+   // const uint id = insertCustomBox( customBox );
+
    /*debugging Title box*/
     /*
    setSimpleFrame(

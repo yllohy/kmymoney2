@@ -219,8 +219,10 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::futureValue(void)
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::interestRate(void)
 {
-  FCALC_DOUBLE eint;
-  FCALC_DOUBLE a, dik;
+  FCALC_DOUBLE eint = 0.0;
+  FCALC_DOUBLE a = 0.0;
+  FCALC_DOUBLE dik = 0.0;
+
   const FCALC_DOUBLE ratio = 1e4;
   int ri;
 
