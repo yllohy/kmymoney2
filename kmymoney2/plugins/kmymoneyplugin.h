@@ -94,8 +94,8 @@ namespace KMyMoneyPlugin {
   class KMYMONEY_EXPORT OnlinePlugin
   {
   public:
-    OnlinePlugin() {};
-    virtual ~OnlinePlugin() {};
+    OnlinePlugin() {}
+    virtual ~OnlinePlugin() {}
 
     virtual void protocols(QStringList& protocolList) const = 0;
 
@@ -159,8 +159,8 @@ namespace KMyMoneyPlugin {
   class KMYMONEY_EXPORT ImporterPlugin
   {
   public:
-    ImporterPlugin() {};
-    virtual ~ImporterPlugin() {};
+    ImporterPlugin() {}
+    virtual ~ImporterPlugin() {}
 
     /**
       * This method returns the english-language name of the format

@@ -45,7 +45,7 @@ class KMyMoneyPriceItem : public KMyMoneyListViewItem
 {
 public:
   KMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);
-  ~KMyMoneyPriceItem() {};
+  ~KMyMoneyPriceItem() {}
 
   int compare(QListViewItem *p, int col, bool ascending) const;
 

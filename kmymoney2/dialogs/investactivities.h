@@ -50,7 +50,7 @@ public:
   virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency) = 0;
 
   virtual void preloadAssetAccount(void);
-  virtual ~Activity() {};
+  virtual ~Activity() {}
 
 protected:
   Activity(InvestTransactionEditor* editor) { m_parent = editor; }
@@ -77,7 +77,7 @@ class Buy : public Activity
 {
 public:
   Buy(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Buy() {};
+  virtual ~Buy() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::BuyShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -88,7 +88,7 @@ class Sell : public Activity
 {
 public:
   Sell(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Sell() {};
+  virtual ~Sell() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::SellShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -99,7 +99,7 @@ class Div : public Activity
 {
 public:
   Div(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Div() {};
+  virtual ~Div() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::Dividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -110,7 +110,7 @@ class Reinvest : public Activity
 {
 public:
   Reinvest(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Reinvest() {};
+  virtual ~Reinvest() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::ReinvestDividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -121,7 +121,7 @@ class Add : public Activity
 {
 public:
   Add(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Add() {};
+  virtual ~Add() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::AddShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -132,7 +132,7 @@ class Remove : public Activity
 {
 public:
   Remove(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Remove() {};
+  virtual ~Remove() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::RemoveShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
@@ -143,7 +143,7 @@ class Split : public Activity
 {
 public:
   Split(InvestTransactionEditor* editor) : Activity(editor) {}
-  virtual ~Split() {};
+  virtual ~Split() {}
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::SplitShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;

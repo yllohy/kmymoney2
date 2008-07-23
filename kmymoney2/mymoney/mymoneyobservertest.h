@@ -22,12 +22,12 @@
 class TestObserver : public MyMoneyObserver
 {
 public:
-	TestObserver() { m_updated = ""; }
-	void update(const QCString& id) { m_updated = id; };
-	const QCString& updated(void) { return m_updated; };
-	void reset(void) { m_updated = ""; };
+        TestObserver() { m_updated = ""; }
+        void update(const QCString& id) { m_updated = id; };
+        const QCString& updated(void) { return m_updated; };
+        void reset(void) { m_updated = ""; };
 private:
-	QCString m_updated;
+        QCString m_updated;
 };
 
 class TestSubject : public MyMoneySubject
@@ -36,69 +36,69 @@ class TestSubject : public MyMoneySubject
 
 class MyMoneyObserverTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST_SUITE(MyMoneyObserverTest);
-	CPPUNIT_TEST(testEmptySubject);
-	CPPUNIT_TEST(testAddObserver);
-	CPPUNIT_TEST(testRemoveObserver);
-	CPPUNIT_TEST(testNotifyObserver);
-	CPPUNIT_TEST(testNotifyMultipleObserver);
+        CPPUNIT_TEST(testEmptySubject);
+        CPPUNIT_TEST(testAddObserver);
+        CPPUNIT_TEST(testRemoveObserver);
+        CPPUNIT_TEST(testNotifyObserver);
+        CPPUNIT_TEST(testNotifyMultipleObserver);
         CPPUNIT_TEST_SUITE_END();
 
 protected:
-	TestSubject *subject;
-	TestObserver *observer1;
-	TestObserver *observer2;
+        TestSubject *subject;
+        TestObserver *observer1;
+        TestObserver *observer2;
 
 public:
-	MyMoneyObserverTest () {};
+        MyMoneyObserverTest () {}
 
 
 void setUp () {
-	subject = new TestSubject;
-	observer1 = new TestObserver;
-	observer2 = new TestObserver;
+        subject = new TestSubject;
+        observer1 = new TestObserver;
+        observer2 = new TestObserver;
 }
 
 void tearDown () {
-	delete observer1;
-	delete observer2;
-	delete subject;
+        delete observer1;
+        delete observer2;
+        delete subject;
 }
 
 void testEmptySubject() {
-	CPPUNIT_ASSERT(subject->m_observers.count() == 0);
+        CPPUNIT_ASSERT(subject->m_observers.count() == 0);
 }
 
 void testAddObserver() {
-	subject->attach(observer1);
-	CPPUNIT_ASSERT(subject->m_observers.count() == 1);
-	CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
+        subject->attach(observer1);
+        CPPUNIT_ASSERT(subject->m_observers.count() == 1);
+        CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
 }
 
 void testRemoveObserver() {
-	testAddObserver();
-	subject->detach(observer1);
-	CPPUNIT_ASSERT(subject->m_observers.count() == 0);
+        testAddObserver();
+        subject->detach(observer1);
+        CPPUNIT_ASSERT(subject->m_observers.count() == 0);
 }
 
 void testNotifyObserver() {
-	testAddObserver();
-	CPPUNIT_ASSERT(observer1->updated() == "");
-	subject->notify("my id");
-	CPPUNIT_ASSERT(observer1->updated() == "my id");
+        testAddObserver();
+        CPPUNIT_ASSERT(observer1->updated() == "");
+        subject->notify("my id");
+        CPPUNIT_ASSERT(observer1->updated() == "my id");
 }
 
 void testNotifyMultipleObserver() {
-	testAddObserver();
-	subject->attach(observer2);
-	CPPUNIT_ASSERT(subject->m_observers.count() == 2);
-	CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
-	CPPUNIT_ASSERT(subject->m_observers.at(1) == observer2);
+        testAddObserver();
+        subject->attach(observer2);
+        CPPUNIT_ASSERT(subject->m_observers.count() == 2);
+        CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
+        CPPUNIT_ASSERT(subject->m_observers.at(1) == observer2);
 
-	CPPUNIT_ASSERT(observer1->updated() == "");
-	CPPUNIT_ASSERT(observer2->updated() == "");
-	subject->notify("my id");
-	CPPUNIT_ASSERT(observer1->updated() == "my id");
-	CPPUNIT_ASSERT(observer2->updated() == "my id");
+        CPPUNIT_ASSERT(observer1->updated() == "");
+        CPPUNIT_ASSERT(observer2->updated() == "");
+        subject->notify("my id");
+        CPPUNIT_ASSERT(observer1->updated() == "my id");
+        CPPUNIT_ASSERT(observer2->updated() == "my id");
 }
 
 };

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef WEBPRICEQUOTE_H 
-#define WEBPRICEQUOTE_H 
+#ifndef WEBPRICEQUOTE_H
+#define WEBPRICEQUOTE_H
 
 // ----------------------------------------------------------------------------
 // QT Headers
@@ -99,10 +99,10 @@ class FinanceQuoteProcess: public KProcess
   */
 struct WebPriceQuoteSource
 {
-  WebPriceQuoteSource() {};
+  WebPriceQuoteSource() {}
   WebPriceQuoteSource(const QString& name);
   WebPriceQuoteSource(const QString& name, const QString& url, const QString& sym, const QString& price, const QString& date, const QString& dateformat);
-  ~WebPriceQuoteSource() {};
+  ~WebPriceQuoteSource() {}
 
   void write(void) const;
   void rename(const QString& name);
@@ -127,12 +127,12 @@ class WebPriceQuote: public QObject
 public:
   WebPriceQuote( QObject* = 0, const char* = 0 );
   ~WebPriceQuote();
-  
+
   typedef enum _quoteSystemE {
-    Native=0, 
+    Native=0,
     FinanceQuote
   } quoteSystemE;
-  
+
   /**
     * This launches a web-based quote update for the given @p _symbol.
     * When the quote is received back from the web source, it will be
@@ -146,7 +146,7 @@ public:
     *                source.
     * @return bool Whether the quote fetch process was launched successfully
     */
-  
+
   bool launch(const QString& _symbol, const QString& _id, const QString& _source=QString());
 
   /**
@@ -157,25 +157,25 @@ public:
    * @return QStringList of quote source names
     */
   static QStringList quoteSources(const _quoteSystemE _system=Native);
-    
+
 signals:
   void quote(const QString&, const QString&, const QDate&, const double&);
   void failed(const QString&, const QString&);
   void status(const QString&);
   void error(const QString&);
-  
+
 protected slots:
   void slotParseQuote(const QString&);
-  
+
 protected:
   static QMap<QString,WebPriceQuoteSource> defaultQuoteSources(void);
-  
+
 private:
   bool launchNative(const QString& _symbol, const QString& _id, const QString& _source=QString());
   bool launchFinanceQuote(const QString& _symbol, const QString& _id, const QString& _source=QString());
   static QStringList quoteSourcesNative();
   static QStringList quoteSourcesFinanceQuote();
-  
+
   WebPriceQuoteProcess m_filter;
   QString m_symbol;
   QString m_id;
@@ -200,7 +200,7 @@ private:
 namespace convertertest {
 
 /**
-Simple class to handle signals/slots for unit tests 
+Simple class to handle signals/slots for unit tests
 
 @author Ace Jones <acejones@users.sourceforge.net>
 */

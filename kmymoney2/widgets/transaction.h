@@ -69,7 +69,7 @@ class Transaction : public RegisterItem
 {
 public:
   Transaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
-  virtual ~Transaction() {};
+  virtual ~Transaction() {}
 
   virtual const char* className(void) { return "Transaction"; }
 
@@ -283,7 +283,7 @@ class StdTransaction : public Transaction
 {
 public:
   StdTransaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
-  virtual ~StdTransaction() {};
+  virtual ~StdTransaction() {}
 
   virtual const char* className(void) { return "StdTransaction"; }
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
@@ -334,7 +334,7 @@ class InvestTransaction : public Transaction
 {
 public:
   InvestTransaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
-  virtual ~InvestTransaction() {};
+  virtual ~InvestTransaction() {}
 
   virtual const QString& sortSecurity(void) const { return m_security.name(); }
   virtual const char* className(void) { return "InvestTransaction"; }

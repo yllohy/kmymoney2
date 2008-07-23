@@ -88,7 +88,7 @@ public:
   };
 
   KTransactionPtrVector() { m_sortType = SortPostDate; };
-  ~KTransactionPtrVector() {};
+  ~KTransactionPtrVector() {}
 
   /**
     * This method is used to set a different sort type.

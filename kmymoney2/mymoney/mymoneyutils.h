@@ -65,8 +65,8 @@ void timestamp(const char *);
 class MyMoneyUtils
 {
 public:
-  MyMoneyUtils() {};
-  ~MyMoneyUtils() {};
+  MyMoneyUtils() {}
+  ~MyMoneyUtils() {}
 
   //static function to add the correct file extension at the end of the file name
   static QString getFileExtension(QString strFileName);
@@ -110,7 +110,7 @@ class _CheckMemoryEntry {
 public:
   _CheckMemoryEntry();
   _CheckMemoryEntry(void *p, int line, size_t size, const char *file);
-  ~_CheckMemoryEntry() {};
+  ~_CheckMemoryEntry() {}
 
   void * pointer(void) const { return m_p; };
   const int line(void) const { return m_line; };

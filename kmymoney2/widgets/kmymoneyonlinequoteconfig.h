@@ -35,7 +35,7 @@ class kMyMoneyOnlineQuoteConfig : public kMyMoneyOnlineQuoteConfigDecl
   Q_OBJECT
 public:
   kMyMoneyOnlineQuoteConfig(QWidget* parent, const char *name);
-  virtual ~kMyMoneyOnlineQuoteConfig() {};
+  virtual ~kMyMoneyOnlineQuoteConfig() {}
 
   void writeConfig(void) {}
   void readConfig(void) {}

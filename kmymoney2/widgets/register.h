@@ -88,7 +88,7 @@ TransactionSortField textToSortOrder(const QString& text);
 class QWidgetContainer : public QMap<QString, QWidget*>
 {
 public:
-  QWidgetContainer() {};
+  QWidgetContainer() {}
 
   QWidget* haveWidget(const QString& name) const {
     QWidgetContainer::const_iterator it_w;
@@ -281,7 +281,7 @@ public:
   void endEdit(int row, int col, bool accept, bool replace);
   void paintCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
-  void resizeData(int) {};
+  void resizeData(int) {}
   QTableItem* item(int, int) { return 0; }
   void setItem(int, int, QTableItem*) {}
   void clearCell(int, int) {}

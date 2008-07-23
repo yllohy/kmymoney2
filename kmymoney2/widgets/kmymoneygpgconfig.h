@@ -42,7 +42,7 @@ class kMyMoneyGPGConfig : public kMyMoneyGPGConfigDecl
   Q_OBJECT
 public:
   kMyMoneyGPGConfig(QWidget* parent, const char *name);
-  virtual ~kMyMoneyGPGConfig() {};
+  virtual ~kMyMoneyGPGConfig() {}
 
   void writeConfig(void);
   void readConfig(void);

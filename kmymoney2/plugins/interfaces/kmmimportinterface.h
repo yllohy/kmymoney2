@@ -48,7 +48,7 @@ class KMMImportInterface : public ImportInterface {
 
 public:
   KMMImportInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMImportInterface() {};
+  ~KMMImportInterface() {}
 
   KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode) const;
 

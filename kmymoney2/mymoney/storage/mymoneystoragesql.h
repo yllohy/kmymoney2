@@ -88,7 +88,7 @@ class MyMoneyStorageSql;
 class MyMoneySqlQuery : public QSqlQuery {
   public:
     MyMoneySqlQuery (MyMoneyStorageSql* db = 0);
-    virtual ~MyMoneySqlQuery() {};
+    virtual ~MyMoneySqlQuery() {}
     bool exec ();
     bool prepare ( const QString & query );
   private:
@@ -118,10 +118,9 @@ class MyMoneyDbColumn : public KShared {
     m_type(itype),
     m_isPrimary(iprimary),
     m_isNotNull(inotnull),
-    m_initVersion(initVersion)
-    {};
-    MyMoneyDbColumn (void) {};
-    virtual ~MyMoneyDbColumn () {};
+    m_initVersion(initVersion) {}
+    MyMoneyDbColumn (void) {}
+    virtual ~MyMoneyDbColumn () {}
 
     virtual MyMoneyDbColumn* clone () const;
 
@@ -144,10 +143,10 @@ class MyMoneyDbDatetimeColumn : public MyMoneyDbColumn {
     MyMoneyDbDatetimeColumn (const QString& iname,
                              const bool iprimary = false,
                              const bool inotnull = false,
-			     const QString &initVersion = "0.1"):
-	    MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion)
-	    {};
-    virtual ~MyMoneyDbDatetimeColumn() {};
+                             const QString &initVersion = "0.1"):
+            MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion)
+            {}
+    virtual ~MyMoneyDbDatetimeColumn() {}
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbDatetimeColumn* clone () const;
   private:
@@ -165,9 +164,8 @@ class MyMoneyDbIntColumn : public MyMoneyDbColumn {
              const QString &initVersion = "0.1"):
         MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion),
     m_type  (type),
-    m_isSigned (isigned)
-    {};
-    virtual ~MyMoneyDbIntColumn() {};
+    m_isSigned (isigned) {}
+    virtual ~MyMoneyDbIntColumn() {}
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbIntColumn* clone () const;
   private:
@@ -184,9 +182,8 @@ class MyMoneyDbTextColumn : public MyMoneyDbColumn {
                          const bool inotnull = false,
              const QString &initVersion = "0.1"):
         MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion),
-    m_type  (type)
-    {};
-    virtual ~MyMoneyDbTextColumn() {};
+    m_type  (type) {}
+    virtual ~MyMoneyDbTextColumn() {}
     virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbTextColumn* clone () const;
   private:
@@ -224,8 +221,8 @@ class MyMoneyDbTable {
              const QString& initVersion = "1.0"):
     m_name(iname),
     m_fields(ifields),
-    m_initVersion(initVersion) {};
-    MyMoneyDbTable (void) {};
+    m_initVersion(initVersion) {}
+    MyMoneyDbTable (void) {}
 
     inline const QString& name(void) const {return (m_name);}
     inline const QString& insertString(void) const {return (m_insertString);};
@@ -263,7 +260,7 @@ class MyMoneyDbView {
     : m_name (name), m_createString (createString), m_initVersion (initVersion)
     {}
 
-    MyMoneyDbView (void) {};
+    MyMoneyDbView (void) {}
 
     inline const QString& name(void) const {return (m_name);}
     inline const QString createString(void) const {return (m_createString);};
@@ -279,7 +276,7 @@ class MyMoneyDbDef  {
   friend class MyMoneyDatabaseMgr;
 public:
     MyMoneyDbDef();
-    ~MyMoneyDbDef() {};
+    ~MyMoneyDbDef() {}
 
     const QString generateSQL (const QString& driver) const;
 
@@ -324,7 +321,7 @@ class MyMoneyStorageSql : public IMyMoneyStorageFormat, public QSqlDatabase, pub
 public:
 
   MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& = KURL());
-  virtual ~MyMoneyStorageSql() {};
+  virtual ~MyMoneyStorageSql() {}
 
   const unsigned int currentVersion() const {return (m_db.currentVersion());};
 

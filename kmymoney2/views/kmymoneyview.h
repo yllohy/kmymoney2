@@ -608,7 +608,7 @@ class KMyMoneyViewBase : public QWidget
   Q_OBJECT
 public:
   KMyMoneyViewBase(QWidget* parent, const char *name, const QString& title);
-  virtual ~KMyMoneyViewBase() {};
+  virtual ~KMyMoneyViewBase() {}
 
   void setTitle(const QString& title);
   QVBoxLayout* layout(void) const { return m_viewLayout; }

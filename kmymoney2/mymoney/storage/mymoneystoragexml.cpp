@@ -67,7 +67,7 @@ class MyMoneyXmlContentHandler : public QXmlContentHandler
 {
 public:
   MyMoneyXmlContentHandler(MyMoneyStorageXML* reader);
-  virtual ~MyMoneyXmlContentHandler() {};
+  virtual ~MyMoneyXmlContentHandler() {}
   virtual void setDocumentLocator (QXmlLocator * locator) { m_loc = locator; }
   virtual bool startDocument (void);
   virtual bool endDocument (void);

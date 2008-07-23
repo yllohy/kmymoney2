@@ -52,7 +52,7 @@ class KMYMONEY_EXPORT ImportInterface : public QObject
 
 public:
   ImportInterface(QObject* parent, const char* name = 0);
-  ~ImportInterface() {};
+  ~ImportInterface() {}
 
   virtual KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode) const = 0;
 

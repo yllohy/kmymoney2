@@ -49,7 +49,7 @@ class KMMStatementInterface : public StatementInterface
 
 public:
   KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMStatementInterface() {};
+  ~KMMStatementInterface() {}
 
   /**
     * This method imports a MyMoneyStatement into the engine

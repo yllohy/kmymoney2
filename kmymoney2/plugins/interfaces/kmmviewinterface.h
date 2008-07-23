@@ -48,7 +48,7 @@ class KMMViewInterface : public ViewInterface {
 
 public:
   KMMViewInterface(KMyMoney2App* app, KMyMoneyView* view, QObject* parent, const char* name = 0);
-  ~KMMViewInterface() {};
+  ~KMMViewInterface() {}
 
   /**
     * This method returns a pointer to a newly created view

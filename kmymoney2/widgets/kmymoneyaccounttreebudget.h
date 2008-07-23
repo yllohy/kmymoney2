@@ -41,7 +41,7 @@ class KMyMoneyAccountTreeBudget : public KMyMoneyAccountTreeBase
   Q_OBJECT
 public:
   KMyMoneyAccountTreeBudget(QWidget* parent = 0, const char *name = 0);
-  virtual ~KMyMoneyAccountTreeBudget() {};
+  virtual ~KMyMoneyAccountTreeBudget() {}
 
 public slots:
   void slotSelectObject(const QListViewItem* i);
@@ -103,7 +103,7 @@ protected:
     * @return Balance of this account
     */
   MyMoneyMoney balance() const;
-  
+
 private:
   MyMoneyBudget m_budget;
 };

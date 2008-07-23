@@ -2,6 +2,7 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
 2008-07-23 Joerg Rodehueser <wampbier@users.sourceforge.net>
  * Did some code cleaning to avoid compiler warnings
  * Added the kdchar source to the cmake build
@@ -11,6 +12,7 @@
   * Escape special characters in payee names before adding to match list
   * Prevent crashes in MyMoneyMoney::price() in case m_shares is 0
     which it should not ever be
+  * Code cleanup (performed after Joerg's above)
 
 2008-07-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Workaround to get price for starting balance in performance

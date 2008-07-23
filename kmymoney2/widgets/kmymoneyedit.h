@@ -74,7 +74,7 @@ public:
   /**
     * Destructs the validator.
     */
-  virtual ~kMyMoneyMoneyValidator() {};
+  virtual ~kMyMoneyMoneyValidator() {}
 
   /** Overloaded for internal reasons. The API is not affected. */
   virtual QValidator::State validate( QString & input, int & pos ) const;

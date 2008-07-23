@@ -48,7 +48,7 @@ class KMYMONEY_EXPORT StatementInterface : public QObject {
 
 public:
   StatementInterface(QObject* parent, const char* name = 0);
-  ~StatementInterface() {};
+  ~StatementInterface() {}
 
   /**
     * This method imports a MyMoneyStatement into the engine

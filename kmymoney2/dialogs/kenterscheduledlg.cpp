@@ -51,8 +51,8 @@
 class KEnterScheduleDlgPrivate
 {
 public:
-  KEnterScheduleDlgPrivate() : m_item(0), m_showWarningOnce(true) {};
-  ~KEnterScheduleDlgPrivate() {};
+  KEnterScheduleDlgPrivate() : m_item(0), m_showWarningOnce(true) {}
+  ~KEnterScheduleDlgPrivate() {}
 
   MyMoneySchedule                m_schedule;
   KMyMoneyRegister::Transaction* m_item;

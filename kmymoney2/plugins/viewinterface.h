@@ -55,7 +55,7 @@ class KMYMONEY_EXPORT ViewInterface : public QObject {
 
 public:
   ViewInterface(QObject* parent, const char* name = 0);
-  ~ViewInterface() {};
+  ~ViewInterface() {}
 
   /**
     * This method creates a new page in the application.

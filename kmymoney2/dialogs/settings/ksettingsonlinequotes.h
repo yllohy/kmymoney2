@@ -35,7 +35,7 @@ class KSettingsOnlineQuotes : public KSettingsOnlineQuotesDecl
   Q_OBJECT
 public:
   KSettingsOnlineQuotes(QWidget* parent = 0, const char *name = 0);
-  virtual ~KSettingsOnlineQuotes() {};
+  virtual ~KSettingsOnlineQuotes() {}
 
   void writeConfig(void) {}
   void readConfig(void) {}
