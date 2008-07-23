@@ -970,6 +970,31 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   } else {
     price = account.deepCurrencyPrice(startingDate);
   }
+
+  //work around if there is no price for the starting balance
+  if(!(file->balance(account.id(),startingDate)).isZero()
+     && account.deepCurrencyPrice(startingDate) == MyMoneyMoney(1, 1))
+  {
+    MyMoneyTransactionFilter filter;
+    //get the transactions for the time before the report
+    filter.setDateFilter(QDate(), startingDate);
+    filter.addAccount(account.id());
+    filter.setReportAllSplits(true);
+
+    QValueList<MyMoneyTransaction> startTransactions = file->transactionList(filter);
+    if(startTransactions.size() > 0)
+    {
+      //get the last transaction
+      MyMoneyTransaction startTrans = startTransactions.back();
+      MyMoneySplit s = startTrans.splitByAccount(account.id());
+      //get the price from the split of that account
+      price = s.price();
+      if ( m_config.isConvertCurrency() )
+        price = price * account.baseCurrencyPrice(startingDate);
+    }
+  }
+
+
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
 
   //convert to lowest fraction
@@ -1025,22 +1050,16 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       returnInvestment += value;
         //convert to lowest fraction
       returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
-    }
-    else if ( action == MyMoneySplit::ActionReinvestDividend )
-    {
+    } else if ( action == MyMoneySplit::ActionReinvestDividend ) {
       reinvestincome += CashFlowListItem( (*it_transaction).postDate(), value );
-    }
-    else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield )
-    {
+    } else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield ) {
       // find the split with the category, which has the actual amount of the dividend
       QValueList<MyMoneySplit> splits = (*it_transaction).splits();
       QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
       bool found = false;
-      while( it_split != splits.end() )
-      {
+      while( it_split != splits.end() ) {
         ReportAccount acc = (*it_split).accountId();
-        if ( acc.isIncomeExpense() )
-        {
+        if ( acc.isIncomeExpense() ) {
           found = true;
           break;
         }
@@ -1052,6 +1071,32 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
         returnInvestment += -(*it_split).value() * price;
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
+      }
+    } else {
+      //if the split does not match any action above, add it as buy or sell depending on sign
+
+      //if value is zero, get the price for that date
+      if( s.value().isZero() ) {
+        if ( m_config.isConvertCurrency() ) {
+          price = account.deepCurrencyPrice((*it_transaction).postDate()) * account.baseCurrencyPrice((*it_transaction).postDate());
+        } else {
+          price = account.deepCurrencyPrice((*it_transaction).postDate());
+        }
+        value = s.shares() * price;
+        if ( s.shares().isPositive() ) {
+          buys += CashFlowListItem( (*it_transaction).postDate(), -value );
+        } else {
+          sells += CashFlowListItem( (*it_transaction).postDate(), -value );
+        }
+        returnInvestment += value;
+      } else {
+        value = s.value() * price;
+        if ( s.value().isPositive() ) {
+          buys += CashFlowListItem( (*it_transaction).postDate(), -value );
+        } else {
+          sells += CashFlowListItem( (*it_transaction).postDate(), -value );
+        }
+        returnInvestment += value;
       }
     }
     ++it_transaction;

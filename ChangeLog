@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-22 Alvaro Soliverez <asoliverez@gmail.com>
+  * Workaround to get price for starting balance in performance
+    report even when there is no price
+  * In performance report add splits without action to buy or sell
+
 2008-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Automatically add copy of deleted payee names to match list of
     replacement payee 
