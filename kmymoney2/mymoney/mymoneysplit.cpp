@@ -59,8 +59,8 @@ MyMoneySplit::MyMoneySplit(const QDomElement& node) :
   m_reconcileFlag = static_cast<MyMoneySplit::reconcileFlagE>(node.attribute("reconcileflag").toInt());
   m_memo = QStringEmpty(node.attribute("memo"));
   m_value = MyMoneyMoney(QStringEmpty(node.attribute("value")));
-  m_price = MyMoneyMoney(QStringEmpty(node.attribute("price")));
   m_shares = MyMoneyMoney(QStringEmpty(node.attribute("shares")));
+  m_price = MyMoneyMoney(QStringEmpty(node.attribute("price")));
   m_account = QCStringEmpty(node.attribute("account"));
   m_number = QStringEmpty(node.attribute("number"));
   m_bankID = QStringEmpty(node.attribute("bankid"));
@@ -189,7 +189,7 @@ MyMoneyMoney MyMoneySplit::price(void) const
 {
   if(!m_price.isZero())
     return m_price;
-  if(!m_value.isZero())
+  if(!m_value.isZero() && !m_shares.isZero())
     return m_value / m_shares;
   return MyMoneyMoney(1,1);
 }

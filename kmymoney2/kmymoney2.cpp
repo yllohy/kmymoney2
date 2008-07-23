@@ -3776,9 +3776,9 @@ void KMyMoney2App::slotPayeeDelete(void)
               break;
           }
           if(it_k == payeeNames.end())
-            payeeNames << (*it_n);
+            payeeNames << QRegExp::escape(*it_n);
         } else if(payeeNames.contains(*it_n) == 0)
-          payeeNames << (*it_n);
+          payeeNames << QRegExp::escape(*it_n);
       }
 
       // and update the payee in the engine context
