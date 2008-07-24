@@ -809,8 +809,8 @@ void QueryTable::constructTransactionTable(void)
 
             //check the specific split against the filter for text and amount
             //TODO this should be done at the engine, but I have no clear idea how -- asoliverez
-            const MyMoneySplit* split = &(*is);
-            if(m_config.match( split ) )
+            if(m_config.match( &(*is) )
+              || transaction_text )
               m_rows += qS;
 
             // track accts that will need opening and closing balances

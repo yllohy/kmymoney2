@@ -74,6 +74,11 @@ void ObjectInfoTable::init ( void )
     case MyMoneyReport::eSchedule:
       constructScheduleTable();
       m_columns = "name";
+      break;
+    case MyMoneyReport::eAccountInfo:
+      constructAccountTable();
+      m_columns = "institution,type,name";
+      break;
     default:
       break;
   }
@@ -85,6 +90,11 @@ void ObjectInfoTable::init ( void )
   {
     case MyMoneyReport::eSchedule:
       m_group = "type";
+      m_subtotal="value";
+      break;
+    case MyMoneyReport::eAccountInfo:
+      m_group = "topcategory";
+      m_subtotal="balance";
       break;
     default:
       throw new MYMONEYEXCEPTION ( "ObjectInfoTable::ObjectInfoTable(): unhandled row type" );
@@ -96,11 +106,9 @@ void ObjectInfoTable::init ( void )
     case MyMoneyReport::eSchedule:
       m_columns="name,payee,paymenttype,occurence,nextduedate,category";
       break;
-  
-    case MyMoneyReport::eAccountByTopAccount:
-    case MyMoneyReport::eEquityType:
-    case MyMoneyReport::eAccountType:
-    case MyMoneyReport::eInstitution:
+    case MyMoneyReport::eAccountInfo:
+      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite,balance";
+      break;
      default:
       m_columns = "";
   }
@@ -136,6 +144,8 @@ void ObjectInfoTable::constructScheduleTable ( void )
 
       // help for sort and render functions
       scheduleRow["rank"] = "0";
+
+      //schedule data
       scheduleRow["id"] = schedule.id();
       scheduleRow["name"] = schedule.name();
       scheduleRow["nextduedate"] = schedule.nextDueDate().toString ( Qt::ISODate );
@@ -152,6 +162,9 @@ void ObjectInfoTable::constructScheduleTable ( void )
       MyMoneyPayee payee = file->payee ( split.payeeId() );
       scheduleRow["payee"] = payee.name();
       m_rows += scheduleRow;
+
+      //the text matches the main split
+      bool transaction_text = m_config.match(&split);
 
       if ( m_config.detailLevel() == MyMoneyReport::eDetailAll )
       {
@@ -182,11 +195,51 @@ void ObjectInfoTable::constructScheduleTable ( void )
           } else {
             splitRow ["category"] = splitAcc.fullName();
           }
-          m_rows += splitRow;
+
+          //add the split only if it matches the text or it matches the main split
+          if(m_config.match( &(*split_it) )
+             || transaction_text )
+            m_rows += splitRow;
         }
       }
     }
     ++it_schedule;
+  }
+}
+
+void ObjectInfoTable::constructAccountTable ( void )
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyAccount> accounts;
+  file->accountList(accounts);
+  QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+  while ( it_account != accounts.end() )
+  {
+    TableRow accountRow;
+    ReportAccount account = *it_account;
+
+    if(m_config.includes(account))
+    {
+      accountRow["rank"] = "0";
+      accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
+      accountRow["institution"] = (file->institution(account.institutionId())).name();
+      accountRow["type"] = KMyMoneyUtils::accountTypeToString(account.accountType());
+      accountRow["name"] = account.name();
+      accountRow["number"] = account.number();
+      accountRow["description"] = account.description();
+      accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
+      accountRow["currency"] = (file->currency(account.currencyId())).name();
+      accountRow["balancewarning"] = account.value("minBalanceEarly");
+      accountRow["maxbalancelimit"] = account.value("minBalanceAbsolute");
+      accountRow["creditwarning"] = account.value("maxCreditEarly");
+      accountRow["maxcreditlimit"] = account.value("maxCreditAbsolute");
+      accountRow["tax"] = account.value("Tax");
+      accountRow["favorite"] = account.value("PreferredAccount");
+      accountRow["balance"] = (file->balance(account.id())).toString();
+      m_rows += accountRow;
+    }
+    ++it_account;
   }
 }
 

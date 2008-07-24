@@ -215,9 +215,19 @@ namespace reports {
     i18nHeaders["nextduedate"] = i18n("Next Due Date");
     i18nHeaders["occurence"] = i18n("Occurence");
     i18nHeaders["paymenttype"] = i18n("Payment Method");
+    i18nHeaders["institution"] = i18n("Institution");
+    i18nHeaders["description"] = i18n("Description");
+    i18nHeaders["openingdate"] = i18n("Opening Date");
+    i18nHeaders["currency"] = i18n("Currency");
+    i18nHeaders["balancewarning"] = i18n("Balance Early Warning");
+    i18nHeaders["maxbalancelimit"]= i18n("Balance Max Limit");
+    i18nHeaders["creditwarning"] = i18n("Credit Early Warning");
+    i18nHeaders["maxcreditlimit"] = i18n("Credit Max Limit");
+    i18nHeaders["tax"] = i18n("Tax");
+    i18nHeaders["favorite"] = i18n("Preferred");
 
   // the list of columns which represent money, so we can display them correctly
-    QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance");
+    QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit");
 
   // the list of columns which represent shares, which is like money except the
   // transaction currency will not be displayed
@@ -227,7 +237,7 @@ namespace reports {
     QStringList percentColumns = QStringList::split(",","return,returninvestment");
 
   // the list of columns which represent dates, so we can display them correctly
-    QStringList dateColumns = QStringList::split(",", "postdate,entrydate,nextduedate");
+    QStringList dateColumns = QStringList::split(",", "postdate,entrydate,nextduedate,openingdate");
 
     result += "<table class=\"report\">\n<thead><tr class=\"itemheader\">";
 

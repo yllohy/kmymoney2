@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-23 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed memo filter to schedule report
+  * Added account information report
+
 2008-07-23 Joerg Rodehueser <wampbier@users.sourceforge.net>
  * Did some code cleaning to avoid compiler warnings
  * Added the kdchar source to the cmake build

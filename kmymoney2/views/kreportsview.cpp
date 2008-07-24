@@ -1370,6 +1370,14 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setDetailLevel(MyMoneyReport::eDetailTop);
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAccountInfo,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::today,
+      false,
+      i18n("Account Information"),
+      i18n("Default Report")
+    ));
     groups.push_back(list);
   }
 }
