@@ -67,10 +67,12 @@ void KOfxDirectConnectDlg::init(void)
   QByteArray request = m_connector.statementRequest(QDate::currentDate().addMonths(-2));
 
   // For debugging, dump out the request
+#if 0
   QFile g( "request.ofx" );
   g.open( IO_WriteOnly );
   QTextStream(&g) << m_connector.url() << "\n" << QString(request);
   g.close();
+#endif
 
   m_job = KIO::http_post(
     m_connector.url(),
