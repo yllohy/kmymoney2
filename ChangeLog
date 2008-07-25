@@ -5,6 +5,9 @@
 
 2008-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Comment generation of request.ofx in OFX plugin
+  * Added auto transaction matcher to statement reader
+  * Added quick filter for matched transactions
+  * Renamed a button in the new user wizard
 
 2008-07-23 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed memo filter to schedule report

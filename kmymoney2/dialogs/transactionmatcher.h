@@ -33,7 +33,13 @@
 class TransactionMatcher
 {
 public:
-  TransactionMatcher(const MyMoneyAccount& acc) { m_account = acc; }
+  typedef enum {
+    notMatched = 0,          ///< no matching transaction found
+    matched,                 ///< matching transaction found
+    matchedDuplicate         ///< duplicate matching transaction found
+  } autoMatchResultE;
+
+  TransactionMatcher(const MyMoneyAccount& acc);
 
   /**
    * This method matches the manual entered transaction @p tm with the imported
@@ -103,11 +109,28 @@ public:
    * It should also detect duplicate imports according to the splits bankid.
    *
    * To be designed
+   *
+   * @param ti the imported transaction we want to match
+   * @param si the split of that transaction referencing the account we import into
+   * @param sm the split of the object returned that matches the split @a si. In case
+   *           the returned pointer is not 0 this object contains the split. In other
+   *           cases it contains an empty MyMoneySplit.
+   * @param result reference to the result details
+   *
+   * @returns pointer to MyMoneyObject (either a MyMoneyTransaction or a MyMoneySchedule). The
+   *          caller of this method becomes the owner of the object pointed to and is responsible
+   *          to delete the object
    */
-  // xxx findMatch(const MyMoneyTransaction& t, const MyMoneySplit& s);
+  const MyMoneyObject* const findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result);
+
+  /**
+   * Sets the number of @a days to look for matching transactions. The default after object creation is 3 days.
+   */
+  void setMatchWindow(int days) { m_days = days; }
 
 private:
   MyMoneyAccount            m_account;
+  int                       m_days;
 };
 
 

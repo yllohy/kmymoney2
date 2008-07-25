@@ -29,6 +29,12 @@
 #include <kmymoney/mymoneyfile.h>
 #include "transactionmatcher.h"
 
+TransactionMatcher::TransactionMatcher(const MyMoneyAccount& acc) :
+  m_account(acc),
+  m_days(3)
+{
+}
+
 void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTransaction ti, MyMoneySplit si)
 {
   const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
@@ -247,4 +253,61 @@ void TransactionMatcher::accept(const MyMoneyTransaction& _t, const MyMoneySplit
 
     MyMoneyFile::instance()->modifyTransaction(tm);
   }
+}
+
+const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result)
+{
+  result = notMatched;
+  sm = MyMoneySplit();
+
+  MyMoneyTransactionFilter filter(m_account.id());
+  filter.setReportAllSplits(false);
+  filter.setDateFilter(ti.postDate().addDays(-m_days), ti.postDate().addDays(m_days));
+  filter.setAmountFilter(si.shares(), si.shares());
+
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > list;
+  MyMoneyFile::instance()->transactionList(list, filter);
+
+  // parse list
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::iterator it_l;
+  QPair<MyMoneyTransaction, MyMoneySplit> lastMatch;
+
+  for(it_l = list.begin(); (result != matchedDuplicate) && (it_l != list.end()); ++it_l) {
+    // just skip myself
+    if((*it_l).first.id() == ti.id()) {
+      continue;
+    }
+
+    const QValueList<MyMoneySplit>& splits = (*it_l).first.splits();
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      // check for duplicate (we can only do that, if we have a bankID)
+      if(!si.bankID().isEmpty()) {
+        if((*it_s).bankID() == si.bankID()) {
+          lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>((*it_l).first, *it_s);
+          result = matchedDuplicate;
+          break;
+        }
+      }
+      // check if this is the one that matches
+      if((*it_s).accountId() == si.accountId()
+      && (*it_s).shares() == si.shares()
+      && !(*it_s).isMatched()) {
+        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>((*it_l).first, *it_s);
+        result = matched;
+      }
+    }
+  }
+
+  // if we did not find anything, we need to scan for scheduled transactions
+  if(result == notMatched) {
+    // TODO
+  }
+
+  MyMoneyObject* rc = 0;
+  if(result != notMatched) {
+    sm = lastMatch.second;
+    rc = new MyMoneyTransaction(lastMatch.first);
+  }
+  return rc;
 }

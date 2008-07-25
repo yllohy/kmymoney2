@@ -57,7 +57,7 @@
                         <cstring>m_openConfigButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Open Configuration Dialog</string>
+                        <string>Configure preferences now</string>
                     </property>
                 </widget>
             </hbox>

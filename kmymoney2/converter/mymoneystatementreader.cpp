@@ -41,9 +41,11 @@
 // Project Headers
 
 #include "mymoneystatementreader.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneystatement.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneystatement.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 #include "../dialogs/kaccountselectdlg.h"
+#include "../dialogs/transactionmatcher.h"
 #include "../kmymoney2.h"
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
@@ -684,23 +686,34 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   // Add the transaction
   try {
-    // check for duplicates ONLY by Bank ID in this account.
-    // We know Bank ID will definitely
-    // find duplicates.  For "softer" duplicates, we'll wait for the full
-    // matching interface.
-    MyMoneyTransactionFilter filter;
-    filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
-    filter.addAccount(thisaccount.id());
-    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
-    QValueList<MyMoneyTransaction>::Iterator it;
-    for(it = list.begin(); it != list.end(); ++it) {
-      MyMoneySplit thissplit = (*it).splitByAccount(thisaccount.id());
-      if(t_in.m_strBankID == thissplit.bankID() && !t_in.m_strBankID.isNull() && !thissplit.bankID().isNull())
-        break;
-    }
-    if(it == list.end())
-    {
-      file->addTransaction(t);
+    file->addTransaction(t);
+
+    // check for matches already stored in the engine
+    MyMoneySplit matchedSplit;
+    TransactionMatcher::autoMatchResultE result;
+    TransactionMatcher matcher(thisaccount);
+    matcher.setMatchWindow(KMyMoneyGlobalSettings::matchInterval());
+    const MyMoneyObject *o = matcher.findMatch(t, s1, matchedSplit, result);
+    if(o) {
+      if(typeid(*o) == typeid(MyMoneyTransaction)) {
+        MyMoneyTransaction tm(*(dynamic_cast<const MyMoneyTransaction*>(o)));
+        switch(result) {
+          case TransactionMatcher::notMatched:
+            // no need to do anything here
+            break;
+          case TransactionMatcher::matchedDuplicate:
+            // we get rid of it immediately
+            file->removeTransaction(t);
+            break;
+          case TransactionMatcher::matched:
+            matcher.match(tm, matchedSplit, t, s1);
+            break;
+        }
+      }
+      else if(typeid(*o) == typeid(MyMoneySchedule)) {
+        // TODO
+      }
+      delete o;
     }
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction #%1: ").arg(t_in.m_strBankID));

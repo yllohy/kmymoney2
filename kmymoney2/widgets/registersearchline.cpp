@@ -78,6 +78,7 @@ void RegisterSearchLine::init(Register *reg)
   // the case labels in RegisterSearchLine::itemMatches() at the same time
   d->combo->insertItem(SmallIcon("run"), i18n("Any status"));
   d->combo->insertItem(SmallIcon("fileimport"), i18n("Imported"));
+  d->combo->insertItem(SmallIcon("connect_creating"), i18n("Matched"));
   d->combo->insertItem(SmallIcon("attention"), i18n("Erroneous"));
   d->combo->insertItem(i18n("Not marked"));
   d->combo->insertItem(i18n("Not reconciled"));
@@ -190,20 +191,24 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
         if(!t->transaction().isImported())
           return false;
         break;
-      case 2:    // Erroneous
+      case 2:    // Matched
+        if(!t->split().isMatched())
+          return false;
+        break;
+      case 3:    // Erroneous
         if(t->transaction().splitSum().isZero())
           return false;
         break;
-      case 3:    // Not marked
+      case 4:    // Not marked
         if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled)
           return false;
         break;
-      case 4:    // Not reconciled
+      case 5:    // Not reconciled
         if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled
         && t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
-      case 5:    // Cleared
+      case 6:    // Cleared
         if(t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
