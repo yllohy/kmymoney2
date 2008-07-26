@@ -469,10 +469,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         if ( ! t_in.m_strBankID.isEmpty() )
           s1.setBankID(t_in.m_strBankID);
 
+#if 0
         if(!s1.value().isNegative())
           s1.setAction(MyMoneySplit::ActionDeposit);
         else
           s1.setAction(MyMoneySplit::ActionWithdrawal);
+#endif
 
         // Needed to satisfy the bankid check below.
         thisaccount = file->account(brokerageactid);
@@ -493,10 +495,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     if ( ! t_in.m_strBankID.isEmpty() )
       s1.setBankID(t_in.m_strBankID);
 
+#if 0
     if(!s1.value().isNegative())
       s1.setAction(MyMoneySplit::ActionDeposit);
     else
       s1.setAction(MyMoneySplit::ActionWithdrawal);
+#endif
   }
 
   QString payeename = t_in.m_strPayee;
@@ -558,10 +562,18 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       }
 
       if(rc == KMessageBox::Yes) {
-        // for now, we just add the payee to the pool. In the future,
-        // we could open a dialog and ask for all the other attributes
-        // of the payee.
+        // for now, we just add the payee to the pool and turn
+        // on simple name matching, so that future transactions
+        // with the same name don't get here again.
+        //
+        // In the future, we could open a dialog and ask for
+        // all the other attributes of the payee, but since this
+        // is called in the context of an automatic procedure it
+        // might distract the user.
         payee.setName(payeename);
+        QStringList keys;
+        keys << payeename;
+        payee.setMatchData(MyMoneyPayee::matchName, true, keys);
 
         try {
           file->addPayee(payee);

@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Only create imported user once
+
 2008-07-25 Fernando Vilas <fvilas@iname.com>
   * Fixed compilation issue from previous commit
 
