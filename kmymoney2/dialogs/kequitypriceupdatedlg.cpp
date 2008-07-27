@@ -152,12 +152,21 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   {
     btnUpdateSelected->hide();
     btnUpdateAll->hide();
-    delete layout1;
+    // delete layout1;
 
     QTimer::singleShot(100,this,SLOT(slotUpdateAllClicked()));
   }
 
+  // Hide OK button until we have received the first update
+  btnOK->setEnabled(false);
+
   slotUpdateSelection();
+
+  // previous versions of this dialog allowed to store a "Don't ask again" switch.
+  // Since we don't support it anymore, we just get rid of it
+  KConfig* config = KGlobal::config();
+  config->setGroup("Notification Messages");
+  config->deleteEntry("KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
 }
 
 KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
@@ -385,10 +394,10 @@ void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _
   if(_id.contains(" ")) {
     result = KMessageBox::warningContinueCancel(this, i18n("Failed to retrieve an exchange rate for %1 from %2. It will be skipped this time.").arg(_symbol, item->text(SOURCE_COL)), i18n("Price Update  Failed"));
   } else {
-    result = KMessageBox::questionYesNoCancel(this, i18n("Failed to retrieve a quote for %1 from %2.  Would you like to disable online price updates for this security?").arg(_symbol, item->text(SOURCE_COL)),i18n("Price Update Failed"), KStdGuiItem::yes(), KStdGuiItem::no(), "KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
+    result = KMessageBox::questionYesNoCancel(this, QString("<qt>%1</qt>").arg(i18n("Failed to retrieve a quote for %1 from %2.  Press <b>No</b> to remove the online price source from this security permanently, <b>Yes</b> to continue updating this security during future price updates or <b>Cancel</b> to stop the current update operation.").arg(_symbol, item->text(SOURCE_COL))), i18n("Price Update Failed"), KStdGuiItem::yes(), KStdGuiItem::no());
   }
 
-  if ( result == KMessageBox::Yes )
+  if ( result == KMessageBox::No )
   {
     // Disable price updates for this security
 
@@ -434,11 +443,12 @@ void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _
     }
     else
     {
-      // we've run past the end, reset to the default value.
-      m_fUpdateAll = false;
-      // force progress bar to show 100%
-      prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
+      finishUpdate();
     }
+  }
+  else
+  {
+    finishUpdate();
   }
 }
 
@@ -486,6 +496,8 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
       item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, sec.tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision()));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated (id %2)").arg(_symbol,_id));
+      // make sure to make OK button available
+      btnOK->setEnabled(true);
     }
     else
     {
@@ -518,11 +530,16 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
   }
   else
   {
-    // we've run past the end, reset to the default value.
-    m_fUpdateAll = false;
-    // force progress bar to show 100%
-    prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
+    finishUpdate();
   }
+}
+
+void KEquityPriceUpdateDlg::finishUpdate(void)
+{
+  // we've run past the end, reset to the default value.
+  m_fUpdateAll = false;
+  // force progress bar to show 100%
+  prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
 }
 
 // Make sure, that these definitions are only used within this file

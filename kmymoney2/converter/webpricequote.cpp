@@ -389,7 +389,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "\\).(\\d+\\D+\\d+\\D+\\d+)", // dateregexp (doesn't work; date in chart
     "%d.%m.%y" // dateformat
   );
-  
+
   result["boerseonline"] = WebPriceQuoteSource("boerseonline",
     "http://www.boerse-online.de/tools/boerse/einzelkurs_kurse.htm?&s=%1",
     QString(),  // symbolregexp
@@ -408,7 +408,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     ", (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
-  
+
   // This quote source provided by Peter Lord
   // The trading symbol will normally be the SEDOL (see wikipedia) but
   // the flexibility presently (1/2008) in the code will allow use of
@@ -420,7 +420,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
       "Valuation date:[\\ ]*(\\d+/\\d+/\\d+)", // date regexp
       "%d/%m/%y" // date format
   );
-  
+
   // This quote source provided by Danny Scott
   result["Yahoo Canada"] = WebPriceQuoteSource("Yahoo Canada",
       "http://ca.finance.yahoo.com/q?s=%1",
@@ -429,7 +429,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
       "day, (.\\D+\\d+\\D+\\d+)", // date regexp
       "%m %d %y" // date format
   );
-  
+
   // (tf2k) The "mpid" is I think the market place id. In this case five
   // stands for Hamburg.
   //
@@ -463,7 +463,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "(\\d{4,4}-\\d{2,2}-\\d{2,2})", // date regexp
     "%y %m %d"                   // date format
   );
-  
+
   // The following price quote is for getting prices of different funds
   // at OMX Baltic market.
   result["OMX Baltic funds"] = WebPriceQuoteSource("OMX Baltic funds",

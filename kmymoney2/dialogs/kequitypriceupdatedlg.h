@@ -71,6 +71,7 @@ protected slots:
 protected:
   void addPricePair(const MyMoneySecurityPair& pair);
   void addInvestment(const MyMoneySecurity& inv);
+  void finishUpdate(void);
 
 private:
   bool m_fUpdateAll;
