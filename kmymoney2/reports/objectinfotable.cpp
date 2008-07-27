@@ -79,6 +79,10 @@ void ObjectInfoTable::init ( void )
       constructAccountTable();
       m_columns = "institution,type,name";
       break;
+    case MyMoneyReport::eAccountLoanInfo:
+      constructAccountLoanTable();
+      m_columns = "institution,type,name";
+      break;
     default:
       break;
   }
@@ -93,6 +97,7 @@ void ObjectInfoTable::init ( void )
       m_subtotal="value";
       break;
     case MyMoneyReport::eAccountInfo:
+    case MyMoneyReport::eAccountLoanInfo:
       m_group = "topcategory";
       m_subtotal="balance";
       break;
@@ -107,9 +112,12 @@ void ObjectInfoTable::init ( void )
       m_columns="name,payee,paymenttype,occurence,nextduedate,category";
       break;
     case MyMoneyReport::eAccountInfo:
-      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite,balance";
+      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite";
       break;
-     default:
+    case MyMoneyReport::eAccountLoanInfo:
+      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,payee,loanamount,interestrate,nextinterestchange,periodicpayment,finalpayment,favorite";
+      break;
+    default:
       m_columns = "";
   }
 
@@ -235,6 +243,46 @@ void ObjectInfoTable::constructAccountTable ( void )
       accountRow["creditwarning"] = account.value("maxCreditEarly");
       accountRow["maxcreditlimit"] = account.value("maxCreditAbsolute");
       accountRow["tax"] = account.value("Tax");
+      accountRow["favorite"] = account.value("PreferredAccount");
+      accountRow["balance"] = (file->balance(account.id())).toString();
+      m_rows += accountRow;
+    }
+    ++it_account;
+  }
+}
+
+void ObjectInfoTable::constructAccountLoanTable ( void )
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyAccount> accounts;
+  file->accountList(accounts);
+  QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+  while ( it_account != accounts.end() )
+  {
+    TableRow accountRow;
+    ReportAccount account = *it_account;
+    MyMoneyAccountLoan loan = *it_account;
+
+    if(m_config.includes(account) && 
+       ( account.accountType() == MyMoneyAccount::Loan
+       || account.accountType() == MyMoneyAccount::AssetLoan ) )
+    {
+      accountRow["rank"] = "0";
+      accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
+      accountRow["institution"] = (file->institution(account.institutionId())).name();
+      accountRow["type"] = KMyMoneyUtils::accountTypeToString(account.accountType());
+      accountRow["name"] = account.name();
+      accountRow["number"] = account.number();
+      accountRow["description"] = account.description();
+      accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
+      accountRow["currency"] = (file->currency(account.currencyId())).name();
+      accountRow["payee"] = loan.payee();
+      accountRow["loanamount"] = loan.loanAmount().toString();
+      accountRow["interestrate"] = loan.interestRate(QDate::currentDate()).toString();
+      accountRow["nextinterestchange"] = loan.nextInterestChange().toString( Qt::ISODate );
+      accountRow["periodicpayment"] = loan.periodicPayment().toString();
+      accountRow["finalpayment"] = loan.finalPayment().toString();
       accountRow["favorite"] = account.value("PreferredAccount");
       accountRow["balance"] = (file->balance(account.id())).toString();
       m_rows += accountRow;

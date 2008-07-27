@@ -60,6 +60,7 @@ public:
 protected:
   void constructScheduleTable ( void );
   void constructAccountTable ( void );
+  void constructAccountLoanTable ( void );
 
 };
 

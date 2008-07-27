@@ -225,19 +225,24 @@ namespace reports {
     i18nHeaders["maxcreditlimit"] = i18n("Credit Max Limit");
     i18nHeaders["tax"] = i18n("Tax");
     i18nHeaders["favorite"] = i18n("Preferred");
+    i18nHeaders["loanamount"] = i18n("Loan Amount");
+    i18nHeaders["interestrate"] = i18n("Interest Rate");
+    i18nHeaders["nextinterestchange"] = i18n("Next Interest Change");
+    i18nHeaders["periodicpayment"] = i18n("Periodic Payment");
+    i18nHeaders["finalpayment"] = i18n("Final Payment");
 
   // the list of columns which represent money, so we can display them correctly
-    QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit");
+    QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,loanamount,periodicpayment,finalpayment");
 
   // the list of columns which represent shares, which is like money except the
   // transaction currency will not be displayed
     QStringList sharesColumns = QStringList::split(",","shares");
 
   // the list of columns which represent a percentage, so we can display them correctly
-    QStringList percentColumns = QStringList::split(",","return,returninvestment");
+    QStringList percentColumns = QStringList::split(",","return,returninvestment,interestrate");
 
   // the list of columns which represent dates, so we can display them correctly
-    QStringList dateColumns = QStringList::split(",", "postdate,entrydate,nextduedate,openingdate");
+    QStringList dateColumns = QStringList::split(",", "postdate,entrydate,nextduedate,openingdate,nextinterestchange");
 
     result += "<table class=\"report\">\n<thead><tr class=\"itemheader\">";
 

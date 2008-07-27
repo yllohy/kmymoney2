@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-27 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added report for loan information
+  * Fixed duplicate column in account information report
+
 2008-07-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated the online price update dialog and allow to quit out
     of the whole operation
