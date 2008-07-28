@@ -99,7 +99,7 @@ void ObjectInfoTable::init ( void )
     case MyMoneyReport::eAccountInfo:
     case MyMoneyReport::eAccountLoanInfo:
       m_group = "topcategory";
-      m_subtotal="balance";
+      m_subtotal="value";
       break;
     default:
       throw new MYMONEYEXCEPTION ( "ObjectInfoTable::ObjectInfoTable(): unhandled row type" );
@@ -244,7 +244,7 @@ void ObjectInfoTable::constructAccountTable ( void )
       accountRow["maxcreditlimit"] = account.value("maxCreditAbsolute");
       accountRow["tax"] = account.value("Tax");
       accountRow["favorite"] = account.value("PreferredAccount");
-      accountRow["balance"] = (file->balance(account.id())).toString();
+      accountRow["value"] = (file->balance(account.id())).toString();
       m_rows += accountRow;
     }
     ++it_account;
@@ -284,7 +284,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       accountRow["periodicpayment"] = loan.periodicPayment().toString();
       accountRow["finalpayment"] = loan.finalPayment().toString();
       accountRow["favorite"] = account.value("PreferredAccount");
-      accountRow["balance"] = (file->balance(account.id())).toString();
+      accountRow["value"] = (file->balance(account.id())).toString();
       m_rows += accountRow;
     }
     ++it_account;
