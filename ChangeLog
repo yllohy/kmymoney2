@@ -5,6 +5,7 @@
 
 2008-07-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed balance column in info reports
+  * Changed schedule info report to sort by next due date
 
 2008-07-27 Alvaro Soliverez <asoliverez@gmail.com>
   * Added report for loan information

@@ -73,7 +73,7 @@ void ObjectInfoTable::init ( void )
   {
     case MyMoneyReport::eSchedule:
       constructScheduleTable();
-      m_columns = "name";
+      m_columns = "nextduedate,name";
       break;
     case MyMoneyReport::eAccountInfo:
       constructAccountTable();
