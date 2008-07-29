@@ -1987,7 +1987,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
         if(!s1.memo().isEmpty()) {
           if(!s1.accountId().isEmpty()) {
             MyMoneyAccount acc = MyMoneyFile::instance()->account(s1.accountId());
-            if(acc.isCategory()) {
+            if(acc.isIncomeExpense()) {
               s1.setMemo(s0.memo());
             }
           }

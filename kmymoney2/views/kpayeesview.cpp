@@ -891,12 +891,7 @@ void KPayeesView::loadPayees(void)
   // reposition viewport
   m_payeesList->setContentsPos(startPoint.x(), startPoint.y());
 
-#if !KDE_IS_VERSION(3,3,0)
-  // for KDE < 3.3 the list view does not emit signals when new
-  // items are added. Hence we must update the items when they
-  // are loaded manually.
   m_searchWidget->searchLine()->updateSearch(QString::null);
-#endif
 
   // turn updates back on
   m_payeesList->setUpdatesEnabled(true);

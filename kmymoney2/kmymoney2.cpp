@@ -1663,32 +1663,29 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   // keep a copy of the statement
   MyMoneyStatement::writeXMLFile(s, "/home/thb/kmm-statement.txt");
 
+  // we use an object on the heap here, so that we can check the presence
+  // of it during slotUpdateActions() by looking at the pointer.
   m_smtReader = new MyMoneyStatementReader;
-  connect(m_smtReader, SIGNAL(importFinished()), this, SLOT(slotStatementImportFinished()));
-
   m_smtReader->setAutoCreatePayee(true);
   m_smtReader->setProgressCallback(&progressCallback);
 
   // disable all standard widgets during the import
   setEnabled(false);
 
-  result = m_smtReader->startImport(s);
+  result = m_smtReader->import(s);
 
-  return result;
-}
+  // get rid of the statement reader and tell everyone else
+  // about the destruction by setting the pointer to zero
+  delete m_smtReader;
+  m_smtReader = 0;
 
-void KMyMoney2App::slotStatementImportFinished(void)
-{
-  if(m_smtReader != 0) {
-    m_smtReader->finishImport();
-    delete m_smtReader;
-    m_smtReader = 0;
-  }
   slotStatusProgressBar(-1, -1);
   ready();
 
   // re-enable all standard widgets
   setEnabled(true);
+
+  return result;
 }
 
 void KMyMoney2App::slotQifExport(void)

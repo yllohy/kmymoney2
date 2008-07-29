@@ -235,6 +235,9 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     QTimer::singleShot(10, this, SLOT(slotTimerDone()));
     m_qlistviewScheduled->update();
 
+    // force repaint in case the filter is set
+    m_searchWidget->searchLine()->updateSearch(QString::null);
+
     if (m_openBills)
       itemBills->setOpen(true);
 

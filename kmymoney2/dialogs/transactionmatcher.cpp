@@ -26,8 +26,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/mymoneyfile.h>
 #include "transactionmatcher.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/kmymoneyutils.h>
 
 TransactionMatcher::TransactionMatcher(const MyMoneyAccount& acc) :
   m_account(acc),
@@ -255,6 +257,34 @@ void TransactionMatcher::accept(const MyMoneyTransaction& _t, const MyMoneySplit
   }
 }
 
+TransactionMatcher::autoMatchResultE TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch) const
+{
+  Q_UNUSED(ti);
+
+  autoMatchResultE result = notMatched;
+
+  const QValueList<MyMoneySplit>& splits = tm.splits();
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+    // check for duplicate (we can only do that, if we have a bankID)
+    if(!si.bankID().isEmpty()) {
+      if((*it_s).bankID() == si.bankID()) {
+        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+        result = matchedDuplicate;
+        break;
+      }
+    }
+    // check if this is the one that matches
+    if((*it_s).accountId() == si.accountId()
+    && (*it_s).shares() == si.shares()
+    && !(*it_s).isMatched()) {
+      lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+      result = matched;
+    }
+  }
+  return result;
+}
+
 const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result)
 {
   result = notMatched;
@@ -278,36 +308,54 @@ const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransactio
       continue;
     }
 
-    const QValueList<MyMoneySplit>& splits = (*it_l).first.splits();
-    QValueList<MyMoneySplit>::const_iterator it_s;
-    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
-      // check for duplicate (we can only do that, if we have a bankID)
-      if(!si.bankID().isEmpty()) {
-        if((*it_s).bankID() == si.bankID()) {
-          lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>((*it_l).first, *it_s);
-          result = matchedDuplicate;
-          break;
-        }
-      }
-      // check if this is the one that matches
-      if((*it_s).accountId() == si.accountId()
-      && (*it_s).shares() == si.shares()
-      && !(*it_s).isMatched()) {
-        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>((*it_l).first, *it_s);
-        result = matched;
-      }
-    }
-  }
-
-  // if we did not find anything, we need to scan for scheduled transactions
-  if(result == notMatched) {
-    // TODO
+    result = checkTransaction((*it_l).first, ti, si, lastMatch);
   }
 
   MyMoneyObject* rc = 0;
   if(result != notMatched) {
     sm = lastMatch.second;
     rc = new MyMoneyTransaction(lastMatch.first);
+
+  } else {
+    // if we did not find anything, we need to scan for scheduled transactions
+    QValueList<MyMoneySchedule> list;
+    QValueList<MyMoneySchedule>::iterator it_sch;
+    // find all schedules that have a reference to the current account
+    list = MyMoneyFile::instance()->scheduleList(m_account.id());
+    for(it_sch = list.begin(); (result != matched) && (it_sch != list.end()); ++it_sch) {
+      // get the next due date adjusted by the weekend switch
+      QDate nextDueDate = (*it_sch).nextDueDate();
+      if((*it_sch).isOverdue() ||
+         (nextDueDate >= ti.postDate().addDays(-m_days)
+         && nextDueDate <= ti.postDate().addDays(m_days))) {
+        MyMoneyTransaction st = scheduledTransaction(*it_sch);
+        result = checkTransaction(st, ti, si, lastMatch);
+        if(result == matched) {
+          sm = lastMatch.second;
+          rc = new MyMoneySchedule(*it_sch);
+        }
+      }
+    }
   }
+
   return rc;
 }
+
+MyMoneyTransaction TransactionMatcher::scheduledTransaction(const MyMoneySchedule& schedule) const
+{
+  MyMoneyTransaction t = schedule.transaction();
+
+  try {
+    if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+      KMyMoneyUtils::calculateAutoLoan(schedule, t, QMap<QCString, MyMoneyMoney>());
+    }
+  } catch (MyMoneyException* e) {
+    qDebug("Unable to load schedule details for '%s' during transaction match: %s", schedule.name().data(), e->what().data());
+    delete e;
+  }
+
+  t.clearId();
+  t.setEntryDate(QDate());
+  return t;
+}
+

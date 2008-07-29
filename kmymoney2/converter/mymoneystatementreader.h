@@ -60,28 +60,13 @@ public:
   ~MyMoneyStatementReader();
 
   /**
-    * This method actually starts the import of data from the selected file
+    * This method imports data from the MyMoneyStatement object
     * into the MyMoney engine.
     *
-    * Make sure to connect the signal importFinished() to detect when
-    * the import actually ended. Call the method finishImport() to clean
-    * things up and get the overall result of the import.
-    *
-    * @retval true the import was started successfully
-    * @retval false the import could not be started.
+    * @retval true the import was processed successfully
+    * @retval false the import resulted in a failure.
     */
-  const bool startImport(const MyMoneyStatement& s);
-
-  /**
-    * This method must be called once the signal importFinished() has
-    * been emitted. It will clean up the reader state and determines
-    * the actual return code of the import.
-    *
-    * @retval true Import was successful.
-    * @retval false Import failed because the filter program terminated
-    *               abnormally or the user aborted the import process.
-    */
-  const bool finishImport(void);
+  bool import(const MyMoneyStatement& s);
 
   /**
     * This method is used to modify the auto payee creation flag.

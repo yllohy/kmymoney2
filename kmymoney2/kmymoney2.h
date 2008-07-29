@@ -172,8 +172,6 @@ protected slots:
     */
   void slotStatementImport(void);
 
-  void slotStatementImportFinished(void);
-
   void slotLoadAccountTemplates(void);
   void slotSaveAccountTemplates(void);
 

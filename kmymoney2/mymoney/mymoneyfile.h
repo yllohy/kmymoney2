@@ -120,7 +120,7 @@ class MyMoneyFilePrivate;
   * The methods liability(), asset(), expense(), income() and equity() are
   * used to retrieve the five standard accounts. isStandardAccount()
   * checks if a given accountId references one of the or not.
-  * setAccountName() is used to specify a name for the standard accounts 
+  * setAccountName() is used to specify a name for the standard accounts
   * from the GUI.
   *
   * The MyMoneyFile object emits the dataChanged() signal when data
@@ -912,7 +912,7 @@ public:
     * according to the filter criteria passed as arguments.
     *
     * @param accountId only search for scheduled transactions that reference
-    *                  accound @p accountId. If accountId is the empty string,
+    *                  account @p accountId. If accountId is the empty string,
     *                  this filter is off. Default is @p QCString().
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.

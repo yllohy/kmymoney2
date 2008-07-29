@@ -29,6 +29,7 @@
 
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneyaccount.h>
+class MyMoneySchedule;
 
 class TransactionMatcher
 {
@@ -127,6 +128,19 @@ public:
    * Sets the number of @a days to look for matching transactions. The default after object creation is 3 days.
    */
   void setMatchWindow(int days) { m_days = days; }
+
+private:
+  autoMatchResultE checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch) const;
+
+  /**
+   * Returns the scheduled transaction. In case of a loan payment the
+   * transaction will be modified by KMyMoneyUtils::calculateAutoLoan().
+   * The ID of the transaction as well as the entryDate will be reset.
+   *
+   * @returns adjusted transaction
+   */
+  MyMoneyTransaction scheduledTransaction(const MyMoneySchedule& schedule) const;
+
 
 private:
   MyMoneyAccount            m_account;

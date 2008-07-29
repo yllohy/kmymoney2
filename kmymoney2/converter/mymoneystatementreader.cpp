@@ -46,8 +46,10 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneystatement.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/transactioneditor.h>
 #include "../dialogs/kaccountselectdlg.h"
 #include "../dialogs/transactionmatcher.h"
+#include "../dialogs/kenterscheduledlg.h"
 #include "../kmymoney2.h"
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
@@ -67,14 +69,8 @@ void MyMoneyStatementReader::setAutoCreatePayee(const bool create)
   m_autoCreatePayee = create;
 }
 
-const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
+bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
 {
-  // right now, it's always true that the import started successfully.
-  // if there are problems, we'll report them in the result code to
-  // finishImport, just so the caller can handle the result in the
-  // same place.
-  bool result = true;
-
   //
   // For testing, save the statement to an XML file
   // (uncomment this line)
@@ -164,22 +160,24 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   if ( !m_userAbort )
   {
-    int progress = 0;
-    QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
-    while ( it_t != s.m_listTransactions.end() )
-    {
-      processTransactionEntry(*it_t);
-      signalProgress(++progress, 0);
-      ++it_t;
+    try {
+      int progress = 0;
+      QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
+      while ( it_t != s.m_listTransactions.end() )
+      {
+        processTransactionEntry(*it_t);
+        signalProgress(++progress, 0);
+        ++it_t;
+      }
+    } catch(MyMoneyException* e) {
+      if(e->what() == "USERABORT")
+        m_userAbort = true;
+      else
+        qDebug("Caught exception from processTransactionEntry() not caused by USERABORT: %s", e->what().data());
+      delete e;
     }
   }
 
-  emit importFinished();
-  return result;
-}
-
-const bool MyMoneyStatementReader::finishImport(void)
-{
   bool  rc = false;
 
   // remove the Don't ask again entries
@@ -560,6 +558,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         rc = KMessageBox::questionYesNoCancel(0, msg, i18n("New payee/receiver"),
                   KStdGuiItem::yes(), KStdGuiItem::no(), askKey);
       }
+      delete e;
 
       if(rc == KMessageBox::Yes) {
         // for now, we just add the payee to the pool and turn
@@ -594,7 +593,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         throw new MYMONEYEXCEPTION("USERABORT");
 
       }
-      delete e;
     }
 
     //
@@ -659,7 +657,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         }
       }
     }
-
   }
 
   t.addSplit(s1);
@@ -723,21 +720,40 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             matcher.match(tm, matchedSplit, t, s1);
             break;
         }
-      }
-      else if(typeid(*o) == typeid(MyMoneySchedule)) {
-        // TODO
+      } else if(typeid(*o) == typeid(MyMoneySchedule)) {
+        MyMoneySchedule schedule(*(dynamic_cast<const MyMoneySchedule*>(o)));
+        if(KMessageBox::questionYesNo(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has found a scheduled transaction named <b>%1</b> which matches an imported transaction. Do you want KMyMoney to enter this schedule now so that the transaction can be matched? ").arg(schedule.name())), i18n("Schedule found")) == KMessageBox::Yes) {
+          KEnterScheduleDlg dlg(0, schedule);
+          TransactionEditor* editor = dlg.startEdit();
+          if(editor) {
+            MyMoneyTransaction torig;
+            editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
+            QCString newId;
+            if(editor->enterTransactions(newId, false)) {
+              if(!newId.isEmpty()) {
+                torig = MyMoneyFile::instance()->transaction(newId);
+                schedule.setLastPayment(torig.postDate());
+              }
+              schedule.setNextDueDate(schedule.nextPayment(schedule.nextDueDate()));
+              MyMoneyFile::instance()->modifySchedule(schedule);
+            }
+
+            // now match the two transactions
+            matcher.match(torig, matchedSplit, t, s1);
+          }
+          delete editor;
+        }
       }
       delete o;
     }
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction #%1: ").arg(t_in.m_strBankID));
     message += e->what();
+    delete e;
 
     int result = KMessageBox::warningContinueCancel(0, message);
     if ( result == KMessageBox::Cancel )
-        throw new MYMONEYEXCEPTION("USERABORT");
-
-    delete e;
+      throw new MYMONEYEXCEPTION("USERABORT");
   }
 }
 
