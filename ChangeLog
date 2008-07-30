@@ -6,6 +6,8 @@
 2008-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Respect preferred account setting from new account wizard
   * Updated French translation from Patrick Petit
+  * Added patch provided by Alexis Lahouze with small modifications
+  * Added StatementGroupMarker object
 
 2008-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed reload of payees and schedule view after changes when

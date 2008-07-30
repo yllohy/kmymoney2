@@ -56,7 +56,7 @@ public slots:
    * happened in the meantime.
    */
   void show(void);
-  
+
   /**
    * Override the base class behaviour to restore the layout. Do not
    * do this in show() because show() itself may change the layout
@@ -64,7 +64,7 @@ public slots:
    */
   void polish(void);
 
-  void slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance);
+  void slotReconcileAccount(const MyMoneyAccount& acc, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance);
 
 protected:
   void loadAccounts(void);

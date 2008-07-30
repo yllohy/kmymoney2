@@ -116,7 +116,7 @@ public:
 class GroupMarker : public RegisterItem
 {
 public:
-  GroupMarker(Register* parent);
+  GroupMarker(Register* parent, const QString& txt = QString());
   ~GroupMarker();
   bool isSelectable(void) const { return false; }
   bool canHaveFocus(void) const { return false; }
@@ -155,6 +155,15 @@ public:
   virtual const char* className(void) { return "FancyDateGroupMarker"; }
 private:
   QDate                    m_date;
+};
+
+class StatementGroupMarker : public FancyDateGroupMarker
+{
+public:
+  StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt, const MyMoneyMoney& balance);
+  CashFlowDirection sortType(void) const { return m_dir; }
+private:
+  CashFlowDirection        m_dir;
 };
 
 class SimpleDateGroupMarker : public FancyDateGroupMarker
@@ -217,7 +226,7 @@ class ItemPtrVector : public QValueVector<RegisterItem *>
 public:
   ItemPtrVector() {}
 
-  void sort(void) { std::sort(begin(), end(), item_cmp); }
+  void sort(void);
 
 protected:
   /**

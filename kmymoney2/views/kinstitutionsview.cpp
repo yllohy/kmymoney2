@@ -156,7 +156,7 @@ void KInstitutionsView::loadAccounts(void)
     MyMoneyInstitution none;
     none.setName(i18n("Accounts with no institution assigned"));
     KMyMoneyAccountTreeItem* noInstitutionItem = new KMyMoneyAccountTreeItem(m_accountTree, none);
-    noInstitutionItem->setPixmap(0,none.pixmap()); 
+    noInstitutionItem->setPixmap(0,none.pixmap());
     loadSubAccounts(noInstitutionItem, QCString());
 
     // hide it, if unused
@@ -318,8 +318,11 @@ void KInstitutionsView::slotUpdateNetWorth(void)
   m_totalProfitsLabel->setText(s);
 }
 
-void KInstitutionsView::slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& /* endingBalance */)
+void KInstitutionsView::slotReconcileAccount(const MyMoneyAccount& acc, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance)
 {
+  Q_UNUSED(reconciliationDate);
+  Q_UNUSED(endingBalance);
+
   // scan through the list of accounts and mark all non
   // expanded and re-select the one that was probably selected before
   QListViewItemIterator it_lvi(m_accountTree);

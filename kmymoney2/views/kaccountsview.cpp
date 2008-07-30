@@ -461,8 +461,11 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
   return unused;
 }
 
-void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& /* endingBalance */)
+void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance)
 {
+  Q_UNUSED(reconciliationDate);
+  Q_UNUSED(endingBalance);
+
   // scan through the list of accounts and mark all non
   // expanded and re-select the one that was probably selected before
   QListViewItemIterator it_lvi(m_accountTree);

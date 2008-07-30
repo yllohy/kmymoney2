@@ -419,7 +419,7 @@ public:
     * @retval true Reconciliation started
     * @retval false Account cannot be reconciled
     */
-  bool startReconciliation(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance);
+  bool startReconciliation(const MyMoneyAccount& account, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance);
 
   /**
     * Used to finish reconciliation of account @a account. It switches the
@@ -593,7 +593,7 @@ signals:
     * @param endingBalance collected ending balance when reconciliation starts
     *                0 otherwise
     */
-  void reconciliationStarts(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance);
+  void reconciliationStarts(const MyMoneyAccount& account, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance);
 
 };
 

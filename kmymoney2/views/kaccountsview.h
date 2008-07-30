@@ -110,7 +110,7 @@ public slots:
    * in undesired ways.
    */
   void polish(void);
-  
+
   /**
     * update the account objects if their icon position has changed since
     * the last time.
@@ -119,7 +119,7 @@ public slots:
     */
   void slotUpdateIconPos(unsigned int action);
 
-  void slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance);
+  void slotReconcileAccount(const MyMoneyAccount& acc, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance);
 
 protected:
   typedef enum {

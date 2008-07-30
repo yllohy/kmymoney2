@@ -2931,7 +2931,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
         connect(m_endingBalanceDlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
         if(m_endingBalanceDlg->exec() == QDialog::Accepted) {
-          if(myMoneyView->startReconciliation(account, m_endingBalanceDlg->endingBalance())) {
+          if(myMoneyView->startReconciliation(account, m_endingBalanceDlg->statementDate(), m_endingBalanceDlg->endingBalance())) {
 
             // check if the user requests us to create interest
             // or charge transactions.
@@ -2972,11 +2972,12 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     MyMoneyTransactionFilter filter(m_reconciliationAccount.id());
     filter.addState(MyMoneyTransactionFilter::cleared);
     filter.addState(MyMoneyTransactionFilter::notReconciled);
+    filter.setDateFilter(QDate(), m_endingBalanceDlg->statementDate());
     filter.setConsiderCategory(false);
     filter.setReportAllSplits(true);
     file->transactionList(transactionList, filter);
 
-    MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_reconciliationAccount.id());
+    MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_reconciliationAccount.id(), m_endingBalanceDlg->statementDate().addDays(-1));
     MyMoneyMoney actBalance, clearedBalance;
     actBalance = clearedBalance = balance;
 

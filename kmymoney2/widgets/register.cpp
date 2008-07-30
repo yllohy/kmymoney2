@@ -102,6 +102,25 @@ static unsigned char fancymarker_bg_image[] = {
 QPixmap* GroupMarker::m_bg = 0;
 int GroupMarker::m_bgRefCnt = 0;
 
+void ItemPtrVector::sort(void)
+{
+  if(count() > 0) {
+    // get rid of 0 pointers in the list
+    KMyMoneyRegister::ItemPtrVector::iterator it_l;
+    RegisterItem *item;
+    for(it_l = begin(); it_l != end(); ++it_l) {
+      if(*it_l == 0) {
+        item = last();
+        *it_l = item;
+        pop_back();
+        --it_l;
+      }
+    }
+
+    std::sort(begin(), end(), item_cmp);
+  }
+}
+
 bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 {
   const QValueList<TransactionSortField>& sortOrder = i1->parent()->sortOrder();
@@ -113,7 +132,8 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
   MyMoneyMoney tmp;
 
   for(it = sortOrder.begin(); it != sortOrder.end(); ++it) {
-    switch(static_cast<TransactionSortField>(abs(*it))) {
+    TransactionSortField sortField = static_cast<TransactionSortField>(abs(*it));
+    switch(sortField) {
       case PostDateSort:
         rc = i2->sortPostDate().daysTo(i1->sortPostDate());
         break;
@@ -191,8 +211,16 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
           // no, both are non-markers, then just continue with the next criteria
           continue;
         }
-        // the marker 'wins'
-        return false;
+
+        // let the marker take precedence but only if it's not a StatementGroupMarker
+        if(dynamic_cast<StatementGroupMarker*>(i2) == 0)
+          return false;
+
+        // it's a StatementGroupMarker which will always be last in date sort order
+        if(sortField == PostDateSort)
+          return true;
+        continue;
+
       } else if(dynamic_cast<GroupMarker*>(i2) != 0) {
         // we have two markers to compare
         bool fm1 = dynamic_cast<FiscalYearGroupMarker*>(i1) != 0;
@@ -201,6 +229,13 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
         if(fm1 || fm2) {
           if(fm1)
             return false;
+        }
+      } else {
+        // make sure to show a statement group marker as the last item, but only when sorting by postdate
+        if(dynamic_cast<StatementGroupMarker*>(i1) != 0) {
+          if(sortField == PostDateSort)
+            return false;
+          continue;
         }
       }
       return true;
@@ -215,8 +250,9 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
   return rc < 0;
 }
 
-GroupMarker::GroupMarker(Register *parent) :
+GroupMarker::GroupMarker(Register *parent, const QString& txt) :
   RegisterItem(parent),
+  m_txt(txt),
   m_drawCounter(parent->drawCounter()-1)   // make sure we get painted the first time around
 {
   int h;
@@ -332,11 +368,16 @@ int GroupMarker::rowHeightHint(void) const
   return m_bg->height();
 }
 
-FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :
-  GroupMarker(parent)
+StatementGroupMarker::StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt, const MyMoneyMoney& balance) :
+  FancyDateGroupMarker(parent, date, txt),
+  m_dir(dir)
 {
-  m_txt = txt;
-  m_date = date;
+}
+
+FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :
+  GroupMarker(parent, txt),
+  m_date(date)
+{
 }
 
 FiscalYearGroupMarker::FiscalYearGroupMarker(Register* parent, const QDate& date, const QString& txt) :
@@ -422,15 +463,13 @@ TypeGroupMarker::TypeGroupMarker(Register* parent, CashFlowDirection dir, MyMone
 }
 
 PayeeGroupMarker::PayeeGroupMarker(Register* parent, const QString& name) :
-  GroupMarker(parent)
+  GroupMarker(parent, name)
 {
-  m_txt = name;
 }
 
 CategoryGroupMarker::CategoryGroupMarker(Register* parent, const QString& category) :
-  GroupMarker(parent)
+  GroupMarker(parent, category)
 {
-  m_txt = category;
 }
 
 ReconcileGroupMarker::ReconcileGroupMarker(Register* parent, MyMoneySplit::reconcileFlagE state) :

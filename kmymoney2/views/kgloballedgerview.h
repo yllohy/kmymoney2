@@ -229,7 +229,7 @@ public slots:
    * @param endingBalance The calculated ending balance for the statement
    *                Default ist 0.
    */
-  void slotSetReconcileAccount(const MyMoneyAccount& account = MyMoneyAccount(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
+  void slotSetReconcileAccount(const MyMoneyAccount& account = MyMoneyAccount(), const QDate& reconciliationDate = QDate(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
 
   /**
     * Select all transactions in the ledger that are not hidden.

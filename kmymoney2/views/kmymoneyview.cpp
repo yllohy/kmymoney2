@@ -149,7 +149,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_institutionsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotInstitutionEdit(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyInstitution&)));
-  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_institutionsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)), m_institutionsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)));
 
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
@@ -162,7 +162,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
   connect(this, SIGNAL(kmmFilePlugin(unsigned int)), m_accountsView, SLOT(slotUpdateIconPos(unsigned int)));
-  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)));
 
   // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
@@ -207,7 +207,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(startEdit()), kmymoney2, SLOT(slotTransactionsEdit()));
   connect(m_ledgerView, SIGNAL(endEdit()), kmymoney2, SLOT(slotTransactionsEnter()));
   connect(m_ledgerView, SIGNAL(toggleReconciliationFlag()), kmymoney2, SLOT(slotToggleReconciliationFlag()));
-  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_ledgerView, SLOT(slotSetReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)), m_ledgerView, SLOT(slotSetReconcileAccount(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)));
   connect(kmymoney2, SIGNAL(selectAllTransactions()), m_ledgerView, SLOT(slotSelectAllTransactions()));
 
   // Page 7
@@ -1231,7 +1231,7 @@ bool KMyMoneyView::dirty(void)
   return MyMoneyFile::instance()->dirty();
 }
 
-bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance)
+bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance)
 {
   bool  ok = true;
 
@@ -1245,7 +1245,7 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
     if(account.isAssetLiability()) {
       showPage(pageIndex(m_ledgerViewFrame));
       // prepare reconciliation mode
-      emit reconciliationStarts(account, endingBalance);
+      emit reconciliationStarts(account, reconciliationDate, endingBalance);
     } else {
       ok = false;
     }
@@ -1256,7 +1256,7 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
 
 void KMyMoneyView::finishReconciliation(const MyMoneyAccount& /* account */)
 {
-  emit reconciliationStarts(MyMoneyAccount(), MyMoneyMoney());
+  emit reconciliationStarts(MyMoneyAccount(), QDate(), MyMoneyMoney());
 }
 
 void KMyMoneyView::newFile(void)

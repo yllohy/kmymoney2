@@ -66,6 +66,7 @@ public:
   KMyMoneyRegister::RegisterSearchLineWidget* m_registerSearchLine;
   QPoint               m_startPoint;
   QCString             m_reconciliationAccount;
+  QDate                m_reconciliationDate;
   MyMoneyMoney         m_endingBalance;
   int                  m_precision;
   bool                 m_inLoading;
@@ -378,6 +379,7 @@ void KGlobalLedgerView::loadView(void)
     // and update the sort order
     QString sortOrder;
     QCString key;
+    QDate reconciliationDate = d->m_reconciliationDate;
 
     MyMoneyTransactionFilter filter(m_account.id());
     // if it's an investment account, we also take care of
@@ -433,6 +435,30 @@ void KGlobalLedgerView::loadView(void)
     // remove trailing and adjacent markers
     m_register->removeUnwantedGroupMarkers();
 
+    // add special markers for reconciliation now so that they do not get
+    // removed by m_register->removeUnwantedGroupMarkers(). Needs resorting
+    // of items but that's ok.
+
+    KMyMoneyRegister::StatementGroupMarker* statement = 0;
+    KMyMoneyRegister::StatementGroupMarker* dStatement = 0;
+    KMyMoneyRegister::StatementGroupMarker* pStatement = 0;
+
+    if(isReconciliationAccount()) {
+      switch(m_register->primarySortKey()) {
+        case KMyMoneyRegister::PostDateSort:
+          statement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Details"), MyMoneyMoney());
+          m_register->sortItems();
+          break;
+        case KMyMoneyRegister::TypeSort:
+          dStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Deposit Details"), MyMoneyMoney());
+          pStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Payment, reconciliationDate, i18n("Statement Payment Details"), MyMoneyMoney());
+          m_register->sortItems();
+          break;
+        default:
+          break;
+      }
+    }
+
     // determine balances (actual, cleared). We do this by getting the actual
     // balance of all entered transactions from the engine and walk the list
     // of transactions backward. Also re-select a transaction if it was
@@ -476,6 +502,10 @@ void KGlobalLedgerView::loadView(void)
         }
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
           tracer.printf("Reducing cleared balance by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
+          clearedBalance[t->split().accountId()] -= split.shares() * factor;
+        }
+        if(isReconciliationAccount() && t->transaction().postDate() > reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
+          tracer.printf("Reducing cleared balance by %s because we are in reconciliation, %s/%s(%s)'s date is after or on reconciliation date (%s) and is cleared", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data(), reconciliationDate.toString(Qt::ISODate).data());
           clearedBalance[t->split().accountId()] -= split.shares() * factor;
         }
         if(t->transaction().postDate() > QDate::currentDate()) {
@@ -705,7 +735,7 @@ void KGlobalLedgerView::slotSelectAllTransactions(void)
   emit transactionsSelected(list);
 }
 
-void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance)
+void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const QDate& reconciliationDate, const MyMoneyMoney& endingBalance)
 {
   if(d->m_reconciliationAccount != acc.id()) {
     // make sure the account is selected
@@ -713,6 +743,7 @@ void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const
       slotSelectAccount(acc.id());
 
     d->m_reconciliationAccount = acc.id();
+    d->m_reconciliationDate = reconciliationDate;
     d->m_endingBalance = endingBalance;
     if(acc.accountGroup() == MyMoneyAccount::Liability)
       d->m_endingBalance = -endingBalance;
