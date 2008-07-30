@@ -188,6 +188,7 @@ void ObjectInfoTable::constructScheduleTable ( void )
           splitRow["id"] = schedule.id();
           splitRow["name"] = schedule.name();
           splitRow["type"] = KMyMoneyUtils::scheduleTypeToString ( schedule.type() );
+          splitRow["nextduedate"] = schedule.nextDueDate().toString ( Qt::ISODate );
 
           if ( ! splitAcc.isIncomeExpense() ) {
             splitRow["split"] = ( *split_it ).value().toString();
