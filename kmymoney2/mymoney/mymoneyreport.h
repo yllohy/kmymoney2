@@ -60,7 +60,7 @@ class KMYMONEY_EXPORT MyMoneyReport: public MyMoneyObject, public MyMoneyTransac
 {
 public:
   // When adding a new row type, be sure to add a corresponding entry in kTypeArray
-  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution, eBudget, eBudgetActual, eSchedule, eAccountInfo, eAccountLoanInfo};
+  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution, eBudget, eBudgetActual, eSchedule, eAccountInfo, eAccountLoanInfo, eAccountReconcile};
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable, eInfoTable };
   enum EColumnType { eNoColumns = 0, eDays = 1, eMonths = 1, eBiMonths = 2, eQuarters = 3, eWeeks = 7, eYears = 12 };
 

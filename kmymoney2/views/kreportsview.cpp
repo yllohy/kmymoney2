@@ -1096,7 +1096,6 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Transactions by Week"),
       i18n("Default Report")
     ));
-
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccount,
       MyMoneyReport::eQCloan,
@@ -1106,7 +1105,14 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setLoansOnly(true);
-
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAccountReconcile,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory|MyMoneyReport::eQCbalance,
+      MyMoneyTransactionFilter::last3Months,
+      false,
+      i18n("Transactions by Reconciliation Status"),
+      i18n("Default Report")
+    ));
     groups.push_back(list);
   }
   {

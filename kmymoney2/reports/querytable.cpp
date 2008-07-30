@@ -50,10 +50,6 @@
 
 namespace reports {
 
-  // this should be in mymoneysplit.h
-  static const QStringList kReconcileText = QStringList::split(",","notreconciled,cleared,reconciled,frozen,none");
-  static const QStringList kReconcileTextChar = QStringList::split(",","N,C,R,F,none");
-
 // ****************************************************************************
 //
 // CashFlowListItem implementation
@@ -377,7 +373,10 @@ void QueryTable::init(void)
   case MyMoneyReport::eAccount:
     m_group = "account";
     break;
-  case MyMoneyReport::ePayee:
+  case MyMoneyReport::eAccountReconcile:
+    m_group = "account,reconcileflag";
+    break;
+    case MyMoneyReport::ePayee:
     m_group = "payee";
     break;
   case MyMoneyReport::eMonth:
@@ -647,7 +646,7 @@ void QueryTable::constructTransactionTable(void)
           : file->payee(p).name().simplifyWhiteSpace();
 
         qA["reconciledate"] = (* is).reconcileDate().toString(Qt::ISODate);
-        qA["reconcileflag"] = kReconcileTextChar[(* is).reconcileFlag()];
+        qA["reconcileflag"] = KMyMoneyUtils::reconcileStateToString((* is).reconcileFlag(), true );
         qA["number"] = (* is).number();
         // qA["action"] = (* is).action();
         qA["memo"] = a_memo;

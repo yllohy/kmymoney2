@@ -192,7 +192,7 @@ namespace reports {
     i18nHeaders["categorytype"] = i18n("Category Type");
     i18nHeaders["month"] = i18n("Month");
     i18nHeaders["week"] = i18n("Week");
-    i18nHeaders["reconcileflag"] = i18n("R");
+    i18nHeaders["reconcileflag"] = i18n("Reconciled");
     i18nHeaders["action"] = i18n("Action");
     i18nHeaders["shares"] = i18n("Shares");
     i18nHeaders["price"] = i18n("Price");
