@@ -136,6 +136,10 @@ const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
   m_account.setInstitutionId(m_institutionPage->institution().id());
   m_account.setNumber(m_institutionPage->m_accountNumber->text());
   m_account.setValue("IBAN", m_institutionPage->m_iban->text());
+  if(m_accountTypePage->m_preferredAccount->isChecked())
+    m_account.setValue("PreferredAccount", "Yes");
+  else
+    m_account.deletePair("PreferredAccount");
 
   m_account.setCurrencyId(currency().id());
   if(m_account.isLoan()) {
