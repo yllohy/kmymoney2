@@ -127,16 +127,20 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
       m_userAbort = ! selectOrCreateAccount(Select, m_account);
   }
 
-  m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
-  if ( s.m_dateEnd.isValid() ) {
-    m_account.setValue("lastImportedTransactionDate", s.m_dateEnd.toString(Qt::ISODate));
-  }
+  // see if we need to update some values stored with the account
+  if(m_account.value("lastStatementBalance") != s.m_closingBalance.toString()
+  || m_account.value("lastImportedTransactionDate") != s.m_dateEnd.toString(Qt::ISODate)) {
+    m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
+    if ( s.m_dateEnd.isValid() ) {
+      m_account.setValue("lastImportedTransactionDate", s.m_dateEnd.toString(Qt::ISODate));
+    }
 
-  try {
-    MyMoneyFile::instance()->modifyAccount(m_account);
-  } catch(MyMoneyException* e) {
-    qDebug("Updating account in MyMoneyStatementReader::startImport failed");
-    delete e;
+    try {
+      MyMoneyFile::instance()->modifyAccount(m_account);
+    } catch(MyMoneyException* e) {
+      qDebug("Updating account in MyMoneyStatementReader::startImport failed");
+      delete e;
+    }
   }
 
   signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
@@ -178,6 +182,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
     }
   }
 
+  qDebug("Statement balance is '%s'", s.m_closingBalance.formatMoney("",2).data());
   bool  rc = false;
 
   // remove the Don't ask again entries
@@ -697,7 +702,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   // Add the transaction
   try {
-    file->addTransaction(t);
 
     // check for matches already stored in the engine
     MyMoneySplit matchedSplit;
@@ -705,50 +709,57 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     TransactionMatcher matcher(thisaccount);
     matcher.setMatchWindow(KMyMoneyGlobalSettings::matchInterval());
     const MyMoneyObject *o = matcher.findMatch(t, s1, matchedSplit, result);
-    if(o) {
-      if(typeid(*o) == typeid(MyMoneyTransaction)) {
-        MyMoneyTransaction tm(*(dynamic_cast<const MyMoneyTransaction*>(o)));
-        switch(result) {
-          case TransactionMatcher::notMatched:
-            // no need to do anything here
-            break;
-          case TransactionMatcher::matchedDuplicate:
-            // we get rid of it immediately
-            file->removeTransaction(t);
-            break;
-          case TransactionMatcher::matched:
-            matcher.match(tm, matchedSplit, t, s1);
-            break;
-        }
-      } else if(typeid(*o) == typeid(MyMoneySchedule)) {
-        MyMoneySchedule schedule(*(dynamic_cast<const MyMoneySchedule*>(o)));
-        if(KMessageBox::questionYesNo(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has found a scheduled transaction named <b>%1</b> which matches an imported transaction. Do you want KMyMoney to enter this schedule now so that the transaction can be matched? ").arg(schedule.name())), i18n("Schedule found")) == KMessageBox::Yes) {
-          KEnterScheduleDlg dlg(0, schedule);
-          TransactionEditor* editor = dlg.startEdit();
-          if(editor) {
-            MyMoneyTransaction torig;
-            editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
-            QCString newId;
-            if(editor->enterTransactions(newId, false)) {
-              if(!newId.isEmpty()) {
-                torig = MyMoneyFile::instance()->transaction(newId);
-                schedule.setLastPayment(torig.postDate());
-              }
-              schedule.setNextDueDate(schedule.nextPayment(schedule.nextDueDate()));
-              MyMoneyFile::instance()->modifySchedule(schedule);
-            }
 
-            // now match the two transactions
-            matcher.match(torig, matchedSplit, t, s1);
+    // if we did not already find this one, we need to process it
+    if(result != TransactionMatcher::matchedDuplicate) {
+      file->addTransaction(t);
+
+      if(o) {
+        if(typeid(*o) == typeid(MyMoneyTransaction)) {
+          // it matched a simple transaction. that's the easy case
+          MyMoneyTransaction tm(*(dynamic_cast<const MyMoneyTransaction*>(o)));
+          switch(result) {
+            case TransactionMatcher::notMatched:
+            case TransactionMatcher::matchedDuplicate:
+              // no need to do anything here
+              break;
+            case TransactionMatcher::matched:
+              matcher.match(tm, matchedSplit, t, s1);
+              break;
           }
-          delete editor;
+
+        } else if(typeid(*o) == typeid(MyMoneySchedule)) {
+          // a match has been found in a pending schedule. We'll ask the user if she wants
+          // to enter the schedule and match it agains the new transaction. Otherwise, we
+          // just leave the transaction as imported.
+          MyMoneySchedule schedule(*(dynamic_cast<const MyMoneySchedule*>(o)));
+          if(KMessageBox::questionYesNo(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has found a scheduled transaction named <b>%1</b> which matches an imported transaction. Do you want KMyMoney to enter this schedule now so that the transaction can be matched? ").arg(schedule.name())), i18n("Schedule found")) == KMessageBox::Yes) {
+            KEnterScheduleDlg dlg(0, schedule);
+            TransactionEditor* editor = dlg.startEdit();
+            if(editor) {
+              MyMoneyTransaction torig;
+              editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
+              QCString newId;
+              if(editor->enterTransactions(newId, false)) {
+                if(!newId.isEmpty()) {
+                  torig = MyMoneyFile::instance()->transaction(newId);
+                  schedule.setLastPayment(torig.postDate());
+                }
+                schedule.setNextDueDate(schedule.nextPayment(schedule.nextDueDate()));
+                MyMoneyFile::instance()->modifySchedule(schedule);
+              }
+
+              // now match the two transactions
+              matcher.match(torig, matchedSplit, t, s1);
+            }
+            delete editor;
+          }
         }
       }
-      delete o;
     }
+    delete o;
   } catch (MyMoneyException *e) {
-    QString message(i18n("Problem adding imported transaction #%1: ").arg(t_in.m_strBankID));
-    message += e->what();
+    QString message(i18n("Problem adding or matching imported transaction with id '%1': %2").arg(t_in.m_strBankID).arg(e->what()));
     delete e;
 
     int result = KMessageBox::warningContinueCancel(0, message);

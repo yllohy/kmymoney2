@@ -468,12 +468,19 @@ void KGlobalLedgerView::loadView(void)
     if(m_account.accountGroup() == MyMoneyAccount::Liability)
       factor = -factor;
 
+    QMap<QCString, int> deposits;
+    QMap<QCString, int> payments;
+    QMap<QCString, MyMoneyMoney> depositAmount;
+    QMap<QCString, MyMoneyMoney> paymentAmount;
     for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
       MyMoneyMoney balance = MyMoneyFile::instance()->balance(it_b.key());
       balance = balance * factor;
       clearedBalance[it_b.key()] =
       futureBalance[it_b.key()] =
       (*it_b) = balance;
+      deposits[it_b.key()] = payments[it_b.key()] = 0;
+      depositAmount[it_b.key()] = MyMoneyMoney();
+      paymentAmount[it_b.key()] = MyMoneyMoney();
     }
 
     tracer.printf("total balance of %s = %s", m_account.name().data(), actBalance[m_account.id()].formatMoney("", 2).data());
@@ -502,17 +509,28 @@ void KGlobalLedgerView::loadView(void)
         }
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
           tracer.printf("Reducing cleared balance by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
-          clearedBalance[t->split().accountId()] -= split.shares() * factor;
+          clearedBalance[split.accountId()] -= split.shares() * factor;
         }
         if(isReconciliationAccount() && t->transaction().postDate() > reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
           tracer.printf("Reducing cleared balance by %s because we are in reconciliation, %s/%s(%s)'s date is after or on reconciliation date (%s) and is cleared", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data(), reconciliationDate.toString(Qt::ISODate).data());
-          clearedBalance[t->split().accountId()] -= split.shares() * factor;
+
+          clearedBalance[split.accountId()] -= split.shares() * factor;
         }
+        if(isReconciliationAccount() && t->transaction().postDate() <= reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
+          if(split.shares().isNegative()) {
+            payments[split.accountId()]++;
+            paymentAmount[split.accountId()] += split.shares();
+          } else {
+            deposits[split.accountId()]++;
+            depositAmount[split.accountId()] += split.shares();
+          }
+        }
+
         if(t->transaction().postDate() > QDate::currentDate()) {
           tracer.printf("Reducing actual balance by %s because %s/%s(%s) is in the future", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
-          actBalance[t->split().accountId()] -= split.shares() * factor;
+          actBalance[split.accountId()] -= split.shares() * factor;
         }
-        futureBalance[t->split().accountId()] = balance;
+        futureBalance[split.accountId()] = balance;
       }
       p = p->prevItem();
     }
@@ -520,6 +538,23 @@ void KGlobalLedgerView::loadView(void)
     tracer.printf("total balance of %s = %s", m_account.name().data(), actBalance[m_account.id()].formatMoney("", 2).data());
     tracer.printf("future balance of %s = %s", m_account.name().data(), futureBalance[m_account.id()].formatMoney("", 2).data());
     tracer.printf("cleared balance of %s = %s", m_account.name().data(), clearedBalance[m_account.id()].formatMoney("", 2).data());
+
+    // update statement information
+    if(statement) {
+      statement->setText(i18n("%1 deposits (%3), %2 payments (%4)").
+          arg(deposits[m_account.id()]).
+          arg(payments[m_account.id()]).
+          arg(depositAmount[m_account.id()].abs().formatMoney(m_account.fraction())).
+          arg(paymentAmount[m_account.id()].abs().formatMoney(m_account.fraction())) );
+    }
+    if(pStatement) {
+      pStatement->setText(i18n("%1 payments (%2)").arg(payments[m_account.id()]).
+          arg(paymentAmount[m_account.id()].abs().formatMoney(m_account.fraction())) );
+    }
+    if(dStatement) {
+      dStatement->setText(i18n("%1 deposits (%2)").arg(deposits[m_account.id()]).
+          arg(depositAmount[m_account.id()].abs().formatMoney(m_account.fraction())) );
+    }
 
     // add a last empty entry for new transactions
     // leave some information about the current account

@@ -197,7 +197,7 @@ void KEndingBalanceDlg::slotUpdateBalances(void)
   for(it = transactionList.begin(); it != transactionList.end(); ++it) {
     const MyMoneySplit& split = (*it).second;
     balance -= split.shares() * factor;
-    if((*it).first.postDate() >= m_statementDate->date()) {
+    if((*it).first.postDate() > m_statementDate->date()) {
       tracer.printf("Reducing balances by %s because postdate of %s/%s(%s) is past statement date", (split.shares() * factor).formatMoney("", 2).data(), (*it).first.id().data(),split.id().data(), (*it).first.postDate().toString(Qt::ISODate).data());
       endBalance -= split.shares() * factor;
       startBalance -= split.shares() * factor;

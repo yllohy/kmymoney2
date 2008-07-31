@@ -2977,7 +2977,7 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     filter.setReportAllSplits(true);
     file->transactionList(transactionList, filter);
 
-    MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_reconciliationAccount.id(), m_endingBalanceDlg->statementDate().addDays(-1));
+    MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_reconciliationAccount.id(), m_endingBalanceDlg->statementDate());
     MyMoneyMoney actBalance, clearedBalance;
     actBalance = clearedBalance = balance;
 

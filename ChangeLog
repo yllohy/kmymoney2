@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-07-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Include transactions with the same date as the statement date
+    in reconciliation
+  * Show information about deposits and payments during reconciliation
+
 2008-07-30 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Argentinian translation
   * Added report of transactions by reconciliation status
