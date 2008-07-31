@@ -94,6 +94,8 @@ OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
       result = OfxAccountData::OFX_CREDITCARD;
     else if ( override == "INV" )
       result = OfxAccountData::OFX_INVESTMENT;
+    else if ( override == "MONEYMARKET")
+      result = OfxAccountData::OFX_MONEYMRKT;
   }
 
   return result;
@@ -130,6 +132,8 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
       result = OFX_CREDITCARD_ACCOUNT;
     else if ( override == "INV" )
       result = OFX_INVEST_ACCOUNT;
+    else if ( override == "MONEYMARKET")
+      result = OfxAccountData::OFX_MONEYMRKT;
   }
 
   return result;
