@@ -98,7 +98,7 @@ void ObjectInfoTable::init ( void )
       break;
     case MyMoneyReport::eAccountInfo:
     case MyMoneyReport::eAccountLoanInfo:
-      m_group = "topcategory";
+      m_group = "topcategory,institution";
       m_subtotal="value";
       break;
     default:
@@ -109,13 +109,17 @@ void ObjectInfoTable::init ( void )
 
   switch ( m_config.rowType() ) {
     case MyMoneyReport::eSchedule:
-      m_columns="name,payee,paymenttype,occurence,nextduedate,category";
+      if ( m_config.detailLevel() == MyMoneyReport::eDetailAll ) {
+          m_columns="name,payee,paymenttype,occurence,nextduedate,category";
+      } else {
+          m_columns="name,payee,paymenttype,occurence,nextduedate";
+      }
       break;
     case MyMoneyReport::eAccountInfo:
-      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite";
+      m_columns="type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite";
       break;
     case MyMoneyReport::eAccountLoanInfo:
-      m_columns="topcategory,institution,type,name,number,description,openingdate,currency,payee,loanamount,interestrate,nextinterestchange,periodicpayment,finalpayment,favorite";
+      m_columns="type,name,number,description,openingdate,currency,payee,loanamount,interestrate,nextinterestchange,periodicpayment,finalpayment,favorite";
       break;
     default:
       m_columns = "";
@@ -228,7 +232,8 @@ void ObjectInfoTable::constructAccountTable ( void )
     TableRow accountRow;
     ReportAccount account = *it_account;
 
-    if(m_config.includes(account))
+    if(m_config.includes(account)
+       && account.accountType() != MyMoneyAccount::Stock )
     {
       accountRow["rank"] = "0";
       accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
@@ -280,7 +285,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       accountRow["currency"] = (file->currency(account.currencyId())).name();
       accountRow["payee"] = loan.payee();
       accountRow["loanamount"] = loan.loanAmount().toString();
-      accountRow["interestrate"] = loan.interestRate(QDate::currentDate()).toString();
+      accountRow["interestrate"] = (loan.interestRate(QDate::currentDate())/MyMoneyMoney(100,1)).toString();
       accountRow["nextinterestchange"] = loan.nextInterestChange().toString( Qt::ISODate );
       accountRow["periodicpayment"] = loan.periodicPayment().toString();
       accountRow["finalpayment"] = loan.finalPayment().toString();

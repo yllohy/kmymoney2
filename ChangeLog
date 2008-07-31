@@ -7,6 +7,10 @@
   * Updated Argentinian translation
   * Added report of transactions by reconciliation status
   * Fixed order of schedules info report
+  * Fixed grouping of account and loan info reports
+  * Removed category column of schedule summary info report 
+    - Patch provided by Marko Käning
+  * Fixed interest rate in loan info report
 
 2008-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Respect preferred account setting from new account wizard
