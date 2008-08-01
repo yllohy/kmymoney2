@@ -91,7 +91,7 @@ public:
   // used by the GUI (for KMyMoney in kfindtransactiondlgdecl.ui)
   enum dateOptionE {
     allDates = 0,
-    untilToday,
+    asOfToday,
     currentMonth,
     currentYear,
     monthToDate,

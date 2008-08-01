@@ -133,7 +133,7 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
     else if ( override == "INV" )
       result = OFX_INVEST_ACCOUNT;
     else if ( override == "MONEYMARKET")
-      result = OfxAccountData::OFX_MONEYMRKT;
+      result = OFX_MONEYMRKT;
   }
 
   return result;

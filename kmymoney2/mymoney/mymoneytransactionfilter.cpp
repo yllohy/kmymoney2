@@ -754,7 +754,7 @@ bool MyMoneyTransactionFilter::translateDateRange(dateOptionE id, QDate& start, 
       start = QDate();
       end = QDate();
       break;
-    case MyMoneyTransactionFilter::untilToday:
+    case MyMoneyTransactionFilter::asOfToday:
       start = QDate();
       end =  QDate::currentDate();
       break;

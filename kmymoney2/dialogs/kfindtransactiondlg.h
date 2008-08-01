@@ -52,7 +52,7 @@ public:
   // used by the GUI in kfindtransactiondlgdecl.ui
   enum dateOptionE {
     allDates = 0,
-    untilToday,
+    asOfToday,
     currentMonth,
     currentYear,
     monthToDate,

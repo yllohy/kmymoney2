@@ -661,7 +661,7 @@ KMyMoneyPeriodCombo::KMyMoneyPeriodCombo(QWidget* parent, const char* name) :
   KMyMoneyGeneralCombo(parent, name)
 {
   insertItem(i18n("All dates"), MyMoneyTransactionFilter::allDates);
-  insertItem(i18n("As of today"), MyMoneyTransactionFilter::untilToday);
+  insertItem(i18n("As of today"), MyMoneyTransactionFilter::asOfToday);
   insertItem(i18n("Today"), MyMoneyTransactionFilter::today);
   insertItem(i18n("Current month"), MyMoneyTransactionFilter::currentMonth);
   insertItem(i18n("Current quarter"), MyMoneyTransactionFilter::currentQuarter);
