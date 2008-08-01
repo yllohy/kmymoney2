@@ -63,11 +63,14 @@ using namespace NewAccountWizard;
 namespace NewAccountWizard {
   enum steps {
     StepInstitution = 1,
-    StepDetail,
-    StepBrokerage,
+    StepAccount,
+    StepBroker,
+    StepDetails,
+    StepPayments,
+    StepFees,
     StepSchedule,
     StepPayout,
-    StepHierarchy,
+    StepParentAccount,
     StepFinish
   };
 };
@@ -76,15 +79,21 @@ NewAccountWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, 
 {
   setTitle(i18n("KMyMoney New Account Setup"));
   addStep(i18n("Institution"));
-  addStep(i18n("Details"));
+  addStep(i18n("Account"));
   addStep(i18n("Broker"));
+  addStep(i18n("Details"));
+  addStep(i18n("Payments"));
+  addStep(i18n("Fees"));
   addStep(i18n("Schedule"));
   addStep(i18n("Payout"));
   addStep(i18n("Parent Account"));
   addStep(i18n("Finish"));
-  setStepHidden(StepBrokerage);
+  setStepHidden(StepBroker);
   setStepHidden(StepSchedule);
   setStepHidden(StepPayout);
+  setStepHidden(StepDetails);
+  setStepHidden(StepPayments);
+  setStepHidden(StepFees);
 
   m_institutionPage = new InstitutionPage(this);
   m_accountTypePage = new AccountTypePage(this);
@@ -415,7 +424,7 @@ KMyMoneyWizardPage* InstitutionPage::nextPage(void) const
 
 AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   KAccountTypePageDecl(wizard),
-  WizardPage<Wizard>(StepDetail, this, wizard, name)
+  WizardPage<Wizard>(StepAccount, this, wizard, name)
 {
   m_typeSelection->insertItem(i18n("Checking"), MyMoneyAccount::Checkings);
   m_typeSelection->insertItem(i18n("Savings"), MyMoneyAccount::Savings);
@@ -445,10 +454,14 @@ void AccountTypePage::hideShowPages(MyMoneyAccount::accountTypeE accountType) co
 {
   bool hideSchedulePage = (accountType != MyMoneyAccount::CreditCard)
                        && (accountType != MyMoneyAccount::Loan);
+  bool hideLoanPage     = (accountType != MyMoneyAccount::Loan);
+  m_wizard->setStepHidden(StepDetails, hideLoanPage);
+  m_wizard->setStepHidden(StepPayments, hideLoanPage);
+  m_wizard->setStepHidden(StepFees, hideLoanPage);
   m_wizard->setStepHidden(StepSchedule, hideSchedulePage);
   m_wizard->setStepHidden(StepPayout, (accountType != MyMoneyAccount::Loan));
-  m_wizard->setStepHidden(StepBrokerage, accountType != MyMoneyAccount::Investment);
-  m_wizard->setStepHidden(StepHierarchy, accountType == MyMoneyAccount::Loan);
+  m_wizard->setStepHidden(StepBroker, accountType != MyMoneyAccount::Investment);
+  m_wizard->setStepHidden(StepParentAccount, accountType == MyMoneyAccount::Loan);
   // Force an update of the steps in case the list has changed
   m_wizard->reselectStep();
 };
@@ -526,7 +539,7 @@ bool AccountTypePage::allowsParentAccount(void) const
 
 BrokeragePage::BrokeragePage(Wizard* wizard, const char* name) :
   KBrokeragePageDecl(wizard),
-  WizardPage<Wizard>(StepBrokerage, this, wizard, name)
+  WizardPage<Wizard>(StepBroker, this, wizard, name)
 {
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
 }
@@ -644,7 +657,7 @@ KMyMoneyWizardPage* CreditCardSchedulePage::nextPage(void) const
 
 GeneralLoanInfoPage::GeneralLoanInfoPage(Wizard* wizard, const char* name) :
   KGeneralLoanInfoPageDecl(wizard),
-  WizardPage<Wizard>(StepDetail, this, wizard, name),
+  WizardPage<Wizard>(StepDetails, this, wizard, name),
   m_firstTime(true)
 {
   m_mandatoryGroup->add(m_payee);
@@ -741,7 +754,7 @@ void GeneralLoanInfoPage::slotLoadWidgets(void)
 
 LoanDetailsPage::LoanDetailsPage(Wizard* wizard, const char* name) :
   KLoanDetailsPageDecl(wizard),
-  WizardPage<Wizard>(StepDetail, this, wizard, name),
+  WizardPage<Wizard>(StepPayments, this, wizard, name),
   m_needCalculate(true)
 {
   // force the balloon payment to zero (default)
@@ -1115,7 +1128,7 @@ public:
 
 LoanPaymentPage::LoanPaymentPage(Wizard* wizard, const char* name) :
   KLoanPaymentPageDecl(wizard),
-  WizardPage<Wizard>(StepDetail, this, wizard, name),
+  WizardPage<Wizard>(StepFees, this, wizard, name),
   d(new LoanPaymentPagePrivate)
 {
   d->phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
@@ -1356,7 +1369,7 @@ const QCString& LoanPayoutPage::payoutAccountId(void) const
 
 HierarchyPage::HierarchyPage(Wizard* wizard, const char* name) :
   KHierarchyPageDecl(wizard),
-  WizardPage<Wizard>(StepHierarchy, this, wizard, name)
+  WizardPage<Wizard>(StepParentAccount, this, wizard, name)
 {
   m_mandatoryGroup->add(m_qlistviewParentAccounts);
   m_qlistviewParentAccounts->setEnabled(true);

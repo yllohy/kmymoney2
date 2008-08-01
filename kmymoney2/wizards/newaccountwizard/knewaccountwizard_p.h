@@ -142,8 +142,6 @@ private slots:
   void slotLoadWidgets(void);
 };
 
-
-
 class GeneralLoanInfoPage : public KGeneralLoanInfoPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT

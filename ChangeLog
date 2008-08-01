@@ -7,6 +7,7 @@
   * Fixed OFX override for LibOFX 0.8
   * Renamed MyMoneyTransactionFilter::untilToday
     into MyMoneyTransactionFilter::asOfToday
+  * Added patch provided by Colin Wright
 
 2008-07-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Include transactions with the same date as the statement date
