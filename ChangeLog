@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-01 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added link to ledger to budget overruns in home page
+
 2008-08-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed OFX override for LibOFX 0.8
   * Renamed MyMoneyTransactionFilter::untilToday

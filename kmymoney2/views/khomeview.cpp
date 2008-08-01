@@ -1440,8 +1440,8 @@ void KHomeView::showBudget(void)
             QString budgetDiffAmount = budgetDiffValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
 
             //account name
-            m_part->write(QString("<td class=\"left\">%1</td>").arg(rowname.name().replace(QRegExp(" "), "&nbsp;")));
-  
+            m_part->write(QString("<td>") + link(VIEW_LEDGER, QString("?id=%1").arg(rowname.id())) + rowname.name() + linkend() + "</td>");
+
             //show amounts
             m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(budgetAmount, budgetValue.isNegative())));
             m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(actualAmount, actualValue.isNegative())));
