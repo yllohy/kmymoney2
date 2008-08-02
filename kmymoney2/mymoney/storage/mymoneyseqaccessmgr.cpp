@@ -1892,18 +1892,21 @@ void MyMoneySeqAccessMgr::startTransaction(void)
   m_budgetList.startTransaction(&m_nextBudgetID);
 }
 
-void MyMoneySeqAccessMgr::commitTransaction(void)
+bool MyMoneySeqAccessMgr::commitTransaction(void)
 {
-  m_payeeList.commitTransaction();
-  m_institutionList.commitTransaction();
-  m_accountList.commitTransaction();
-  m_transactionList.commitTransaction();
-  m_transactionKeys.commitTransaction();
-  m_scheduleList.commitTransaction();
-  m_securitiesList.commitTransaction();
-  m_currencyList.commitTransaction();
-  m_reportList.commitTransaction();
-  m_budgetList.commitTransaction();
+  bool rc = false;
+  rc |= m_payeeList.commitTransaction();
+  rc |= m_institutionList.commitTransaction();
+  rc |= m_accountList.commitTransaction();
+  rc |= m_transactionList.commitTransaction();
+  rc |= m_transactionKeys.commitTransaction();
+  rc |= m_scheduleList.commitTransaction();
+  rc |= m_securitiesList.commitTransaction();
+  rc |= m_currencyList.commitTransaction();
+  rc |= m_reportList.commitTransaction();
+  rc |= m_budgetList.commitTransaction();
+
+  return rc;
 }
 
 void MyMoneySeqAccessMgr::rollbackTransaction(void)

@@ -496,9 +496,9 @@ const unsigned int MyMoneyDatabaseMgr::accountCount(void) const
 }
 
 const QValueList<MyMoneyInstitution> MyMoneyDatabaseMgr::institutionList(void) const
-{ 
+{
   if (m_sql) {
-    return m_sql->fetchInstitutions().values(); 
+    return m_sql->fetchInstitutions().values();
   } else {
     return QValueList<MyMoneyInstitution> ();
   }
@@ -1639,8 +1639,12 @@ void MyMoneyDatabaseMgr::close(void)
 void MyMoneyDatabaseMgr::startTransaction(void)
 { if (m_sql) m_sql->startCommitUnit ("databasetransaction"); }
 
-void MyMoneyDatabaseMgr::commitTransaction(void)
-{ if (m_sql) m_sql->endCommitUnit ("databasetransaction"); }
+bool MyMoneyDatabaseMgr::commitTransaction(void)
+{
+  if (m_sql)
+    return m_sql->endCommitUnit ("databasetransaction");
+  return false;
+}
 
 void MyMoneyDatabaseMgr::rollbackTransaction(void)
 { if (m_sql) m_sql->cancelCommitUnit ("databasetransaction"); }

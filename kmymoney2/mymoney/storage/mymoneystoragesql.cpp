@@ -649,14 +649,21 @@ void MyMoneyStorageSql::startCommitUnit (const QString& callingFunction) {
   m_commitUnitStack.push(callingFunction);
 }
 
-void MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
+bool MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
   DBG("*** Entering MyMoneyStorageSql::endCommitUnit");
+  // for now, we don't know if there were any changes made to the data so
+  // we expect the data to have changed. This assumption causes some unnecessary
+  // repaints of the UI here and there, but for now it's ok. If we can determine
+  // that the commit() really changes the data, we can return that information
+  // as value of this method.
+  bool rc = true;
   if (callingFunction != m_commitUnitStack.top())
     qDebug("%s", QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()).data());
   m_commitUnitStack.pop();
   if (m_commitUnitStack.isEmpty()) {
     if (!commit()) throw buildError (MyMoneySqlQuery(), __func__, "ending commit unit");
   }
+  return rc;
 }
 
 void MyMoneyStorageSql::cancelCommitUnit (const QString& callingFunction) {

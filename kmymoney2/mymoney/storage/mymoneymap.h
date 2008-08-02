@@ -52,13 +52,15 @@ public:
     }
   }
 
-  void commitTransaction(void)
+  bool commitTransaction(void)
   {
     if(m_stack.count() == 0)
       throw new MYMONEYEXCEPTION("No transaction started to commit changes");
 
+    bool rc = m_stack.count() > 1;
     m_stack.setAutoDelete(true);
     m_stack.clear();
+    return rc;
   }
 
   void insert(const Key& key, const T& obj)

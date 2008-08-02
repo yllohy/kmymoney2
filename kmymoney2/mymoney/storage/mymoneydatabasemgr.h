@@ -845,7 +845,7 @@ public:
     * These methods have to be provided to allow transaction safe data handling.
     */
   virtual void startTransaction(void);
-  virtual void commitTransaction(void);
+  virtual bool commitTransaction(void);
   virtual void rollbackTransaction(void);
 
   // general set functions

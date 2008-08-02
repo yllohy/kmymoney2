@@ -879,7 +879,7 @@ public:
     * These methods have to be provided to allow transaction safe data handling.
     */
   virtual void startTransaction(void) = 0;
-  virtual void commitTransaction(void) = 0;
+  virtual bool commitTransaction(void) = 0;
   virtual void rollbackTransaction(void) = 0;
 };
 

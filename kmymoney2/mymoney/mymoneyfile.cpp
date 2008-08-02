@@ -154,10 +154,12 @@ void MyMoneyFile::commitTransaction(void)
 {
   checkTransaction(__PRETTY_FUNCTION__);
 
-  m_storage->commitTransaction();
+  bool changed = m_storage->commitTransaction();
   d->m_inTransaction = false;
   preloadCache();
-  emit dataChanged();
+  if(changed) {
+    emit dataChanged();
+  }
 }
 
 void MyMoneyFile::rollbackTransaction(void)

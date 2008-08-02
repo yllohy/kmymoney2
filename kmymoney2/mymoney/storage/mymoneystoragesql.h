@@ -448,7 +448,7 @@ public:
   virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage){ Q_UNUSED(s); Q_UNUSED(storage) };
 
   void startCommitUnit (const QString& callingFunction);
-  void endCommitUnit (const QString& callingFunction);
+  bool endCommitUnit (const QString& callingFunction);
   void cancelCommitUnit (const QString& callingFunction);
 
   long long unsigned getRecCount(const QString& table) const;

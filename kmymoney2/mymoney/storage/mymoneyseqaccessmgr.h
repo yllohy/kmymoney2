@@ -972,7 +972,7 @@ public:
   void rebuildAccountBalances(void);
 
   virtual void startTransaction(void);
-  virtual void commitTransaction(void);
+  virtual bool commitTransaction(void);
   virtual void rollbackTransaction(void);
 
 protected:
