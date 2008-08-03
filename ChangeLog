@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-03 Alvaro Soliverez <asoliverez@gmail.com>
+  * Cleaned code in forecast and reports
+  * Added check in QueryTable to prevent infinite loops in cases
+    of splits data inconsistency
+
 2008-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed override for OFX money market accounts for LibOFX 0.8
   * Use the payee as stored with a manually entered transaction in
