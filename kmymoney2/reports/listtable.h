@@ -86,7 +86,7 @@ namespace reports {
     protected:
       void render ( QString&, QString& ) const;
       QValueList<TableRow> m_rows;
-      
+
       QString m_group;
       /**
        * Comma-separated list of columns to place BEFORE the subtotal column

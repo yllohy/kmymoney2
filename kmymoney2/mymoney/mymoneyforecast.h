@@ -164,9 +164,7 @@ public:
 
 private:
 
-  static const int SCHEDULED = 0;
-
-  static const int HISTORIC = 1;
+  enum EForecastMethod {eScheduled = 0, eHistoric = 1 };
 
   /**
    * daily balances of an account

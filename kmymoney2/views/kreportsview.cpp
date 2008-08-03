@@ -1064,6 +1064,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Transactions by Account"),
       i18n("Default Report")
     ));
+    //list.back().setConvertCurrency(false);
     list.push_back(MyMoneyReport(
       MyMoneyReport::eCategory,
       MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCaccount,

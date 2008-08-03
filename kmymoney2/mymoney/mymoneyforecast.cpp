@@ -87,11 +87,11 @@ void MyMoneyForecast::doForecast()
 
   switch(fMethod)
   {
-    case SCHEDULED:
+    case eScheduled:
       doFutureScheduledForecast();
       calculateScheduledDailyBalances();
       break;
-    case HISTORIC:
+    case eHistoric:
       pastTransactions();
       calculateHistoricDailyBalances();
       break;
@@ -747,7 +747,7 @@ MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
 {
   MyMoneyMoney cycleVariation;
 
-  if (forecastMethod() == HISTORIC) {
+  if (forecastMethod() == eHistoric) {
     for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
       cycleVariation += m_accountTrendList[acc.id()][t_day];
     }
@@ -923,11 +923,11 @@ void MyMoneyForecast::createBudget ( MyMoneyBudget& budget, QDate historyStart, 
   //calculate budget according to forecast method
   switch(fMethod)
   {
-    case SCHEDULED:
+    case eScheduled:
       doFutureScheduledForecast();
       calculateScheduledMonthlyBalances();
       break;
-    case HISTORIC:
+    case eHistoric:
       pastTransactions(); //get all transactions for history period
       calculateAccountTrendList();
       calculateHistoricMonthlyBalances(); //add all balances of each month and put at the 1st day of each month
