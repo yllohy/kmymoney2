@@ -585,6 +585,7 @@ void QueryTable::constructTransactionTable(void)
     bool transaction_text = false; //indicates whether a text should be considered as a match for the transaction or for a split only
     QString a_fullname = "";
     QString a_memo = "";
+    int pass = 1;
 
     do {
 
@@ -692,8 +693,7 @@ void QueryTable::constructTransactionTable(void)
           accts.insert (a.id(), a);
         }
 
-      }
-      else {
+      } else {
 
         if (include_me) {
 
@@ -718,7 +718,7 @@ void QueryTable::constructTransactionTable(void)
             else {
               // accumulate everything else in the "fees" column
               MyMoneyMoney n0 = MyMoneyMoney(qA["fees"]);
-              MyMoneyMoney n1 = ((-(* is).value()) * xr).toString();
+              MyMoneyMoney n1 = ((-(* is).value()) * xr).convert(fraction).toString();
               qA["fees"] = (n0 + n1).toString();
             }
             // we don't add qA here for a loan transaction. we'll add one
@@ -819,11 +819,19 @@ void QueryTable::constructTransactionTable(void)
       }
 
       ++is;
+
       // look for wrap-around
-      if (is == S_end) is = S.begin();
+      if (is == S_end)
+        is = S.begin();
 
       // but terminate if this transaction has only a single split
       if(S.count() < 2)
+        break;
+
+      //check if there have been more passes than there are splits
+      //this is to prevent infinite loops in cases of data inconsistency -- asoliverez
+      ++pass;
+      if( pass > S.count() )
         break;
 
     } while (is != myBegin);
