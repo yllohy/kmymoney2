@@ -132,8 +132,10 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
       result = OFX_CREDITCARD_ACCOUNT;
     else if ( override == "INV" )
       result = OFX_INVEST_ACCOUNT;
+#if 0  // money market is not supported by 0.8.x
     else if ( override == "MONEYMARKET")
       result = OFX_MONEYMRKT;
+#endif
   }
 
   return result;
