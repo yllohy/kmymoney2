@@ -173,6 +173,13 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
   }
 #endif
 
+  // if we don't have a payee assigned to the manually entered transaction
+  // we use the one we found in the imported transaction
+  if(sm.payeeId().isEmpty() && !si.payeeId().isEmpty()) {
+    sm.setValue("kmm-orig-payee", sm.payeeId());
+    sm.setPayeeId(si.payeeId());
+  }
+
   // We use the imported postdate and keep the previous one for unmatch
   if(tm.postDate() != ti.postDate()) {
     sm.setValue("kmm-orig-postdate", tm.postDate().toString(Qt::ISODate));

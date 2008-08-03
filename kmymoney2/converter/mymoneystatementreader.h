@@ -45,6 +45,7 @@
 #include "../mymoney/mymoneystatement.h"
 
 class MyMoneyFileTransaction;
+class MyMoneyStatementReaderPrivate;
 
 /**
   * This is a pared-down version of a MyMoneyQifReader object
@@ -133,7 +134,7 @@ signals:
   void importFinished(void);
 
 private:
-
+  MyMoneyStatementReaderPrivate* d;
   MyMoneyAccount          m_account;
   QStringList             m_dontAskAgain;
   bool                    m_skipAccount;

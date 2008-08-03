@@ -7,6 +7,10 @@
   * Removed override for OFX money market accounts for LibOFX 0.8
   * Use the payee as stored with a manually entered transaction in
     favor of the imported transaction after matching
+  * If the manually transaction does not have a payee assigned
+    use the one found in the imported transaction
+  * If multiple payees match use the one that is found most often
+    in the account that is imported
 
 2008-08-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Avoid sending out dataChanged() signal when no changes were
