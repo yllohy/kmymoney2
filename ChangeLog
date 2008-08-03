@@ -5,6 +5,8 @@
 
 2008-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed override for OFX money market accounts for LibOFX 0.8
+  * Use the payee as stored with a manually entered transaction in
+    favor of the imported transaction after matching
 
 2008-08-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Avoid sending out dataChanged() signal when no changes were

@@ -165,11 +165,13 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
     sm.setReconcileFlag(MyMoneySplit::Cleared);
   }
 
+#if 0 // there has been a request to keep the original payee
   // We use the imported payee and keep the previous one for unmatch
   if(sm.payeeId() != si.payeeId()) {
     sm.setValue("kmm-orig-payee", sm.payeeId());
     sm.setPayeeId(si.payeeId());
   }
+#endif
 
   // We use the imported postdate and keep the previous one for unmatch
   if(tm.postDate() != ti.postDate()) {
@@ -215,13 +217,11 @@ void TransactionMatcher::unmatch(const MyMoneyTransaction& _t, const MyMoneySpli
     // restore the postdate if modified
     if(!sm.value("kmm-orig-postdate").isEmpty()) {
       tm.setPostDate(QDate::fromString(sm.value("kmm-orig-postdate"), Qt::ISODate));
-      sm.deletePair("kmm-orig-postdate");
     }
 
     // restore payee if modified
     if(!sm.value("kmm-orig-payee").isEmpty()) {
       sm.setPayeeId(QCString(sm.value("kmm-orig-payee")));
-      sm.deletePair("kmm-orig-payee");
     }
 
     // restore memo
@@ -235,6 +235,10 @@ void TransactionMatcher::unmatch(const MyMoneyTransaction& _t, const MyMoneySpli
         sm.setMemo(memo);
       }
     }
+
+    sm.deletePair("kmm-orig-postdate");
+    sm.deletePair("kmm-orig-payee");
+    sm.deletePair("kmm-match-split");
     tm.modifySplit(sm);
 
     MyMoneyFile::instance()->modifyTransaction(tm);
