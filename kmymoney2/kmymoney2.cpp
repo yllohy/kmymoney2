@@ -4042,6 +4042,7 @@ void KMyMoney2App::slotKDELanguageSettings(void)
 
 void KMyMoney2App::slotNewFeature(void)
 {
+  // slotStatementImport();
 #if 0
   if(m_selectedBudgets.size() == 1) {
     MyMoneyFileTransaction ft;
@@ -4511,7 +4512,7 @@ void KMyMoney2App::slotMoveToAccount(const QCString& id)
     }
   }
 
-  if(m_selectedTransactions.count() > 0 && m_selectedAccount.isAssetLiability()) {
+  if(m_selectedTransactions.count() > 0) {
     MyMoneyFileTransaction ft;
     try {
       KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
@@ -4542,17 +4543,22 @@ void KMyMoney2App::slotUpdateMoveToAccountMenu(void)
 {
   if(!m_selectedAccount.id().isEmpty()) {
     AccountSet accountSet;
-    accountSet.addAccountType(MyMoneyAccount::Checkings);
-    accountSet.addAccountType(MyMoneyAccount::Savings);
-    accountSet.addAccountType(MyMoneyAccount::Cash);
-    accountSet.addAccountType(MyMoneyAccount::AssetLoan);
-    accountSet.addAccountType(MyMoneyAccount::CertificateDep);
-    accountSet.addAccountType(MyMoneyAccount::MoneyMarket);
-    accountSet.addAccountType(MyMoneyAccount::Asset);
-    accountSet.addAccountType(MyMoneyAccount::Currency);
-    accountSet.addAccountType(MyMoneyAccount::CreditCard);
-    accountSet.addAccountType(MyMoneyAccount::Loan);
-    accountSet.addAccountType(MyMoneyAccount::Liability);
+    if(m_selectedAccount.isAssetLiability()) {
+      accountSet.addAccountType(MyMoneyAccount::Checkings);
+      accountSet.addAccountType(MyMoneyAccount::Savings);
+      accountSet.addAccountType(MyMoneyAccount::Cash);
+      accountSet.addAccountType(MyMoneyAccount::AssetLoan);
+      accountSet.addAccountType(MyMoneyAccount::CertificateDep);
+      accountSet.addAccountType(MyMoneyAccount::MoneyMarket);
+      accountSet.addAccountType(MyMoneyAccount::Asset);
+      accountSet.addAccountType(MyMoneyAccount::Currency);
+      accountSet.addAccountType(MyMoneyAccount::CreditCard);
+      accountSet.addAccountType(MyMoneyAccount::Loan);
+      accountSet.addAccountType(MyMoneyAccount::Liability);
+    } else if(m_selectedAccount.isIncomeExpense()) {
+      accountSet.addAccountType(MyMoneyAccount::Income);
+      accountSet.addAccountType(MyMoneyAccount::Expense);
+    }
 
     accountSet.load(d->m_moveToAccountSelector);
     // remove those accounts that we currently reference
@@ -4904,13 +4910,14 @@ void KMyMoney2App::slotUpdateActions(void)
           action("transaction_editsplits")->setEnabled(true);
         }
         if(m_selectedAccount.isAssetLiability()) {
-          w = factory()->container("transaction_move_menu", this);
-          if(w)
-            w->setEnabled(true);
           action("transaction_create_schedule")->setEnabled(m_selectedTransactions.count() == 1);
         }
       }
       action("transaction_edit")->setToolTip(tooltip);
+
+      w = factory()->container("transaction_move_menu", this);
+      if(w)
+        w->setEnabled(true);
 
       // Allow marking the transaction if at least one is selected
       action("transaction_mark_cleared")->setEnabled(true);
