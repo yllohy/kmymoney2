@@ -64,19 +64,35 @@ OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
 {
   OfxAccountData::AccountType result = OfxAccountData::OFX_CHECKING;
 
-  switch( m_account.accountType() )
-  {
-  case MyMoneyAccount::Investment:
-    result = OfxAccountData::OFX_INVESTMENT;
-    break;
-  case MyMoneyAccount::CreditCard:
-    result = OfxAccountData::OFX_CREDITCARD;
-    break;
-  case MyMoneyAccount::Savings:
+  QString type = m_account.onlineBankingSettings()["type"];
+  if(type == "CHECKING")
+    result = OfxAccountData::OFX_CHECKING;
+  else if(type == "SAVINGS")
     result = OfxAccountData::OFX_SAVINGS;
-    break;
-  default:
-    break;
+  else if(type == "MONEY MARKET")
+    result = OfxAccountData::OFX_MONEYMRKT;
+  else if(type == "CREDIT LINE")
+    result = OfxAccountData::OFX_CREDITLINE;
+  else if(type == "CMA")
+    result = OfxAccountData::OFX_CMA;
+  else if(type == "CREDIT CARD")
+    result = OfxAccountData::OFX_CREDITCARD;
+  else if(type == "INVESTMENT")
+    result = OfxAccountData::OFX_INVESTMENT;
+  else {
+    switch( m_account.accountType()) {
+    case MyMoneyAccount::Investment:
+      result = OfxAccountData::OFX_INVESTMENT;
+      break;
+    case MyMoneyAccount::CreditCard:
+      result = OfxAccountData::OFX_CREDITCARD;
+      break;
+    case MyMoneyAccount::Savings:
+      result = OfxAccountData::OFX_SAVINGS;
+      break;
+    default:
+      break;
+    }
   }
 
   // This is a bit of a personalized hack.  Sometimes we may want to override the

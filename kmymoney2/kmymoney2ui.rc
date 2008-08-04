@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="32" name="kmymoney2" >
+<kpartgui version="33" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
@@ -11,9 +11,6 @@
     <Action name="file_import_qif" />
     <Action name="file_import_gnc" />
     <MergeLocal name="import_merge"/>
-<!--
-    <ActionList name="file_import_plugins" />
--->
     <Separator/>
     <Action name="file_import_template" />
    </Menu>
@@ -62,6 +59,7 @@
    <Separator/>
    <Action name="account_online_map" />
    <Action name="account_online_update" />
+   <Action name="account_online_unmap" />
   </Menu>
   <Menu name="category" >
    <text>&amp;Category</text>
@@ -137,6 +135,7 @@
   <Separator/>
   <Action name="account_online_map" />
   <Action name="account_online_update" />
+  <Action name="account_online_unmap" />
   <Separator/>
   <Action name="investment_new" />
   <Action name="investment_edit" />

@@ -279,28 +279,27 @@ int KOnlineBankingSetupWizard::ofxAccountCallback(struct OfxAccountData data, vo
     switch ( data.account_type )
     {
       case OfxAccountData::OFX_CHECKING:  /**< A standard checking account */
-      type = i18n("CHECKING");
+      type = "CHECKING";
       break;
     case OfxAccountData::OFX_SAVINGS:   /**< A standard savings account */
-      type = i18n("SAVINGS");
+      type = "SAVINGS";
       break;
     case OfxAccountData::OFX_MONEYMRKT: /**< A money market account */
-      type = i18n("MONEY MARKET");
+      type = "MONEY MARKET";
       break;
     case OfxAccountData::OFX_CREDITLINE: /**< A line of credit */
-      type = i18n("CREDIT LINE");
+      type = "CREDIT LINE";
       break;
     case OfxAccountData::OFX_CMA:       /**< Cash Management Account */
-      type = i18n("CMA");
+      type = "CMA";
       break;
     case OfxAccountData::OFX_CREDITCARD: /**< A credit card account */
-      type = i18n("CREDIT CARD");
+      type = "CREDIT CARD";
       break;
     case OfxAccountData::OFX_INVESTMENT: /**< An investment account */
-      type = i18n("INVESTMENT");
+      type = "INVESTMENT";
       break;
     default:
-      type = i18n("UNKNOWN");
       break;
     }
     kvps.setValue("type",type);

@@ -6,6 +6,8 @@
 2008-08-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow to move transactions to different category in category ledger
   * Updated pot file and merged into message files
+  * Fixed override for account type during OFX statement requests
+  * Added feature to unmap an online account
 
 2008-08-03 Alvaro Soliverez <asoliverez@gmail.com>
   * Cleaned code in forecast and reports

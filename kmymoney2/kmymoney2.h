@@ -433,7 +433,7 @@ protected slots:
   void slotKDELanguageSettings(void);
 
   void slotAccountMapOnline(void);
-
+  void slotAccountUnmapOnline(void);
   void slotAccountUpdateOnline(void);
 
   void slotManageGpgKeys(void);

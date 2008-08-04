@@ -353,6 +353,7 @@ void KMyMoney2App::initActions(void)
 #endif
   new KAction(i18n("Map to online account"), "news_subscribe", 0, this, SLOT(slotAccountMapOnline()), actionCollection(), "account_online_map");
   new KAction(i18n("Update account..."), "reload", 0, this, SLOT(slotAccountUpdateOnline()), actionCollection(), "account_online_update");
+  new KAction(i18n("Unmap account"), "", 0, this, SLOT(slotAccountUnmapOnline()), actionCollection(), "account_online_unmap");
 
   // *******************
   // The categories menu
@@ -4817,6 +4818,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("account_transaction_report")->setEnabled(false);
   action("account_online_map")->setEnabled(false);
   action("account_online_update")->setEnabled(false);
+  action("account_online_unmap")->setEnabled(false);
 #ifdef HAVE_KDCHART
   action("account_chart")->setEnabled(false);
 #endif
@@ -4996,9 +4998,10 @@ void KMyMoney2App::slotUpdateActions(void)
           else if(canCloseAccount(m_selectedAccount))
             action("account_close")->setEnabled(true);
 
-          if ( !m_selectedAccount.onlineBankingSettings().value("provider").isEmpty() )
+          if ( !m_selectedAccount.onlineBankingSettings().value("provider").isEmpty() ) {
+            action("account_online_unmap")->setEnabled(true);
             action("account_online_update")->setEnabled(true);
-          else
+          } else
             action("account_online_map")->setEnabled(m_onlinePlugins.count() > 0);
 
 #ifdef HAVE_KDCHART
@@ -5585,6 +5588,29 @@ void KMyMoney2App::setAccountOnlineParameters(const MyMoneyAccount& _acc, const 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to setup online parameters for account ''%1'").arg(_acc.name()), e->what() );
     delete e;
+  }
+}
+
+void KMyMoney2App::slotAccountUnmapOnline(void)
+{
+  // no account selected
+  if(m_selectedAccount.id().isEmpty())
+    return;
+
+  // not a mapped account
+  if(m_selectedAccount.onlineBankingSettings().value("provider").isEmpty())
+    return;
+
+  if(KMessageBox::warningYesNo(this, QString("<qt>%1</qt>").arg(i18n("Do you really want to remove the mapping of account <b>%1</b> to an online account? Depending on the details of the online banking method used, this action cannot be reverted.").arg(m_selectedAccount.name())), i18n("Remove mapping to online account")) == KMessageBox::Yes) {
+    MyMoneyFileTransaction ft;
+    try {
+      m_selectedAccount.setOnlineBankingSettings(MyMoneyKeyValueContainer());
+      MyMoneyFile::instance()->modifyAccount(m_selectedAccount);
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      KMessageBox::error(this, i18n("Unable to unmap account from online account: %1").arg(e->what()));
+      delete e;
+    }
   }
 }
 
