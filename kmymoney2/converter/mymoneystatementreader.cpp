@@ -59,6 +59,7 @@ class MyMoneyStatementReaderPrivate
 
     MyMoneyAccount                 lastAccount;
     QValueList<MyMoneyTransaction> transactions;
+    QValueList<MyMoneyPayee>       payees;
 };
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
@@ -184,6 +185,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
         signalProgress(++progress, 0);
         ++it_t;
       }
+
     } catch(MyMoneyException* e) {
       if(e->what() == "USERABORT")
         m_userAbort = true;
@@ -193,8 +195,20 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
     }
   }
 
-  qDebug("Statement balance is '%s'", s.m_closingBalance.formatMoney("",2).data());
+  qDebug("Statement balance for '%s' is '%s'", s.m_dateEnd.toString(Qt::ISODate).data(), s.m_closingBalance.formatMoney("",2).data());
   bool  rc = false;
+
+  // delete all payees created in vain
+  QValueList<MyMoneyPayee>::const_iterator it_p;
+  for(it_p = d->payees.begin(); it_p != d->payees.end(); ++it_p) {
+    try {
+      MyMoneyFile::instance()->removePayee(*it_p);
+      qDebug("%s removed", (*it_p).name().data());
+    } catch(MyMoneyException* e) {
+      // if we can't delete it, it must be in use which is ok for us
+      delete e;
+    }
+  }
 
   // remove the Don't ask again entries
   KConfig* config = KGlobal::config();
@@ -638,6 +652,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
         try {
           file->addPayee(payee);
+          qDebug("%s created", payee.name().data());
+          d->payees << payee;
           payeeid = payee.id();
           s1.setPayeeId(payeeid);
 
