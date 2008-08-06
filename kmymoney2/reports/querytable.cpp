@@ -585,7 +585,7 @@ void QueryTable::constructTransactionTable(void)
     bool transaction_text = false; //indicates whether a text should be considered as a match for the transaction or for a split only
     QString a_fullname = "";
     QString a_memo = "";
-    int pass = 1;
+    unsigned int pass = 1;
 
     do {
 

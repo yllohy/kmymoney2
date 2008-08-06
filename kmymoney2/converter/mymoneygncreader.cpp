@@ -1622,7 +1622,7 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
       MyMoneyMoney exFormula (0);
       exFormula.setNegativeMonetarySignPosition (MyMoneyMoney::BeforeQuantityMoney);
       QString numericTest;
-      char crdr;
+      char crdr=0 ;
       if (!gncCreditFormula.isEmpty()) {
         crdr = 'C';
         numericTest = gncCreditFormula;

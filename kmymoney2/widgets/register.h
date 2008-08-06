@@ -161,7 +161,7 @@ private:
 class StatementGroupMarker : public FancyDateGroupMarker
 {
 public:
-  StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt, const MyMoneyMoney& balance);
+  StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt );
   CashFlowDirection sortType(void) const { return m_dir; }
 private:
   CashFlowDirection        m_dir;

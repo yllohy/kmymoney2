@@ -227,6 +227,7 @@ public:
 
   virtual KMyMoneyWizard* wizard(void) const = 0;
 
+  virtual ~KMyMoneyWizardPage() {}
 protected:
   /**
     * Constructor (kept protected, so that one cannot create such an object directly)
@@ -268,7 +269,7 @@ public:
     m_wizardBase(parent)
     {
     }
-
+    virtual ~WizardPage() {}
     virtual KMyMoneyWizard* wizard(void) const { return m_wizardBase; }
 
 protected:
@@ -406,6 +407,8 @@ public:
     * pages to immediately to be reflected in the step frame
     */
   void reselectStep(void);
+
+  virtual ~KMyMoneyWizard(){}
 
 signals:
   /**

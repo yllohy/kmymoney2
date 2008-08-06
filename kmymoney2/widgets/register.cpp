@@ -368,7 +368,7 @@ int GroupMarker::rowHeightHint(void) const
   return m_bg->height();
 }
 
-StatementGroupMarker::StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt, const MyMoneyMoney& balance) :
+StatementGroupMarker::StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt) :
   FancyDateGroupMarker(parent, date, txt),
   m_dir(dir)
 {

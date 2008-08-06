@@ -446,12 +446,12 @@ void KGlobalLedgerView::loadView(void)
     if(isReconciliationAccount()) {
       switch(m_register->primarySortKey()) {
         case KMyMoneyRegister::PostDateSort:
-          statement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Details"), MyMoneyMoney());
+          statement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Details"));
           m_register->sortItems();
           break;
         case KMyMoneyRegister::TypeSort:
-          dStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Deposit Details"), MyMoneyMoney());
-          pStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Payment, reconciliationDate, i18n("Statement Payment Details"), MyMoneyMoney());
+          dStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Deposit, reconciliationDate, i18n("Statement Deposit Details"));
+          pStatement = new KMyMoneyRegister::StatementGroupMarker(m_register, KMyMoneyRegister::Payment, reconciliationDate, i18n("Statement Payment Details"));
           m_register->sortItems();
           break;
         default:
