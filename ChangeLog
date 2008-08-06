@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed payee matching (was a bit broken by change on 2008-08-03)
+
 2008-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to remove payees that were created during statement
     import but are unused.

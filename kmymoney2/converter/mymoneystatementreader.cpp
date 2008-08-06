@@ -605,7 +605,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         }
 
       } else if(matchMap.count() == 1)
-        payeeid = *(matchMap.begin());
+        payeeid = matchMap.begin().key();
 
       if(payeeid.isEmpty())
         throw new MYMONEYEXCEPTION("payee not matched");
