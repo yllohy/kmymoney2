@@ -535,6 +535,7 @@ public:
   virtual void loadSchedules(const QMap<QCString, MyMoneySchedule>& map);
   virtual void loadSecurities(const QMap<QCString, MyMoneySecurity>& map);
   virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map);
+  virtual void loadPrices(const MyMoneyPriceList& list);
 
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
@@ -1130,7 +1131,7 @@ private:
     */
   MyMoneyMap<QCString, MyMoneyBudget> m_budgetList;
 
-  MyMoneyPriceList              m_priceList;
+  MyMoneyMap<MyMoneySecurityPair, MyMoneyPriceEntries> m_priceList;
 
   /**
     * This member signals if the file has been modified or not

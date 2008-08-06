@@ -285,6 +285,7 @@ public:
   virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map) = 0;
   virtual void loadReports( const QMap<QCString, MyMoneyReport>& reports ) = 0;
   virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets ) = 0;
+  virtual void loadPrices(const MyMoneyPriceList& list) = 0;
 
   virtual const unsigned long accountId(void) const = 0;
   virtual const unsigned long transactionId(void) const = 0;

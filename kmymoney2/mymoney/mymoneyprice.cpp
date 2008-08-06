@@ -41,6 +41,24 @@ MyMoneyPrice::MyMoneyPrice() :
 {
 }
 
+MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDomElement& node)
+{
+  if("PRICE" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not PRICE");
+
+  m_fromSecurity = from;
+  m_toSecurity = to;
+
+  m_date = QDate::fromString(node.attribute("date"), Qt::ISODate);
+  m_rate = MyMoneyMoney(node.attribute("price"));
+  m_source = node.attribute("source");
+
+  if(!m_rate.isZero())
+    m_invRate = MyMoneyMoney(1,1) / m_rate;
+  else
+    qDebug("Price with zero value loaded");
+}
+
 MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source) :
   m_fromSecurity(from),
   m_toSecurity(to),

@@ -35,6 +35,7 @@
 #include <qdatetime.h>
 #include <qpair.h>
 #include <qmap.h>
+#include <qdom.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -71,6 +72,7 @@ class KMYMONEY_EXPORT MyMoneyPrice
 {
 public:
   MyMoneyPrice();
+  MyMoneyPrice(const QCString& from, const QCString& to, const QDomElement& node);
   MyMoneyPrice(const QCString& from, const QCString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source = QString());
   virtual ~MyMoneyPrice();
 

@@ -903,6 +903,7 @@ public:
   virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map);
   virtual void loadReports( const QMap<QCString, MyMoneyReport>& reports );
   virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets );
+  virtual void loadPrices(const MyMoneyPriceList& list);
 
   virtual const unsigned long accountId(void) const;
   virtual const unsigned long transactionId(void) const;

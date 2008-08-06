@@ -78,33 +78,49 @@ void MyMoneySeqAccessMgrTest::testSetFunctions() {
 	m->m_dirty = false;
 	user.setName("Name");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setAddress("Street");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setCity("Town");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setState("County");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setPostcode("Postcode");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setTelephone("Telephone");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	user.setEmail("Email");
 	m->setUser(user);
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	m->setValue("key", "value");
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 
 	user = m->user();
@@ -119,6 +135,8 @@ void MyMoneySeqAccessMgrTest::testSetFunctions() {
 
 	m->m_dirty = false;
 	m->deletePair("key");
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == true);
 }
 
@@ -154,6 +172,8 @@ void MyMoneySeqAccessMgrTest::testNewAccount() {
 	a.setNumber("AccountNumber");
 
 	m->addAccount(a);
+	m->commitTransaction();
+	m->startTransaction();
 
 	CPPUNIT_ASSERT(m->m_nextAccountID == 1);
 	CPPUNIT_ASSERT(m->dirty() == true);
@@ -174,11 +194,15 @@ void MyMoneySeqAccessMgrTest::testAccount() {
 	} catch (MyMoneyException *e) {
 		delete e;
 	} 
+	m->commitTransaction();
+	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == false);
 
 	// now make sure, that a real ID works
 	try {
 		a = m->account("A000001");
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(a.name() == "AccountName");
 		CPPUNIT_ASSERT(a.id() == "A000001");
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -195,6 +219,8 @@ void MyMoneySeqAccessMgrTest::testAddNewAccount() {
 	b.setName("Account2");
 	b.setNumber("Acc2");
 	m->addAccount(b);
+	m->commitTransaction();
+	m->startTransaction();
 
 	m->m_dirty = false;
 
@@ -209,6 +235,8 @@ void MyMoneySeqAccessMgrTest::testAddNewAccount() {
 	} catch (MyMoneyException *e) {
 		delete e;
 	}
+	m->commitTransaction();
+	m->startTransaction();
 
 	CPPUNIT_ASSERT(m->dirty() == false);
 	// now try to add account 1 as sub-account to account 2
@@ -216,6 +244,8 @@ void MyMoneySeqAccessMgrTest::testAddNewAccount() {
 	try {
 		CPPUNIT_ASSERT(m->m_accountList[STD_ACC_ASSET].accountList().count() == 0);
 		m->addAccount(b, a);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->m_accountList["A000002"].accountList()[0] == "A000001");
 		CPPUNIT_ASSERT(m->m_accountList["A000002"].accountList().count() == 1);
 		CPPUNIT_ASSERT(m->m_accountList[STD_ACC_ASSET].accountList().count() == 0);
@@ -290,6 +320,8 @@ void MyMoneySeqAccessMgrTest::testAccount2Institution() {
 	} catch (MyMoneyException *e) {
 		delete e;
 	}
+	m->commitTransaction();
+	m->startTransaction();
 
 	CPPUNIT_ASSERT(m->dirty() == false);
 	// now try to do it with a real institution
@@ -297,6 +329,8 @@ void MyMoneySeqAccessMgrTest::testAccount2Institution() {
 		CPPUNIT_ASSERT(i.accountList().count() == 0);
 		a.setInstitutionId(i.id());
 		m->modifyAccount(a);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(a.institutionId() == i.id());
 		b = m->account("A000001");
@@ -317,6 +351,8 @@ void MyMoneySeqAccessMgrTest::testModifyAccount() {
 	m->m_dirty = false;
 	try {
 		m->modifyAccount(a);
+		m->commitTransaction();
+		m->startTransaction();
 		MyMoneyAccount b = m->account("A000001");
 		CPPUNIT_ASSERT(b.parentAccountId() == a.parentAccountId());
 		CPPUNIT_ASSERT(b.name() == "New account name");
@@ -365,6 +401,8 @@ void MyMoneySeqAccessMgrTest::testModifyInstitution() {
 	i.setName("New inst name");
 	try {
 		m->modifyInstitution(i);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		i = m->institution("I000001");
 		CPPUNIT_ASSERT(i.name() == "New inst name");
@@ -480,6 +518,8 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 	m->m_dirty = false;
 	try {
 		m->addTransaction(t1);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(t1.id() == "T000000000000000001");
 		CPPUNIT_ASSERT(t1.splitCount() == 2);
@@ -525,6 +565,8 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 	m->m_dirty = false;
 	try {
 		m->addTransaction(t2);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(t2.id() == "T000000000000000002");
 		CPPUNIT_ASSERT(t2.splitCount() == 4);
@@ -753,6 +795,8 @@ void MyMoneySeqAccessMgrTest::testRemoveUnusedAccount() {
 		a.setInstitutionId(QCString());
 		m->modifyAccount(a);
 		m->removeAccount(a);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		i = m->institution("I000001");
@@ -801,6 +845,8 @@ void MyMoneySeqAccessMgrTest::testRemoveInstitution() {
 		m->removeInstitution(i);
 		a.setInstitutionId(QCString());
 		m->modifyAccount(a);
+		m->commitTransaction();
+		m->startTransaction();
 		a = m->account("A000006");
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(a.institutionId().isEmpty());
@@ -819,6 +865,8 @@ void MyMoneySeqAccessMgrTest::testRemoveTransaction() {
 	m->m_dirty = false;
 	try {
 		m->removeTransaction(t);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(m->transactionCount() == 1);
 /* removed with MyMoneyAccount::Transaction
@@ -861,6 +909,8 @@ void MyMoneySeqAccessMgrTest::testAddPayee() {
 	try {
 		CPPUNIT_ASSERT(m->m_nextPayeeID == 0);
 		m->addPayee(p);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(m->m_nextPayeeID == 1);
 	} catch (MyMoneyException *e) {
@@ -919,6 +969,8 @@ void MyMoneySeqAccessMgrTest::testModifyPayee() {
 	m->m_dirty = false;
 	try {
 		m->modifyPayee(p);
+		m->commitTransaction();
+		m->startTransaction();
 		p = m->payee("P000001");
 		CPPUNIT_ASSERT(p.name() == "New name");
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -937,6 +989,8 @@ void MyMoneySeqAccessMgrTest::testRemovePayee() {
 	try {
 		CPPUNIT_ASSERT(m->m_payeeList.count() == 1);
 		m->removePayee(p);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->m_payeeList.count() == 0);
 		CPPUNIT_ASSERT(m->dirty() == true);
 	} catch (MyMoneyException *e) {
@@ -1128,14 +1182,14 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 
 
 	try {
-	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
-	MyMoneyTransaction t1;
-	MyMoneySplit s1, s2;
-	s1.setAccountId("A000001");
-	t1.addSplit(s1);
-	s2.setAccountId("A000002");
-	t1.addSplit(s2);
-	MyMoneySchedule schedule("Sched-Name",
+		CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
+		MyMoneyTransaction t1;
+		MyMoneySplit s1, s2;
+		s1.setAccountId("A000001");
+		t1.addSplit(s1);
+		s2.setAccountId("A000002");
+		t1.addSplit(s2);
+		MyMoneySchedule schedule("Sched-Name",
 				 MyMoneySchedule::TYPE_DEPOSIT,
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_MANUALDEPOSIT,
@@ -1143,8 +1197,8 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 				 QDate(),
 				 true,
 				 false);
-	t1.setPostDate(QDate(2003,7,10));
-	schedule.setTransaction(t1);
+		t1.setPostDate(QDate(2003,7,10));
+		schedule.setTransaction(t1);
 
 		m->addSchedule(schedule);
 
@@ -1217,26 +1271,34 @@ void MyMoneySeqAccessMgrTest::testModifySchedule() {
 
 void MyMoneySeqAccessMgrTest::testRemoveSchedule() {
 	testAddSchedule();
+	m->commitTransaction();
+	m->startTransaction();
 	MyMoneySchedule sched;
 
 	sched = m->schedule("SCH000001");
 	sched.setId("SCH000002");
 	try {
 		m->removeSchedule(sched);
+		m->commitTransaction();
 		CPPUNIT_FAIL("Exception expected");
 	} catch(MyMoneyException *e) {
+		m->rollbackTransaction();
 		delete e;
 	}
+	m->startTransaction();
 
 	sched = m->schedule("SCH000001");
 	try {
 		m->removeSchedule(sched);
+		m->commitTransaction();
 		CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
 		
 	} catch(MyMoneyException *e) {
+		m->rollbackTransaction();
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
+	m->startTransaction();
 }
 
 void MyMoneySeqAccessMgrTest::testScheduleList() {
@@ -1409,6 +1471,8 @@ void MyMoneySeqAccessMgrTest::testAddCurrency()
 	m->m_dirty = false;
 	try {
 		m->addCurrency(curr);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->m_currencyList.count() == 1);
 		CPPUNIT_ASSERT(m->m_currencyList["EUR"].name() == "Euro");
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -1422,6 +1486,8 @@ void MyMoneySeqAccessMgrTest::testAddCurrency()
 		m->addCurrency(curr);
                 CPPUNIT_FAIL("Expected exception missing");
 	} catch(MyMoneyException *e) {
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == false);
                 delete e;
 	}
@@ -1435,6 +1501,8 @@ void MyMoneySeqAccessMgrTest::testModifyCurrency()
 	curr.setName("EURO");
 	try {
 		m->modifyCurrency(curr);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->m_currencyList.count() == 1);
 		CPPUNIT_ASSERT(m->m_currencyList["EUR"].name() == "EURO");
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -1450,6 +1518,8 @@ void MyMoneySeqAccessMgrTest::testModifyCurrency()
 		m->modifyCurrency(unknownCurr);
                 CPPUNIT_FAIL("Expected exception missing");
 	} catch(MyMoneyException *e) {
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == false);
                 delete e;
 	}
@@ -1462,6 +1532,8 @@ void MyMoneySeqAccessMgrTest::testRemoveCurrency()
 	m->m_dirty = false;
 	try {
 		m->removeCurrency(curr);
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->m_currencyList.count() == 0);
 		CPPUNIT_ASSERT(m->dirty() == true);
 	} catch(MyMoneyException *e) {
@@ -1476,6 +1548,8 @@ void MyMoneySeqAccessMgrTest::testRemoveCurrency()
 		m->removeCurrency(unknownCurr);
                 CPPUNIT_FAIL("Expected exception missing");
 	} catch(MyMoneyException *e) {
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == false);
                 delete e;
 	}
@@ -1489,6 +1563,8 @@ void MyMoneySeqAccessMgrTest::testCurrency()
 	m->m_dirty = false;
 	try {
 		newCurr = m->currency("EUR");
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == false);
 		CPPUNIT_ASSERT(newCurr.id() == curr.id());
 		CPPUNIT_ASSERT(newCurr.name() == curr.name());
@@ -1501,6 +1577,8 @@ void MyMoneySeqAccessMgrTest::testCurrency()
 		m->currency("DEM");
                 CPPUNIT_FAIL("Expected exception missing");
 	} catch(MyMoneyException *e) {
+		m->commitTransaction();
+		m->startTransaction();
 		CPPUNIT_ASSERT(m->dirty() == false);
                 delete e;
 	}

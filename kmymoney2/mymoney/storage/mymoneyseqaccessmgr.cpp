@@ -161,7 +161,6 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& account)
   MyMoneyAccount newAccount(nextAccountID(), account);
   m_accountList.insert(newAccount.id(), newAccount);
 
-  touch();
   account = newAccount;
 }
 
@@ -170,7 +169,6 @@ void MyMoneySeqAccessMgr::addPayee(MyMoneyPayee& payee)
   // create the payee
   MyMoneyPayee newPayee(nextPayeeID(), payee);
   m_payeeList.insert(newPayee.id(), newPayee);
-  touch();
   payee = newPayee;
 }
 
@@ -209,7 +207,6 @@ void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
     QString msg = "Unknown payee '" + payee.id() + "'";
     throw new MYMONEYEXCEPTION(msg);
   }
-  touch();
   m_payeeList.modify((*it).id(), payee);
 }
 
@@ -239,7 +236,6 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
   // FIXME: check referential integrity in schedules
 
   m_payeeList.remove((*it_p).id());
-  touch();
 }
 
 const QValueList<MyMoneyPayee> MyMoneySeqAccessMgr::payeeList(void) const
@@ -279,8 +275,6 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& acc
 
   MyMoneyBalanceCacheItem balance;
   m_balanceCache[account.id()] = balance;
-
-  touch();
 }
 
 void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
@@ -288,9 +282,6 @@ void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
   MyMoneyInstitution newInstitution(nextInstitutionID(), institution);
 
   m_institutionList.insert(newInstitution.id(), newInstitution);
-
-  // mark file as changed
-  touch();
 
   // return new data
   institution = newInstitution;
@@ -448,9 +439,6 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
     }
     m_accountList.modify(acc.id(), acc);
   }
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::touch(void)
@@ -514,8 +502,6 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const boo
       // invalidate cached balance
       invalidateBalanceCache(account.id());
 
-      // mark file as changed
-      touch();
     } else
       throw new MYMONEYEXCEPTION("Invalid information for update");
 
@@ -532,8 +518,6 @@ void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institutio
   if(pos != m_institutionList.end()) {
     m_institutionList.modify(institution.id(), institution);
 
-    // mark file as changed
-    touch();
   } else
     throw new MYMONEYEXCEPTION("unknown institution");
 }
@@ -606,9 +590,6 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   QCString newKey = transaction.uniqueSortKey();
   m_transactionList.insert(newKey, transaction);
   m_transactionKeys.modify(transaction.id(), newKey);
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
@@ -657,9 +638,6 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   if(account.accountType() != MyMoneyAccount::Stock && account.accountType() != MyMoneyAccount::Investment)
     (*childAccount).setAccountType((*newParent).accountType());
 #endif
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transaction)
@@ -696,9 +674,6 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   // remove the transaction from the two lists
   m_transactionList.remove(*it_k);
   m_transactionKeys.remove(transaction.id());
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
@@ -775,9 +750,6 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
     // remove from balance list
     m_balanceCache.remove(account.id());
     invalidateBalanceCache(parent.id());
-
-    // mark file as changed
-    touch();
   }
 }
 
@@ -787,11 +759,8 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
 
   it_i = m_institutionList.find(institution.id());
   if(it_i != m_institutionList.end()) {
-
     m_institutionList.remove(institution.id());
 
-    // mark file as changed
-    touch();
   } else
     throw new MYMONEYEXCEPTION("invalid institution");
 }
@@ -1142,6 +1111,11 @@ void MyMoneySeqAccessMgr::loadCurrencies(const QMap<QCString, MyMoneySecurity>& 
   m_currencyList = map;
 }
 
+void MyMoneySeqAccessMgr::loadPrices(const MyMoneyPriceList& list)
+{
+  m_priceList = list;
+}
+
 void MyMoneySeqAccessMgr::loadAccountId(const unsigned long id)
 {
   m_nextAccountID = id;
@@ -1217,9 +1191,6 @@ void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
   MyMoneySchedule newSched(nextScheduleID(), sched);
   m_scheduleList.insert(newSched.id(), newSched);
   sched = newSched;
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::modifySchedule(const MyMoneySchedule& sched)
@@ -1233,9 +1204,6 @@ void MyMoneySeqAccessMgr::modifySchedule(const MyMoneySchedule& sched)
   }
 
   m_scheduleList.modify(sched.id(), sched);
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
@@ -1249,9 +1217,7 @@ void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
   }
 
   // FIXME: check referential integrity for loan accounts
-
   m_scheduleList.remove(sched.id());
-  touch();
 }
 
 const MyMoneySchedule MyMoneySeqAccessMgr::schedule(const QCString& id) const
@@ -1423,7 +1389,6 @@ void MyMoneySeqAccessMgr::addSecurity(MyMoneySecurity& security)
 
   m_securitiesList.insert(newSecurity.id(), newSecurity);
 
-  touch();
   security = newSecurity;
 }
 
@@ -1440,7 +1405,6 @@ void MyMoneySeqAccessMgr::modifySecurity(const MyMoneySecurity& security)
   }
 
   m_securitiesList.modify(security.id(), security);
-  touch();
 }
 
 void MyMoneySeqAccessMgr::removeSecurity(const MyMoneySecurity& security)
@@ -1458,7 +1422,6 @@ void MyMoneySeqAccessMgr::removeSecurity(const MyMoneySecurity& security)
   }
 
   m_securitiesList.remove(security.id());
-  touch();
 }
 
 const MyMoneySecurity MyMoneySeqAccessMgr::security(const QCString& id) const
@@ -1488,7 +1451,6 @@ void MyMoneySeqAccessMgr::addCurrency(const MyMoneySecurity& currency)
   }
 
   m_currencyList.insert(currency.id(), currency);
-  touch();
 }
 
 void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneySecurity& currency)
@@ -1501,7 +1463,6 @@ void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneySecurity& currency)
   }
 
   m_currencyList.modify(currency.id(), currency);
-  touch();
 }
 
 void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
@@ -1516,7 +1477,6 @@ void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
   }
 
   m_currencyList.remove(currency.id());
-  touch();
 }
 
 const MyMoneySecurity MyMoneySeqAccessMgr::currency(const QCString& id) const
@@ -1552,8 +1512,6 @@ void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )
   MyMoneyReport newReport(nextReportID(), report);
   m_reportList.insert(newReport.id(), newReport);
   report = newReport;
-
-  touch();
 }
 
 void MyMoneySeqAccessMgr::loadReports(const QMap<QCString, MyMoneyReport>& map)
@@ -1584,8 +1542,6 @@ void MyMoneySeqAccessMgr::modifyReport( const MyMoneyReport& report )
     throw new MYMONEYEXCEPTION(msg);
   }
   m_reportList.modify(report.id(), report);
-
-  touch();
 }
 
 const QCString MyMoneySeqAccessMgr::nextReportID(void)
@@ -1617,7 +1573,6 @@ void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )
   }
 
   m_reportList.remove(report.id());
-  touch();
 }
 
 const QValueList<MyMoneyBudget> MyMoneySeqAccessMgr::budgetList(void) const
@@ -1630,7 +1585,6 @@ void MyMoneySeqAccessMgr::addBudget( MyMoneyBudget& budget )
 {
   MyMoneyBudget newBudget(nextBudgetID(), budget);
   m_budgetList.insert(newBudget.id(), newBudget);
-  touch();
   budget = newBudget;
 }
 
@@ -1675,7 +1629,6 @@ void MyMoneySeqAccessMgr::modifyBudget( const MyMoneyBudget& budget )
     throw new MYMONEYEXCEPTION(msg);
   }
   m_budgetList.modify(budget.id(), budget);
-  touch();
 }
 
 const QCString MyMoneySeqAccessMgr::nextBudgetID(void)
@@ -1707,33 +1660,68 @@ void MyMoneySeqAccessMgr::removeBudget( const MyMoneyBudget& budget )
   }
 
   m_budgetList.remove(budget.id());
-  touch();
 }
 
 void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
 {
+  MyMoneySecurityPair pricePair(price.from(), price.to());
+  QMap<MyMoneySecurityPair, MyMoneyPriceEntries>::ConstIterator it_m;
+  it_m = m_priceList.find(pricePair);
+
+  MyMoneyPriceEntries entries;
+  if(it_m != m_priceList.end()) {
+     entries = (*it_m);
+  }
+  // entries contains the current entries for this security pair
+  // in case it_m points to m_priceList.end() we need to create a
+  // new entry in the priceList, otherwise we need to modify
+  // an existing one.
+
   MyMoneyPriceEntries::ConstIterator it;
-  it = m_priceList[MyMoneySecurityPair(price.from(), price.to())].find(price.date());
-  // do not replace, if the information did not change.
-  if(it != m_priceList[MyMoneySecurityPair(price.from(), price.to())].end()) {
+  it = entries.find(price.date());
+  if(it != entries.end()) {
     if((*it).rate(QCString()) == price.rate(QCString())
     && (*it).source() == price.source())
+      // in case the information did not change, we don't do anything
       return;
   }
 
-  m_priceList[MyMoneySecurityPair(price.from(), price.to())][price.date()] = price;
-  touch();
+  // store new value in local copy
+  entries[price.date()] = price;
+
+  if(it_m != m_priceList.end()) {
+    m_priceList.modify(pricePair, entries);
+  } else {
+    m_priceList.insert(pricePair, entries);
+  }
 }
 
 void MyMoneySeqAccessMgr::removePrice(const MyMoneyPrice& price)
 {
-  m_priceList[MyMoneySecurityPair(price.from(), price.to())].remove(price.date());
-  touch();
+  MyMoneySecurityPair pricePair(price.from(), price.to());
+  QMap<MyMoneySecurityPair, MyMoneyPriceEntries>::ConstIterator it_m;
+  it_m = m_priceList.find(pricePair);
+
+  MyMoneyPriceEntries entries;
+  if(it_m != m_priceList.end()) {
+    entries = (*it_m);
+  }
+
+  // store new value in local copy
+  entries.remove(price.date());
+
+  if(entries.count() != 0) {
+    m_priceList.modify(pricePair, entries);
+  } else {
+    m_priceList.remove(pricePair);
+  }
 }
 
 const MyMoneyPriceList MyMoneySeqAccessMgr::priceList(void) const
 {
-  return m_priceList;
+  MyMoneyPriceList list;
+  m_priceList.map(list);
+  return list;
 }
 
 const MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& toId, const QDate& _date, const bool exactDate) const
@@ -1890,6 +1878,7 @@ void MyMoneySeqAccessMgr::startTransaction(void)
   m_currencyList.startTransaction();
   m_reportList.startTransaction(&m_nextReportID);
   m_budgetList.startTransaction(&m_nextBudgetID);
+  m_priceList.startTransaction();
 }
 
 bool MyMoneySeqAccessMgr::commitTransaction(void)
@@ -1905,6 +1894,11 @@ bool MyMoneySeqAccessMgr::commitTransaction(void)
   rc |= m_currencyList.commitTransaction();
   rc |= m_reportList.commitTransaction();
   rc |= m_budgetList.commitTransaction();
+  rc |= m_priceList.commitTransaction();
+
+  // if there was a change, touch the whole storage object
+  if(rc)
+    touch();
 
   return rc;
 }
@@ -1921,6 +1915,7 @@ void MyMoneySeqAccessMgr::rollbackTransaction(void)
   m_currencyList.rollbackTransaction();
   m_reportList.rollbackTransaction();
   m_budgetList.rollbackTransaction();
+  m_priceList.rollbackTransaction();
 }
 
 void MyMoneySeqAccessMgr::removeReferences(const QCString& id)

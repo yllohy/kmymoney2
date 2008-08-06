@@ -1761,6 +1761,11 @@ void MyMoneyDatabaseMgr::loadBudgets( const QMap<QCString, MyMoneyBudget>& /*bud
 // on error, rollbackTransaction
 }
 
+void MyMoneyDatabaseMgr::loadPrices(const MyMoneyPriceList& list)
+{
+  Q_UNUSED(list);
+}
+
 const unsigned long MyMoneyDatabaseMgr::accountId(void) const
 { return m_sql->getNextAccountId(); }
 

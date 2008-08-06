@@ -5,6 +5,8 @@
 
 2008-08-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed payee matching (was a bit broken by change on 2008-08-03)
+  * Added MyMoneySeqAccessMgr::m_priceList to transaction based handling
+  * Modified testcases to accompany the above change
 
 2008-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to remove payees that were created during statement

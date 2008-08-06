@@ -77,8 +77,11 @@ public:
     if(m_stack.count() == 0)
       throw new MYMONEYEXCEPTION("No transaction started to modify element in container");
 
+#if 0
+    // had to take this out, because we use QPair in one instance as key
     if(key.isEmpty())
       throw new MYMONEYEXCEPTION("No key to update object");
+#endif
 
     m_stack.push(new MyMoneyMapModify(this, key, obj));
   }
@@ -88,8 +91,11 @@ public:
     if(m_stack.count() == 0)
       throw new MYMONEYEXCEPTION("No transaction started to remove element from container");
 
+#if 0
+    // had to take this out, because we use QPair in one instance as key
     if(key.isEmpty())
       throw new MYMONEYEXCEPTION("No key to remove object");
+#endif
 
     m_stack.push(new MyMoneyMapRemove(this, key));
   }
@@ -137,11 +143,11 @@ public:
     return find(k) != end();
   }
 
-  inline void map(QMap<Key, T>& that)
+  inline void map(QMap<Key, T>& that) const
   {
     //QMap<Key, T>* ptr = dynamic_cast<QMap<Key, T>* >(this);
     //that = *ptr;
-    that = *(dynamic_cast<QMap<Key, T>* >(this));
+    that = *(dynamic_cast<QMap<Key, T>* >(const_cast<MyMoneyMap<Key, T>* >(this)));
   }
 
   inline size_t count(void) const

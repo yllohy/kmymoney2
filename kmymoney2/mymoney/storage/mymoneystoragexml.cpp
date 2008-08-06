@@ -60,6 +60,11 @@ public:
   QMap<QCString, MyMoneySecurity> secList;
   QMap<QCString, MyMoneyReport> rList;
   QMap<QCString, MyMoneyBudget> bList;
+  QMap<MyMoneySecurityPair, MyMoneyPriceEntries> prList;
+
+  QCString           m_fromSecurity;
+  QCString           m_toSecurity;
+
 };
 
 
@@ -136,7 +141,7 @@ bool MyMoneyXmlContentHandler::startElement (const QString& /* namespaceURI */, 
     QString s = qName.lower();
     if(s == "transaction"
     || s == "account"
-    || s == "pricepair"
+    || s == "price"
     || s == "payee"
     || s == "currency"
     || s == "security"
@@ -182,6 +187,14 @@ bool MyMoneyXmlContentHandler::startElement (const QString& /* namespaceURI */, 
         m_reader->signalProgress(0, count, i18n("Loading reports..."));
         m_elementCount = 0;
       }
+    } else if(s == "prices") {
+      qDebug("reading prices");
+      m_elementCount = 0;
+    } else if(s == "pricepair") {
+      if(atts.count()) {
+        m_reader->d->m_fromSecurity = QCString(atts.value(QString("from")));
+        m_reader->d->m_toSecurity = QCString(atts.value(QString("to")));
+      }
     }
 
   } else {
@@ -211,8 +224,6 @@ bool MyMoneyXmlContentHandler::endElement(const QString& /* namespaceURI */, con
         } else if(s == "account") {
           MyMoneyAccount a(m_baseNode);
           m_reader->d->aList[a.id()] = a;
-        } else if(s == "pricepair") {
-          m_reader->readPricePair(m_baseNode);
         } else if(s == "payee") {
           MyMoneyPayee p(m_baseNode);
           m_reader->d->pList[p.id()] = p;
@@ -241,6 +252,9 @@ bool MyMoneyXmlContentHandler::endElement(const QString& /* namespaceURI */, con
         } else if(s == "scheduled_tx") {
           MyMoneySchedule s(m_baseNode);
           m_reader->d->sList[s.id()] = s;
+        } else if(s == "price") {
+          MyMoneyPrice p(m_reader->d->m_fromSecurity, m_reader->d->m_toSecurity, m_baseNode);
+          m_reader->d->prList[MyMoneySecurityPair(m_reader->d->m_fromSecurity, m_reader->d->m_toSecurity)][p.date()] = p;
         } else {
           m_errMsg = i18n("Unknown XML tag %1 found in line %2").arg(qName).arg(m_loc->lineNumber());
           kdDebug(2) << m_errMsg << endl;
@@ -299,6 +313,11 @@ bool MyMoneyXmlContentHandler::endElement(const QString& /* namespaceURI */, con
     } else if(s == "budgets") {
       // last budget read, now dump them into the engine
       m_reader->m_storage->loadBudgets(m_reader->d->bList);
+      m_reader->d->bList.clear();
+      m_reader->signalProgress(-1, -1);
+    } else if(s == "prices") {
+      // last price read, now dump them into the engine
+      m_reader->m_storage->loadPrices(m_reader->d->prList);
       m_reader->d->bList.clear();
       m_reader->signalProgress(-1, -1);
     }
@@ -776,43 +795,6 @@ QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QCString, QString> 
     return keyValPairs;
   }
   return QDomElement();
-}
-
-void MyMoneyStorageXML::readPricePair(const QDomElement& pricePair)
-{
-  QCString from = QCString(pricePair.attribute("from"));
-  QCString to = QCString(pricePair.attribute("to"));
-  QDomNode child = pricePair.firstChild();
-
-  while(!child.isNull())
-  {
-    if(child.isElement())
-    {
-      QDomElement childElement = child.toElement();
-      if("PRICE" == childElement.tagName())
-      {
-        MyMoneyPrice p = readPrice(from, to, childElement);
-
-        //tell the storage objects we have a new price.
-        m_storage->addPrice(p);
-      }
-    }
-    child = child.nextSibling();
-  }
-}
-
-const MyMoneyPrice MyMoneyStorageXML::readPrice(const QCString& from, const QCString& to, const QDomElement& price)
-{
-  QDate date;
-  MyMoneyMoney rate;
-  QString source;
-
-  date = QDate::fromString(price.attribute("date"), Qt::ISODate);
-  rate = MyMoneyMoney(price.attribute("price"));
-  source = price.attribute("source");
-
-  //create actual object to return to add into the engine's list of objects.
-  return MyMoneyPrice(from, to, date, rate, source);
 }
 
 void MyMoneyStorageXML::writePrices(QDomElement& prices)
