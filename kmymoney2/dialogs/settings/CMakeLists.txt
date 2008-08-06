@@ -2,9 +2,9 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${K
 
 
 ADD_CUSTOM_COMMAND(
-	 OUTPUT ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.h  ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.cpp
-	 DEPENDS ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.h ${KMyMoney2_SOURCE_DIR}/kmymoney2.kcfg ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc
-	 COMMAND ${KDE3_KCFGC_EXECUTABLE} -d ${KMyMoney2_SOURCE_DIR}/ ${KMyMoney2_SOURCE_DIR}/kmymoney2.kcfg ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc
+	 OUTPUT ${KMyMoney2_BINARY_DIR}/kmymoneysettings.h  ${KMyMoney2_BINARY_DIR}/kmymoneysettings.cpp
+	 DEPENDS ${KMyMoney2_SOURCE_DIR}/kmymoney2.kcfg ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc
+	 COMMAND ${KDE3_KCFGC_EXECUTABLE} -d ${KMyMoney2_BINARY_DIR}/ ${KMyMoney2_SOURCE_DIR}/kmymoney2.kcfg ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc
          )
 
 
@@ -18,7 +18,7 @@ SET (libsettings_a_SOURCES
 	 ksettingsonlinequotes.cpp 
 	 ksettingshome.cpp
 	 ksettingsforecast.cpp
-	 ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.h
+	 ${KMyMoney2_BINARY_DIR}/kmymoneysettings.h
 	)
 
 SET (libsettings_a_UI 
@@ -36,7 +36,6 @@ ADD_LIBRARY(settings STATIC ${libsettings_a_SOURCES})
 # Manually added dependency to kmymoney shared lib. 
 # This cause libkmymoney to be build before settings.
 ADD_DEPENDENCIES(settings kmymoney)
-#ADD_DEPENDENCIES(settings wizardpages)
 
 ########### install files ###############
 
