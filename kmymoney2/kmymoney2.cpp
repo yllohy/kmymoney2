@@ -2922,6 +2922,23 @@ void KMyMoney2App::slotAccountReconcileStart(void)
     // check if we can reconcile this account
     // it make's sense for asset and liability accounts
     try {
+      // check if we have overdue schedules for this account
+      QValueList<MyMoneySchedule> schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
+      if(schedules.count() > 0) {
+        if(KMessageBox::questionYesNo(this, i18n("KMyMoney has detected some overdue schedules for this account. Do you want to enter those scheduled transactions now?"), i18n("Scheduled transactions found")) == KMessageBox::Yes) {
+          do {
+            // start with the first schedule
+            MyMoneySchedule sch(*(schedules.begin()));
+
+            // and enter it
+            enterSchedule(sch);
+
+            // reload list (maybe this schedule needs to be added again)
+            schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
+          } while(schedules.count() > 0);
+        }
+      }
+
       account = file->account(m_selectedAccount.id());
       // get rid of previous run.
       if(m_endingBalanceDlg)
@@ -3530,6 +3547,10 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
               schedule.setNextDueDate(schedule.nextPayment(origDueDate));
               MyMoneyFile::instance()->modifySchedule(schedule);
               rc = true;
+
+              // delete the editor before we emit the dataChanged() signal from the
+              // engine. Calling this twice in a row does not hurt.
+              deleteTransactionEditor();
               ft.commit();
             }
             deleteTransactionEditor();
