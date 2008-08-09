@@ -31,6 +31,7 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyutils.h>
+class KListViewSearchLineWidget;
 
 #include "../views/kaccountsviewdecl.h"
 
@@ -196,6 +197,11 @@ private:
 
   KMyMoneyAccountTreeItem*            m_assetItem;
   KMyMoneyAccountTreeItem*            m_liabilityItem;
+
+  /**
+   * Search widget for the list
+   */
+  KListViewSearchLineWidget*  m_searchWidget;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload[MaxViewTabs];

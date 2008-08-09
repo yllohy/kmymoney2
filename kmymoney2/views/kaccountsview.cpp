@@ -75,10 +75,10 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name) :
 {
   // create the searchline widget
   // and insert it into the existing layout
-  KListViewSearchLineWidget* searchWidget = new KListViewSearchLineWidget(m_accountTree, m_accountTree->parentWidget());
+  m_searchWidget = new KListViewSearchLineWidget(m_accountTree, m_accountTree->parentWidget());
   QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(m_accountTree->parentWidget()->layout());
   if(layout) {
-    layout->insertWidget(0, searchWidget);
+    layout->insertWidget(0, m_searchWidget);
   }
 
   // setup icons for collapse and expand button
@@ -391,6 +391,8 @@ void KAccountsView::loadListView(void)
 
   // reposition viewport
   m_accountTree->setContentsPos(startPoint.x(), startPoint.y());
+
+  m_searchWidget->searchLine()->updateSearch(QString::null);
 
   // turn updates back on
   m_accountTree->setUpdatesEnabled(true);

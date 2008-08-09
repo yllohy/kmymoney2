@@ -36,6 +36,7 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyutils.h>
+class KListViewSearchLineWidget;
 
 #include "kcategoriesviewdecl.h"
 
@@ -75,7 +76,7 @@ public slots:
     * happened in the meantime.
     */
   void show(void);
-  
+
   /**
    * Override the base class behaviour to restore the layout. Do not
    * do this in show() because show() itself may change the layout
@@ -132,6 +133,11 @@ private:
 
   KMyMoneyAccountTreeItem*            m_incomeItem;
   KMyMoneyAccountTreeItem*            m_expenseItem;
+
+  /**
+   * Search widget for the list
+   */
+  KListViewSearchLineWidget*  m_searchWidget;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;
