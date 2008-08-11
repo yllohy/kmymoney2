@@ -165,15 +165,25 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction)
   if(!t.postDate().isValid())
     return;
 
-  // make sure to store a single payee in the first split
+  // make sure to clear out some unused information in scheduled transactions
+  // we need to do this for the case that the transaction passed as argument
+  // is a matched or imported transaction.
   QValueList<MyMoneySplit> splits = t.splits();
-  if(splits.count() > 1) {
+  if(splits.count() > 0) {
     QValueList<MyMoneySplit>::const_iterator it_s;
-    it_s = splits.begin();
-    // only clear payees from second split
-    for(++it_s; it_s != splits.end(); ++it_s) {
+    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      MyMoneySplit s = *it_s;
+      // clear out the bankID
+      if(!(*it_s).bankID().isEmpty()) {
+        s.setBankID(QCString());
+        t.modifySplit(s);
+      }
+
+      // only clear payees from second split onwards
+      if(it_s == splits.begin())
+        continue;
+
       if(!(*it_s).payeeId().isEmpty()) {
-        MyMoneySplit s = *it_s;
         s.setPayeeId(QCString());
         t.modifySplit(s);
       }
