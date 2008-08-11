@@ -547,7 +547,8 @@ KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KListView *parent, cons
   m_security(security),
   m_totalValue(MyMoneyMoney(0)),
   m_account(account),
-  m_type(Account)
+  m_type(Account),
+  m_negative(false)
 {
   if(!name.isEmpty()) {
     // we do not want to modify the original account
@@ -564,7 +565,8 @@ KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KMyMoneyAccountTreeBase
   m_security(security),
   m_totalValue(MyMoneyMoney(0)),
   m_account(account),
-  m_type(Account)
+  m_type(Account),
+  m_negative(false)
 {
   setName();
 }
@@ -735,6 +737,7 @@ void KMyMoneyAccountTreeBaseItem::paintCell(QPainter *p, const QColorGroup & cg,
 {
   QColorGroup cg2(cg);
 
+  //set item background
   if(isAlternate())
     cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
@@ -752,6 +755,14 @@ void KMyMoneyAccountTreeBaseItem::paintCell(QPainter *p, const QColorGroup & cg,
 
   p->setFont(font);
 #endif
+  //set text color
+  QColor textColour;
+  if(m_negative == true) {
+    textColour = KMyMoneyGlobalSettings::listNegativeValueColor(); //if the item is marked is marked as negative, all columns will be painted negative
+  } else {
+    textColour = m_columnsColor[column]; //otherwise, respect the color for each column
+  }
+  cg2.setColor(QColorGroup::Text, textColour); 
 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
@@ -790,6 +801,24 @@ void KMyMoneyAccountTreeBase::slotActivateSort(void)
   if(!m_queuedSort)
     KListView::sort();
 }
+
+void KMyMoneyAccountTreeBaseItem::setNegative(bool isNegative)
+{
+  m_negative = isNegative;
+}
+
+void KMyMoneyAccountTreeBaseItem::setText( int column, const QString &text, const bool &negative)
+{
+  //if negative set the map to negative color according to KMyMoneySettings
+  if(negative) {
+    m_columnsColor[column] = KMyMoneyGlobalSettings::listNegativeValueColor();
+  } else {
+    m_columnsColor[column] = QColorGroup::Text;
+  }
+  
+  KListViewItem::setText(column, text);
+}
+
 
 #include "kmymoneyaccounttreebase.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:

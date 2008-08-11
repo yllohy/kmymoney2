@@ -416,6 +416,10 @@ public:
     * @retval false @p this object is no decendant of @p item
     */
   bool isChildOf(const QListViewItem* const item) const;
+  
+  void setNegative(bool isNegative);
+  
+  void setText( int column, const QString &text, const bool &negative = false );
 
 protected:
    /**
@@ -446,6 +450,8 @@ protected:
   MyMoneySecurity                   m_security;
   MyMoneyMoney                      m_totalValue;
   MyMoneyAccount                    m_account;
+  bool                              m_negative;
+  QMap<int, QColor>                 m_columnsColor;
 
 private:
 

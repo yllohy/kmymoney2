@@ -30,6 +30,7 @@
 #include <kmymoney/mymoneyutils.h>
 
 #include "../views/kforecastviewdecl.h"
+#include "../widgets/kmymoneyaccounttreeforecast.h"
 
 /**
   * @author Alvaro Soliverez
@@ -104,9 +105,22 @@ protected:
 
 protected slots:
   void slotTabChanged(QWidget*);
+  
+  /**
+   * Get the list of prices for an account
+   * This is used later to create an instance of KMyMoneyAccountTreeForecastItem
+   *
+   */
+  QValueList<MyMoneyPrice> getAccountPrices(const MyMoneyAccount& acc);
 
 private:
+  void addAssetLiabilityRows(const MyMoneyForecast& forecast);
+  void addTotalRow(const MyMoneyForecast& forecast);
+
   bool                                m_needReload[MaxViewTabs];
+  KMyMoneyAccountTreeForecastItem*    m_totalItem;
+  KMyMoneyAccountTreeForecastItem*    m_assetItem;
+  KMyMoneyAccountTreeForecastItem*    m_liabilityItem;
 
 };
 

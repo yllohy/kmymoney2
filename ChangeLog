@@ -3,6 +3,12 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Forecast Summary and Detail are shown in a tree
+  * Code cleanup in KForecastView
+  * Added method to show negative numbers in red to
+    KMyMoneyAccountTreeBaseItem
+
 2008-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated German translation provided by yllohy
   * Fixed reload of accounts and categories view after changes when
