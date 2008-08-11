@@ -537,7 +537,8 @@ KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KListView *parent, cons
   KListViewItem(parent),
   m_totalValue(MyMoneyMoney(0)),
   m_institution(institution),
-  m_type(Institution)
+  m_type(Institution),
+  m_negative(false)
 {
   setName();
 }
@@ -762,7 +763,7 @@ void KMyMoneyAccountTreeBaseItem::paintCell(QPainter *p, const QColorGroup & cg,
   } else {
     textColour = m_columnsColor[column]; //otherwise, respect the color for each column
   }
-  cg2.setColor(QColorGroup::Text, textColour); 
+  cg2.setColor(QColorGroup::Text, textColour);
 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
@@ -815,7 +816,7 @@ void KMyMoneyAccountTreeBaseItem::setText( int column, const QString &text, cons
   } else {
     m_columnsColor[column] = QColorGroup::Text;
   }
-  
+
   KListViewItem::setText(column, text);
 }
 
