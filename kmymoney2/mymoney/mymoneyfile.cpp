@@ -1589,9 +1589,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         const MyMoneyAccount& acc = this->account(s.accountId());
         if(t.commodity() == acc.currencyId()
         && s.shares().reduce() != s.value().reduce()) {
-          s.setValue(s.shares());
+          // use the value as master if the transaction is balanced
+          if(t.splitSum().isZero()) {
+            s.setShares(s.value());
+            rc << i18n("  * shares set to value in split of transaction '%1'.").arg(t.id());
+          } else {
+            s.setValue(s.shares());
+            rc << i18n("  * value set to shares in split of transaction '%1'.").arg(t.id());
+          }
           sChanged = true;
-          rc << i18n("  * value set to shares in split of transaction '%1'.").arg(t.id());
           ++problemCount;
         }
       } catch(MyMoneyException *e) {
@@ -1644,6 +1650,13 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         ++problemCount;
       }
 
+      // make sure, we don't have a bankid stored with a split in a schedule
+      if(!(*it_s).bankID().isEmpty()) {
+        s.setBankID(QString());
+        sChanged = true;
+        rc << i18n("  * Removed bankid from split in scheduled transaction '%1'.").arg((*it_sch).name());
+        ++problemCount;
+      }
 
       // make sure, that shares and value have the same number if they
       // represent the same currency.
@@ -1651,9 +1664,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         const MyMoneyAccount& acc = this->account(s.accountId());
         if(t.commodity() == acc.currencyId()
         && s.shares().reduce() != s.value().reduce()) {
-          s.setValue(s.shares());
-          sChanged = tChanged = true;
-          rc << i18n("  * value set to shares in split of schedule '%1'.").arg(sch.name());
+          // use the value as master if the transaction is balanced
+          if(t.splitSum().isZero()) {
+            s.setShares(s.value());
+            rc << i18n("  * shares set to value in split in schedule '%1'.").arg((*it_sch).name());
+          } else {
+            s.setValue(s.shares());
+            rc << i18n("  * value set to shares in split in schedule '%1'.").arg((*it_sch).name());
+          }
+          sChanged = true;
           ++problemCount;
         }
       } catch(MyMoneyException *e) {
