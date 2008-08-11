@@ -8,6 +8,7 @@
     have to contain equal values.
   * Updated Brazilian translation from Marcus Gama
   * Updated Simplified Chinese translation from Roy Qu
+  * Fixed a payee assignment and display problem with schedules
 
 2008-08-09 Alvaro Soliverez <asoliverez@gmail.com>
   * Forecast Summary and Detail are shown in a tree

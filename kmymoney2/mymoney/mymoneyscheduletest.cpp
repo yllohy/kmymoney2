@@ -661,7 +661,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" id=\"S0001\" account=\"A000076\" />\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" id=\"S0002\" account=\"A000276\" />\n"
+		"    <SPLIT payee=\"\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" id=\"S0002\" account=\"A000276\" />\n"
 		"   </SPLITS>\n"
 		"   <KEYVALUEPAIRS>\n"
 		"    <PAIR key=\"key\" value=\"value\" />\n"

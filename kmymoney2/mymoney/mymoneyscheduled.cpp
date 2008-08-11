@@ -89,7 +89,7 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   if(nodeList.count() == 0)
     throw new MYMONEYEXCEPTION("SCHEDULED_TX has no TRANSACTION node");
 
-  m_transaction = MyMoneyTransaction(nodeList.item(0).toElement(), false);
+  setTransaction(MyMoneyTransaction(nodeList.item(0).toElement(), false));
 
   // some old versions did not remove the entry date and post date fields
   // in the schedule. So if this is the case, we deal with a very old transaction
@@ -164,6 +164,21 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction)
   }
   if(!t.postDate().isValid())
     return;
+
+  // make sure to store a single payee in the first split
+  QValueList<MyMoneySplit> splits = t.splits();
+  if(splits.count() > 1) {
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    it_s = splits.begin();
+    // only clear payees from second split
+    for(++it_s; it_s != splits.end(); ++it_s) {
+      if(!(*it_s).payeeId().isEmpty()) {
+        MyMoneySplit s = *it_s;
+        s.setPayeeId(QCString());
+        t.modifySplit(s);
+      }
+    }
+  }
 
   m_transaction = t;
   // make sure that the transaction does not have an id so that we can enter
