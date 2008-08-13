@@ -4519,8 +4519,25 @@ void KMyMoney2App::slotTransactionGotoPayee(void)
 
 void KMyMoney2App::slotTransactionCreateSchedule(void)
 {
-  if(m_selectedTransactions.count() == 1)
-    slotScheduleNew(m_selectedTransactions[0].transaction());
+  if(m_selectedTransactions.count() == 1) {
+    // make sure to have the current selected split as first split in the schedule
+    MyMoneyTransaction t = m_selectedTransactions[0].transaction();
+    MyMoneySplit s = m_selectedTransactions[0].split();
+    QCString splitId = s.id();
+    s.clearId();
+    t.removeSplits();
+    t.addSplit(s);
+    const QValueList<MyMoneySplit>& splits = m_selectedTransactions[0].transaction().splits();
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      if((*it_s).id() != splitId) {
+        MyMoneySplit s0 = (*it_s);
+        s0.clearId();
+        t.addSplit(s0);
+      }
+    }
+    slotScheduleNew(t);
+  }
 }
 
 void KMyMoney2App::slotTransactionAssignNumber(void)

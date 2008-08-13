@@ -6,6 +6,7 @@
 2008-08-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed endless loop when canceling the entry of a schedule during
     reconciliation startup
+  * Make sure to have the current selected split as first split in the schedule
 
 2008-08-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed consistency check to modify share instead of value field if they
