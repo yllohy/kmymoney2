@@ -2926,16 +2926,26 @@ void KMyMoney2App::slotAccountReconcileStart(void)
       QValueList<MyMoneySchedule> schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
       if(schedules.count() > 0) {
         if(KMessageBox::questionYesNo(this, i18n("KMyMoney has detected some overdue schedules for this account. Do you want to enter those scheduled transactions now?"), i18n("Scheduled transactions found")) == KMessageBox::Yes) {
-          do {
-            // start with the first schedule
-            MyMoneySchedule sch(*(schedules.begin()));
 
-            // and enter it
-            enterSchedule(sch);
+          QMap<QCString, bool> skipMap;
+          bool processedOne;
+          do {
+            processedOne = false;
+            QValueList<MyMoneySchedule>::const_iterator it_sch;
+            for(it_sch = schedules.begin(); it_sch != schedules.end(); ++it_sch) {
+              MyMoneySchedule sch(*(it_sch));
+
+              // and enter it if it is not on the skip list
+              if(skipMap.find((*it_sch).id()) == skipMap.end()) {
+                if(!enterSchedule(sch)) {
+                  skipMap[(*it_sch).id()] = true;
+                }
+              }
+            }
 
             // reload list (maybe this schedule needs to be added again)
             schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
-          } while(schedules.count() > 0);
+          } while(processedOne);
         }
       }
 
