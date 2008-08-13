@@ -71,6 +71,7 @@ public:
   int                  m_precision;
   bool                 m_inLoading;
   bool                 m_recursion;
+  bool                 m_showDetails;
   KMyMoneyRegister::Action m_action;
   QTimer               m_viewPosTimer;
 };
@@ -136,7 +137,8 @@ KGlobalLedgerViewPrivate::KGlobalLedgerViewPrivate() :
   m_mousePressFilter(0),
   m_registerSearchLine(0),
   m_inLoading(false),
-  m_recursion(false)
+  m_recursion(false),
+  m_showDetails(false)
 {
 }
 
@@ -339,7 +341,7 @@ void KGlobalLedgerView::loadView(void)
       focusItemId = m_register->focusItem()->id();
 
     // remember the upper left corner of the viewport
-    if(!d->m_inLoading)
+    if(!d->m_inLoading && d->m_showDetails == KMyMoneyGlobalSettings::showRegisterDetailed())
       d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
   } else {
     if(d->m_viewPosTimer.isActive())
@@ -599,6 +601,8 @@ void KGlobalLedgerView::loadView(void)
     d->m_viewPosTimer.start(30, true);
     d->m_inLoading = true;
   }
+
+  d->m_showDetails = KMyMoneyGlobalSettings::showRegisterDetailed();
 
   // and tell everyone what's selected
   emit accountSelected(m_account);

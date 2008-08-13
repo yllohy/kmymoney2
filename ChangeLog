@@ -7,6 +7,7 @@
   * Fixed endless loop when canceling the entry of a schedule during
     reconciliation startup
   * Make sure to have the current selected split as first split in the schedule
+  * Fixed #1866881 (Show Transaction Detail:scroll view to current record)
 
 2008-08-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed consistency check to modify share instead of value field if they
