@@ -55,11 +55,20 @@
 class MyMoneyStatementReaderPrivate
 {
   public:
-    MyMoneyStatementReaderPrivate() {}
+    MyMoneyStatementReaderPrivate() :
+      transactionsCount(0),
+      transactionsAdded(0),
+      transactionsMatched(0),
+      transactionsDuplicate(0)
+    {}
 
     MyMoneyAccount                 lastAccount;
     QValueList<MyMoneyTransaction> transactions;
     QValueList<MyMoneyPayee>       payees;
+    int                            transactionsCount;
+    int                            transactionsAdded;
+    int                            transactionsMatched;
+    int                            transactionsDuplicate;
 };
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
@@ -81,7 +90,7 @@ void MyMoneyStatementReader::setAutoCreatePayee(const bool create)
   m_autoCreatePayee = create;
 }
 
-bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
+bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& messages)
 {
   //
   // For testing, save the statement to an XML file
@@ -157,6 +166,8 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
 
   signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
 
+  messages += i18n("Importing statement for account %1").arg(m_account.name());
+
   //
   // Process the securities
   //
@@ -195,20 +206,30 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s)
     }
   }
 
-  qDebug("Statement balance for '%s' is '%s'", s.m_dateEnd.toString(Qt::ISODate).data(), s.m_closingBalance.formatMoney("",2).data());
   bool  rc = false;
 
   // delete all payees created in vain
+  int payeeCount = d->payees.count();
   QValueList<MyMoneyPayee>::const_iterator it_p;
   for(it_p = d->payees.begin(); it_p != d->payees.end(); ++it_p) {
     try {
       MyMoneyFile::instance()->removePayee(*it_p);
-      qDebug("%s removed", (*it_p).name().data());
+      --payeeCount;
     } catch(MyMoneyException* e) {
       // if we can't delete it, it must be in use which is ok for us
       delete e;
     }
   }
+
+  messages += i18n("  Statement balance on %1 is reported to be %2").arg(s.m_dateEnd.toString(Qt::ISODate)).arg(s.m_closingBalance.formatMoney("",2));
+  messages += i18n("  Transactions");
+  messages += i18n("    %1 processed").arg(d->transactionsCount);
+  messages += i18n("    %1 added").arg(d->transactionsAdded);
+  messages += i18n("    %1 matched").arg(d->transactionsMatched);
+  messages += i18n("    %1 duplicates").arg(d->transactionsDuplicate);
+  messages += i18n("  Payees");
+  messages += i18n("    %1 created").arg(payeeCount);
+  messages += QString();
 
   // remove the Don't ask again entries
   KConfig* config = KGlobal::config();
@@ -782,9 +803,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     TransactionMatcher matcher(thisaccount);
     matcher.setMatchWindow(KMyMoneyGlobalSettings::matchInterval());
     const MyMoneyObject *o = matcher.findMatch(t, s1, matchedSplit, result);
+    d->transactionsCount++;
 
     // if we did not already find this one, we need to process it
     if(result != TransactionMatcher::matchedDuplicate) {
+      d->transactionsAdded++;
       file->addTransaction(t);
 
       if(o) {
@@ -798,6 +821,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               break;
             case TransactionMatcher::matched:
               matcher.match(tm, matchedSplit, t, s1);
+              d->transactionsMatched++;
               break;
           }
 
@@ -824,11 +848,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
               // now match the two transactions
               matcher.match(torig, matchedSplit, t, s1);
+              d->transactionsMatched++;
             }
             delete editor;
           }
         }
       }
+    } else {
+      d->transactionsDuplicate++;
     }
     delete o;
   } catch (MyMoneyException *e) {

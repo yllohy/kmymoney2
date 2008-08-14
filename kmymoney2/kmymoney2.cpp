@@ -1673,7 +1673,8 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   // disable all standard widgets during the import
   setEnabled(false);
 
-  result = m_smtReader->import(s);
+  QStringList messages;
+  result = m_smtReader->import(s, messages);
 
   // get rid of the statement reader and tell everyone else
   // about the destruction by setting the pointer to zero
@@ -1686,6 +1687,7 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   // re-enable all standard widgets
   setEnabled(true);
 
+  KMessageBox::informationList(this, i18n("The statement has been processed with the following results:"), messages, i18n("Statement stats"));
   return result;
 }
 

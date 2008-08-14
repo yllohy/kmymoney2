@@ -46,6 +46,7 @@
 
 class MyMoneyFileTransaction;
 class MyMoneyStatementReaderPrivate;
+class QStringList;
 
 /**
   * This is a pared-down version of a MyMoneyQifReader object
@@ -61,13 +62,14 @@ public:
   ~MyMoneyStatementReader();
 
   /**
-    * This method imports data from the MyMoneyStatement object
-    * into the MyMoney engine.
+    * This method imports data from the MyMoneyStatement object @a s
+    * into the MyMoney engine. It leaves some statistical information
+    * in the @a messages string list
     *
     * @retval true the import was processed successfully
     * @retval false the import resulted in a failure.
     */
-  bool import(const MyMoneyStatement& s);
+  bool import(const MyMoneyStatement& s, QStringList& messages);
 
   /**
     * This method is used to modify the auto payee creation flag.
