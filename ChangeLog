@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix sqlite logout problem
+
 2008-08-14  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * globally catch all uncaught kmymoney exceptions
 

@@ -46,6 +46,9 @@
 #define PASS } catch (MyMoneyException *e) { throw; }
 #define ECATCH }
 #define DBG(a)  // qDebug(a)
+//#define TRACE(a) qDebug(a)
+#define TRACE(a) ::timetrace(a)
+
 //***************** THE CURRENT VERSION OF THE DATABASE LAYOUT ****************
 unsigned int MyMoneyDbDef::m_currentVersion = 2;
 
@@ -57,10 +60,10 @@ MyMoneySqlQuery::MyMoneySqlQuery (MyMoneyStorageSql*  db)
 }
 
 bool MyMoneySqlQuery::exec () {
-  ::timetrace("start sql");
+  TRACE(QString("start sql - %1").arg(lastQuery()));
   bool rc = QSqlQuery::exec();
   QString msg("end sql\n%1\n***Query returned %2, row count %3");
-  ::timetrace (msg.arg(QSqlQuery::executedQuery()).arg(rc).arg(numRowsAffected()));
+  TRACE (msg.arg(QSqlQuery::executedQuery()).arg(rc).arg(numRowsAffected()));
   //DBG (QString("%1\n***Query returned %2, row count %3").arg(QSqlQuery::executedQuery()).arg(rc).arg(size()));
   return (rc);
 }
@@ -72,6 +75,7 @@ bool MyMoneySqlQuery::prepare ( const QString & query ) {
   }
   return (QSqlQuery::prepare (query));
 }
+
 //*****************************************************************************
 MyMoneyDbDrivers::MyMoneyDbDrivers () {
   m_driverMap["QDB2"] = QString("IBM DB2");
@@ -200,8 +204,10 @@ try {
 void MyMoneyStorageSql::close(bool logoff) {
   DBG("*** Entering MyMoneyStorageSql::close");
   if (logoff) {
+    startCommitUnit(__func__);
     m_logonUser = QString();
     writeFileInfo();
+    endCommitUnit(__func__);
   }
   QSqlDatabase::close();
   QSqlDatabase::removeDatabase(this);
@@ -569,26 +575,26 @@ bool MyMoneyStorageSql::readFile(void) {
       user.append(QCString("USER"));
       readPayees(user);
     }
-  //::timetrace("done payees");
+  //TRACE("done payees");
     readCurrencies();
-  //::timetrace("done currencies");
+  //TRACE("done currencies");
     readSecurities();
-  //::timetrace("done securities");
+  //TRACE("done securities");
     readAccounts();
     if (m_loadAll) {
       readTransactions();
     } else {
       if (m_preferred.filterSet().singleFilter.accountFilter) readTransactions (m_preferred);
     }
-  //::timetrace("done accounts");
+  //TRACE("done accounts");
     readSchedules();
-  //::timetrace("done schedules");
+  //TRACE("done schedules");
     readPrices();
-  //::timetrace("done prices");
+  //TRACE("done prices");
     readReports();
-  //::timetrace("done reports");
+  //TRACE("done reports");
     readBudgets();
-  //::timetrace("done budgets");
+  //TRACE("done budgets");
     if (m_mode == 0)
       m_storage->rebuildAccountBalances();
   // this seems to be nonsense, but it clears the dirty flag
