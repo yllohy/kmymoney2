@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improvement for fix of #1866881: keep focus item
+
 2008-08-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed endless loop when canceling the entry of a schedule during
     reconciliation startup

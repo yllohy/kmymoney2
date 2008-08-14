@@ -570,7 +570,12 @@ void KGlobalLedgerView::loadView(void)
     m_register->updateRegister(true);
 
     if(focusItem) {
-      m_register->selectItem(focusItem, true);
+      // in case we have some selected items we just set the focus item
+      // in other cases, we make the focusitem also the selected item
+      if(isSelected.count() > 0)
+        m_register->setFocusItem(focusItem);
+      else
+        m_register->selectItem(focusItem, true);
     } else {
       // make sure to skip the empty entry at the end if anything else exists
       // otherwise point to that emtpy line
