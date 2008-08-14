@@ -67,6 +67,21 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   setParentAccountId(QCStringEmpty(node.attribute("parentaccount")));
   setLastModified(stringToDate(QStringEmpty(node.attribute("lastmodified"))));
   setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute("lastreconciled"))));
+
+  if(!m_lastReconciliationDate.isValid()) {
+    // for some reason, I was unable to access our own kvp at this point through
+    // the value() method. It always returned empty strings. The workaround for
+    // this is to construct a local kvp the same way as we have done before and
+    // extract the value from it.
+    //
+    // Since we want to get rid of the lastStatementDate record anyway, this seems
+    // to be ok for now. (ipwizard - 2008-08-14)
+    QString txt = MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement()).value("lastStatementDate");
+    if(!txt.isEmpty()) {
+      setLastReconciliationDate(QDate::fromString(txt, Qt::ISODate));
+    }
+  }
+
   setInstitutionId(QCStringEmpty(node.attribute("institution")));
   setNumber(QStringEmpty(node.attribute("number")));
   setOpeningDate(stringToDate(QStringEmpty(node.attribute("opened"))));
@@ -145,6 +160,11 @@ void MyMoneyAccount::setOpeningDate(const QDate& date)
 
 void MyMoneyAccount::setLastReconciliationDate(const QDate& date)
 {
+  // FIXME: for a limited time (maybe until we delivered 1.0) we
+  // keep the last reconciliation date also in the KVP for backward
+  // compatability. After that, the setValue() statemetn should be removed
+  // and the XML ctor should remove the value completely from the KVP
+  setValue("lastStatementDate", date.toString(Qt::ISODate));
   m_lastReconciliationDate = date;
 }
 
@@ -499,6 +519,11 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
     }
     el.appendChild(onlinesettings);
   }
+
+  // FIXME drop the lastStatementDate record from the KVP when it is
+  // not stored there after setLastReconciliationDate() has been changed
+  // See comment there when this will happen
+  // deletePair("lastStatementDate");
 
 
   //Add in Key-Value Pairs for accounts.

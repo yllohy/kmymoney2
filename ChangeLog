@@ -5,6 +5,8 @@
 
 2008-08-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improvement for fix of #1866881: keep focus item
+  * Applied patch provided by Alexis Lahouze
+  * Fixed testcases
 
 2008-08-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed endless loop when canceling the entry of a schedule during

@@ -629,14 +629,6 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& ac
   } else {
     // update summary line in normal mode
     QDate reconcileDate = m_account.lastReconciliationDate();
-    // For some historic reason, the last reconciliation statement is
-    // stored in the KVP area of the account under the key 'lastStatementDate'.
-    // As long as we don't change that, we continue to read it from there
-    // if the lastReconciliationDate() method returns an invalid date.
-    if(!reconcileDate.isValid()) {
-      if(!m_account.value("lastStatementDate").isEmpty())
-        reconcileDate = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
-    }
 
     if(reconcileDate.isValid()) {
       m_leftSummaryLabel->setText(i18n("Last reconciled: %1").arg(KGlobal::locale()->formatDate(reconcileDate, true)));

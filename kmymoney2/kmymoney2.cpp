@@ -3033,7 +3033,7 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     myMoneyView->finishReconciliation(m_reconciliationAccount);
 
     m_reconciliationAccount.setValue("lastStatementBalance", m_endingBalanceDlg->endingBalance().toString());
-    m_reconciliationAccount.setValue("lastStatementDate", m_endingBalanceDlg->statementDate().toString(Qt::ISODate));
+    m_reconciliationAccount.setLastReconciliationDate(m_endingBalanceDlg->statementDate());
 
     m_reconciliationAccount.deletePair("lastReconciledBalance");
     m_reconciliationAccount.deletePair("statementBalance");

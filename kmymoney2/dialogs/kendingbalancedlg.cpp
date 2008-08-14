@@ -79,7 +79,7 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     // if the last statement has been entered long enough ago (more than one month),
     // then take the last statement date and add one month and use that as statement
     // date.
-    QDate lastStatementDate = QDate::fromString(account.value("lastStatementDate"), Qt::ISODate);
+    QDate lastStatementDate = account.lastReconciliationDate();
     if(lastStatementDate.addMonths(1) < QDate::currentDate()) {
       m_statementDate->setDate(lastStatementDate.addMonths(1));
     }
@@ -115,11 +115,10 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   if(!value.isEmpty())
     m_statementDate->setDate(QDate::fromString(value, Qt::ISODate));
 
-  value = account.value("lastStatementDate");
   m_lastStatementDate->setText(QString());
-  if(!value.isEmpty()) {
+  if(account.lastReconciliationDate().isValid()) {
     m_lastStatementDate->setText(i18n("Last reconciled statement: %1")
-      .arg(KGlobal::locale()->formatDate(QDate::fromString(value, Qt::ISODate), true)));
+      .arg(KGlobal::locale()->formatDate(account.lastReconciliationDate(), true)));
   }
 
   // remove all unwanted pages
@@ -383,12 +382,11 @@ KEndingBalanceLoanDlg::KEndingBalanceLoanDlg(const MyMoneyAccount& account, QWid
   d(new KEndingBalanceLoanDlgPrivate)
 {
   d->m_account = account;
-  QString value;
-  value = account.value("lastStatementDate");
-  if(value.isEmpty())
-    m_startDateEdit->setDate(d->m_account.openingDate());
+  QDate value = account.lastReconciliationDate();
+  if(value.isValid())
+    m_startDateEdit->setDate(value.addDays(1));
   else
-    m_startDateEdit->setDate(QDate::fromString(value, Qt::ISODate).addDays(1));
+    m_startDateEdit->setDate(d->m_account.openingDate());
 
   // make sure, we show the correct start page
   showPage(m_startPageLoan);

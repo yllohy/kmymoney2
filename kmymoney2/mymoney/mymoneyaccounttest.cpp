@@ -381,9 +381,10 @@ void MyMoneyAccountTest::testReadXML() {
 		CPPUNIT_ASSERT(a.accountList().count() == 2);
 		CPPUNIT_ASSERT(a.accountList()[0] == "A000002");
 		CPPUNIT_ASSERT(a.accountList()[1] == "A000003");
-		CPPUNIT_ASSERT(a.pairs().count() == 2);
+		CPPUNIT_ASSERT(a.pairs().count() == 3);
 		CPPUNIT_ASSERT(a.value("key") == "value");
 		CPPUNIT_ASSERT(a.value("Key") == "Value");
+		CPPUNIT_ASSERT(a.value("lastStatementDate").isEmpty());
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
