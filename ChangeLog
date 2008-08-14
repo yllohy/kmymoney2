@@ -14,6 +14,7 @@
   * Applied patch provided by Alexis Lahouze
   * Fixed testcases
   * Added status display for statement import
+  * Keep changes to category when changing parent account in same edit session
 
 2008-08-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed endless loop when canceling the entry of a schedule during

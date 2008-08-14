@@ -2845,11 +2845,11 @@ void KMyMoney2App::slotAccountEdit(void)
               bal = -bal;
             }
 
-            // we need to reparent first, as modify will check for same type
+            // we need to modify first, as reparent would override all other changes
+            file->modifyAccount(account);
             if(account.parentAccountId() != parent.id()) {
               file->reparentAccount(account, parent);
             }
-            file->modifyAccount(account);
             if(!tid.isEmpty() && dlg.openingBalance().isZero()) {
               file->removeTransaction(t);
 
