@@ -23,16 +23,18 @@
 
 // ----------------------------------------------------------------------------
 // System Includes
+
 #include <string>
 #include <vector>
 #include <curl/curl.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qlistview.h>
+
 #include <qtextbrowser.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -43,6 +45,8 @@
 #include <kstandarddirs.h>
 #include <kprogress.h>
 #include <kapplication.h>
+#include <klistview.h>
+#include <klistviewsearchline.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -66,13 +70,15 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
   dlg->setMinimumDuration(0);
   kapp->processEvents();
 
+  m_listLayout->insertWidget(1, new KListViewSearchLineWidget(m_listFi, FIPage, 0));
+
   OfxPartner::setDirectory(locateLocal("appdata", ""));
   try {
     vector<string> banks = OfxPartner::BankNames();
     vector<string>::const_iterator it_bank = banks.begin();
     while (it_bank != banks.end())
     {
-      new QListViewItem( m_listFi, QString((*it_bank).c_str()));
+      new KListViewItem( m_listFi, QString((*it_bank).c_str()));
       ++it_bank;
     }
     m_fInit = true;

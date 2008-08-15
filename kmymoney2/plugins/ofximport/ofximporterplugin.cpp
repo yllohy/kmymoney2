@@ -545,9 +545,8 @@ void OfxImporterPlugin::protocols(QStringList& protocolList) const
 QWidget* OfxImporterPlugin::accountConfigTab(const MyMoneyAccount& acc, QString& name)
 {
   name = i18n("Online settings");
-  return new KOnlineBankingStatus(acc, 0, 0);
-
-  return 0;
+  m_statusDlg = new KOnlineBankingStatus(acc, 0, 0);
+  return m_statusDlg;
 }
 
 MyMoneyKeyValueContainer OfxImporterPlugin::onlineBankingSettings(const MyMoneyKeyValueContainer& current)
@@ -555,7 +554,11 @@ MyMoneyKeyValueContainer OfxImporterPlugin::onlineBankingSettings(const MyMoneyK
   MyMoneyKeyValueContainer kvp(current);
   // keep the provider name in sync with the one found in kmm_ofximport.desktop
   kvp["provider"] = "KMyMoney OFX";
-
+  if(m_statusDlg) {
+    kvp.deletePair("appId");
+    if(!m_statusDlg->appId().isEmpty())
+      kvp.setValue("appId", m_statusDlg->appId());
+  }
   return kvp;
 }
 

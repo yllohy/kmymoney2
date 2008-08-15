@@ -34,6 +34,7 @@
 
 #include <klocale.h>
 #include <kled.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -42,11 +43,32 @@
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/mymoneyaccount.h>
 
+static QMap<QString, QString> appMap;
+static QMap<QString, QString> verMap;
+static QString defaultAppId("QWIN:1700");
+
 KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent, const char *name) :
   KOnlineBankingStatusDecl(parent,name)
 {
   m_ledOnlineStatus->off();
 #ifdef USE_OFX_DIRECTCONNECT
+// http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-intuit-products/
+// http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
+
+  // Quicken
+  appMap[i18n("Quicken Windows 2005")] = "QWIN:1400";
+  appMap[i18n("Quicken Windows 2006")] = "QWIN:1500";
+  appMap[i18n("Quicken Windows 2007")] = "QWIN:1600";
+  appMap[i18n("Quicken Windows 2008")] = "QWIN:1700";
+
+  // MS-Money
+  appMap[i18n("MS-Money 2003")] = "Money 2003:1100";
+  appMap[i18n("MS-Money 2004")] = "Money 2004:1200";
+  appMap[i18n("MS-Money 2005")] = "Money 2005:1400";
+  appMap[i18n("MS-Money 2006")] = "Money 2006:1500";
+  appMap[i18n("MS-Money 2007")] = "Money 2007:1600";
+  appMap[i18n("MS-Money Plus")] = "Money Plus:1700";
+
   // Set up online banking settings if applicable
   MyMoneyKeyValueContainer settings = acc.onlineBankingSettings();
   m_textOnlineStatus->setText(i18n("Enabled & configured"));
@@ -60,6 +82,14 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_textBank->setText(bank);
   m_textOnlineAccount->setText(account);
 
+  QString appId = settings.value("appId");
+  // default to Quicken 2008
+  if(appId.isEmpty()) {
+    appId = defaultAppId;
+  }
+
+  loadApplicationButton(appId);
+  
 #else
   m_textOnlineStatus->setText(i18n("Disabled. No online banking services are available"));
 #endif
@@ -67,6 +97,29 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
 
 KOnlineBankingStatus::~KOnlineBankingStatus()
 {
+}
+
+void KOnlineBankingStatus::loadApplicationButton(const QString& appId)
+{
+  m_applicationCombo->clear();
+  m_applicationCombo->insertStringList(appMap.keys());
+
+  QMap<QString, QString>::const_iterator it_a;
+  for(it_a = appMap.begin(); it_a != appMap.end(); ++it_a) {
+    if(*it_a == appId)
+      break;
+  }
+  if(it_a != appMap.end()) {
+    m_applicationCombo->setCurrentItem(it_a.key());
+  }
+}
+
+const QString& KOnlineBankingStatus::appId(void) const
+{
+  QString app = m_applicationCombo->currentText();
+  if(appMap[app] != defaultAppId)
+    return appMap[app];
+  return QString::null;
 }
 
 #ifdef USE_OFX_DIRECTCONNECT

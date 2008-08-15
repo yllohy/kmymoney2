@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added application override to OFX plugin
+  * Added search filter to GUI of OFX institution setup wizard
+
 2008-08-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix sqlite logout problem
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>245</height>
+            <width>526</width>
+            <height>323</height>
         </rect>
     </property>
     <vbox>
@@ -33,9 +33,12 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLayoutWidget">
+        <widget class="QGroupBox">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Account Details</string>
             </property>
             <grid>
                 <property name="name">
@@ -52,6 +55,11 @@
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <bold>1</bold>
+                        </font>
                     </property>
                     <property name="text">
                         <string>&amp;lt;Not configured&amp;gt;</string>
@@ -76,6 +84,11 @@
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <bold>1</bold>
+                        </font>
                     </property>
                     <property name="text">
                         <string>&amp;lt;Not configured&amp;gt;</string>
@@ -148,6 +161,49 @@
                         <string>STATUS:</string>
                     </property>
                 </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>OFX Details</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_applicationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Identify as</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="2">
+                    <property name="name">
+                        <cstring>spacer4_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>81</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
             </grid>
         </widget>
         <spacer>

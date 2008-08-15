@@ -35,6 +35,7 @@
 // Project Includes
 
 #include "../kmymoneyplugin.h"
+class KOnlineBankingStatus;
 
 /**
 @author Ace Jones
@@ -137,7 +138,7 @@ private:
   QStringList m_infos;
   QStringList m_warnings;
   QStringList m_errors;
-
+  KOnlineBankingStatus* m_statusDlg;
 };
 
 #endif

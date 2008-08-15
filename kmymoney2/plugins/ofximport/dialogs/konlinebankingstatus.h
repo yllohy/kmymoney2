@@ -45,7 +45,10 @@ class KOnlineBankingStatus : public KOnlineBankingStatusDecl
 public:
   KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent=0, const char *name=0);
   ~KOnlineBankingStatus();
+  const QString& appId(void) const;
 
+private:
+  void loadApplicationButton(const QString& appId);
 };
 
 #endif
