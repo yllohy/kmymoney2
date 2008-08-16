@@ -197,7 +197,6 @@ void kMyMoneyCalculator::calculationClicked(int button)
     // if the pending operation is addition and we now do multiplication
     // we just stack op1 and remember the operation in
     if((op == PLUS || op == MINUS) && (button == STAR || button == SLASH)) {
-      qDebug("stacking %f and operation %d", op1, op);
       op0 = op1;
       stackedOp = op;
       op = 0;
@@ -224,7 +223,6 @@ void kMyMoneyCalculator::calculationClicked(int button)
     // if we have a pending addition operation, and the next operation is
     // not multiplication, we calculate the stacked operation
     if(stackedOp && button != STAR && button != SLASH) {
-      qDebug("Unstacking operation");
       switch(stackedOp) {
         case PLUS:
           op2 = op0 + op2;
