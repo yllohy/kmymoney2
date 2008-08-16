@@ -5,6 +5,7 @@
 
 2008-08-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed schedule loader to not forget data about finished items
+  * Removed extranous EXTRA_DIST entry in templates
 
 2008-08-16 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Forecast Summary. The tree was being shown in a different tab.
