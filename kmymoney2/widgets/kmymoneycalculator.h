@@ -181,6 +181,11 @@ private:
   QChar m_comma;
 
   /**
+    * The numeric representation of a stacked first operand
+    */
+  double op0;
+
+  /**
     * The numeric representation of the first operand
     */
   double op1;
@@ -190,6 +195,11 @@ private:
     * the first and the second operand.
     */
   int op;
+
+  /**
+   * This member stores a pending addition operation
+   */
+  int stackedOp;
 
   /**
     * This member stores a pointer to the display area

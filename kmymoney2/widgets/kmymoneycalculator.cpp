@@ -99,7 +99,7 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
   buttons[EQUAL]->setFocus();
 
   op1 = 0.0;
-  op = 0;
+  stackedOp = op = 0;
   operand = QString();
   changeDisplay("0");
 
@@ -193,6 +193,16 @@ void kMyMoneyCalculator::calculationClicked(int button)
     // perform operation
     double op2 = operand.toDouble();
     bool error = false;
+
+    // if the pending operation is addition and we now do multiplication
+    // we just stack op1 and remember the operation in
+    if((op == PLUS || op == MINUS) && (button == STAR || button == SLASH)) {
+      qDebug("stacking %f and operation %d", op1, op);
+      op0 = op1;
+      stackedOp = op;
+      op = 0;
+    }
+
     switch(op) {
       case PLUS:
         op2 = op1 + op2;
@@ -210,6 +220,22 @@ void kMyMoneyCalculator::calculationClicked(int button)
           op2 = op1 / op2;
         break;
     }
+
+    // if we have a pending addition operation, and the next operation is
+    // not multiplication, we calculate the stacked operation
+    if(stackedOp && button != STAR && button != SLASH) {
+      qDebug("Unstacking operation");
+      switch(stackedOp) {
+        case PLUS:
+          op2 = op0 + op2;
+          break;
+        case MINUS:
+          op2 = op0 - op2;
+          break;
+      }
+      stackedOp = 0;
+    }
+
     if(error) {
       op = 0;
       changeDisplay("Error");
