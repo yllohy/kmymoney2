@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-16 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed Forecast Summary. The tree was being shown in a different tab.
+
 2008-08-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added application override to OFX plugin
   * Added search filter to GUI of OFX institution setup wizard

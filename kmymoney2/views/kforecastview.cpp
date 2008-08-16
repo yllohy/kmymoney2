@@ -206,7 +206,7 @@ void KForecastView::loadListView(void)
   KMyMoneyAccountTreeForecastItem *forecastItem = 0;
 
   //add default rows
-  addTotalRow(forecast);
+  addTotalRow(m_forecastList, forecast);
   addAssetLiabilityRows(forecast);
 
   QMap<QCString, QCString>::ConstIterator it_nc;
@@ -281,7 +281,7 @@ void KForecastView::loadSummaryView(void)
   KMyMoneyAccountTreeForecastItem *summaryItem = 0;
 
   //add default rows
-  addTotalRow(forecast);
+  addTotalRow(m_summaryList, forecast);
   addAssetLiabilityRows(forecast);
 
   //if beginning of forecast is today, set the begin day to next cycle to avoid repeating the first cycle
@@ -703,11 +703,11 @@ void KForecastView::addAssetLiabilityRows(const MyMoneyForecast& forecast)
   m_liabilityItem->setOpen(true);
 }
 
-void KForecastView::addTotalRow(const MyMoneyForecast& forecast)
+void KForecastView::addTotalRow(KMyMoneyAccountTreeForecast* forecastList, const MyMoneyForecast& forecast)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  m_totalItem = new KMyMoneyAccountTreeForecastItem( m_forecastList, file->asset(), forecast, file->baseCurrency(), i18n("Total") );
+  m_totalItem = new KMyMoneyAccountTreeForecastItem( forecastList, file->asset(), forecast, file->baseCurrency(), i18n("Total") );
   m_totalItem->setOpen(true);
 }
 

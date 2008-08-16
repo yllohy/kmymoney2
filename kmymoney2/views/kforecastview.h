@@ -115,7 +115,7 @@ protected slots:
 
 private:
   void addAssetLiabilityRows(const MyMoneyForecast& forecast);
-  void addTotalRow(const MyMoneyForecast& forecast);
+  void addTotalRow(KMyMoneyAccountTreeForecast* forecastList, const MyMoneyForecast& forecast);
 
   bool                                m_needReload[MaxViewTabs];
   KMyMoneyAccountTreeForecastItem*    m_totalItem;
