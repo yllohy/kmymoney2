@@ -474,6 +474,19 @@ private:
     */
   void fixDate(QDate& date) const;
 
+  /**
+    * Simple method that sets the transaction for the schedule.
+    * The transaction must have a valid postDate set, otherwise
+    * it will not be accepted. This test is bypassed, if @a noDateCheck
+    * is set to true
+    *
+    * @param transaction The new transaction.
+    * @param noDateCheck if @a true, the date check is bypassed
+    * @return none
+    */
+  void setTransaction(const MyMoneyTransaction& transaction, bool noDateCheck);
+
+
 private:
   /// Its occurence
   occurenceE m_occurence;

@@ -89,7 +89,7 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   if(nodeList.count() == 0)
     throw new MYMONEYEXCEPTION("SCHEDULED_TX has no TRANSACTION node");
 
-  setTransaction(MyMoneyTransaction(nodeList.item(0).toElement(), false));
+  setTransaction(MyMoneyTransaction(nodeList.item(0).toElement(), false), true);
 
   // some old versions did not remove the entry date and post date fields
   // in the schedule. So if this is the case, we deal with a very old transaction
@@ -154,16 +154,24 @@ void MyMoneySchedule::setFixed(bool fixed)
 
 void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction)
 {
+  setTransaction(transaction, false);
+}
+
+void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool noDateCheck)
+{
   MyMoneyTransaction t = transaction;
-  // don't allow a transaction that has no due date
-  // if we get something like that, then we use the
-  // the current next due date. If that is also invalid
-  // we can't help it.
-  if(!t.postDate().isValid()) {
-    t.setPostDate(m_transaction.postDate());
+  if(!noDateCheck) {
+    // don't allow a transaction that has no due date
+    // if we get something like that, then we use the
+    // the current next due date. If that is also invalid
+    // we can't help it.
+    if(!t.postDate().isValid()) {
+      t.setPostDate(m_transaction.postDate());
+    }
+
+    if(!t.postDate().isValid())
+      return;
   }
-  if(!t.postDate().isValid())
-    return;
 
   // make sure to clear out some unused information in scheduled transactions
   // we need to do this for the case that the transaction passed as argument
@@ -421,11 +429,11 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
         break;
 
       case OCCUR_EVERYTHREEWEEKS:
-	do {
+        do {
           paymentDate = paymentDate.addDays(21);
-	}
-	while (paymentDate <= refDate);
-	break;
+        }
+        while (paymentDate <= refDate);
+        break;
 
         case OCCUR_EVERYTHIRTYDAYS:
         do
