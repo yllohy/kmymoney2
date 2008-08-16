@@ -116,6 +116,9 @@ bool OfxImporterPlugin::import( const QString& filename )
 {
   m_fatalerror = i18n("Unable to parse file");
   m_valid = false;
+  m_errors.clear();
+  m_warnings.clear();
+  m_infos.clear();
 
   m_statementlist.clear();
   m_securitylist.clear();
@@ -143,7 +146,9 @@ bool OfxImporterPlugin::import( const QString& filename )
 
 QString OfxImporterPlugin::lastError(void) const
 {
-  return m_fatalerror;
+  if(m_errors.count() == 0)
+    return m_fatalerror;
+  return m_errors.join("<p>");
 }
 
 /* __________________________________________________________________________
@@ -601,7 +606,7 @@ void OfxImporterPlugin::slotImportFile(const QString& url)
 {
   
   if(!import(url)) {
-    KMessageBox::error( 0, i18n("Unable to import %1 using the OFX importer plugin.  The plugin returned the following error: %2").arg(url, lastError()), i18n("Importing error"));
+    KMessageBox::error( 0, QString("<qt>%1</qt>").arg(i18n("Unable to import %1 using the OFX importer plugin.  The plugin returned the following error:<p>%2").arg(url, lastError())), i18n("Importing error"));
   }
 }
 
