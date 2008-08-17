@@ -255,7 +255,7 @@ void KHomeView::loadView(void)
 void KHomeView::showNetWorthGraph(void)
 {
 #ifdef HAVE_KDCHART
-  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Networth Forecast")));
+  m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n").arg(i18n("Networth Forecast")));
 
   MyMoneyReport reportCfg = MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -377,7 +377,7 @@ void KHomeView::showPayments(void)
     ++d_it;
   }
 
-  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Payments")));
+  m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n").arg(i18n("Payments")));
 
   if(overdues.count() > 0) {
     m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -641,7 +641,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   if(accounts.count() > 0) {
     QString tmp;
     int i = 0;
-    tmp = "<div class=\"itemheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
+    tmp = "<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
@@ -772,17 +772,17 @@ void KHomeView::showFavoriteReports(void)
     {
       if ( (*it_report).isFavorite() ) {
         if(firstTime) {
-          m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
-          m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-          m_part->write("<tr class=\"item\"><th class=\"left\" width=\"50%\">");
+          m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
+          m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+          m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
           m_part->write(i18n("Report"));
-          m_part->write("</th><th width=\"50%\" class=\"right\">");
+          m_part->write("</th><th width=\"60%\" class=\"left\">");
           m_part->write(i18n("Comment"));
           m_part->write("</th></tr>");
           firstTime = false;
         }
 
-        m_part->write(QString("<tr class=\"row-%1\"><td>%2%3%4</td><td align=\"right\">%5</td></tr>")
+        m_part->write(QString("<tr class=\"row-%1\"><td>%2%3%4</td><td align=\"left\">%5</td></tr>")
           .arg(row++ & 0x01 ? "even" : "odd")
           .arg(link(VIEW_REPORTS, QString("?id=%1").arg((*it_report).id())))
           .arg((*it_report).name())
@@ -833,7 +833,7 @@ void KHomeView::showForecast(void)
       beginDay = forecast.accountsCycle();
 
     // Now output header
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
+    m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
     m_part->write("<table width=\"95%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
@@ -1091,7 +1091,7 @@ void KHomeView::showSummary(void)
   //only do it if we have assets or liabilities account
   if(nameAssetsIdx.count() > 0 || nameLiabilitiesIdx.count() > 0) {
     //print header
-    m_part->write("<div class=\"itemheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     //asset and liability titles
     m_part->write("<tr class=\"item\"><th class=\"center\" colspan=\"2\">");
@@ -1388,7 +1388,7 @@ void KHomeView::showBudget(void)
     PivotGrid grid = table.grid();
 
     //table header
-    m_part->write("<div class=\"itemheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
       //asset and liability titles
     m_part->write("<tr class=\"item\">");
