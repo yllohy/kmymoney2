@@ -172,7 +172,6 @@ void KForecastView::loadListView(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> accList;
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
   MyMoneyForecast forecast;
@@ -184,17 +183,6 @@ void KForecastView::loadListView(void)
   forecast.setForecastCycles(m_forecastCycles->value());
   forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
-
-  //Get all accounts of the right type to calculate forecast
-  m_nameIdx.clear();
-  accList = forecast.accountList();
-  QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
-  for(; accList_t != accList.end(); ++accList_t ) {
-    MyMoneyAccount acc = *accList_t;
-    if(m_nameIdx[acc.id()] != acc.id()) { //Check if the account is there
-        m_nameIdx[acc.id()] = acc.id();
-    }
-  }
 
   //clear the list, including columns
   m_forecastList->clearColumns();
@@ -203,54 +191,27 @@ void KForecastView::loadListView(void)
   m_forecastList->showAccount();
   m_forecastList->showDetailed(forecast);
 
-  KMyMoneyAccountTreeForecastItem *forecastItem = 0;
-
   //add default rows
   addTotalRow(m_forecastList, forecast);
   addAssetLiabilityRows(forecast);
 
-  QMap<QCString, QCString>::ConstIterator it_nc;
-  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
+  loadAccounts(forecast, file->asset(), m_assetItem, KMyMoneyAccountTreeForecastItem::eDetailed);
+  loadAccounts(forecast, file->liability(), m_liabilityItem, KMyMoneyAccountTreeForecastItem::eDetailed);
 
-    const MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency;
-    if(acc.isInvest()) {
-      MyMoneySecurity underSecurity = file->security(acc.currencyId());
-      currency = file->security(underSecurity.tradingCurrency());
-    } else {
-      currency = file->security(acc.currencyId());
-    }
-
-    QString amount;
-    QString vAmount;
-    MyMoneyMoney vAmountMM;
-
-    //get prices
-    QValueList<MyMoneyPrice> prices = getAccountPrices(acc);
-
-    //add to right branch depending on asset or liability
-    if(acc.accountGroup() == MyMoneyAccount::Asset )
-      forecastItem = new KMyMoneyAccountTreeForecastItem( m_assetItem, acc, forecast, prices, file->security(acc.currencyId()) );
-    if(acc.accountGroup() == MyMoneyAccount::Liability )
-      forecastItem = new KMyMoneyAccountTreeForecastItem( m_liabilityItem, acc, forecast, prices, file->security(acc.currencyId()) );
-
-    forecastItem->updateDetailed();
-  }
   m_forecastList->show();
 }
 
 void KForecastView::loadSummaryView(void)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyForecast forecast;
   QValueList<MyMoneyAccount> accList;
   QMap<QDate, MyMoneyMoney> cycleBalance;
   int dropMinimum;
   int dropZero;
-  int daysToBeginDay;
 
+  MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
-  MyMoneyForecast forecast;
 
   //get the settings from current page
   forecast.setForecastDays(m_forecastDays->value());
@@ -260,6 +221,21 @@ void KForecastView::loadSummaryView(void)
   forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
 
+  //clear the list, including columns
+  m_summaryList->clearColumns();
+
+  //add columns
+  m_summaryList->showAccount();
+  m_summaryList->showSummary(forecast);
+
+  //add default rows
+  addTotalRow(m_summaryList, forecast);
+  addAssetLiabilityRows(forecast);
+
+  loadAccounts(forecast, file->asset(), m_assetItem, KMyMoneyAccountTreeForecastItem::eSummary);
+  loadAccounts(forecast, file->liability(), m_liabilityItem, KMyMoneyAccountTreeForecastItem::eSummary);
+
+  //Add comments to the advice list
   //Get all accounts of the right type to calculate forecast
   m_nameIdx.clear();
   accList = forecast.accountList();
@@ -271,56 +247,7 @@ void KForecastView::loadSummaryView(void)
     }
   }
 
-  //clear the list, including columns
-  m_summaryList->clearColumns();
-
-  //add columns
-  m_summaryList->showAccount();
-  m_summaryList->showSummary(forecast);
-
-  KMyMoneyAccountTreeForecastItem *summaryItem = 0;
-
-  //add default rows
-  addTotalRow(m_summaryList, forecast);
-  addAssetLiabilityRows(forecast);
-
-  //if beginning of forecast is today, set the begin day to next cycle to avoid repeating the first cycle
-  if(QDate::currentDate() < forecast.beginForecastDate()) {
-    daysToBeginDay = QDate::currentDate().daysTo(forecast.beginForecastDate());
-  } else {
-    daysToBeginDay = forecast.accountsCycle();
-  }
-
   QMap<QCString, QCString>::ConstIterator it_nc;
-  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
-
-    const MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency;
-    if(acc.isInvest()) {
-      MyMoneySecurity underSecurity = file->security(acc.currencyId());
-      currency = file->security(underSecurity.tradingCurrency());
-    } else {
-      currency = file->security(acc.currencyId());
-    }
-
-    QString amount;
-    QString vAmount;
-    MyMoneyMoney vAmountMM;
-
-    //get prices
-    QValueList<MyMoneyPrice> prices = getAccountPrices(acc);
-
-    //add to right branch depending on asset or liability
-    if(acc.accountGroup() == MyMoneyAccount::Asset )
-      summaryItem = new KMyMoneyAccountTreeForecastItem( m_assetItem, acc, forecast, prices, file->security(acc.currencyId()) );
-    if(acc.accountGroup() == MyMoneyAccount::Liability )
-      summaryItem = new KMyMoneyAccountTreeForecastItem( m_liabilityItem, acc, forecast, prices, file->security(acc.currencyId()) );
-
-    summaryItem->setDaysToBeginDay(daysToBeginDay);
-    summaryItem->updateSummary();
-  }
-
-  //Add comments to the advice list
   for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
 
     const MyMoneyAccount& acc = file->account(*it_nc);
@@ -709,6 +636,73 @@ void KForecastView::addTotalRow(KMyMoneyAccountTreeForecast* forecastList, const
 
   m_totalItem = new KMyMoneyAccountTreeForecastItem( forecastList, file->asset(), forecast, file->baseCurrency(), i18n("Total") );
   m_totalItem->setOpen(true);
+}
+
+bool KForecastView::includeAccount(MyMoneyForecast& forecast, const MyMoneyAccount& acc)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  if( forecast.isForecastAccount(acc) )
+    return true;
+
+  QCStringList accounts = acc.accountList();
+
+  if(accounts.size() > 0) {
+    QCStringList::ConstIterator it_acc;
+    for(it_acc = accounts.begin(); it_acc != accounts.end(); ++it_acc) {
+      MyMoneyAccount account = file->account(*it_acc);
+      if( includeAccount(forecast, account) )
+        return true;
+    }
+  }
+  return false;
+}
+
+void KForecastView::loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount& account, KMyMoneyAccountTreeForecastItem* parentItem, int forecastType )
+{
+  QMap<QCString, QCString> nameIdx;
+  QCStringList accList;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  KMyMoneyAccountTreeForecastItem *forecastItem = 0;
+
+  //Get all accounts of the right type to calculate forecast
+  accList = account.accountList();
+
+  if(accList.size() == 0)
+    return;
+
+  QCStringList::ConstIterator accList_t;
+  for(accList_t = accList.begin(); accList_t != accList.end(); ++accList_t ) {
+    MyMoneyAccount subAccount = file->account(*accList_t);
+    //only add the account if it is a forecast account or the parent of a forecast account
+    if(includeAccount(forecast, subAccount)) {
+      nameIdx[subAccount.id()] = subAccount.id();
+    }
+  }
+
+  QMap<QCString, QCString>::ConstIterator it_nc;
+  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+
+    const MyMoneyAccount subAccount = file->account(*it_nc);
+    MyMoneySecurity currency;
+    if(subAccount.isInvest()) {
+      MyMoneySecurity underSecurity = file->security(subAccount.currencyId());
+      currency = file->security(underSecurity.tradingCurrency());
+    } else {
+      currency = file->security(subAccount.currencyId());
+    }
+
+    QString amount;
+    QString vAmount;
+    MyMoneyMoney vAmountMM;
+
+    //get prices
+    QValueList<MyMoneyPrice> prices = getAccountPrices(subAccount);
+
+    forecastItem = new KMyMoneyAccountTreeForecastItem( parentItem, subAccount, forecast, prices, file->security(subAccount.currencyId()), static_cast<KMyMoneyAccountTreeForecastItem::EForecastViewType>(forecastType) );
+
+    loadAccounts(forecast, subAccount, forecastItem, forecastType);
+  }
 }
 
 #include "kforecastview.moc"

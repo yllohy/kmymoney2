@@ -38,28 +38,28 @@ class KMyMoneyAccountTreeForecastItem;
 
 class KMyMoneyAccountTreeForecast : public KMyMoneyAccountTreeBase
 {
-  Q_OBJECT
-public:
-  KMyMoneyAccountTreeForecast(QWidget* parent = 0, const char *name = 0);
-  virtual ~KMyMoneyAccountTreeForecast() {}
+    Q_OBJECT
+  public:
+    KMyMoneyAccountTreeForecast(QWidget* parent = 0, const char *name = 0);
+    virtual ~KMyMoneyAccountTreeForecast() {}
 
-  enum EForecastView { eSummary = 0, eDetailed, eAdvanced, eBudget };
-  
-  void showSummary(MyMoneyForecast& forecast);
-  void showDetailed(MyMoneyForecast& forecast);
-  void showAdvanced(MyMoneyForecast& forecast);
-  void showBudget(MyMoneyForecast& forecast);
-  void showAccount(void);
-  void clearColumns(void);
+    void showSummary(MyMoneyForecast& forecast);
+    void showDetailed(MyMoneyForecast& forecast);
+    void showAdvanced(MyMoneyForecast& forecast);
+    void showBudget(MyMoneyForecast& forecast);
+    void showAccount(void);
+    void clearColumns(void);
 
-public slots:
-  void slotSelectObject(const QListViewItem* i);
+  public slots:
+    void slotSelectObject(const QListViewItem* i);
 
 };
 
 class KMyMoneyAccountTreeForecastItem : public KMyMoneyAccountTreeBaseItem
 {
 public:
+
+  enum EForecastViewType { eSummary = 0, eDetailed, eAdvanced, eBudget, eUndefined };
 
   /**
     * Constructor to be used to construct an account
@@ -76,7 +76,7 @@ public:
     * @param security const reference to the security used to show the value. Usually
     *                 one should pass MyMoneyFile::baseCurrency() here.
     */
-  KMyMoneyAccountTreeForecastItem(KMyMoneyAccountTreeForecastItem *parent, const MyMoneyAccount& account, const MyMoneyForecast& forecast, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
+  KMyMoneyAccountTreeForecastItem(KMyMoneyAccountTreeForecastItem *parent, const MyMoneyAccount& account, const MyMoneyForecast& forecast, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity(), const EForecastViewType forecastViewType = eUndefined);
 
   /**
     * Constructor to be used to construct an account
@@ -101,6 +101,8 @@ public:
   void updateSummary(void);
   void updateDetailed(void);
   void setDaysToBeginDay(int _days) {m_daysToBeginDay = _days;}
+  void setForecastViewType(EForecastViewType forecastType) { m_forecastType = forecastType; }
+  EForecastViewType forecastViewType(void) { return m_forecastType; }
 
 protected:
    /**
@@ -123,6 +125,7 @@ private:
   MyMoneyForecast m_forecast;
   int m_daysToBeginDay;
   QMap<int, MyMoneyMoney> m_values;
+  EForecastViewType m_forecastType;
 };
 
 #endif

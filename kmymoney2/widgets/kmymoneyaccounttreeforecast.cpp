@@ -38,7 +38,7 @@ KMyMoneyAccountTreeForecast::KMyMoneyAccountTreeForecast(QWidget* parent, const 
 
 void KMyMoneyAccountTreeForecast::showAccount( void )
 {
-  int nameColumn = addColumn(i18n("Account"));
+  addColumn(i18n("Account"));
 }
 
 void KMyMoneyAccountTreeForecast::clearColumns( void )
@@ -161,13 +161,27 @@ KMyMoneyAccountTreeForecastItem::KMyMoneyAccountTreeForecastItem(KListView *pare
   m_forecast(forecast)
 {
   updateAccount(true);
+  
 }
 
-KMyMoneyAccountTreeForecastItem::KMyMoneyAccountTreeForecastItem(KMyMoneyAccountTreeForecastItem *parent, const MyMoneyAccount& account, const MyMoneyForecast& forecast, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
+KMyMoneyAccountTreeForecastItem::KMyMoneyAccountTreeForecastItem(KMyMoneyAccountTreeForecastItem *parent, const MyMoneyAccount& account, const MyMoneyForecast& forecast, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security, const EForecastViewType forecastType) :
     KMyMoneyAccountTreeBaseItem(parent, account, price, security),
-  m_forecast(forecast)
+    m_forecast(forecast),
+    m_forecastType(forecastType)
 {
+  //setForecastViewType(forecastViewType);
   updateAccount(true);
+  switch(forecastViewType())
+  {
+    case eSummary:
+      updateSummary();
+      break;
+    case eDetailed:
+      updateDetailed();
+      break;
+    default:
+      break;
+  }
 }
 
 
@@ -186,7 +200,14 @@ void KMyMoneyAccountTreeForecastItem::updateSummary()
   MyMoneyMoney amountMM;
   int it_c = 1; // iterator for the columns of the listview
   MyMoneyFile* file = MyMoneyFile::instance();
+  int daysToBeginDay;
 
+  if(QDate::currentDate() < m_forecast.beginForecastDate()) {
+    daysToBeginDay = QDate::currentDate().daysTo(m_forecast.beginForecastDate());
+  } else {
+    daysToBeginDay = m_forecast.accountsCycle();
+  }
+  
   MyMoneySecurity currency;
   if(m_account.isInvest()) {
     MyMoneySecurity underSecurity = file->security(m_account.currencyId());
@@ -206,7 +227,7 @@ void KMyMoneyAccountTreeForecastItem::updateSummary()
   it_c++;
 
     //iterate through all other columns
-  for(QDate summaryDate = QDate::currentDate().addDays(m_daysToBeginDay); summaryDate <= m_forecast.forecastEndDate();summaryDate = summaryDate.addDays(m_forecast.accountsCycle()), ++it_c) {
+  for(QDate summaryDate = QDate::currentDate().addDays(daysToBeginDay); summaryDate <= m_forecast.forecastEndDate();summaryDate = summaryDate.addDays(m_forecast.accountsCycle()), ++it_c) {
     amountMM = m_forecast.forecastBalance(m_account, summaryDate);
 
       //calculate the balance in base currency for the total row
