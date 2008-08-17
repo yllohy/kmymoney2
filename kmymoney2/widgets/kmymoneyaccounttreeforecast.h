@@ -100,6 +100,7 @@ public:
   void setForecast(const MyMoneyForecast& forecast);
   void updateSummary(void);
   void updateDetailed(void);
+  void updateBudget(void);
   void setDaysToBeginDay(int _days) {m_daysToBeginDay = _days;}
   void setForecastViewType(EForecastViewType forecastType) { m_forecastType = forecastType; }
   EForecastViewType forecastViewType(void) { return m_forecastType; }

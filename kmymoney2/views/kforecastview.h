@@ -115,6 +115,7 @@ protected slots:
 
 private:
   void addAssetLiabilityRows(const MyMoneyForecast& forecast);
+  void addIncomeExpenseRows(const MyMoneyForecast& forecast);
   void addTotalRow(KMyMoneyAccountTreeForecast* forecastList, const MyMoneyForecast& forecast);
   bool includeAccount(MyMoneyForecast& forecast, const MyMoneyAccount& acc);
   void loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount& account, KMyMoneyAccountTreeForecastItem* parentItem, int forecastType);
@@ -123,6 +124,9 @@ private:
   KMyMoneyAccountTreeForecastItem*    m_totalItem;
   KMyMoneyAccountTreeForecastItem*    m_assetItem;
   KMyMoneyAccountTreeForecastItem*    m_liabilityItem;
+  KMyMoneyAccountTreeForecastItem*    m_incomeItem;
+  KMyMoneyAccountTreeForecastItem*    m_expenseItem;
+
 
 };
 

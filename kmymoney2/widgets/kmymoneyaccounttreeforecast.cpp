@@ -179,6 +179,9 @@ KMyMoneyAccountTreeForecastItem::KMyMoneyAccountTreeForecastItem(KMyMoneyAccount
     case eDetailed:
       updateDetailed();
       break;
+    case eBudget:
+      updateBudget();
+      break;
     default:
       break;
   }
@@ -269,6 +272,39 @@ void KMyMoneyAccountTreeForecastItem::updateDetailed()
   vAmountMM = m_forecast.accountTotalVariation(m_account);
   setValue(it_c, vAmountMM, m_forecast.forecastEndDate());
   setAmount(it_c, vAmountMM, currency);
+}
+
+void KMyMoneyAccountTreeForecastItem::updateBudget()
+{
+  MyMoneySecurity currency;
+  MyMoneyMoney tAmountMM;
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  int it_c = 1; // iterator for the columns of the listview
+  QDate forecastDate = m_forecast.forecastStartDate();
+
+  if(m_account.isInvest()) {
+    MyMoneySecurity underSecurity = file->security(m_account.currencyId());
+    currency = file->security(underSecurity.tradingCurrency());
+  } else {
+    currency = file->security(m_account.currencyId());
+  }
+
+    //iterate columns
+  for(int i = 1; forecastDate <= m_forecast.forecastEndDate(); ++i, forecastDate = forecastDate.addMonths(1), ++it_c) {
+    MyMoneyMoney amountMM;
+    amountMM = m_forecast.forecastBalance(m_account,QDate(QDate::currentDate().year(), i, 1));
+    if(m_account.accountType() == MyMoneyAccount::Expense)
+      amountMM = -amountMM;
+
+    tAmountMM += amountMM;
+    setValue(it_c, amountMM, QDate(QDate::currentDate().year(), i, 1));
+    setAmount(it_c, amountMM, currency);
+  }
+
+  //set total column
+  setValue(it_c, tAmountMM, m_forecast.forecastEndDate());
+  setAmount(it_c, tAmountMM, currency);
 }
 
 MyMoneyMoney KMyMoneyAccountTreeForecastItem::balance() const
