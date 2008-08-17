@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Actually use override value for OFX app id and version
+  * Don't allow override for libOFX < 0.9
+
 2008-08-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed schedule loader to not forget data about finished items
   * Removed extranous EXTRA_DIST entry in templates

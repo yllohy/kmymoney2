@@ -167,11 +167,18 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
   strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
   strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
-  // pretend we're Quicken 2008
+  // If we don't know better, we pretend to be Quicken 2008
   // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-intuit-products/
   // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
-  strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
-  strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
+  QString appId = m_account.onlineBankingSettings().value("appId");
+  QRegExp exp("(.*):(.*)");
+  if(exp.search(appId) != -1) {
+    strncpy(fi.appid, exp.cap(1).latin1(), OFX_APPID_LENGTH-1);
+    strncpy(fi.appver, exp.cap(2).latin1(), OFX_APPVER_LENGTH-1);
+  } else {
+    strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
+    strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
+  }
 
   OfxAccountData account;
   memset(&account,0,sizeof(OfxAccountData));

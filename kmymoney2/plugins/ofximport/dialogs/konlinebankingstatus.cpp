@@ -42,6 +42,7 @@
 #include "konlinebankingstatus.h"
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/mymoneyaccount.h>
+#include "mymoneyofxconnector.h"  // for definition of LIBOFX_IS_VERSION
 
 static QMap<QString, QString> appMap;
 static QMap<QString, QString> verMap;
@@ -62,12 +63,12 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   appMap[i18n("Quicken Windows 2008")] = "QWIN:1700";
 
   // MS-Money
-  appMap[i18n("MS-Money 2003")] = "Money 2003:1100";
-  appMap[i18n("MS-Money 2004")] = "Money 2004:1200";
-  appMap[i18n("MS-Money 2005")] = "Money 2005:1400";
-  appMap[i18n("MS-Money 2006")] = "Money 2006:1500";
-  appMap[i18n("MS-Money 2007")] = "Money 2007:1600";
-  appMap[i18n("MS-Money Plus")] = "Money Plus:1700";
+  appMap[i18n("MS-Money 2003")] = "Money:1100";
+  appMap[i18n("MS-Money 2004")] = "Money:1200";
+  appMap[i18n("MS-Money 2005")] = "Money:1400";
+  appMap[i18n("MS-Money 2006")] = "Money:1500";
+  appMap[i18n("MS-Money 2007")] = "Money:1600";
+  appMap[i18n("MS-Money Plus")] = "Money:1700";
 
   // Set up online banking settings if applicable
   MyMoneyKeyValueContainer settings = acc.onlineBankingSettings();
@@ -112,6 +113,13 @@ void KOnlineBankingStatus::loadApplicationButton(const QString& appId)
   if(it_a != appMap.end()) {
     m_applicationCombo->setCurrentItem(it_a.key());
   }
+
+#if LIBOFX_IS_VERSION(0,9,0)
+#else
+  // This feature does not work with libOFX < 0.9 so
+  // we just make disable the button in this case
+  m_applicationCombo->setDisabled(true);
+#endif
 }
 
 const QString& KOnlineBankingStatus::appId(void) const
