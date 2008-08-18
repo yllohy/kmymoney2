@@ -7,6 +7,7 @@
   * Don't allow creation of transactions when no account is selected
   * Allow application override before initial OFX connection with bank
   * Fixed a duplicate i18n call as pointed out by Alexander Kireev
+  * Reduced min height of the KAccountTemplateSelector widget
 
 2008-08-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Added style to headers in Home Page. Reported by Pallavi Damera.
