@@ -52,7 +52,7 @@ KMyMoneyUtils::~KMyMoneyUtils()
 
 const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
 {
-  return i18n(MyMoneyAccount::accountTypeToString(accountType));
+  return MyMoneyAccount::accountTypeToString(accountType);
 }
 
 const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QString& type)
