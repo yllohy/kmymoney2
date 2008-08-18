@@ -60,8 +60,13 @@ using std::string;
 using std::vector;
 
 KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char *name):
-  KOnlineBankingSetupDecl(parent,name), m_fDone(false), m_fInit(false)
+  KOnlineBankingSetupDecl(parent,name),
+  m_fDone(false),
+  m_fInit(false),
+  m_appId(0)
 {
+  m_appId = new OfxAppVersion(m_applicationCombo, "");
+
   // fill the list view with banks
   KProgressDialog* dlg = new KProgressDialog(this, 0, i18n("Loading banklist"), i18n("Getting list of banks from http://moneycentral.msn.com/\nThis may take some time depending on the available bandwidth."), true);
   dlg->setAllowCancel(false);
@@ -92,6 +97,7 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
 
 KOnlineBankingSetupWizard::~KOnlineBankingSetupWizard()
 {
+  delete m_appId;
 }
 
 void KOnlineBankingSetupWizard::next(void)
@@ -391,6 +397,10 @@ bool KOnlineBankingSetupWizard::chosenSettings( MyMoneyKeyValueContainer& settin
     if ( item )
     {
       settings = *item;
+      settings.deletePair("appId");
+      QString appId = m_appId->appId();
+      if(!appId.isEmpty())
+        settings.setValue("appId", appId);
       result = true;
     }
   }

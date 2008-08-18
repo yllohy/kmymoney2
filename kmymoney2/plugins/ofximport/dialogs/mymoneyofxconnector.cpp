@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klocale.h>
 #include <kdebug.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -44,6 +46,61 @@
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include "mymoneyofxconnector.h"
+
+OfxAppVersion::OfxAppVersion(KComboBox* combo, const QString& appId) :
+  m_combo(combo)
+{
+// http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-intuit-products/
+// http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
+
+  // Quicken
+  m_appMap[i18n("Quicken Windows 2005")] = "QWIN:1400";
+  m_appMap[i18n("Quicken Windows 2006")] = "QWIN:1500";
+  m_appMap[i18n("Quicken Windows 2007")] = "QWIN:1600";
+  m_appMap[i18n("Quicken Windows 2008")] = "QWIN:1700";
+
+  // MS-Money
+  m_appMap[i18n("MS-Money 2003")] = "Money:1100";
+  m_appMap[i18n("MS-Money 2004")] = "Money:1200";
+  m_appMap[i18n("MS-Money 2005")] = "Money:1400";
+  m_appMap[i18n("MS-Money 2006")] = "Money:1500";
+  m_appMap[i18n("MS-Money 2007")] = "Money:1600";
+  m_appMap[i18n("MS-Money Plus")] = "Money:1700";
+
+  // KMyMoney
+  m_appMap["KMyMoney"] = "KMyMoney:1000";
+
+  combo->clear();
+  combo->insertStringList(m_appMap.keys());
+
+  QMap<QString, QString>::const_iterator it_a;
+  for(it_a = m_appMap.begin(); it_a != m_appMap.end(); ++it_a) {
+    if(*it_a == appId)
+      break;
+  }
+
+  if(it_a != m_appMap.end()) {
+    combo->setCurrentItem(it_a.key());
+  } else {
+    combo->setCurrentItem(i18n("Quicken Windows 2008"));
+  }
+
+#if ! LIBOFX_IS_VERSION(0,9,0)
+  // This feature does not work with libOFX < 0.9 so
+  // we just make disable the button in this case
+  combo->setDisabled(true);
+#endif
+}
+
+const QString& OfxAppVersion::appId(void) const
+{
+  static QString defaultAppId("QWIN:1700");
+
+  QString app = m_combo->currentText();
+  if(m_appMap[app] != defaultAppId)
+    return m_appMap[app];
+  return QString::null;
+}
 
 MyMoneyOfxConnector::MyMoneyOfxConnector(const MyMoneyAccount& _account):
   m_account(_account)

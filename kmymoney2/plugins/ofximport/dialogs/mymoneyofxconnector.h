@@ -46,6 +46,7 @@ class QDate;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+class KComboBox;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -55,6 +56,26 @@ class QDate;
 class MyMoneyAccount;
 class MyMoneyInstitution;
 class MyMoneyTransaction;
+
+/**
+ * @author Thomas Baumgart
+ */
+class OfxAppVersion
+{
+public:
+  OfxAppVersion(KComboBox* combo, const QString& appId);
+  /**
+   * This method returns the currently selected application id
+   * as a colon separated value consisting of the application
+   * and version (eg. "QWIN:1700").  If current value is the
+   * default, an empty string is returned.
+   */ 
+  const QString& appId(void) const;
+
+private:
+  QMap<QString, QString> m_appMap;
+  KComboBox*             m_combo;
+};
 
 /**
 @author ace jones

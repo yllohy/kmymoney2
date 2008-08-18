@@ -38,6 +38,7 @@
 
 #include "konlinebankingsetupdecl.h"
 #include <kmymoney/mymoneykeyvaluecontainer.h>
+class OfxAppVersion;
 
 /**
   * @author Ace Jones
@@ -90,6 +91,7 @@ private:
   QValueList<OfxFiServiceInfo>::const_iterator m_it_info;
   bool m_fDone;
   bool m_fInit;
+  OfxAppVersion* m_appId;
 };
 
 #endif

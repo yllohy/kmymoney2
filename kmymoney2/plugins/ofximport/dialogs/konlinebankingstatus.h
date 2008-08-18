@@ -34,6 +34,7 @@
 
 #include "konlinebankingstatusdecl.h"
 class MyMoneyAccount;
+class OfxAppVersion;
 
 /**
   * @author Thomas Baumgart
@@ -46,9 +47,8 @@ public:
   KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent=0, const char *name=0);
   ~KOnlineBankingStatus();
   const QString& appId(void) const;
-
 private:
-  void loadApplicationButton(const QString& appId);
+  OfxAppVersion*  m_appId;
 };
 
 #endif
