@@ -16,8 +16,8 @@
   }
 
   body.highlighted {
-    background-color: #308169;
-    color: #FFFFFF;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   p {
@@ -40,8 +40,8 @@
   }
 
   h2.highlighted {
-    background-color: #308169;
-    color: #FFFFFF;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   h2.report { /* header -title on report pages */
@@ -56,9 +56,10 @@
     }
 
   .itemheader { /*section labels in the financial summary and column labels in reports */
-    color: ButtonText;
+    color: highlighttext;
     font-family: verdana, arial, helvetica, sans-serif;
-    background-color: ButtonFace;
+    font-weight: bold;
+    background-color: highlight;
     padding-top: 5px;
     padding-left: 20px;
     padding-bottom: 5px;
@@ -75,8 +76,8 @@
 
   td.highlighted
   {
-    background-color: #32A49E;
-    color: #FFFFFF;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   .row-even {
@@ -103,16 +104,15 @@
   }
 
   .warning { /* "overdue payments" */
-    background-color: #FFFFE0;
-    color: red;
+    background-color: infobackground;
     font-weight: bold;
     padding-bottom: 2px;
     text-align: left;
   }
 
   table.highlighted {
-    background-color: #308169;
-    color: #FFFFFF;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   font.kmymoney2 {
@@ -121,13 +121,13 @@
   }
 
   font.highlighted {
-    background-color: #4C59A6;
-    color: #FFFFFF;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   th.highlighted {
-    background-color: #32A49E;
-    color: #547098;
+    background-color: highlight;
+    color: highlighttext;
   }
 
   th.left {
@@ -271,9 +271,10 @@
   td.left0,
   td.left1,
   td.left2,
-  td.left  { text-align: left  }
-  td       { text-align: right }
-  td, th   { padding: 2pt 4pt }
+  td.left   { text-align: left  }
+  td.center { text-align: center  }
+  td.right  { text-align: right }
+  td, th    { padding: 2pt 4pt }
 
   tr.sectionheader td.left,
   tr.sectionfooter td.left,

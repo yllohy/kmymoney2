@@ -255,7 +255,7 @@ void KHomeView::loadView(void)
 void KHomeView::showNetWorthGraph(void)
 {
 #ifdef HAVE_KDCHART
-  m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n").arg(i18n("Networth Forecast")));
+  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Networth Forecast")));
 
   MyMoneyReport reportCfg = MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -377,7 +377,7 @@ void KHomeView::showPayments(void)
     ++d_it;
   }
 
-  m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n").arg(i18n("Payments")));
+  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Payments")));
 
   if(overdues.count() > 0) {
     m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -387,7 +387,7 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator it_f;
 
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    m_part->write(QString("<tr><th class=\"warning\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Overdue payments")));
+    m_part->write(QString("<tr><th class=\"warning\" colspan=\"3\">%1</th></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       // determine number of overdue payments
       QDate nextDate = (*it).nextDueDate();
@@ -641,15 +641,15 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   if(accounts.count() > 0) {
     QString tmp;
     int i = 0;
-    tmp = "<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
+    tmp = "<div class=\"itemheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"35%\">");
     m_part->write(i18n("Account"));
-    m_part->write("</th><th width=\"30%\" class=\"right\">");
+    m_part->write("</th><th width=\"25%\" class=\"right\">");
     m_part->write(i18n("Current Balance"));
     m_part->write("</th>");
-    m_part->write("</th><th width=\"30%\" class=\"right\">");
+    m_part->write("</th><th width=\"40%\" class=\"right\">");
     m_part->write(i18n("To Minimum Balance / Maximum Credit"));
     m_part->write("</th></tr>");
 
@@ -772,11 +772,11 @@ void KHomeView::showFavoriteReports(void)
     {
       if ( (*it_report).isFavorite() ) {
         if(firstTime) {
-          m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
+          m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
           m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
           m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
           m_part->write(i18n("Report"));
-          m_part->write("</th><th width=\"60%\" class=\"left\">");
+          m_part->write("</th><th width=\"60%\" class=\"center\">");
           m_part->write(i18n("Comment"));
           m_part->write("</th></tr>");
           firstTime = false;
@@ -833,8 +833,8 @@ void KHomeView::showForecast(void)
       beginDay = forecast.accountsCycle();
 
     // Now output header
-    m_part->write(QString("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
-    m_part->write("<table width=\"95%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</th>");
@@ -909,13 +909,16 @@ void KHomeView::showForecast(void)
             break;
           case 0:
             msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency));
+            msg = showColoredAmount(msg, true);
             break;
           default:
             msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency)).arg(dropMinimum-1);
+            msg = showColoredAmount(msg, true);
+            break;
         }
 
         if(!msg.isEmpty()) {
-          m_part->write(QString("<tr class=\"row-even\"><td colspan=%2 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg).arg(colspan));
+          m_part->write(QString("<tr class=\"warning\" style=\"font-weight: normal;\" ><td colspan=%2 align=\"center\" >%1</td></tr>").arg(msg).arg(colspan));
         }
          }
       // a drop below zero is always shown
@@ -926,6 +929,7 @@ void KHomeView::showForecast(void)
            case 0:
              if(acc.accountGroup() == MyMoneyAccount::Asset) {
                msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
+               msg = showColoredAmount(msg, true);
                break;
              }
              if(acc.accountGroup() == MyMoneyAccount::Liability) {
@@ -936,6 +940,7 @@ void KHomeView::showForecast(void)
            default:
              if(acc.accountGroup() == MyMoneyAccount::Asset) {
                msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
+               msg = showColoredAmount(msg, true);
                break;
              }
              if(acc.accountGroup() == MyMoneyAccount::Liability) {
@@ -944,7 +949,7 @@ void KHomeView::showForecast(void)
              }
          }
          if(!msg.isEmpty()) {
-           m_part->write(QString("<tr class=\"row-even\"><td colspan=%2 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg).arg(colspan));
+           m_part->write(QString("<tr class=\"warning\"><td colspan=%2 align=\"center\" ><b>%1</b></td></tr>").arg(msg).arg(colspan));
          }
     }
     m_part->write("</table>");
@@ -1091,7 +1096,7 @@ void KHomeView::showSummary(void)
   //only do it if we have assets or liabilities account
   if(nameAssetsIdx.count() > 0 || nameLiabilitiesIdx.count() > 0) {
     //print header
-    m_part->write("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"itemheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     //asset and liability titles
     m_part->write("<tr class=\"item\"><th class=\"center\" colspan=\"2\">");
@@ -1388,7 +1393,7 @@ void KHomeView::showBudget(void)
     PivotGrid grid = table.grid();
 
     //table header
-    m_part->write("<div class=\"itemheader\" style=\"font-weight: bold; color: highlighttext; background-color: highlight;\" >" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"itemheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
       //asset and liability titles
     m_part->write("<tr class=\"item\">");
