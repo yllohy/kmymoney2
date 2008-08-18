@@ -945,20 +945,21 @@ TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::Selected
 
   TransactionEditor* editor = 0;
   KMyMoneyRegister::Transaction* item = dynamic_cast<KMyMoneyRegister::Transaction*>(m_register->focusItem());
-  // in case the current focus item is not selected, we move the focus to the first selected transaction
-  if(!item->isSelected()) {
-    KMyMoneyRegister::RegisterItem* p;
-    for(p = m_register->firstItem(); p; p = p->nextItem()) {
-      KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-      if(t && t->isSelected()) {
-        m_register->setFocusItem(t);
-        item = t;
-        break;
-      }
-    }
-  }
 
   if(item) {
+    // in case the current focus item is not selected, we move the focus to the first selected transaction
+    if(!item->isSelected()) {
+      KMyMoneyRegister::RegisterItem* p;
+      for(p = m_register->firstItem(); p; p = p->nextItem()) {
+        KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+        if(t && t->isSelected()) {
+          m_register->setFocusItem(t);
+          item = t;
+          break;
+        }
+      }
+    }
+
     // decide, if we edit in the register or in the form
     TransactionEditorContainer* parent;
     if(m_formFrame->isVisible())
@@ -1222,6 +1223,10 @@ void KGlobalLedgerView::slotKeepPostDate(const QDate& date)
 bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
 {
   bool rc = true;
+  if(m_account.id().isEmpty()) {
+    tooltip = i18n("Cannot create transactions when no account is selected.");
+    rc = false;
+  }
   if(m_account.accountGroup() == MyMoneyAccount::Income
   || m_account.accountGroup() == MyMoneyAccount::Expense) {
     tooltip = i18n("Cannot create transactions in the context of a category.");

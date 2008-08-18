@@ -3,10 +3,13 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't allow creation of transactions when no account is selected
+
 2008-08-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Added style to headers in Home Page. Reported by Pallavi Damera.
   * Added hierarchy to summary and detail forecast. Accounts are now shown
-  even if not in the forecast when child accounts are in forecast.
+    even if not in the forecast when child accounts are in forecast.
   * Changed budget forecast to be shown in a tree
 
 2008-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
