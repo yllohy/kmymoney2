@@ -35,6 +35,7 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qregexp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -47,6 +48,7 @@
 #include <kapplication.h>
 #include <klistview.h>
 #include <klistviewsearchline.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -235,8 +237,15 @@ bool KOnlineBankingSetupWizard::finishLoginPage(void)
     // pretend we're Quicken 2008
     // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-intuit-products/
     // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
-    strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
-    strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
+    QString appId = m_appId->appId();
+    QRegExp exp("(.*):(.*)");
+    if(exp.search(appId) != -1) {
+      strncpy(fi.appid, exp.cap(1).latin1(), OFX_APPID_LENGTH-1);
+      strncpy(fi.appver, exp.cap(2).latin1(), OFX_APPVER_LENGTH-1);
+    } else {
+      strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
+      strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
+    }
 #endif
 
     // who owns this memory?!?!
