@@ -1562,6 +1562,11 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
   }
 }
 
+void Register::setAnchorItem(RegisterItem* anchorItem)
+{
+  m_selectAnchor = anchorItem;
+}
+
 bool Register::setFocusItem(RegisterItem* focusItem)
 {
   if(focusItem && focusItem->canHaveFocus()) {

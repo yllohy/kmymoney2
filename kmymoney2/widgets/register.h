@@ -308,12 +308,15 @@ public:
   void updateCell(int /* row */, int /* col */) {}
 
   RegisterItem* focusItem(void) const { return m_focusItem; }
+  RegisterItem* anchorItem(void) const { return m_selectAnchor; }
 
   /**
     * set focus to specific item.
     * @return true if the item got focus
     */
   bool setFocusItem(RegisterItem* focusItem);
+
+  void setAnchorItem(RegisterItem* anchorItem);
 
   /**
     * Set focus to the first focussable item

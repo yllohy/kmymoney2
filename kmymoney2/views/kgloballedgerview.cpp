@@ -324,6 +324,7 @@ void KGlobalLedgerView::loadView(void)
 
   QMap<QCString, bool> isSelected;
   QCString focusItemId;
+  QCString anchorItemId;
 
   if(!d->m_inLoading)
     d->m_startPoint = QPoint(-1, -1);
@@ -339,6 +340,9 @@ void KGlobalLedgerView::loadView(void)
     // remember the item that has the focus
     if(m_register->focusItem())
       focusItemId = m_register->focusItem()->id();
+    // and the one that has the selection anchor
+    if(m_register->anchorItem())
+      anchorItemId = m_register->anchorItem()->id();
 
     // remember the upper left corner of the viewport
     if(!d->m_inLoading && d->m_showDetails == KMyMoneyGlobalSettings::showRegisterDetailed())
@@ -374,6 +378,7 @@ void KGlobalLedgerView::loadView(void)
 
   // ... and recreate it
   KMyMoneyRegister::RegisterItem* focusItem = 0;
+  KMyMoneyRegister::RegisterItem* anchorItem = 0;
   QMap<QCString, MyMoneyMoney> actBalance, clearedBalance, futureBalance;
   QMap<QCString, MyMoneyMoney>::iterator it_b;
   try {
@@ -499,6 +504,8 @@ void KGlobalLedgerView::loadView(void)
 
         if(t->id() == focusItemId)
           focusItem = t;
+        if(t->id() == anchorItemId)
+          anchorItem = t;
 
         MyMoneyMoney balance = futureBalance[t->split().accountId()];
         t->setBalance(balance.formatMoney("", d->m_precision));
@@ -572,9 +579,10 @@ void KGlobalLedgerView::loadView(void)
     if(focusItem) {
       // in case we have some selected items we just set the focus item
       // in other cases, we make the focusitem also the selected item
-      if(isSelected.count() > 0)
+      if(isSelected.count() > 1) {
         m_register->setFocusItem(focusItem);
-      else
+        m_register->setAnchorItem(anchorItem);
+      } else
         m_register->selectItem(focusItem, true);
     } else {
       // make sure to skip the empty entry at the end if anything else exists

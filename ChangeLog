@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added web price quote for Financial Express as provided by P. Hargreaves
+  * Fixed crash on shift-select
+
 2008-08-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Make branches in forecast trees open by default
 

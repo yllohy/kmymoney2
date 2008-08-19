@@ -474,6 +474,32 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
       "%d.%m.%y"   // dateformat
   );
 
+  // The following price quote was contributed by
+  // Peter Hargreaves <pete.h@pdh-online.info>
+  // The original posting can be found here:
+  // http://sourceforge.net/mailarchive/message.php?msg_name=200806060854.11682.pete.h%40pdh-online.info
+
+  // I have PEP and ISA accounts which I invest in Funds with Barclays 
+  // Stockbrokers. They give me Fund data via Financial Express:
+  // 
+  // https://webfund6.financialexpress.net/Clients/Barclays/default.aspx
+  //
+  // A typical Fund Factsheet is:
+  //
+  // https://webfund6.financialexpress.net/Clients/Barclays/search_factsheet_summary.aspx?code=0585239
+  //
+  // On the Factsheet to identify the fund you can see ISIN Code GB0005852396. 
+  // In the url, this code is shortened by loosing the first four and last 
+  // characters.
+
+  result["Financial Express"] = WebPriceQuoteSource("Financial Express",
+       "https://webfund6.financialexpress.net/Clients/Barclays/search_factsheet_summary.aspx?code=%1",
+       "ISIN Code[^G]*(GB..........).*",  // symbolregexp
+       "[Bid|Mid|Offer] Price[^0-9]*([0-9,\\.]+)p.*", // priceregexp
+       "Price Date[^0-9]*(../../....).*", // dateregexp
+       "%d/%m/%y"                         // dateformat
+  );
+
   return result;
 }
 
