@@ -56,10 +56,10 @@
     }
 
   .itemheader { /*section labels in the financial summary and column labels in reports */
-    color: highlighttext;
     font-family: verdana, arial, helvetica, sans-serif;
     font-weight: bold;
     background-color: highlight;
+    color: highlighttext;
     padding-top: 5px;
     padding-left: 20px;
     padding-bottom: 5px;
@@ -98,8 +98,8 @@
 
   .item { /*item labels (sub-titles) for sections in the financial summary */
   /*  font-size: 11px; */
-    background-color: Window;
-    color: WindowText;
+    background-color: highlight;
+    color: highlighttext;
     padding-top: 2px;
   }
 
@@ -130,15 +130,21 @@
     color: highlighttext;
   }
 
-  th.left {
+  th.left,
+  td.left
+  {
     text-align: left;
   }
 
-  th.right {
+  th.right,
+  td.right
+  {
     text-align: right;
   }
 
-  th.center {
+  th.center,
+  td.center
+  {
     text-align: center;
   }
 
