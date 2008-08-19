@@ -5050,7 +5050,12 @@ void KMyMoney2App::slotUpdateActions(void)
 
           if ( !m_selectedAccount.onlineBankingSettings().value("provider").isEmpty() ) {
             action("account_online_unmap")->setEnabled(true);
-            action("account_online_update")->setEnabled(true);
+            // check if provider is available
+            QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p;
+            it_p = m_onlinePlugins.find(m_selectedAccount.onlineBankingSettings().value("provider"));
+            if(it_p != m_onlinePlugins.end()) {
+              action("account_online_update")->setEnabled(true);
+            }
           } else
             action("account_online_map")->setEnabled(m_onlinePlugins.count() > 0);
 
