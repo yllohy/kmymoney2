@@ -626,6 +626,7 @@ void KForecastView::loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount
     QValueList<MyMoneyPrice> prices = getAccountPrices(subAccount);
 
     forecastItem = new KMyMoneyAccountTreeForecastItem( parentItem, subAccount, forecast, prices, file->security(subAccount.currencyId()), static_cast<KMyMoneyAccountTreeForecastItem::EForecastViewType>(forecastType) );
+    forecastItem->setOpen(true);
 
     loadAccounts(forecast, subAccount, forecastItem, forecastType);
   }
