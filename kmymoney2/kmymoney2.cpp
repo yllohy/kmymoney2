@@ -5621,10 +5621,20 @@ const MyMoneyAccount& KMyMoney2App::account(const QString& key, const QString& v
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::const_iterator it_a;
   MyMoneyFile::instance()->accountList(list);
+  QValueList<MyMoneyAccount> accList;
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
-    if((*it_a).onlineBankingSettings().value(QCString(key)) == value) {
+    const QString& id = (*it_a).onlineBankingSettings().value(QCString(key));
+    if(id.contains(value)) {
+      accList << MyMoneyFile::instance()->account((*it_a).id());
+    }
+    if(id == value) {
       return MyMoneyFile::instance()->account((*it_a).id());
     }
+  }
+  // if we did not find an exact match of the value, we take the one that partially
+  // matched, but only if not more than one matched partially.
+  if(accList.count() == 1) {
+    return accList[0];
   }
 
   // return reference to empty element
