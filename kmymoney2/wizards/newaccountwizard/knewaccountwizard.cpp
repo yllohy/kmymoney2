@@ -50,6 +50,7 @@
 #include <kmymoney/kmymoneylistviewitem.h>
 #include <kmymoney/kcurrencycalculator.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "knewaccountwizard.h"
 #include "knewaccountwizard_p.h"
@@ -324,6 +325,10 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
 
 MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void)
 {
+  // equity accounts don't have an opening balance
+  if(m_accountTypePage->accountType() == MyMoneyAccount::Equity)
+    return MyMoneyMoney();
+
   if(m_accountTypePage->accountType() == MyMoneyAccount::Loan) {
     if(m_generalLoanInfoPage->recordAllPayments())
       return MyMoneyMoney(0, 1);
@@ -434,6 +439,9 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   m_typeSelection->insertItem(i18n("Investment"), MyMoneyAccount::Investment);
   m_typeSelection->insertItem(i18n("Asset"), MyMoneyAccount::Asset);
   m_typeSelection->insertItem(i18n("Liability"), MyMoneyAccount::Liability);
+  if(KMyMoneyGlobalSettings::expertMode()) {
+    m_typeSelection->insertItem(i18n("Equity"), MyMoneyAccount::Equity);
+  }
 
   m_typeSelection->setCurrentItem(MyMoneyAccount::Checkings);
 
@@ -448,6 +456,7 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
 void AccountTypePage::slotUpdateType(int i)
 {
   hideShowPages(static_cast<MyMoneyAccount::accountTypeE> (i));
+  m_openingBalance->setDisabled(static_cast<MyMoneyAccount::accountTypeE> (i) == MyMoneyAccount::Equity);
 }
 
 void AccountTypePage::hideShowPages(MyMoneyAccount::accountTypeE accountType) const
@@ -526,6 +535,8 @@ const MyMoneyAccount& AccountTypePage::parentAccount(void)
     case MyMoneyAccount::Loan: // Can be either but we return liability here
       return MyMoneyFile::instance()->liability();
       break;
+    case MyMoneyAccount::Equity:
+      return MyMoneyFile::instance()->equity();
     default:
       break;
   }

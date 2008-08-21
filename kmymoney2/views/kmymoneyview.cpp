@@ -444,6 +444,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& _accId, const QCString& tr
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
     case MyMoneyAccount::Investment:
+    case MyMoneyAccount::Equity:
       showPage(pageIndex(m_ledgerViewFrame));
       m_ledgerView->slotSelectAccount(accId, transaction);
       break;
