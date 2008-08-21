@@ -132,16 +132,6 @@ public:
 private:
   autoMatchResultE checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch) const;
 
-  /**
-   * Returns the scheduled transaction. In case of a loan payment the
-   * transaction will be modified by KMyMoneyUtils::calculateAutoLoan().
-   * The ID of the transaction as well as the entryDate will be reset.
-   *
-   * @returns adjusted transaction
-   */
-  MyMoneyTransaction scheduledTransaction(const MyMoneySchedule& schedule) const;
-
-
 private:
   MyMoneyAccount            m_account;
   int                       m_days;

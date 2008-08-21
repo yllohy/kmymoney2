@@ -598,3 +598,22 @@ QString KMyMoneyUtils::reconcileStateToString(MyMoneySplit::reconcileFlagE flag,
   }
   return txt;
 }
+
+MyMoneyTransaction KMyMoneyUtils::scheduledTransaction(const MyMoneySchedule& schedule)
+{
+  MyMoneyTransaction t = schedule.transaction();
+
+  try {
+    if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+      calculateAutoLoan(schedule, t, QMap<QCString, MyMoneyMoney>());
+    }
+  } catch (MyMoneyException* e) {
+    qDebug("Unable to load schedule details for '%s' during transaction match: %s", schedule.name().data(), e->what().data());
+    delete e;
+  }
+
+  t.clearId();
+  t.setEntryDate(QDate());
+  return t;
+}
+

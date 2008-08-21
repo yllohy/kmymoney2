@@ -368,6 +368,17 @@ public:
     * then the full text will be returned otherwise a short form (usually one character).
     */
   static QString reconcileStateToString(MyMoneySplit::reconcileFlagE flag, bool text = false);
+
+  /**
+   * Returns the transaction for @a schedule. In case of a loan payment the
+   * transaction will be modified by calculateAutoLoan().
+   * The ID of the transaction as well as the entryDate will be reset.
+   *
+   * @returns adjusted transaction
+   */
+
+  static MyMoneyTransaction scheduledTransaction(const MyMoneySchedule& schedule);
+
 };
 
 #endif

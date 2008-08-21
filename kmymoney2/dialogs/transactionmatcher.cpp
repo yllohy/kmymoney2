@@ -339,7 +339,7 @@ const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransactio
       if((*it_sch).isOverdue() ||
          (nextDueDate >= ti.postDate().addDays(-m_days)
          && nextDueDate <= ti.postDate().addDays(m_days))) {
-        MyMoneyTransaction st = scheduledTransaction(*it_sch);
+        MyMoneyTransaction st = KMyMoneyUtils::scheduledTransaction(*it_sch);
         result = checkTransaction(st, ti, si, lastMatch);
         if(result == matched) {
           sm = lastMatch.second;
@@ -350,23 +350,5 @@ const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransactio
   }
 
   return rc;
-}
-
-MyMoneyTransaction TransactionMatcher::scheduledTransaction(const MyMoneySchedule& schedule) const
-{
-  MyMoneyTransaction t = schedule.transaction();
-
-  try {
-    if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
-      KMyMoneyUtils::calculateAutoLoan(schedule, t, QMap<QCString, MyMoneyMoney>());
-    }
-  } catch (MyMoneyException* e) {
-    qDebug("Unable to load schedule details for '%s' during transaction match: %s", schedule.name().data(), e->what().data());
-    delete e;
-  }
-
-  t.clearId();
-  t.setEntryDate(QDate());
-  return t;
 }
 
