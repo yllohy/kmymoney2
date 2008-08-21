@@ -42,9 +42,7 @@
 #include "../mymoney/mymoneyforecast.h"
 #include "../widgets/kmymoneyforecastlistviewitem.h"
 #include "../widgets/kmymoneyaccounttreeforecast.h"
-#include "../reports/reportaccount.h"
 
-using namespace reports;
 
 KForecastView::KForecastView(QWidget *parent, const char *name) :
   KForecastViewDecl(parent,name)
@@ -170,11 +168,10 @@ void KForecastView::loadForecastSettings(void)
 
 void KForecastView::loadListView(void)
 {
+  MyMoneyForecast forecast;
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  MyMoneySecurity baseCurrency = file->baseCurrency();
-
-  MyMoneyForecast forecast;
+  m_forecastList->setBaseCurrency(file->baseCurrency());
 
   //get the settings from current page
   forecast.setForecastDays(m_forecastDays->value());
@@ -206,13 +203,12 @@ void KForecastView::loadSummaryView(void)
 {
   MyMoneyForecast forecast;
   QValueList<MyMoneyAccount> accList;
-  QMap<QDate, MyMoneyMoney> cycleBalance;
   int dropMinimum;
   int dropZero;
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneySecurity baseCurrency = file->baseCurrency();
 
+  m_summaryList->setBaseCurrency(file->baseCurrency());
 
   //get the settings from current page
   forecast.setForecastDays(m_forecastDays->value());
@@ -474,10 +470,10 @@ void KForecastView::loadAdvancedView(void)
 void KForecastView::loadBudgetView(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneySecurity baseCurrency = file->baseCurrency();
   MyMoneyForecast forecast;
-  QDate f_date;
-  QValueList<MyMoneyAccount> accList;
+//  QValueList<MyMoneyAccount> accList;
+
+  m_budgetList->setBaseCurrency(file->baseCurrency());
 
   //get the settings from current page and calculate this year based on last year
   QDate historyEndDate = QDate(QDate::currentDate().year()-1, 12, 31);
@@ -625,7 +621,7 @@ void KForecastView::loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount
     //get prices
     QValueList<MyMoneyPrice> prices = getAccountPrices(subAccount);
 
-    forecastItem = new KMyMoneyAccountTreeForecastItem( parentItem, subAccount, forecast, prices, file->security(subAccount.currencyId()), static_cast<KMyMoneyAccountTreeForecastItem::EForecastViewType>(forecastType) );
+    forecastItem = new KMyMoneyAccountTreeForecastItem( parentItem, subAccount, forecast, prices, currency, static_cast<KMyMoneyAccountTreeForecastItem::EForecastViewType>(forecastType) );
     forecastItem->setOpen(true);
 
     loadAccounts(forecast, subAccount, forecastItem, forecastType);

@@ -225,22 +225,25 @@ void KMyMoneyAccountTreeForecastItem::updateSummary()
   amountMM = m_forecast.forecastBalance(m_account, summaryDate);
 
   //calculate the balance in base currency for the total row
+  setAmount(it_c, amountMM);
   setValue(it_c, amountMM, summaryDate);
-  setAmount(it_c, amountMM, currency);
+  showAmount(it_c, amountMM, currency);
   it_c++;
 
     //iterate through all other columns
   for(QDate summaryDate = QDate::currentDate().addDays(daysToBeginDay); summaryDate <= m_forecast.forecastEndDate();summaryDate = summaryDate.addDays(m_forecast.accountsCycle()), ++it_c) {
     amountMM = m_forecast.forecastBalance(m_account, summaryDate);
 
-      //calculate the balance in base currency for the total row
+    //calculate the balance in base currency for the total row
+    setAmount(it_c, amountMM);
     setValue(it_c, amountMM, summaryDate);
-    setAmount(it_c, amountMM, currency);
+    showAmount(it_c, amountMM, currency);
   }
   //calculate and add variation per cycle
   setNegative(m_forecast.accountTotalVariation(m_account).isNegative());
+  setAmount(it_c, m_forecast.accountTotalVariation(m_account));
   setValue(it_c, m_forecast.accountTotalVariation(m_account), m_forecast.forecastEndDate());
-  setAmount(it_c, m_forecast.accountTotalVariation(m_account), currency);
+  showAmount(it_c, m_forecast.accountTotalVariation(m_account), currency);
 }
 
 void KMyMoneyAccountTreeForecastItem::updateDetailed()
@@ -264,14 +267,16 @@ void KMyMoneyAccountTreeForecastItem::updateDetailed()
     MyMoneyMoney amountMM = m_forecast.forecastBalance(m_account, forecastDate);
 
     //calculate the balance in base currency for the total row
+    setAmount(it_c, amountMM);
     setValue(it_c, amountMM, forecastDate);
-    setAmount(it_c, amountMM, currency);
+    showAmount(it_c, amountMM, currency);
   }
 
     //calculate and add variation per cycle
   vAmountMM = m_forecast.accountTotalVariation(m_account);
+  setAmount(it_c, vAmountMM);
   setValue(it_c, vAmountMM, m_forecast.forecastEndDate());
-  setAmount(it_c, vAmountMM, currency);
+  showAmount(it_c, vAmountMM, currency);
 }
 
 void KMyMoneyAccountTreeForecastItem::updateBudget()
@@ -298,13 +303,15 @@ void KMyMoneyAccountTreeForecastItem::updateBudget()
       amountMM = -amountMM;
 
     tAmountMM += amountMM;
+    setAmount(it_c, amountMM);
     setValue(it_c, amountMM, QDate(QDate::currentDate().year(), i, 1));
-    setAmount(it_c, amountMM, currency);
+    showAmount(it_c, amountMM, currency);
   }
 
   //set total column
+  setAmount(it_c, tAmountMM);
   setValue(it_c, tAmountMM, m_forecast.forecastEndDate());
-  setAmount(it_c, tAmountMM, currency);
+  showAmount(it_c, tAmountMM, currency);
 }
 
 MyMoneyMoney KMyMoneyAccountTreeForecastItem::balance() const
@@ -312,7 +319,7 @@ MyMoneyMoney KMyMoneyAccountTreeForecastItem::balance() const
   return MyMoneyMoney();
 }
 
-void KMyMoneyAccountTreeForecastItem::setAmount(int column, const MyMoneyMoney amount, const MyMoneySecurity security)
+void KMyMoneyAccountTreeForecastItem::showAmount(int column, const MyMoneyMoney amount, const MyMoneySecurity security)
 {
   setText(column, amount.formatMoney(m_account, security), amount.isNegative() );
 }
@@ -333,9 +340,9 @@ void KMyMoneyAccountTreeForecastItem::adjustParentValue(int column, const MyMone
     if(firstChild())
       setText(column, " ");
     if(parent())
-      setAmount(column, m_values[column], listView()->baseCurrency());
+      showAmount(column, m_values[column], listView()->baseCurrency());
     else
-      setAmount(column, m_values[column],listView()->baseCurrency());
+      showAmount(column, m_values[column],listView()->baseCurrency());
   }
 
   // now make sure, the upstream accounts also get notified about the value change
@@ -347,15 +354,14 @@ void KMyMoneyAccountTreeForecastItem::adjustParentValue(int column, const MyMone
 
 void KMyMoneyAccountTreeForecastItem::setValue(int column, MyMoneyMoney amount, QDate forecastDate)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
   KMyMoneyAccountTreeForecastItem* p = dynamic_cast<KMyMoneyAccountTreeForecastItem*>(parent());
 
   //calculate the balance in base currency for the total row
-  if(m_account.currencyId() != file->baseCurrency().id()) {
+  if(m_account.currencyId() != listView()->baseCurrency().id()) {
     ReportAccount repAcc = ReportAccount(m_account.id());
     MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(forecastDate);
     MyMoneyMoney baseAmountMM = amount * curPrice;
-    m_values[column] = baseAmountMM.convert(file->baseCurrency().smallestAccountFraction());
+    m_values[column] = baseAmountMM.convert(listView()->baseCurrency().smallestAccountFraction());
 
     if(p != 0) {
       p->adjustParentValue(column, m_values[column]);
@@ -364,6 +370,31 @@ void KMyMoneyAccountTreeForecastItem::setValue(int column, MyMoneyMoney amount, 
     m_values[column] += amount;
     if(p != 0) {
       p->adjustParentValue(column, amount);
+    }
+  }
+}
+
+void KMyMoneyAccountTreeForecastItem::setAmount(int column, MyMoneyMoney amount)
+{
+  m_amounts[column] = amount;
+}
+
+void KMyMoneyAccountTreeForecastItem::setOpen(bool open)
+{
+  if (open == isOpen())
+    return;
+  KMyMoneyAccountTreeBaseItem::setOpen(open);
+
+  if(!open)
+  {
+    for(int i = 1; i < listView()->columns(); ++i)
+    {
+      showAmount(i, m_values[i], listView()->baseCurrency());
+    }
+  } else if (depth() > 1) {
+    for(int i = 1; i < listView()->columns(); ++i)
+    {
+      showAmount(i, m_amounts[i], m_security);
     }
   }
 }

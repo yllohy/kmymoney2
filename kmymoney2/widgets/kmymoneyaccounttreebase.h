@@ -416,9 +416,16 @@ public:
     * @retval false @p this object is no decendant of @p item
     */
   bool isChildOf(const QListViewItem* const item) const;
-  
+
+  /**
+    * Sets the whole item to be shown with negative colors
+    */
   void setNegative(bool isNegative);
-  
+
+  /**
+   * Sets the text of a given column. @param negative indicates whether it should
+   * be shown as negative number or not
+   */
   void setText( int column, const QString &text, const bool &negative = false );
 
 protected:

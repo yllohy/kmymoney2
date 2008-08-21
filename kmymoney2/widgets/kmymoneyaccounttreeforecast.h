@@ -97,13 +97,46 @@ public:
 
   ~KMyMoneyAccountTreeForecastItem();
 
+  /**
+   * Sets the forecast object
+   */
   void setForecast(const MyMoneyForecast& forecast);
+
+  /**
+   * updates the item with summary information. Used in Summary tab of Forecast View
+   */
   void updateSummary(void);
+
+  /**
+   * updates the item with detailed information. Used in Detailed tab of Forecast View
+   */
   void updateDetailed(void);
+
+  /**
+   * updates the item with budget forecast information. Used in Budget tab of Forecast View
+   */
   void updateBudget(void);
+
+  /**
+   * sets when to begin a forecast cycle. This is used when showing forecast information per cycle, eg.
+   * on the summary tab of forecast view.
+   */
   void setDaysToBeginDay(int _days) {m_daysToBeginDay = _days;}
+
+  /**
+   * sets the type of forecast that the time will show, eg. summary, detailed, budget
+   */
   void setForecastViewType(EForecastViewType forecastType) { m_forecastType = forecastType; }
+
+  /**
+   * returns the forecast type of the item
+   */
   EForecastViewType forecastViewType(void) { return m_forecastType; }
+
+  /**
+   * it executes some logic specific to this class before calling the same method on the base class
+   */
+  virtual void setOpen(bool o);
 
 protected:
    /**
@@ -118,14 +151,16 @@ protected:
     * @return Balance of this account
     */
   MyMoneyMoney balance() const;
-  void setAmount(int column, const MyMoneyMoney amount, const MyMoneySecurity security);
+  void showAmount(int column, const MyMoneyMoney amount, const MyMoneySecurity security);
   void adjustParentValue(int column, const MyMoneyMoney& value);
   void setValue(int column, MyMoneyMoney amount, QDate forecastDate);
+  void setAmount(int column, MyMoneyMoney amount);
 
 private:
   MyMoneyForecast m_forecast;
   int m_daysToBeginDay;
   QMap<int, MyMoneyMoney> m_values;
+  QMap<int, MyMoneyMoney> m_amounts;
   EForecastViewType m_forecastType;
 };
 
