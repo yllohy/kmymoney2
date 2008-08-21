@@ -2159,6 +2159,7 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
     case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Equity:
       if(s.accountId().isEmpty())
         s.setAccountId(parent->account().id());
       if(transaction.isImported())
@@ -2176,7 +2177,6 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
     case MyMoneyAccount::CertificateDep:
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::Stock:
-    case MyMoneyAccount::Equity:
     default:
       qDebug("Register::transactionFactory: invalid accountTypeE %d", parent->account().accountType());
       break;
