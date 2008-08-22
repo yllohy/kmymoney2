@@ -110,7 +110,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
 
   m_interestFrequencyAmountEdit->setValue(1);
   m_interestFrequencyUnitEdit->setCurrentItem(static_cast<int>(MyMoneyAccountLoan::changeYearly));
-  m_paymentFrequencyUnitEdit->setCurrentItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
+  m_paymentFrequencyUnitEdit->setCurrentItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY)));
   m_firstDueDateEdit->loadDate(QDate(QDate::currentDate().year(),QDate::currentDate().month(),30));
 
   m_paymentAccountEdit->removeButtons();
@@ -613,20 +613,20 @@ void KNewLoanWizard::loadComboBoxes(void)
   m_interestFrequencyUnitEdit->insertItem(i18n("Months"), static_cast<int>(MyMoneyAccountLoan::changeMonthly));
   m_interestFrequencyUnitEdit->insertItem(i18n("Years"), static_cast<int>(MyMoneyAccountLoan::changeYearly));
 
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_DAILY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY));
-  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_YEARLY));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_DAILY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY)));
+  m_paymentFrequencyUnitEdit->insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_YEARLY)));
 
   m_durationUnitEdit->insertItem(i18n("Months"), static_cast<int>(MyMoneySchedule::OCCUR_MONTHLY));
   m_durationUnitEdit->insertItem(i18n("Years"), static_cast<int>(MyMoneySchedule::OCCUR_YEARLY));

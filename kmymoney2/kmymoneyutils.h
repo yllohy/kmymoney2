@@ -167,6 +167,8 @@ public:
     * @return QString representing the human readable format translated according to the language cataglogue
     *
     * @sa MyMoneySchedule::occurenceToString()
+    *
+    * @deprecated Use i18n(MyMoneySchedule::occurenceToString(occurence)) instead
     */
   static const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
 

@@ -162,7 +162,7 @@ void ObjectInfoTable::constructScheduleTable ( void )
       scheduleRow["name"] = schedule.name();
       scheduleRow["nextduedate"] = schedule.nextDueDate().toString ( Qt::ISODate );
       scheduleRow["type"] = KMyMoneyUtils::scheduleTypeToString ( schedule.type() );
-      scheduleRow["occurence"] = KMyMoneyUtils::occurenceToString ( schedule.occurence() );
+      scheduleRow["occurence"] = i18n(MyMoneySchedule::occurenceToString ( schedule.occurence() ));
       scheduleRow["paymenttype"] = KMyMoneyUtils::paymentMethodToString ( schedule.paymentType() );
 
       //scheduleRow["category"] = account.name();
@@ -270,7 +270,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
     ReportAccount account = *it_account;
     MyMoneyAccountLoan loan = *it_account;
 
-    if(m_config.includes(account) && 
+    if(m_config.includes(account) &&
        ( account.accountType() == MyMoneyAccount::Loan
        || account.accountType() == MyMoneyAccount::AssetLoan ) )
     {

@@ -736,6 +736,7 @@ void StdTransactionEditor::createEditWidgets(void)
   connect(category, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
   connect(category, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(category->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditSplits()));
+  category->splitButton()->setDisabled(true);
 
   KTextEdit* memo = new KTextEdit;
   memo->setTabChangesFocus(true);
@@ -2037,6 +2038,15 @@ void StdTransactionEditor::setupFinalWidgets(void)
   addFinalWidget(haveWidget("payment"));
   addFinalWidget(haveWidget("amount"));
   addFinalWidget(haveWidget("status"));
+}
+
+void StdTransactionEditor::slotUpdateAccount(const QCString& id)
+{
+  TransactionEditor::slotUpdateAccount(id);
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  if(category && category->splitButton()) {
+    category->splitButton()->setDisabled(id.isEmpty());
+  }
 }
 
 #include "transactioneditor.moc"

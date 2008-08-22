@@ -164,9 +164,9 @@ protected:
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
 protected slots:
-  void slotUpdateButtonState(void);
-  void slotUpdateAccount(void);
-  void slotNumberChanged(const QString&);
+  virtual void slotUpdateButtonState(void);
+  virtual void slotUpdateAccount(void);
+  virtual void slotNumberChanged(const QString&);
 
 signals:
   /**
@@ -318,6 +318,7 @@ protected slots:
   void slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection);
   void slotCreateCategory(const QString&, QCString&);
   void slotUpdateAction(int action);
+  void slotUpdateAccount(const QCString& id);
 
 protected:
   /**

@@ -109,12 +109,12 @@ void KMyMoneyBriefSchedule::loadSchedule()
                 .arg(KGlobal::locale()->formatDate(m_date, true))
                 .arg(amount.formatMoney(sched.account().fraction()))
                 .arg(QString::number(transactions))
-                .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
+                .arg(i18n(MyMoneySchedule::occurenceToString(sched.occurence())));
       } else {
         text = i18n("Payment on %1 for %2 occuring %4.")
                 .arg(KGlobal::locale()->formatDate(m_date, true))
                 .arg(amount.formatMoney(sched.account().fraction()))
-                .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
+                .arg(i18n(MyMoneySchedule::occurenceToString(sched.occurence())));
       }
 
       if (m_date < QDate::currentDate())
