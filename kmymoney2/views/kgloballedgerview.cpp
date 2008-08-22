@@ -57,6 +57,8 @@
 #include "../dialogs/ksortoptiondlg.h"
 #include "../kmymoney2.h"
 
+#include "../widgets/scheduledtransaction.h"
+
 class KGlobalLedgerViewPrivate
 {
 public:
@@ -433,6 +435,33 @@ void KGlobalLedgerView::loadView(void)
       kmymoney2->slotStatusProgressBar(++i, 0);
     }
 
+    // create dummy entries for the scheduled transactions if sorted by postdate
+    int period = KMyMoneyGlobalSettings::schedulePreview();
+    if(m_register->primarySortKey() == KMyMoneyRegister::PostDateSort && !isReconciliationAccount() && period > 0) {
+      QDate endDate = QDate::currentDate().addDays(period);
+      QValueList<MyMoneySchedule> scheduleList = MyMoneyFile::instance()->scheduleList(m_account.id());
+      while(scheduleList.count() > 0){
+        MyMoneySchedule& s = scheduleList.first();
+        for(;;) {
+          if(s.isFinished() || s.nextDueDate() > endDate) {
+            break;;
+          }
+
+          MyMoneyTransaction t(s.id(), KMyMoneyUtils::scheduledTransaction(s));
+          t.setPostDate(s.nextDueDate());
+          const QValueList<MyMoneySplit>& splits = t.splits();
+          QValueList<MyMoneySplit>::const_iterator it_s;
+          for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+            if((*it_s).accountId() == m_account.id()) {
+              new KMyMoneyRegister::StdTransactionScheduled(m_register, t, *it_s, uniqueMap[t.id()]);
+            }
+          }
+          s.setNextDueDate(s.nextPayment(s.nextDueDate()));
+        }
+        scheduleList.pop_front();
+      }
+    }
+
     // add the group markers
     m_register->addGroupMarkers();
 
@@ -496,6 +525,25 @@ void KGlobalLedgerView::loadView(void)
 
     KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
     focusItem = p;
+
+    // take care of possibly trailing scheduled transactions (bump up the future balance)
+    while(focusItem && !focusItem->isSelectable()) {
+      KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(focusItem);
+      if(t && t->isScheduled()) {
+        MyMoneyMoney balance = futureBalance[t->split().accountId()];
+        const MyMoneySplit& split = t->split();
+        // if this split is a stock split, we can't just add the amount of shares
+        if(t->transaction().isStockSplit()) {
+          balance = balance * split.shares();
+        } else {
+          balance += split.shares() * factor;
+        }
+        futureBalance[split.accountId()] = balance;
+      }
+      focusItem = focusItem->prevItem();
+    }
+
+    p = m_register->lastItem();
     while(p) {
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
       if(t) {
@@ -510,34 +558,38 @@ void KGlobalLedgerView::loadView(void)
         MyMoneyMoney balance = futureBalance[t->split().accountId()];
         t->setBalance(balance.formatMoney("", d->m_precision));
         const MyMoneySplit& split = t->split();
+
         // if this split is a stock split, we can't just add the amount of shares
         if(t->transaction().isStockSplit()) {
           balance /= split.shares();
         } else {
           balance -= split.shares() * factor;
         }
-        if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
-          tracer.printf("Reducing cleared balance by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
-          clearedBalance[split.accountId()] -= split.shares() * factor;
-        }
-        if(isReconciliationAccount() && t->transaction().postDate() > reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
-          tracer.printf("Reducing cleared balance by %s because we are in reconciliation, %s/%s(%s)'s date is after or on reconciliation date (%s) and is cleared", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data(), reconciliationDate.toString(Qt::ISODate).data());
 
-          clearedBalance[split.accountId()] -= split.shares() * factor;
-        }
-        if(isReconciliationAccount() && t->transaction().postDate() <= reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
-          if(split.shares().isNegative()) {
-            payments[split.accountId()]++;
-            paymentAmount[split.accountId()] += split.shares();
-          } else {
-            deposits[split.accountId()]++;
-            depositAmount[split.accountId()] += split.shares();
+        if(!t->isScheduled()) {
+          if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
+            tracer.printf("Reducing cleared balance by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
+            clearedBalance[split.accountId()] -= split.shares() * factor;
           }
-        }
+          if(isReconciliationAccount() && t->transaction().postDate() > reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
+            tracer.printf("Reducing cleared balance by %s because we are in reconciliation, %s/%s(%s)'s date is after or on reconciliation date (%s) and is cleared", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data(), reconciliationDate.toString(Qt::ISODate).data());
 
-        if(t->transaction().postDate() > QDate::currentDate()) {
-          tracer.printf("Reducing actual balance by %s because %s/%s(%s) is in the future", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
-          actBalance[split.accountId()] -= split.shares() * factor;
+            clearedBalance[split.accountId()] -= split.shares() * factor;
+          }
+          if(isReconciliationAccount() && t->transaction().postDate() <= reconciliationDate && split.reconcileFlag() == MyMoneySplit::Cleared) {
+            if(split.shares().isNegative()) {
+              payments[split.accountId()]++;
+              paymentAmount[split.accountId()] += split.shares();
+            } else {
+              deposits[split.accountId()]++;
+              depositAmount[split.accountId()] += split.shares();
+            }
+          }
+
+          if(t->transaction().postDate() > QDate::currentDate()) {
+            tracer.printf("Reducing actual balance by %s because %s/%s(%s) is in the future", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
+            actBalance[split.accountId()] -= split.shares() * factor;
+          }
         }
         futureBalance[split.accountId()] = balance;
       }
@@ -585,8 +637,7 @@ void KGlobalLedgerView::loadView(void)
       } else
         m_register->selectItem(focusItem, true);
     } else {
-      // make sure to skip the empty entry at the end if anything else exists
-      // otherwise point to that emtpy line
+      // just use the empty line at the end if nothing else exists in the ledger
       p = m_register->lastItem();
       m_register->setFocusItem(p);
       m_register->selectItem(p);
@@ -1238,6 +1289,10 @@ bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
   if(m_account.accountGroup() == MyMoneyAccount::Income
   || m_account.accountGroup() == MyMoneyAccount::Expense) {
     tooltip = i18n("Cannot create transactions in the context of a category.");
+    rc = false;
+  }
+  if(m_account.isClosed()) {
+    tooltip = i18n("Cannot create transactions in a closed account.");
     rc = false;
   }
   return rc;

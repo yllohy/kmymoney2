@@ -39,6 +39,12 @@
    <min>0</min>
    <max>999</max>
   </entry>
+  <entry name="SchedulePreview" type="Int">
+   <label>Number of days to preview schedules in ledger</label>
+   <default>0</default>
+   <min>0</min>
+   <max>999</max>
+  </entry>
   <entry name="CopyTypeToNr" type="Bool">
    <label>Insert transaction type into No. field for new transactions</label>
    <default>false</default>

@@ -2010,7 +2010,7 @@ void Register::selectRange(RegisterItem* from, RegisterItem* to, bool invert, bo
         }
       } else {
         bool sel = !item->isSelected();
-        if(item->isSelected() != sel && sel || !sel) {
+        if((item->isSelected() != sel) && (sel || !sel)) {
           if(item->isVisible()) {
             item->setSelected(sel);
             changed = true;

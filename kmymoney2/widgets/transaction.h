@@ -81,6 +81,8 @@ public:
   bool hasFocus(void) const { return m_focus; }
   bool hasEditorOpen(void) const { return m_inEdit; }
 
+  virtual bool isScheduled(void) const { return false; }
+
   void setFocus(bool focus, bool updateLens = true);
 
   bool isErronous(void) const { return m_erronous; }

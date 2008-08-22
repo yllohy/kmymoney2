@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KSettingsSchedulesDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -72,6 +72,46 @@
                 </widget>
             </vbox>
         </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of days to preview schedules in ledger</string>
+                    </property>
+                </widget>
+                <widget class="KIntSpinBox">
+                    <property name="name">
+                        <cstring>kcfg_SchedulePreview</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>41</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer10</cstring>
@@ -85,12 +125,14 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>31</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_CheckSchedule</sender>
