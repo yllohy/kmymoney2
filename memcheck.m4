@@ -9,9 +9,8 @@ dnl Need AC_CHECK_COMPILERS to be run before
 AC_DEFUN([AC_MEMORY_LEAK_CHECK], [
   AC_ARG_ENABLE(
   leak-check,
-  AC_HELP_STRING([--enable-leak-check],[enable memory leak checker (default=yes)]),
-  use_memory_leak_check=$enableval,
-  use_memory_leak_check=$kde_use_debug_code)
+  AC_HELP_STRING([--enable-leak-check],[enable memory leak checker (default=no)]),
+  use_memory_leak_check=$enableval,use_memory_leak_check=no)
 
   if test "x$use_memory_leak_check" != "xno"; then
     CPPFLAGS="$CPPFLAGS -D_CHECK_MEMORY"
