@@ -327,6 +327,16 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     dumpTransaction(s, storage, (*it_s).transaction());
   }
   s << "\n";
+
+  s << "Reports" << "\n";
+  s << "-------" << "\n";
+
+  QValueList<MyMoneyReport> list_r = storage->reportList();
+  QValueList<MyMoneyReport>::ConstIterator it_r;
+  for(it_r = list_r.begin(); it_r != list_r.end(); ++it_r) {
+    s << "  ID = " << (*it_r).id() << "\n";
+    s << "  Name = " << (*it_r).name() << "\n";
+  }
 }
 
 void MyMoneyStorageDump::dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp)

@@ -10,6 +10,8 @@
   * Got rid of 'type qualifiers ignored on function return type' warning
   * Use occurenceToString() from MyMoneySchedule instead of KMyMoneyUtils
   * Disable the split button of the category until the account is known
+  * Don't keep elements from file that are not properly read
+  * Fixed a problem with the investment value display in the ledger view
 
 2008-08-21 Alvaro Soliverez <asoliverez@gmail.com>
   * Branches of forecast trees now show the total of subaccounts if closed, 

@@ -706,13 +706,19 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& ac
       bool approx = false;
       for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
         MyMoneyAccount stock = file->account(it_b.key());
-        MyMoneySecurity sec = file->security(stock.currencyId());
-        MyMoneyMoney rate;
+        QCString currencyId = stock.currencyId();
+        MyMoneySecurity sec = file->security(currencyId);
         MyMoneyPrice priceInfo;
-        priceInfo = file->price(sec.id(), sec.tradingCurrency());
-        approx |= !priceInfo.isValid();
-        rate = priceInfo.rate(sec.tradingCurrency());
-        if(sec.tradingCurrency() != base.id()) {
+        MyMoneyMoney rate(1,1);
+
+        if(stock.isInvest()) {
+          currencyId = sec.tradingCurrency();
+          priceInfo = file->price(sec.id(), currencyId);
+          approx |= !priceInfo.isValid();
+          rate = priceInfo.rate(sec.tradingCurrency());
+        }
+
+        if(currencyId != base.id()) {
           priceInfo = file->price(sec.tradingCurrency(), base.id());
           approx |= !priceInfo.isValid();
           rate = rate * priceInfo.rate(base.id());

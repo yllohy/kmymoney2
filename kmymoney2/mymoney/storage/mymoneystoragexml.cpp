@@ -220,38 +220,47 @@ bool MyMoneyXmlContentHandler::endElement(const QString& /* namespaceURI */, con
       try {
         if(s == "transaction") {
           MyMoneyTransaction t(m_baseNode);
-          m_reader->d->tList[t.uniqueSortKey()] = t;
+          if(!t.id().isEmpty())
+            m_reader->d->tList[t.uniqueSortKey()] = t;
         } else if(s == "account") {
           MyMoneyAccount a(m_baseNode);
-          m_reader->d->aList[a.id()] = a;
+          if(!a.id().isEmpty())
+            m_reader->d->aList[a.id()] = a;
         } else if(s == "payee") {
           MyMoneyPayee p(m_baseNode);
-          m_reader->d->pList[p.id()] = p;
+          if(!p.id().isEmpty())
+            m_reader->d->pList[p.id()] = p;
         } else if(s == "currency") {
           MyMoneySecurity s(m_baseNode);
-          m_reader->d->secList[s.id()] = s;
+          if(!s.id().isEmpty())
+            m_reader->d->secList[s.id()] = s;
         } else if(s == "security") {
           MyMoneySecurity s(m_baseNode);
-          m_reader->d->secList[s.id()] = s;
+          if(!s.id().isEmpty())
+            m_reader->d->secList[s.id()] = s;
         } else if(s == "keyvaluepairs") {
           MyMoneyKeyValueContainer kvp(m_baseNode);
           m_reader->m_storage->setPairs(kvp.pairs());
         } else if(s == "institution") {
           MyMoneyInstitution i(m_baseNode);
-          m_reader->d->iList[i.id()] = i;
+          if(!i.id().isEmpty())
+            m_reader->d->iList[i.id()] = i;
         } else if(s == "report") {
           MyMoneyReport r(m_baseNode);
-          m_reader->d->rList[r.id()] = r;
+          if(!r.id().isEmpty())
+            m_reader->d->rList[r.id()] = r;
         } else if(s == "budget") {
           MyMoneyBudget b(m_baseNode);
-          m_reader->d->bList[b.id()] = b;
+          if(!b.id().isEmpty())
+            m_reader->d->bList[b.id()] = b;
         } else if(s == "fileinfo") {
           rc = m_reader->readFileInformation(m_baseNode);
         } else if(s == "user") {
           rc = m_reader->readUserInformation(m_baseNode);
         } else if(s == "scheduled_tx") {
           MyMoneySchedule s(m_baseNode);
-          m_reader->d->sList[s.id()] = s;
+          if(!s.id().isEmpty())
+            m_reader->d->sList[s.id()] = s;
         } else if(s == "price") {
           MyMoneyPrice p(m_reader->d->m_fromSecurity, m_reader->d->m_toSecurity, m_baseNode);
           m_reader->d->prList[MyMoneySecurityPair(m_reader->d->m_fromSecurity, m_reader->d->m_toSecurity)][p.date()] = p;
