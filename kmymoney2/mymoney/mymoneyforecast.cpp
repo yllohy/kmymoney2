@@ -1037,10 +1037,14 @@ void MyMoneyForecast::calculateScheduledMonthlyBalances()
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
-    for( QDate f_date = forecastStartDate(); f_date <= forecastEndDate();  ) {
-      MyMoneyMoney accountDailyBalance = m_accountList[acc.id()][f_date]; //trend for that day
-      m_accountList[acc.id()][QDate(f_date.year(), f_date.month(), 1)] += accountDailyBalance; //movement trend for that particular day
-      f_date = f_date.addDays(1);
+    for( QDate f_date = forecastStartDate(); f_date <= forecastEndDate(); f_date = f_date.addDays(1) ) {
+      //get the trend for the day
+      MyMoneyMoney accountDailyBalance = m_accountList[acc.id()][f_date];
+
+      //do not add if it is the beginning of the month
+      //otherwise we end up with duplicated values as reported by Marko Käning
+      if(f_date != QDate(f_date.year(), f_date.month(), 1) )
+        m_accountList[acc.id()][QDate(f_date.year(), f_date.month(), 1)] += accountDailyBalance;
     }
   }
 }

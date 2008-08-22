@@ -6,12 +6,14 @@
 2008-08-21 Alvaro Soliverez <asoliverez@gmail.com>
   * Branches of forecast trees now show the total of subaccounts if closed, 
     and revert if opened
-  * Renamed TransactionMatcher::scheduledTransaction() into
-    KMyMoneyUtils::scheduledTransaction()
+  * Fixed running sum of schedule-based forecast when creating a budget -
+    Reported by Marko Käning
 
 2008-08-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow creation of Equity additional accounts
   * Allow editing transactions in Equity accounts
+  * Renamed TransactionMatcher::scheduledTransaction() into
+    KMyMoneyUtils::scheduledTransaction()
 
 2008-08-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Be somewhat relaxed when searching an account based on information
