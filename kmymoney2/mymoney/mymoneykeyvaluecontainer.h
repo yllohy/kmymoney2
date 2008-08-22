@@ -115,7 +115,7 @@ public:
   /**
     * This operator tests for equality of two MyMoneyKeyValueContainer objects
     */
-  const bool operator == (const MyMoneyKeyValueContainer &) const;
+  bool operator == (const MyMoneyKeyValueContainer &) const;
 
   const QString& operator[] ( const QCString& k ) const { return value(k); }
 

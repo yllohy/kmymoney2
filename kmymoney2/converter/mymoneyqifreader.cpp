@@ -202,7 +202,7 @@ void MyMoneyQifReader::slotImportFinished(void)
   // slotReceivedErrorFromFilter();
 }
 
-const bool MyMoneyQifReader::startImport(void)
+bool MyMoneyQifReader::startImport(void)
 {
   bool rc = false;
 
@@ -265,7 +265,7 @@ const bool MyMoneyQifReader::startImport(void)
   return rc;
 }
 
-const bool MyMoneyQifReader::finishImport(void)
+bool MyMoneyQifReader::finishImport(void)
 {
   bool  rc = false;
 

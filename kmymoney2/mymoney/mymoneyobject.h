@@ -85,7 +85,7 @@ public:
     */
   virtual void writeXML(QDomDocument& document, QDomElement& parent) const = 0;
 
-  const bool operator == (const MyMoneyObject& right) const;
+  bool operator == (const MyMoneyObject& right) const;
 
   static const QCString& emptyId(void);
 

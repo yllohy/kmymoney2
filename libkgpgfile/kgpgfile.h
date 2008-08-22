@@ -99,7 +99,7 @@ public:
   void setComment(const QString& txt);
 
   const QCString errmsg(void) const { return m_errmsg; };
-  const int exitStatus(void) const { return m_exitStatus; };
+  int exitStatus(void) const { return m_exitStatus; };
 
   /**
     * Checks whether GPG is available or not
@@ -107,7 +107,7 @@ public:
     * @retval true GPG can be started and returns a version number
     * @retval false GPG is not available
     */
-  static const bool GPGAvailable(void);
+  static bool GPGAvailable(void);
 
   /**
     * Checks whether a key for a given user-id @p name exists.
@@ -118,7 +118,7 @@ public:
     * @retval true key for user-id @p name was found
     * @retval false key for user-id @p not available
     */
-  static const bool keyAvailable(const QString& name);
+  static bool keyAvailable(const QString& name);
 
   /**
     * This function returns a list of the secret keys contained
@@ -159,7 +159,7 @@ protected slots:
 
 private:
   void init(void);
-  const bool startProcess(const QStringList& args);
+  bool startProcess(const QStringList& args);
   Q_LONG _writeBlock(const char *data, Q_ULONG maxlen);
   bool open(int mode, const QString&, bool skipPasswd);
 

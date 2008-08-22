@@ -87,7 +87,7 @@ public:
     void setStartDate  ( const QDate& _start )    { m_start  = _start; }
     void setAmount( const MyMoneyMoney& _amount ) { m_amount = _amount;}
 
-    const bool operator == (const PeriodGroup &r) const { return (m_start == r.m_start && m_amount == r.m_amount); }
+    bool operator == (const PeriodGroup &r) const { return (m_start == r.m_start && m_amount == r.m_amount); }
 
  private:
     QDate         m_start;
@@ -161,7 +161,7 @@ public:
     // m_budgetsubaccounts remains unaffected
     AccountGroup operator += (const AccountGroup& r);
 
-    const bool operator == (const AccountGroup &r) const;
+    bool operator == (const AccountGroup &r) const;
 
     bool isZero(void) const;
 
@@ -181,7 +181,7 @@ public:
   /**
    * This operator tests for equality of two MyMoneyBudget objects
    */
-  const bool operator == (const MyMoneyBudget &) const;
+  bool operator == (const MyMoneyBudget &) const;
 
   // Simple get operations
   const QString& name(void) const { return m_name; }

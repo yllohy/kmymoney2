@@ -70,7 +70,7 @@ public:
   const QString& memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit>& splits(void) const { return m_splits; };
   QValueList<MyMoneySplit>& splits(void) { return m_splits; };
-  const unsigned int splitCount(void) const { return m_splits.count(); };
+  unsigned int splitCount(void) const { return m_splits.count(); };
   const QCString& commodity(void) const { return m_commodity; };
   const QString& bankID(void) const /*__attribute__ ((deprecated))*/ { return m_bankID; };
 
@@ -138,7 +138,7 @@ public:
     *
     * @param id account id that should be checked for usage
     */
-  const bool accountReferenced(const QCString& id) const;
+  bool accountReferenced(const QCString& id) const;
 
   /**
     * This method is used to add a split to the transaction. The split
@@ -184,7 +184,7 @@ public:
     *
     * @note Upon internal failures, the return value @p false will be used.
     */
-  const bool isLoanPayment(void) const;
+  bool isLoanPayment(void) const;
 
   /**
     * This method returns a const reference to the amortization split.
@@ -206,7 +206,7 @@ public:
     * @retval true transactions are identical
     * @retval false transactions are not identical
     */
-  const bool isDuplicate(const MyMoneyTransaction& transaction) const;
+  bool isDuplicate(const MyMoneyTransaction& transaction) const;
 
   /**
     * returns @a true if this is a stock split transaction

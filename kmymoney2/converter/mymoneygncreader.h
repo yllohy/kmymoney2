@@ -283,7 +283,7 @@ public:
 protected:
   friend class MyMoneyGncReader;
   friend class GncTransaction;
-  const bool isCurrency() const { return (*m_v.at(CMDTYSPC) == QString("ISO4217"));};
+  bool isCurrency() const { return (*m_v.at(CMDTYSPC) == QString("ISO4217"));};
   const QString id() const { return (*m_v.at(CMDTYID));};
   const QString space() const { return (*m_v.at(CMDTYSPC));};
 private:
@@ -327,7 +327,7 @@ protected:
   const QString key() const { return (var(KEY));};
   const QString value() const { return (var(VALUE));};
   const QString type() const { return (m_kvpType);};
-  const unsigned int kvpCount() const { return (m_kvpList.count());};
+  unsigned int kvpCount() const { return (m_kvpList.count());};
   const GncKvp *getKvp(unsigned int i) const { return (static_cast<GncKvp *>(m_kvpList.at(i)));};
 private:
   // subsidiary objects/elements
@@ -373,7 +373,7 @@ public:
 protected:
   friend class MyMoneyGncReader;
   // access data values
-  const bool isCurrency() const { return (var(SPACE) == QString("ISO4217"));};
+  bool isCurrency() const { return (var(SPACE) == QString("ISO4217"));};
   const QString space() const { return (var(SPACE));};
   const QString id() const { return (var(ID));};
   const QString name() const { return (var(NAME));};
@@ -469,8 +469,8 @@ protected:
   const QString currency() const { return (m_vpCurrency == NULL ? QString () : m_vpCurrency->id());};
   const QDate dateEntered() const { return (m_vpDateEntered->date());};
   const QDate datePosted() const { return (m_vpDatePosted->date());};
-  const bool isTemplate() const { return (m_template);};
-  const unsigned int splitCount() const { return (m_splitList.count());};
+  bool isTemplate() const { return (m_template);};
+  unsigned int splitCount() const { return (m_splitList.count());};
   const GncObject *getSplit (unsigned int i) const { return (m_splitList.at(i));};
 private:
   // subsidiary objects/elements
@@ -499,7 +499,7 @@ protected:
   const QString value() const { return (var(VALUE));};
   const QString qty() const { return (var(QTY));};
   const QString acct() const { return (var(ACCT));};
-  const unsigned int kvpCount() const { return (m_kvpList.count());};
+  unsigned int kvpCount() const { return (m_kvpList.count());};
   const GncKvp *getKvp(unsigned int i) const { return (static_cast<GncKvp *>(m_kvpList.at(i)));};
 private:
   // subsidiary objects/elements
@@ -657,7 +657,7 @@ class GncMessages {
 protected:
   friend class MyMoneyGncReader;
   static QString text (const QString, const unsigned int); // returns text of identified message
-  static const unsigned int argCount (const QString, const unsigned int); // returns no. of args required
+  static unsigned int argCount (const QString, const unsigned int); // returns no. of args required
 private:
   typedef struct {
     const QString source;

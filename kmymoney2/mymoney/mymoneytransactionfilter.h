@@ -287,7 +287,7 @@ public:
     * @retval false The transaction does not match at least one of
     *               the filters in the filter set
     */
-  const bool match(const MyMoneyTransaction& transaction);
+  bool match(const MyMoneyTransaction& transaction);
 
   /**
     * This method is used to check a specific split against the
@@ -364,7 +364,7 @@ public:
     * @param cat id of category in question
     * @return true if category is in filter set, false otherwise
     */
-  const bool includesCategory( const QCString& cat ) const;
+  bool includesCategory( const QCString& cat ) const;
 
   /**
     * This method is used to return information about the
@@ -375,7 +375,7 @@ public:
     * @param acc id of account in question
     * @return true if account is in filter set, false otherwise
     */
-  const bool includesAccount( const QCString& acc ) const;
+  bool includesAccount( const QCString& acc ) const;
 
   /**
     * This method is used to return information about the
@@ -386,7 +386,7 @@ public:
     * @param pye id of payee in question
     * @return true if payee is in filter set, false otherwise
     */
-  const bool includesPayee( const QCString& pye ) const;
+  bool includesPayee( const QCString& pye ) const;
 
   /**
     * This method is used to return information about the
@@ -396,7 +396,7 @@ public:
     * @param to result value for the end of the date range
     * @return true if an amount filter is set
     */
-  const bool dateFilter( QDate& from, QDate& to ) const;
+  bool dateFilter( QDate& from, QDate& to ) const;
 
   /**
     * This method is used to return information about the
@@ -406,7 +406,7 @@ public:
     * @param to result value for the high end of the amount range
     * @return true if an amount filter is set
     */
-  const bool amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const;
+  bool amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const;
 
   /**
     * This method is used to return information about the
@@ -416,7 +416,7 @@ public:
     * @param to result value for the high end of the number range
     * @return true if a number filter is set
     */
-  const bool numberFilter( QString& from, QString& to ) const;
+  bool numberFilter( QString& from, QString& to ) const;
 
   /**
     * This method returns whether a payee filter has been set,
@@ -425,7 +425,7 @@ public:
     * @param list list to append payees into
     * @return return true if a payee filter has been set
     */
-  const bool payees(QCStringList& list) const;
+  bool payees(QCStringList& list) const;
 
   /**
     * This method returns whether an account filter has been set,
@@ -434,7 +434,7 @@ public:
     * @param list list to append accounts into
     * @return return true if an account filter has been set
     */
-  const bool accounts(QCStringList& list) const;
+  bool accounts(QCStringList& list) const;
 
   /**
     * This method returns whether a category filter has been set,
@@ -443,7 +443,7 @@ public:
     * @param list list to append categories into
     * @return return true if a category filter has been set
     */
-  const bool categories(QCStringList& list) const;
+  bool categories(QCStringList& list) const;
 
   /**
     * This method returns whether a type filter has been set,
@@ -452,9 +452,9 @@ public:
     * @param i int to replace with first type filter, untouched otherwise
     * @return return true if a type filter has been set
     */
-  const bool firstType(int& i) const;
+  bool firstType(int& i) const;
 
-  const bool types(QValueList<int>& list) const;
+  bool types(QValueList<int>& list) const;
 
   /**
     * This method returns whether a state filter has been set,
@@ -463,9 +463,9 @@ public:
     * @param i reference to int to replace with first state filter, untouched otherwise
     * @return return true if a state filter has been set
     */
-  const bool firstState(int& i) const;
+  bool firstState(int& i) const;
 
-  const bool states(QValueList<int>& list) const;
+  bool states(QValueList<int>& list) const;
   /**
     * This method returns whether a text filter has been set,
     * and if so, it returns the text filter.
@@ -473,7 +473,7 @@ public:
     * @param text regexp to replace with text filter, or blank if none set
     * @return return true if a text filter has been set
     */
-  const bool textFilter(QRegExp& text) const;
+  bool textFilter(QRegExp& text) const;
 
   /**
     * This method translates a plain-language date range into QDate
@@ -505,7 +505,7 @@ private:
     *
     * @return converted reconcile flag of the split passed as parameter
     */
-  const int splitState(const MyMoneySplit& split) const;
+  int splitState(const MyMoneySplit& split) const;
 
   /**
     * This is a conversion tool from MyMoneySplit::action
@@ -516,7 +516,7 @@ private:
     *
     * @return converted action of the split passed as parameter
     */
-  const int splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+  int splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
   /**
     * This method checks if a transaction is valid or not. A transaction
@@ -526,7 +526,7 @@ private:
     * @retval valid transaction is valid
     * @retval invalid transaction is invalid
     */
-  const validityOptionE validTransaction(const MyMoneyTransaction& transaction) const;
+  validityOptionE validTransaction(const MyMoneyTransaction& transaction) const;
 
 protected:
   FilterSet           m_filterSet;

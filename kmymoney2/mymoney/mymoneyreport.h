@@ -255,7 +255,7 @@ public:
     * @param list list to append account groups into
     * @return return true if an account group filter has been set
     */
-  const bool accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const;
+  bool accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const;
 
   /**
     * This method returns whether the specified account group
@@ -264,7 +264,7 @@ public:
     * @param type group to append account groups into
     * @return return true if an account group filter has been set
     */
-  const bool includesAccountGroup( MyMoneyAccount::accountTypeE type ) const;
+  bool includesAccountGroup( MyMoneyAccount::accountTypeE type ) const;
 
   /**
     * This method is used to test whether a specific account
@@ -276,7 +276,7 @@ public:
     * @param acc the account in question
     * @return true if account is in filter set, false otherwise
     */
-  const bool includes( const MyMoneyAccount& acc ) const;
+  bool includes( const MyMoneyAccount& acc ) const;
 
   /**
     * This method writes this report to the DOM element @p e,

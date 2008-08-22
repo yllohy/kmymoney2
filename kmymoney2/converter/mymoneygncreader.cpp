@@ -2425,7 +2425,7 @@ QString GncMessages::text (const QString source, const unsigned int code) {
   PASS
 }
 //
-const unsigned int GncMessages::argCount (const QString source, const unsigned int code) {
+unsigned int GncMessages::argCount (const QString source, const unsigned int code) {
   TRY
   unsigned int i;
   for (i = 0; texts[i].source != "ZZ"; i++) {

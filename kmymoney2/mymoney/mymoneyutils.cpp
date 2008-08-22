@@ -334,7 +334,7 @@ QString QStringEmpty(const QString& val)
   return QString();
 }
 
-const unsigned long extractId(const QCString& txt)
+unsigned long extractId(const QCString& txt)
 {
   int pos;
   unsigned long rc = 0;

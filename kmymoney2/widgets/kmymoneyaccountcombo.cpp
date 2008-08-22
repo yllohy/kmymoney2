@@ -106,7 +106,7 @@ void KMyMoneyAccountCombo::setText(const QString& txt)
   changeItem(txt, currentItem());
 }
 
-const int KMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+int KMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
 {
   AccountSet set;
 

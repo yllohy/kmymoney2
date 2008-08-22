@@ -122,7 +122,7 @@ protected:
     *
     * @return true if inline edit mode is on, false otherwise
     */
-  const bool isEditMode(void) const;
+  bool isEditMode(void) const;
 
   /**
     * This method retuns the background color for a given @p row.

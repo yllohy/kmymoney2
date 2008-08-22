@@ -177,8 +177,8 @@ protected:
     *
     * @note If the view contains no items the method returns @p true.
     */
-  const bool allItemsSelected(const QListView* view) const;
-  const bool allItemsSelected(const QListViewItem *item) const;
+  bool allItemsSelected(const QListView* view) const;
+  bool allItemsSelected(const QListViewItem *item) const;
 
   void scanCheckListItems(const QListView* view, const opTypeE op);
   void scanCheckListItems(const QListViewItem* item, const opTypeE op);

@@ -51,7 +51,7 @@ void MyMoneyObject::setId(const QCString& id)
   m_id = id;
 }
 
-const bool MyMoneyObject::operator == (const MyMoneyObject& right) const
+bool MyMoneyObject::operator == (const MyMoneyObject& right) const
 {
   return m_id == right.m_id;
 }

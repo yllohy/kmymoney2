@@ -92,9 +92,9 @@ public:
   const QString&  tradingSymbol() const               { return m_tradingSymbol; }
   void            setTradingSymbol(const String& str) { m_tradingSymbol = str; }
 
-  const eSECURITYTYPE securityType() const                 { return m_securityType; }
+        eSECURITYTYPE securityType() const                { return m_securityType; }
   void          setSecurityType(const eSECURITYTYPE& s)   { m_securityType = s; }
-  const bool    isCurrency(void) const { return m_securityType == SECURITY_CURRENCY; };
+        bool    isCurrency(void) const { return m_securityType == SECURITY_CURRENCY; };
 
   const QString& tradingMarket() const  { return m_tradingMarket; }
   void           setTradingMarket(const QString& str) { m_tradingMarket = str; }
@@ -102,11 +102,11 @@ public:
   const QCString& tradingCurrency(void) const { return m_tradingCurrency; };
   void            setTradingCurrency(const QCString& str) { m_tradingCurrency = str; };
 
-  const int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
+  int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
   void setSmallestAccountFraction(const int sf) { m_smallestAccountFraction = sf; };
 
-  const int partsPerUnit(void) const { return m_partsPerUnit; };
-  const int smallestCashFraction(void) const { return m_smallestCashFraction; };
+  int partsPerUnit(void) const { return m_partsPerUnit; };
+  int smallestCashFraction(void) const { return m_smallestCashFraction; };
 
   void setPartsPerUnit(const int ppu) { m_partsPerUnit = ppu; };
   void setSmallestCashFraction(const int sf) { m_smallestCashFraction = sf; };

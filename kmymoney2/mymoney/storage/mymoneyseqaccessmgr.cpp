@@ -26,7 +26,7 @@
 #define CATCH } catch (MyMoneyException *e) {
 #define PASS } catch (MyMoneyException *e) { throw; }
 
-const bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
+bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
 {
   return ((balance == right.balance)
         && (valid == right.valid));
@@ -101,7 +101,7 @@ MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
 {
 }
 
-MyMoneySeqAccessMgr* const MyMoneySeqAccessMgr::duplicate(void)
+MyMoneySeqAccessMgr const * MyMoneySeqAccessMgr::duplicate(void)
 {
   MyMoneySeqAccessMgr* that = new MyMoneySeqAccessMgr();
   *that = *this;
@@ -115,7 +115,7 @@ MyMoneyStorageSql *MyMoneySeqAccessMgr::connectToDatabase
   return 0;
 }
 
-const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
+bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
 {
   return id == STD_ACC_LIABILITY
       || id == STD_ACC_ASSET
@@ -287,7 +287,7 @@ void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
   institution = newInstitution;
 }
 
-const unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account) const
+unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account) const
 {
   unsigned int cnt = 0;
 
@@ -338,12 +338,12 @@ const QMap<QCString, unsigned long> MyMoneySeqAccessMgr::transactionCountMap(voi
   return map;
 }
 
-const unsigned int MyMoneySeqAccessMgr::institutionCount(void) const
+unsigned int MyMoneySeqAccessMgr::institutionCount(void) const
 {
   return m_institutionList.count();
 }
 
-const unsigned int MyMoneySeqAccessMgr::accountCount(void) const
+unsigned int MyMoneySeqAccessMgr::accountCount(void) const
 {
   return m_accountList.count();
 }
@@ -447,7 +447,7 @@ void MyMoneySeqAccessMgr::touch(void)
   m_lastModificationDate = QDate::currentDate();
 }
 
-const bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
+bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
 {
   QMap<QCString, MyMoneyTransaction>::ConstIterator it;
 

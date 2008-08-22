@@ -123,13 +123,13 @@ public:
     * @retval true if price object is valid
     * @retval false if price object is not valid
     */
-  const bool isValid(void) const;
+  bool isValid(void) const;
 
   // Equality operator
-  const bool operator == (const MyMoneyPrice &) const;
+  bool operator == (const MyMoneyPrice &) const;
 
   // Inequality operator
-  const bool operator != (const MyMoneyPrice &right) const { return !(operator == (right)); };
+  bool operator != (const MyMoneyPrice &right) const { return !(operator == (right)); };
 
   /**
     * This method checks if a reference to the given object exists. It returns,

@@ -255,7 +255,7 @@ bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp) const
   return rc;
 }
 
-const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
+bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneySplit>::ConstIterator it;
@@ -511,7 +511,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
   return matchingSplits.count() != 0;
 }
 
-const int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const
+int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const
 {
   int rc = notReconciled;
 
@@ -535,7 +535,7 @@ const int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const
   return rc;
 }
 
-const int MyMoneyTransactionFilter::splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
+int MyMoneyTransactionFilter::splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount a, b;
@@ -564,7 +564,7 @@ const int MyMoneyTransactionFilter::splitType(const MyMoneyTransaction& t, const
   return payments;
 }
 
-const MyMoneyTransactionFilter::validityOptionE MyMoneyTransactionFilter::validTransaction(const MyMoneyTransaction& t) const
+MyMoneyTransactionFilter::validityOptionE MyMoneyTransactionFilter::validTransaction(const MyMoneyTransaction& t) const
 {
   QValueList<MyMoneySplit>::ConstIterator it_s;
   MyMoneyMoney val;
@@ -575,43 +575,43 @@ const MyMoneyTransactionFilter::validityOptionE MyMoneyTransactionFilter::validT
   return (val == MyMoneyMoney(0,1)) ? valid : invalid;
 }
 
-const bool MyMoneyTransactionFilter::includesCategory( const QCString& cat ) const
+bool MyMoneyTransactionFilter::includesCategory( const QCString& cat ) const
 {
   return (! m_filterSet.singleFilter.categoryFilter) || m_categories.find( cat );
 }
 
-const bool MyMoneyTransactionFilter::includesAccount( const QCString& acc ) const
+bool MyMoneyTransactionFilter::includesAccount( const QCString& acc ) const
 {
   return (! m_filterSet.singleFilter.accountFilter) || m_accounts.find( acc );
 }
 
-const bool MyMoneyTransactionFilter::includesPayee( const QCString& pye ) const
+bool MyMoneyTransactionFilter::includesPayee( const QCString& pye ) const
 {
   return (! m_filterSet.singleFilter.payeeFilter) || m_payees.find( pye );
 }
 
-const bool MyMoneyTransactionFilter::dateFilter( QDate& from, QDate& to ) const
+bool MyMoneyTransactionFilter::dateFilter( QDate& from, QDate& to ) const
 {
   from = m_fromDate;
   to = m_toDate;
   return m_filterSet.singleFilter.dateFilter==1;
 }
 
-const bool MyMoneyTransactionFilter::amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const
+bool MyMoneyTransactionFilter::amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const
 {
   from = m_fromAmount;
   to = m_toAmount;
   return m_filterSet.singleFilter.amountFilter==1;
 }
 
-const bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) const
+bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) const
 {
   from = m_fromNr;
   to = m_toNr;
   return m_filterSet.singleFilter.nrFilter==1;
 }
 
-const bool MyMoneyTransactionFilter::payees(QCStringList& list) const
+bool MyMoneyTransactionFilter::payees(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.payeeFilter;
 
@@ -627,7 +627,7 @@ const bool MyMoneyTransactionFilter::payees(QCStringList& list) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
+bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.accountFilter;
 
@@ -644,7 +644,7 @@ const bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::categories(QCStringList& list) const
+bool MyMoneyTransactionFilter::categories(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.categoryFilter;
 
@@ -660,7 +660,7 @@ const bool MyMoneyTransactionFilter::categories(QCStringList& list) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::types(QValueList<int>& list) const
+bool MyMoneyTransactionFilter::types(QValueList<int>& list) const
 {
   bool result = m_filterSet.singleFilter.typeFilter;
 
@@ -676,7 +676,7 @@ const bool MyMoneyTransactionFilter::types(QValueList<int>& list) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::states(QValueList<int>& list) const
+bool MyMoneyTransactionFilter::states(QValueList<int>& list) const
 {
   bool result = m_filterSet.singleFilter.stateFilter;
 
@@ -692,7 +692,7 @@ const bool MyMoneyTransactionFilter::states(QValueList<int>& list) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::firstType(int&i) const
+bool MyMoneyTransactionFilter::firstType(int&i) const
 {
   bool result = m_filterSet.singleFilter.typeFilter;
 
@@ -705,7 +705,7 @@ const bool MyMoneyTransactionFilter::firstType(int&i) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::firstState(int&i) const
+bool MyMoneyTransactionFilter::firstState(int&i) const
 {
   bool result = m_filterSet.singleFilter.stateFilter;
 
@@ -718,7 +718,7 @@ const bool MyMoneyTransactionFilter::firstState(int&i) const
   return result;
 }
 
-const bool MyMoneyTransactionFilter::textFilter(QRegExp& exp) const
+bool MyMoneyTransactionFilter::textFilter(QRegExp& exp) const
 {
   exp = m_text;
   return m_filterSet.singleFilter.textFilter == 1;

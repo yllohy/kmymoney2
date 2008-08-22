@@ -42,7 +42,7 @@ class MyMoneyQifProfile : public QObject
 {
   Q_OBJECT
 
-public: 
+public:
   MyMoneyQifProfile();
   MyMoneyQifProfile(const QString& name);
   ~MyMoneyQifProfile();
@@ -81,7 +81,7 @@ public:
   /**
     * This method is used to determine, if a profile has been changed or not
     */
-  const bool isDirty(void) const { return m_isDirty; };
+  bool isDirty(void) const { return m_isDirty; };
 
 public slots:
   void setProfileDescription(const QString& desc);

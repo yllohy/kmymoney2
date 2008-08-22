@@ -122,7 +122,7 @@ public:
    *          caller of this method becomes the owner of the object pointed to and is responsible
    *          to delete the object
    */
-  const MyMoneyObject* const findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result);
+  MyMoneyObject const * findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result);
 
   /**
    * Sets the number of @a days to look for matching transactions. The default after object creation is 3 days.

@@ -61,8 +61,8 @@ public:
   virtual const MyMoneyPayee user(void) const = 0;
   virtual const QDate creationDate(void) const = 0;
   virtual const QDate lastModificationDate(void) const = 0;
-  virtual const unsigned int currentFixVersion(void) const = 0;
-  virtual const unsigned int fileFixVersion(void) const = 0;
+  virtual unsigned int currentFixVersion(void) const = 0;
+  virtual unsigned int fileFixVersion(void) const = 0;
 
   // general set functions
   virtual void setUser(const MyMoneyPayee& val) = 0;
@@ -287,14 +287,14 @@ public:
   virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets ) = 0;
   virtual void loadPrices(const MyMoneyPriceList& list) = 0;
 
-  virtual const unsigned long accountId(void) const = 0;
-  virtual const unsigned long transactionId(void) const = 0;
-  virtual const unsigned long payeeId(void) const = 0;
-  virtual const unsigned long institutionId(void) const = 0;
-  virtual const unsigned long scheduleId(void) const = 0;
-  virtual const unsigned long securityId(void) const = 0;
-  virtual const unsigned long reportId(void) const = 0;
-  virtual const unsigned long budgetId(void) const = 0;
+  virtual unsigned long accountId(void) const = 0;
+  virtual unsigned long transactionId(void) const = 0;
+  virtual unsigned long payeeId(void) const = 0;
+  virtual unsigned long institutionId(void) const = 0;
+  virtual unsigned long scheduleId(void) const = 0;
+  virtual unsigned long securityId(void) const = 0;
+  virtual unsigned long reportId(void) const = 0;
+  virtual unsigned long budgetId(void) const = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
   virtual void loadTransactionId(const unsigned long id) = 0;

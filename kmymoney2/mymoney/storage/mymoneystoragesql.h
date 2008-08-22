@@ -102,7 +102,7 @@ class MyMoneyDbDrivers {
       *  @return a list ofsupported Qt database driver types, their qt names and useful names
       **/
     const QMap<QString, QString> driverMap() const {return (m_driverMap);};
-    const databaseTypeE driverToType (const QString& driver) const;
+    databaseTypeE driverToType (const QString& driver) const;
   private:
     QMap<QString, QString> m_driverMap;
 };
@@ -128,8 +128,8 @@ class MyMoneyDbColumn : public KShared {
 
     const QString& name(void) const {return (m_name);}
     const QString& type(void) const {return (m_type);}
-    const bool isPrimaryKey(void) const {return (m_isPrimary);}
-    const bool isNotNull(void) const {return (m_isNotNull);}
+    bool isPrimaryKey(void) const {return (m_isPrimary);}
+    bool isNotNull(void) const {return (m_isNotNull);}
   private:
     QString m_name;
     QString m_type;
@@ -288,7 +288,7 @@ public:
     inline view_iterator viewBegin(void) const {return m_views.constBegin();}
     inline view_iterator viewEnd(void) const {return m_views.constEnd();}
 
-    inline const unsigned int currentVersion() const {return (m_currentVersion);};
+    inline unsigned int currentVersion() const {return (m_currentVersion);};
 
 private:
   static unsigned int m_currentVersion; // The current version of the database layout
@@ -323,7 +323,7 @@ public:
   MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& = KURL());
   virtual ~MyMoneyStorageSql() {}
 
-  const unsigned int currentVersion() const {return (m_db.currentVersion());};
+  unsigned int currentVersion() const {return (m_db.currentVersion());};
 
     /**
    * MyMoneyStorageSql - open database file
@@ -418,7 +418,7 @@ public:
   void modifyBudget(const MyMoneyBudget& bud);
   void removeBudget(const MyMoneyBudget& bud);
 
-  const unsigned long transactionCount  (const QCString& aid = QCString()) const;
+  unsigned long transactionCount  (const QCString& aid = QCString()) const;
   inline const QMap<QCString, unsigned long> transactionCountMap () const
       {return (m_transactionCountMap);};
   /**
@@ -534,7 +534,7 @@ private:
   void deleteTransaction(const QString& id);
   void deleteSchedule(const QString& id);
   void deleteKeyValuePairs(const QString& kvpType, const QString& kvpId);
-  const long long unsigned calcHighId (const long long unsigned, const QString&);
+  long long unsigned calcHighId (const long long unsigned, const QString&);
 
   void setVersion (const QString& version);
 
@@ -544,7 +544,7 @@ private:
   //void startCommitUnit (const QString& callingFunction);
   //void endCommitUnit (const QString& callingFunction);
   //void cancelCommitUnit (const QString& callingFunction);
-  const int splitState(const MyMoneyTransactionFilter::stateOptionE& state) const;
+  int splitState(const MyMoneyTransactionFilter::stateOptionE& state) const;
 
   inline const QDate getDate (const QString& date) const {
     return (date.isNull() ? QDate() : QDate::fromString(date, Qt::ISODate));

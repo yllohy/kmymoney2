@@ -92,13 +92,13 @@ const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
   throw new MYMONEYEXCEPTION(msg);
 }
 
-const bool MyMoneyPrice::isValid(void) const
+bool MyMoneyPrice::isValid(void) const
 {
   return (m_date.isValid() && !m_fromSecurity.isEmpty() && !m_toSecurity.isEmpty());
 }
 
 // Equality operator
-const bool MyMoneyPrice::operator == (const MyMoneyPrice &right) const
+bool MyMoneyPrice::operator == (const MyMoneyPrice &right) const
 {
   return ((m_date == right.m_date) &&
       (m_rate == right.m_rate) &&

@@ -71,7 +71,7 @@ namespace reports {
       bool isSubtotal ( void ) const { return ( m_currentGroup != m_previousGroup ) && ( !m_previousGroup.isEmpty() ); }
       const MyMoneyMoney& subtotal ( void ) const { return m_previousSubtotal; }
       const MyMoneyMoney& currenttotal ( void ) const { return m_currentSubtotal; }
-      const unsigned depth ( void ) const { return m_depth; }
+      unsigned depth ( void ) const { return m_depth; }
       const QString& name ( void ) const { return m_currentGroup; }
       const QString& oldName ( void ) const { return m_previousGroup; }
       const QString& groupField ( void ) const { return m_groupField; }

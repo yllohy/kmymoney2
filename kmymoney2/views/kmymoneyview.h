@@ -273,7 +273,7 @@ public:
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool saveFile(const KURL& url, const QString& keyList = QString());
+  bool saveFile(const KURL& url, const QString& keyList = QString());
   /**
    * Saves the data into permanent storage on a new or empty SQL database.
    *
@@ -291,7 +291,7 @@ public:
    * @retval false save operation failed
    * @retval true save operation was successful
    */
-  const bool saveAsDatabase(const KURL& url);
+  bool saveAsDatabase(const KURL& url);
 
   /**
     * Call this to find out if the currently open file is native KMM
@@ -299,7 +299,7 @@ public:
     * @retval true file is native
     * @retval false file is foreign
     */
-  const bool isNativeFile() { return (m_fileOpen && (m_fileType < MaxNativeFileType)); }
+  bool isNativeFile() { return (m_fileOpen && (m_fileType < MaxNativeFileType)); }
 
   /**
    * Call this to find out if the currently open file is a sql database
@@ -307,7 +307,7 @@ public:
    * @retval true file is database
    * @retval false file is serial
    */
-  const bool isDatabase()
+  bool isDatabase()
     { return (m_fileOpen && ((m_fileType == KmmDbFile) || (m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
 
   /**
@@ -317,7 +317,7 @@ public:
    * @retval true file is synchronous
    * @retval false file is asynchronous
    */
-  const bool isSyncDatabase()
+  bool isSyncDatabase()
   { return (m_fileOpen && ((m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
 
   /**

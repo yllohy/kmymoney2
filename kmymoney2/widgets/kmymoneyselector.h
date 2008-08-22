@@ -122,7 +122,7 @@ public:
     * @note If the selection mode is set to Single, this
     *       method always returns false.
     */
-  const bool allItemsSelected(void) const;
+  bool allItemsSelected(void) const;
 
   /**
     * This method sets the current selected item and marks the

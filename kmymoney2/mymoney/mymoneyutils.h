@@ -192,6 +192,6 @@ KMYMONEY_EXPORT QDate stringToDate(const QString& str);
 KMYMONEY_EXPORT QCString QCStringEmpty(const QString&);
 KMYMONEY_EXPORT QString QStringEmpty(const QString&);
 
-KMYMONEY_EXPORT const unsigned long extractId(const QCString& txt);
+KMYMONEY_EXPORT unsigned long extractId(const QCString& txt);
 
 #endif

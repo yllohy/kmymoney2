@@ -753,7 +753,7 @@ void kMyMoneySplitTable::slotCancelEdit(void)
   }
 }
 
-const bool kMyMoneySplitTable::isEditMode(void) const
+bool kMyMoneySplitTable::isEditMode(void) const
 {
   return m_editMode;
 }

@@ -64,7 +64,7 @@ public:
     * @param clear if true (default) clears the widget before populating
     * @return This method returns the number of accounts loaded into the list
     */
-  const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
+  int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
 
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 

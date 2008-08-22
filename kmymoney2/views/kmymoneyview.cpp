@@ -1054,7 +1054,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     qfile->close();
 }
 
-const bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
+bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
 {
   QString filename = url.path();
 
@@ -1146,7 +1146,7 @@ const bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
   return rc;
 }
 
-const bool KMyMoneyView::saveAsDatabase(const KURL& url)
+bool KMyMoneyView::saveAsDatabase(const KURL& url)
 {
   bool rc = false;
   if (!fileOpen()) {

@@ -252,7 +252,7 @@ void KMyMoneySelector::setOptimizedWidth(void)
   m_listView->setColumnWidth(0, w+28);
 }
 
-const bool KMyMoneySelector::allItemsSelected(void) const
+bool KMyMoneySelector::allItemsSelected(void) const
 {
   QListViewItem* it_v;
 

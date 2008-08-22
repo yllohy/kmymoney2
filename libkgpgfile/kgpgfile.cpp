@@ -220,7 +220,7 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
   return true;
 }
 
-const bool KGPGFile::startProcess(const QStringList& args)
+bool KGPGFile::startProcess(const QStringList& args)
 {
   // now start the KProcess with GPG
   m_process = new KShellProcess();
@@ -505,7 +505,7 @@ void KGPGFile::slotSendDataToGPG(KProcess *)
   }
 }
 
-const bool KGPGFile::GPGAvailable(void)
+bool KGPGFile::GPGAvailable(void)
 {
   QString output;
   char  buffer[1024];
@@ -521,7 +521,7 @@ const bool KGPGFile::GPGAvailable(void)
   return !output.isEmpty();
 }
 
-const bool KGPGFile::keyAvailable(const QString& name)
+bool KGPGFile::keyAvailable(const QString& name)
 {
   QString output;
   char  buffer[1024];

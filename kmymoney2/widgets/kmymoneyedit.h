@@ -154,7 +154,7 @@ public:
 
   void setValue(const MyMoneyMoney& value);
 
-  const bool isValid(void) const;
+  bool isValid(void) const;
 
   virtual bool eventFilter(QObject * , QEvent * );
 
@@ -180,7 +180,7 @@ public:
     * return the number of fractional digits
     * @sa setPrecision
     */
-  const int precision(void) { return m_prec; };
+  int precision(void) { return m_prec; };
 
   QWidget* focusWidget(void) const;
 

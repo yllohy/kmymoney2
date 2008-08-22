@@ -97,7 +97,7 @@ public:
     * @retval true the import was started successfully
     * @retval false the import could not be started.
     */
-  const bool startImport(void);
+  bool startImport(void);
 
   /**
     * This method must be called once the signal importFinished() has
@@ -108,7 +108,7 @@ public:
     * @retval false Import failed because the filter program terminated
     *               abnormally or the user aborted the import process.
     */
-  const bool finishImport(void);
+  bool finishImport(void);
 
   /**
     * This method is used to modify the auto payee creation flag.

@@ -95,7 +95,7 @@ bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
       (m_postDate == right.m_postDate) );
 }
 
-const bool MyMoneyTransaction::accountReferenced(const QCString& id) const
+bool MyMoneyTransaction::accountReferenced(const QCString& id) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -281,7 +281,7 @@ void MyMoneyTransaction::setPostDate(const QDate& date) { m_postDate = date; }
 void MyMoneyTransaction::setEntryDate(const QDate& date) { m_entryDate = date; }
 void MyMoneyTransaction::setMemo(const QString& memo) { m_memo = memo; }
 
-const bool MyMoneyTransaction::isLoanPayment(void) const
+bool MyMoneyTransaction::isLoanPayment(void) const
 {
   try {
     QValueList<MyMoneySplit>::ConstIterator it;
@@ -341,7 +341,7 @@ bool MyMoneyTransaction::isImported(void) const
   return value("Imported").lower() == QString("true");
 }
 
-const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
+bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;
   if(splitCount() != r.splitCount()) {

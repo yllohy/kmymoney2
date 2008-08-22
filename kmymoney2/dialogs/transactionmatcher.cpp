@@ -296,7 +296,7 @@ TransactionMatcher::autoMatchResultE TransactionMatcher::checkTransaction(const 
   return result;
 }
 
-const MyMoneyObject* const TransactionMatcher::findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result)
+MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result)
 {
   result = notMatched;
   sm = MyMoneySplit();

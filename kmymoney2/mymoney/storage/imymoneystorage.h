@@ -105,8 +105,8 @@ public:
   virtual const MyMoneyPayee user(void) const = 0;
   virtual const QDate creationDate(void) const = 0;
   virtual const QDate lastModificationDate(void) const = 0;
-  virtual const unsigned int currentFixVersion(void) const = 0;
-  virtual const unsigned int fileFixVersion(void) const = 0;
+  virtual unsigned int currentFixVersion(void) const = 0;
+  virtual unsigned int fileFixVersion(void) const = 0;
 
   // general set functions
   virtual void setUser(const MyMoneyPayee& user) = 0;
@@ -122,7 +122,7 @@ public:
     * a pointer to the newly created copy. The caller of this method is the
     * new owner of the object and must destroy it.
     */
-  virtual IMyMoneyStorage* const duplicate(void) = 0;
+  virtual IMyMoneyStorage const * duplicate(void) = 0;
 
   /**
     * This method is used to create a new account
@@ -221,7 +221,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  virtual const bool isStandardAccount(const QCString& id) const = 0;
+  virtual bool isStandardAccount(const QCString& id) const = 0;
 
   /**
     * This method is used to set the name for the specified standard account
@@ -269,7 +269,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  virtual const bool hasActiveSplits(const QCString& id) const = 0;
+  virtual bool hasActiveSplits(const QCString& id) const = 0;
 
   /**
     * This method is used to return the actual balance of an account
@@ -328,7 +328,7 @@ public:
     *
     * @return number of accounts currently known inside a MyMoneyFile object
     */
-  virtual const unsigned int accountCount(void) const = 0;
+  virtual unsigned int accountCount(void) const = 0;
 
   /**
     * This method returns a list of the institutions
@@ -400,7 +400,7 @@ public:
     *
     * @return number of transactions in journal/account
     */
-  virtual const unsigned int transactionCount(const QCString& account = QCString()) const = 0;
+  virtual unsigned int transactionCount(const QCString& account = QCString()) const = 0;
 
   /**
     * This method returns a QMap filled with the number of transactions
@@ -480,7 +480,7 @@ public:
     *
     * @return number of institutions known to file
     */
-  virtual const unsigned int institutionCount(void) const = 0;
+  virtual unsigned int institutionCount(void) const = 0;
 
   /**
     * This method returns a list of accounts inside the storage object.

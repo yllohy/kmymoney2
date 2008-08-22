@@ -261,7 +261,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   m_selectedCriteria->setText(i18n("Current selections: ") + txt);
 }
 
-const bool KFindTransactionDlg::allItemsSelected(const QListViewItem *item) const
+bool KFindTransactionDlg::allItemsSelected(const QListViewItem *item) const
 {
   QListViewItem* it_v;
 
@@ -275,7 +275,7 @@ const bool KFindTransactionDlg::allItemsSelected(const QListViewItem *item) cons
   return true;
 }
 
-const bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
+bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
 {
   QListViewItem* it_v;
 

@@ -147,7 +147,7 @@ MyMoneyBudget::AccountGroup MyMoneyBudget::AccountGroup::operator += (const MyMo
   return *this;
 }
 
-const bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const
+bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const
 {
   return (m_id == r.m_id
        && m_budgetlevel == r.m_budgetlevel
@@ -183,7 +183,7 @@ MyMoneyBudget::~MyMoneyBudget()
 {
 }
 
-const bool MyMoneyBudget::operator == (const MyMoneyBudget& right) const
+bool MyMoneyBudget::operator == (const MyMoneyBudget& right) const
 {
   return (MyMoneyObject::operator==(right) &&
       (m_accounts.count() == right.m_accounts.count()) &&

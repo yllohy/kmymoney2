@@ -46,10 +46,10 @@ const QDate MyMoneyDatabaseMgr::creationDate(void) const
 const QDate MyMoneyDatabaseMgr::lastModificationDate(void) const
 { return m_lastModificationDate; }
 
-const unsigned int MyMoneyDatabaseMgr::currentFixVersion(void) const
+unsigned int MyMoneyDatabaseMgr::currentFixVersion(void) const
 { return CURRENT_FIX_VERSION; }
 
-const unsigned int MyMoneyDatabaseMgr::fileFixVersion(void) const
+unsigned int MyMoneyDatabaseMgr::fileFixVersion(void) const
 { return m_fileFixVersion; }
 
   // general set functions
@@ -88,7 +88,7 @@ void MyMoneyDatabaseMgr::setPairs(const QMap<QCString, QString>& list)
   MyMoneyKeyValueContainer::setPairs(list);
 }
 
-MyMoneyDatabaseMgr* const MyMoneyDatabaseMgr::duplicate(void)
+MyMoneyDatabaseMgr const * MyMoneyDatabaseMgr::duplicate(void)
 {
   MyMoneyDatabaseMgr* that = new MyMoneyDatabaseMgr();
   *that = *this;
@@ -261,7 +261,7 @@ const MyMoneyAccount MyMoneyDatabaseMgr::account(const QCString& id) const
   throw new MYMONEYEXCEPTION(msg);
 }
 
-const bool MyMoneyDatabaseMgr::isStandardAccount(const QCString& id) const
+bool MyMoneyDatabaseMgr::isStandardAccount(const QCString& id) const
 {
   return id == STD_ACC_LIABILITY
       || id == STD_ACC_ASSET
@@ -420,7 +420,7 @@ void MyMoneyDatabaseMgr::addTransaction(MyMoneyTransaction& transaction, const b
   }
 }
 
-const bool MyMoneyDatabaseMgr::hasActiveSplits(const QCString& id) const
+bool MyMoneyDatabaseMgr::hasActiveSplits(const QCString& id) const
 {
   QMap<QCString, MyMoneyTransaction>::ConstIterator it;
 
@@ -490,7 +490,7 @@ bool MyMoneyDatabaseMgr::dirty(void) const
 void MyMoneyDatabaseMgr::setDirty(void)
 {}
 
-const unsigned int MyMoneyDatabaseMgr::accountCount(void) const
+unsigned int MyMoneyDatabaseMgr::accountCount(void) const
 {
   return m_sql->getRecCount("kmmAccounts");
 }
@@ -747,7 +747,7 @@ void MyMoneyDatabaseMgr::removeTransaction(const MyMoneyTransaction& transaction
   m_sql->removeTransaction(transaction);
 }
 
-const unsigned int MyMoneyDatabaseMgr::transactionCount(const QCString& account) const
+unsigned int MyMoneyDatabaseMgr::transactionCount(const QCString& account) const
 { return (m_sql->transactionCount(account)); }
 
 const QMap<QCString, unsigned long> MyMoneyDatabaseMgr::transactionCountMap(void) const
@@ -1026,7 +1026,7 @@ const MyMoneyTransaction MyMoneyDatabaseMgr::transaction(const QCString& account
   return transaction(list[idx].id());
 }
 
-const unsigned int MyMoneyDatabaseMgr::institutionCount(void) const
+unsigned int MyMoneyDatabaseMgr::institutionCount(void) const
 {
   return m_sql->getRecCount("kmmInstitutions");
 }
@@ -1766,28 +1766,28 @@ void MyMoneyDatabaseMgr::loadPrices(const MyMoneyPriceList& list)
   Q_UNUSED(list);
 }
 
-const unsigned long MyMoneyDatabaseMgr::accountId(void) const
+unsigned long MyMoneyDatabaseMgr::accountId(void) const
 { return m_sql->getNextAccountId(); }
 
-const unsigned long MyMoneyDatabaseMgr::transactionId(void) const
+unsigned long MyMoneyDatabaseMgr::transactionId(void) const
 { return m_sql->getNextTransactionId(); }
 
-const unsigned long MyMoneyDatabaseMgr::payeeId(void) const
+unsigned long MyMoneyDatabaseMgr::payeeId(void) const
 { return m_sql->getNextPayeeId(); }
 
-const unsigned long MyMoneyDatabaseMgr::institutionId(void) const
+unsigned long MyMoneyDatabaseMgr::institutionId(void) const
 { return m_sql->getNextInstitutionId(); }
 
-const unsigned long MyMoneyDatabaseMgr::scheduleId(void) const
+unsigned long MyMoneyDatabaseMgr::scheduleId(void) const
 { return m_sql->getNextScheduleId(); }
 
-const unsigned long MyMoneyDatabaseMgr::securityId(void) const
+unsigned long MyMoneyDatabaseMgr::securityId(void) const
 { return m_sql->getNextSecurityId(); }
 
-const unsigned long MyMoneyDatabaseMgr::reportId(void) const
+unsigned long MyMoneyDatabaseMgr::reportId(void) const
 { return m_sql->getNextReportId(); }
 
-const unsigned long MyMoneyDatabaseMgr::budgetId(void) const
+unsigned long MyMoneyDatabaseMgr::budgetId(void) const
 { return m_sql->getNextBudgetId(); }
 
 void MyMoneyDatabaseMgr::loadAccountId(const unsigned long id)

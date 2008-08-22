@@ -691,7 +691,7 @@ public slots:
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool slotFileSave(void);
+  bool slotFileSave(void);
 
   /**
     * ask the user for the filename and save the current document
@@ -699,7 +699,7 @@ public slots:
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool slotFileSaveAs(void);
+  bool slotFileSaveAs(void);
 
   /**
    * ask the user to select a database and save the current document
@@ -707,7 +707,7 @@ public slots:
    * @retval false save operation failed
    * @retval true save operation was successful
    */
-  const bool slotSaveAsDatabase(void);
+  bool slotSaveAsDatabase(void);
 
   /** asks for saving if the file is modified, then closes the actual file and window */
   void slotFileCloseWindow(void);

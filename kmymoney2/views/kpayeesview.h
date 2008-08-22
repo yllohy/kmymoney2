@@ -103,7 +103,7 @@ public:
     * @return transactionSortE value of sort order. See
     *         KTransactionPtrVector::TransactionSortE for possible values.
     */
-  const TransactionSortE sortType(void) const { return m_sortType; };
+  TransactionSortE sortType(void) const { return m_sortType; };
 
   /**
     * This method is used to set the account id to have a chance to

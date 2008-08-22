@@ -142,7 +142,7 @@ public:
   /**
     * This operator tests for equality of two MyMoneyAccount objects
     */
-  const bool operator == (const MyMoneyAccount &) const;
+  bool operator == (const MyMoneyAccount &) const;
 
   /**
     * This converts the account type into one of the four
@@ -176,9 +176,9 @@ public:
     * @param type actual account type
     * @return accountTypeE of major account type
     */
-  static const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type);
+  static MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type);
 
-  const MyMoneyAccount::accountTypeE accountGroup(void) const;
+  MyMoneyAccount::accountTypeE accountGroup(void) const;
 
   /**
     * This method returns the id of the MyMoneyInstitution object this account
@@ -248,7 +248,7 @@ public:
     * This method returns the number of entries in the m_accountList
     * @return number of entries in the accountList
     */
-  const int accountCount(void) const { return m_accountList.count(); };
+  int accountCount(void) const { return m_accountList.count(); };
 
   /**
     * This method is used to add an account id as sub-ordinate account
@@ -653,19 +653,19 @@ public:
   void setLoanAmount(const MyMoneyMoney& amount);
   const MyMoneyMoney interestRate(const QDate& date) const;
   void setInterestRate(const QDate& date, const MyMoneyMoney& rate);
-  const interestDueE interestCalculation(void) const;
+  interestDueE interestCalculation(void) const;
   void setInterestCalculation(const interestDueE onReception);
   const QDate nextInterestChange(void) const;
   void setNextInterestChange(const QDate& date);
   const QCString schedule(void) const;
   void setSchedule(const QCString& sched);
-  const bool fixedInterestRate(void) const;
+  bool fixedInterestRate(void) const;
   void setFixedInterestRate(const bool fixed);
   const MyMoneyMoney finalPayment(void) const;
   void setFinalPayment(const MyMoneyMoney& finalPayment);
-  const unsigned int term(void) const;
+  unsigned int term(void) const;
   void setTerm(const unsigned int payments);
-  const int interestChangeFrequency(int* unit = 0) const;
+  int interestChangeFrequency(int* unit = 0) const;
   void setInterestChangeFrequency(const int amount, const int unit);
   const MyMoneyMoney periodicPayment(void) const;
   void setPeriodicPayment(const MyMoneyMoney& payment);

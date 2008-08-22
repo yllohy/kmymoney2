@@ -113,7 +113,7 @@ public:
     * @retval false Dialog was left using the 'Skip' button
     * @retval true Dialog was left using the 'Abort' button
     */
-  const bool aborted(void) const { return m_aborted; };
+  bool aborted(void) const { return m_aborted; };
 
 public slots:
   /**

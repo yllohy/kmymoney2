@@ -155,7 +155,7 @@ public:
     * This is the function to access the MyMoneyFile object.
     * It returns a pointer to the single instance of the object.
     */
-  static inline MyMoneyFile* const instance() { return &file; }
+  static inline MyMoneyFile* instance() { return &file; }
 
   /**
     * This is the destructor for any MyMoneyFile object
@@ -224,7 +224,7 @@ public:
     * @return const pointer to the current attached storage object.
     *         If no object is attached, returns 0.
     */
-  IMyMoneyStorage* const storage(void) const { return m_storage; };
+  IMyMoneyStorage* storage(void) const { return m_storage; };
 
   /**
     * This method must be called before any single change or a series of changes
@@ -436,7 +436,7 @@ public:
     *
     * @return the number of modified splits
     */
-  const unsigned int moveSplits(const QCString& oldAccount, const QCString& newAccount);
+  unsigned int moveSplits(const QCString& oldAccount, const QCString& newAccount);
 
   /**
     * This method is used to determince, if the account with the
@@ -445,7 +445,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  const bool hasActiveSplits(const QCString& id) const;
+  bool hasActiveSplits(const QCString& id) const;
 
   /**
     * This method is used to check whether a given
@@ -456,7 +456,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  const bool isStandardAccount(const QCString& id) const;
+  bool isStandardAccount(const QCString& id) const;
 
   /**
     * Returns @a true, if transaction @t is a transfer transaction.
@@ -629,7 +629,7 @@ public:
     *
     * @return number of transactions in journal/account
     */
-  const unsigned int transactionCount(const QCString& account = QCString()) const;
+  unsigned int transactionCount(const QCString& account = QCString()) const;
 
   /**
     * This method returns a QMap filled with the number of transactions
@@ -648,7 +648,7 @@ public:
     *
     * @return number of institutions known to file
     */
-  const unsigned int institutionCount(void) const;
+  unsigned int institutionCount(void) const;
 
   /**
     * This method returns the number of accounts currently known to file
@@ -656,7 +656,7 @@ public:
     *
     * @return number of accounts currently known inside a MyMoneyFile object
     */
-  const unsigned int accountCount(void) const;
+  unsigned int accountCount(void) const;
 
   /**
     * Returns the institution of a given ID
@@ -1159,7 +1159,7 @@ public:
     * @retval true account with name @p name found as subaccounts
     * @retval false no subaccount present with that name
     */
-  const bool hasAccount(const QCString& id, const QString& name) const;
+  bool hasAccount(const QCString& id, const QString& name) const;
 
   /**
     * This method is used to retrieve the list of all reports
@@ -1320,7 +1320,7 @@ public:
     * @retval false @p no is not in use
     * @retval true @p no is already assigned
     */
-  const bool checkNoUsed(const QCString& accId, const QString& no) const;
+  bool checkNoUsed(const QCString& accId, const QString& no) const;
 
   /**
     * This method returns the highest assigned check no for

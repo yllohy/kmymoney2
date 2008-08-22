@@ -85,7 +85,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const FCALC_DOUBLE numPayments();
+  FCALC_DOUBLE numPayments();
 
   /**
     * This method calculates the amount of the payment (amortization and interest)
@@ -97,7 +97,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const FCALC_DOUBLE payment();
+  FCALC_DOUBLE payment();
 
   /**
     * This method calculates the present value
@@ -109,7 +109,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const FCALC_DOUBLE presentValue();
+  FCALC_DOUBLE presentValue();
 
   /**
     * This method calculates the future value
@@ -121,7 +121,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const FCALC_DOUBLE futureValue();
+  FCALC_DOUBLE futureValue();
 
   /**
     * This method calculates the nominal interest rate
@@ -133,7 +133,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const FCALC_DOUBLE interestRate();
+  FCALC_DOUBLE interestRate();
 
   /**
     * This method calculates the interest due for the next payment according
@@ -159,7 +159,7 @@ public:
     *
     * @return the interest amount
     */
-  const FCALC_DOUBLE interestDue(void) const;
+  FCALC_DOUBLE interestDue(void) const;
 
   /**
     * This method sets the rounding precision to @p prec fractional
@@ -179,7 +179,7 @@ public:
     */
   void setNpp(const FCALC_DOUBLE npp);
 
-  const FCALC_DOUBLE npp(void) const { return m_npp; };
+  FCALC_DOUBLE npp(void) const { return m_npp; };
 
   /**
     * This method sets the payment frequency. The parameter @p PF
@@ -247,7 +247,7 @@ public:
     */
   void setIr(const FCALC_DOUBLE ir);
 
-  const FCALC_DOUBLE ir(void) const { return m_ir; };
+  FCALC_DOUBLE ir(void) const { return m_ir; };
 
   /**
     * This method sets the present value to the value passed
@@ -257,7 +257,7 @@ public:
     */
   void setPv(const FCALC_DOUBLE pv);
 
-  const FCALC_DOUBLE pv(void) const { return m_pv; };
+  FCALC_DOUBLE pv(void) const { return m_pv; };
 
   /**
     * This method sets the payment amount to the value passed
@@ -267,7 +267,7 @@ public:
     */
   void setPmt(const FCALC_DOUBLE pmt);
 
-  const FCALC_DOUBLE pmt(void) const { return m_pmt; };
+  FCALC_DOUBLE pmt(void) const { return m_pmt; };
 
   /**
     * This method sets the future value to the value passed
@@ -277,18 +277,18 @@ public:
     */
   void setFv(const FCALC_DOUBLE fv);
 
-  const FCALC_DOUBLE fv(void) const { return m_fv; };
+  FCALC_DOUBLE fv(void) const { return m_fv; };
 
 private:
-  const FCALC_DOUBLE eff_int(void) const;
-  const FCALC_DOUBLE nom_int(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE rnd(const FCALC_DOUBLE x) const;
+  FCALC_DOUBLE eff_int(void) const;
+  FCALC_DOUBLE nom_int(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE rnd(const FCALC_DOUBLE x) const;
 
-  const FCALC_DOUBLE _Ax(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _Bx(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _Cx(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _fi(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _fip(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE _Ax(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE _Bx(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE _Cx(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE _fi(const FCALC_DOUBLE eint) const;
+  FCALC_DOUBLE _fip(const FCALC_DOUBLE eint) const;
 
 private:
   FCALC_DOUBLE          m_ir;   // nominal interest rate

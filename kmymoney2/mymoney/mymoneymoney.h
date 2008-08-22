@@ -137,7 +137,7 @@ public:
    * about currency symbol and precision out of the MyMoneySecurity object @a sec.
    */
   const QString formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
-  
+
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
    * about precision out of the denomination @a denom. No currency symbol is shown. If you want
@@ -155,13 +155,13 @@ public:
     * @param fract smallest fractional part (e.g. 100 for cents)
     * @return number of precision digits (e.g. 2 for cents)
     */
-  static const int denomToPrec(signed64 fract);
+  static int denomToPrec(signed64 fract);
 
   const QString toString(void) const;
   void fromString(const QString& str);
   const MyMoneyMoney convert(const signed64 denom = 100, const roundingMethod how = RndRound) const;
-  static const signed64 precToDenom(int prec);
-  const double toDouble(void) const;
+  static signed64 precToDenom(int prec);
+  double toDouble(void) const;
 
   static void setThousandSeparator(const unsigned char);
   static void setDecimalSeparator(const unsigned char);
@@ -228,7 +228,7 @@ private:
   signed64 m_num;
   signed64 m_denom;
 
-  const signed64 getLcd(const MyMoneyMoney& b) const;
+  signed64 getLcd(const MyMoneyMoney& b) const;
 
   KMYMONEY_EXPORT friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
   KMYMONEY_EXPORT friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);

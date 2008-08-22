@@ -274,7 +274,7 @@ void kMyMoneyEdit::setPrecision(const int prec)
   }
 }
 
-const bool kMyMoneyEdit::isValid(void) const
+bool kMyMoneyEdit::isValid(void) const
 {
   return !(m_edit->text().isEmpty());
 }

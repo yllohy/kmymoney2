@@ -57,7 +57,7 @@ public:
   MyMoneyBalanceCacheItem() { valid = false; };
   MyMoneyBalanceCacheItem(const MyMoneyMoney& val) { balance = val; valid = true; };
 
-  const bool operator == (const MyMoneyBalanceCacheItem& right) const;
+  bool operator == (const MyMoneyBalanceCacheItem& right) const;
   bool          valid;
   MyMoneyMoney  balance;
 };
@@ -87,8 +87,8 @@ public:
   const MyMoneyPayee user(void) const { return m_user; };
   const QDate creationDate(void) const { return m_creationDate; };
   const QDate lastModificationDate(void) const { return m_lastModificationDate; };
-  const unsigned int currentFixVersion(void) const { return m_currentFixVersion; };
-  const unsigned int fileFixVersion(void) const { return m_fileFixVersion; };
+  unsigned int currentFixVersion(void) const { return m_currentFixVersion; };
+  unsigned int fileFixVersion(void) const { return m_fileFixVersion; };
 
 
   // general set functions
@@ -113,7 +113,7 @@ public:
     * a pointer to the newly created copy. The caller of this method is the
     * new owner of the object and must destroy it.
     */
-  MyMoneySeqAccessMgr * const duplicate(void);
+  MyMoneySeqAccessMgr const * duplicate(void);
 
   /**
     * Returns the account addressed by it's id.
@@ -131,7 +131,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  const bool isStandardAccount(const QCString& id) const;
+  bool isStandardAccount(const QCString& id) const;
 
   /**
     * This method is used to set the name for the specified standard account
@@ -350,7 +350,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  const bool hasActiveSplits(const QCString& id) const;
+  bool hasActiveSplits(const QCString& id) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -478,7 +478,7 @@ public:
     *
     * @return number of transactions in journal/account
     */
-  const unsigned int transactionCount(const QCString& account = QCString()) const;
+  unsigned int transactionCount(const QCString& account = QCString()) const;
 
   const QMap<QCString, unsigned long> transactionCountMap(void) const;
 
@@ -488,7 +488,7 @@ public:
     *
     * @return number of institutions known to file
     */
-  const unsigned int institutionCount(void) const;
+  unsigned int institutionCount(void) const;
 
   /**
     * This method returns the number of accounts currently known to file
@@ -496,7 +496,7 @@ public:
     *
     * @return number of accounts currently known inside a MyMoneyFile object
     */
-  const unsigned int accountCount(void) const;
+  unsigned int accountCount(void) const;
 
   /**
     * This method is used to return the standard liability account
@@ -546,14 +546,14 @@ public:
   virtual void loadReportId(const unsigned long id);
   virtual void loadBudgetId(const unsigned long id);
 
-  virtual const unsigned long accountId(void) const { return m_nextAccountID; };
-  virtual const unsigned long transactionId(void) const { return m_nextTransactionID; };
-  virtual const unsigned long payeeId(void) const { return m_nextPayeeID; };
-  virtual const unsigned long institutionId(void) const { return m_nextInstitutionID; };
-  virtual const unsigned long scheduleId(void) const { return m_nextScheduleID; };
-  virtual const unsigned long securityId(void) const { return m_nextSecurityID; };
-  virtual const unsigned long reportId(void) const { return m_nextReportID; };
-  virtual const unsigned long budgetId(void) const { return m_nextBudgetID; };
+  virtual unsigned long accountId(void) const { return m_nextAccountID; };
+  virtual unsigned long transactionId(void) const { return m_nextTransactionID; };
+  virtual unsigned long payeeId(void) const { return m_nextPayeeID; };
+  virtual unsigned long institutionId(void) const { return m_nextInstitutionID; };
+  virtual unsigned long scheduleId(void) const { return m_nextScheduleID; };
+  virtual unsigned long securityId(void) const { return m_nextSecurityID; };
+  virtual unsigned long reportId(void) const { return m_nextReportID; };
+  virtual unsigned long budgetId(void) const { return m_nextBudgetID; };
 
 
   /**

@@ -133,7 +133,7 @@ public:
     * @return accountTypeE containing the internal used numeric value. For possible
     *         values see MyMoneyAccount::accountTypeE
     */
-  static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
+  static MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
 
   /**
     * This method is used to convert a security type from it's
@@ -143,7 +143,7 @@ public:
     * @return eSECURITYTYPE containing the internal used numeric value. For possible
     *         values see MyMoneySecurity::eSECURITYTYPE
     */
-  static const MyMoneySecurity::eSECURITYTYPE stringToSecurity(const QString& txt);
+  static MyMoneySecurity::eSECURITYTYPE stringToSecurity(const QString& txt);
 
   /**
     * This method is used to convert the internal representation of
@@ -177,7 +177,7 @@ public:
     * @param text reference to QString representing the human readable format
     * @return numerical representation of the occurence
     */
-  static const MyMoneySchedule::occurenceE stringToOccurence(const QString& text);
+  static MyMoneySchedule::occurenceE stringToOccurence(const QString& text);
 
   /**
     * This method is used to convert the payment type from it's
@@ -237,7 +237,7 @@ public:
     * @retval 0 @p txt is unknown
     * @retval >0 numeric value for @p txt
     */
-  static const int stringToHomePageItem(const QString& txt);
+  static int stringToHomePageItem(const QString& txt);
 
   /**
     * Retrieve a KDE KGuiItem for the new schedule button.
@@ -344,7 +344,7 @@ public:
     *
     * @return KMyMoneyUtils::transactionTypeE value of the action
     */
-  static const transactionTypeE transactionType(const MyMoneyTransaction& t);
+  static transactionTypeE transactionType(const MyMoneyTransaction& t);
 
   /**
     * This method modifies a scheduled loan transaction such that all

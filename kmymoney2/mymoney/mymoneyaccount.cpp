@@ -198,7 +198,7 @@ void MyMoneyAccount::removeAccountId(const QCString& account)
     m_accountList.remove(it);
 }
 
-const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::accountTypeE type)
+MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::accountTypeE type)
 {
   switch(type) {
     case MyMoneyAccount::Checkings:
@@ -221,7 +221,7 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
   }
 }
 
-const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
+bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 {
   return (MyMoneyKeyValueContainer::operator==(right) &&
       MyMoneyObject::operator==(right) &&
@@ -238,7 +238,7 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
       (m_institution == right.m_institution) );
 }
 
-const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
+MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
 {
   return accountGroup(m_accountType);
 }
@@ -327,7 +327,7 @@ void MyMoneyAccountLoan::setInterestRate(const QDate& date, const MyMoneyMoney& 
   setValue(key, value.toString());
 }
 
-const MyMoneyAccountLoan::interestDueE MyMoneyAccountLoan::interestCalculation(void) const
+MyMoneyAccountLoan::interestDueE MyMoneyAccountLoan::interestCalculation(void) const
 {
   QString payTime(value("interest-calculation"));
   if(payTime == "paymentDue")
@@ -359,7 +359,7 @@ void MyMoneyAccountLoan::setNextInterestChange(const QDate& date)
   setValue("interest-nextchange", date.toString(Qt::ISODate));
 }
 
-const int MyMoneyAccountLoan::interestChangeFrequency(int* unit) const
+int MyMoneyAccountLoan::interestChangeFrequency(int* unit) const
 {
   int rc = -1;
 
@@ -393,7 +393,7 @@ void MyMoneyAccountLoan::setSchedule(const QCString& sched)
   setValue("schedule", sched);
 }
 
-const bool MyMoneyAccountLoan::fixedInterestRate(void) const
+bool MyMoneyAccountLoan::fixedInterestRate(void) const
 {
   // make sure, that an empty kvp element returns true
   return !(value("fixed-interest") == "no");
@@ -418,7 +418,7 @@ void MyMoneyAccountLoan::setFinalPayment(const MyMoneyMoney& finalPayment)
   setValue("final-payment", finalPayment.toString());
 }
 
-const unsigned int MyMoneyAccountLoan::term(void) const
+unsigned int MyMoneyAccountLoan::term(void) const
 {
   return value("term").toUInt();
 }

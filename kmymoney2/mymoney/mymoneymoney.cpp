@@ -542,7 +542,7 @@ MyMoneyMoney MyMoneyMoney::operator / ( const MyMoneyMoney& _b ) const
   return quotient;
 }
 
-const signed64 MyMoneyMoney::getLcd(const MyMoneyMoney& b) const
+signed64 MyMoneyMoney::getLcd(const MyMoneyMoney& b) const
 {
   signed64 current_divisor = 2;
   signed64 max_square;
@@ -761,7 +761,7 @@ const MyMoneyMoney MyMoneyMoney::reduce(void) const
   return out;
 }
 
-const signed64 MyMoneyMoney::precToDenom(int prec)
+signed64 MyMoneyMoney::precToDenom(int prec)
 {
   signed64 denom = 1;
 
@@ -771,12 +771,12 @@ const signed64 MyMoneyMoney::precToDenom(int prec)
   return denom;
 }
 
-const double MyMoneyMoney::toDouble(void) const
+double MyMoneyMoney::toDouble(void) const
 {
   return static_cast<double>(m_num) / static_cast<double>(m_denom);
 }
 
-const int MyMoneyMoney::denomToPrec(signed64 fract)
+int MyMoneyMoney::denomToPrec(signed64 fract)
 {
   int rc = 0;
   while(fract > 1) {

@@ -88,7 +88,7 @@ MyMoneyDbDrivers::MyMoneyDbDrivers () {
   m_driverMap["QSQLITE3"] = QString("SQLite Version 3");
 }
 
-const databaseTypeE MyMoneyDbDrivers::driverToType (const QString& driver) const {
+databaseTypeE MyMoneyDbDrivers::driverToType (const QString& driver) const {
   if (driver == "QDB2") return(Db2);
   else if (driver == "QIBASE") return(Interbase);
   else if (driver == "QMYSQL3") return(Mysql);
@@ -2437,7 +2437,7 @@ const QMap<QCString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (c
   return txMap;
 }
 
-const int MyMoneyStorageSql::splitState(const MyMoneyTransactionFilter::stateOptionE& state) const
+int MyMoneyStorageSql::splitState(const MyMoneyTransactionFilter::stateOptionE& state) const
 {
   int rc = MyMoneySplit::NotReconciled;
 
@@ -2630,7 +2630,7 @@ const QMap<QCString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (c
   //FIXME: if we have an accounts-only filter, recalc balances on loaded accounts
 }
 
-const unsigned long MyMoneyStorageSql::transactionCount (const QCString& aid) const {
+unsigned long MyMoneyStorageSql::transactionCount (const QCString& aid) const {
   DBG("*** Entering MyMoneyStorageSql::transactionCount");
   if (aid.length() == 0)
     return m_transactions;
@@ -3409,7 +3409,7 @@ void MyMoneyStorageSql::loadBudgetId(const unsigned long long id)
 }
 
 //****************************************************
-const long long unsigned MyMoneyStorageSql::calcHighId
+long long unsigned MyMoneyStorageSql::calcHighId
      (const long long unsigned i, const QString& id) {
   DBG("*** Entering MyMoneyStorageSql::calcHighId");
   QString nid = id;

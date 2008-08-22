@@ -217,7 +217,7 @@ void MyMoneyReport::setRowType(ERowType _rt)
   }
 }
 
-const bool MyMoneyReport::accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const
+bool MyMoneyReport::accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const
 {
   bool result = m_accountGroupFilter;
 
@@ -244,7 +244,7 @@ void MyMoneyReport::addAccountGroup(MyMoneyAccount::accountTypeE type)
     m_accountGroups.push_back(type);
 }
 
-const bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE type ) const
+bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE type ) const
 {
   bool result = (! m_accountGroupFilter)
                 || ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome )
@@ -253,7 +253,7 @@ const bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE typ
   return result;
 }
 
-const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
+bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
 {
   bool result = false;
 

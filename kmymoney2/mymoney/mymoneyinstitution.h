@@ -136,7 +136,7 @@ public:
     * this institution
     * @return number of accounts
     */
-  const unsigned int accountCount(void) const { return m_accountList.count(); }
+  unsigned int accountCount(void) const { return m_accountList.count(); }
 
   bool operator == (const MyMoneyInstitution&) const;
   bool operator < (const MyMoneyInstitution& right) const;
@@ -153,7 +153,7 @@ public:
     * @retval false This object does not reference the object with id @p id.
     */
   virtual bool hasReferenceTo(const QCString& id) const;
-  
+
   QPixmap pixmap() const;
 
 private:

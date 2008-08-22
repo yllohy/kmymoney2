@@ -401,14 +401,14 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 }
 
 
-const bool MyMoneyFile::hasActiveSplits(const QCString& id) const
+bool MyMoneyFile::hasActiveSplits(const QCString& id) const
 {
   checkStorage();
 
   return m_storage->hasActiveSplits(id);
 }
 
-const bool MyMoneyFile::isStandardAccount(const QCString& id) const
+bool MyMoneyFile::isStandardAccount(const QCString& id) const
 {
   checkStorage();
 
@@ -1004,7 +1004,7 @@ void MyMoneyFile::setDirty(void) const
   m_storage->setDirty();
 }
 
-const unsigned int MyMoneyFile::accountCount(void) const
+unsigned int MyMoneyFile::accountCount(void) const
 {
   checkStorage();
 
@@ -1054,7 +1054,7 @@ const MyMoneyAccount& MyMoneyFile::equity(void) const
   return d->m_cache.account (STD_ACC_EQUITY);
 }
 
-const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
+unsigned int MyMoneyFile::transactionCount(const QCString& account) const
 {
   checkStorage();
 
@@ -1068,7 +1068,7 @@ const QMap<QCString, unsigned long> MyMoneyFile::transactionCountMap(void) const
   return m_storage->transactionCountMap();
 }
 
-const unsigned int MyMoneyFile::institutionCount(void) const
+unsigned int MyMoneyFile::institutionCount(void) const
 {
   checkStorage();
 
@@ -1995,7 +1995,7 @@ const MyMoneyPriceList MyMoneyFile::priceList(void) const
   return m_storage->priceList();
 }
 
-const bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) const
+bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) const
 {
   MyMoneyAccount acc = d->m_cache.account(id);
   QCStringList list = acc.accountList();
@@ -2129,7 +2129,7 @@ bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArr
   return m_storage->isReferenced(obj, skipChecks);
 }
 
-const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const
+bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const
 {
   // by definition, an empty string or a non-numeric string is not used
   QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));

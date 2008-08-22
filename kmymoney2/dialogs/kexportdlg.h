@@ -95,12 +95,12 @@ public:
   /**
     * This method returns the state of the account checkbox
     */
-  const bool accountSelected(void) const { return m_qcheckboxAccount->isChecked(); };
+  bool accountSelected(void) const { return m_qcheckboxAccount->isChecked(); };
 
   /**
     * This method returns the state of the account checkbox
     */
-  const bool categorySelected(void) const { return m_qcheckboxCategories->isChecked(); };
+  bool categorySelected(void) const { return m_qcheckboxCategories->isChecked(); };
 
 protected slots:
   /**

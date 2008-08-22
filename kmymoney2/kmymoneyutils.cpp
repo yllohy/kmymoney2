@@ -55,7 +55,7 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
   return MyMoneyAccount::accountTypeToString(accountType);
 }
 
-const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QString& type)
+MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QString& type)
 {
   MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
   QString tmp = type.lower();
@@ -96,7 +96,7 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
   return rc;
 }
 
-const MyMoneySecurity::eSECURITYTYPE KMyMoneyUtils::stringToSecurity(const QString& txt)
+MyMoneySecurity::eSECURITYTYPE KMyMoneyUtils::stringToSecurity(const QString& txt)
 {
   MyMoneySecurity::eSECURITYTYPE rc = MyMoneySecurity::SECURITY_NONE;
   QString tmp = txt.lower();
@@ -118,7 +118,7 @@ const QString KMyMoneyUtils::securityTypeToString(const MyMoneySecurity::eSECURI
   return i18n(MyMoneySecurity::securityTypeToString(securityType));
 }
 
-const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text)
+MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text)
 {
   MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY;
   QString tmp = text.lower();
@@ -252,7 +252,7 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
   return rc;
 }
 
-const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
+int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
 {
   int idx = 0;
   for(idx = 0; homePageItems[idx] != 0; ++idx) {
@@ -413,7 +413,7 @@ const MyMoneySplit KMyMoneyUtils::stockSplit(const MyMoneyTransaction& t)
   return MyMoneySplit();
 }
 
-const KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMoneyTransaction& t)
+KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMoneyTransaction& t)
 {
   if(!stockSplit(t).id().isEmpty())
     return InvestmentTransaction;

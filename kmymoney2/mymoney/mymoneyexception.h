@@ -93,7 +93,7 @@ public:
     *
     * @return long integer containing the line number
     */
-  const unsigned long line(void) const { return m_line; };
+  unsigned long line(void) const { return m_line; };
 
 private:
   /**

@@ -951,7 +951,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   }
 }
 
-const bool KMyMoney2App::slotFileSave(void)
+bool KMyMoney2App::slotFileSave(void)
 {
   // if there's nothing changed, there's no need to save anything
   if(!myMoneyView->dirty())
@@ -1008,7 +1008,7 @@ void KMyMoney2App::slotKeySelected(int idx)
   m_additionalKeyLabel->setText(i18n("Additional encryption key(s) to be used: %1").arg(cnt));
 }
 
-const bool KMyMoney2App::slotFileSaveAs(void)
+bool KMyMoney2App::slotFileSaveAs(void)
 {
   bool rc = false;
   // in event of it being a database, ensure that all data is read into storage for saveas
@@ -1144,7 +1144,7 @@ const bool KMyMoney2App::slotFileSaveAs(void)
   return rc;
 }
 
-const bool KMyMoney2App::slotSaveAsDatabase(void)
+bool KMyMoney2App::slotSaveAsDatabase(void)
 {
 
   bool rc = false;

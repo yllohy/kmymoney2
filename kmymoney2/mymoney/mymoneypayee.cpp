@@ -108,7 +108,7 @@ MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right) :
   *this = right;
 }
 
-const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
+bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
 {
   return (MyMoneyObject::operator==(right) &&
       ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&

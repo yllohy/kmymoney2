@@ -154,7 +154,7 @@ public:
   MyMoneyPayee(const MyMoneyPayee&);
 
   // Equality operator
-  const bool operator == (const MyMoneyPayee &) const;
+  bool operator == (const MyMoneyPayee &) const;
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
 
