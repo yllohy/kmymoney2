@@ -126,13 +126,13 @@ void KMyMoneyAccountTreeForecast::showAdvanced(MyMoneyForecast& forecast)
 
 void KMyMoneyAccountTreeForecast::showBudget(MyMoneyForecast& forecast)
 {
-  QDate forecastStartDate = QDate(QDate::currentDate().year(), 1, 1);
+  QDate forecastStartDate = forecast.forecastStartDate();
   QDate forecastEndDate = forecast.forecastEndDate();
 
   //add cycle interval columns
   QDate f_date = forecastStartDate;
-  for(int i = 1; f_date <= forecastEndDate; ++i, f_date = f_date.addMonths(1)) {
-    QString columnName =  QDate::longMonthName(i);
+  for(; f_date <= forecastEndDate; f_date = f_date.addMonths(1)) {
+    QString columnName =  QDate::longMonthName(f_date.month());
     addColumn(columnName, -1);
   }
   //add total column
@@ -296,15 +296,15 @@ void KMyMoneyAccountTreeForecastItem::updateBudget()
   }
 
     //iterate columns
-  for(int i = 1; forecastDate <= m_forecast.forecastEndDate(); ++i, forecastDate = forecastDate.addMonths(1), ++it_c) {
+  for(; forecastDate <= m_forecast.forecastEndDate(); forecastDate = forecastDate.addMonths(1), ++it_c) {
     MyMoneyMoney amountMM;
-    amountMM = m_forecast.forecastBalance(m_account,QDate(QDate::currentDate().year(), i, 1));
+    amountMM = m_forecast.forecastBalance(m_account,forecastDate);
     if(m_account.accountType() == MyMoneyAccount::Expense)
       amountMM = -amountMM;
 
     tAmountMM += amountMM;
     setAmount(it_c, amountMM);
-    setValue(it_c, amountMM, QDate(QDate::currentDate().year(), i, 1));
+    setValue(it_c, amountMM, forecastDate);
     showAmount(it_c, amountMM, currency);
   }
 

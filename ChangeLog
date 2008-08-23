@@ -13,6 +13,8 @@
     report
   * Changed style of intermediate column in Summary - patch provided by
     David Houlden
+  * Code cleanup in budget forecast tree
+  * Fixed html tag in Summary - patch provided by David Houlden
 
 2008-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store name of new file in 'recent files' list

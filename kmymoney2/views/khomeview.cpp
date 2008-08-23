@@ -1164,14 +1164,16 @@ void KHomeView::showSummary(void)
     //column titles
     m_part->write("<tr class=\"item\"><td class=\"left\" width=\"30%\">");
     m_part->write(i18n("Accounts"));
-    m_part->write("</td><td width=\"15%\" class=\"right\">");
+    m_part->write("</td>");
+    m_part->write("<td width=\"15%\" class=\"right\">");
     m_part->write(i18n("Current Balance"));
+    m_part->write("</td>");
     //intermediate row to separate both columns
     m_part->write("<td width=\"10%\" style=\"background-color: Window;\"></td>");
-    m_part->write("</td>");
     m_part->write("<td class=\"left\" width=\"30%\">");
     m_part->write(i18n("Accounts"));
-    m_part->write("</td><td width=\"15%\" class=\"right\">");
+    m_part->write("</td>");
+    m_part->write("<td width=\"15%\" class=\"right\">");
     m_part->write(i18n("Current Balance"));
     m_part->write("</td></tr>");
 
@@ -1321,7 +1323,7 @@ void KHomeView::showSummary(void)
   //print total profit/loss
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Profit/Loss")).arg(showColoredAmount(amountProfit, profitValue.isNegative())));
-  m_part->write("<td style=\"background-color: Window;\"><td></td><td></td>");
+  m_part->write("<td style=\"background-color: Window;\"></td><td></td><td></td>");
   m_part->write("</tr>");
 
   //Add all schedules for this month
@@ -1420,7 +1422,7 @@ void KHomeView::showSummary(void)
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Transfers This Month")).arg(amountScheduledTransfer));
 
   //leave the rest blank and end the row
-  m_part->write("<td style=\"background-color: Window;\"><td></td><td></td>");
+  m_part->write("<td style=\"background-color: Window;\"></td><td></td><td></td>");
   m_part->write("</tr>");
 
   m_part->write("</table>");
