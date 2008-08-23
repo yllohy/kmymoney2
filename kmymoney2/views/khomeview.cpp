@@ -386,7 +386,7 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator it;
     QValueList<MyMoneySchedule>::Iterator it_f;
 
-    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     m_part->write(QString("<tr class=\"warning\" ><td colspan=\"4\">%1</td></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
     m_part->write("<tr class=\"warning\">");
     m_part->write("<td class=\"left\" width=\"10%\">");
@@ -447,7 +447,7 @@ void KHomeView::showPayments(void)
 
     if (todays.count() > 0) {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
-      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
       m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Todays payments")));
       m_part->write("<tr class=\"item\">");
       m_part->write("<td class=\"left\" width=\"10%\">");
@@ -478,7 +478,7 @@ void KHomeView::showPayments(void)
 
       QValueList<MyMoneySchedule>::Iterator it;
 
-      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
       m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Future payments")));
       m_part->write("<tr class=\"item\">");
       m_part->write("<td class=\"left\" width=\"10%\">");
@@ -697,7 +697,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
     int i = 0;
     tmp = "<div class=\"summaryheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
-    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     m_part->write("<tr class=\"item\"><td class=\"left\" width=\"35%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td><td width=\"25%\" class=\"right\">");
@@ -827,10 +827,10 @@ void KHomeView::showFavoriteReports(void)
       if ( (*it_report).isFavorite() ) {
         if(firstTime) {
           m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
-          m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+          m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
           m_part->write("<tr class=\"item\"><td class=\"left\" width=\"40%\">");
           m_part->write(i18n("Report"));
-          m_part->write("</td><td width=\"60%\" class=\"center\">");
+          m_part->write("</td><td width=\"60%\" class=\"left\">");
           m_part->write(i18n("Comment"));
           m_part->write("</td></tr>");
           firstTime = false;
@@ -888,7 +888,7 @@ void KHomeView::showForecast(void)
 
     // Now output header
     m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
-    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     m_part->write("<tr class=\"item\"  style=\"font-weight: normal;\" ><td class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td>");
@@ -1151,7 +1151,7 @@ void KHomeView::showSummary(void)
   if(nameAssetsIdx.count() > 0 || nameLiabilitiesIdx.count() > 0) {
     //print header
     m_part->write("<div class=\"summaryheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
-    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     //asset and liability titles
     m_part->write("<tr class=\"item\"><td class=\"center\" colspan=\"2\">");
     m_part->write(i18n("Assets"));
@@ -1448,7 +1448,7 @@ void KHomeView::showBudget(void)
 
     //table header
     m_part->write("<div class=\"summaryheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
       //asset and liability titles
     m_part->write("<tr class=\"item\">");
     m_part->write("<td class=\"left\" width=\"30%\">");
