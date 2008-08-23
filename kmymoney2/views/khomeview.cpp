@@ -255,7 +255,7 @@ void KHomeView::loadView(void)
 void KHomeView::showNetWorthGraph(void)
 {
 #ifdef HAVE_KDCHART
-  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Networth Forecast")));
+  m_part->write(QString("<div class=\"summaryheader\">%1</div>\n").arg(i18n("Networth Forecast")));
 
   MyMoneyReport reportCfg = MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -377,7 +377,7 @@ void KHomeView::showPayments(void)
     ++d_it;
   }
 
-  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Payments")));
+  m_part->write(QString("<div class=\"summaryheader\">%1</div>\n").arg(i18n("Payments")));
 
   if(overdues.count() > 0) {
     m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -386,8 +386,23 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator it;
     QValueList<MyMoneySchedule>::Iterator it_f;
 
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    m_part->write(QString("<tr><td class=\"warning\" colspan=\"3\">%1</td></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write(QString("<tr class=\"warning\" ><td colspan=\"4\">%1</td></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
+    m_part->write("<tr class=\"warning\">");
+    m_part->write("<td class=\"left\" width=\"10%\">");
+    m_part->write(i18n("Date"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"left\" width=\"50%\">");
+    m_part->write(i18n("Schedule"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"left\" width=\"25%\">");
+    m_part->write(i18n("Account"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"right\" width=\"15%\">");
+    m_part->write(i18n("Amount"));
+    m_part->write("</td>");
+    m_part->write("</tr>");
+
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       // determine number of overdue payments
       QDate nextDate = (*it).nextDueDate();
@@ -432,8 +447,22 @@ void KHomeView::showPayments(void)
 
     if (todays.count() > 0) {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
-      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"3\">%1</td></tr>\n").arg(i18n("Todays payments")));
+      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Todays payments")));
+      m_part->write("<tr class=\"item\">");
+      m_part->write("<td class=\"left\" width=\"10%\">");
+      m_part->write(i18n("Date"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"left\" width=\"50%\">");
+      m_part->write(i18n("Schedule"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"left\" width=\"25%\">");
+      m_part->write(i18n("Account"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"right\" width=\"15%\">");
+      m_part->write(i18n("Amount"));
+      m_part->write("</td>");
+      m_part->write("</tr>");
 
       for(t_it = todays.begin(); t_it != todays.end(); ++t_it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
@@ -449,8 +478,22 @@ void KHomeView::showPayments(void)
 
       QValueList<MyMoneySchedule>::Iterator it;
 
-      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"3\">%1</td></tr>\n").arg(i18n("Future payments")));
+      m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Future payments")));
+      m_part->write("<tr class=\"item\">");
+      m_part->write("<td class=\"left\" width=\"10%\">");
+      m_part->write(i18n("Date"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"left\" width=\"50%\">");
+      m_part->write(i18n("Schedule"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"left\" width=\"25%\">");
+      m_part->write(i18n("Account"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"right\" width=\"15%\">");
+      m_part->write(i18n("Amount"));
+      m_part->write("</td>");
+      m_part->write("</tr>");
 
       // show all or the first 6 entries
       int cnt;
@@ -513,6 +556,8 @@ void KHomeView::showPayments(void)
 void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
 {
   QString tmp;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   try {
     MyMoneyAccount acc = sched.account();
     if(acc.id()) {
@@ -523,13 +568,22 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
       if(!sched.isFinished()) {
         MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
-        tmp = QString("<td width=\"20%\">") +
+        //show payment date
+        tmp = QString("<td>") +
           KGlobal::locale()->formatDate(sched.nextDueDate(), true) +
-          "</td><td width=\"70%\">" +
+          "</td><td>" +
           link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend();
+
+        //show quantity of payments overdue if any
         if(cnt > 1)
           tmp += i18n(" (%1 payments)").arg(cnt);
-        tmp += "</td><td width=\"10%\" align=\"right\">";
+
+        //show account of the main split
+        tmp += "<td>";
+        tmp += QString(file->account(acc.id()).name());
+
+        //show amount of the schedule
+        tmp += "</td><td align=\"right\">";
 
         const MyMoneySecurity& currency = MyMoneyFile::instance()->currency(acc.currencyId());
         QString amount = (sp.value()*cnt).formatMoney(acc, currency);
@@ -641,7 +695,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   if(accounts.count() > 0) {
     QString tmp;
     int i = 0;
-    tmp = "<div class=\"itemheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
+    tmp = "<div class=\"summaryheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><td class=\"left\" width=\"35%\">");
@@ -772,7 +826,7 @@ void KHomeView::showFavoriteReports(void)
     {
       if ( (*it_report).isFavorite() ) {
         if(firstTime) {
-          m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
+          m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
           m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
           m_part->write("<tr class=\"item\"><td class=\"left\" width=\"40%\">");
           m_part->write(i18n("Report"));
@@ -833,7 +887,7 @@ void KHomeView::showForecast(void)
       beginDay = forecast.accountsCycle();
 
     // Now output header
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
+    m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"  style=\"font-weight: normal;\" ><td class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
@@ -1096,7 +1150,7 @@ void KHomeView::showSummary(void)
   //only do it if we have assets or liabilities account
   if(nameAssetsIdx.count() > 0 || nameLiabilitiesIdx.count() > 0) {
     //print header
-    m_part->write("<div class=\"itemheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"summaryheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
     //asset and liability titles
     m_part->write("<tr class=\"item\"><td class=\"center\" colspan=\"2\">");
@@ -1393,7 +1447,7 @@ void KHomeView::showBudget(void)
     PivotGrid grid = table.grid();
 
     //table header
-    m_part->write("<div class=\"itemheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<div class=\"summaryheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
       //asset and liability titles
     m_part->write("<tr class=\"item\">");

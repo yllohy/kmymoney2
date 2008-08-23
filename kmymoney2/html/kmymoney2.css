@@ -55,7 +55,17 @@
     color:WindowText;
     }
 
-  .itemheader { /*section labels in the financial summary and column labels in reports */
+  .itemheader { /*column labels in reports */
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-weight: bold;
+    background-color: Window;
+    color: WindowText;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+  }
+
+  .summaryheader { /*section labels in the financial summary*/
     font-family: verdana, arial, helvetica, sans-serif;
     font-weight: bold;
     background-color: highlight;
@@ -64,7 +74,6 @@
     padding-left: 20px;
     padding-bottom: 5px;
   }
-
   li {
   color:WindowText;
   }
@@ -77,7 +86,7 @@
   td.highlighted
   {
     background-color: highlight;
-    color: highlighttext;
+    color: highlighttext;highlight
   }
 
   .row-even {
