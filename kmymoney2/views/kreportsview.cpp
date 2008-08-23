@@ -1385,6 +1385,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Account Information"),
       i18n("Default Report")
     ));
+    list.back().setConvertCurrency(false);
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccountLoanInfo,
       MyMoneyReport::eMonths,
@@ -1393,6 +1394,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Loan Information"),
       i18n("Default Report")
     ));
+    list.back().setConvertCurrency(false);
     groups.push_back(list);
   }
 }

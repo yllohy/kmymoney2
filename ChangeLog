@@ -3,6 +3,15 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-23 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added borders to tables on Home Page
+  * Fixed alignment on Home Page
+  * Use the currency symbol rather than the name in Information reports
+  * Don't display closed accounts in Account Information reports
+  * Show balance of subaccounts of an investment in account information
+  * Show 'next due date' only in the first row of the schedule information
+    report
+
 2008-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store name of new file in 'recent files' list
 

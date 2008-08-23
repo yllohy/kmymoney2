@@ -218,7 +218,7 @@ namespace reports {
     i18nHeaders["institution"] = i18n ( "Institution" );
     i18nHeaders["description"] = i18n ( "Description" );
     i18nHeaders["openingdate"] = i18n ( "Opening Date" );
-    i18nHeaders["currency"] = i18n ( "Currency" );
+    i18nHeaders["currencyname"] = i18n ( "Currency" );
     i18nHeaders["balancewarning"] = i18n ( "Balance Early Warning" );
     i18nHeaders["maxbalancelimit"] = i18n ( "Balance Max Limit" );
     i18nHeaders["creditwarning"] = i18n ( "Credit Early Warning" );
@@ -407,6 +407,7 @@ namespace reports {
                     || *it_column == "action"
                     || *it_column == "shares"
                     || *it_column == "price"
+                    || *it_column == "nextduedate"
                     || *it_column == "balance"
                     || *it_column == "account"
                     || *it_column == "name" )

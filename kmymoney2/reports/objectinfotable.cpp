@@ -116,10 +116,10 @@ void ObjectInfoTable::init ( void )
       }
       break;
     case MyMoneyReport::eAccountInfo:
-      m_columns="type,name,number,description,openingdate,currency,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite";
+      m_columns="type,name,number,description,openingdate,currencyname,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,tax,favorite";
       break;
     case MyMoneyReport::eAccountLoanInfo:
-      m_columns="type,name,number,description,openingdate,currency,payee,loanamount,interestrate,nextinterestchange,periodicpayment,finalpayment,favorite";
+      m_columns="type,name,number,description,openingdate,currencyname,payee,loanamount,interestrate,nextinterestchange,periodicpayment,finalpayment,favorite";
       break;
     default:
       m_columns = "";
@@ -233,7 +233,8 @@ void ObjectInfoTable::constructAccountTable ( void )
     ReportAccount account = *it_account;
 
     if(m_config.includes(account)
-       && account.accountType() != MyMoneyAccount::Stock )
+       && account.accountType() != MyMoneyAccount::Stock
+       && !account.isClosed())
     {
       accountRow["rank"] = "0";
       accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
@@ -243,14 +244,22 @@ void ObjectInfoTable::constructAccountTable ( void )
       accountRow["number"] = account.number();
       accountRow["description"] = account.description();
       accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
-      accountRow["currency"] = (file->currency(account.currencyId())).name();
+      accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
+      accountRow["currencyname"] = (file->currency(account.currencyId())).name();
       accountRow["balancewarning"] = account.value("minBalanceEarly");
       accountRow["maxbalancelimit"] = account.value("minBalanceAbsolute");
       accountRow["creditwarning"] = account.value("maxCreditEarly");
       accountRow["maxcreditlimit"] = account.value("maxCreditAbsolute");
       accountRow["tax"] = account.value("Tax");
       accountRow["favorite"] = account.value("PreferredAccount");
-      accountRow["value"] = (file->balance(account.id())).toString();
+
+      //investment accounts show the balances of all its subaccounts
+      if(account.accountType() == MyMoneyAccount::Investment) {
+        MyMoneyMoney value = investmentBalance(account);
+        accountRow["value"] = value.toString();
+      } else {
+        accountRow["value"] = (file->balance(account.id())).toString();
+      }
       m_rows += accountRow;
     }
     ++it_account;
@@ -282,8 +291,9 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       accountRow["number"] = account.number();
       accountRow["description"] = account.description();
       accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
-      accountRow["currency"] = (file->currency(account.currencyId())).name();
-      accountRow["payee"] = loan.payee();
+      accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
+      accountRow["currencyname"] = (file->currency(account.currencyId())).name();
+      accountRow["payee"] = file->payee(loan.payee()).name();
       accountRow["loanamount"] = loan.loanAmount().toString();
       accountRow["interestrate"] = (loan.interestRate(QDate::currentDate())/MyMoneyMoney(100,1)).toString();
       accountRow["nextinterestchange"] = loan.nextInterestChange().toString( Qt::ISODate );
@@ -295,6 +305,34 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
     }
     ++it_account;
   }
+}
+
+MyMoneyMoney ObjectInfoTable::investmentBalance(const MyMoneyAccount& acc)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyMoney value;
+
+  value = file->balance(acc.id());
+  QValueList<QCString>::const_iterator it_a;
+  for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+    MyMoneyAccount stock = file->account(*it_a);
+    try {
+      MyMoneyMoney val;
+      MyMoneyMoney balance = file->balance(stock.id());
+      MyMoneySecurity security = file->security(stock.currencyId());
+      MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
+      val = balance * price.rate(security.tradingCurrency());
+      // adjust value of security to the currency of the account
+      MyMoneySecurity accountCurrency = file->currency(acc.currencyId());
+      val = val * file->price(security.tradingCurrency(), accountCurrency.id()).rate(accountCurrency.id());
+      val = val.convert(acc.fraction());
+      value += val;
+    } catch(MyMoneyException* e) {
+      qWarning("%s", (QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what())).data());
+      delete e;
+    }
+  }
+  return value;
 }
 
 }

@@ -62,6 +62,12 @@ protected:
   void constructAccountTable ( void );
   void constructAccountLoanTable ( void );
 
+private:
+  /**
+    * @param acc the investment account
+    * @return the balance in the currency of the investment account
+    */
+  MyMoneyMoney investmentBalance(const MyMoneyAccount& acc);
 };
 
 }
