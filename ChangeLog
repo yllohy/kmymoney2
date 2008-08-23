@@ -11,6 +11,8 @@
   * Show balance of subaccounts of an investment in account information
   * Show 'next due date' only in the first row of the schedule information
     report
+  * Changed style of intermediate column in Summary - patch provided by
+    David Houlden
 
 2008-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store name of new file in 'recent files' list

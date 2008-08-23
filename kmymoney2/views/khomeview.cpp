@@ -1153,10 +1153,12 @@ void KHomeView::showSummary(void)
     m_part->write("<div class=\"summaryheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     //asset and liability titles
-    m_part->write("<tr class=\"item\"><td class=\"center\" colspan=\"2\">");
+    m_part->write("<tr class=\"item\">");
+    m_part->write("<td class=\"center\" colspan=\"2\">");
     m_part->write(i18n("Assets"));
-    m_part->write("<td></td>");
-    m_part->write("</td><td class=\"center\" colspan=\"2\">");
+    m_part->write("</td>");
+    m_part->write("<td style=\"background-color: Window;\"></td>");
+    m_part->write("<td class=\"center\" colspan=\"2\">");
     m_part->write(i18n("Liabilities"));
     m_part->write("</td></tr>");
     //column titles
@@ -1165,7 +1167,7 @@ void KHomeView::showSummary(void)
     m_part->write("</td><td width=\"15%\" class=\"right\">");
     m_part->write(i18n("Current Balance"));
     //intermediate row to separate both columns
-    m_part->write("<td width=\"10%\"></td>");
+    m_part->write("<td width=\"10%\" style=\"background-color: Window;\"></td>");
     m_part->write("</td>");
     m_part->write("<td class=\"left\" width=\"30%\">");
     m_part->write(i18n("Accounts"));
@@ -1205,7 +1207,7 @@ void KHomeView::showSummary(void)
       }
 
       //leave the intermediate column empty
-      m_part->write("<td></td>");
+      m_part->write("<td style=\"background-color: Window;\"></td>");
 
       //write a liability account
       if(liabilities_it != nameLiabilitiesIdx.end()) {
@@ -1246,7 +1248,7 @@ void KHomeView::showSummary(void)
     m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Assets")).arg(showColoredAmount(amountAssets, netAssets.isNegative())));
 
     //leave the intermediate column empty
-    m_part->write("<td></td>");
+    m_part->write("<td style=\"background-color: Window;\"></td>");
 
     //print total liabilities
     m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Liabilities")).arg(showColoredAmount(amountLiabilities, netLiabilities.isNegative())));
@@ -1255,7 +1257,8 @@ void KHomeView::showSummary(void)
     //print net worth
     m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
-      m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td><td></td><td></td><td></td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
+      m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
+      m_part->write("<td style=\"background-color: Window;\"></td><td></td><td></td>");
     m_part->write("</tr>");
 
   }
@@ -1305,20 +1308,20 @@ void KHomeView::showSummary(void)
 
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
-  //print total for income
+  //print total for incomes
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Incomes This Month")).arg(showColoredAmount(amountIncome, incomeValue.isNegative())));
 
   //leave the intermediate column empty
-  m_part->write("<td></td>");
+  m_part->write("<td style=\"background-color: Window;\"></td>");
 
-    //print total income
+    //print total expenses
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Expenses This Month")).arg(showColoredAmount(amountExpense, expenseValue.isNegative())));
   m_part->write("</tr>");
 
   //print total profit/loss
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Profit/Loss")).arg(showColoredAmount(amountProfit, profitValue.isNegative())));
-  m_part->write("<td></td><td></td><td></td>");
+  m_part->write("<td style=\"background-color: Window;\"><td></td><td></td>");
   m_part->write("</tr>");
 
   //Add all schedules for this month
@@ -1404,7 +1407,7 @@ void KHomeView::showSummary(void)
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Incomes This Month")).arg(amountScheduledIncome));
 
   //leave the intermediate column empty
-  m_part->write("<td></td>");
+  m_part->write("<td style=\"background-color: Window;\"></td>");
 
   //print the scheduled expenses
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Expenses This Month")).arg(showColoredAmount(amountScheduledExpense,  true)));
@@ -1417,7 +1420,7 @@ void KHomeView::showSummary(void)
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Transfers This Month")).arg(amountScheduledTransfer));
 
   //leave the rest blank and end the row
-  m_part->write("<td></td><td></td><td></td>");
+  m_part->write("<td style=\"background-color: Window;\"><td></td><td></td>");
   m_part->write("</tr>");
 
   m_part->write("</table>");
