@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Store name of new file in 'recent files' list
+
 2008-08-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Add type of Information Reports when reading and writing reports
   * Fixed style of report column headers

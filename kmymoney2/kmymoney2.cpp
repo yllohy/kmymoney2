@@ -796,6 +796,21 @@ void KMyMoney2App::slotFileNew(void)
         m_fileName = KURL(wizard->url());
         ft.commit();
         KMyMoneyGlobalSettings::setFirstTimeRun(false);
+
+        // FIXME This is a bit clumsy. We re-read the freshly
+        // created file to be able to run through all the
+        // fixup logic and then save it to keep the modified
+        // flag off.
+        slotFileSave();
+        myMoneyView->readFile(m_fileName);
+        slotFileSave();
+
+        // now keep the filename in the recent files used list
+        KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
+        if(p)
+          p->addURL( m_fileName );
+        writeLastUsedFile(m_fileName.url());
+
       } catch(MyMoneyException* e) {
         delete e;
         // next line required until we move all file handling out of KMyMoneyView
