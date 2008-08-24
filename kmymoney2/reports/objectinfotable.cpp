@@ -94,12 +94,12 @@ void ObjectInfoTable::init ( void )
   {
     case MyMoneyReport::eSchedule:
       m_group = "type";
-      m_subtotal="value";
+      m_subtotal="currentbalance";
       break;
     case MyMoneyReport::eAccountInfo:
     case MyMoneyReport::eAccountLoanInfo:
       m_group = "topcategory,institution";
-      m_subtotal="value";
+      m_subtotal="currentbalance";
       break;
     default:
       throw new MYMONEYEXCEPTION ( "ObjectInfoTable::ObjectInfoTable(): unhandled row type" );
@@ -244,7 +244,7 @@ void ObjectInfoTable::constructAccountTable ( void )
       accountRow["number"] = account.number();
       accountRow["description"] = account.description();
       accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
-      accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
+      //accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
       accountRow["currencyname"] = (file->currency(account.currencyId())).name();
       accountRow["balancewarning"] = account.value("minBalanceEarly");
       accountRow["maxbalancelimit"] = account.value("minBalanceAbsolute");
@@ -256,9 +256,9 @@ void ObjectInfoTable::constructAccountTable ( void )
       //investment accounts show the balances of all its subaccounts
       if(account.accountType() == MyMoneyAccount::Investment) {
         MyMoneyMoney value = investmentBalance(account);
-        accountRow["value"] = value.toString();
+        accountRow["currentbalance"] = value.toString();
       } else {
-        accountRow["value"] = (file->balance(account.id())).toString();
+        accountRow["currentbalance"] = (file->balance(account.id())).toString();
       }
       m_rows += accountRow;
     }
@@ -281,7 +281,8 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
 
     if(m_config.includes(account) &&
        ( account.accountType() == MyMoneyAccount::Loan
-       || account.accountType() == MyMoneyAccount::AssetLoan ) )
+       || account.accountType() == MyMoneyAccount::AssetLoan ) 
+       && !account.isClosed())
     {
       accountRow["rank"] = "0";
       accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
@@ -291,7 +292,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       accountRow["number"] = account.number();
       accountRow["description"] = account.description();
       accountRow["openingdate"] = account.openingDate().toString( Qt::ISODate );
-      accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
+      //accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
       accountRow["currencyname"] = (file->currency(account.currencyId())).name();
       accountRow["payee"] = file->payee(loan.payee()).name();
       accountRow["loanamount"] = loan.loanAmount().toString();
@@ -300,7 +301,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       accountRow["periodicpayment"] = loan.periodicPayment().toString();
       accountRow["finalpayment"] = loan.finalPayment().toString();
       accountRow["favorite"] = account.value("PreferredAccount");
-      accountRow["value"] = (file->balance(account.id())).toString();
+      accountRow["currentbalance"] = (file->balance(account.id())).toString();
       m_rows += accountRow;
     }
     ++it_account;

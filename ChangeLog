@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-24 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed format of value and column name in Account Info Reports
+  * Fixed display of AutoCalc values in Schedule Info Reports
+  * Do not show closed account in Loan Info Reports
+
 2008-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign of equity balance in accounts and ledger view
 

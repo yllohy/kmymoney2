@@ -230,9 +230,10 @@ namespace reports {
     i18nHeaders["nextinterestchange"] = i18n ( "Next Interest Change" );
     i18nHeaders["periodicpayment"] = i18n ( "Periodic Payment" );
     i18nHeaders["finalpayment"] = i18n ( "Final Payment" );
+    i18nHeaders["currentbalance"] = i18n ( "Current Balance" );
 
     // the list of columns which represent money, so we can display them correctly
-    QStringList moneyColumns = QStringList::split ( ",", "value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,loanamount,periodicpayment,finalpayment" );
+    QStringList moneyColumns = QStringList::split ( ",", "value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance,balancewarning,maxbalancelimit,creditwarning,maxcreditlimit,loanamount,periodicpayment,finalpayment,currentbalance" );
 
     // the list of columns which represent shares, which is like money except the
     // transaction currency will not be displayed
@@ -471,8 +472,12 @@ namespace reports {
             result += QString ( "<td%1></td>" )
                       .arg ( ( *it_column == "value" ) ? " class=\"value\"" : "" );
             csv += "\"\",";
-          }
-          else {
+          } else if ( MyMoneyMoney( data ) == MyMoneyMoney::autoCalc ) {
+            result += QString ( "<td%1>%2</td>" )
+                .arg ( ( *it_column == "value" ) ? " class=\"value\"" : "" )
+                .arg (i18n("Calculated"));
+            csv += "\""+ i18n("Calculated") +"\",";
+          } else {
             result += QString ( "<td%1>%2&nbsp;%3</td>" )
                       .arg ( ( *it_column == "value" ) ? " class=\"value\"" : "" )
                       .arg ( ( *it_row ) ["currency"] )
