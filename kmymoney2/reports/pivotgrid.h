@@ -64,7 +64,7 @@ namespace reports {
   {
   public:
     PivotCell() : m_stockSplit(MyMoneyMoney(1,1)), m_cellUsed(false) {}
-    PivotCell(const MyMoneyMoney& value) : MyMoneyMoney(value), m_stockSplit(MyMoneyMoney(1,1)), m_cellUsed(false) {}
+    PivotCell(const MyMoneyMoney& value);
     static PivotCell stockSplit(const MyMoneyMoney& factor);
     PivotCell operator += (const PivotCell& right);
     PivotCell operator += (const MyMoneyMoney& value);

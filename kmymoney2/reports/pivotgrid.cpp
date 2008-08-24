@@ -58,6 +58,13 @@ namespace reports {
 
   const unsigned PivotOuterGroup::m_kDefaultSortOrder = 100;
 
+  PivotCell::PivotCell(const MyMoneyMoney& value) :
+    MyMoneyMoney(value),
+    m_stockSplit(MyMoneyMoney(1,1))
+  {
+    m_cellUsed |= !value.isZero();
+  }
+  
 PivotCell PivotCell::operator += (const PivotCell& right)
 {
   const MyMoneyMoney& r = static_cast<const MyMoneyMoney&>(right);

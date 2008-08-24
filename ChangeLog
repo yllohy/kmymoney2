@@ -8,6 +8,7 @@
   * Fixed display of AutoCalc values in Schedule Info Reports
   * Do not show closed account in Loan Info Reports
   * Fixed display of value in Schedule Reports
+  * Fixed initialization of PivotCell to check m_cellUsed - #2070446
 
 2008-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign of equity balance in accounts and ledger view
