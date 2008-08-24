@@ -7,6 +7,7 @@
   * Fixed format of value and column name in Account Info Reports
   * Fixed display of AutoCalc values in Schedule Info Reports
   * Do not show closed account in Loan Info Reports
+  * Fixed display of value in Schedule Reports
 
 2008-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign of equity balance in accounts and ledger view

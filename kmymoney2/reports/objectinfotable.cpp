@@ -94,7 +94,7 @@ void ObjectInfoTable::init ( void )
   {
     case MyMoneyReport::eSchedule:
       m_group = "type";
-      m_subtotal="currentbalance";
+      m_subtotal="value";
       break;
     case MyMoneyReport::eAccountInfo:
     case MyMoneyReport::eAccountLoanInfo:
@@ -194,7 +194,9 @@ void ObjectInfoTable::constructScheduleTable ( void )
           splitRow["type"] = KMyMoneyUtils::scheduleTypeToString ( schedule.type() );
           splitRow["nextduedate"] = schedule.nextDueDate().toString ( Qt::ISODate );
 
-          if ( ! splitAcc.isIncomeExpense() ) {
+          if ( ( *split_it ).value() == MyMoneyMoney::autoCalc ) {
+            splitRow["split"] = MyMoneyMoney::autoCalc.toString();
+          } else if ( ! splitAcc.isIncomeExpense() ) {
             splitRow["split"] = ( *split_it ).value().toString();
           } else {
             splitRow["split"] = ( - ( *split_it ).value() ).toString();
