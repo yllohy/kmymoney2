@@ -10,6 +10,7 @@
 
 2008-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign of equity balance in accounts and ledger view
+  * Fixed some stuff in the anonymous file writer
 
 2008-08-23 Alvaro Soliverez <asoliverez@gmail.com>
   * Added borders to tables on Home Page
