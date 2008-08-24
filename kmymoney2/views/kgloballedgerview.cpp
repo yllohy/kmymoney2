@@ -501,7 +501,8 @@ void KGlobalLedgerView::loadView(void)
     // selected before and setup the focus item.
 
     MyMoneyMoney factor(1,1);
-    if(m_account.accountGroup() == MyMoneyAccount::Liability)
+    if(m_account.accountGroup() == MyMoneyAccount::Liability
+    || m_account.accountGroup() == MyMoneyAccount::Equity)
       factor = -factor;
 
     QMap<QCString, int> deposits;

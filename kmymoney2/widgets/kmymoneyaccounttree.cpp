@@ -132,6 +132,7 @@ MyMoneyMoney KMyMoneyAccountTreeItem::balance() const
   switch(m_account.accountGroup()) {
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Liability:
+    case MyMoneyAccount::Equity:
         result = -result;
       break;
 
