@@ -203,14 +203,16 @@ try {
 
 void MyMoneyStorageSql::close(bool logoff) {
   DBG("*** Entering MyMoneyStorageSql::close");
-  if (logoff) {
-    startCommitUnit(__func__);
-    m_logonUser = QString();
-    writeFileInfo();
-    endCommitUnit(__func__);
+  if (!QSqlDatabase::open()) {
+    if (logoff) {
+      startCommitUnit(__func__);
+      m_logonUser = QString();
+      writeFileInfo();
+      endCommitUnit(__func__);
+    }
+    QSqlDatabase::close();
+    QSqlDatabase::removeDatabase(this);
   }
-  QSqlDatabase::close();
-  QSqlDatabase::removeDatabase(this);
 }
 
 int MyMoneyStorageSql::createDatabase (const KURL& url) {
@@ -3822,7 +3824,7 @@ const QString MyMoneyDbTable::generateCreateSQL (databaseTypeE dbType) const {
 
 const QString MyMoneyDbTable::dropPrimaryKeyString(databaseTypeE dbType) const
 {
-  if (dbType == Mysql)
+  if (dbType == Mysql || dbType == Oracle8)
     return "ALTER TABLE " + m_name + " DROP PRIMARY KEY;";
   else if (dbType == Postgresql)
     return "ALTER TABLE " + m_name + " DROP CONSTRAINT " + m_name + "_pkey;";
@@ -3840,6 +3842,8 @@ const QString MyMoneyDbTable::modifyColumnString(databaseTypeE dbType, const QSt
     qs += "ALTER COLUMN " + columnName + " TYPE " + newDef.generateDDL(dbType).section(' ', 1);
   else if (dbType == Sqlite3)
     qs = "";
+  else if (dbType == Oracle8)
+    qs = "MODIFY " + columnName + " " + newDef.generateDDL(dbType);
 
   return qs;
 }
@@ -3872,6 +3876,10 @@ const QString MyMoneyDbIndex::generateDDL (databaseTypeE dbType) const
 }
 
 //*****************************************************************************
+// These are the actual column types.
+// TODO: consider changing all the else-if statements to driver classes.
+//
+
 MyMoneyDbColumn*         MyMoneyDbColumn::clone () const
 { return (new MyMoneyDbColumn (*this)); }
 
@@ -3905,6 +3913,8 @@ const QString MyMoneyDbIntColumn::generateDDL (databaseTypeE dbType) const
         qs += "int2 ";
       } else if (dbType == Db2) {
         qs += "smallint ";
+      } else if (dbType == Oracle8) {
+        qs += "number(3) ";
       } else {
         // cross your fingers...
         qs += "smallint ";
@@ -3915,6 +3925,8 @@ const QString MyMoneyDbIntColumn::generateDDL (databaseTypeE dbType) const
         qs += "smallint ";
       } else if (dbType == Postgresql) {
         qs += "int2 ";
+      } else if (dbType == Oracle8) {
+        qs += "number(5) ";
       } else {
         // cross your fingers...
         qs += "smallint ";
@@ -3927,6 +3939,8 @@ const QString MyMoneyDbIntColumn::generateDDL (databaseTypeE dbType) const
         qs += "int4 ";
       } else if (dbType == Sqlite3) {
         qs += "integer ";
+      } else if (dbType == Oracle8) {
+        qs += "number(10) ";
       } else {
         // cross your fingers...
         qs += "int ";
@@ -3937,6 +3951,8 @@ const QString MyMoneyDbIntColumn::generateDDL (databaseTypeE dbType) const
         qs += "bigint ";
       } else if (dbType == Postgresql) {
         qs += "int8 ";
+      } else if (dbType == Oracle8) {
+        qs += "number(20) ";
       } else {
         // cross your fingers...
         qs += "bigint ";
@@ -3970,6 +3986,8 @@ const QString MyMoneyDbTextColumn::generateDDL (databaseTypeE dbType) const
         qs += "text ";
       } else if (dbType == Db2) {
         qs += "varchar(255) ";
+      } else if (dbType == Oracle8) {
+        qs += "varchar2(255) ";
       } else {
         // cross your fingers...
         qs += "tinytext ";
@@ -3980,6 +3998,8 @@ const QString MyMoneyDbTextColumn::generateDDL (databaseTypeE dbType) const
         qs += "text ";
       } else if (dbType == Db2) {
         qs += "clob(64K) ";
+      } else if (dbType == Oracle8) {
+        qs += "clob ";
       } else {
         // cross your fingers...
         qs += "text ";
@@ -3992,6 +4012,8 @@ const QString MyMoneyDbTextColumn::generateDDL (databaseTypeE dbType) const
         qs += "text ";
       } else if (dbType == Db2) {
         qs += "clob(16M) ";
+      } else if (dbType == Oracle8) {
+        qs += "clob ";
       } else {
         // cross your fingers...
         qs += "mediumtext ";
@@ -4004,13 +4026,19 @@ const QString MyMoneyDbTextColumn::generateDDL (databaseTypeE dbType) const
         qs += "text ";
       } else if (dbType == Db2) {
         qs += "clob(2G) ";
+      } else if (dbType == Oracle8) {
+        qs += "clob ";
       } else {
         // cross your fingers...
         qs += "longtext ";
       }
       break;
     default:
-      qs += "text ";
+      if (dbType == Oracle8) {
+        qs += "clob ";
+      } else {
+        qs += "text ";
+      }
       break;
   }
 

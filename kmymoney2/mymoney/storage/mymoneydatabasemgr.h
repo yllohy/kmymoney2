@@ -954,27 +954,11 @@ public:
 
 private:
   /**
-    * The member variable m_accountList is the container for the accounts
-    * known within this file.
-    */
-  //MyMoneyMap<QCString, MyMoneyAccount> m_accountList;
-
-  /**
-    * A list containing all the budget information objects.
-    */
-  //MyMoneyMap<QCString, MyMoneyBudget> m_budgetList;
-
-  /**
     * This member variable keeps the creation date of this MyMoneySeqAccessMgr
     * object. It is set during the constructor and can only be modified using
     * the stream read operator.
     */
   QDate m_creationDate;
-
-  /**
-    * A list containing all the currency information objects.
-    */
-  //MyMoneyMap<QCString, MyMoneySecurity> m_currencyList;
 
   /**
     * This member variable contains the current fix level of application
@@ -989,39 +973,10 @@ private:
   unsigned int m_fileFixVersion;
 
   /**
-    * The member variable m_institutionList is the container for the
-    * institutions known within this file.
-    */
-  //MyMoneyMap<QCString, MyMoneyInstitution> m_institutionList;
-
-  /**
     * This member variable keeps the date of the last modification of
     * the MyMoneySeqAccessMgr object.
     */
   QDate m_lastModificationDate;
-
-  /**
-    * A list containing all the payees that have been used
-    */
-  //MyMoneyMap<QCString, MyMoneyPayee> m_payeeList;
-
-  //MyMoneyPriceList              m_priceList;
-
-  //MyMoneyMap<QCString, MyMoneyReport> m_reportList;
-
-  /**
-    * A list containing all the scheduled transactions
-    */
-  //MyMoneyMap<QCString, MyMoneySchedule> m_scheduleList;
-
-  /**
-    * A list containing all the security information objects.  Each object
-    * can represent a stock, bond, or mutual fund.  It contains a price
-    * history that a user can add entries to.  The price history will be used
-    * to determine the cost basis for sales, as well as the source of
-    * information for reports in a security account.
-    */
-  //MyMoneyMap<QCString, MyMoneySecurity> m_securitiesList;
 
   /**
     * This contains the interface with SQL reader for database access
@@ -1029,76 +984,10 @@ private:
   KSharedPtr <MyMoneyStorageSql> m_sql;
 
   /**
-    * The member variable m_transactionKeys is used to convert
-    * transaction id's into the corresponding key used in m_transactionList.
-    * @see m_transactionList;
-    */
-  //MyMoneyMap<QCString, QCString> m_transactionKeys;
-
-  /**
-    * The member variable m_transactionList is the container for all
-    * transactions within this file.
-    * @see m_transactionKeys
-    */
-  //MyMoneyMap<QCString, MyMoneyTransaction> m_transactionList;
-
-  /**
     * This member variable keeps the User information.
     * @see setUser()
     */
   MyMoneyPayee m_user;
-
-
-  /**
-    * The member variable m_nextInstitutionID keeps the number that will be
-    * assigned to the next institution created. It is maintained by
-    * nextInstitutionID().
-    */
-  //unsigned long m_nextInstitutionID;
-
-  /**
-    * The member variable m_nextAccountID keeps the number that will be
-    * assigned to the next institution created. It is maintained by
-    * nextAccountID().
-    */
-  //unsigned long m_nextAccountID;
-
-  /**
-    * The member variable m_nextTransactionID keeps the number that will be
-    * assigned to the next transaction created. It is maintained by
-    * nextTransactionID().
-    */
-  //unsigned long m_nextTransactionID;
-
-  /**
-    * The member variable m_nextPayeeID keeps the number that will be
-    * assigned to the next payee created. It is maintained by
-    * nextPayeeID()
-    */
-  //unsigned long m_nextPayeeID;
-
-  /**
-    * The member variable m_nextScheduleID keeps the number that will be
-    * assigned to the next schedule created. It is maintained by
-    * nextScheduleID()
-    */
-  //unsigned long m_nextScheduleID;
-
-  /**
-    * The member variable m_nextSecurityID keeps the number that will be
-    * assigned to the next security object created.  It is maintained by
-    * nextSecurityID()
-    */
-  //unsigned long m_nextSecurityID;
-
-  //unsigned long m_nextReportID;
-
-  /**
-    * The member variable m_nextBudgetID keeps the number that will be
-    * assigned to the next budget object created.  It is maintained by
-    * nextBudgetID()
-    */
-  //unsigned long m_nextBudgetID;
 
   /**
     * This method is used to get the next valid ID for a institution

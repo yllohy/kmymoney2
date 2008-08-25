@@ -2,6 +2,11 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-08-24 Fernando Vilas <fvilas@iname.com>
+  * Updated OCI values in db code based on comments from Colin Wright. (Untested)
+  * Removed some unused db code.
+  * Changed closing behavior of db to make it less likely to remain open.
+    (More to come on this one.)
 
 2008-08-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed format of value and column name in Account Info Reports

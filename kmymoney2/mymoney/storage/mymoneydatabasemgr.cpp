@@ -32,9 +32,7 @@ m_sql (0)
 { }
 
 MyMoneyDatabaseMgr::~MyMoneyDatabaseMgr()
-{
-  //close();
-}
+{ }
 
   // general get functions
 const MyMoneyPayee MyMoneyDatabaseMgr::user(void) const

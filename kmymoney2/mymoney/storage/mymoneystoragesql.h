@@ -321,7 +321,7 @@ class MyMoneyStorageSql : public IMyMoneyStorageFormat, public QSqlDatabase, pub
 public:
 
   MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& = KURL());
-  virtual ~MyMoneyStorageSql() {}
+  virtual ~MyMoneyStorageSql() {close(true);}
 
   unsigned int currentVersion() const {return (m_db.currentVersion());};
 
@@ -671,5 +671,9 @@ private:
   QString m_logonUser;
   QDateTime m_logonAt;
   QDateTime m_txPostDate; // FIXME: remove when Tom puts date into split object
+
+  //Disable copying
+  MyMoneyStorageSql (const MyMoneyStorageSql& rhs);
+  MyMoneyStorageSql& operator= (const MyMoneyStorageSql& rhs);
 };
 #endif // MYMONEYSTORAGESQL_H
