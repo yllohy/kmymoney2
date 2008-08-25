@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-25 Alvaro Soliverez <asoliverez@gmail.com>
+  * Reload forecast on Home Page when file is changed
+
 2008-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow direct editing and entering of schedules from Home page
   * Don't allow deletion of transactions referencing closed accounts

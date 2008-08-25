@@ -147,6 +147,7 @@ public:
   void setSkipOpeningDate(bool _skip) { m_skipOpeningDate = _skip; }
   void setHistoryMethod(int historyMethod) { m_historyMethod = historyMethod; }
   void setIncludeUnusedAccounts(bool _bool) { m_includeUnusedAccounts = _bool; }
+  void setForecastDone(bool _bool) { m_forecastDone = _bool; }
 
   int accountsCycle(void) const   { return m_accountsCycle; }
   int forecastCycles(void) const   { return m_forecastCycles; }
@@ -262,7 +263,7 @@ private:
    * It returns the total amount of Forecast Days from current date.
    */
   int calculateBeginForecastDay();
-
+  
   /**
    * remove accounts from the list if the accounts has no transactions in the forecast timeframe.
    * Used for scheduled-forecast method.

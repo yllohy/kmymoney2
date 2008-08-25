@@ -184,6 +184,9 @@ void KHomeView::loadView(void)
     }
 #endif
   } else {
+    //clear the forecast flag so it will be reloaded
+    m_forecast.setForecastDone(false);
+
     QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
     QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">\n").arg(filename);
 
@@ -1574,6 +1577,9 @@ QString KHomeView::showColoredAmount(const QString& amount, bool isNegative)
 
 void KHomeView::doForecast()
 {
+  //clear m_accountList because forecast is about to changed
+  m_accountList.clear();
+
   //If forecastDays lower than accountsCycle, adjust to the first cycle
   if(m_forecast.accountsCycle() > m_forecast.forecastDays())
     m_forecast.setForecastDays(m_forecast.accountsCycle());
