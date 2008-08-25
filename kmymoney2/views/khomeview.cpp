@@ -50,6 +50,7 @@
 #include <kdebug.h>
 #include <kmdcodec.h>
 #include <kglobalsettings.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -584,12 +585,16 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
       if(!sched.isFinished()) {
         MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
+        QString path;
+        KGlobal::iconLoader()->loadIcon("key_enter", KIcon::Small, KIcon::SizeSmall, KIcon::DefaultState, &path);
+
         //show payment date
         tmp = QString("<td>") +
           KGlobal::locale()->formatDate(sched.nextDueDate(), true) +
           "</td><td>" +
-          link(VIEW_SCHEDULE, QString("?id=%1&mode=edit").arg(sched.id())) + sched.name() + linkend() + "&nbsp;" +
-          link(VIEW_SCHEDULE, QString("?id=%1&mode=enter").arg(sched.id())) + QString("(%1)").arg(i18n("Enter schedule", "Enter")) + linkend();
+          link(VIEW_SCHEDULE, QString("?id=%1&mode=edit").arg(sched.id())) + sched.name() + linkend();
+        if(path.length() > 0)
+          tmp += "&nbsp;" + link(VIEW_SCHEDULE, QString("?id=%1&mode=enter").arg(sched.id())) + QString("<img src=\"file://%1\" border=\"0\"></a>").arg(path) + linkend();
 
         //show quantity of payments overdue if any
         if(cnt > 1)
