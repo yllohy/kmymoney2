@@ -456,6 +456,11 @@ void KGlobalLedgerView::loadView(void)
               new KMyMoneyRegister::StdTransactionScheduled(m_register, t, *it_s, uniqueMap[t.id()]);
             }
           }
+          // if this is a one time schedule, we can bail out here as we're done
+          if(s.occurence() == MyMoneySchedule::OCCUR_ONCE)
+            break;
+
+          // for all others, we check if the next payment date is still 'in range'
           s.setNextDueDate(s.nextPayment(s.nextDueDate()));
         }
         scheduleList.pop_front();

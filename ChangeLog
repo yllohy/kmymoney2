@@ -6,6 +6,7 @@
 2008-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow direct editing and entering of schedules from Home page
   * Don't allow deletion of transactions referencing closed accounts
+  * Fixed endless loop in transaction preview for one time schedules
 
 2008-08-24 Fernando Vilas <fvilas@iname.com>
   * Updated OCI values in db code based on comments from Colin Wright.
