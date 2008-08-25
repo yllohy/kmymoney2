@@ -393,6 +393,9 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 
   // scan the splits again to update notification list
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    MyMoneyAccount acc = account((*it_s).accountId());
+    if(acc.isClosed())
+      throw new MYMONEYEXCEPTION(i18n("Cannot remove transaction that references a closed account."));
     addNotification((*it_s).accountId());
     addNotification((*it_s).payeeId());
   }

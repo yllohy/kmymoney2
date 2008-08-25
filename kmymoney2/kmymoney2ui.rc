@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="33" name="kmymoney2" >
+<kpartgui version="34" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
@@ -57,9 +57,9 @@
    <Action name="account_close" />
    <Action name="account_reopen" />
    <Separator/>
+   <Action name="account_online_unmap" />
    <Action name="account_online_map" />
    <Action name="account_online_update" />
-   <Action name="account_online_unmap" />
   </Menu>
   <Menu name="category" >
    <text>&amp;Category</text>
@@ -133,9 +133,9 @@
   <Action name="account_close" />
   <Action name="account_reopen" />
   <Separator/>
+  <Action name="account_online_unmap" />
   <Action name="account_online_map" />
   <Action name="account_online_update" />
-  <Action name="account_online_unmap" />
   <Separator/>
   <Action name="investment_new" />
   <Action name="investment_edit" />

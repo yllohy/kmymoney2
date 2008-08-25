@@ -585,7 +585,8 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
         tmp = QString("<td>") +
           KGlobal::locale()->formatDate(sched.nextDueDate(), true) +
           "</td><td>" +
-          link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend();
+          link(VIEW_SCHEDULE, QString("?id=%1&mode=edit").arg(sched.id())) + sched.name() + linkend() + "&nbsp;" +
+          link(VIEW_SCHEDULE, QString("?id=%1&mode=enter").arg(sched.id())) + QString("(%1)").arg(i18n("Enter schedule", "Enter")) + linkend();
 
         //show quantity of payments overdue if any
         if(cnt > 1)
@@ -758,7 +759,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
     value = file->balance(acc.id(), QDate::currentDate());
 
     //if credit card or checkings account, show maximum credit
-    if( acc.accountType() == MyMoneyAccount::CreditCard || 
+    if( acc.accountType() == MyMoneyAccount::CreditCard ||
         acc.accountType() == MyMoneyAccount::Checkings ) {
       QString maximumCredit = acc.value("maxCreditAbsolute");
       MyMoneyMoney maxCredit = MyMoneyMoney(maximumCredit);
@@ -1058,10 +1059,24 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
       emit ledgerSelected(id, QCString());
 
     } else if(view == VIEW_SCHEDULE) {
-      if(!id.isEmpty())
+      if(mode == "enter") {
         emit scheduleSelected(id);
-      if(!mode.isEmpty()) {
-        m_showAllSchedules = (mode == QCString("full"));
+        KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+        Q_CHECK_PTR(mw);
+        QTimer::singleShot(0, mw->actionCollection()->action("schedule_enter"), SLOT(activate()));
+
+      } else if(mode == "edit") {
+        emit scheduleSelected(id);
+        KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+        Q_CHECK_PTR(mw);
+        QTimer::singleShot(0, mw->actionCollection()->action("schedule_edit"), SLOT(activate()));
+
+      } else if(mode == "full") {
+        m_showAllSchedules = true;
+        loadView();
+
+      } else if(mode == "reduced") {
+        m_showAllSchedules = false;
         loadView();
       }
 
@@ -1574,7 +1589,7 @@ MyMoneyMoney KHomeView::forecastPaymentBalance(const MyMoneyAccount& acc, const 
     paymentDate = QDate::currentDate();
 
   //check if the account is already there
-  if(m_accountList.find(acc.id()) == m_accountList.end() 
+  if(m_accountList.find(acc.id()) == m_accountList.end()
      || m_accountList[acc.id()].find(paymentDate) == m_accountList[acc.id()].end())
   {
     if(paymentDate == QDate::currentDate()) {

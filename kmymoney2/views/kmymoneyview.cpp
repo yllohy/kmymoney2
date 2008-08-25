@@ -471,8 +471,6 @@ void KMyMoneyView::slotScheduleSelected(const QCString& scheduleId)
 {
   MyMoneySchedule sched = MyMoneyFile::instance()->schedule(scheduleId);
   kmymoney2->slotSelectSchedule(sched);
-  showPage(pageIndex(m_scheduleViewFrame));
-  m_scheduledView->slotSelectSchedule(scheduleId);
 }
 
 void KMyMoneyView::slotShowReport(const QCString& reportid)

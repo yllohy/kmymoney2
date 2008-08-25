@@ -2,8 +2,14 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow direct editing and entering of schedules from Home page
+  * Don't allow deletion of transactions referencing closed accounts
+
 2008-08-24 Fernando Vilas <fvilas@iname.com>
-  * Updated OCI values in db code based on comments from Colin Wright. (Untested)
+  * Updated OCI values in db code based on comments from Colin Wright.
+    (Untested)
   * Removed some unused db code.
   * Changed closing behavior of db to make it less likely to remain open.
     (More to come on this one.)
