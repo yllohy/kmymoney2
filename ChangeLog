@@ -9,6 +9,9 @@
   * Do not show closed account in Loan Info Reports
   * Fixed display of value in Schedule Reports
   * Fixed initialization of PivotCell to check m_cellUsed - #2070446
+  * Added a flag to MyMoneyForecast to tell when forecast is done
+  * Added forecast balance after payments to Home Page
+  * Changed alignment of totals on Summary
 
 2008-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign of equity balance in accounts and ledger view

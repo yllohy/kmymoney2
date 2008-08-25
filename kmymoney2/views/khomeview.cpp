@@ -336,6 +336,10 @@ void KHomeView::showPayments(void)
   QValueList<MyMoneySchedule> schedule;
   int i = 0;
 
+  //if forecast has not been executed yet, do it.
+  if(!m_forecast.isForecastDone())
+    doForecast();
+
   schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
                                  MyMoneySchedule::OCCUR_ANY,
                                  MyMoneySchedule::STYPE_ANY,
@@ -387,19 +391,22 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator it_f;
 
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-    m_part->write(QString("<tr class=\"warning\" ><td colspan=\"4\">%1</td></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
+    m_part->write(QString("<tr class=\"warning\" ><td colspan=\"5\">%1</td></tr>\n").arg(showColoredAmount(i18n("Overdue payments"), true)));
     m_part->write("<tr class=\"warning\">");
     m_part->write("<td class=\"left\" width=\"10%\">");
     m_part->write(i18n("Date"));
     m_part->write("</td>");
-    m_part->write("<td class=\"left\" width=\"50%\">");
+    m_part->write("<td class=\"left\" width=\"40%\">");
     m_part->write(i18n("Schedule"));
     m_part->write("</td>");
-    m_part->write("<td class=\"left\" width=\"25%\">");
+    m_part->write("<td class=\"left\" width=\"20%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td>");
     m_part->write("<td class=\"right\" width=\"15%\">");
     m_part->write(i18n("Amount"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"right\" width=\"15%\">");
+    m_part->write(i18n("Balance after"));
     m_part->write("</td>");
     m_part->write("</tr>");
 
@@ -448,19 +455,22 @@ void KHomeView::showPayments(void)
     if (todays.count() > 0) {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Todays payments")));
+      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"5\">%1</td></tr>\n").arg(i18n("Today's payments")));
       m_part->write("<tr class=\"item\">");
       m_part->write("<td class=\"left\" width=\"10%\">");
       m_part->write(i18n("Date"));
       m_part->write("</td>");
-      m_part->write("<td class=\"left\" width=\"50%\">");
+      m_part->write("<td class=\"left\" width=\"40%\">");
       m_part->write(i18n("Schedule"));
       m_part->write("</td>");
-      m_part->write("<td class=\"left\" width=\"25%\">");
+      m_part->write("<td class=\"left\" width=\"20%\">");
       m_part->write(i18n("Account"));
       m_part->write("</td>");
       m_part->write("<td class=\"right\" width=\"15%\">");
       m_part->write(i18n("Amount"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"right\" width=\"15%\">");
+      m_part->write(i18n("Balance after"));
       m_part->write("</td>");
       m_part->write("</tr>");
 
@@ -479,19 +489,22 @@ void KHomeView::showPayments(void)
       QValueList<MyMoneySchedule>::Iterator it;
 
       m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"4\">%1</td></tr>\n").arg(i18n("Future payments")));
+      m_part->write(QString("<tr class=\"item\"><td class=\"left\" colspan=\"5\">%1</td></tr>\n").arg(i18n("Future payments")));
       m_part->write("<tr class=\"item\">");
       m_part->write("<td class=\"left\" width=\"10%\">");
       m_part->write(i18n("Date"));
       m_part->write("</td>");
-      m_part->write("<td class=\"left\" width=\"50%\">");
+      m_part->write("<td class=\"left\" width=\"40%\">");
       m_part->write(i18n("Schedule"));
       m_part->write("</td>");
-      m_part->write("<td class=\"left\" width=\"25%\">");
+      m_part->write("<td class=\"left\" width=\"20%\">");
       m_part->write(i18n("Account"));
       m_part->write("</td>");
       m_part->write("<td class=\"right\" width=\"15%\">");
       m_part->write(i18n("Amount"));
+      m_part->write("</td>");
+      m_part->write("<td class=\"right\" width=\"15%\">");
+      m_part->write(i18n("Balance after"));
       m_part->write("</td>");
       m_part->write("</tr>");
 
@@ -579,7 +592,7 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
           tmp += i18n(" (%1 payments)").arg(cnt);
 
         //show account of the main split
-        tmp += "<td>";
+        tmp += "</td><td>";
         tmp += QString(file->account(acc.id()).name());
 
         //show amount of the schedule
@@ -588,8 +601,18 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
         const MyMoneySecurity& currency = MyMoneyFile::instance()->currency(acc.currencyId());
         QString amount = (sp.value()*cnt).formatMoney(acc, currency);
         amount.replace(" ","&nbsp;");
-        tmp += amount;
+        tmp += showColoredAmount(amount, (sp.value()*cnt).isNegative()) ;
         tmp += "</td>";
+        //show balance after payments
+        tmp += "<td align=\"right\">";
+        MyMoneyMoney payment = MyMoneyMoney((sp.value()*cnt));
+        QDate paymentDate = QDate(sched.nextDueDate());
+        MyMoneyMoney balanceAfter = forecastPaymentBalance(acc, payment, paymentDate);
+        QString balance = balanceAfter.formatMoney(acc, currency);
+        balance.replace(" ","&nbsp;");
+        tmp += showColoredAmount(balance, balanceAfter.isNegative());
+        tmp += "</td>";
+
         // qDebug("paymentEntry = '%s'", tmp.latin1());
         m_part->write(tmp);
       }
@@ -769,16 +792,16 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& 
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
 
   //show account balance
-  tmp += QString("<td align=\"right\">%1</td>").arg(showColoredAmount(amount, value.isNegative()));
+  tmp += QString("<td class=\"right\">%1</td>").arg(showColoredAmount(amount, value.isNegative()));
 
   //show minimum balance column if requested
   if(showMinBal) {
     //if it is an investment, show minimum balance empty
     if(acc.accountType() == MyMoneyAccount::Investment) {
-      tmp += QString("<td align=\"right\">&nbsp;</td>");
+      tmp += QString("<td class=\"right\">&nbsp;</td>");
     } else {
       //show minimum balance entry
-      tmp += QString("<td align=\"right\">%1</td>").arg(showColoredAmount(amountToMinBal, valueToMinBal.isNegative()));
+      tmp += QString("<td class=\"right\">%1</td>").arg(showColoredAmount(amountToMinBal, valueToMinBal.isNegative()));
     }
   }
   // qDebug("accountEntry = '%s'", tmp.latin1());
@@ -857,23 +880,16 @@ void KHomeView::showForecast(void)
   QMap<QCString, QCString> nameIdx;
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accList;
-  MyMoneyForecast forecast;
 
-  //If forecastDays lower than accountsCycle, adjust to the first cycle
-  if(forecast.accountsCycle() > forecast.forecastDays())
-    forecast.setForecastDays(forecast.accountsCycle());
+  //if forecast has not been executed yet, do it.
+  if(!m_forecast.isForecastDone())
+    doForecast();
 
-  //Get all accounts of the right type to calculate forecast
-  forecast.doForecast();
-  accList = forecast.accountList();
+  accList = m_forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for ( ; accList_t != accList.end(); ++accList_t )
   {
-    MyMoneyAccount acc = *accList_t;
-    if ( nameIdx[acc.id() ] != acc.id() ) { //Check if the account is there
-      nameIdx[acc.id() ] = acc.id();
-
-    }
+    nameIdx[(*accList_t).id()] = (*accList_t).id();
   }
 
   if(nameIdx.count() > 0) {
@@ -881,22 +897,22 @@ void KHomeView::showForecast(void)
 
     int colspan = 1;
     //get begin day
-    int beginDay = QDate::currentDate().daysTo(forecast.beginForecastDate());
+    int beginDay = QDate::currentDate().daysTo(m_forecast.beginForecastDate());
     //if begin day is today skip to next cycle
     if(beginDay == 0)
-      beginDay = forecast.accountsCycle();
+      beginDay = m_forecast.accountsCycle();
 
     // Now output header
-    m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
+    m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(m_forecast.forecastDays())));
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
     m_part->write("<tr class=\"item\"  style=\"font-weight: normal;\" ><td class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td>");
-    int colWidth = 55/ (forecast.forecastDays() / forecast.accountsCycle());
-    for(i = 0; (i*forecast.accountsCycle() + beginDay) <= forecast.forecastDays(); ++i) {
+    int colWidth = 55/ (m_forecast.forecastDays() / m_forecast.accountsCycle());
+    for(i = 0; (i*m_forecast.accountsCycle() + beginDay) <= m_forecast.forecastDays(); ++i) {
       m_part->write(QString("<td width=\"%1%\" class=\"right\">").arg(colWidth));
 
-      m_part->write(i18n("%1 days").arg(i*forecast.accountsCycle() + beginDay));
+      m_part->write(i18n("%1 days").arg(i*m_forecast.accountsCycle() + beginDay));
       m_part->write("</td>");
       colspan++;
     }
@@ -928,8 +944,8 @@ void KHomeView::showForecast(void)
         currency = file->security(acc.currencyId());
       }
 
-      for (int f = beginDay; f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
-        forecastBalance = forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
+      for (int f = beginDay; f <= m_forecast.forecastDays(); f += m_forecast.accountsCycle()) {
+        forecastBalance = m_forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
         QString amount;
         amount = forecastBalance.formatMoney(acc, currency);
         amount.replace(" ","&nbsp;");
@@ -942,10 +958,10 @@ void KHomeView::showForecast(void)
       //Check if the account is going to be below zero or below the minimal balance in the forecast period
 
       //Check if the account is going to be below minimal balance
-      dropMinimum = forecast.daysToMinimumBalance(acc);
+      dropMinimum = m_forecast.daysToMinimumBalance(acc);
 
       //Check if the account is going to be below zero in the future
-      dropZero = forecast.daysToZeroBalance(acc);
+      dropZero = m_forecast.daysToZeroBalance(acc);
 
 
       // spit out possible warnings
@@ -1259,8 +1275,9 @@ void KHomeView::showSummary(void)
     //print net worth
     m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
-      m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
-      m_part->write("<td style=\"background-color: Window;\"></td><td></td><td></td>");
+    m_part->write("<td></td><td></td><td style=\"background-color: Window;\"></td>");
+    m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
+
     m_part->write("</tr>");
 
   }
@@ -1322,8 +1339,8 @@ void KHomeView::showSummary(void)
 
   //print total profit/loss
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+  m_part->write("<td></td><td></td><td style=\"background-color: Window;\"></td>");
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Profit/Loss")).arg(showColoredAmount(amountProfit, profitValue.isNegative())));
-  m_part->write("<td style=\"background-color: Window;\"></td><td></td><td></td>");
   m_part->write("</tr>");
 
   //Add all schedules for this month
@@ -1540,6 +1557,35 @@ QString KHomeView::showColoredAmount(const QString& amount, bool isNegative)
   return amount;
 }
 
+void KHomeView::doForecast()
+{
+  //If forecastDays lower than accountsCycle, adjust to the first cycle
+  if(m_forecast.accountsCycle() > m_forecast.forecastDays())
+    m_forecast.setForecastDays(m_forecast.accountsCycle());
+
+  //Get all accounts of the right type to calculate forecast
+  m_forecast.doForecast();
+}
+
+MyMoneyMoney KHomeView::forecastPaymentBalance(const MyMoneyAccount& acc, const MyMoneyMoney& payment, QDate& paymentDate)
+{
+  //if paymentDate before currentDate set it to current date
+  if(paymentDate < QDate::currentDate())
+    paymentDate = QDate::currentDate();
+
+  //check if the account is already there
+  if(m_accountList.find(acc.id()) == m_accountList.end() 
+     || m_accountList[acc.id()].find(paymentDate) == m_accountList[acc.id()].end())
+  {
+    if(paymentDate == QDate::currentDate()) {
+      m_accountList[acc.id()][paymentDate] = m_forecast.forecastBalance(acc, paymentDate);
+    } else {
+      m_accountList[acc.id()][paymentDate] = m_forecast.forecastBalance(acc, paymentDate.addDays(-1));
+    }
+  }
+  m_accountList[acc.id()][paymentDate] = m_accountList[acc.id()][paymentDate] + payment;
+  return m_accountList[acc.id()][paymentDate];
+}
 
 // Make sure, that these definitions are only used within this file
 // this does not seem to be necessary, but when building RPMs the

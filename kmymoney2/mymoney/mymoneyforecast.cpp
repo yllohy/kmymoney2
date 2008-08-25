@@ -40,7 +40,8 @@
 
 MyMoneyForecast::MyMoneyForecast() :
     m_skipOpeningDate(true),
-    m_includeUnusedAccounts(false)
+    m_includeUnusedAccounts(false),
+    m_forecastDone(false)
 {
   setForecastCycles(KMyMoneyGlobalSettings::forecastCycles());
   setAccountsCycle(KMyMoneyGlobalSettings::forecastAccountCycle());
@@ -98,6 +99,9 @@ void MyMoneyForecast::doForecast()
     default:
       break;
   }
+
+  //flag the forecast as done
+  m_forecastDone = true;
 }
 
 MyMoneyForecast::~MyMoneyForecast()
@@ -935,6 +939,9 @@ void MyMoneyForecast::createBudget ( MyMoneyBudget& budget, QDate historyStart, 
     default:
       break;
   }
+
+  //flag the forecast as done
+  m_forecastDone = true;
 
   //only fill the budget if it is going to be used
   if ( returnBudget ) { 

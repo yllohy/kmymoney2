@@ -161,6 +161,7 @@ public:
   bool skipOpeningDate(void) const { return m_skipOpeningDate; }
   int historyMethod(void) const   { return m_historyMethod; }
   bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
+  bool isForecastDone(void) const { return m_forecastDone; }
 
 private:
 
@@ -352,6 +353,11 @@ private:
    * include accounts with no transactions in the forecast timeframe. default is false.
    */
   bool m_includeUnusedAccounts;
+
+  /**
+   * forecast already done
+   */
+  bool m_forecastDone;
 };
 
 #endif // MYMONEYFORECAST_H

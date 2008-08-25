@@ -37,6 +37,7 @@ class QFrame;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyforecast.h"
 #include "../views/kmymoneyview.h"
 
 /**
@@ -100,6 +101,14 @@ signals:
 
 private:
 
+  /**
+   * daily balances of an account
+   */
+  typedef QMap<QDate, MyMoneyMoney> dailyBalances;
+
+  /**
+    * Print an account and its balance and limit
+    */
   void showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& value, const MyMoneyMoney& valueToMinBal, const bool showMinBal);
   
   /**
@@ -107,13 +116,34 @@ private:
     * @return the balance in the currency of the investment account
     */
   MyMoneyMoney investmentBalance(const MyMoneyAccount& acc);
+
+  /**
+   * Print text in the color set for negative numbers, if @param isNegative is true
+   */
   QString showColoredAmount(const QString& amount, bool isNegative);
+
+  /**
+   * Run the forecast
+   */
+  void doForecast(void);
+
+  /**
+   * Calculate the forecast balance after a payment has been made
+   */
+  MyMoneyMoney forecastPaymentBalance(const MyMoneyAccount& acc, const MyMoneyMoney& payment, QDate& paymentDate);
 
   KHTMLPart*      m_part;
   QVBoxLayout*    m_qvboxlayoutPage;
   QString         m_filename;
   bool            m_showAllSchedules;
   bool            m_needReload;
+  MyMoneyForecast m_forecast;
+
+  /**
+    * daily forecast balance of accounts
+    */
+  QMap<QCString, dailyBalances> m_accountList;
+
 };
 
 #endif
