@@ -457,13 +457,11 @@ protected:
   MyMoneySecurity                   m_security;
   MyMoneyMoney                      m_totalValue;
   MyMoneyAccount                    m_account;
-  bool                              m_negative;
   QMap<int, QColor>                 m_columnsColor;
+  bool                              m_negative;
 
 private:
-
   MyMoneyInstitution                m_institution;
-
   KMyMoneyAccountTreeItemType       m_type;
 
   /**

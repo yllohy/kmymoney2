@@ -536,9 +536,9 @@ const MyMoneyObject& KMyMoneyAccountTreeBaseItem::itemObject(void) const
 KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KListView *parent, const MyMoneyInstitution& institution) :
   KListViewItem(parent),
   m_totalValue(MyMoneyMoney(0)),
+  m_negative(false),
   m_institution(institution),
-  m_type(Institution),
-  m_negative(false)
+  m_type(Institution)
 {
   setName();
 }
@@ -548,8 +548,8 @@ KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KListView *parent, cons
   m_security(security),
   m_totalValue(MyMoneyMoney(0)),
   m_account(account),
-  m_type(Account),
-  m_negative(false)
+  m_negative(false),
+  m_type(Account)
 {
   if(!name.isEmpty()) {
     // we do not want to modify the original account
@@ -566,8 +566,8 @@ KMyMoneyAccountTreeBaseItem::KMyMoneyAccountTreeBaseItem(KMyMoneyAccountTreeBase
   m_security(security),
   m_totalValue(MyMoneyMoney(0)),
   m_account(account),
-  m_type(Account),
-  m_negative(false)
+  m_negative(false),
+  m_type(Account)
 {
   setName();
 }
