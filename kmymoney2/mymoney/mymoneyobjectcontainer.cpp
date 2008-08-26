@@ -167,6 +167,7 @@ void MyMoneyObjectContainer::refresh(const QCString& id)
     const MyMoneyPayee* payee = dynamic_cast<const MyMoneyPayee *>(*it);
     const MyMoneySecurity* security = dynamic_cast<const MyMoneySecurity *>(*it);
     const MyMoneyInstitution* institution = dynamic_cast<const MyMoneyInstitution *>(*it);
+    const MyMoneySchedule* schedule = dynamic_cast<const MyMoneySchedule *>(*it);
     delete *it;
     if(account) {
       const MyMoneyAccount& a = m_storage->account(id);
@@ -185,6 +186,9 @@ void MyMoneyObjectContainer::refresh(const QCString& id)
     } else if(institution) {
       const MyMoneyInstitution& i = m_storage->institution(id);
       m_map[id] = new MyMoneyInstitution(i);
+    } else if(schedule) {
+      const MyMoneySchedule& s = m_storage->schedule(id);
+      m_map[id] = new MyMoneySchedule(s);
     } else {
       qWarning("Ooops, should preload an unknown object with id '%s'", id.data());
     }
@@ -192,6 +196,7 @@ void MyMoneyObjectContainer::refresh(const QCString& id)
   }
 }
 
+objectAccessMethod(schedule, MyMoneySchedule)
 objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)
 objectAccessMethod(institution, MyMoneyInstitution)
@@ -200,6 +205,7 @@ preloadListMethod(Account, MyMoneyAccount)
 preloadListMethod(Payee, MyMoneyPayee)
 preloadListMethod(Institution, MyMoneyInstitution)
 preloadListMethod(Security, MyMoneySecurity)
+preloadListMethod(Schedule, MyMoneySchedule)
 
 preloadMethod(Account, MyMoneyAccount)
 preloadMethod(Security, MyMoneySecurity)

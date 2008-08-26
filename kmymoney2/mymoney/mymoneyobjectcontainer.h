@@ -57,6 +57,7 @@ public:
   const MyMoneyPayee& payee(const QCString& id);
   const MyMoneySecurity& security(const QCString& id);
   const MyMoneyInstitution& institution(const QCString& id);
+  const MyMoneySchedule& schedule(const QCString& id);
 
   void account(QValueList<MyMoneyAccount>& list);
   void payee(QValueList<MyMoneyPayee>& list);
@@ -66,6 +67,7 @@ public:
   void preloadPayee(const QValueList<MyMoneyPayee>& list);
   void preloadInstitution(const QValueList<MyMoneyInstitution>& list);
   void preloadSecurity(const QValueList<MyMoneySecurity>& list);
+  void preloadSchedule(const QValueList<MyMoneySchedule>& list);
 
   void preloadAccount(const MyMoneyAccount& account);
   void preloadSecurity(const MyMoneySecurity& security);

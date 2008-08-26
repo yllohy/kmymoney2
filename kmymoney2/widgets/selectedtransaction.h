@@ -28,6 +28,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneysplit.h>
 
 namespace KMyMoneyRegister {
@@ -36,12 +37,16 @@ class SelectedTransaction
 {
 public:
   SelectedTransaction() {}
-  SelectedTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s) : m_transaction(t), m_split(s) {}
+  SelectedTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const QCString& scheduleId = QCString()) :
+    m_transaction(t), m_split(s), m_scheduleId(scheduleId) {}
 
   MyMoneyTransaction& transaction(void) { return m_transaction; }
   const MyMoneyTransaction& transaction(void) const { return m_transaction; }
   MyMoneySplit& split(void) { return m_split; }
   const MyMoneySplit& split(void) const { return m_split; }
+
+  bool isScheduled(void) const { return !m_scheduleId.isEmpty(); }
+  const QCString& scheduleId(void) const { return m_scheduleId; }
 
   /**
    * checks the transaction for specific reasons which would
@@ -56,6 +61,7 @@ public:
 private:
   MyMoneyTransaction      m_transaction;
   MyMoneySplit            m_split;
+  QCString                m_scheduleId;
 };
 
 class Register;

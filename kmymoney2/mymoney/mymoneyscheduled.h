@@ -392,6 +392,7 @@ public:
   void setName(const QString& nm);
 
   bool operator ==(const MyMoneySchedule& right);
+  bool operator !=(const MyMoneySchedule& right) { return ! operator==(right); }
 
   bool operator <(const MyMoneySchedule& right);
 

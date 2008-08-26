@@ -1320,9 +1320,7 @@ void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
 
 const MyMoneySchedule MyMoneyFile::schedule(const QCString& id) const
 {
-  checkStorage();
-
-  return m_storage->schedule(id);
+  return d->m_cache.schedule(id);
 }
 
 const QValueList<MyMoneySchedule> MyMoneyFile::scheduleList(
@@ -2206,6 +2204,7 @@ void MyMoneyFile::preloadCache(void)
   d->m_cache.preloadPayee(m_storage->payeeList());
   d->m_cache.preloadInstitution(m_storage->institutionList());
   d->m_cache.preloadSecurity(m_storage->securityList() + m_storage->currencyList());
+  d->m_cache.preloadSchedule(m_storage->scheduleList());
 }
 
 bool MyMoneyFile::isTransfer(const MyMoneyTransaction& t) const

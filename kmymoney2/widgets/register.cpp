@@ -44,7 +44,7 @@
 #include <kmymoney/transactionform.h>
 #include <kmymoney/stdtransactiondownloaded.h>
 #include <kmymoney/stdtransactionmatched.h>
-
+#include "scheduledtransaction.h"
 #include "../kmymoneyglobalsettings.h"
 
 const int LinesPerMemo = 3;
@@ -1467,7 +1467,10 @@ void Register::selectedTransactions(SelectedTransactions& list) const
   if(m_focusItem && m_focusItem->isSelected() && m_focusItem->isVisible()) {
     Transaction* t = dynamic_cast<Transaction*>(m_focusItem);
     if(t) {
-      SelectedTransaction s(t->transaction(), t->split());
+      QCString id;
+      if(t->isScheduled())
+        id = t->transaction().id();
+      SelectedTransaction s(t->transaction(), t->split(), id);
       list << s;
     }
   }
@@ -1480,7 +1483,10 @@ void Register::selectedTransactions(SelectedTransactions& list) const
     if(item && item->isSelected() && item->isVisible()) {
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {
-        SelectedTransaction s(t->transaction(), t->split());
+        QCString id;
+        if(t->isScheduled())
+          id = t->transaction().id();
+        SelectedTransaction s(t->transaction(), t->split(), id);
         list << s;
       }
     }
@@ -1548,7 +1554,7 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
             break;
 
           case Qt::LeftButton:
-            if(t && col == ReconcileFlagColumn && selectedItemsCount() == 1)
+            if(t && col == ReconcileFlagColumn && selectedItemsCount() == 1 && !t->isScheduled())
               emit reconcileStateColumnClicked(t);
             break;
 
@@ -1618,8 +1624,15 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
 
   if(item->isSelectable()) {
     QCString id = item->id();
+    QValueList<RegisterItem*> itemList = selectedItems();
     bool okToSelect = true;
-    int cnt = selectedItemsCount();
+    int cnt = itemList.count();
+    bool sameEntryType = true;
+    if(cnt > 0) {
+      if(typeid(*itemList.begin()) != typeid(item))
+        sameEntryType = false;
+    }
+
     if(buttonState & Qt::LeftButton) {
       if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
         if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
@@ -1639,6 +1652,9 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
       if(m_selectionMode == Multi) {
         switch(buttonState & (Qt::ShiftButton | Qt::ControlButton)) {
           case Qt::ControlButton:
+            okToSelect = sameEntryType;
+            if(typeid(*item) == typeid(StdTransactionScheduled))
+              okToSelect = false;
             // toggle selection state of current item
             emit aboutToSelectItem(item, okToSelect);
             if(okToSelect) {
@@ -1650,6 +1666,9 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
             break;
 
           case Qt::ShiftButton:
+            okToSelect = sameEntryType;
+            if(typeid(*item) == typeid(StdTransactionScheduled))
+              okToSelect = false;
             emit aboutToSelectItem(item, okToSelect);
             if(okToSelect) {
               // pointer 'item' might have changed. reconstruct it.
@@ -1670,6 +1689,7 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
       // b) multiple transactions are selected and the one to be selected is not
       if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
         if((cnt > 0) && (!item->isSelected())) {
+          okToSelect = sameEntryType;
           emit aboutToSelectItem(item, okToSelect);
           if(okToSelect) {
             // pointer 'item' might have changed. reconstruct it.
@@ -2228,6 +2248,9 @@ void Register::addGroupMarkers(void)
         new KMyMoneyRegister::FancyDateGroupMarker(this, yesterday, i18n("Yesterday"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, today, i18n("Today"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, thisWeek.addDays(7), i18n("Next week"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, thisMonth.addMonths(1), i18n("Next month"));
+
       } else {
         new KMyMoneyRegister::SimpleDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
       }
@@ -2239,6 +2262,7 @@ void Register::addGroupMarkers(void)
         QDate previousFiscalYear = currentFiscalYear.addYears(-1);
         new KMyMoneyRegister::FiscalYearGroupMarker(this, currentFiscalYear, i18n("Current fiscal year"));
         new KMyMoneyRegister::FiscalYearGroupMarker(this, currentFiscalYear.addYears(-1), i18n("Previous fiscal year"));
+        new KMyMoneyRegister::FiscalYearGroupMarker(this, currentFiscalYear.addYears(1), i18n("Next fiscal year"));
       }
       break;
 

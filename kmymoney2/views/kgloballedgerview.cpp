@@ -530,23 +530,26 @@ void KGlobalLedgerView::loadView(void)
     tracer.printf("cleared balance of %s = %s", m_account.name().data(), clearedBalance[m_account.id()].formatMoney("", 2).data());
 
     KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
-    focusItem = p;
+    focusItem = 0;
 
     // take care of possibly trailing scheduled transactions (bump up the future balance)
-    while(focusItem && !focusItem->isSelectable()) {
-      KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(focusItem);
-      if(t && t->isScheduled()) {
-        MyMoneyMoney balance = futureBalance[t->split().accountId()];
-        const MyMoneySplit& split = t->split();
-        // if this split is a stock split, we can't just add the amount of shares
-        if(t->transaction().isStockSplit()) {
-          balance = balance * split.shares();
-        } else {
-          balance += split.shares() * factor;
-        }
-        futureBalance[split.accountId()] = balance;
+    while(p) {
+      if(p->isSelectable()) {
+        KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+        if(t && t->isScheduled()) {
+          MyMoneyMoney balance = futureBalance[t->split().accountId()];
+          const MyMoneySplit& split = t->split();
+          // if this split is a stock split, we can't just add the amount of shares
+          if(t->transaction().isStockSplit()) {
+            balance = balance * split.shares();
+          } else {
+            balance += split.shares() * factor;
+          }
+          futureBalance[split.accountId()] = balance;
+        } else if(t && !focusItem)
+          focusItem = p;
       }
-      focusItem = focusItem->prevItem();
+      p = p->prevItem();
     }
 
     p = m_register->lastItem();

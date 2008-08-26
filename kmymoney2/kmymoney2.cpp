@@ -4737,7 +4737,11 @@ void KMyMoney2App::showContextMenu(const QString& containerName)
 
 void KMyMoney2App::slotShowTransactionContextMenu(void)
 {
-  showContextMenu("transaction_context_menu");
+  if(m_selectedTransactions.count() == 0 && m_selectedSchedule != MyMoneySchedule()) {
+    showContextMenu("schedule_context_menu");
+  } else {
+    showContextMenu("transaction_context_menu");
+  }
 }
 
 void KMyMoney2App::slotShowInvestmentContextMenu(void)
@@ -5200,49 +5204,68 @@ void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)
 
 void KMyMoney2App::slotSelectTransactions(const KMyMoneyRegister::SelectedTransactions& list)
 {
-  m_selectedTransactions = list;
+  // list can either contain a list of transactions or a single selected scheduled transaction
+  // in the latter case, the transaction id is actually the one of the schedule. In order
+  // to differentiate between the two, we just ask for the schedule. If we don't find one - because
+  // we passed the id of a real transaction - then we know that fact.  We use the schedule here,
+  // because the list of schedules is kept in a cache by MyMoneyFile. This way, we save some trips
+  // to the backend which we would have to do if we check for the transaction.
+  m_selectedTransactions.clear();
+  m_selectedSchedule = MyMoneySchedule();
 
   m_accountGoto = QCString();
   m_payeeGoto = QCString();
-  if(list.count() == 1) {
-    const MyMoneySplit& sp = m_selectedTransactions[0].split();
-    if(!sp.payeeId().isEmpty()) {
-      try {
-        MyMoneyPayee payee = MyMoneyFile::instance()->payee(sp.payeeId());
-        if(!payee.name().isEmpty()) {
-          m_payeeGoto = payee.id();
-          QString name = payee.name();
-          name.replace(QRegExp("&(?!&)"), "&&");
-          action("transaction_goto_payee")->setText(i18n("Goto '%1'").arg(name));
+  if(list.count() > 0 && !list.first().isScheduled()) {
+    m_selectedTransactions = list;
+    if(list.count() == 1) {
+      const MyMoneySplit& sp = m_selectedTransactions[0].split();
+      if(!sp.payeeId().isEmpty()) {
+        try {
+          MyMoneyPayee payee = MyMoneyFile::instance()->payee(sp.payeeId());
+          if(!payee.name().isEmpty()) {
+            m_payeeGoto = payee.id();
+            QString name = payee.name();
+            name.replace(QRegExp("&(?!&)"), "&&");
+            action("transaction_goto_payee")->setText(i18n("Goto '%1'").arg(name));
+          }
+        } catch(MyMoneyException *e) {
+          delete e;
         }
-      } catch(MyMoneyException *e) {
+      }
+      try {
+        QValueList<MyMoneySplit>::const_iterator it_s;
+        const MyMoneyTransaction& t = m_selectedTransactions[0].transaction();
+        // search the first non-income/non-expense accunt and use it for the 'goto account'
+        const MyMoneySplit& sp = m_selectedTransactions[0].split();
+        for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+          if((*it_s).id() != sp.id()) {
+            MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+            if(!acc.isIncomeExpense()) {
+              // for stock accounts we show the portfolio account
+              if(acc.isInvest()) {
+                acc = MyMoneyFile::instance()->account(acc.parentAccountId());
+              }
+              m_accountGoto = acc.id();
+              QString name = acc.name();
+              name.replace(QRegExp("&(?!&)"), "&&");
+              action("transaction_goto_account")->setText(i18n("Goto '%1'").arg(name));
+              break;
+            }
+          }
+        }
+      } catch(MyMoneyException* e) {
         delete e;
       }
     }
-    try {
-      QValueList<MyMoneySplit>::const_iterator it_s;
-      const MyMoneyTransaction& t = m_selectedTransactions[0].transaction();
-      // search the first non-income/non-expense accunt and use it for the 'goto account'
-      const MyMoneySplit& sp = m_selectedTransactions[0].split();
-      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
-        if((*it_s).id() != sp.id()) {
-          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-          if(!acc.isIncomeExpense()) {
-            // for stock accounts we show the portfolio account
-            if(acc.isInvest()) {
-              acc = MyMoneyFile::instance()->account(acc.parentAccountId());
-            }
-            m_accountGoto = acc.id();
-            QString name = acc.name();
-            name.replace(QRegExp("&(?!&)"), "&&");
-            action("transaction_goto_account")->setText(i18n("Goto '%1'").arg(name));
-            break;
-          }
-        }
-      }
-    } catch(MyMoneyException* e) {
-      delete e;
-    }
+
+    slotUpdateActions();
+    emit transactionsSelected(m_selectedTransactions);
+
+  } else if(list.count() > 0) {
+    slotSelectSchedule(MyMoneyFile::instance()->schedule(list.first().scheduleId()));
+
+  } else {
+    slotUpdateActions();
   }
 
   // make sure, we show some neutral menu entry if we don't have an object
@@ -5250,9 +5273,6 @@ void KMyMoney2App::slotSelectTransactions(const KMyMoneyRegister::SelectedTransa
     action("transaction_goto_payee")->setText(i18n("Goto payee"));
   if(m_accountGoto.isEmpty())
     action("transaction_goto_account")->setText(i18n("Goto account"));
-
-  slotUpdateActions();
-  emit transactionsSelected(m_selectedTransactions);
 }
 
 void KMyMoney2App::slotSelectInstitution(const MyMoneyObject& institution)
