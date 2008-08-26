@@ -1111,6 +1111,7 @@ void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
           break;
       }
       initParentWidget(parentId, QCString());
+      m_account.setAccountType(type);
     }
   } catch(MyMoneyException *e) {
     delete e;

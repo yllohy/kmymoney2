@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with syncing the hierarchy tab in the account edit dialog
+
 2008-08-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Reload forecast on Home Page when file is changed
   * Set the title of legend on report charts
