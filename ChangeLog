@@ -5,6 +5,7 @@
 
 2008-08-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Reload forecast on Home Page when file is changed
+  * Set the title of legend on report charts
 
 2008-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow direct editing and entering of schedules from Home page

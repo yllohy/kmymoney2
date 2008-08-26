@@ -1994,6 +1994,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 #endif
   _view.params().setLegendFontRelSize(20);
   _view.params().setLegendTitleFontRelSize(24);
+  _view.params().setLegendTitleText(i18n("Legend"));
 
   _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
   _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());
