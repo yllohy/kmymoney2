@@ -558,14 +558,18 @@ void KHomeView::showPayments(void)
       }
       while(1);
 
-      m_part->write("</table>");
       if (needMoreLess) {
+        m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+        m_part->write("<td>");
         if(m_showAllSchedules) {
           m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less ...") + linkend());
         } else {
           m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More ...") + linkend());
         }
+        m_part->write("</td><td></td><td></td><td></td><td></td>");
+        m_part->write("</tr>");
       }
+      m_part->write("</table>");
     }
   }
 }
@@ -912,9 +916,9 @@ void KHomeView::showForecast(void)
       beginDay = m_forecast.accountsCycle();
 
     // Now output header
-    m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(m_forecast.forecastDays())));
+    m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 Day Forecast").arg(m_forecast.forecastDays())));
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-    m_part->write("<tr class=\"item\"  style=\"font-weight: normal;\" ><td class=\"left\" width=\"40%\">");
+    m_part->write("<tr class=\"item\"><td class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td>");
     int colWidth = 55/ (m_forecast.forecastDays() / m_forecast.accountsCycle());
