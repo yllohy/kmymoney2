@@ -5,6 +5,7 @@
 
 2008-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't select scheduled transactions during Ctrl+A processing
+  * Wrap networth graph on homepage into frame
 
 2008-08-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed styles of Home Page - Patch provided by David Houlden

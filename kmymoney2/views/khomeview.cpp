@@ -259,7 +259,7 @@ void KHomeView::loadView(void)
 void KHomeView::showNetWorthGraph(void)
 {
 #ifdef HAVE_KDCHART
-  m_part->write(QString("<div class=\"summaryheader\">%1</div>\n").arg(i18n("Networth Forecast")));
+  m_part->write(QString("<div class=\"summaryheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Networth Forecast")));
 
   MyMoneyReport reportCfg = MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -315,7 +315,7 @@ void KHomeView::showNetWorthGraph(void)
   if(width() < chartWidget->width()) {
     int nh;
     nh = (width()*chartWidget->height() ) / chartWidget->width();
-    chartWidget->resize(width()-40, nh);
+    chartWidget->resize(width()-60, nh);
   }
 
   QPixmap pm(chartWidget->width(), chartWidget->height());
@@ -328,7 +328,12 @@ void KHomeView::showNetWorthGraph(void)
   buffer.open( IO_WriteOnly );
   pm.save( &buffer, "PNG" ); // writes pixmap into ba in PNG format
 
-  m_part->write(QString("<center><IMG SRC=\"data:image/png;base64,%1\" ALT=\"Networth\"></center>").arg(KCodecs::base64Encode(ba)));
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  m_part->write("<tr class=\"item\">");
+  m_part->write(QString("<td><center><IMG SRC=\"data:image/png;base64,%1\" ALT=\"Networth\"></center></td>").arg(KCodecs::base64Encode(ba)));
+  m_part->write("</tr>");
+  m_part->write("</table>");
+
   delete chartWidget;
 #endif
 }
