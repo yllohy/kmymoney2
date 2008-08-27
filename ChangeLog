@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't select scheduled transactions during Ctrl+A processing
+
 2008-08-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed styles of Home Page - Patch provided by David Houlden
 

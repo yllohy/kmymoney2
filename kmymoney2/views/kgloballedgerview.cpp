@@ -832,7 +832,7 @@ void KGlobalLedgerView::slotSelectAllTransactions(void)
   while(p) {
     KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
     if(t) {
-      if(t->isVisible() && t->isSelectable() && !t->id().isEmpty()) {
+      if(t->isVisible() && t->isSelectable() && !t->isScheduled() && !t->id().isEmpty()) {
         t->setSelected(true);
       }
     }
