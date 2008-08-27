@@ -634,6 +634,8 @@ void kMyMoneySplitTable::slotDeleteSplit(void)
         // if we removed the last split, select the previous
         if(m_currentRow && m_currentRow == static_cast<int>(list.count())-1)
           setCurrentCell(m_currentRow-1, 0);
+        else
+          setCurrentCell(m_currentRow, 0);
         emit transactionChanged(m_transaction);
       } catch(MyMoneyException *e) {
         qDebug("Cannot remove split: %s", e->what().latin1());
