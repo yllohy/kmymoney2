@@ -1061,6 +1061,7 @@ bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
     return false;
   }
 
+#if 0
   if(KMessageBox::warningContinueCancel(this, i18n(
       "Since this version of KMyMoney only writes data files in its new "
       "format, files written with this version cannot be read by KMyMoney version 0.4. "
@@ -1069,6 +1070,7 @@ bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
       "If you want to abort this operation, please press Cancel now"),
       QString::null, KStdGuiItem::cont(), "WarningNewFileVersion0.5") == KMessageBox::Cancel)
     return false;
+#endif
 
   emit kmmFilePlugin (preSave);
   IMyMoneyStorageFormat* pWriter = NULL;

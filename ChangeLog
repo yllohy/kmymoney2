@@ -6,6 +6,7 @@
 2008-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added functionality to wizard's help button
   * Set standard context for new file setup
+  * Disabled warning about deprecated fileformat of version 0.4
 
 2008-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't select scheduled transactions during Ctrl+A processing
