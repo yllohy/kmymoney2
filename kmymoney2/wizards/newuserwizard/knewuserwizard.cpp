@@ -99,6 +99,7 @@ NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFl
   else
     setFirstPage(m_generalPage);
 
+  setHelpContext("firsttime-3");
 }
 
 MyMoneyPayee NewUserWizard::Wizard::user(void) const

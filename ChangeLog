@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added functionality to wizard's help button
+  * Set standard context for new file setup
+
 2008-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't select scheduled transactions during Ctrl+A processing
   * Wrap networth graph on homepage into frame

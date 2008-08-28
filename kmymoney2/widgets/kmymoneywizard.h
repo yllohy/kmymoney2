@@ -227,6 +227,12 @@ public:
 
   virtual KMyMoneyWizard* wizard(void) const = 0;
 
+  /**
+   * This method returns a specific help context for the page shown
+   * The default returns an empty string.
+   */
+  virtual const QString& helpContext(void) const;
+
   virtual ~KMyMoneyWizardPage() {}
 protected:
   /**
@@ -408,6 +414,14 @@ public:
     */
   void reselectStep(void);
 
+  /**
+   * Setup a global help context for the wizard. It will be used whenever
+   * there is no specific help context available for the current page.
+   *
+   * @sa KMyMoneyWizardPage::helpContext()
+   */
+  void setHelpContext(const QString& ctx) { m_helpContext = ctx; }
+
   virtual ~KMyMoneyWizard(){}
 
 signals:
@@ -460,6 +474,7 @@ private:
 private slots:
   void backButtonClicked(void);
   void nextButtonClicked(void);
+  void helpButtonClicked(void);
 
 protected:
   /*
@@ -515,6 +530,8 @@ private:
    * The history stack
    */
   QValueList<KMyMoneyWizardPage*> m_history;
+
+  QString               m_helpContext;
 };
 
 

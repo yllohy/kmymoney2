@@ -32,6 +32,7 @@
 #include <kstdguiitem.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -101,6 +102,11 @@ bool KMyMoneyWizardPage::isComplete(void) const
   else
     QToolTip::add(wizard()->m_finishButton, i18n("Finish wizard"));
   return m_mandatoryGroup->isEnabled();
+}
+
+const QString& KMyMoneyWizardPage::helpContext(void) const
+{
+  return QString::null;
 }
 
 KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WFlags f) :
@@ -189,6 +195,7 @@ KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WF
   connect(m_nextButton, SIGNAL(clicked()), this, SLOT(nextButtonClicked()));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_finishButton, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
 }
 
 void KMyMoneyWizard::setTitle(const QString& txt)
@@ -325,6 +332,15 @@ void KMyMoneyWizard::nextButtonClicked(void)
     newPage->resetPage();
     switchPage(oldPage);
   }
+}
+
+void KMyMoneyWizard::helpButtonClicked(void)
+{
+  KMyMoneyWizardPage* currentPage = m_history.back();
+  QString ctx = currentPage->helpContext();
+  if(ctx.isEmpty())
+    ctx = m_helpContext;
+  kapp->invokeHelp(ctx);
 }
 
 void KMyMoneyWizard::completeStateChanged(void)
