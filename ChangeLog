@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reset the last payment date when duplicating a transaction
+
 2008-08-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Spanish translation of Home and Whats New pages
 

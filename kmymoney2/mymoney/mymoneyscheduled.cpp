@@ -267,7 +267,7 @@ void MyMoneySchedule::setLastPayment(const QDate& date)
 
   for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
   {
-    if (*it < date)
+    if (*it < date || !date.isValid())
       delList.append(*it);
   }
 

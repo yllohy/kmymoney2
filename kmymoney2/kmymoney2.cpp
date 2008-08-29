@@ -3435,6 +3435,7 @@ void KMyMoney2App::slotScheduleDuplicate(void)
   if(kmymoney2->action("schedule_duplicate")->isEnabled()) {
     MyMoneySchedule sch = m_selectedSchedule;
     sch.clearId();
+    sch.setLastPayment(QDate());
     sch.setName(i18n("Copy of schedulename", "Copy of %1").arg(sch.name()));
 
     MyMoneyFileTransaction ft;
