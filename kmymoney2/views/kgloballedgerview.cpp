@@ -449,6 +449,11 @@ void KGlobalLedgerView::loadView(void)
 
           MyMoneyTransaction t(s.id(), KMyMoneyUtils::scheduledTransaction(s));
           t.setPostDate(s.nextDueDate());
+          // if the transaction is scheduled and overdue, it can't
+          // certainly be posted in the past. So we take todays date
+          // as the alternative
+          if(s.isOverdue())
+            t.setPostDate(QDate::currentDate());
           const QValueList<MyMoneySplit>& splits = t.splits();
           QValueList<MyMoneySplit>::const_iterator it_s;
           for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {

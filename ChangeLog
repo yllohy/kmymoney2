@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-08-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show overdue payments in the past
+
 2008-08-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reset the last payment date when duplicating a transaction
 
