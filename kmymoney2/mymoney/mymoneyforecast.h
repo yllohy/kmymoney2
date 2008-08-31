@@ -148,6 +148,8 @@ public:
   void setHistoryMethod(int historyMethod) { m_historyMethod = historyMethod; }
   void setIncludeUnusedAccounts(bool _bool) { m_includeUnusedAccounts = _bool; }
   void setForecastDone(bool _bool) { m_forecastDone = _bool; }
+  void setIncludeFutureTransactions(bool _bool) { m_includeFutureTransactions = _bool; }
+  void setIncludeScheduledTransactions(bool _bool) { m_includeScheduledTransactions = _bool; }
 
   int accountsCycle(void) const   { return m_accountsCycle; }
   int forecastCycles(void) const   { return m_forecastCycles; }
@@ -163,6 +165,8 @@ public:
   int historyMethod(void) const   { return m_historyMethod; }
   bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
   bool isForecastDone(void) const { return m_forecastDone; }
+  bool isIncludingFutureTransactions(void) const { return m_includeFutureTransactions; }
+  bool isIncludingScheduledTransactions(void) const { return m_includeScheduledTransactions; }
 
 private:
 
@@ -207,6 +211,16 @@ private:
    * calculate forecast based on future and scheduled transactions
    */
   void doFutureScheduledForecast(void);
+
+  /**
+   * add future transactions to forecast
+   */
+  void addFutureTransactions(void);
+
+  /**
+   * add scheduled transactions to forecast
+   */
+  void addScheduledTransactions (void);
 
   /**
    * calculate daily forecast balance based on future and scheduled transactions
@@ -359,6 +373,17 @@ private:
    * forecast already done
    */
   bool m_forecastDone;
+
+  /**
+   * include future transactions when doing a scheduled-based forecast
+   */
+  bool m_includeFutureTransactions;
+
+  /**
+   * include scheduled transactions when doing a scheduled-based forecast
+   */
+  bool m_includeScheduledTransactions;
+
 };
 
 #endif // MYMONEYFORECAST_H

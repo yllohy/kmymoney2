@@ -299,6 +299,14 @@
    <label>Skip opening date when fetching transactions</label>
    <default>true</default>
   </entry>
+  <entry name="includeFutureTransactions" type="Bool">
+   <label>Include future transaction when using Schedule Forecast</label>
+   <default>true</default>
+  </entry>
+  <entry name="includeScheduledTransactions" type="Bool">
+   <label>Include scheduled transactions when using Schedule Forecast</label>
+   <default>true</default>
+  </entry>
  </group>
 
 </kcfg>

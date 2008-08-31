@@ -51,6 +51,8 @@ MyMoneyForecast::MyMoneyForecast() :
   setBeginForecastDay(KMyMoneyGlobalSettings::beginForecastDay());
   setForecastMethod(KMyMoneyGlobalSettings::forecastMethod());
   setHistoryMethod(KMyMoneyGlobalSettings::historyMethod());
+  setIncludeFutureTransactions(KMyMoneyGlobalSettings::includeFutureTransactions());
+  setIncludeScheduledTransactions(KMyMoneyGlobalSettings::includeScheduledTransactions());
 }
 
 
@@ -446,8 +448,52 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  //QDate endDate = forecastEndDate();
+  if(isIncludingFutureTransactions())
+    addFutureTransactions();
+
+  if(isIncludingScheduledTransactions())
+    addScheduledTransactions();
+
+  //do not show accounts with no transactions
+  if(!isIncludingUnusedAccounts())
+    purgeForecastAccountsList(m_accountList);
+
+  //adjust value of investments to deep currency
+  QMap<QCString, QCString>::ConstIterator it_n;
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+    MyMoneyAccount acc = file->account ( *it_n );
+
+    if ( acc.isInvest() ) {
+      //get the id of the security for that account
+      MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
+
+      //only do it if the security is not an actual currency
+      if ( ! undersecurity.isCurrency() )
+      {
+        //set the default value
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 1 );
+        MyMoneyPrice price;
+
+        for (QDate it_day = QDate::currentDate(); it_day <= forecastEndDate(); ) {
+          //get the price for the tradingCurrency that day
+          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), it_day );
+          if ( price.isValid() )
+          {
+            rate = price.rate ( undersecurity.tradingCurrency() );
+          }
+          //value is the amount of shares multiplied by the rate of the deep currency
+          m_accountList[acc.id() ][it_day] = m_accountList[acc.id() ][it_day] * rate;
+          it_day = it_day.addDays(1);
+        }
+      }
+    }
+  }
+}
+
+void MyMoneyForecast::addFutureTransactions(void)
+{
   MyMoneyTransactionFilter filter;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   // collect and process all transactions that have already been entered but
   // are located in the future.
@@ -480,24 +526,30 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
 
 #if 0
   QFile trcFile("forecast.csv");
-  trcFile.open(IO_WriteOnly);
-  QTextStream s(&trcFile);
+    trcFile.open(IO_WriteOnly);
+    QTextStream s(&trcFile);
 
-  {
-    s << "Already present transactions\n";
-    QMap<QCString, dailyBalances>::Iterator it_a;
-    QMap<QCString, QCString>::ConstIterator it_n;
-    for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
+    {
+      s << "Already present transactions\n";
+      QMap<QCString, dailyBalances>::Iterator it_a;
+      QMap<QCString, QCString>::ConstIterator it_n;
+      for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
       MyMoneyAccount acc = file->account(*it_n);
       it_a = m_accountList.find(*it_n);
       s << "\"" << acc.name() << "\",";
       for(int i = 0; i < 90; ++i) {
-        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
-      }
-      s << "\n";
+      s << "\"" << (*it_a)[i].formatMoney("") << "\",";
     }
+    s << "\n";
   }
+}
 #endif
+
+}
+
+void MyMoneyForecast::addScheduledTransactions (void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   // now process all the schedules that may have an impact
   QValueList<MyMoneySchedule> schedule;
@@ -601,56 +653,21 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   }
 
 #if 0
-  {
-    s << "\n\nAdded scheduled transactions\n";
-    QMap<QCString, dailyBalances>::Iterator it_a;
-    QMap<QCString, QCString>::ConstIterator it_n;
-    for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
-      MyMoneyAccount acc = file->account(*it_n);
-      it_a = m_accountList.find(*it_n);
-      s << "\"" << acc.name() << "\",";
-      for(int i = 0; i < 90; ++i) {
-        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
-      }
-      s << "\n";
-    }
-  }
-#endif
-
-  //do not show accounts with no transactions
-  if(isIncludingUnusedAccounts() == false)
-    purgeForecastAccountsList(m_accountList);
-
-  //adjust value of investments to deep currency
+{
+  s << "\n\nAdded scheduled transactions\n";
+  QMap<QCString, dailyBalances>::Iterator it_a;
   QMap<QCString, QCString>::ConstIterator it_n;
-  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
-    MyMoneyAccount acc = file->account ( *it_n );
-
-    if ( acc.isInvest() ) {
-      //get the id of the security for that account
-      MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
-
-      //only do it if the security is not an actual currency
-      if ( ! undersecurity.isCurrency() )
-      {
-        //set the default value
-        MyMoneyMoney rate = MyMoneyMoney ( 1, 1 );
-        MyMoneyPrice price;
-
-        for (QDate it_day = QDate::currentDate(); it_day <= forecastEndDate(); ) {
-          //get the price for the tradingCurrency that day
-          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), it_day );
-          if ( price.isValid() )
-          {
-            rate = price.rate ( undersecurity.tradingCurrency() );
-          }
-          //value is the amount of shares multiplied by the rate of the deep currency
-          m_accountList[acc.id() ][it_day] = m_accountList[acc.id() ][it_day] * rate;
-          it_day = it_day.addDays(1);
-        }
-      }
-    }
+  for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
+  MyMoneyAccount acc = file->account(*it_n);
+  it_a = m_accountList.find(*it_n);
+  s << "\"" << acc.name() << "\",";
+  for(int i = 0; i < 90; ++i) {
+    s << "\"" << (*it_a)[i].formatMoney("") << "\",";
   }
+  s << "\n";
+}
+}
+#endif
 }
 
 void MyMoneyForecast::calculateScheduledDailyBalances (void)
