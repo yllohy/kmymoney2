@@ -3371,8 +3371,8 @@ void KMyMoney2App::slotScheduleEdit(void)
                 KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
                 delete e;
               }
-              deleteTransactionEditor();
             }
+            deleteTransactionEditor();
           }
           delete sched_dlg;
           break;
@@ -3583,12 +3583,11 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
               deleteTransactionEditor();
               ft.commit();
             }
-            deleteTransactionEditor();
-
           } catch (MyMoneyException *e) {
             KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
             delete e;
           }
+          deleteTransactionEditor();
         }
       }
     } catch (MyMoneyException *e) {
