@@ -2254,7 +2254,6 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       file->addAccount(brokerageAccount, parentAccount);
 
       // set a link from the investment account to the brokerage account
-      newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
       file->modifyAccount(newAccount);
       file->createOpeningBalanceTransaction(brokerageAccount, openingBal);
 
@@ -3364,14 +3363,17 @@ void KMyMoney2App::slotScheduleEdit(void)
                   }
                 }
                 MyMoneyFile::instance()->modifySchedule(sched);
+                // delete the editor before we emit the dataChanged() signal from the
+                // engine. Calling this twice in a row does not hurt.
+                deleteTransactionEditor();
                 ft.commit();
               } catch (MyMoneyException *e) {
                 KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
                 delete e;
               }
+              deleteTransactionEditor();
             }
           }
-          deleteTransactionEditor();
           delete sched_dlg;
           break;
 

@@ -1258,6 +1258,10 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   if ( accountname.isEmpty() )
   {
     accountid = m_account.value("kmm-brokerage-account").utf8();
+    if (accountid.isEmpty() )
+    {
+      accountid = file->accountByName(m_account.brokerageName()).id();
+    }
   }
   else
   {

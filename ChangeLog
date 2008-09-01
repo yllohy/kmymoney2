@@ -3,6 +3,13 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a false popup dialog when editing a schedule from within the ledger
+  * Added name based detection of brokerage account to QIF Importer and
+    statement reader
+  * Preset statement balance to autoCalc to be able to detect if the
+    balance was filled in by the importer/online module
+
 2008-08-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings to exclude future or scheduled-transactions from forecast
 

@@ -151,9 +151,11 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
   // see if we need to update some values stored with the account
   if(m_account.value("lastStatementBalance") != s.m_closingBalance.toString()
   || m_account.value("lastImportedTransactionDate") != s.m_dateEnd.toString(Qt::ISODate)) {
-    m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
-    if ( s.m_dateEnd.isValid() ) {
-      m_account.setValue("lastImportedTransactionDate", s.m_dateEnd.toString(Qt::ISODate));
+    if(s.m_closingBalance != MyMoneyMoney::autoCalc) {
+      m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
+      if ( s.m_dateEnd.isValid() ) {
+        m_account.setValue("lastImportedTransactionDate", s.m_dateEnd.toString(Qt::ISODate));
+      }
     }
 
     try {
@@ -512,6 +514,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // we can stuff the transaction there.
 
       QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
+      if (brokerageactid.isEmpty() )
+      {
+        brokerageactid = file->accountByName(m_account.brokerageName()).id();
+      }
       if ( ! brokerageactid.isEmpty() )
       {
         s1.setAccountId(brokerageactid);
