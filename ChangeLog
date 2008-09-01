@@ -9,6 +9,8 @@
     statement reader
   * Preset statement balance to autoCalc to be able to detect if the
     balance was filled in by the importer/online module
+  * Don't remove account from selector if it has children. Rather make
+    it not selectable
 
 2008-08-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings to exclude future or scheduled-transactions from forecast

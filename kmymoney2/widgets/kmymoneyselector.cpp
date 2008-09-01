@@ -299,13 +299,21 @@ void KMyMoneySelector::removeItem(const QCString& id)
       KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(id == it_c->id()) {
-          delete it_c;
+          if(it_c->firstChild()) {
+            it_c->setSelectable(false);
+          } else {
+            delete it_c;
+          }
         }
       }
     } else if(it_v->rtti() == 0) {
       KMyMoneyListViewItem* it_c = dynamic_cast<KMyMoneyListViewItem*>(it_v);
       if(id == it_c->id()) {
-        delete it_c;
+        if(it_c->firstChild()) {
+          it_c->setSelectable(false);
+        } else {
+          delete it_c;
+        }
       }
     }
     it++;
