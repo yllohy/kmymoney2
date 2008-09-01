@@ -11,6 +11,8 @@
     balance was filled in by the importer/online module
   * Don't remove account from selector if it has children. Rather make
     it not selectable
+  * Fix sortorder of scheduled and non-scheduled transactions in
+    ledger when they have the same post date
 
 2008-08-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings to exclude future or scheduled-transactions from forecast

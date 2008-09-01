@@ -136,6 +136,15 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
     switch(sortField) {
       case PostDateSort:
         rc = i2->sortPostDate().daysTo(i1->sortPostDate());
+        // make sure to show non-scheduled transaction before
+        // scheduled ones if they have the same post date
+        if(rc == 0) {
+          Transaction* t1 = dynamic_cast<Transaction*>(i1);
+          Transaction* t2 = dynamic_cast<Transaction*>(i2);
+          if(t1 && t2) {
+            rc = t1->isScheduled() - t2->isScheduled();
+          }
+        }
         break;
 
       case EntryDateSort:
@@ -244,8 +253,9 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
     return (*it < 0) ? rc >= 0 : rc < 0;
   }
 
-  if(rc == 0)
+  if(rc == 0) {
     rc = qstrcmp(i1->sortEntryOrder(), i2->sortEntryOrder());
+  }
 
   return rc < 0;
 }
