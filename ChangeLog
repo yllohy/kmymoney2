@@ -10,6 +10,7 @@
   * Show last online balance in ledger
   * Added Debian/Ubuntu specifc build instructions to README
   * Improved sorting in ledger for items with same post date
+  * Don't allow create schedule option for investment accounts
 
 2008-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a false popup dialog when editing a schedule from within the ledger

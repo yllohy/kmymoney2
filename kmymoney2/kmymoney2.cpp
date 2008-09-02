@@ -4982,7 +4982,7 @@ void KMyMoney2App::slotUpdateActions(void)
         if(m_selectedTransactions.count() == 1) {
           action("transaction_editsplits")->setEnabled(true);
         }
-        if(m_selectedAccount.isAssetLiability()) {
+        if(m_selectedAccount.isAssetLiability() && m_selectedAccount.accountType() != MyMoneyAccount::Investment) {
           action("transaction_create_schedule")->setEnabled(m_selectedTransactions.count() == 1);
         }
       }
