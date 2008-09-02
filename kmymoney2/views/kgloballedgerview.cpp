@@ -735,7 +735,7 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& ac
         if(currencyId != base.id()) {
           priceInfo = file->price(sec.tradingCurrency(), base.id());
           approx |= !priceInfo.isValid();
-          rate = rate * priceInfo.rate(base.id());
+          rate = (rate * priceInfo.rate(base.id())).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision()));
         }
         balance += ((*it_b) * rate).convert(base.smallestAccountFraction());
       }
