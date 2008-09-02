@@ -134,6 +134,7 @@ public:
   int rowHeightHint(void) const;
 
   bool matches(const QString&) const { return true; }
+  virtual int sortSamePostDate(void) const { return 0; }
 
 protected:
   void setupColors(QColorGroup& cg);
@@ -164,6 +165,7 @@ class StatementGroupMarker : public FancyDateGroupMarker
 public:
   StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt );
   CashFlowDirection sortType(void) const { return m_dir; }
+  virtual int sortSamePostDate(void) const { return 4; }
 private:
   CashFlowDirection        m_dir;
 };
@@ -191,6 +193,7 @@ class FiscalYearGroupMarker : public FancyDateGroupMarker
 public:
   FiscalYearGroupMarker(Register* parent, const QDate& date, const QString& txt);
   virtual const char* className(void) { return "FiscalYearGroupMarker"; }
+  virtual int sortSamePostDate(void) const { return 1; }
 
 protected:
   void setupColors(QColorGroup& cg);

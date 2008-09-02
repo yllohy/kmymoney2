@@ -136,14 +136,8 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
     switch(sortField) {
       case PostDateSort:
         rc = i2->sortPostDate().daysTo(i1->sortPostDate());
-        // make sure to show non-scheduled transaction before
-        // scheduled ones if they have the same post date
         if(rc == 0) {
-          Transaction* t1 = dynamic_cast<Transaction*>(i1);
-          Transaction* t2 = dynamic_cast<Transaction*>(i2);
-          if(t1 && t2) {
-            rc = t1->isScheduled() - t2->isScheduled();
-          }
+          rc = i1->sortSamePostDate() - i2->sortSamePostDate();
         }
         break;
 
@@ -213,44 +207,9 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
         break;
     }
 
-    if(rc == 0) {
-      if(dynamic_cast<GroupMarker*>(i1) == 0) {
-        // only one item is a non-marker
-        if(dynamic_cast<GroupMarker*>(i2) == 0) {
-          // no, both are non-markers, then just continue with the next criteria
-          continue;
-        }
-
-        // let the marker take precedence but only if it's not a StatementGroupMarker
-        if(dynamic_cast<StatementGroupMarker*>(i2) == 0)
-          return false;
-
-        // it's a StatementGroupMarker which will always be last in date sort order
-        if(sortField == PostDateSort)
-          return true;
-        continue;
-
-      } else if(dynamic_cast<GroupMarker*>(i2) != 0) {
-        // we have two markers to compare
-        bool fm1 = dynamic_cast<FiscalYearGroupMarker*>(i1) != 0;
-        bool fm2 = dynamic_cast<FiscalYearGroupMarker*>(i2) != 0;
-        // if one of them is a fiscal year marker give it precedence
-        if(fm1 || fm2) {
-          if(fm1)
-            return false;
-        }
-      } else {
-        // make sure to show a statement group marker as the last item, but only when sorting by postdate
-        if(dynamic_cast<StatementGroupMarker*>(i1) != 0) {
-          if(sortField == PostDateSort)
-            return false;
-          continue;
-        }
-      }
-      return true;
-    }
-
-    return (*it < 0) ? rc >= 0 : rc < 0;
+    // the items differ for this sort key so we can return a result
+    if(rc != 0)
+      return (*it < 0) ? rc >= 0 : rc < 0;
   }
 
   if(rc == 0) {

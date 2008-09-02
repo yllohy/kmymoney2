@@ -88,6 +88,7 @@ public:
   bool isErronous(void) const { return m_erronous; }
 
   virtual const QDate& sortPostDate(void) const { return m_transaction.postDate(); }
+  virtual int sortSamePostDate(void) const { return 2; }
   virtual const QDate& sortEntryDate(void) const { return m_transaction.entryDate(); }
   virtual const QString& sortPayee(void) const { return m_payee; }
   virtual const MyMoneyMoney& sortValue(void) const { return m_split.shares(); }

@@ -87,6 +87,7 @@ public:
 
   // helper functions used for sorting
   virtual const QDate& sortPostDate(void) const { return nullDate; }
+  virtual int sortSamePostDate(void) const = 0;
   virtual const QDate& sortEntryDate(void) const { return nullDate; }
   virtual const QString& sortPayee(void) const { return QString::null; }
   virtual const MyMoneyMoney& sortValue(void) const { return nullValue; }
