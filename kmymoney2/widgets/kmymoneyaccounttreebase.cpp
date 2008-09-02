@@ -599,7 +599,7 @@ MyMoneyMoney KMyMoneyAccountTreeBaseItem::value() const
   QValueList<MyMoneyPrice>::const_iterator it_p;
   QCString security = m_security.id();
   for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
-    result = result * (MyMoneyMoney(1,1) / (*it_p).rate(security));
+    result = (result * (MyMoneyMoney(1,1) / (*it_p).rate(security))).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision()));
     if((*it_p).from() == security)
       security = (*it_p).to();
     else

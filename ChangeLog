@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Prevent numeric overflow when calculating value of
+    stocks traded in different currency
+
 2008-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a false popup dialog when editing a schedule from within the ledger
   * Added name based detection of brokerage account to QIF Importer and
