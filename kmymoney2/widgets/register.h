@@ -119,6 +119,7 @@ public:
   GroupMarker(Register* parent, const QString& txt = QString());
   ~GroupMarker();
   void setText(const QString& txt) { m_txt = txt; }
+  const QString& text(void) const { return m_txt; }
   bool isSelectable(void) const { return false; }
   bool canHaveFocus(void) const { return false; }
   int numRows(void) const { return 1; }

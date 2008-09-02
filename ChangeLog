@@ -6,6 +6,9 @@
 2008-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Prevent numeric overflow when calculating value of
     stocks traded in different currency
+  * Delete StatementKey during account unmap
+  * Show last online balance in ledger
+  * Added Debian/Ubuntu specifc build instructions to README
 
 2008-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a false popup dialog when editing a schedule from within the ledger

@@ -5707,6 +5707,10 @@ void KMyMoney2App::slotAccountUnmapOnline(void)
     MyMoneyFileTransaction ft;
     try {
       m_selectedAccount.setOnlineBankingSettings(MyMoneyKeyValueContainer());
+      // delete the kvp that is used in MyMoneyStatementReader too
+      // we should really get rid of it, but since I don't know what it
+      // is good for, I'll keep it around. (ipwizard)
+      m_selectedAccount.deletePair("StatementKey");
       MyMoneyFile::instance()->modifyAccount(m_selectedAccount);
       ft.commit();
     } catch(MyMoneyException* e) {

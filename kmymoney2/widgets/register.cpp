@@ -2248,7 +2248,14 @@ void Register::addGroupMarkers(void)
 
       if(KMyMoneyGlobalSettings::showFancyMarker()) {
         if(m_account.lastReconciliationDate().isValid())
-          new KMyMoneyRegister::FancyDateGroupMarker(this, m_account.lastReconciliationDate(), i18n("Last reconciliation"));
+          new KMyMoneyRegister::StatementGroupMarker(this, KMyMoneyRegister::Deposit, m_account.lastReconciliationDate(), i18n("Last reconciliation"));
+
+        if(!m_account.value("lastImportedTransactionDate").isEmpty()
+        && !m_account.value("lastStatementBalance").isEmpty()) {
+          MyMoneyMoney balance(m_account.value("lastStatementBalance"));
+          QString txt = i18n("Online Statement Balance: %1").arg(balance.formatMoney(m_account.fraction()));
+          new KMyMoneyRegister::StatementGroupMarker(this, KMyMoneyRegister::Deposit, QDate::fromString(m_account.value("lastImportedTransactionDate"), Qt::ISODate), txt);
+        }
 
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisYear, i18n("This year"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, lastMonth, i18n("Last month"));
@@ -2377,7 +2384,8 @@ void Register::removeUnwantedGroupMarkers(void)
     p = p->prevItem();
     if(m) {
       m->markVisible(true);
-      if(lastWasGroupMarker) {
+      // make adjacent group marker invisible except those that show statement information
+      if(lastWasGroupMarker && (dynamic_cast<KMyMoneyRegister::StatementGroupMarker*>(m) == 0)) {
         m->markVisible(false);
       }
       lastWasGroupMarker = true;

@@ -52,6 +52,13 @@ from.
            ./configure --with-qt-dir=[your location of qt3] \
                        --prefix=[your location of kde3]
 
+     Debian/Ubuntu/Kubuntu/... users have to prepend the call to
+     configure with a variable setting to be able to view the online
+     manual from within the application. If you have such a system,
+     please use the following command syntax:
+
+           kde_htmldir=/usr/share/doc/kde/HTML ./configure ---with....
+
      Below, please find a table of values for the above for several
      distributions:
 
@@ -73,7 +80,7 @@ from.
 
       and for Debian/Ubuntu the command is:
 
-           ./configure
+           kde_htmldir=/usr/share/doc/kde/HTML ./configure
 
      Please tell us the values for other distributions, so we can add
      them to this list. Send an e-mail to the developers mailing list.
