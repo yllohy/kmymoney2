@@ -26,6 +26,8 @@
 // KDE Includes
 
 #include <klocale.h>
+#include <kglobal.h>
+#include <kiconloader.h>
 #include <kdebug.h>
 
 // ----------------------------------------------------------------------------
@@ -194,6 +196,29 @@ void Transaction::setFocus(bool focus, bool updateLens)
         setNumRowsRegister(numRowsRegister(KMyMoneyGlobalSettings::showRegisterDetailed()));
     }
   }
+}
+
+void Transaction::markAttachment(QPainter* painter, int /* row */, int /* col */, const QRect& r)
+{
+  static QPixmap clip;
+
+  const int m = 2;  // margin
+  int h = m_parent->rowHeightHint() - (2*m);
+  int lx = r.topRight().x() - h;
+  if(isErronous())
+    lx -= h;
+  QRect cr(QPoint(lx - m, m), QSize(h, h));
+
+  painter->save();
+  if(clip.isNull()) {
+    clip = KGlobal::iconLoader()->loadIcon("attach", KIcon::Small, KIcon::SizeSmall, KIcon::DefaultState);
+    if(clip.height() > h) {
+      clip.resize(h, h);
+    }
+  }
+
+  painter->drawPixmap(QPoint(lx - m, m + (h - clip.height())/2 ), clip);
+  painter->restore();
 }
 
 void Transaction::markAsErronous(QPainter* painter, int /* row */, int /* col */, const QRect& r)
@@ -1142,13 +1167,23 @@ void StdTransaction::paintRegisterCell(QPainter* painter, int row, int col, cons
 {
   Transaction::paintRegisterCell(painter, row, col, r, selected, _cg);
 
-  if(m_erronous && painter && row == 0 && col == DetailColumn) {
-    QRect cellRect;
-    cellRect.setX(0);
-    cellRect.setY(0);
-    cellRect.setWidth(m_parent->columnWidth(col));
-    cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
-    markAsErronous(painter, row, col, cellRect);
+  if(row == 0 && col == DetailColumn && painter) {
+    if(m_erronous) {
+      QRect cellRect;
+      cellRect.setX(0);
+      cellRect.setY(0);
+      cellRect.setWidth(m_parent->columnWidth(col));
+      cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
+      markAsErronous(painter, row, col, cellRect);
+    }
+    if(!m_transaction.value("kmm-attachment").isEmpty()) {
+      QRect cellRect;
+      cellRect.setX(0);
+      cellRect.setY(0);
+      cellRect.setWidth(m_parent->columnWidth(col));
+      cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
+      markAttachment(painter, row, col, cellRect);
+    }
   }
 }
 

@@ -503,6 +503,11 @@ protected:
 
   void selectRange(RegisterItem* from, RegisterItem* to, bool invert, bool includeFirst, bool clearSel);
 
+  // DND
+  void dragMoveEvent(QDragMoveEvent* event);
+  void dropEvent(QDropEvent* event);
+  Transaction* dropTransaction(QPoint cPos) const;
+
 protected slots:
   void resize(void);
 

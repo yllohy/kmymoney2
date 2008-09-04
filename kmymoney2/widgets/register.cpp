@@ -33,6 +33,7 @@
 #include <klocale.h>
 #include <kglobal.h>
 #include <kdebug.h>
+#include <kurldrag.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -571,7 +572,52 @@ Register::Register(QWidget *parent, const char *name ) :
 
   // double clicking the header turns on auto column sizing
   connect(horizontalHeader(), SIGNAL(sectionSizeChanged(int)), this, SLOT(slotAutoColumnSizing(int)));
+
+  //DND
+  setAcceptDrops(true);
 }
+
+// DND
+Transaction* Register::dropTransaction(QPoint cPos) const
+{
+  Transaction* t = 0;
+  cPos -= QPoint( verticalHeader()->width(), horizontalHeader()->height() );
+  if(cPos.y() >= 0) {
+    cPos += QPoint(contentsX(), contentsY());
+    int row = rowAt(cPos.y());
+    int col = columnAt(cPos.x());
+    t = dynamic_cast<Transaction*>(itemAtRow(row));
+  }
+}
+
+void Register::dragMoveEvent(QDragMoveEvent* event)
+{
+  if ( KURLDrag::canDecode(event) ) {
+    event->ignore();
+    Transaction* t = dropTransaction(event->pos());
+    if(t && !t->isScheduled()) {
+      event->accept();
+    }
+  }
+}
+
+void Register::dropEvent(QDropEvent* event)
+{
+  qDebug("Register::dropEvent");
+  if ( KURLDrag::canDecode(event) ) {
+    event->ignore();
+    Transaction* t = dropTransaction(event->pos());
+    if(t && !t->isScheduled()) {
+      qDebug("Drop was ok");
+      KURL::List urls;
+      KURLDrag::decode(event, urls);
+      qDebug("List is '%s'", urls.toStringList().join(";").data());
+      event->accept();
+    }
+  }
+}
+// DND end
+
 
 Register::~Register()
 {

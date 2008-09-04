@@ -240,6 +240,7 @@ public:
 
 protected:
   virtual void markAsErronous(QPainter* p, int row, int col, const QRect& r);
+  virtual void markAttachment(QPainter* painter, int row, int col, const QRect& r);
 
   /**
     * This method converts m_split.reconcileFlag() into a readable string
