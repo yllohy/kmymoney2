@@ -29,7 +29,7 @@
 
     <releaseinfo>0.7</releaseinfo>
   </chapterinfo>
-
+  
   <title id="details.accounts.title">Accounts</title>
 
   <para>The Accounts screen provides a summary of all the accounts. There are
@@ -126,7 +126,7 @@
     </sect2>
 
     <sect2>
-      <title>Account details</title>
+      <title>Account</title>
 
       <para><screenshot>
           <mediaobject>
@@ -150,11 +150,10 @@
 
       <variablelist>
         <varlistentry>
-          <term>Current</term>
+          <term>Checking</term>
 
           <listitem>
-            <para>A normal current account, the type you get with any high
-            street bank.</para>
+            <para>A normal checking account, the type you get with any bank or credit union.</para>
           </listitem>
         </varlistentry>
 
@@ -162,8 +161,7 @@
           <term>Savings</term>
 
           <listitem>
-            <para>A normal savings account, the type you get with any high
-            street bank.</para>
+            <para>A normal savings account, the type you get with any bank or credit union.</para>
           </listitem>
         </varlistentry>
 
@@ -188,15 +186,22 @@
           <term>Loan</term>
 
           <listitem>
-            <para>An account to manage a loan.</para>
+            <para>An account to manage a loan for money either borrowed or lent.  With a Loan account &kappname; automatically calculates interest payments to help you track the remaining principal on the loan.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
+          <term>Investment</term>
+
+          <listitem>
+            <para>An account to manage an investment such as stocks and investment funds.</para>
+          </listitem>
+	</varlistentry>
+        <varlistentry>
           <term>Asset</term>
 
           <listitem>
-            <para>An account to manage assets.</para>
+            <para>An account to manage an asset.</para>
           </listitem>
         </varlistentry>
 
@@ -204,8 +209,7 @@
           <term>Liability</term>
 
           <listitem>
-            <para>An account to manage a liability such as money you
-            borrowed.</para>
+            <para>An account to manage a liability such as money you borrowed or a future expense.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -254,6 +258,8 @@
 
     <sect2>
       <title>Investment Accounts</title>
+      <para>For Investment account you have the option to create an associated Brokerage account.  For more information see <link linkend="details.investments">Investments</link></para>
+
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -269,7 +275,9 @@
     </sect2>
 
     <sect2>
-      <title>Loan Accounts</title>
+	    <title>Loan Accounts</title>
+	<para>Loan accounts are special accounts used to help you manage Loans with interest and scheduled repayments.  By providing &kappname; with information about the loan, &kappname; can help you track interest payments and the remaining principal of the loan.</para>
+
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -281,6 +289,21 @@
               </textobject>
             </mediaobject>
           </screenshot></para>
+	
+	<para>On the Details page you enter the general information about the loan.</para>
+
+	<para>First, select whether you are borrowing or lending money.  If you are borrowing money the loan will be listed in Accounts under Liabilities.  If you are lending money the loan will be listed under Assets.</para>
+	
+	<para>Next, select the payee or payer of the loan.  As always, if the name doesn't yet exist in the Payees list, enter it here and &kappname; will create it for you.</para>
+
+	<para>The next three items are for handling Loans on which you've already made payments.  If you select Yes in the "Have you made/received any payments yet?" item you can then select whether you want to record all payments or just those from the beginning of the current year.  If you want to record from the beginning of the current year, you are than asked to input the current balance.</para>
+	
+	<para>Then, select how often payments will be made and how often interest is compounded.  Compounding is where the interest is added to the amount owed on the loan so that when the interest is next calculated there will be more interest paid on the interest.  It's common for interest to be compounded at the same frequency that payments are made.</para>
+
+	<para>Next, enter the date the first recorded payment will be made.</para>
+	
+	<para>Finally, enter information about how the interest rate varies.  If the loan is fixed-rate there is nothing to do.  If the rate varies, select Variable in "Type of interest rate" and then enter the interval between interest rate changes and the date the first change of interest rate is due: &kappname; will ask you to update the interest rate when that date arrives.</para>
+	
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -292,6 +315,61 @@
               </textobject>
             </mediaobject>
           </screenshot></para>
+  
+	<para>The Payments page is where you enter the payment and interest values for the loan.</para>
+
+	<para>First, select whether the interest rate is calculated when the payment is received or when it becomes due.  If you don't know, leave it on the default value.</para>
+
+	<para>Next, enter the following values:</para>
+	  <variablelist>
+	    <varlistentry>
+	      <term>Loan amount</term>
+
+	      <listitem>
+		<para>The amount of the loan.</para>
+	      </listitem>
+	    </varlistentry>
+
+	  <varlistentry>
+	    <term>Interest rate</term>
+
+	    <listitem>
+	      <para>The annual percentage interest rate of the loan.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Term</term>
+
+	    <listitem>
+	      <para>The length of the loan.  Enter a number and select either Months or Years.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Payment (principal and interest)</term>
+
+	    <listitem>
+	      <para>The amount paid for each loan payment.  This is the total of the principal and interest paid with each payment.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Balloon payment</term>
+
+	    <listitem>
+	      <para>Additional final payment made at the end of the term to pay off the remaining principal of the loan.  For a repayment loan this is often zero.  For an interest-only loan this will be the same as the loan amount.</para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+
+	<para>Finally, use the <guibutton>Calculate</guibutton> button to check the values you have entered.  You must have entered either all or all but one of the values listed above.  If you omit two or more values the button is disabled because it is not possible to check that the entered values are consistent: in that case you will not be able to use the Loan account facility in &kappname; and will instead have to use a Liability or Asset account to track the loan manually.</para>
+	
+	<para>If you omit one value &kappname; will try to calculate it for you.  If you have entered all values &kappname; will check the values are consistent.  &kappname; will not adjust entered values other than the "Balloon payment", which it may adjust slightly to deal with rounding.  If the values are inconsistent or &kappname; cannot calculate the omitted value &kappname; will let you know so that you can correct any errors and repeat the calculation.</para>
+	
+	<para>Once the values are consistent the <guibutton>Next</guibutton> button is enabled and you can advance to the next page.</para>
+	
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -303,6 +381,11 @@
               </textobject>
             </mediaobject>
           </screenshot></para>
+	 
+	<para>The Fees page is where you can enter any fees added to the loan payments.</para>
+	
+	<para>If there are any fees press the <guibutton>Additional Fees</guibutton> button.  The Transaction Split editor will be displayed for entry of the fees.  Any lines added here will be included in the payment schedule for the loan.  When you save the splits the Fees page will display the principal and interest payment, the total additional fees and the total periodic payment.</para>
+	
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -314,6 +397,14 @@
               </textobject>
             </mediaobject>
           </screenshot></para>
+	  
+	<para>&kappname; will create a <link linkend="details.schedules">scheduled
+        transaction</link> for your loan.  The Schedule page is where you enter the remaining details needed to create the schedule.</para>
+	
+	<para>First enter the Category to which loan interest will be assigned.  Then enter the account from which the loan payment will be made.</para>
+	
+	<para>The page also displays the first payment date for which the Schedule will be created.</para>
+	
         <para><screenshot>
             <mediaobject>
               <imageobject>
@@ -326,6 +417,16 @@
             </mediaobject>
           </screenshot></para>
 
+	<para>Optionally, &kappname; can create a transaction representing what was received or paid when the loan was created.</para>
+	
+	<para>If you borrowed or lent cash select the account from which or to which the loan amount was paid.</para>
+	
+	<para>If you borrowed money to purchase a car you can select or create an Asset account to help you track the value of the new car.</para>
+	
+	<para>If you re-financed an existing Loan check the "Refinance existing loan" checkbox, select the Loan account and &kappname; will create a transfer transaction paying off the existing loan.</para>
+	
+	<para>If you don't want to create the payout transaction, check the "Do not create transaction" checkbox.</para>
+	
     </sect2>
 
     <sect2>
@@ -375,7 +476,7 @@
         </screenshot></para>
 
       <para>
-      This is the final step in creating a new account. A summary of the information entered is displayed. Review it, and if everything is OK press the Finish button. Otherwise, either press the Back button to make corrections or the Cancel button to abandon creating a new account.
+      This is the final step in creating a new account. A summary of the information entered is displayed. Review it, and if everything is OK press the Finish button. Otherwise, either press the <guibutton>Back</guibutton> button to make corrections or the Cancel button to abandon creating a new account.
       </para>
       <para>
         NOTE: The Type and Currency cannot at present be changed after the account is created.

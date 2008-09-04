@@ -5,6 +5,7 @@
 
 2008-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Initial code for drag and drop for attachments (not functional yet)
+  * Added documentation update provided by Colin Wright
 
 2008-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Prevent numeric overflow when calculating value of
