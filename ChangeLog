@@ -6,6 +6,8 @@
 2008-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Initial code for drag and drop for attachments (not functional yet)
   * Added documentation update provided by Colin Wright
+  * Updated screen shots for documentation of new account wizard
+    as received in patch #2038235
 
 2008-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Prevent numeric overflow when calculating value of
