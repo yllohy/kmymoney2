@@ -1,22 +1,21 @@
-# translation of de.po to german
+# translation of de.po to
 # This file is put in the public domain.
 #
 # Jochen Rundholz <jochen_r@gmx.de>, 2005.
 # Frank Schmischke <frank.schmischke@t-online.de>, 2006.
-# Thomas Baumgart <thb@net-bembel.de>, 2006, 2007.
 # Holger Bunzel <holger.bunzel@gmx.net>, 2006.
-# Thomas Baumgart <ipwizard@users.sourceforge.net>, 2007.
 # Marko <marko.kaening@email.de>, 2008.
 # Marko Kaening <mk-lists@email.de>, 2008.
 # yllohy <yllohy@googlemail.com>, 2008.
+# Thomas Baumgart <ipwizard@users.sourceforge.net>, 2006, 2007, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-31 10:59+0200\n"
-"PO-Revision-Date: 2008-08-09 09:16+0200\n"
-"Last-Translator: yllohy <yllohy@googlemail.com>\n"
-"Language-Team: german <de@li.org>\n"
+"PO-Revision-Date: 2008-09-05 15:26+0200\n"
+"Last-Translator: Thomas Baumgart <ipwizard@users.sourceforge.net>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -418,8 +417,7 @@ msgstr "KMyMoney hat für Ihren Kredit eine Laufzeit von %1 berechnet. "
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:973
 msgid "KMyMoney has calculated a balloon payment of %1 for this loan."
-msgstr ""
-"KMyMoney hat für Ihren Kredit eine abschließende Zahlung von %1 berechnet."
+msgstr "KMyMoney hat für Ihren Kredit eine abschließende Zahlung von %1 berechnet."
 
 #: dialogs/knewloanwizard.cpp:909
 #: wizards/newaccountwizard/knewaccountwizard.cpp:980
@@ -508,8 +506,7 @@ msgid "Create a new asset account"
 msgstr "Neues Anlagekonto anlegen"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1305
-msgid ""
-"If the asset account does not yet exist, press this button to create it."
+msgid "If the asset account does not yet exist, press this button to create it."
 msgstr ""
 "Wenn das Anlagenkonto noch nicht existiert, drücken sie diesen Knopf um es "
 "anzulegen."
@@ -822,8 +819,7 @@ msgid "Preferred account"
 msgstr "Bevorzugtes Konto"
 
 #: wizards/newaccountwizard/rc.cpp:15
-msgid ""
-"Mark this checkbox if the account should be maintained as preferred account"
+msgid "Mark this checkbox if the account should be maintained as preferred account"
 msgstr ""
 "Aktivieren Sie das Kästchen, um dieses Konto als bevorzugtes Konto zu "
 "markieren"
@@ -1063,8 +1059,7 @@ msgstr ""
 
 #: wizards/newaccountwizard/rc.cpp:57
 msgid "Select the institution which manages this account or leave empty"
-msgstr ""
-"Wählen Sie das Geldinstitut, welches dieses Konto verwaltet, oder leer lassen"
+msgstr "Wählen Sie das Geldinstitut, welches dieses Konto verwaltet, oder leer lassen"
 
 #: wizards/newaccountwizard/rc.cpp:58
 msgid "Ne&w Institution"
@@ -1208,8 +1203,7 @@ msgstr "Berechnen"
 
 #: wizards/newaccountwizard/rc.cpp:79
 msgid "Press this button to calculate/verify your loan details."
-msgstr ""
-"Drücken Sie diesen Knopf um ihre Darlehens-Details zu berechnen/verifizieren."
+msgstr "Drücken Sie diesen Knopf um ihre Darlehens-Details zu berechnen/verifizieren."
 
 #: wizards/newaccountwizard/rc.cpp:80
 msgid ""
@@ -1279,8 +1273,7 @@ msgid "Refinance existing loan"
 msgstr "Refinanzierung eines existierenden Darlehens"
 
 #: wizards/newaccountwizard/rc.cpp:92
-msgid ""
-"Check this if you are refinancing a loan that already exists in KMyMoney"
+msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
 msgstr ""
 "Hier markieren, falls Sie einen Kredit refinanzieren, der bereits in "
 "KMyMoney existiert"
@@ -1655,8 +1648,7 @@ msgstr "Kann Datenbank für Treiber %1 nicht anlegen; bitte manuell anlegen"
 
 #: mymoney/storage/mymoneystoragesql.cpp:238
 msgid "Error in create database %1; do you have create permissions?"
-msgstr ""
-"Fehler beim Erstellen der Datenbank %1. Haben Sie Rechte zum Erstellen?"
+msgstr "Fehler beim Erstellen der Datenbank %1. Haben Sie Rechte zum Erstellen?"
 
 #: converter/mymoneygncreader.cpp:1322
 #: mymoney/storage/mymoneystoragexml.cpp:166
@@ -1779,9 +1771,8 @@ msgid "Opening Balances"
 msgstr "Eröffnungssaldo"
 
 #: mymoney/mymoneyfile.cpp:398
-#, fuzzy
 msgid "Cannot remove transaction that references a closed account."
-msgstr "Kann im Kontext dieses Kontos keine Investitionen bearbeiten."
+msgstr "Kann keine Transaktionen löschen, die ein geschlossenes Konto referenziert."
 
 #: mymoney/mymoneyfile.cpp:1414 mymoney/mymoneyfile.cpp:1433
 #: mymoney/mymoneyfile.cpp:1447 mymoney/mymoneyfile.cpp:1469
@@ -1833,13 +1824,12 @@ msgid "  * Payee id updated in split of transaction '%1'."
 msgstr "  * Zahlungsempfänger-Id in Split-Buchung '%1' aktualisiert."
 
 #: mymoney/mymoneyfile.cpp:1596
-#, fuzzy
 msgid "  * shares set to value in split of transaction '%1'."
-msgstr "  * Wert auf Anteile der Split-Buchung '%1' gesetzt."
+msgstr "  * Anzahl Anteile auf Wert der Split-Buchung '%1' gesetzt."
 
 #: mymoney/mymoneyfile.cpp:1599
 msgid "  * value set to shares in split of transaction '%1'."
-msgstr "  * Wert auf Anteile der Split-Buchung '%1' gesetzt."
+msgstr "  * Wert auf Anzahl Anteile der Split-Buchung '%1' gesetzt."
 
 #: mymoney/mymoneyfile.cpp:1605
 msgid ""
@@ -1860,8 +1850,7 @@ msgstr ""
 "aktualisiert."
 
 #: mymoney/mymoneyfile.cpp:1649
-msgid ""
-"  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
+msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
 msgstr ""
 "  *  Split-Buchung in geplanter Buchung '%1' enthielt Betrag != 0 und Aktien "
 "== 0."
@@ -1871,21 +1860,16 @@ msgid "    Shares set to value."
 msgstr "    Aktien auf Betrag gesetzt."
 
 #: mymoney/mymoneyfile.cpp:1658
-#, fuzzy
 msgid "  * Removed bankid from split in scheduled transaction '%1'."
-msgstr "  * Zahlungsempfänger-Id in Split-Buchung '%1' aktualisiert."
+msgstr "  * Feld bankId in Split-Buchung '%1' entfernt"
 
 #: mymoney/mymoneyfile.cpp:1671
-#, fuzzy
 msgid "  * shares set to value in split in schedule '%1'."
-msgstr ""
-"  * Betrag als Aktien in Split-Buchung der geplanten Zahlung '%1' gesetzt."
+msgstr "  * Anzahl Anteile auf Betrag in Split-Buchung der geplanten Zahlung '%1' gesetzt."
 
 #: mymoney/mymoneyfile.cpp:1674
-#, fuzzy
 msgid "  * value set to shares in split in schedule '%1'."
-msgstr ""
-"  * Betrag als Aktien in Split-Buchung der geplanten Zahlung '%1' gesetzt."
+msgstr "  * Betrag auf Anzahl Aktien in Split-Buchung der geplanten Zahlung '%1' gesetzt."
 
 #: mymoney/mymoneyfile.cpp:1680
 msgid ""
@@ -2142,9 +2126,8 @@ msgid "Update account..."
 msgstr "Konto aktualisieren..."
 
 #: kmymoney2.cpp:356
-#, fuzzy
 msgid "Unmap account"
-msgstr "Kreditkonto"
+msgstr "Kontenzuordnung löschen"
 
 #: kmymoney2.cpp:361
 msgid "New category..."
@@ -2622,8 +2605,7 @@ msgstr "Importiere XML Kontoauszug..."
 
 #: kmymoney2.cpp:1670
 msgid "Error importing %1: This file is not a valid KMM statement file."
-msgstr ""
-"Fehler beim Import von %1: Die Datei ist keine gültige KMM Kontoauszugsdatei."
+msgstr "Fehler beim Import von %1: Die Datei ist keine gültige KMM Kontoauszugsdatei."
 
 #: kmymoney2.cpp:1670
 msgid "Invalid Statement"
@@ -2631,10 +2613,10 @@ msgstr "Ungültiger Kontoauszug"
 
 #: kmymoney2.cpp:1705
 msgid "The statement has been processed with the following results:"
-msgstr ""
+msgstr "Der Kontoauszug wurde mit folgendem Ergebnis verarbeitet:"
 
 #: kmymoney2.cpp:1705
-#, fuzzy
+
 msgid "Statement stats"
 msgstr "Kontoauszug Details"
 
@@ -2835,8 +2817,7 @@ msgstr "Kann Konto nicht anlegen: %1"
 msgid ""
 "The security <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
 "Do you want to create it?"
-msgstr ""
-"Die Kategorie <b>%1</b> existiert derzeit nicht. Möchten Sie sie anlegen?"
+msgstr "Die Kategorie <b>%1</b> existiert derzeit nicht. Möchten Sie sie anlegen?"
 
 #: kmymoney2.cpp:2434
 msgid "Do you really want to delete the investment <b>%1</b>?"
@@ -2868,8 +2849,7 @@ msgid "Adjusting budgets ..."
 msgstr "Budgets anpassen ..."
 
 #: kmymoney2.cpp:2665
-msgid ""
-"Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
+msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
 msgstr ""
 "Kann Kategorie <b>%1</b> nicht mit der Kategorie <b>%2</b> austauschen. "
 "Ursache: %3"
@@ -2939,10 +2919,10 @@ msgstr "Kann Konto '%1' nicht verändern. Ursache: %2"
 msgid ""
 "KMyMoney has detected some overdue schedules for this account. Do you want "
 "to enter those scheduled transactions now?"
-msgstr ""
+msgstr "KMyMoney hat einige überfällige geplante Buchungen in diesem Account gefunden. Möchten Sie diese jetzt in das Kontobuch eintragen?"
 
 #: kmymoney2.cpp:2945
-#, fuzzy
+
 msgid "Scheduled transactions found"
 msgstr "Geplante Buchungen"
 
@@ -3029,8 +3009,7 @@ msgstr "Kann geplante Buchung '%1' nicht ändern"
 
 #: kmymoney2.cpp:3413
 msgid "Are you sure you want to delete the schedule <b>%1</b>?"
-msgstr ""
-"Sind Sie sicher, dass Sie die geplante Buchung <b>%1</b> löschen wollen?"
+msgstr "Sind Sie sicher, dass Sie die geplante Buchung <b>%1</b> löschen wollen?"
 
 #: kmymoney2.cpp:3416
 msgid ""
@@ -3354,8 +3333,7 @@ msgid "Checking for overdue schedules..."
 msgstr "Suche nach fälligen Zahlungen..."
 
 #: kmymoney2.cpp:5518
-msgid ""
-"You must first select a KMyMoney file before you can import a statement."
+msgid "You must first select a KMyMoney file before you can import a statement."
 msgstr ""
 "Bevor Sie einen Kontoauszug importieren können, müssen sie zuerst eine "
 "KMyMoney-Datei auswählen."
@@ -3418,17 +3396,16 @@ msgid ""
 "Do you really want to remove the mapping of account <b>%1</b> to an online "
 "account? Depending on the details of the online banking method used, this "
 "action cannot be reverted."
-msgstr ""
+msgstr "Wollen Sie die Zuordnung von Konto <b>%1</b> auf ein Onlinekonto wirklich entfernen? Abhängig von der jeweils verwendeten Onlinezugangsmethode kann dies evtl. nicht rückgängig gemacht werden."
 
 #: kmymoney2.cpp:5705
-#, fuzzy
 msgid "Remove mapping to online account"
-msgstr "Einem Onlinekonto zuordnen"
+msgstr "Entfernen der Zuordnung zu Onlinekonto"
 
 #: kmymoney2.cpp:5712
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to unmap account from online account: %1"
-msgstr "Kann Konto dem Onlinekonto %1 nicht zuordnen"
+msgstr "Kann Zuordnung vom Konto nicht vom Onlinekonto %1 entfernen"
 
 #: kmymoney2.cpp:5730
 msgid "Select online banking plugin"
@@ -3483,8 +3460,7 @@ msgid "Invalid top-level account type <b>%1</b> in template file <b>%2</b>!"
 msgstr "Ungültiger Haupt-Kontotyp <b>%1</b>in Vorlagendatei <b>%2</b>!"
 
 #: converter/mymoneytemplate.cpp:309
-msgid ""
-"Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
+msgid "Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
 msgstr ""
 "Ungültiger Kennzeichentyp <b>%1</b> für Konto <b>%3</b> in Vorlagendatei <b>%"
 "2</b>!"
@@ -3738,44 +3714,41 @@ msgid "Unable to import"
 msgstr "Kann nicht importieren"
 
 #: converter/mymoneystatementreader.cpp:169
-#, fuzzy, c-format
+#, c-format
 msgid "Importing statement for account %1"
-msgstr "Importiere Abrechnung via Web Connect"
+msgstr "Importiere Kontoauszug für Konto %1"
 
 #: converter/mymoneystatementreader.cpp:224
 msgid "  Statement balance on %1 is reported to be %2"
-msgstr ""
+msgstr "  Endsaldo am %1 ist %2."
 
 #: converter/mymoneystatementreader.cpp:225
-#, fuzzy
 msgid "  Transactions"
-msgstr "Buchungen"
+msgstr "  Buchungen"
 
 #: converter/mymoneystatementreader.cpp:226
 msgid "    %1 processed"
-msgstr ""
+msgstr "    %1 verarbeitet"
 
 #: converter/mymoneystatementreader.cpp:227
 msgid "    %1 added"
-msgstr ""
+msgstr "    %1 hinzugefügt"
 
 #: converter/mymoneystatementreader.cpp:228
 msgid "    %1 matched"
-msgstr ""
+msgstr "    %1 im Kontobuch gefunden"
 
 #: converter/mymoneystatementreader.cpp:229
-#, fuzzy
 msgid "    %1 duplicates"
-msgstr "Dupliziere"
+msgstr "    %1 Duplikate erkannt"
 
 #: converter/mymoneystatementreader.cpp:230
-#, fuzzy
 msgid "  Payees"
-msgstr "Zahlungsempfänger"
+msgstr "  Zahlungsempfänger"
 
 #: converter/mymoneystatementreader.cpp:231
 msgid "    %1 created"
-msgstr ""
+msgstr "    %1 angelegt"
 
 #: converter/mymoneystatementreader.cpp:297
 #, c-format
@@ -3811,10 +3784,8 @@ msgstr ""
 "1': %2"
 
 #: converter/mymoneystatementreader.cpp:910
-msgid ""
-"<b>You have downloaded a statement for the following account:</b><br><br>"
-msgstr ""
-"<b>Sie haben einen Auszug für das folgende Konto heruntergeladen:</b><br><br>"
+msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
+msgstr "<b>Sie haben einen Auszug für das folgende Konto heruntergeladen:</b><br><br>"
 
 #: converter/mymoneystatementreader.cpp:911
 msgid " - Account Name: %1<br>"
@@ -3892,8 +3863,7 @@ msgstr "Planung%1"
 
 #: converter/mymoneygncreader.cpp:258
 msgid "This version of the importer cannot handle multi-book files."
-msgstr ""
-"Diese Version des Importers kann keine mehrfach Kontobuchdateien handhaben."
+msgstr "Diese Version des Importers kann keine mehrfach Kontobuchdateien handhaben."
 
 #: converter/mymoneygncreader.cpp:905
 msgid "Invalid header for file. Should be 'gnc-v2'"
@@ -4369,8 +4339,7 @@ msgstr ""
 
 #: _tips.cpp:49
 msgid "<p>...that the KMyMoney development team wishes you a nice day?\n"
-msgstr ""
-"<p>... dass Ihnen die KMyMoney Entwickler einen schönen Tag wünschen?\n"
+msgstr "<p>... dass Ihnen die KMyMoney Entwickler einen schönen Tag wünschen?\n"
 
 #: _tips.cpp:54
 msgid ""
@@ -4720,9 +4689,8 @@ msgid "Closing Balance"
 msgstr "Abschlußsaldo"
 
 #: reports/listtable.cpp:478 reports/listtable.cpp:479
-#, fuzzy
 msgid "Calculated"
-msgstr "Berechnen"
+msgstr "Berechnet"
 
 #: reports/listtable.cpp:560 reports/listtable.cpp:562
 #: reports/pivottable.cpp:1509 reports/pivottable.cpp:1917
@@ -4753,9 +4721,8 @@ msgid "Difference"
 msgstr "Differenz"
 
 #: reports/pivottable.cpp:1997
-#, fuzzy
 msgid "Legend"
-msgstr "Kontobuch"
+msgstr "Legende"
 
 #: reports/pivottable.cpp:2144 reports/pivottable.cpp:2273
 #: reports/pivottable.cpp:2391
@@ -4860,8 +4827,7 @@ msgstr "Schalte Programm-Traces ein"
 
 #: main.cpp:62
 msgid "dump the names of all defined KAction objects to stdout and quit"
-msgstr ""
-"die Namen aller definierten KAction-Objeke auf stdout ausgeben und beenden"
+msgstr "die Namen aller definierten KAction-Objeke auf stdout ausgeben und beenden"
 
 #: main.cpp:66
 msgid "file to open"
@@ -4944,12 +4910,11 @@ msgstr "Ungültige Einstellungen"
 
 #: main.cpp:228
 msgid "Another instance of KMyMoney is already running. Do you want to quit?"
-msgstr ""
-"Eine andere Instanz von KMyMoney läuft bereits. Möchten Sie hier abbrechen?"
+msgstr "Eine andere Instanz von KMyMoney läuft bereits. Möchten Sie hier abbrechen?"
 
 #: main.cpp:289
 msgid "Uncaught error. Please report the details to the developers"
-msgstr ""
+msgstr "Unbehandelter Fehler: Bitte melden Sie die Details an die Entwickler"
 
 #: _translatorinfo.cpp:1
 msgid ""
@@ -5080,7 +5045,7 @@ msgstr "Anzahl Tage, die Zahlungen im voraus eingetragen werden"
 
 #: dialogs/settings/rc.cpp:155 rc.cpp:32
 msgid "Number of days to preview schedules in ledger"
-msgstr ""
+msgstr "Anzahl Tage für die Buchungsvorschau im Kontobuch"
 
 #: dialogs/settings/rc.cpp:136 rc.cpp:33
 msgid "Insert transaction type into No. field for new transactions"
@@ -5271,10 +5236,8 @@ msgid "Sort order of register in search dialog"
 msgstr "Sortierreihenfolge des Kontobuchs im Such-Dialog"
 
 #: rc.cpp:82
-msgid ""
-"Default reconciliation state for transactions entered during reconciliation"
-msgstr ""
-"Standard des Abgleichstatus für während des Abgleichs eingetragene Buchungen"
+msgid "Default reconciliation state for transactions entered during reconciliation"
+msgstr "Standard des Abgleichstatus für während des Abgleichs eingetragene Buchungen"
 
 #: rc.cpp:83
 msgid "Number of days (plus/minus) to search for matching transactions"
@@ -7133,24 +7096,20 @@ msgid "Account closed"
 msgstr "Konto geschlossen"
 
 #: views/kgloballedgerview.cpp:1306
-#, fuzzy
 msgid "Cannot create transactions when no account is selected."
-msgstr ""
-"Kann Buchung mit Fokus nicht verarbeiten, wenn sie nicht ausgewählt ist."
+msgstr "Kann keine Buchungen erstellen, so lange kein Konto ausgewählt ist."
 
 #: views/kgloballedgerview.cpp:1311
 msgid "Cannot create transactions in the context of a category."
 msgstr "Kann im Kontext einer Kategorie keine Buchungen erstellen."
 
 #: views/kgloballedgerview.cpp:1315
-#, fuzzy
 msgid "Cannot create transactions in a closed account."
-msgstr "Kann im Kontext einer Kategorie keine Buchungen erstellen."
+msgstr "Kann in einem geschlossenen Konto keine Buchungen erstellen."
 
 #: views/kgloballedgerview.cpp:1327
 msgid "Cannot process transaction with focus if it is not selected."
-msgstr ""
-"Kann Buchung mit Fokus nicht verarbeiten, wenn sie nicht ausgewählt ist."
+msgstr "Kann Buchung mit Fokus nicht verarbeiten, wenn sie nicht ausgewählt ist."
 
 #: views/kgloballedgerview.cpp:1357
 msgid "Cannot edit transactions with frozen splits."
@@ -7161,10 +7120,8 @@ msgid "Cannot edit transactions in the context of a category."
 msgstr "Kann im Kontext einer Kategorie keine Buchungen ändern."
 
 #: views/kgloballedgerview.cpp:1387
-msgid ""
-"Cannot edit investment transactions and non-investment transactions together."
-msgstr ""
-"Kann Investitions- und Nichtinvestions-Buchungen nicht gemeinsam bearbeiten."
+msgid "Cannot edit investment transactions and non-investment transactions together."
+msgstr "Kann Investitions- und Nichtinvestions-Buchungen nicht gemeinsam bearbeiten."
 
 #: views/kgloballedgerview.cpp:1395
 msgid "Cannot edit multiple split transactions at once."
@@ -7188,8 +7145,7 @@ msgstr "Der aktuelle Saldo von %2 liegt heute unterhalb des Minimal-Saldo %3."
 
 #: views/kforecastview.cpp:291 views/khomeview.cpp:1003
 msgid "The balance of %1 will drop below the minimum balance %2 in %3 days."
-msgstr ""
-"Das Saldo von %1 wird in %3 Tagen unterhalb des Minimal-Saldos %2 fallen."
+msgstr "Das Saldo von %1 wird in %3 Tagen unterhalb des Minimal-Saldos %2 fallen."
 
 #: views/kforecastview.cpp:308 views/khomeview.cpp:1019
 msgid "The balance of %1 is below %2 today."
@@ -7260,12 +7216,11 @@ msgid "Overdue payments"
 msgstr "Überfällige Zahlungen"
 
 #: views/khomeview.cpp:418 views/khomeview.cpp:482 views/khomeview.cpp:516
-#, fuzzy
 msgid "Balance after"
-msgstr "Saldo: "
+msgstr "Saldo nach"
 
 #: views/khomeview.cpp:467
-#, fuzzy
+
 msgid "Today's payments"
 msgstr "Heutige Zahlungen"
 
@@ -7290,9 +7245,8 @@ msgid "To Minimum Balance / Maximum Credit"
 msgstr "Zu Minimum-Saldo / Maximum-Kredit"
 
 #: views/khomeview.cpp:924
-#, fuzzy
 msgid "%1 Day Forecast"
-msgstr "%1-Tag-Vorhersage"
+msgstr "%1-Tage-Vorhersage"
 
 #: views/khomeview.cpp:933 widgets/kmymoneyaccounttreeforecast.cpp:67
 msgid "%1 days"
@@ -7388,13 +7342,12 @@ msgid "Error connecting to bank: %1"
 msgstr "Fehler beim Verbindungsaufbau mit der Bank: %1"
 
 #: plugins/ofximport/ofximporterplugin.cpp:609
-#, fuzzy
 msgid ""
 "Unable to import %1 using the OFX importer plugin.  The plugin returned the "
 "following error:<p>%2"
 msgstr ""
-"Kann %1 nicht mit dem OFX Importierplugin importieren.  Das Plugin liefert "
-"den folgenden Fehler: %3"
+"Kann %1 nicht mit dem OFX Importierplugin einlesen.  Das Plugin liefert "
+"den folgenden Fehler:<p> %2"
 
 #: plugins/ofximport/ofximporterplugin.cpp:640
 msgid "Importing process terminated unexpectedly."
@@ -7550,9 +7503,8 @@ msgstr ""
 "Online-Zugriff zuweisen."
 
 #: plugins/ofximport/dialogs/rc.cpp:12 plugins/ofximport/dialogs/rc.cpp:30
-#, fuzzy
 msgid "Identify as"
-msgstr "Identifikation"
+msgstr "Identifizieren als"
 
 #: dialogs/rc.cpp:666 dialogs/rc.cpp:736 plugins/ofximport/dialogs/rc.cpp:13
 msgid "Password"
@@ -7591,9 +7543,8 @@ msgstr ""
 "eingerichtet."
 
 #: plugins/ofximport/dialogs/rc.cpp:22
-#, fuzzy
 msgid "Account Details"
-msgstr "Konto-Einstellungen"
+msgstr "Kontenangaben"
 
 #: plugins/ofximport/dialogs/rc.cpp:23 plugins/ofximport/dialogs/rc.cpp:25
 msgid "&lt;Not configured&gt;"
@@ -7616,50 +7567,49 @@ msgid "STATUS:"
 msgstr "STATUS:"
 
 #: plugins/ofximport/dialogs/rc.cpp:29
-#, fuzzy
 msgid "OFX Details"
-msgstr "Details"
+msgstr "OFX Details"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:57
 msgid "Quicken Windows 2005"
-msgstr ""
+msgstr "Quicken Windows 2005"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:58
 msgid "Quicken Windows 2006"
-msgstr ""
+msgstr "Quicken Windows 2006"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:59
 msgid "Quicken Windows 2007"
-msgstr ""
+msgstr "Quicken Windows 2007"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:60
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
 msgid "Quicken Windows 2008"
-msgstr ""
+msgstr "Quicken Windows 2008"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:63
 msgid "MS-Money 2003"
-msgstr ""
+msgstr "MS-Money 2003"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:64
 msgid "MS-Money 2004"
-msgstr ""
+msgstr "MS-Money 2004"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:65
 msgid "MS-Money 2005"
-msgstr ""
+msgstr "MS-Money 2005"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:66
 msgid "MS-Money 2006"
-msgstr ""
+msgstr "MS-Money 2006"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:67
 msgid "MS-Money 2007"
-msgstr ""
+msgstr "MS-Money 2007"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:68
 msgid "MS-Money Plus"
-msgstr ""
+msgstr "MS-Money Plus"
 
 #: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:157
 msgid "The HTTP request failed."
@@ -8067,8 +8017,7 @@ msgstr "&Planung"
 
 #: dialogs/transactioneditor.cpp:594
 msgid "Accepts the entered data and stores it as schedule"
-msgstr ""
-"Akzeptiert die eingegebenen Daten und speichert sie als geplante Buchung"
+msgstr "Akzeptiert die eingegebenen Daten und speichert sie als geplante Buchung"
 
 #: dialogs/transactioneditor.cpp:595
 msgid "Use this to schedule the transaction for later entry into the ledger."
@@ -8091,29 +8040,24 @@ msgid ""
 msgstr "Eingeben oder planen?"
 
 #: dialogs/transactioneditor.cpp:655
-msgid ""
-"The balance of account <b>%1</b> dropped below the warning balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr "Das Saldo des Kontos <b>%1</b> fiel unter die Saldo-Warnung von %2."
 
 #: dialogs/transactioneditor.cpp:661
-msgid ""
-"The balance of account <b>%1</b> dropped below the minimum balance of %2."
-msgstr ""
-"Das Saldo des Kontos <b>%1</b> fiel unter die minimale Saldo-Warnung von %2."
+msgid "The balance of account <b>%1</b> dropped below the minimum balance of %2."
+msgstr "Das Saldo des Kontos <b>%1</b> fiel unter die minimale Saldo-Warnung von %2."
 
 #: dialogs/transactioneditor.cpp:667
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit warning "
 "limit of %2."
-msgstr ""
-"Das Saldo des Kontos <b>%1</b> fiel unter das maximale Kredit-Limit von %2."
+msgstr "Das Saldo des Kontos <b>%1</b> fiel unter das maximale Kredit-Limit von %2."
 
 #: dialogs/transactioneditor.cpp:673
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit limit of %"
 "2."
-msgstr ""
-"Das Saldo des Kontos <b>%1</b> fiel unter das maximale Kredit-Limit von %2."
+msgstr "Das Saldo des Kontos <b>%1</b> fiel unter das maximale Kredit-Limit von %2."
 
 #: dialogs/transactioneditor.cpp:724
 msgid "Payer/Receiver"
@@ -8196,14 +8140,11 @@ msgstr "Konto geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
 msgid ""
 "Transfer account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</"
 "b><p>"
-msgstr ""
-"Gegenkonto geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
+msgstr "Gegenkonto geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid ""
-"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Kategorie geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
+msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgstr "Kategorie geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:151
 #: dialogs/kconfirmmanualenterdlg.cpp:153
@@ -8216,8 +8157,7 @@ msgstr "Notiz geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:166
 msgid "Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Betrag geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
+msgstr "Betrag geändert.<br>&nbsp;&nbsp;&nbsp;Alt: <b>%1</b>, Neu: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:175
 msgid ""
@@ -8517,8 +8457,7 @@ msgstr "Auswahl nach unten verschieben"
 
 #: dialogs/settings/ksettingshome.cpp:58
 msgid "Use this to move the selected item down by one position in the list."
-msgstr ""
-"Drücken, um den gewählten Eintrag um eine Zeile nach unten zu verschieben."
+msgstr "Drücken, um den gewählten Eintrag um eine Zeile nach unten zu verschieben."
 
 #: dialogs/settings/rc.cpp:1
 msgid "Color settings"
@@ -9214,8 +9153,7 @@ msgid "Accept splits and return to transaction form"
 msgstr "Teilbuchung akzeptieren und zur Buchungseingabe zurückkehren"
 
 #: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
+msgid "Use this to accept all changes to the splits and return to the transaction"
 msgstr ""
 "Hiermit alle Änderungen an der Split-Buchung akzeptieren und zur Buchung "
 "zurückkehren"
@@ -9227,8 +9165,7 @@ msgstr ""
 "zurückkehren"
 
 #: dialogs/ksplittransactiondlg.cpp:87
-msgid ""
-"Use this to reject all changes to the splits and return to the transaction"
+msgid "Use this to reject all changes to the splits and return to the transaction"
 msgstr ""
 "Drücken, um alle Änderungen an den Split-Buchungen zu verwerfen und zur "
 "Buchung zurückzukehren"
@@ -9415,8 +9352,7 @@ msgid "will be calculated"
 msgstr "wird berechnet"
 
 #: dialogs/kmymoneysplittable.cpp:627
-msgid ""
-"You are about to delete the selected split. Do you really want to continue?"
+msgid "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
 "Sie sind gerade dabei, die aktuelle Split-Buchung zu löschen! Möchten Sie "
 "wirklich fortfahren?"
@@ -9553,8 +9489,7 @@ msgid "Please choose what you wish to do with the above changes"
 msgstr "Bitte wählen Sie, was Sie mit obigen Änderungen machen möchten"
 
 #: dialogs/rc.cpp:31
-msgid ""
-"Discard the changes and enter the original transaction into the register."
+msgid "Discard the changes and enter the original transaction into the register."
 msgstr "Änderungen verwerfen und die originale Buchung im Kontobuch eintragen."
 
 #: dialogs/rc.cpp:32
@@ -10241,8 +10176,7 @@ msgid "Online Quotes - Select price source"
 msgstr "Online-Kursnotiz - Auswahl der Preisquellen"
 
 #: dialogs/rc.cpp:265
-msgid ""
-"This price source is not known to KMyMoney. Please select an option below."
+msgid "This price source is not known to KMyMoney. Please select an option below."
 msgstr ""
 "Die Preisquelle ist KMyMoney nicht bekannt. Bitte wählen Sie eine der unten "
 "angegebenen Optionen."
@@ -10253,8 +10187,7 @@ msgstr "Für dieses Investment &keine Online Aktualisierung durchführen"
 
 #: dialogs/rc.cpp:267
 msgid "Select a known KMyMoney source from the list &below"
-msgstr ""
-"Wählen Sie eine bekannte KMyMoney Quelle aus der &unten stehenden Liste"
+msgstr "Wählen Sie eine bekannte KMyMoney Quelle aus der &unten stehenden Liste"
 
 #: dialogs/rc.cpp:268
 msgid ""
@@ -11592,8 +11525,7 @@ msgid "Select Transaction"
 msgstr "Buchung auswählen"
 
 #: dialogs/kselecttransactionsdlg.cpp:45
-msgid ""
-"Select a transaction and press the OK button or use Cancel to select none."
+msgid "Select a transaction and press the OK button or use Cancel to select none."
 msgstr ""
 "Eine Buchung selektieren, \"OK\" drücken oder \"Abbruch\" um nichs "
 "auszuwählen."
@@ -11641,8 +11573,7 @@ msgid "Skip this transaction"
 msgstr "Diese Buchung überspringen"
 
 #: dialogs/kaccountselectdlg.cpp:67
-msgid ""
-"Use this to skip importing this transaction and proceed with the next one."
+msgid "Use this to skip importing this transaction and proceed with the next one."
 msgstr ""
 "Drücken, um die aktuelle Buchung zu überspringen und den Importvorgang mit "
 "der nächsten fortzusetzen."
@@ -11653,16 +11584,14 @@ msgstr "Neues Konto / neue Kategorie erstellen"
 
 #: dialogs/kaccountselectdlg.cpp:73
 msgid "Use this to add a new account/category to the file"
-msgstr ""
-"Drücken, um ein neues Konto bzw. eine neue Kategorie zur Datei hinzuzufügen"
+msgstr "Drücken, um ein neues Konto bzw. eine neue Kategorie zur Datei hinzuzufügen"
 
 #: dialogs/kaccountselectdlg.cpp:78
 msgid "Accepts the selected action and continues"
 msgstr "Akzeptiert die gewählte Aktion und fährt fort"
 
 #: dialogs/kaccountselectdlg.cpp:79
-msgid ""
-"Use this to accept the selection and continue processing the transaction"
+msgid "Use this to accept the selection and continue processing the transaction"
 msgstr "Drücken, um Änderungen der aktuellen Buchung zu akzeptieren"
 
 #: dialogs/kaccountselectdlg.cpp:84
@@ -11699,8 +11628,7 @@ msgstr "Änderungen übernehmen"
 
 #: dialogs/knewaccountdlg.cpp:376
 msgid "Use this to accept the data and possibly create the account/category"
-msgstr ""
-"Hiermit die Daten akzeptieren und ggf. das Konto bzw. die Kategorie erstellen"
+msgstr "Hiermit die Daten akzeptieren und ggf. das Konto bzw. die Kategorie erstellen"
 
 #: dialogs/knewaccountdlg.cpp:484
 msgid ""
@@ -11812,8 +11740,7 @@ msgstr ""
 "erfassen, die in den laufenden Zahlungen enthalten sind."
 
 #: dialogs/knewloanwizard.cpp:139
-msgid ""
-"Use this to create a new account to which the initial payment should be made"
+msgid "Use this to create a new account to which the initial payment should be made"
 msgstr ""
 "Hiermit ein neues Konto anlegen, auf das die erste Einzahlung gebucht werden "
 "soll"
@@ -11860,8 +11787,7 @@ msgstr ""
 "lassen Sie es leer, um es später berechnen zu lassen."
 
 #: dialogs/knewloanwizard.cpp:248
-msgid ""
-"Please enter the date, the first payment for this loan was/is due this year."
+msgid "Please enter the date, the first payment for this loan was/is due this year."
 msgstr ""
 "Bitte das Datum angeben, an dem die erste Zahlung für diesen Kredit IN "
 "DIESEM JAHR fällig ist/war."
@@ -11958,8 +11884,7 @@ msgstr "Die abschließende Zahlung wurde auf %1 geändert."
 
 #: dialogs/knewloanwizard.cpp:902
 msgid "KMyMoney has calculated a final payment of %1 for this loan."
-msgstr ""
-"KMyMoney hat für Ihren Kredit eine abschließende Zahlung von %1 berechnet."
+msgstr "KMyMoney hat für Ihren Kredit eine abschließende Zahlung von %1 berechnet."
 
 #: dialogs/knewloanwizard.cpp:917
 msgid ""
@@ -11990,8 +11915,7 @@ msgid "Text"
 msgstr "Text"
 
 #: dialogs/kfindtransactiondlg.cpp:250
-msgid ""
-"Warning: Filtering by Category will exclude all transfers from the results."
+msgid "Warning: Filtering by Category will exclude all transfers from the results."
 msgstr ""
 "Warnung: Filtern nach Kategorie schließt alle Umbuchungen von den Resultaten "
 "aus."
@@ -12055,19 +11979,19 @@ msgstr "Von"
 
 #: widgets/transaction.cpp:608
 msgid "Transaction is missing a category assignment."
-msgstr "Buchung hat keine Kategorie."
+msgstr "Dieser Buchung wurde keine Kategorie zugewiesenen."
 
 #: widgets/transaction.cpp:611
 msgid "The transaction has a missing assignment of <b>%1</b>."
-msgstr "Die Buchung hat eine fehlende Zuordnung auf <b>%1</b>."
+msgstr "Die Buchung hat eine fehlende Zuordnung von <b>%1</b>."
 
 #: widgets/transaction.cpp:814
 msgid "Sell"
-msgstr "Verkaufen"
+msgstr "Verkauf"
 
 #: widgets/transaction.cpp:816
 msgid "Buy"
-msgstr "Kaufe"
+msgstr "Kauf"
 
 #: widgets/kmymoneycombo.cpp:519 widgets/transaction.cpp:819
 #: widgets/transaction.cpp:1396
@@ -12223,8 +12147,7 @@ msgstr "%1 von %2"
 
 #: widgets/kmymoneybriefschedule.cpp:108
 msgid "Payment on %1 for %2 with %3 transactions remaining occuring %4."
-msgstr ""
-"Nächste Zahlung am %1 von %2 mit %3 weiteren Buchungen, durchzuführen an %4."
+msgstr "Nächste Zahlung am %1 von %2 mit %3 weiteren Buchungen, durchzuführen an %4."
 
 #: widgets/kmymoneybriefschedule.cpp:114
 msgid "Payment on %1 for %2 occuring %4."
@@ -12351,9 +12274,8 @@ msgid "Future transactions"
 msgstr "Zukünftige Buchungen"
 
 #: widgets/register.cpp:2251
-#, fuzzy
 msgid "Next week"
-msgstr "Letzte Woche"
+msgstr "Nächste Woche"
 
 #: widgets/kmymoneycalendar.cpp:131 widgets/register.cpp:2252
 msgid "Next month"
@@ -12368,9 +12290,8 @@ msgid "Previous fiscal year"
 msgstr "Voriges Geschäftsjahr"
 
 #: widgets/register.cpp:2265
-#, fuzzy
 msgid "Next fiscal year"
-msgstr "Letztes Geschäftsjahr"
+msgstr "Nächstes Geschäftsjahr"
 
 #: widgets/register.cpp:2297
 msgid ""
@@ -12759,8 +12680,7 @@ msgid "Totals"
 msgstr "Summen"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
-msgid ""
-"<p>Choose what kind of accounts to display as the rows of this report.</p>"
+msgid "<p>Choose what kind of accounts to display as the rows of this report.</p>"
 msgstr ""
 "<p>Wählen Sie aus, welche Arten von Konten in den Zeilen des Berichts "
 "angezeigt werden sollen.</p>"
@@ -12775,8 +12695,7 @@ msgstr "Zwei-monatlich"
 
 #: widgets/rc.cpp:78
 msgid "<p>Choose how large of a time period each column should encompass</p>"
-msgstr ""
-"<p>Wählen Sie wie groß die Zeitperiode sein soll die jede Spalte umfasst.</p>"
+msgstr "<p>Wählen Sie wie groß die Zeitperiode sein soll die jede Spalte umfasst.</p>"
 
 #: widgets/rc.cpp:79
 msgid "Income & Expenses"
@@ -12901,8 +12820,7 @@ msgid "Hide Split Transaction Details"
 msgstr "Ausblenden Teil Buchung Details"
 
 #: widgets/rc.cpp:124
-msgid ""
-"Do not display the individual transactions that make up a split transaction"
+msgid "Do not display the individual transactions that make up a split transaction"
 msgstr ""
 "Nicht die individuellen Buchungen darstellen, aus denen eine Split-Buchung "
 "besteht"
@@ -13177,3 +13095,4 @@ msgstr "Letzte 3 Monate bis nächste 3 Monate"
 #: widgets/kmymoneycombo.cpp:690
 msgid "User defined"
 msgstr "Benutzerdefiniert"
+
