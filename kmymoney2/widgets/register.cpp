@@ -2368,14 +2368,15 @@ void Register::addGroupMarkers(void)
 
 void Register::removeUnwantedGroupMarkers(void)
 {
-  // remove all trailing group markers
+  // remove all trailing group markers except statement markers
   KMyMoneyRegister::RegisterItem* q;
   KMyMoneyRegister::RegisterItem* p = lastItem();
   while(p) {
     q = p;
-    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-    if(t)
+    if(dynamic_cast<KMyMoneyRegister::Transaction*>(p)
+    || dynamic_cast<KMyMoneyRegister::StatementGroupMarker*>(p))
       break;
+
     p = p->prevItem();
     delete q;
   }

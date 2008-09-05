@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't remove statement marker if it's the last entry in the ledger
+
 2008-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Initial code for drag and drop for attachments (not functional yet)
   * Added documentation update provided by Colin Wright
