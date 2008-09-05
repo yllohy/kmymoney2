@@ -369,7 +369,7 @@ void MyMoneyQifReader::processQifEntry(void)
     if(!category.isEmpty()) {
 
       while(!category.isEmpty()) {
-        if(category.left(5) == "Type:") {
+        if(category.left(5).lower() == "type:") {
 
           category = category.mid(5);
           m_entryType = EntryTransaction;
