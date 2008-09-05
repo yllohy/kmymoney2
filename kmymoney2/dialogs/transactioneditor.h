@@ -69,9 +69,11 @@ public:
     * transaction @a newId contains the assigned id. In case @a askForSchedule
     * is true (the default), the user will be asked if he wants to enter new
     * transactions with a post date in the future into the ledger or rather
-    * create a schedule for them.
+    * create a schedule for them. In case  @a suppressBalanceWarnings is @p false
+    * (the default) a warning will be displayed when the balance crosses the minimum
+    * or maximum balance settings for the account.
     */
-  virtual bool enterTransactions(QCString& newId, bool askForSchedule = true);
+  virtual bool enterTransactions(QCString& newId, bool askForSchedule = true, bool suppressBalanceWarnings = false);
 
   /**
     * This method creates a transaction based on the contents of the current widgets,

@@ -843,7 +843,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               MyMoneyTransaction torig;
               editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
               QCString newId;
-              if(editor->enterTransactions(newId, false)) {
+              if(editor->enterTransactions(newId, false, true)) {
                 if(!newId.isEmpty()) {
                   torig = MyMoneyFile::instance()->transaction(newId);
                   schedule.setLastPayment(torig.postDate());
