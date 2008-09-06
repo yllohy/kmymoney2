@@ -1530,7 +1530,7 @@ void KHomeView::showBudget(void)
         while ( it_row != (*it_innergroup).end() )
         {
           //column number is 1 because the report includes only current month
-          if(it_row.data().m_budgetDiff[1].isNegative()) {
+          if(it_row.data()[eBudgetDiff][1].isNegative()) {
             //get report account to get the name later
             ReportAccount rowname = it_row.key();
 
@@ -1543,9 +1543,9 @@ void KHomeView::showBudget(void)
             m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
 
             //get values from grid
-            MyMoneyMoney actualValue = it_row.data()[1];
-            MyMoneyMoney budgetValue = it_row.data().m_budget[1];
-            MyMoneyMoney budgetDiffValue = it_row.data().m_budgetDiff[1];
+            MyMoneyMoney actualValue = it_row.data()[eActual][1];
+            MyMoneyMoney budgetValue = it_row.data()[eBudget][1];
+            MyMoneyMoney budgetDiffValue = it_row.data()[eBudgetDiff][1];
 
             //format amounts
             QString actualAmount = actualValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);

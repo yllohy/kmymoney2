@@ -29,6 +29,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "kreportchartview.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyreport.h"
 #include "reporttable.h"
@@ -309,6 +310,15 @@ protected:
     */
     MyMoneyMoney cellBalance(const QString& outergroup, const ReportAccount& _row, unsigned column, bool budget);
 
+   /**
+     * Draws the total in a chart for the given ERowType
+     */
+    unsigned drawChartTotal(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const ERowType rowType ) const;
+
+   /**
+     * Draws a PivotGridRowSet in a chart for the given ERowType
+     */
+    unsigned drawChartRowSet(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const PivotGridRowSet& rowSet, const ERowType rowType ) const;
 };
 
 

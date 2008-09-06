@@ -122,7 +122,13 @@ MyMoneyMoney PivotCell::cellBalance(const MyMoneyMoney& _balance)
   return balance;
 }
 
-
+PivotGridRowSet::PivotGridRowSet( unsigned _numcolumns )
+{
+  insert(eActual, PivotGridRow(_numcolumns));
+  insert(eBudget, PivotGridRow(_numcolumns));
+  insert(eBudgetDiff, PivotGridRow(_numcolumns));
+  insert(eForecast, PivotGridRow(_numcolumns));
+}
 
 
 } // namespace

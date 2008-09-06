@@ -36,6 +36,8 @@
 
 namespace reports {
 
+  enum ERowType {eActual, eBudget, eBudgetDiff, eForecast };
+
   /**
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:
     *
@@ -81,6 +83,7 @@ namespace reports {
   class PivotGridRow: public QValueList<PivotCell>
   {
   public:
+
     PivotGridRow( unsigned _numcolumns = 0 )
     {
       if ( _numcolumns )
@@ -89,13 +92,10 @@ namespace reports {
     MyMoneyMoney m_total;
   };
 
-  class PivotGridRowSet: public PivotGridRow
+  class PivotGridRowSet: public QMap<ERowType, PivotGridRow>
   {
   public:
-    PivotGridRowSet( unsigned _numcolumns = 0 ): PivotGridRow(_numcolumns), m_budget(_numcolumns), m_budgetDiff(_numcolumns), m_forecast(_numcolumns) {}
-    PivotGridRow m_budget;
-    PivotGridRow m_budgetDiff;
-    PivotGridRow m_forecast;
+    PivotGridRowSet( unsigned _numcolumns = 0 );
   };
 
   class PivotInnerGroup: public QMap<ReportAccount,PivotGridRowSet>

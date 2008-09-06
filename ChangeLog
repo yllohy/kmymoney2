@@ -3,6 +3,13 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-06 Alvaro Soliverez <asoliverez@gmail.com>
+  * Changed internal structure of PivotGrid to work as a QValueList
+  * Modified PivotTable and unit tests to accomodate to the new PivotGrid
+    design
+  * Implemented new methods for drawing charts by level and avoid duplicating
+    code
+
 2008-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed Wolfgang's modification
 
