@@ -184,7 +184,13 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
 
   QCString pwd;
   if(isReadable() && useOwnPassphrase && !skipPasswd) {
-    if(KPasswordDialog::getPassword(pwd, i18n("Enter passphrase"), 0) == QDialog::Rejected)
+    KPasswordDialog *p = new KPasswordDialog(KPasswordDialog::Password,false,0);
+    p->setPrompt(i18n("Enter passphrase"));
+    p->addLine(i18n("File"), m_fn);
+    p->adjustSize();
+    int res = p->exec();
+    delete p;
+    if (res == QDialog::Rejected)
       return false;
   }
 
