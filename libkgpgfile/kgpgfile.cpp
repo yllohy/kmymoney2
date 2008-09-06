@@ -184,14 +184,13 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
 
   QCString pwd;
   if(isReadable() && useOwnPassphrase && !skipPasswd) {
-    KPasswordDialog *p = new KPasswordDialog(KPasswordDialog::Password,false,0);
-    p->setPrompt(i18n("Enter passphrase"));
-    p->addLine(i18n("File"), m_fn);
-    p->adjustSize();
-    int res = p->exec();
-    delete p;
-    if (res == QDialog::Rejected)
+    KPasswordDialog dlg(KPasswordDialog::Password,false,0);
+    dlg.setPrompt(i18n("Enter passphrase"));
+    dlg.addLine(i18n("File"), m_fn);
+    dlg.adjustSize();
+    if (dlg.exec() == QDialog::Rejected)
       return false;
+    pwd = QCString(dlg.password());
   }
 
   // qDebug("starting GPG process");
