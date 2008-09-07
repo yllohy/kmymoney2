@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-07 Fernando Vilas <fvilas@iname.com>
+  * Fixed primary key error when adding first items to database
+  * More database documentation updates
+  * Added simple test cases for budgets
+
 2008-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Display information why Financial Summary link is not working
 

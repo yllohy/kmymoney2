@@ -697,6 +697,90 @@ void MyMoneyDatabaseMgrTest::testTransactionCount() {
   CPPUNIT_ASSERT(m->transactionCount("A000006") == 2);
 }
 
+void MyMoneyDatabaseMgrTest::testAddBudget() {
+  testAttachDb();
+
+  if (!m_canOpen) {
+    std::cout << "Database test skipped because no database could be opened." << std::endl;
+    return;
+  }
+
+  MyMoneyBudget budget;
+
+  budget.setName("TestBudget");
+  budget.setBudgetStart(QDate::currentDate(Qt::LocalTime));
+
+  m->addBudget(budget);
+
+  CPPUNIT_ASSERT(m->budgetList().count() == 1);
+  CPPUNIT_ASSERT(m->budgetId() == 1);
+  MyMoneyBudget newBudget = m->budgetByName("TestBudget");
+
+  CPPUNIT_ASSERT(budget.budgetStart() == newBudget.budgetStart());
+  CPPUNIT_ASSERT(budget.name() == newBudget.name());
+}
+
+void MyMoneyDatabaseMgrTest::testCopyBudget() {
+  testAddBudget();
+
+  try {
+    MyMoneyBudget oldBudget = m->budgetByName("TestBudget");
+    MyMoneyBudget newBudget = oldBudget;
+
+    newBudget.clearId();
+    newBudget.setName(QString("Copy of %1").arg(oldBudget.name()));
+    m->addBudget(newBudget);
+
+    CPPUNIT_ASSERT(m->budgetList().count() == 2);
+    CPPUNIT_ASSERT(m->budgetId() == 2);
+
+    MyMoneyBudget testBudget = m->budgetByName("TestBudget");
+
+    CPPUNIT_ASSERT(oldBudget.budgetStart() == testBudget.budgetStart());
+    CPPUNIT_ASSERT(oldBudget.name() == testBudget.name());
+
+    testBudget = m->budgetByName("Copy of TestBudget");
+
+    CPPUNIT_ASSERT(testBudget.budgetStart() == newBudget.budgetStart());
+    CPPUNIT_ASSERT(testBudget.name() == newBudget.name());
+  } catch (QString& s) {
+    std::cout << "Error in testCopyBudget(): " << s << std::endl;
+    CPPUNIT_ASSERT(false);
+  }
+}
+
+void MyMoneyDatabaseMgrTest::testModifyBudget() {
+  testAddBudget();
+
+  MyMoneyBudget budget = m->budgetByName("TestBudget");
+
+  budget.setBudgetStart(QDate::currentDate(Qt::LocalTime).addDays(-1));
+
+  m->modifyBudget(budget);
+
+  MyMoneyBudget newBudget = m->budgetByName("TestBudget");
+
+  CPPUNIT_ASSERT(budget.id() == newBudget.id());
+  CPPUNIT_ASSERT(budget.budgetStart() == newBudget.budgetStart());
+  CPPUNIT_ASSERT(budget.name() == newBudget.name());
+}
+
+void MyMoneyDatabaseMgrTest::testRemoveBudget() {
+  testAddBudget();
+
+  MyMoneyBudget budget = m->budgetByName("TestBudget");
+  m->removeBudget(budget);
+
+  try {
+    budget = m->budgetByName("TestBudget");
+    // exception should be thrown if budget not found.
+    CPPUNIT_ASSERT(false);
+  } catch (MyMoneyException *e) {
+    delete e;
+    CPPUNIT_ASSERT(true);
+  }
+}
+
 void MyMoneyDatabaseMgrTest::testBalance() {
   testAttachDb();
 

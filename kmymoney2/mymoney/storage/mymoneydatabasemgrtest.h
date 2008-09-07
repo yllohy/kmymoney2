@@ -49,6 +49,10 @@ class MyMoneyDatabaseMgrTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST(testAddTransactions);
   CPPUNIT_TEST(testTransactionCount);
   CPPUNIT_TEST(testBalance);
+  CPPUNIT_TEST(testAddBudget);
+  CPPUNIT_TEST(testCopyBudget);
+  CPPUNIT_TEST(testModifyBudget);
+  CPPUNIT_TEST(testRemoveBudget);
   CPPUNIT_TEST(testModifyTransaction);
   CPPUNIT_TEST(testRemoveUnusedAccount);
   CPPUNIT_TEST(testRemoveUsedAccount);
@@ -102,6 +106,10 @@ public:
   void testReparentAccount();
   void testAddTransactions();
   void testTransactionCount();
+  void testAddBudget();
+  void testCopyBudget();
+  void testModifyBudget();
+  void testRemoveBudget();
   void testBalance();
   void testModifyTransaction();
   void testRemoveUnusedAccount();

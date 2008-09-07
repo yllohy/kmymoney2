@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include <algorithm>
+#include <numeric>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -3254,6 +3255,7 @@ long long unsigned MyMoneyStorageSql::incrementBudgetId() {
   q.prepare("UPDATE kmmFileInfo SET hiBudgetId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdBudgets = returnValue;
   return returnValue;
 }
 
@@ -3269,6 +3271,7 @@ long long unsigned MyMoneyStorageSql::incrementAccountId() {
   q.prepare("UPDATE kmmFileInfo SET hiAccountId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdAccounts = returnValue;
   return returnValue;
 }
 
@@ -3284,6 +3287,7 @@ long long unsigned MyMoneyStorageSql::incrementInstitutionId() {
   q.prepare("UPDATE kmmFileInfo SET hiInstitutionId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdInstitutions = returnValue;
   return returnValue;
 }
 
@@ -3299,6 +3303,7 @@ long long unsigned MyMoneyStorageSql::incrementPayeeId() {
   q.prepare("UPDATE kmmFileInfo SET hiPayeeId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdPayees = returnValue;
   return returnValue;
 }
 
@@ -3314,6 +3319,7 @@ long long unsigned MyMoneyStorageSql::incrementReportId() {
   q.prepare("UPDATE kmmFileInfo SET hiReportId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdReports = returnValue;
   return returnValue;
 }
 
@@ -3329,6 +3335,7 @@ long long unsigned MyMoneyStorageSql::incrementScheduleId() {
   q.prepare("UPDATE kmmFileInfo SET hiScheduleId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdSchedules = returnValue;
   return returnValue;
 }
 
@@ -3344,6 +3351,7 @@ long long unsigned MyMoneyStorageSql::incrementSecurityId() {
   q.prepare("UPDATE kmmFileInfo SET hiSecurityId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdSecurities = returnValue;
   return returnValue;
 }
 
@@ -3359,6 +3367,7 @@ long long unsigned MyMoneyStorageSql::incrementTransactionId() {
   q.prepare("UPDATE kmmFileInfo SET hiTransactionId = " + QString::number(returnValue));
   q.exec();
   endCommitUnit (__func__);
+  m_hiIdTransactions = returnValue;
   return returnValue;
 }
 
