@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Display information why Financial Summary link is not working
+
 2008-09-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed internal structure of PivotGrid to work as a QValueList
   * Modified PivotTable and unit tests to accomodate to the new PivotGrid

@@ -1118,6 +1118,11 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
       QTimer::singleShot(0, mw->actionCollection()->action( id ), SLOT(activate()));
 
     } else if(view == VIEW_HOME) {
+      QValueList<MyMoneyAccount> list;
+      MyMoneyFile::instance()->accountList(list);
+      if(list.count() == 0) {
+        KMessageBox::information(this, i18n("Before KMyMoney can give you detailed information about your financial status, you need to create at least one account. Until then, KMyMoney shows the welcome page instead."));
+      }
       loadView();
 
     } else {
