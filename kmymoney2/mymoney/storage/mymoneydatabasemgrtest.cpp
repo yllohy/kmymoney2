@@ -723,6 +723,11 @@ void MyMoneyDatabaseMgrTest::testAddBudget() {
 void MyMoneyDatabaseMgrTest::testCopyBudget() {
   testAddBudget();
 
+  if (!m_canOpen) {
+    std::cout << "Database test skipped because no database could be opened." << std::endl;
+    return;
+  }
+
   try {
     MyMoneyBudget oldBudget = m->budgetByName("TestBudget");
     MyMoneyBudget newBudget = oldBudget;
@@ -752,6 +757,11 @@ void MyMoneyDatabaseMgrTest::testCopyBudget() {
 void MyMoneyDatabaseMgrTest::testModifyBudget() {
   testAddBudget();
 
+  if (!m_canOpen) {
+    std::cout << "Database test skipped because no database could be opened." << std::endl;
+    return;
+  }
+
   MyMoneyBudget budget = m->budgetByName("TestBudget");
 
   budget.setBudgetStart(QDate::currentDate(Qt::LocalTime).addDays(-1));
@@ -767,6 +777,11 @@ void MyMoneyDatabaseMgrTest::testModifyBudget() {
 
 void MyMoneyDatabaseMgrTest::testRemoveBudget() {
   testAddBudget();
+
+  if (!m_canOpen) {
+    std::cout << "Database test skipped because no database could be opened." << std::endl;
+    return;
+  }
 
   MyMoneyBudget budget = m->budgetByName("TestBudget");
   m->removeBudget(budget);
@@ -815,7 +830,7 @@ void MyMoneyDatabaseMgrTest::testBalance() {
 
   m->addTransaction(t1);
 
-  qDebug ("Balance of A000003 is %s", m->balance("A000003", QDate()).toString().ascii());
+  //qDebug ("Balance of A000003 is %s", m->balance("A000003", QDate()).toString().ascii());
   CPPUNIT_ASSERT(m->balance("A000003", QDate()).isZero());
 
   CPPUNIT_ASSERT(m->totalBalance("A000001", QDate()) == MyMoneyMoney(1600));

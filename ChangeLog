@@ -4,6 +4,9 @@
 --------------------------------------------------------------------
 
 2008-09-07 Fernando Vilas <fvilas@iname.com>
+  * Fixed budget test cases for the case when a database is not installed
+
+2008-09-07 Fernando Vilas <fvilas@iname.com>
   * Fixed primary key error when adding first items to database
   * More database documentation updates
   * Added simple test cases for budgets
