@@ -1327,6 +1327,16 @@ QString PivotTable::renderCSV( void ) const
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
+  //check which columns to render
+  bool showBudget = m_config_f.hasBudget();
+  bool showForecast = m_config_f.isIncludingForecast();
+  bool showBudgetDiff = false;
+  bool showActual = false;
+  if( (m_config_f.isIncludingBudgetActuals()) || ( !showBudget && !showForecast) )
+    showActual = true;
+  if( showBudget && showActual)
+    showBudgetDiff = true;
+
   //
   // Report Title
   //
@@ -1395,12 +1405,42 @@ QString PivotTable::renderCSV( void ) const
         unsigned column = 1;
         bool isUsed = it_row.data()[eActual][0].isUsed();
         while ( column < m_numColumns ) {
-          isUsed |= it_row.data()[eActual][column].isUsed();
-          rowdata += QString(",\"%1\"").arg(it_row.data()[eActual][column++].formatMoney(fraction, false));
+          //show columns
+          if(showBudget) {
+            isUsed |= it_row.data()[eBudget][column].isUsed();
+            rowdata += QString(",\"%1\"").arg(it_row.data()[eBudget][column].formatMoney(fraction, false));
+          }
+
+          if(showActual) {
+            isUsed |= it_row.data()[eActual][column].isUsed();
+            rowdata += QString(",\"%1\"").arg(it_row.data()[eActual][column].formatMoney(fraction, false));
+          }
+
+          if(showBudgetDiff) {
+            isUsed |= it_row.data()[eBudgetDiff][column].isUsed();
+            rowdata += QString(",\"%1\"").arg(it_row.data()[eBudgetDiff][column].formatMoney(fraction, false));
+          }
+
+          if(showForecast) {
+            isUsed |= it_row.data()[eForecast][column].isUsed();
+            rowdata += QString(",\"%1\"").arg(it_row.data()[eForecast][column].formatMoney(fraction, false));
+          }
+          column++;
         }
 
-        if ( m_config_f.isShowingRowTotals() )
-          rowdata += QString(",\"%1\"").arg((*it_row)[eActual].m_total.formatMoney(fraction, false));
+        if ( m_config_f.isShowingRowTotals() ) {
+          if(showBudget)
+            rowdata += QString(",\"%1\"").arg((*it_row)[eBudget].m_total.formatMoney(fraction, false));
+
+          if(showActual)
+            rowdata += QString(",\"%1\"").arg((*it_row)[eActual].m_total.formatMoney(fraction, false));
+
+          if(showBudgetDiff)
+            rowdata += QString(",\"%1\"").arg((*it_row)[eBudgetDiff].m_total.formatMoney(fraction, false));
+
+          if(showForecast)
+            rowdata += QString(",\"%1\"").arg((*it_row)[eForecast].m_total.formatMoney(fraction, false));
+        }
 
         //
         // Row Header
@@ -1468,12 +1508,41 @@ QString PivotTable::renderCSV( void ) const
         isUsed |= (*it_innergroup).m_total[eActual][0].isUsed();
         while ( column < m_numColumns )
         {
-          isUsed |= (*it_innergroup).m_total[eActual][column].isUsed();
-          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual][column++].formatMoney(fraction, false));
+          if(showBudget) {
+            isUsed |= (*it_innergroup).m_total[eBudget][column].isUsed();
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudget][column].formatMoney(fraction, false));
+          }
+
+          if(showActual) {
+            isUsed |= (*it_innergroup).m_total[eActual][column].isUsed();
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual][column].formatMoney(fraction, false));
+          }
+
+          if(showBudgetDiff) {
+            isUsed |= (*it_innergroup).m_total[eBudgetDiff][column].isUsed();
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudgetDiff][column].formatMoney(fraction, false));
+          }
+
+          if(showForecast) {
+            isUsed |= (*it_innergroup).m_total[eForecast][column].isUsed();
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eForecast][column].formatMoney(fraction, false));
+          }
+          column++;
         }
 
-        if (  m_config_f.isShowingRowTotals() )
-          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual].m_total.formatMoney(fraction, false));
+        if (  m_config_f.isShowingRowTotals() ) {
+          if(showBudget)
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudget].m_total.formatMoney(fraction, false));
+
+          if(showActual)
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual].m_total.formatMoney(fraction, false));
+
+          if(showBudgetDiff)
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
+
+          if(showForecast)
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eForecast].m_total.formatMoney(fraction, false));
+        }
 
         finalRow += "\n";
       }
@@ -1494,11 +1563,36 @@ QString PivotTable::renderCSV( void ) const
     {
       result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
       unsigned column = 1;
-      while ( column < m_numColumns )
-        result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual][column++].formatMoney(fraction, false));
+      while ( column < m_numColumns ) {
+        if(showBudget)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudget][column].formatMoney(fraction, false));
 
-      if (  m_config_f.isShowingRowTotals() )
-        result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual].m_total.formatMoney(fraction, false));
+        if(showActual)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual][column].formatMoney(fraction, false));
+
+        if(showBudgetDiff)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudgetDiff][column].formatMoney(fraction, false));
+
+        if(showForecast)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eForecast][column].formatMoney(fraction, false));
+
+        column++;
+      }
+
+      if (  m_config_f.isShowingRowTotals() ) {
+        if(showBudget)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudget].m_total.formatMoney(fraction, false));
+
+        if(showActual)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual].m_total.formatMoney(fraction, false));
+
+        if(showBudgetDiff)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
+
+        if(showForecast)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eForecast].m_total.formatMoney(fraction, false));
+
+      }
 
       result += "\n";
     }
@@ -1513,11 +1607,35 @@ QString PivotTable::renderCSV( void ) const
   {
     result += i18n("Grand Total");
     unsigned totalcolumn = 1;
-    while ( totalcolumn < m_numColumns )
-      result += QString(",\"%1\"").arg(m_grid.m_total[eActual][totalcolumn++].formatMoney(fraction, false));
+    while ( totalcolumn < m_numColumns ) {
+      if(showBudget)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eBudget][totalcolumn].formatMoney(fraction, false));
 
-    if (  m_config_f.isShowingRowTotals() )
-      result += QString(",\"%1\"").arg(m_grid.m_total[eActual].m_total.formatMoney(fraction, false));
+      if(showActual)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eActual][totalcolumn].formatMoney(fraction, false));
+
+      if(showBudgetDiff)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eBudgetDiff][totalcolumn].formatMoney(fraction, false));
+
+      if(showForecast)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eForecast][totalcolumn].formatMoney(fraction, false));
+
+      totalcolumn++;
+    }
+
+    if (  m_config_f.isShowingRowTotals() ) {
+      if(showBudget)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eBudget].m_total.formatMoney(fraction, false));
+
+      if(showActual)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eActual].m_total.formatMoney(fraction, false));
+
+      if(showBudgetDiff)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
+
+      if(showForecast)
+        result += QString(",\"%1\"").arg(m_grid.m_total[eForecast].m_total.formatMoney(fraction, false));
+    }
 
     result += "\n";
   }
