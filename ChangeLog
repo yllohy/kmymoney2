@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed edit loan wizard to keep changes made to interest rate
+
 2008-09-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Budget, Budget Difference and Forecast to exported
     report CSV

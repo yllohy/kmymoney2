@@ -129,6 +129,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   }
   m_interestRateEdit->loadText(ir.formatMoney("", 3));
   m_newInterestRateEdit->loadText(ir.formatMoney("", 3));
+  m_newInterestRateEdit->setPrecision(3);
   m_interestRateLabel->setText(QString(" ") + ir.formatMoney("", 3) + QString("%"));
 
   m_paymentFrequencyUnitEdit->setCurrentItem(i18n(MyMoneySchedule::occurenceToString(m_schedule.occurence())));
@@ -330,15 +331,15 @@ void KEditLoanWizard::next()
 
   } else if(currentPage() == m_interestEditPage) {
     // copy the necessary data to the widgets used for calculation
-    m_interestRateEdit->loadText(m_newInterestRateEdit->text());
-    m_paymentEdit->loadText(m_newPaymentEdit->text());
+    m_interestRateEdit->setValue(m_newInterestRateEdit->value());
+    m_paymentEdit->setValue(m_newPaymentEdit->value());
 
     // if interest rate and payment amount is given, then force
     // the term to be recalculated. The final payment is adjusted to
     // 0 if the loan was ment to be fully repayed
     updateTermWidgets(m_account.term());
-    if(!m_interestRateEdit->text().isEmpty()
-    && !m_paymentEdit->text().isEmpty()) {
+    if(!m_interestRateEdit->lineedit()->text().isEmpty()
+    && !m_paymentEdit->lineedit()->text().isEmpty()) {
       // if there's an amortization going on, we can evaluate
       // the new term. If the amortization is 0 (interest only
       // payments) then we keep the term as entered by the user.
