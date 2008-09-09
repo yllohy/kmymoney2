@@ -594,16 +594,21 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
       if(!sched.isFinished()) {
         MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
-        QString path;
-        KGlobal::iconLoader()->loadIcon("key_enter", KIcon::Small, KIcon::SizeSmall, KIcon::DefaultState, &path);
+        QString pathEnter, pathSkip;
+        KGlobal::iconLoader()->loadIcon("key_enter", KIcon::Small, KIcon::SizeSmall, KIcon::DefaultState, &pathEnter);
+        KGlobal::iconLoader()->loadIcon("player_fwd", KIcon::Small, KIcon::SizeSmall, KIcon::DefaultState, &pathSkip);
 
         //show payment date
         tmp = QString("<td>") +
           KGlobal::locale()->formatDate(sched.nextDueDate(), true) +
-          "</td><td>" +
-          link(VIEW_SCHEDULE, QString("?id=%1&mode=edit").arg(sched.id())) + sched.name() + linkend();
-        if(path.length() > 0)
-          tmp += "&nbsp;" + link(VIEW_SCHEDULE, QString("?id=%1&mode=enter").arg(sched.id())) + QString("<img src=\"file://%1\" border=\"0\"></a>").arg(path) + linkend();
+          "</td><td>";
+        if(pathEnter.length() > 0)
+          tmp += link(VIEW_SCHEDULE, QString("?id=%1&mode=enter").arg(sched.id()), i18n("Enter schedule")) + QString("<img src=\"file://%1\" border=\"0\"></a>").arg(pathEnter) + linkend();
+        if(pathSkip.length() > 0)
+          tmp += "&nbsp;" + link(VIEW_SCHEDULE, QString("?id=%1&mode=skip").arg(sched.id()), i18n("Skip schedule")) + QString("<img src=\"file://%1\" border=\"0\"></a>").arg(pathSkip) + linkend();
+
+        tmp += QString("&nbsp;");
+        tmp += link(VIEW_SCHEDULE, QString("?id=%1&mode=edit").arg(sched.id()), i18n("Edit schedule")) + sched.name() + linkend();
 
         //show quantity of payments overdue if any
         if(cnt > 1)
@@ -1045,9 +1050,14 @@ void KHomeView::showForecast(void)
   }
 }
 
-const QString KHomeView::link(const QString& view, const QString& query) const
+const QString KHomeView::link(const QString& view, const QString& query, const QString& _title) const
 {
-  return QString("<a href=\"/") + view + query + "\">";
+  QString titlePart;
+  QString title(_title);
+  if(!title.isEmpty())
+    titlePart = QString(" title=\"%1\"").arg(title.replace(" ", "&nbsp;"));
+
+  return QString("<a href=\"/%1%2\"%3>").arg(view, query, titlePart);
 }
 
 const QString KHomeView::linkend(void) const
@@ -1087,6 +1097,12 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
         Q_CHECK_PTR(mw);
         QTimer::singleShot(0, mw->actionCollection()->action("schedule_edit"), SLOT(activate()));
+
+      } else if(mode == "skip") {
+        emit scheduleSelected(id);
+        KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+        Q_CHECK_PTR(mw);
+        QTimer::singleShot(0, mw->actionCollection()->action("schedule_skip"), SLOT(activate()));
 
       } else if(mode == "full") {
         m_showAllSchedules = true;

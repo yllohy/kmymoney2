@@ -74,7 +74,7 @@ protected:
   void showSummary(void);
   void showBudget(void);
 
-  const QString link(const QString& view, const QString& query) const;
+  const QString link(const QString& view, const QString& query, const QString& title = QString()) const;
   const QString linkend(void) const;
   void loadView(void);
 
@@ -110,7 +110,7 @@ private:
     * Print an account and its balance and limit
     */
   void showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& value, const MyMoneyMoney& valueToMinBal, const bool showMinBal);
-  
+
   /**
     * @param acc the investment account
     * @return the balance in the currency of the investment account

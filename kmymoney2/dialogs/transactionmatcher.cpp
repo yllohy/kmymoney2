@@ -268,11 +268,10 @@ void TransactionMatcher::accept(const MyMoneyTransaction& _t, const MyMoneySplit
   }
 }
 
-TransactionMatcher::autoMatchResultE TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch) const
+void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch, TransactionMatcher::autoMatchResultE& result) const
 {
   Q_UNUSED(ti);
 
-  autoMatchResultE result = notMatched;
 
   const QValueList<MyMoneySplit>& splits = tm.splits();
   QValueList<MyMoneySplit>::const_iterator it_s;
@@ -293,7 +292,6 @@ TransactionMatcher::autoMatchResultE TransactionMatcher::checkTransaction(const 
       result = matched;
     }
   }
-  return result;
 }
 
 MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti, const MyMoneySplit& si, MyMoneySplit& sm, autoMatchResultE& result)
@@ -319,7 +317,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
       continue;
     }
 
-    result = checkTransaction((*it_l).first, ti, si, lastMatch);
+    checkTransaction((*it_l).first, ti, si, lastMatch, result);
   }
 
   MyMoneyObject* rc = 0;
@@ -340,7 +338,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
          (nextDueDate >= ti.postDate().addDays(-m_days)
          && nextDueDate <= ti.postDate().addDays(m_days))) {
         MyMoneyTransaction st = KMyMoneyUtils::scheduledTransaction(*it_sch);
-        result = checkTransaction(st, ti, si, lastMatch);
+        checkTransaction(st, ti, si, lastMatch, result);
         if(result == matched) {
           sm = lastMatch.second;
           rc = new MyMoneySchedule(*it_sch);
