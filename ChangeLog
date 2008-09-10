@@ -2,6 +2,8 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-09-10 Robert Wadley <robntina@users.sourceforge.net>
+  * Updated the "whats new in this release" page.
 
 2008-09-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added skip icon for schedules to home view
