@@ -16,3 +16,4 @@ kschedulebriefwidget.h
 libkmymoney.la
 kmmwidgets.cpp
 *.a
+makekdewidgets
