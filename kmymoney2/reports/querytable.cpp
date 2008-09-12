@@ -1020,6 +1020,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
   //add start balance to calculate return on investment
   MyMoneyMoney returnInvestment = startingBal;
+  MyMoneyMoney paidDividend;
   CashFlowList buys;
   CashFlowList sells;
   CashFlowList reinvestincome;
@@ -1075,9 +1076,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() * price);
-        returnInvestment += -(*it_split).value() * price;
-        //convert to lowest fraction
-        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
+        paidDividend += (*it_split).value() * price;
       }
     } else {
       //if the split does not match any action above, add it as buy or sell depending on sign
@@ -1120,7 +1119,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
   //check if no activity on that term
   if(!returnInvestment.isZero() && !endingBal.isZero()) {
-    returnInvestment = (endingBal - returnInvestment)/returnInvestment;
+    returnInvestment = ((endingBal + paidDividend) - returnInvestment)/returnInvestment;
     returnInvestment = returnInvestment.convert(10000);
   } else {
     returnInvestment = MyMoneyMoney(0,1);
