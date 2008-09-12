@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 /****************************************************************************
-  Contains code from the func_xirr and related methods of financial.cpp 
+  Contains code from the func_xirr and related methods of financial.cpp
   - KOffice 1.6 by Sascha Pfau.  Sascha agreed to relicense those methods under
   GPLv2 or later.
 *****************************************************************************/
@@ -107,7 +107,7 @@ MyMoneyMoney CashFlowList::NPV( double _rate ) const
 double CashFlowList::calculateXIRR ( void ) const
 {
   double resultRate = 0.00001;
-  
+
   double resultZero = 0.00000;
   //if ( args.count() > 2 )
   //  resultRate = calc->conv()->asFloat ( args[2] ).asFloat();
@@ -123,7 +123,7 @@ double CashFlowList::calculateXIRR ( void ) const
   static const int maxIter = 50;
 
 // Newton's method - try to find a res, with a accuracy of maxEpsilon
-  double rateEpsilon, newRate, resultValue; 
+  double rateEpsilon, newRate, resultValue;
   int i = 0;
   bool contLoop;
 
@@ -138,7 +138,7 @@ double CashFlowList::calculateXIRR ( void ) const
     if( resultDerive != 0 ) {
       newRate =  resultRate - resultValue / resultDerive;
     } else {
-      
+
       newRate =  resultRate - resultValue;
     }
 
@@ -1005,7 +1005,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
 
   //convert to lowest fraction
-  startingBal = startingBal.convert(account.currency().smallestAccountFraction());
+  startingBal = startingBal.convert(account.fraction());
 
   //calculate ending balance
   if ( m_config.isConvertCurrency() ) {
@@ -1016,7 +1016,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
 
   //convert to lowest fraction
-  endingBal = endingBal.convert(account.currency().smallestAccountFraction());
+  endingBal = endingBal.convert(account.fraction());
 
   //add start balance to calculate return on investment
   MyMoneyMoney returnInvestment = startingBal;
@@ -1057,7 +1057,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       }
       returnInvestment += value;
         //convert to lowest fraction
-      returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
+      returnInvestment = returnInvestment.convert(account.fraction());
     } else if ( action == MyMoneySplit::ActionReinvestDividend ) {
       reinvestincome += CashFlowListItem( (*it_transaction).postDate(), value );
     } else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield ) {
@@ -1076,7 +1076,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() * price);
-        paidDividend += (*it_split).value() * price;
+        paidDividend += ((-(*it_split).value()) * price).convert(account.fraction());
       }
     } else {
       //if the split does not match any action above, add it as buy or sell depending on sign

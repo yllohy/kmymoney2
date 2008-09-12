@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed sign problem with paid dividends
+
 2008-09-11 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed calculation of paid dividends for return of investment
   * Updated Spanish Whats New page
