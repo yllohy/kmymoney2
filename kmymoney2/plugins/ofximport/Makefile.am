@@ -26,6 +26,6 @@ kde_services_DATA = kmm_ofximport.desktop
 
 noinst_HEADERS = ofximporterplugin.h nodeparser.h ofxpartner.h
 
-EXTRA_DIST = kmm_ofximport.desktop
+EXTRA_DIST = kmm_ofximport.desktop kmm_ofximport.rc
 
 SUBDIRS = dialogs
