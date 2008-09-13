@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-09-12 Fernando Vilas <fvilas@iname.com>
+  * Updated MMStorageSql to throw MyMoneyExceptions
+
 2008-09-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign problem with paid dividends
   * Updated German Whats New page
