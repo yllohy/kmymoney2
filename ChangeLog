@@ -1,7 +1,3 @@
---------------------------------------------------------------------
-     Leave this note at the top of the file until the next release:
-        Set version of kmm_mymoney.so to 5.0.0
---------------------------------------------------------------------
 
 2008-09-12 Fernando Vilas <fvilas@iname.com>
   * Updated MMStorageSql to throw MyMoneyExceptions
