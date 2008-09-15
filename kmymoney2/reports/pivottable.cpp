@@ -5,6 +5,7 @@
     copyright            : (C) 2004-2005 by Ace Jones
     email                : <ace.j@hotpop.com>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Alvaro Soliverez <asoliverez@gmail.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -132,6 +133,9 @@ void PivotTable::init(void)
   }
 
   m_numColumns = columnValue(m_endDate) - columnValue(m_beginDate) + 2;
+
+  //Load what types of row the report is going to show
+  loadRowTypeList();
 
   //
   // Initialize outer groups of the grid
@@ -1004,16 +1008,17 @@ void PivotTable::convertToDeepCurrency( void )
 
 void PivotTable::calculateTotals( void )
 {
-  m_grid.m_total[eActual].insert( m_grid.m_total[eActual].end(), m_numColumns, PivotCell() );
+  for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+    m_grid.m_total[ m_rowTypeList[i] ].insert( m_grid.m_total[ m_rowTypeList[i] ].end(), m_numColumns, PivotCell() );
 
   //insert only if they are going to be used
-  if(m_config_f.hasBudget())
+  /*if(m_config_f.hasBudget())
     m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
   if(m_config_f.isIncludingBudgetActuals())
     m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
   if(m_config_f.isIncludingForecast())
     m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
-
+*/
   //
   // Outer groups
   //
@@ -1022,13 +1027,8 @@ void PivotTable::calculateTotals( void )
   PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    (*it_outergroup).m_total[eActual].insert( (*it_outergroup).m_total[eActual].end(), m_numColumns, PivotCell() );
-    if(m_config_f.hasBudget())
-      (*it_outergroup).m_total[eBudget].insert( (*it_outergroup).m_total[eBudget].end(), m_numColumns, PivotCell() );
-    if(m_config_f.isIncludingBudgetActuals())
-      (*it_outergroup).m_total[eBudgetDiff].insert( (*it_outergroup).m_total[eBudgetDiff].end(), m_numColumns, PivotCell() );
-    if(m_config_f.isIncludingForecast())
-      (*it_outergroup).m_total[eForecast].insert( (*it_outergroup).m_total[eForecast].end(), m_numColumns, PivotCell() );
+    for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+      (*it_outergroup).m_total[ m_rowTypeList[i] ].insert( (*it_outergroup).m_total[ m_rowTypeList[i] ].end(), m_numColumns, PivotCell() );
 
     //
     // Inner Groups
@@ -1037,14 +1037,8 @@ void PivotTable::calculateTotals( void )
     PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      (*it_innergroup).m_total[eActual].insert( (*it_innergroup).m_total[eActual].end(), m_numColumns, PivotCell() );
-      if(m_config_f.hasBudget())
-        (*it_innergroup).m_total[eBudget].insert( (*it_innergroup).m_total[eBudget].end(), m_numColumns, PivotCell() );
-      if(m_config_f.isIncludingBudgetActuals())
-        (*it_innergroup).m_total[eBudgetDiff].insert( (*it_innergroup).m_total[eBudgetDiff].end(), m_numColumns, PivotCell() );
-      if(m_config_f.isIncludingForecast())
-        (*it_innergroup).m_total[eForecast].insert( (*it_innergroup).m_total[eForecast].end(), m_numColumns, PivotCell() );
-
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+        (*it_innergroup).m_total[ m_rowTypeList[i] ].insert( (*it_innergroup).m_total[ m_rowTypeList[i] ].end(), m_numColumns, PivotCell() );
       //
       // Rows
       //
@@ -1059,37 +1053,17 @@ void PivotTable::calculateTotals( void )
         unsigned column = 1;
         while ( column < m_numColumns )
         {
-          if ( it_row.data()[eActual].count() <= column )
-            throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, row columns").arg(column).arg(it_row.data()[eActual].count()));
-          if ( (*it_innergroup).m_total[eActual].count() <= column )
-            throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total[eActual].count()));
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+            if ( it_row.data()[ m_rowTypeList[i] ].count() <= column )
+              throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, row columns").arg(column).arg(it_row.data()[ m_rowTypeList[i] ].count()));
+            if ( (*it_innergroup).m_total[ m_rowTypeList[i] ].count() <= column )
+              throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total[ m_rowTypeList[i] ].count()));
 
-          //calculate actual total
-          MyMoneyMoney value = it_row.data()[eActual][column];
-          (*it_innergroup).m_total[eActual][column] += value;
-          (*it_row)[eActual].m_total += value;
-
-          if(m_config_f.hasBudget()) {
-            //calculate budget total
-            MyMoneyMoney budget = it_row.data()[eBudget][column];
-            (*it_innergroup).m_total[eBudget][column] += budget;
-            (*it_row)[eBudget].m_total += budget;
+            //calculate total
+            MyMoneyMoney value = it_row.data()[ m_rowTypeList[i] ][column];
+            (*it_innergroup).m_total[ m_rowTypeList[i] ][column] += value;
+            (*it_row)[ m_rowTypeList[i] ].m_total += value;
           }
-
-          if(m_config_f.isIncludingBudgetActuals()) {
-            //calculate budget difference total
-            MyMoneyMoney budgetDiff = it_row.data()[eBudgetDiff][column];
-            (*it_innergroup).m_total[eBudgetDiff][column] += budgetDiff;
-            (*it_row)[eBudgetDiff].m_total += budgetDiff;
-          }
-
-          if(m_config_f.isIncludingForecast()) {
-            //calculate forecast total
-            MyMoneyMoney forecast = it_row.data()[eForecast][column];
-            (*it_innergroup).m_total[eForecast][column] += forecast;
-            (*it_row)[eForecast].m_total += forecast;
-          }
-
           ++column;
         }
         ++it_row;
@@ -1102,37 +1076,17 @@ void PivotTable::calculateTotals( void )
       unsigned column = 1;
       while ( column < m_numColumns )
       {
-        if ( (*it_innergroup).m_total[eActual].count() <= column )
-          throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total[eActual].count()));
-        if ( (*it_outergroup).m_total[eActual].count() <= column )
-          throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, outer group totals").arg(column).arg((*it_innergroup).m_total[eActual].count()));
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+          if ( (*it_innergroup).m_total[ m_rowTypeList[i] ].count() <= column )
+            throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total[ m_rowTypeList[i] ].count()));
+          if ( (*it_outergroup).m_total[ m_rowTypeList[i] ].count() <= column )
+            throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, outer group totals").arg(column).arg((*it_innergroup).m_total[ m_rowTypeList[i] ].count()));
 
-        //calculate actual totals
-        MyMoneyMoney value = (*it_innergroup).m_total[eActual][column];
-        (*it_outergroup).m_total[eActual][column] += value;
-        (*it_innergroup).m_total[eActual].m_total += value;
-
-        if(m_config_f.hasBudget()) {
-          //calculate budget totals
-          MyMoneyMoney budget = (*it_innergroup).m_total[eBudget][column];
-          (*it_outergroup).m_total[eBudget][column] += budget;
-          (*it_innergroup).m_total[eBudget].m_total += budget;
+          //calculate totals
+          MyMoneyMoney value = (*it_innergroup).m_total[ m_rowTypeList[i] ][column];
+          (*it_outergroup).m_total[ m_rowTypeList[i] ][column] += value;
+          (*it_innergroup).m_total[ m_rowTypeList[i] ].m_total += value;
         }
-
-        if(m_config_f.isIncludingBudgetActuals()) {
-          //calculate budget difference totals
-          MyMoneyMoney budgetDiff = (*it_innergroup).m_total[eBudgetDiff][column];
-          (*it_outergroup).m_total[eBudgetDiff][column] += budgetDiff;
-          (*it_innergroup).m_total[eBudgetDiff].m_total += budgetDiff;
-        }
-
-        if(m_config_f.isIncludingForecast()) {
-          //calculate forecast totals
-          MyMoneyMoney forecast = (*it_innergroup).m_total[eForecast][column];
-          (*it_outergroup).m_total[eForecast][column] += forecast;
-          (*it_innergroup).m_total[eForecast].m_total += forecast;
-        }
-
         ++column;
       }
 
@@ -1147,50 +1101,24 @@ void PivotTable::calculateTotals( void )
     unsigned column = 1;
     while ( column < m_numColumns )
     {
-      if ( m_grid.m_total[eActual].count() <= column )
-        throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(column).arg((*it_innergroup).m_total[eActual].count()));
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+        if ( m_grid.m_total[ m_rowTypeList[i] ].count() <= column )
+          throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(column).arg((*it_innergroup).m_total[ m_rowTypeList[i] ].count()));
 
       //calculate actual totals
-      MyMoneyMoney value = (*it_outergroup).m_total[eActual][column];
-      (*it_outergroup).m_total[eActual].m_total += value;
+        MyMoneyMoney value = (*it_outergroup).m_total[ m_rowTypeList[i] ][column];
+        (*it_outergroup).m_total[ m_rowTypeList[i] ].m_total += value;
 
-      if ( invert_total )
-        value = -value;
+        //so far the invert only applies to actual and budget
+        if ( invert_total 
+             && m_rowTypeList[i] != eBudgetDiff
+             &&  m_rowTypeList[i] != eForecast)
+          value = -value;
 
-      m_grid.m_total[eActual][column] += value;
-
-      if(m_config_f.hasBudget()) {
-        //calculate budget totals
-        MyMoneyMoney budget = (*it_outergroup).m_total[eBudget][column];
-        (*it_outergroup).m_total[eBudget].m_total += budget;
-
-        if ( invert_total )
-          budget = -budget;
-
-        m_grid.m_total[eBudget][column] += budget;
+        m_grid.m_total[ m_rowTypeList[i] ][column] += value;
       }
-
-      if(m_config_f.isIncludingBudgetActuals()) {
-        //calculate budget difference totals
-        MyMoneyMoney budgetDiff = (*it_outergroup).m_total[eBudgetDiff][column];
-        (*it_outergroup).m_total[eBudgetDiff].m_total += budgetDiff;
-
-        //for budget difference it does not take the invert into account because the total has to be the sum of both
-        m_grid.m_total[eBudgetDiff][column] += budgetDiff;
-      }
-
-      if(m_config_f.isIncludingForecast()) {
-        //calculate forecast totals
-        MyMoneyMoney forecast = (*it_outergroup).m_total[eForecast][column];
-        (*it_outergroup).m_total[eForecast].m_total += forecast;
-
-        //for forecast the invert is not taken into account either
-        m_grid.m_total[eForecast][column] += forecast;
-      }
-
       ++column;
     }
-
     ++it_outergroup;
   }
 
@@ -1201,34 +1129,16 @@ void PivotTable::calculateTotals( void )
   unsigned totalcolumn = 1;
   while ( totalcolumn < m_numColumns )
   {
-    if ( m_grid.m_total[eActual].count() <= totalcolumn )
-      throw new MYMONEYEXCEPTION(QString("Total column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(totalcolumn).arg(m_grid.m_total[eActual].count()));
+    for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+      if ( m_grid.m_total[ m_rowTypeList[i] ].count() <= totalcolumn )
+        throw new MYMONEYEXCEPTION(QString("Total column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(totalcolumn).arg(m_grid.m_total[ m_rowTypeList[i] ].count()));
 
     //calculate actual totals
-    MyMoneyMoney value = m_grid.m_total[eActual][totalcolumn];
-    m_grid.m_total[eActual].m_total += value;
-
-    if(m_config_f.hasBudget()) {
-      //calculate budget totals
-      MyMoneyMoney budget = m_grid.m_total[eBudget][totalcolumn];
-      m_grid.m_total[eBudget].m_total += budget;
+      MyMoneyMoney value = m_grid.m_total[ m_rowTypeList[i] ][totalcolumn];
+      m_grid.m_total[ m_rowTypeList[i] ].m_total += value;
     }
-
-    if(m_config_f.isIncludingBudgetActuals()) {
-      //calculate budget difference totals
-      MyMoneyMoney budgetDiff = m_grid.m_total[eBudgetDiff][totalcolumn];
-      m_grid.m_total[eBudgetDiff].m_total += budgetDiff;
-    }
-
-    if(m_config_f.isIncludingForecast()) {
-      //calculate forecast totals
-      MyMoneyMoney forecast = m_grid.m_total[eForecast][totalcolumn];
-      m_grid.m_total[eForecast].m_total += forecast;
-    }
-
     ++totalcolumn;
   }
-
 }
 
 void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _row, unsigned column, MyMoneyMoney value, bool budget, bool stockSplit )
@@ -1327,16 +1237,6 @@ QString PivotTable::renderCSV( void ) const
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
-  //check which columns to render
-  bool showBudget = m_config_f.hasBudget();
-  bool showForecast = m_config_f.isIncludingForecast();
-  bool showBudgetDiff = false;
-  bool showActual = false;
-  if( (m_config_f.isIncludingBudgetActuals()) || ( !showBudget && !showForecast) )
-    showActual = true;
-  if( showBudget && showActual)
-    showBudgetDiff = true;
-
   //
   // Report Title
   //
@@ -1403,43 +1303,23 @@ QString PivotTable::renderCSV( void ) const
 
         QString rowdata;
         unsigned column = 1;
-        bool isUsed = it_row.data()[eActual][0].isUsed();
+
+        bool isUsed;
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+          isUsed = it_row.data()[ m_rowTypeList[i] ][0].isUsed();
+
         while ( column < m_numColumns ) {
           //show columns
-          if(showBudget) {
-            isUsed |= it_row.data()[eBudget][column].isUsed();
-            rowdata += QString(",\"%1\"").arg(it_row.data()[eBudget][column].formatMoney(fraction, false));
-          }
-
-          if(showActual) {
-            isUsed |= it_row.data()[eActual][column].isUsed();
-            rowdata += QString(",\"%1\"").arg(it_row.data()[eActual][column].formatMoney(fraction, false));
-          }
-
-          if(showBudgetDiff) {
-            isUsed |= it_row.data()[eBudgetDiff][column].isUsed();
-            rowdata += QString(",\"%1\"").arg(it_row.data()[eBudgetDiff][column].formatMoney(fraction, false));
-          }
-
-          if(showForecast) {
-            isUsed |= it_row.data()[eForecast][column].isUsed();
-            rowdata += QString(",\"%1\"").arg(it_row.data()[eForecast][column].formatMoney(fraction, false));
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+            isUsed |= it_row.data()[ m_rowTypeList[i] ][column].isUsed();
+            rowdata += QString(",\"%1\"").arg(it_row.data()[ m_rowTypeList[i] ][column].formatMoney(fraction, false));
           }
           column++;
         }
 
         if ( m_config_f.isShowingRowTotals() ) {
-          if(showBudget)
-            rowdata += QString(",\"%1\"").arg((*it_row)[eBudget].m_total.formatMoney(fraction, false));
-
-          if(showActual)
-            rowdata += QString(",\"%1\"").arg((*it_row)[eActual].m_total.formatMoney(fraction, false));
-
-          if(showBudgetDiff)
-            rowdata += QString(",\"%1\"").arg((*it_row)[eBudgetDiff].m_total.formatMoney(fraction, false));
-
-          if(showForecast)
-            rowdata += QString(",\"%1\"").arg((*it_row)[eForecast].m_total.formatMoney(fraction, false));
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+            rowdata += QString(",\"%1\"").arg((*it_row)[ m_rowTypeList[i] ].m_total.formatMoney(fraction, false));
         }
 
         //
@@ -1457,7 +1337,7 @@ QString PivotTable::renderCSV( void ) const
 
           innergroupdata += "\"";
 
-          if ( ! (*it_row)[eActual].m_total.isZero() )
+          if ( isUsed )
             innergroupdata += rowdata;
 
           innergroupdata += "\n";
@@ -1505,43 +1385,22 @@ QString PivotTable::renderCSV( void ) const
       if ( finishrow )
       {
         unsigned column = 1;
-        isUsed |= (*it_innergroup).m_total[eActual][0].isUsed();
+
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+          isUsed |= (*it_innergroup).m_total[ m_rowTypeList[i] ][0].isUsed();
+
         while ( column < m_numColumns )
         {
-          if(showBudget) {
-            isUsed |= (*it_innergroup).m_total[eBudget][column].isUsed();
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudget][column].formatMoney(fraction, false));
-          }
-
-          if(showActual) {
-            isUsed |= (*it_innergroup).m_total[eActual][column].isUsed();
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual][column].formatMoney(fraction, false));
-          }
-
-          if(showBudgetDiff) {
-            isUsed |= (*it_innergroup).m_total[eBudgetDiff][column].isUsed();
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudgetDiff][column].formatMoney(fraction, false));
-          }
-
-          if(showForecast) {
-            isUsed |= (*it_innergroup).m_total[eForecast][column].isUsed();
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eForecast][column].formatMoney(fraction, false));
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+            isUsed |= (*it_innergroup).m_total[ m_rowTypeList[i] ][column].isUsed();
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[ m_rowTypeList[i] ][column].formatMoney(fraction, false));
           }
           column++;
         }
 
         if (  m_config_f.isShowingRowTotals() ) {
-          if(showBudget)
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudget].m_total.formatMoney(fraction, false));
-
-          if(showActual)
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eActual].m_total.formatMoney(fraction, false));
-
-          if(showBudgetDiff)
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
-
-          if(showForecast)
-            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[eForecast].m_total.formatMoney(fraction, false));
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+            finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[ m_rowTypeList[i] ].m_total.formatMoney(fraction, false));
         }
 
         finalRow += "\n";
@@ -1564,34 +1423,15 @@ QString PivotTable::renderCSV( void ) const
       result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
       unsigned column = 1;
       while ( column < m_numColumns ) {
-        if(showBudget)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudget][column].formatMoney(fraction, false));
-
-        if(showActual)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual][column].formatMoney(fraction, false));
-
-        if(showBudgetDiff)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudgetDiff][column].formatMoney(fraction, false));
-
-        if(showForecast)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eForecast][column].formatMoney(fraction, false));
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[ m_rowTypeList[i] ][column].formatMoney(fraction, false));
 
         column++;
       }
 
       if (  m_config_f.isShowingRowTotals() ) {
-        if(showBudget)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudget].m_total.formatMoney(fraction, false));
-
-        if(showActual)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eActual].m_total.formatMoney(fraction, false));
-
-        if(showBudgetDiff)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
-
-        if(showForecast)
-          result += QString(",\"%1\"").arg((*it_outergroup).m_total[eForecast].m_total.formatMoney(fraction, false));
-
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+          result += QString(",\"%1\"").arg((*it_outergroup).m_total[ m_rowTypeList[i] ].m_total.formatMoney(fraction, false));
       }
 
       result += "\n";
@@ -1608,33 +1448,15 @@ QString PivotTable::renderCSV( void ) const
     result += i18n("Grand Total");
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns ) {
-      if(showBudget)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eBudget][totalcolumn].formatMoney(fraction, false));
-
-      if(showActual)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eActual][totalcolumn].formatMoney(fraction, false));
-
-      if(showBudgetDiff)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eBudgetDiff][totalcolumn].formatMoney(fraction, false));
-
-      if(showForecast)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eForecast][totalcolumn].formatMoney(fraction, false));
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+        result += QString(",\"%1\"").arg(m_grid.m_total[ m_rowTypeList[i] ][totalcolumn].formatMoney(fraction, false));
 
       totalcolumn++;
     }
 
     if (  m_config_f.isShowingRowTotals() ) {
-      if(showBudget)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eBudget].m_total.formatMoney(fraction, false));
-
-      if(showActual)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eActual].m_total.formatMoney(fraction, false));
-
-      if(showBudgetDiff)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eBudgetDiff].m_total.formatMoney(fraction, false));
-
-      if(showForecast)
-        result += QString(",\"%1\"").arg(m_grid.m_total[eForecast].m_total.formatMoney(fraction, false));
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
+        result += QString(",\"%1\"").arg(m_grid.m_total[ m_rowTypeList[i] ].m_total.formatMoney(fraction, false));
     }
 
     result += "\n";
@@ -1648,16 +1470,6 @@ QString PivotTable::renderHTML( void ) const
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_config_f.isShowingRowTotals() ? 1 : 0) );
-
-  //check which columns to show
-  bool showBudget = m_config_f.hasBudget();
-  bool showForecast = m_config_f.isIncludingForecast();
-  bool showBudgetDiff = false;
-  bool showActual = false;
-  if( (m_config_f.isIncludingBudgetActuals()) || ( !showBudget && !showForecast) )
-       showActual = true;
-  if( showBudget && showActual)
-    showBudgetDiff = true;
 
   //
   // Report Title
@@ -1674,7 +1486,7 @@ QString PivotTable::renderHTML( void ) const
 
   // setup a leftborder for better readability of budget vs actual reports
   QString leftborder;
-  if (showBudgetDiff)
+  if (m_rowTypeList.size() > 1)
     leftborder = " class=\"leftborder\"";
 
   //
@@ -1684,17 +1496,7 @@ QString PivotTable::renderHTML( void ) const
        "<thead><tr class=\"itemheader\">\n<th>%1</th>").arg(i18n("Account"));
 
   QString headerspan;
-  int span = 0;
-
-  //calculate span
-  if ( showBudget )
-    ++span;
-  if ( showBudgetDiff ) //add an extra column for budget difference
-    ++span;
-  if ( showActual )
-    ++span;
-  if ( showForecast )
-    ++span;
+  int span = m_rowTypeList.size();
 
   headerspan = QString(" colspan=\"%1\"").arg(span);
 
@@ -1708,9 +1510,9 @@ QString PivotTable::renderHTML( void ) const
   result += "</tr></thead>\n";
 
   //
-  // "Budget/Forecast/Actual" header
+  // Header for multiple columns
   //
-  if ( showActual && (showBudget || showForecast))
+  if ( span > 1 )
   {
     result += "<tr><td></td>";
 
@@ -1721,20 +1523,19 @@ QString PivotTable::renderHTML( void ) const
       if(column != 1)
         lb = leftborder;
 
-      if(showBudget)
-        result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),lb);
-
-      if(showForecast)
-        result += QString("<td%4>%1</td><td>%2</td>").arg(i18n("Actual"),i18n("Forecast"),lb);
-
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+        result += QString("<td%2>%1</td>")
+            .arg(i18n( m_columnTypeHeaderList[i] ))
+            .arg(i == 0 ? lb : QString() );
+      }
       column++;
     }
     if ( m_config_f.isShowingRowTotals() ) {
-      if(showBudget)
-        result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),leftborder);
-
-      if(showForecast)
-        result += QString("<td%4>%1</td><td>%2</td>").arg(i18n("Actual"),i18n("Forecast"),leftborder);
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+        result += QString("<td%2>%1</td>")
+            .arg(i18n( m_columnTypeHeaderList[i] ))
+            .arg(i == 0 ? leftborder : QString() );
+      }
     }
     result += "</tr>";
   }
@@ -1809,39 +1610,24 @@ QString PivotTable::renderHTML( void ) const
               if(column != 1)
                 lb = leftborder;
 
-              if ( showBudget )
+              for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
                 rowdata += QString("<td%2>%1</td>")
-                    .arg(coloredAmount(it_row.data()[eBudget][column]), lb);
+                    .arg(coloredAmount(it_row.data()[ m_rowTypeList[i] ][column]))
+                    .arg(i == 0 ? lb : QString());
 
-              isUsed |= it_row.data()[eActual][column].isUsed();
-              if ( showActual )
-                rowdata += QString("<td>%1</td>")
-                    .arg(coloredAmount(it_row.data()[eActual][column]));
-
-              if ( showBudgetDiff )
-                rowdata += QString("<td>%1</td>").arg(coloredAmount(it_row.data()[eBudgetDiff][column]));
-
-              if ( showForecast )
-                rowdata += QString("<td>%1</td>").arg(coloredAmount(it_row.data()[eForecast][column]));
+                isUsed |= it_row.data()[ m_rowTypeList[i] ][column].isUsed();
+              }
 
               column++;
             }
 
             if ( m_config_f.isShowingRowTotals() )
             {
-              if ( showBudget )
+              for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
                 rowdata += QString("<td%2>%1</td>")
-                    .arg(coloredAmount((*it_row)[eBudget].m_total), leftborder);
-
-              if ( showActual )
-                rowdata += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_row)[eActual].m_total));
-
-              if ( showBudgetDiff )
-                rowdata += QString("<td>%1</td>").arg(coloredAmount((*it_row)[eBudgetDiff].m_total));
-
-              if ( showForecast )
-                rowdata += QString("<td>%1</td>").arg(coloredAmount((*it_row)[eForecast].m_total));
+                    .arg(coloredAmount(it_row.data()[ m_rowTypeList[i] ].m_total))
+                    .arg(i == 0 ? leftborder : QString());
+              }
             }
 
             //
@@ -1927,39 +1713,24 @@ QString PivotTable::renderHTML( void ) const
               QString lb;
               if(column != 1)
                 lb = leftborder;
-              if ( showBudget )
+
+              for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
                 finalRow += QString("<td%2>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total[eBudget][column]), lb);
-
-              isUsed |= (*it_innergroup).m_total[eActual][column].isUsed();
-              if ( showActual )
-                finalRow += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total[eActual][column]));
-
-              if ( showBudgetDiff )
-                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total[eBudgetDiff][column]));
-
-              if ( showForecast )
-                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total[eForecast][column]));
+                    .arg(coloredAmount((*it_innergroup).m_total[ m_rowTypeList[i] ][column]))
+                    .arg(i == 0 ? lb : QString());
+                isUsed |= (*it_innergroup).m_total[ m_rowTypeList[i] ][column].isUsed();
+              }
 
               column++;
             }
 
             if (  m_config_f.isShowingRowTotals() )
             {
-              if ( showBudget )
+              for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
                 finalRow += QString("<td%2>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total[eBudget].m_total), leftborder);
-
-              if ( showActual )
-                finalRow += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total[eActual].m_total));
-
-              if ( showBudgetDiff )
-                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total[eBudgetDiff].m_total));
-
-              if ( showForecast )
-                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total[eForecast].m_total));
+                    .arg(coloredAmount((*it_innergroup).m_total[ m_rowTypeList[i] ].m_total))
+                    .arg(i == 0 ? leftborder : QString());
+              }
             }
 
             finalRow += "</tr>\n";
@@ -1988,38 +1759,23 @@ QString PivotTable::renderHTML( void ) const
           QString lb;
           if(column != 1)
             lb = leftborder;
-          if ( showBudget )
+
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
             result += QString("<td%2>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total[eBudget][column]), lb);
-
-          if ( showActual )
-            result += QString("<td>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total[eActual][column]));
-
-          if ( showBudgetDiff )
-            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total[eBudgetDiff][column]));
-
-          if ( showForecast )
-            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total[eForecast][column]));
+                .arg(coloredAmount((*it_outergroup).m_total[ m_rowTypeList[i] ][column]))
+                .arg(i == 0 ? lb : QString());
+          }
 
           column++;
         }
 
         if (  m_config_f.isShowingRowTotals() )
         {
-          if ( m_config_f.hasBudget() )
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
             result += QString("<td%2>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total[eBudget].m_total),leftborder);
-
-          if ( showActual )
-            result += QString("<td>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total[eActual].m_total));
-
-          if ( showBudgetDiff )
-            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total[eBudgetDiff].m_total));
-
-          if ( showForecast )
-            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total[eForecast].m_total));
+                .arg(coloredAmount((*it_outergroup).m_total[ m_rowTypeList[i] ].m_total))
+                .arg(i == 0 ? leftborder : QString());
+          }
         }
         result += "</tr>\n";
       }
@@ -2044,38 +1800,23 @@ QString PivotTable::renderHTML( void ) const
       QString lb;
       if(totalcolumn != 1)
         lb = leftborder;
-      if ( showBudget )
+
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
         result += QString("<td%2>%1</td>")
-            .arg(coloredAmount(m_grid.m_total[eBudget][totalcolumn]),lb);
-
-      if ( showActual )
-        result += QString("<td>%1</td>")
-            .arg(coloredAmount(m_grid.m_total[eActual][totalcolumn]));
-
-      if ( showBudgetDiff )
-        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total[eBudgetDiff][totalcolumn]));
-
-      if ( showForecast )
-        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total[eForecast][totalcolumn]));
+            .arg(coloredAmount(m_grid.m_total[ m_rowTypeList[i] ][totalcolumn]))
+            .arg(i == 0 ? lb : QString());
+      }
 
       totalcolumn++;
     }
 
     if (  m_config_f.isShowingRowTotals() )
     {
-      if ( showBudget )
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
         result += QString("<td%2>%1</td>")
-            .arg(coloredAmount(m_grid.m_total[eBudget].m_total), leftborder);
-
-      if ( showActual )
-        result += QString("<td>%1</td>")
-            .arg(coloredAmount(m_grid.m_total[eActual].m_total));
-
-      if ( showBudgetDiff )
-        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total[eBudgetDiff].m_total));
-
-      if ( showForecast )
-        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total[eForecast].m_total));
+            .arg(coloredAmount(m_grid.m_total[ m_rowTypeList[i] ].m_total))
+            .arg(i == 0 ? leftborder : QString());
+      }
     }
 
     result += "</tr>\n";
@@ -2623,6 +2364,30 @@ void PivotTable::calculateForecast(void)
       ++it_innergroup;
     }
     ++it_outergroup;
+  }
+}
+
+void PivotTable::loadRowTypeList()
+{
+  if (m_config_f.hasBudget()) {
+    m_rowTypeList.append(eBudget);
+    m_columnTypeHeaderList.append(i18n("Budget"));
+  }
+
+  if( (m_config_f.isIncludingBudgetActuals()) || 
+       ( !m_config_f.hasBudget() && !m_config_f.isIncludingForecast()) ) {
+    m_rowTypeList.append(eActual);
+    m_columnTypeHeaderList.append(i18n("Actual"));
+  }
+
+  if(m_config_f.isIncludingBudgetActuals()) {
+    m_rowTypeList.append(eBudgetDiff);
+    m_columnTypeHeaderList.append(i18n("Difference"));
+  }
+
+  if(m_config_f.isIncludingForecast()) {
+    m_rowTypeList.append(eForecast);
+    m_columnTypeHeaderList.append(i18n("Forecast"));
   }
 }
 

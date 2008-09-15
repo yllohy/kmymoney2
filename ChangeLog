@@ -1,4 +1,8 @@
 
+2008-09-11 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added generic code in PivotTable to support multiple
+    columns while preventing duplication of code
+
 2008-09-12 Fernando Vilas <fvilas@iname.com>
   * Updated MMStorageSql to throw MyMoneyExceptions
 

@@ -5,6 +5,7 @@
     copyright            : (C) 2004-2005 by Ace Jones
     email                : <ace.j@hotpop.com>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Alvaro Soliverez <asoliverez@gmail.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -121,10 +122,22 @@ private:
     QDate m_endDate;
     bool m_runningSumsCalculated;
 
-    // For budget-vs-actual reports only, maps each account to the account which holds
-    // the budget for it.  If an account is not contained in this map, it is not included
-    // in the budget.
+    /** 
+      * For budget-vs-actual reports only, maps each account to the account which holds
+      * the budget for it.  If an account is not contained in this map, it is not included
+      * in the budget.
+      */
     QMap<QCString,QCString> m_budgetMap;
+
+    /**
+      * This list contains the types of PivotGridRows that are going to be shown in the report
+      */
+    QValueList<ERowType> m_rowTypeList;
+
+    /**
+     * This list contains the i18n headers for the column types
+     */
+    QValueList<QString> m_columnTypeHeaderList;
 
     MyMoneyReport m_config_f;
 
@@ -319,6 +332,12 @@ protected:
      * Draws a PivotGridRowSet in a chart for the given ERowType
      */
     unsigned drawChartRowSet(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const PivotGridRowSet& rowSet, const ERowType rowType ) const;
+    
+   /**
+     * Loads m_rowTypeList with the list of PivotGridRow types that the reporttable
+     * should show
+     */
+    void loadRowTypeList(void);
 };
 
 
