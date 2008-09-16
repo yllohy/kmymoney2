@@ -283,6 +283,11 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
         result = matchedDuplicate;
         break;
       }
+      // in case the stored split already has a bankid
+      // assigned, it must be a different one and therefore
+      // will certainly not match
+      if(!(*it_s).bankID().isEmpty())
+        continue;
     }
     // check if this is the one that matches
     if((*it_s).accountId() == si.accountId()
