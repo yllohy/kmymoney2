@@ -1615,6 +1615,10 @@ void KHomeView::doForecast()
   //clear m_accountList because forecast is about to changed
   m_accountList.clear();
 
+  //reinitialize the object
+  MyMoneyForecast forecast;
+  m_forecast = forecast;
+
   //If forecastDays lower than accountsCycle, adjust to the first cycle
   if(m_forecast.accountsCycle() > m_forecast.forecastDays())
     m_forecast.setForecastDays(m_forecast.accountsCycle());

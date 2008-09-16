@@ -1,5 +1,10 @@
 
-2008-09-11 Alvaro Soliverez <asoliverez@gmail.com>
+2008-09-15 Alvaro Soliverez <asoliverez@gmail.com>
+  * Convert fractions in KMyMoneyAccountTreeForecastItem to make
+    sure it does not overflow when handling multiple currencies
+  * Reinitialize m_forecast in Home Page on change
+
+2008-09-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Added generic code in PivotTable to support multiple
     columns while preventing duplication of code
 

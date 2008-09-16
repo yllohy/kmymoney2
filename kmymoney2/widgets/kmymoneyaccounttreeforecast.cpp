@@ -327,6 +327,7 @@ void KMyMoneyAccountTreeForecastItem::showAmount(int column, const MyMoneyMoney 
 void KMyMoneyAccountTreeForecastItem::adjustParentValue(int column, const MyMoneyMoney& value)
 {
   m_values[column] += value;
+  m_values[column] = m_values[column].convert(listView()->baseCurrency().smallestAccountFraction());
 
   // if the entry has no children,
   // or it is the top entry
@@ -339,10 +340,8 @@ void KMyMoneyAccountTreeForecastItem::adjustParentValue(int column, const MyMone
     || depth() == 1 ) {
     if(firstChild())
       setText(column, " ");
-    if(parent())
-      showAmount(column, m_values[column], listView()->baseCurrency());
-    else
-      showAmount(column, m_values[column],listView()->baseCurrency());
+
+    showAmount(column, m_values[column], listView()->baseCurrency());
   }
 
   // now make sure, the upstream accounts also get notified about the value change
