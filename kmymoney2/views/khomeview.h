@@ -72,6 +72,9 @@ protected:
   void showForecast(void);
   void showNetWorthGraph(void);
   void showSummary(void);
+  void showAssetsLiabilities(void);
+  void showIncomeExpenseSummary(void);
+  void showSchedulesSummary(void);
   void showBudget(void);
 
   const QString link(const QString& view, const QString& query, const QString& title = QString()) const;
