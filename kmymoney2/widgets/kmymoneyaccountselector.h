@@ -170,6 +170,9 @@ public:
 
   int count(void) const { return m_count; }
 
+  void setHideClosedAccounts (bool _bool) { m_hideClosedAccounts = _bool; }
+  bool isHidingClosedAccounts (void) { return m_hideClosedAccounts; }
+
 protected:
   int loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QCStringList& list);
 
@@ -178,5 +181,6 @@ private:
   MyMoneyFile*                             m_file;
   QValueList<MyMoneyAccount::accountTypeE> m_typeList;
   QListViewItem*                           m_favorites;
+  bool                                     m_hideClosedAccounts;
 };
 #endif

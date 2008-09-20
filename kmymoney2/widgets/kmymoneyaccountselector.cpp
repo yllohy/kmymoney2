@@ -245,7 +245,8 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
 AccountSet::AccountSet() :
   m_count(0),
   m_file(MyMoneyFile::instance()),
-  m_favorites(0)
+  m_favorites(0),
+  m_hideClosedAccounts(true)
 {
 }
 
@@ -400,8 +401,10 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
         const MyMoneyAccount& acc = m_file->account(*it_l);
         ++m_count;
         ++count;
+        //this will include an account if it matches the account type and
+        //if it is still open or it has been set to show closed accounts
         if(m_typeList.contains(acc.accountType())
-        && !acc.isClosed()) {
+        && (!isHidingClosedAccounts() || !acc.isClosed()) ) {
           QString tmpKey;
           tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
           QListViewItem* subItem = selector->newItem(item, acc.name(), tmpKey, acc.id());

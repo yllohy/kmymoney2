@@ -300,6 +300,8 @@ void KFindTransactionDlg::setupAccountsPage(void)
   AccountSet accountSet;
   accountSet.addAccountGroup(MyMoneyAccount::Asset);
   accountSet.addAccountGroup(MyMoneyAccount::Liability);
+  //set the accountset to show closed account if the settings say so
+  accountSet.setHideClosedAccounts(KMyMoneyGlobalSettings::hideClosedAccounts());
   accountSet.load(m_accountsView);
   connect(m_accountsView, SIGNAL(stateChanged()), this, SLOT(slotUpdateSelections()));
 }
