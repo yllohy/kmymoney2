@@ -751,9 +751,13 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
     m_part->write("</td><td width=\"25%\" class=\"right\">");
     m_part->write(i18n("Current Balance"));
     m_part->write("</td>");
-    m_part->write("<td width=\"40%\" class=\"right\">");
-    m_part->write(i18n("To Minimum Balance / Maximum Credit"));
-    m_part->write("</td></tr>");
+    //only show limit info if user chose to do so
+    if(KMyMoneyGlobalSettings::showLimitInfo()) {
+      m_part->write("<td width=\"40%\" class=\"right\">");
+      m_part->write(i18n("To Minimum Balance / Maximum Credit"));
+      m_part->write("</td>");
+    }
+    m_part->write("</tr>");
 
 
     QMap<QString, MyMoneyAccount>::const_iterator it_m;
@@ -772,12 +776,14 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   MyMoneySecurity currency = file->currency(acc.currencyId());
   MyMoneyMoney value;
 
+  bool showLimit = KMyMoneyGlobalSettings::showLimitInfo();
+
   if(acc.accountType() == MyMoneyAccount::Investment) {
     //investment accounts show the balances of all its subaccounts
     value = investmentBalance(acc);
 
     //investment accounts have no minimum balance
-    showAccountEntry(acc, value, MyMoneyMoney(), true);
+    showAccountEntry(acc, value, MyMoneyMoney(), showLimit);
   } else {
     //get balance for normal accounts
     value = file->balance(acc.id(), QDate::currentDate());
@@ -787,12 +793,12 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
         acc.accountType() == MyMoneyAccount::Checkings ) {
       QString maximumCredit = acc.value("maxCreditAbsolute");
       MyMoneyMoney maxCredit = MyMoneyMoney(maximumCredit);
-      showAccountEntry(acc, value, value - maxCredit, true);
+      showAccountEntry(acc, value, value - maxCredit, showLimit);
     } else {
       //otherwise use minimum balance
       QString minimumBalance = acc.value("minBalanceAbsolute");
       MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
-      showAccountEntry(acc, value, value - minBalance, true);
+      showAccountEntry(acc, value, value - minBalance, showLimit);
     }
   }
 }

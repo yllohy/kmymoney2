@@ -1,4 +1,7 @@
 
+2008-09-21 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added setting to hide limit column on Home page
+
 2008-09-20 Alvaro Soliverez <asoliverez@gmail.com>
   * Show closed accounts in reports and find transactions dialog
     if the user has chosen to do so

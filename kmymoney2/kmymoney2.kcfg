@@ -131,6 +131,10 @@
    <label>Remember (manually adjusted) font size in home view on program end.</label>
    <default>true</default>
   </entry>
+  <entry name="ShowLimitInfo" type="Bool">
+   <label>Show account limit information on the Homepage</label>
+   <default>true</default>
+  </entry>
  </group>
  <group name="Investment Settings">
  </group>
