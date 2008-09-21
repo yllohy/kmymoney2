@@ -1,4 +1,7 @@
 
+2008-09-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added option to select most often used transaction for autofill
+
 2008-09-21 Alvaro Soliverez <asoliverez@gmail.com>
   * Added setting to hide limit column on Home page
 

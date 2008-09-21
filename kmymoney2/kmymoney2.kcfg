@@ -7,9 +7,9 @@
    <label>Always show a No. field in transaction form</label>
    <default>false</default>
   </entry>
-  <entry name="AutoFillTransaction" type="Bool">
+  <entry name="AutoFillTransaction" type="Int">
    <label>Auto fill with previous transaction data</label>
-   <default>true</default>
+   <default>1</default>
   </entry>
   <entry name="AutoFillDifference" type="Int">
     <label>Treat two transactions as identical, if amount differs less than</label>

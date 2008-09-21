@@ -585,9 +585,9 @@ Transaction* Register::dropTransaction(QPoint cPos) const
   if(cPos.y() >= 0) {
     cPos += QPoint(contentsX(), contentsY());
     int row = rowAt(cPos.y());
-    int col = columnAt(cPos.x());
     t = dynamic_cast<Transaction*>(itemAtRow(row));
   }
+  return t;
 }
 
 void Register::dragMoveEvent(QDragMoveEvent* event)

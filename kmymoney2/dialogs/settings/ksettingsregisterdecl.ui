@@ -39,7 +39,7 @@
                             <cstring>kcfg_ShowGrid</cstring>
                         </property>
                         <property name="text">
-                            <string>Show a grid in the register</string>
+                            <string>Show a &amp;grid in the register</string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -226,111 +226,8 @@
                             <cstring>kcfg_AutoIncCheckNumber</cstring>
                         </property>
                         <property name="text">
-                            <string>Auto increment check number</string>
+                            <string>Auto increment check num&amp;ber</string>
                         </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>kcfg_AutoFillTransaction</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Auto fill with previous transaction data</string>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>layout5</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer3</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Fixed</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QFrame">
-                                <property name="name">
-                                    <cstring>m_percentageFrame</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>NoFrame</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Raised</enum>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <property name="margin">
-                                        <number>0</number>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel1</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Same transaction if amount differs less than</string>
-                                            <comment>Same transaction if amount differs less than percent.</comment>
-                                        </property>
-                                    </widget>
-                                    <widget class="KIntSpinBox">
-                                        <property name="name">
-                                            <cstring>kcfg_AutoFillDifference</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>100</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                        <property name="whatsThis" stdset="0">
-                                            <string>Two transactions are usually treated identical for autofill, if they refer the same accounts. They are treated as different transactions though, when their amount varies by more than the percentage given here.</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>percent.</string>
-                                            <comment>Same transaction if amount differs less than percent.</comment>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer4_2</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>41</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
                     </widget>
                     <widget class="QCheckBox">
                         <property name="name">
@@ -345,7 +242,7 @@
                             <cstring>kcfg_EnterMovesBetweenFields</cstring>
                         </property>
                         <property name="text">
-                            <string>Use Enter to move between fields</string>
+                            <string>&amp;Use Enter to move between fields</string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget">
@@ -405,6 +302,96 @@
                                 </property>
                             </spacer>
                         </hbox>
+                    </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>kcfg_AutoFillTransaction</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Autofill</string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>false</bool>
+                        </property>
+                        <property name="selectedId" stdset="0">
+                            <number>0</number>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>radioButton1</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>No Autofill</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Don't do autofill of transaction data at all.</string>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>layout4</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>radioButton2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Same transaction if amount differs less than</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string></string>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>Collect all transactions for the given payee. Treat all transactions that refer to the same category and have an amount with +/- X % as identical. If more than one transaction is found, a list of them is presented to the user.
+
+Selecting 0% will list all transactions.</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KIntSpinBox">
+                                        <property name="name">
+                                            <cstring>kcfg_AutoFillDifference</cstring>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>100</number>
+                                        </property>
+                                        <property name="value">
+                                            <number>10</number>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>Two transactions are usually treated identical for autofill, if they refer the same accounts. They are treated as different transactions though, when their amount varies by more than the percentage given here.</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>percent.</string>
+                                            <comment>Same transaction if amount differs less than percent.</comment>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>radioButton3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>with previously most often used transaction for the payee</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The data of the last transaction assigned to the category used most often for this payee is autofilled into the transaction editor.</string>
+                                </property>
+                            </widget>
+                        </vbox>
                     </widget>
                     <spacer>
                         <property name="name">
@@ -512,13 +499,5 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>kcfg_AutoFillTransaction</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_percentageFrame</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

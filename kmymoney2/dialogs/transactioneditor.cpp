@@ -1103,7 +1103,7 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
   // in the account.
   if(m_transaction.id().isEmpty()
   && m_splits.count() == 0
-  && KMyMoneyGlobalSettings::autoFillTransaction()) {
+  && KMyMoneyGlobalSettings::autoFillTransaction() != 0) {
     // check if category is empty
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
     QCStringList list;
@@ -1161,6 +1161,11 @@ MyMoneyMoney StdTransactionEditor::shares(const MyMoneyTransaction& t) const
   return result;
 }
 
+struct uniqTransaction {
+  const MyMoneyTransaction* t;
+  int   cnt;
+};
+
 void StdTransactionEditor::autoFill(const QCString& payeeId)
 {
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  list;
@@ -1172,23 +1177,24 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
     // what we have collected so far and add those splits from
     // the previous transaction.
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator  it_t;
-    QMap<QString, const MyMoneyTransaction* > uniqList;
+    QMap<QString, struct uniqTransaction> uniqList;
 
     // collect the transactions and see if we have any duplicates
     for(it_t = list.begin(); it_t != list.end(); ++it_t) {
       QString key = (*it_t).first.accountSignature();
       int cnt = 0;
-      QMap<QString, const MyMoneyTransaction* >::iterator it_u;
+      QMap<QString, struct uniqTransaction>::iterator it_u;
       do {
         QString ukey = QString("%1-%2").arg(key).arg(cnt);
         it_u = uniqList.find(ukey);
         if(it_u == uniqList.end()) {
-          uniqList[ukey] = &((*it_t).first);
-        } else {
+          uniqList[ukey].t = &((*it_t).first);
+          uniqList[ukey].cnt = 1;
+        } else if (KMyMoneyGlobalSettings::autoFillTransaction() == 1) {
           // we already have a transaction with this signature. we must
           // now check, if we should really treat it as a duplicate according
           // to the value comparison delta.
-          MyMoneyMoney s1 = shares(*(*it_u));
+          MyMoneyMoney s1 = shares(*((*it_u).t));
           MyMoneyMoney s2 = shares((*it_t).first);
           if(s2.abs() > s1.abs()) {
             MyMoneyMoney t(s1);
@@ -1201,9 +1207,12 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
           else
             diff = ((s1 - s2) / s2).convert(10000);
           if(diff.isPositive() && diff <= MyMoneyMoney(KMyMoneyGlobalSettings::autoFillDifference(),100)) {
-            uniqList[ukey] = &((*it_t).first);
-            break;
+            uniqList[ukey].t = &((*it_t).first);
+            break;    // end while loop
           }
+        } else if (KMyMoneyGlobalSettings::autoFillTransaction() == 2) {
+          (*it_u).cnt++;
+          break;      // end while loop
         }
         ++cnt;
       } while(it_u != uniqList.end());
@@ -1211,28 +1220,39 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
     }
 
     MyMoneyTransaction t;
-    if(uniqList.count() == 1) {
-      t = list.last().first;
-    } else {
-      KSelectTransactionsDlg dlg(m_account, m_regForm);
-      dlg.setCaption(i18n("Select autofill transaction"));
+    if (KMyMoneyGlobalSettings::autoFillTransaction() != 2) {
+      if(uniqList.count() == 1) {
+        t = list.last().first;
+      } else {
+        KSelectTransactionsDlg dlg(m_account, m_regForm);
+        dlg.setCaption(i18n("Select autofill transaction"));
 
-      QMap<QString, const MyMoneyTransaction*>::const_iterator it_u;
-      for(it_u = uniqList.begin(); it_u != uniqList.end(); ++it_u) {
-        dlg.addTransaction(*(*it_u));
+        QMap<QString, struct uniqTransaction>::const_iterator it_u;
+        for(it_u = uniqList.begin(); it_u != uniqList.end(); ++it_u) {
+          dlg.addTransaction(*(*it_u).t);
+        }
+
+        // setup sort order
+        dlg.m_register->setSortOrder("1,-9,-4");
+        // sort the transactions according to the sort setting
+        dlg.m_register->sortItems();
+
+        // and select the last item
+        if(dlg.m_register->lastItem())
+          dlg.m_register->selectItem(dlg.m_register->lastItem());
+
+        if(dlg.exec() == QDialog::Accepted) {
+          t = dlg.transaction();
+        }
       }
-
-      // setup sort order
-      dlg.m_register->setSortOrder("1,-9,-4");
-      // sort the transactions according to the sort setting
-      dlg.m_register->sortItems();
-
-      // and select the last item
-      if(dlg.m_register->lastItem())
-        dlg.m_register->selectItem(dlg.m_register->lastItem());
-
-      if(dlg.exec() == QDialog::Accepted) {
-        t = dlg.transaction();
+    } else {
+      int maxCnt = 0;
+      QMap<QString, struct uniqTransaction>::const_iterator it_u;
+      for(it_u = uniqList.begin(); it_u != uniqList.end(); ++it_u) {
+        if((*it_u).cnt > maxCnt) {
+          t = *(*it_u).t;
+          maxCnt = (*it_u).cnt;
+        }
       }
     }
 
