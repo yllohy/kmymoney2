@@ -1402,7 +1402,7 @@ void KHomeView::showIncomeExpenseSummary(void)
   amountProfit.replace(" ","&nbsp;");
 
   //print header
-  m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
   //income and expense title
   m_part->write("<tr class=\"itemtitle\">");
   m_part->write("<td class=\"left\" colspan=\"4\">");
@@ -1410,18 +1410,20 @@ void KHomeView::showIncomeExpenseSummary(void)
   m_part->write("</td></tr>");
   //column titles
   m_part->write("<tr class=\"item\">");
-  m_part->write("<td width=\"35%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">&nbsp;</td>");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Incomes"));
   m_part->write("</td>");
-  m_part->write("<td width=\"35%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Expenses"));
   m_part->write("</td>");
-  m_part->write("<td width=\"30%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Profit/Loss"));
   m_part->write("</td>");
 
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
+  m_part->write("<td width=\"25%\" class=\"right\">&nbsp;</td>");
   //print total for incomes
   m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(amountIncome, incomeValue.isNegative())));
 
@@ -1518,21 +1520,22 @@ void KHomeView::showSchedulesSummary(void)
   amountScheduledExpense.replace(" ","&nbsp;");
 
   //print header
-  m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
   //income and expense title
   m_part->write("<tr class=\"itemtitle\">");
-  m_part->write("<td class=\"left\" colspan=\"3\">");
+  m_part->write("<td class=\"left\" colspan=\"4\">");
   m_part->write(i18n("Schedules This Month"));
   m_part->write("</td></tr>");
   //column titles
   m_part->write("<tr class=\"item\">");
-  m_part->write("<td width=\"35%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">&nbsp;</td>");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Incomes"));
   m_part->write("</td>");
-  m_part->write("<td width=\"35%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Transfers"));
   m_part->write("</td>");
-  m_part->write("<td width=\"30%\" class=\"right\">");
+  m_part->write("<td width=\"25%\" class=\"right\">");
   m_part->write(i18n("Expenses"));
   m_part->write("</td>");
 
@@ -1540,6 +1543,7 @@ void KHomeView::showSchedulesSummary(void)
   //add row with banding
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
+  m_part->write("<td width=\"25%\" class=\"right\">&nbsp;</td>");
   //print the scheduled income
   m_part->write(QString("<td align=\"right\">%2</td>").arg(amountScheduledIncome));
 
