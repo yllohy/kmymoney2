@@ -177,7 +177,7 @@ msgstr "Gebühren"
 #: views/khomeview.cpp:507 views/kmymoneyview.cpp:168
 #: wizards/newaccountwizard/knewaccountwizard.cpp:88
 msgid "Schedule"
-msgstr "geplante Buchung"
+msgstr "Planung"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:89
 msgid "Payout"
@@ -4419,8 +4419,8 @@ msgid ""
 "To verify, how the data looks like you are about to send away, you can open\n"
 "this file in KMyMoney and see how the developers see your data.\n"
 msgstr ""
-"<p>... dass Sie in den Fällen die stark von Ihren Daten abhängen,\n"
-" das KMyMoney Entwickler Team aktiv Unterstützen können?\n"
+"<p>... dass Sie in den Fällen, die stark von Ihren Daten abhängen,\n"
+" das KMyMoney Entwickler Team aktiv unterstützen können?\n"
 " Sie können Ihre Daten anonymisiert speichern.<p>\n"
 "Öffnen Sie dazu lediglich Ihre Datei und wählen Sie direkt\n"
 "<b>Datei/Speichern unter ...</b>. In dem <b>Speichern unter...</b> Dialog\n"
@@ -4428,7 +4428,7 @@ msgstr ""
 "Datei\n"
 "die Erweiterung <b>.anon.xml</b> bekommt.<p>\n"
 "Um zu überprüfen wie die Daten die Sie versenden aussehen,\n"
-"öffnen Sie die neue Datei im KMyMoney. Nun sehen Sie die Daten, wie sie die "
+"öffnen Sie die neue Datei in KMyMoney. Nun sehen Sie die Daten, wie sie die "
 "Entwickler sehen.\n"
 
 #: _tips.cpp:112
@@ -5693,11 +5693,11 @@ msgstr "Kategorien"
 #: dialogs/kfindtransactiondlg.cpp:232 dialogs/rc.cpp:298
 #: views/kmymoneyview.cpp:188 views/rc.cpp:62 widgets/rc.cpp:92
 msgid "Payees"
-msgstr "Zahlungsempfänger"
+msgstr "Empfänger"
 
 #: views/kgloballedgerview.cpp:150 views/kmymoneyview.cpp:199
 msgid "Ledgers"
-msgstr "Kontobuch"
+msgstr "Kontenbuch"
 
 #: views/kmymoneyview.cpp:317
 msgid "Creating transactions can only be performed in the ledger view"
