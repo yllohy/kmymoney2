@@ -3,6 +3,7 @@
   * Fixed a problem with schedule preview in ledger if end of schedule
     falls into preview period. This could cause a lockup of the application.
   * Show cleared transactions during reconciliation in a dimmed fashion
+  * Updated Romanian translation by Chrstian Onet
 
 2008-09-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Added blank column to Summary
