@@ -433,6 +433,12 @@ void KGlobalLedgerView::loadView(void)
       KMyMoneyRegister::Transaction* t = KMyMoneyRegister::Register::transactionFactory(m_register, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
       actBalance[t->split().accountId()] = MyMoneyMoney(0,1);
       kmymoney2->slotStatusProgressBar(++i, 0);
+      // if we're in reconciliation and the state is cleared, we
+      // force the item to show in dimmed intensity to get a visual focus
+      // on those items, that we need to work on
+      if(isReconciliationAccount() && (*it).second.reconcileFlag() == MyMoneySplit::Cleared) {
+        t->setReducedIntensity(true);
+      }
     }
 
     // create dummy entries for the scheduled transactions if sorted by postdate
@@ -461,6 +467,9 @@ void KGlobalLedgerView::loadView(void)
               new KMyMoneyRegister::StdTransactionScheduled(m_register, t, *it_s, uniqueMap[t.id()]);
             }
           }
+          // keep track of this payment locally (not in the engine)
+          s.setLastPayment(t.postDate());
+
           // if this is a one time schedule, we can bail out here as we're done
           if(s.occurence() == MyMoneySchedule::OCCUR_ONCE)
             break;

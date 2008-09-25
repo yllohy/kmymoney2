@@ -1,4 +1,9 @@
 
+2008-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with schedule preview in ledger if end of schedule
+    falls into preview period. This could cause a lockup of the application.
+  * Show cleared transactions during reconciliation in a dimmed fashion
+
 2008-09-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Added blank column to Summary
   * Added missing file for Home Settings

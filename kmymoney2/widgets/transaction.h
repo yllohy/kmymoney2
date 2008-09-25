@@ -238,6 +238,8 @@ public:
     */
   virtual void setShowRowInForm(int row, bool show) { Q_UNUSED(row); Q_UNUSED(show) }
 
+  virtual void setReducedIntensity(bool reduced) { m_reducedIntensity = reduced; }
+
 protected:
   virtual void markAsErronous(QPainter* p, int row, int col, const QRect& r);
   virtual void markAttachment(QPainter* painter, int row, int col, const QRect& r);
@@ -281,6 +283,7 @@ protected:
   bool                    m_inEdit;
   bool                    m_inRegisterEdit;
   bool                    m_showBalance;
+  bool                    m_reducedIntensity;
 };
 
 class StdTransaction : public Transaction

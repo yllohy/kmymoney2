@@ -147,7 +147,8 @@ Transaction::Transaction(Register *parent, const MyMoneyTransaction& transaction
   m_erronous(false),
   m_inEdit(false),
   m_inRegisterEdit(false),
-  m_showBalance(true)
+  m_showBalance(true),
+  m_reducedIntensity(false)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -241,6 +242,9 @@ void Transaction::markAsErronous(QPainter* painter, int /* row */, int /* col */
 
 bool Transaction::paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush)
 {
+  if(m_reducedIntensity)
+    cg = m_parent->palette().disabled();
+
   if(m_alternate)
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
