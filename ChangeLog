@@ -1,4 +1,7 @@
 
+2008-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Italian what's new file provided by Vincenzo Reale
+
 2008-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with schedule preview in ledger if end of schedule
     falls into preview period. This could cause a lockup of the application.
