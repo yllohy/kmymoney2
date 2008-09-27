@@ -51,7 +51,7 @@
 #define TRACE(a) ::timetrace(a)
 
 //***************** THE CURRENT VERSION OF THE DATABASE LAYOUT ****************
-unsigned int MyMoneyDbDef::m_currentVersion = 2;
+unsigned int MyMoneyDbDef::m_currentVersion = 3;
 
 // subclass QSqlQuery for performance tracing
 
@@ -266,6 +266,10 @@ int MyMoneyStorageSql::upgradeDb() {
       ++m_majorVersion;
       break;
     case 2:
+      if ((rc = upgradeToV3()) != 0) return (1);
+      ++m_majorVersion;
+      break;
+    case 3:
       break;
     default:
       qFatal("Unknown version number in database - %d", m_majorVersion);
@@ -459,8 +463,8 @@ int MyMoneyStorageSql::upgradeToV1() {
 
 int MyMoneyStorageSql::upgradeToV2() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV2");
-  //FIXME: SQLite now supports ALTER TABLE...ADD COLUMN, so no need to die.
-  if ((m_dbType == Sqlite) || (m_dbType == Sqlite3)) qFatal("SQLite upgrade NYI");
+  //SQLite3 now supports ALTER TABLE...ADD COLUMN, so only die if version < 3
+  if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // change kmmSplits add price fields
@@ -478,6 +482,26 @@ int MyMoneyStorageSql::upgradeToV2() {
   }
   endCommitUnit(__func__);
   return (0);
+}
+
+int MyMoneyStorageSql::upgradeToV3() {
+  DBG("*** Entering MyMoneyStorageSql::upgradeToV3");
+  //SQLite3 now supports ALTER TABLE...ADD COLUMN, so only die if version < 3
+  if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
+  startCommitUnit(__func__);
+  MyMoneySqlQuery q(this);
+  // The default value is given here to populate the column.
+  q.prepare ("ALTER TABLE kmmSchedules ADD COLUMN " + 
+      MyMoneyDbIntColumn("occurenceMultiplier", MyMoneyDbIntColumn::SMALL, false,
+        false, true).generateDDL(m_dbType) + " DEFAULT 0;");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmSchedules.occurenceMultiplier");
+    return (1);
+  }
+  //The default is less than any useful value, so as each schedule is hit, it will update
+  //itself to the appropriate value.
+  endCommitUnit(__func__);
+  return 0;
 }
 
 long long unsigned MyMoneyStorageSql::getRecCount (const QString& table) const {
@@ -1367,6 +1391,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":type", sch.type());
   q.bindValue(":typeString", MyMoneySchedule::scheduleTypeToString(sch.type()));
   q.bindValue(":occurence", sch.occurence());
+  q.bindValue(":occurenceMultiplier", sch.occurenceMultiplier());
   q.bindValue(":occurenceString", MyMoneySchedule::occurenceToString(sch.occurence()));
   q.bindValue(":paymentType", sch.paymentType());
   q.bindValue(":paymentTypeString", MyMoneySchedule::paymentMethodToString(sch.paymentType()));
@@ -2747,6 +2772,7 @@ const QMap<QCString, MyMoneySchedule> MyMoneyStorageSql::fetchSchedules (const Q
       else CASE(name)  s.setName (GETSTRING);
       else CASE(type)  s.setType (static_cast<MyMoneySchedule::typeE>(GETINT));
       else CASE(occurence)  s.setOccurence (static_cast<MyMoneySchedule::occurenceE>(GETINT));
+      else CASE(occurenceMultiplier) s.setOccurenceMultiplier (GETINT);
       else CASE(paymentType)  s.setPaymentType (static_cast<MyMoneySchedule::paymentTypeE>(GETINT));
       else CASE(startDate)  s.setStartDate (GETDATE);
       else CASE(endDate)  s.setEndDate (GETDATE);
@@ -3640,6 +3666,8 @@ void MyMoneyDbDef::Schedules(void){
   fields.append(new MyMoneyDbTextColumn("typeString"));
   fields.append(new MyMoneyDbIntColumn("occurence", MyMoneyDbIntColumn::SMALL, UNSIGNED, false,
         NOTNULL));
+  fields.append(new MyMoneyDbIntColumn("occurenceMultiplier", MyMoneyDbIntColumn::SMALL, UNSIGNED,
+        false, NOTNULL));
   fields.append(new MyMoneyDbTextColumn("occurenceString"));
   fields.append(new MyMoneyDbIntColumn("paymentType", MyMoneyDbIntColumn::TINY, UNSIGNED));
   fields.append(new MyMoneyDbTextColumn("paymentTypeString", MyMoneyDbTextColumn::LONG));

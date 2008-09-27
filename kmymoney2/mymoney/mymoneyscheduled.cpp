@@ -35,6 +35,7 @@ MyMoneySchedule::MyMoneySchedule() :
 {
   // Set up the default values
   m_occurence = OCCUR_ANY;
+  m_occurenceMultiplier = 1;
   m_type = TYPE_ANY;
   m_paymentType = STYPE_ANY;
   m_fixed = false;
@@ -46,7 +47,8 @@ MyMoneySchedule::MyMoneySchedule() :
 }
 
 MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
-                                 occurenceE occurence, paymentTypeE paymentType,
+                                 occurenceE occurence, int occurenceMultiplier,
+                                 paymentTypeE paymentType,
                                  const QDate& /* startDate */,
                                  const QDate& endDate,
                                  bool fixed, bool autoEnter) :
@@ -55,6 +57,7 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
   // Set up the default values
   m_name = name;
   m_occurence = occurence;
+  m_occurenceMultiplier = occurenceMultiplier;
   m_type = type;
   m_paymentType = paymentType;
   m_fixed = fixed;
@@ -79,7 +82,7 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   m_type = static_cast<MyMoneySchedule::typeE>(node.attribute("type").toInt());
   m_paymentType = static_cast<MyMoneySchedule::paymentTypeE>(node.attribute("paymentType").toInt());
   m_occurence = static_cast<MyMoneySchedule::occurenceE>(node.attribute("occurence").toInt());
-
+  m_occurenceMultiplier = node.attribute("occurenceMultiplier", "1").toInt();
   m_autoEnter = static_cast<bool>(node.attribute("autoEnter").toInt());
   m_fixed = static_cast<bool>(node.attribute("fixed").toInt());
   m_weekendOption = static_cast<MyMoneySchedule::weekendOptionE>(node.attribute("weekendOption").toInt());
@@ -289,6 +292,11 @@ void MyMoneySchedule::setName(const QString& nm)
 void MyMoneySchedule::setOccurence(occurenceE occ)
 {
   m_occurence = occ;
+}
+
+void MyMoneySchedule::setOccurenceMultiplier(int occmultiplier)
+{
+  m_occurenceMultiplier = occmultiplier < 1 ? 1 : occmultiplier;
 }
 
 void MyMoneySchedule::setType(typeE type)
@@ -734,6 +742,7 @@ bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
 {
   if (  MyMoneyObject::operator==(right) &&
         m_occurence == right.m_occurence &&
+        m_occurenceMultiplier == right.m_occurenceMultiplier &&
         m_type == right.m_type &&
         m_startDate == right.m_startDate &&
         m_paymentType == right.m_paymentType &&
@@ -1010,6 +1019,7 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
   el.setAttribute("name", m_name);
   el.setAttribute("type", m_type);
   el.setAttribute("occurence", m_occurence);
+  el.setAttribute("occurenceMultiplier", m_occurenceMultiplier);
   el.setAttribute("paymentType", m_paymentType);
   el.setAttribute("startDate", dateToString(m_startDate));
   el.setAttribute("endDate", dateToString(m_endDate));

@@ -103,8 +103,8 @@ public:
     *
     * @a startDate is not used anymore and internally set to QDate()
     */
-  MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
-          const QDate& startDate, const QDate& endDate, bool fixed, bool autoEnter);
+  MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, int occurenceMultiplier,
+          paymentTypeE paymentType, const QDate& startDate, const QDate& endDate, bool fixed, bool autoEnter);
 
   MyMoneySchedule(const QDomElement& node);
 
@@ -121,6 +121,13 @@ public:
     * @return occurenceE The instance frequency.
     */
   occurenceE occurence(void) const { return m_occurence; }
+
+  /**
+    * Simple get method that returns the occurence frequency multiplier.
+    *
+    * @return int The frequency multiplier
+    */
+  int occurenceMultiplier(void) const { return m_occurenceMultiplier; }
 
   /**
     * Simple get method that returns the schedule type.
@@ -236,6 +243,14 @@ public:
     * @return none
     */
   void setOccurence(occurenceE occ);
+
+  /**
+    * Simple method that sets the frequency multiplier for the schedule.
+    *
+    * @param occmultiplier The new occurence (frequency) multiplier.
+    * @return none
+    */
+  void setOccurenceMultiplier(int occmultiplier);
 
   /**
     * Simple method that sets the type for the schedule.
@@ -491,6 +506,9 @@ private:
 private:
   /// Its occurence
   occurenceE m_occurence;
+
+  /// Its occurence multiplier
+  int m_occurenceMultiplier;
 
   /// Its type
   typeE m_type;

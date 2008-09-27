@@ -1112,7 +1112,7 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
 {
   MyMoneySchedule sched(m_nameEdit->text(),
                         MyMoneySchedule::TYPE_LOANPAYMENT,
-                        KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()),
+                        KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()), 1,
                         MyMoneySchedule::STYPE_OTHER,
                         QDate(),
                         QDate(),

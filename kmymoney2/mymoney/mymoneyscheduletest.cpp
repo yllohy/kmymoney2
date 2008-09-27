@@ -51,7 +51,7 @@ void MyMoneyScheduleTest::testEmptyConstructor() {
 void MyMoneyScheduleTest::testConstructor() {
 	MyMoneySchedule s(	"A Name",
 				MyMoneySchedule::TYPE_BILL,
-				MyMoneySchedule::OCCUR_WEEKLY,
+				MyMoneySchedule::OCCUR_WEEKLY, 1,
 				MyMoneySchedule::STYPE_DIRECTDEBIT,
 				QDate::currentDate(),
 				QDate(),
@@ -60,6 +60,7 @@ void MyMoneyScheduleTest::testConstructor() {
 
 	CPPUNIT_ASSERT(s.type() == MyMoneySchedule::TYPE_BILL);
 	CPPUNIT_ASSERT(s.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
+  CPPUNIT_ASSERT(s.occurenceMultiplier() == 1 );
 	CPPUNIT_ASSERT(s.paymentType() == MyMoneySchedule::STYPE_DIRECTDEBIT);
 	CPPUNIT_ASSERT(s.startDate() == QDate());
 	CPPUNIT_ASSERT(s.willEnd() == false);
@@ -146,7 +147,7 @@ void MyMoneyScheduleTest::testAddSchedule()
 
   	MyMoneySchedule s1(	"s1",
 				MyMoneySchedule::TYPE_BILL,
-  				MyMoneySchedule::OCCUR_WEEKLY,
+  				MyMoneySchedule::OCCUR_WEEKLY, 1,
   				MyMoneySchedule::STYPE_DIRECTDEBIT,
   				QDate(2001, 1, 1),
   				false,
@@ -155,7 +156,7 @@ void MyMoneyScheduleTest::testAddSchedule()
   	s1.setTransaction(t);
   	MyMoneySchedule s2(	"s2",
 				MyMoneySchedule::TYPE_DEPOSIT,
-  				MyMoneySchedule::OCCUR_MONTHLY,
+  				MyMoneySchedule::OCCUR_MONTHLY, 1,
   				MyMoneySchedule::STYPE_MANUALDEPOSIT,
   				QDate(2001, 2, 1),
   				false,
@@ -164,7 +165,7 @@ void MyMoneyScheduleTest::testAddSchedule()
   	s2.setTransaction(t);
   	MyMoneySchedule s3(	"s3",
 				MyMoneySchedule::TYPE_TRANSFER,
-  				MyMoneySchedule::OCCUR_YEARLY,
+  				MyMoneySchedule::OCCUR_YEARLY, 1,
   				MyMoneySchedule::STYPE_WRITECHEQUE,
   				QDate(2001, 3, 1),
   				false,
@@ -240,7 +241,7 @@ void MyMoneyScheduleTest::testOverdue()
 	QString ref = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"0\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"8\" endDate=\"\" type=\"5\" id=\"SCH0002\" name=\"A Name\" fixed=\"0\" occurence=\"32\" >\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"0\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"8\" endDate=\"\" type=\"5\" id=\"SCH0002\" name=\"A Name\" fixed=\"0\" occurenceMultiplier=\"1\" occurence=\"32\" >\n"
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
@@ -313,6 +314,7 @@ void MyMoneyScheduleTest::testGetSchedule()
 
 		CPPUNIT_ASSERT(s.type() == MyMoneySchedule::TYPE_DEPOSIT);
 		CPPUNIT_ASSERT(s.occurence() == MyMoneySchedule::OCCUR_MONTHLY);
+    CPPUNIT_ASSERT(s.occurenceMultiplier() == 1);
 		CPPUNIT_ASSERT(s.paymentType() == MyMoneySchedule::STYPE_MANUALDEPOSIT);
 		CPPUNIT_ASSERT(s.startDate() == QDate(2001, 2, 1));
 		CPPUNIT_ASSERT(s.willEnd() == false);
@@ -432,7 +434,7 @@ void MyMoneyScheduleTest::testNextPayment()
 	QString future_sched = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		"<SCHEDULED_TX startDate=\"2007-02-17\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH000058\" name=\"Car Tax\" fixed=\"1\" occurence=\"16384\" >\n"
+		"<SCHEDULED_TX startDate=\"2007-02-17\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH000058\" name=\"Car Tax\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"16384\" >\n"
 		"  <PAYMENTS/>\n"
 		"  <TRANSACTION postdate=\"\" memo=\"\" id=\"\" commodity=\"GBP\" entrydate=\"\" >\n"
 		"  <SPLITS>\n"
@@ -492,7 +494,7 @@ void MyMoneyScheduleTest::testPaymentDates()
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
 
-		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-01-31\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurence=\"32\" >\n"
+		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-01-31\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurenceMultiplier=\"1\" occurence=\"32\" >\n"
 		" <PAYMENTS/>\n"
 		" <TRANSACTION postdate=\"2006-02-28\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"  <SPLITS>\n"
@@ -607,7 +609,7 @@ void MyMoneyScheduleTest::testRemoveSchedule()
 void MyMoneyScheduleTest::testWriteXML() {
 	MyMoneySchedule sch(	"A Name",
 				MyMoneySchedule::TYPE_BILL,
-				MyMoneySchedule::OCCUR_WEEKLY,
+				MyMoneySchedule::OCCUR_WEEKLY, 123,
 				MyMoneySchedule::STYPE_DIRECTDEBIT,
 				QDate::currentDate(),
 				QDate(),
@@ -654,7 +656,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 	QString ref = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0001\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0001\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"123\" occurence=\"4\" >\n"
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
@@ -682,7 +684,7 @@ void MyMoneyScheduleTest::testReadXML() {
 	QString ref_ok1 = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"4\" >\n"
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
@@ -706,7 +708,7 @@ void MyMoneyScheduleTest::testReadXML() {
 	QString ref_ok2 = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"4\" >\n"
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
@@ -728,7 +730,7 @@ void MyMoneyScheduleTest::testReadXML() {
 	QString ref_false = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULE startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		" <SCHEDULE startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"4\" >\n"
 		"  <PAYMENTS count=\"1\" >\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
@@ -777,6 +779,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		CPPUNIT_ASSERT(sch.type() == MyMoneySchedule::TYPE_BILL);
 		CPPUNIT_ASSERT(sch.name() == "A Name");
 		CPPUNIT_ASSERT(sch.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
+    CPPUNIT_ASSERT(sch.occurenceMultiplier() == 1);
 		CPPUNIT_ASSERT(sch.nextDueDate() == sch.lastPayment().addDays(7));
 		CPPUNIT_ASSERT(sch.recordedPayments().count() == 1);
 		CPPUNIT_ASSERT(sch.recordedPayments()[0] == QDate::currentDate());
@@ -803,6 +806,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		CPPUNIT_ASSERT(sch.type() == MyMoneySchedule::TYPE_BILL);
 		CPPUNIT_ASSERT(sch.name() == "A Name");
 		CPPUNIT_ASSERT(sch.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
+    CPPUNIT_ASSERT(sch.occurenceMultiplier() == 1);
 		CPPUNIT_ASSERT(sch.nextDueDate() == sch.lastPayment().addDays(7));
 		CPPUNIT_ASSERT(sch.recordedPayments().count() == 1);
 		CPPUNIT_ASSERT(sch.recordedPayments()[0] == QDate::currentDate());
@@ -818,7 +822,7 @@ void MyMoneyScheduleTest::testHasReferenceTo()
 	QString ref_ok = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
-		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"4\" >\n"
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"

@@ -1467,7 +1467,7 @@ void MyMoneyDatabaseMgrTest::testAddSchedule() {
     t1.addSplit(s2);
     MyMoneySchedule schedule("Sched-Name",
            MyMoneySchedule::TYPE_DEPOSIT,
-           MyMoneySchedule::OCCUR_DAILY,
+           MyMoneySchedule::OCCUR_DAILY, 1,
            MyMoneySchedule::STYPE_MANUALDEPOSIT,
            QDate(),
            QDate(),
@@ -1490,7 +1490,7 @@ void MyMoneyDatabaseMgrTest::testAddSchedule() {
   try {
     MyMoneySchedule schedule("Sched-Name",
            MyMoneySchedule::TYPE_DEPOSIT,
-           MyMoneySchedule::OCCUR_DAILY,
+           MyMoneySchedule::OCCUR_DAILY, 1,
            MyMoneySchedule::STYPE_MANUALDEPOSIT,
            QDate(),
            QDate(),
@@ -1613,7 +1613,7 @@ void MyMoneyDatabaseMgrTest::testScheduleList() {
   t1.addSplit(s2);
   MyMoneySchedule schedule1("Schedule 1",
          MyMoneySchedule::TYPE_BILL,
-         MyMoneySchedule::OCCUR_ONCE,
+         MyMoneySchedule::OCCUR_ONCE, 1,
          MyMoneySchedule::STYPE_DIRECTDEBIT,
          QDate(),
          QDate(),
@@ -1631,7 +1631,7 @@ void MyMoneyDatabaseMgrTest::testScheduleList() {
   t2.addSplit(s4);
   MyMoneySchedule schedule2("Schedule 2",
          MyMoneySchedule::TYPE_DEPOSIT,
-         MyMoneySchedule::OCCUR_DAILY,
+         MyMoneySchedule::OCCUR_DAILY, 1,
          MyMoneySchedule::STYPE_DIRECTDEPOSIT,
          QDate(),
          QDate(),
@@ -1649,7 +1649,7 @@ void MyMoneyDatabaseMgrTest::testScheduleList() {
   t3.addSplit(s6);
   MyMoneySchedule schedule3("Schedule 3",
          MyMoneySchedule::TYPE_TRANSFER,
-         MyMoneySchedule::OCCUR_WEEKLY,
+         MyMoneySchedule::OCCUR_WEEKLY, 1,
          MyMoneySchedule::STYPE_OTHER,
          QDate(),
          QDate(),
@@ -1667,7 +1667,7 @@ void MyMoneyDatabaseMgrTest::testScheduleList() {
   t4.addSplit(s8);
   MyMoneySchedule schedule4("Schedule 4",
          MyMoneySchedule::TYPE_BILL,
-         MyMoneySchedule::OCCUR_WEEKLY,
+         MyMoneySchedule::OCCUR_WEEKLY, 1,
          MyMoneySchedule::STYPE_WRITECHEQUE,
          QDate(),
          notOverdue.addDays(31),

@@ -393,7 +393,7 @@ void MyMoneyForecastTest::testScheduleForecast()
   MyMoneyFileTransaction ft;
   MyMoneySchedule sch( "A Name",
                        MyMoneySchedule::TYPE_BILL,
-                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::OCCUR_WEEKLY, 1,
                        MyMoneySchedule::STYPE_DIRECTDEBIT,
                        QDate::currentDate().addDays(1),
                                           QDate(),
@@ -435,7 +435,7 @@ void MyMoneyForecastTest::testScheduleForecast()
   MyMoneyFileTransaction ft3;
   MyMoneySchedule sch3( "A Name1",
                        MyMoneySchedule::TYPE_BILL,
-                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::OCCUR_WEEKLY, 1,
                        MyMoneySchedule::STYPE_DIRECTDEBIT,
                        QDate::currentDate().addDays(5),
                                           QDate(),
@@ -482,7 +482,7 @@ void MyMoneyForecastTest::testScheduleForecast()
   MyMoneyFileTransaction ft2;
   MyMoneySchedule sch2( "A Name2",
                        MyMoneySchedule::TYPE_BILL,
-                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::OCCUR_WEEKLY, 1,
                        MyMoneySchedule::STYPE_DIRECTDEBIT,
                        QDate::currentDate().addDays(2),
                                           QDate(),
@@ -905,7 +905,7 @@ void MyMoneyForecastTest::testCreateBudget()
   MyMoneyFileTransaction ft;
   MyMoneySchedule sch( "A Name",
                        MyMoneySchedule::TYPE_BILL,
-                       MyMoneySchedule::OCCUR_MONTHLY,
+                       MyMoneySchedule::OCCUR_MONTHLY, 1,
                        MyMoneySchedule::STYPE_DIRECTDEBIT,
                        QDate::currentDate(),
                                           QDate(),

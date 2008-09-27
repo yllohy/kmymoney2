@@ -1032,7 +1032,7 @@ void MyMoneyFileTest::testSetAccountName() {
         }
         ft.restart();
         try {
-                m->setAccountName(STD_ACC_ASSET, "Verm�gen");
+                m->setAccountName(STD_ACC_ASSET, "Vermögen");
                 ft.commit();
         } catch (MyMoneyException *e) {
                 delete e;
@@ -1057,7 +1057,7 @@ void MyMoneyFileTest::testSetAccountName() {
         ft.restart();
 
         CPPUNIT_ASSERT(m->liability().name() == "Verbindlichkeiten");
-        CPPUNIT_ASSERT(m->asset().name() == "Verm�gen");
+        CPPUNIT_ASSERT(m->asset().name() == "Vermögen");
         CPPUNIT_ASSERT(m->expense().name() == "Ausgaben");
         CPPUNIT_ASSERT(m->income().name() == "Einnahmen");
 

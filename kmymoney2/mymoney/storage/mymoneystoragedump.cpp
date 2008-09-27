@@ -296,6 +296,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     else
       s << "  Enddate   = not specified\n";
     s << "  Occurence = " << MyMoneySchedule::occurenceToString((*it_s).occurence()) << "\n";
+    s << "  OccurenceMultiplier = " << (*it_s).occurenceMultiplier() << "\n";
     s << "  Type = " << MyMoneySchedule::scheduleTypeToString((*it_s).type()) << "\n";
     s << "  Paymenttype = " << MyMoneySchedule::paymentMethodToString((*it_s).paymentType()) << "\n";
     s << "  Fixed = " << (*it_s).isFixed() << "\n";
