@@ -314,7 +314,11 @@ void MyMoneyBudget::setAccount(const AccountGroup &_account, const QCString _id)
   if(_account.isZero()) {
     m_accounts.remove(_id);
   } else {
-    m_accounts[_id] = _account;
+    // make sure we store a correct id
+    AccountGroup account(_account);
+    if(account.id() != _id)
+      account.setId(_id);
+    m_accounts[_id] = account;
   }
 }
 
@@ -324,8 +328,7 @@ const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) co
 
   if ( m_accounts.contains(_id) )
     return m_accounts[_id];
-  else
-    return empty;
+  return empty;
 }
 
 void MyMoneyBudget::setBudgetStart(const QDate& _start)

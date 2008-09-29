@@ -811,16 +811,18 @@ void PivotTable::calculateBudgetMapping( void )
         // If the budget contains this account outright
         if ( budget.contains ( id ) )
         {
-        // Add it to the mapping
-        m_budgetMap[acid] = id;
-        //kdDebug(2) << ReportAccount(acid).debugName() << " self-maps / type =" << budget.account(id).budgetlevel() << endl;
+          // Add it to the mapping
+          m_budgetMap[acid] = id;
+          // kdDebug(2) << ReportAccount(acid).debugName() << " self-maps / type =" << budget.account(id).budgetLevel() << endl;
         }
         // Otherwise, search for a parent account which includes sub-accounts
         else
         {
-          //if includeBudgetActuals, include all account regardless of whether in budget or not
-          if ( m_config_f.isIncludingBudgetActuals() )
+          //if includeBudgetActuals, include all accounts regardless of whether in budget or not
+          if ( m_config_f.isIncludingBudgetActuals() ) {
             m_budgetMap[acid] = id;
+            // kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
+          }
           do
           {
             id = file->account ( id ).parentAccountId();
@@ -829,7 +831,7 @@ void PivotTable::calculateBudgetMapping( void )
               if ( budget.account ( id ).budgetSubaccounts() )
               {
                 m_budgetMap[acid] = id;
-                //kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
+                // kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
                 break;
               }
             }
@@ -1110,7 +1112,7 @@ void PivotTable::calculateTotals( void )
         (*it_outergroup).m_total[ m_rowTypeList[i] ].m_total += value;
 
         //so far the invert only applies to actual and budget
-        if ( invert_total 
+        if ( invert_total
              && m_rowTypeList[i] != eBudgetDiff
              &&  m_rowTypeList[i] != eForecast)
           value = -value;
@@ -2374,7 +2376,7 @@ void PivotTable::loadRowTypeList()
     m_columnTypeHeaderList.append(i18n("Budget"));
   }
 
-  if( (m_config_f.isIncludingBudgetActuals()) || 
+  if( (m_config_f.isIncludingBudgetActuals()) ||
        ( !m_config_f.hasBudget() && !m_config_f.isIncludingForecast()) ) {
     m_rowTypeList.append(eActual);
     m_columnTypeHeaderList.append(i18n("Actual"));
