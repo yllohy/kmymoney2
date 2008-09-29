@@ -506,7 +506,8 @@ void KMyMoneyCashFlowCombo::removeDontCare(void)
 
 
 KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
-  KMyMoneyCombo(false, w, name)
+  KMyMoneyCombo(false, w, name),
+  m_activity(MyMoneySplit::UnknownTransactionType)
 {
   m_completion = new kMyMoneyCompletion(this, 0);
   QCString num;
