@@ -1434,6 +1434,15 @@ class KMYMONEY_EXPORT MyMoneyFileTransaction
 public:
   MyMoneyFileTransaction();
   ~MyMoneyFileTransaction();
+
+  /**
+   * Commit the current transaction.
+   *
+   * @warning Make sure not to use any variable that might have been altered by
+   *          the transaction. Please keep in mind, that changing transactions
+   *          can also affect account objects. If you still need those variables
+   *          just reload them from the engine.
+   */
   void commit(void);
   void rollback(void);
   void restart(void);

@@ -1,9 +1,12 @@
+
 2008-09-30  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fix valgrind warning about conditional jump depending on
     uninitialized variable
 
 2008-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Brazilian translation from Marcus Gama
+  * Make sure to update local variables from engine after chanages
+  * Removed unused variables
 
 2008-09-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Assign id to budget accountgroup if missing or different

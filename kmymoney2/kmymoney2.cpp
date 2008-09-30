@@ -2130,7 +2130,7 @@ void KMyMoney2App::slotInstitutionEdit(const MyMoneyObject& obj)
       try {
         file->modifyInstitution(dlg.institution());
         ft.commit();
-        slotSelectInstitution(dlg.institution());
+        slotSelectInstitution(file->institution(dlg.institution().id()));
 
       } catch(MyMoneyException *e) {
         KMessageBox::information(this, i18n("Unable to store institution: %1").arg(e->what()));
@@ -2685,9 +2685,9 @@ void KMyMoney2App::slotAccountDelete(void)
         if (!needAskUser || (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to delete category <b>%1</b>?").arg(m_selectedAccount.name())+QString("</qt>")) == KMessageBox::Yes)) {
           try {
             file->removeAccount(m_selectedAccount);
-            ft.commit();
             m_selectedAccount.clearId();
             slotUpdateActions();
+            ft.commit();
           } catch(MyMoneyException* e) {
             KMessageBox::error( this, QString("<qt>")+i18n("Unable to delete category <b>%1</b>. Cause: %2").arg(m_selectedAccount.name()).arg(e->what())+QString("</qt>"));
             delete e;
@@ -2882,7 +2882,8 @@ void KMyMoney2App::slotAccountEdit(void)
 
             ft.commit();
 
-            slotSelectAccount(account);
+            // reload the account object as it might have changed in the meantime
+            slotSelectAccount(file->account(account.id()));
 
           } catch(MyMoneyException* e) {
             KMessageBox::error( this, i18n("Unable to modify account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
@@ -2990,12 +2991,14 @@ void KMyMoney2App::slotAccountReconcileStart(void)
                 MyMoneyFile::instance()->addTransaction(tc);
               }
               ft.commit();
+
             } catch(MyMoneyException *e) {
               qWarning("interest transaction not stored: '%s'", e->what().data());
               delete e;
             }
 
-            m_reconciliationAccount = account;
+            // reload the account object as it might have changed in the meantime
+            m_reconciliationAccount = file->account(account.id());
             slotUpdateActions();
           }
         }
@@ -3093,6 +3096,8 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       }
       ft.commit();
 
+      // reload account data from engine as the data might have changed in the meantime
+      m_reconciliationAccount = file->account(m_reconciliationAccount.id());
       emit accountReconciled(m_reconciliationAccount,
                              m_endingBalanceDlg->statementDate(),
                              m_endingBalanceDlg->previousBalance(),

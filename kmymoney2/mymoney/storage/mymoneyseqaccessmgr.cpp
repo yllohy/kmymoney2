@@ -524,8 +524,6 @@ void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institutio
 
 void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transaction)
 {
-  QMap<QCString, bool> modifiedAccounts;
-
   // perform some checks to see that the transaction stuff is OK. For
   // now we assume that
   // * ids are assigned
@@ -564,15 +562,13 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   if(it_t == m_transactionList.end())
     throw new MYMONEYEXCEPTION("invalid transaction key");
 
-  // mark all accounts referenced in old and new transaction data
-  // as modified
+  // adjust account balances
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
     acc.adjustBalance(*it_s, true);   // reverse the adjust operation (reverse = true)
     acc.touch();
     invalidateBalanceCache(acc.id());
     m_accountList.modify(acc.id(), acc);
-    modifiedAccounts[(*it_s).accountId()] = true;
   }
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
@@ -580,7 +576,6 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
     acc.touch();
     invalidateBalanceCache(acc.id());
     m_accountList.modify(acc.id(), acc);
-    modifiedAccounts[(*it_s).accountId()] = true;
   }
 
   // remove old transaction from lists
