@@ -2,6 +2,9 @@
   * fix valgrind warning about conditional jump depending on
     uninitialized variable
 
+2008-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Brazilian translation from Marcus Gama
+
 2008-09-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Assign id to budget accountgroup if missing or different
   * Updated french what's new page from Patrick Petit
