@@ -221,6 +221,7 @@ public:
   bool isNegative() const { return (m_num < 0) ? true : false; }
   bool isPositive() const { return (m_num > 0) ? true : false; }
   bool isZero() const { return m_num == 0; }
+  bool isAutoCalc(void) const { return (*this == autoCalc); }
 
   const MyMoneyMoney reduce(void) const;
 

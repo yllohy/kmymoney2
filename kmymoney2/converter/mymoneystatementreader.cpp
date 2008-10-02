@@ -223,7 +223,11 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
     }
   }
 
-  messages += i18n("  Statement balance on %1 is reported to be %2").arg(s.m_dateEnd.toString(Qt::ISODate)).arg(s.m_closingBalance.formatMoney("",2));
+  if(s.m_closingBalance.isAutoCalc()) {
+    messages += i18n("  Statement balance is not contained in statement.");
+  } else {
+    messages += i18n("  Statement balance on %1 is reported to be %2").arg(s.m_dateEnd.toString(Qt::ISODate)).arg(s.m_closingBalance.formatMoney("",2));
+  }
   messages += i18n("  Transactions");
   messages += i18n("    %1 processed").arg(d->transactionsCount);
   messages += i18n("    %1 added").arg(d->transactionsAdded);

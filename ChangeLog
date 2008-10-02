@@ -1,4 +1,7 @@
 
+2008-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Show correct message if statement balance is not included in statement
+
 2008-09-30  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fix valgrind warning about conditional jump depending on
     uninitialized variable
