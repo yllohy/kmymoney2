@@ -108,6 +108,13 @@ public:
     InvestmentTransaction
   };
 
+  enum EnterScheduleResultCodeE {
+    Cancel = 0,    // cancel the operation
+    Enter,         // enter the schedule
+    Skip,          // skip the schedule
+    Ignore         // ignore the schedule
+  };
+
   static const int maxHomePageItems = 5;
 
   KMyMoneyUtils();

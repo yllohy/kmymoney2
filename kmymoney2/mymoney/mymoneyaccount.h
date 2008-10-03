@@ -537,6 +537,9 @@ public:
    */
   static QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType);
 
+  KMYMONEY_EXPORT QDataStream &operator<<( const MyMoneyAccount & );
+  KMYMONEY_EXPORT QDataStream &operator>>( MyMoneyAccount & );
+
 private:
   /**
     * This member variable identifies the type of account

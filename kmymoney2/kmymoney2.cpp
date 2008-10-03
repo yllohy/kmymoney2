@@ -2946,15 +2946,17 @@ void KMyMoney2App::slotAccountReconcileStart(void)
 
           QMap<QCString, bool> skipMap;
           bool processedOne;
+          KMyMoneyUtils::EnterScheduleResultCodeE rc = KMyMoneyUtils::Enter;
           do {
             processedOne = false;
             QValueList<MyMoneySchedule>::const_iterator it_sch;
-            for(it_sch = schedules.begin(); it_sch != schedules.end(); ++it_sch) {
+            for(it_sch = schedules.begin(); (rc != KMyMoneyUtils::Cancel) && (it_sch != schedules.end()); ++it_sch) {
               MyMoneySchedule sch(*(it_sch));
 
               // and enter it if it is not on the skip list
               if(skipMap.find((*it_sch).id()) == skipMap.end()) {
-                if(!enterSchedule(sch)) {
+                rc = enterSchedule(sch, false, true);
+                if(rc == KMyMoneyUtils::Ignore) {
                   skipMap[(*it_sch).id()] = true;
                 }
               }
@@ -3467,16 +3469,14 @@ void KMyMoney2App::slotScheduleSkip(void)
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
       if(!schedule.isFinished()) {
-        if(!schedule.isFinished()) {
-          if(schedule.occurence() != MyMoneySchedule::OCCUR_ONCE) {
-            QDate next = schedule.nextDueDate();
-            if(!schedule.isFinished() && (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name(), KGlobal::locale()->formatDate(next, true))+QString("</qt>"))) == KMessageBox::Yes) {
-              MyMoneyFileTransaction ft;
-              schedule.setLastPayment(next);
-              schedule.setNextDueDate(schedule.nextPayment(next));
-              MyMoneyFile::instance()->modifySchedule(schedule);
-              ft.commit();
-            }
+        if(schedule.occurence() != MyMoneySchedule::OCCUR_ONCE) {
+          QDate next = schedule.nextDueDate();
+          if(!schedule.isFinished() && (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name(), KGlobal::locale()->formatDate(next, true))+QString("</qt>"))) == KMessageBox::Yes) {
+            MyMoneyFileTransaction ft;
+            schedule.setLastPayment(next);
+            schedule.setNextDueDate(schedule.nextPayment(next));
+            MyMoneyFile::instance()->modifySchedule(schedule);
+            ft.commit();
           }
         }
       }
@@ -3500,15 +3500,17 @@ void KMyMoney2App::slotScheduleEnter(void)
   }
 }
 
-bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
+KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter, bool extendedKeys)
 {
-  bool rc = false;
+  KMyMoneyUtils::EnterScheduleResultCodeE rc = KMyMoneyUtils::Cancel;
   if (!schedule.id().isEmpty()) {
     try {
       schedule = MyMoneyFile::instance()->schedule(schedule.id());
       QDate origDueDate = schedule.nextDueDate();
 
       KEnterScheduleDlg dlg(this, schedule);
+      dlg.showExtendedKeys(extendedKeys);
+
       m_transactionEditor = dlg.startEdit();
       if(m_transactionEditor) {
         MyMoneyTransaction torig, taccepted;
@@ -3521,20 +3523,29 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
         KConfirmManualEnterDlg::Action action = KConfirmManualEnterDlg::ModifyOnce;
         if(!autoEnter || !schedule.isFixed()) {
           for(;;) {
+            rc = KMyMoneyUtils::Cancel;
             if(dlg.exec() == QDialog::Accepted) {
-              m_transactionEditor->createTransaction(taccepted, torig, torig.splits()[0], true);
-              // make sure to suppress comparison of some data: postDate
-              torig.setPostDate(taccepted.postDate());
-              if(torig != taccepted) {
-                KConfirmManualEnterDlg cdlg(schedule, this);
-                cdlg.loadTransactions(torig, taccepted);
-                if(cdlg.exec() == QDialog::Accepted) {
-                  action = cdlg.action();
-                  break;
+              rc = dlg.resultCode();
+              if(rc == KMyMoneyUtils::Enter) {
+                m_transactionEditor->createTransaction(taccepted, torig, torig.splits()[0], true);
+                // make sure to suppress comparison of some data: postDate
+                torig.setPostDate(taccepted.postDate());
+                if(torig != taccepted) {
+                  KConfirmManualEnterDlg cdlg(schedule, this);
+                  cdlg.loadTransactions(torig, taccepted);
+                  if(cdlg.exec() == QDialog::Accepted) {
+                    action = cdlg.action();
+                    break;
+                  }
+                  // the user has choosen 'cancel' during confirmation,
+                  // we go back to the editor
+                  continue;
                 }
-                // the user has choosen 'cancel' during confirmation,
-                // we go back to the editor
-                continue;
+              } else if(rc == KMyMoneyUtils::Skip) {
+                slotTransactionsCancel();
+                slotScheduleSkip();
+              } else {
+                slotTransactionsCancel();
               }
             } else {
               if(autoEnter) {
@@ -3581,7 +3592,7 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
               }
               schedule.setNextDueDate(schedule.nextPayment(origDueDate));
               MyMoneyFile::instance()->modifySchedule(schedule);
-              rc = true;
+              rc = KMyMoneyUtils::Enter;
 
               // delete the editor before we emit the dataChanged() signal from the
               // engine. Calling this twice in a row does not hurt.
@@ -5392,17 +5403,17 @@ void KMyMoney2App::slotCheckSchedules(void)
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;
 
-    for (it=scheduleList.begin(); it!=scheduleList.end(); ++it) {
+    KMyMoneyUtils::EnterScheduleResultCodeE rc = KMyMoneyUtils::Enter;
+    for (it=scheduleList.begin(); (it != scheduleList.end()) && (rc != KMyMoneyUtils::Cancel); ++it) {
       // Get the copy in the file because it might be modified by commitTransaction
       MyMoneySchedule schedule = file->schedule((*it).id());
 
       if(schedule.autoEnter()) {
         try {
-          while(!schedule.isFinished() && (schedule.nextDueDate() <= checkDate)) {
-            if(!enterSchedule(schedule, true)) {
-              // the user has selected to stop processing this schedule
-              break;
-            }
+          while(!schedule.isFinished() && (schedule.nextDueDate() <= checkDate)
+                 && rc != KMyMoneyUtils::Ignore
+                 && rc != KMyMoneyUtils::Cancel) {
+            rc = enterSchedule(schedule, true, true);
             schedule = file->schedule((*it).id()); // get a copy of the modified schedule
           }
         } catch(MyMoneyException* e) {

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
+            <width>679</width>
             <height>410</height>
         </rect>
     </property>
@@ -112,6 +112,51 @@
             </grid>
         </widget>
         <widget class="KMyMoneyRegister::Register">
+            <column>
+                <property name="text">
+                    <string>Security</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Details</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>C</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Payment</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Deposit</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Quantity</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Price</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Value</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Balance</string>
+                </property>
+            </column>
             <property name="name">
                 <cstring>m_register</cstring>
             </property>
@@ -202,7 +247,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>140</width>
+                            <width>190</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -212,13 +257,44 @@
                         <cstring>buttonOk</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;OK</string>
+                        <string>Enter</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Enter the transaction and advance the next due date of this schedule to the next payment date.</string>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>buttonSkip</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Skip</string>
+                    </property>
+                    <property name="isDragEnabled" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Do not enter the transaction but advance the next due date of this schedule to the next payment date.</string>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>buttonIgnore</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ignore</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Do not enter or skip payments for this schedule but continue with the next schedule.</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -227,6 +303,9 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Cancel processing of schedule entry.</string>
                     </property>
                 </widget>
             </hbox>

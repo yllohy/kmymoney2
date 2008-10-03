@@ -44,12 +44,14 @@ class KPushButton;
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneybudget.h>
 #include <kmymoney/kmymoneyplugin.h>
 #include <kmymoney/register.h>
+#include <kmymoney/kmymoneyutils.h>
 
 class QSignalMapper;
 class KProgress;
@@ -548,6 +550,8 @@ k_dcop:
     */
   bool okToWriteFile(const KURL& url);
 
+  // QValueList<MyMoneyAccount> accountList() const;
+
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
@@ -642,10 +646,19 @@ protected:
   void markTransaction(MyMoneySplit::reconcileFlagE flag);
 
   /**
-    * This slot allows to enter the next scheduled transaction of
-    * the given schedule
+    * This method allows to enter the next scheduled transaction of
+    * the given schedule @a s. In case @a extendedKeys is @a true,
+    * the given schedule can also be skipped or ignored.
+    * If @a autoEnter is @a true and the schedule does not contain
+    * an estimated value, the schedule is entered as is without further
+    * interaction with the user. In all other cases, the user will
+    * be presented a dialog and allowed to adjust the values for this
+    * instance of the schedule.
+    *
+    * The transaction will be created and entered into the ledger
+    * and the schedule updated.
     */
-  bool enterSchedule(MyMoneySchedule& s, bool autoEnter = false);
+  KMyMoneyUtils::EnterScheduleResultCodeE enterSchedule(MyMoneySchedule& s, bool autoEnter = false, bool extendedKeys = false);
 
   /**
     * Creates a new institution entry in the MyMoneyFile engine

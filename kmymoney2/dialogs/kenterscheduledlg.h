@@ -31,6 +31,7 @@ class TransactionEditor;
 
 #include "../dialogs/kenterscheduledlgdecl.h"
 #include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/kmymoneyutils.h>
 
 class KEnterScheduleDlgPrivate;
 
@@ -46,6 +47,20 @@ public:
 
   TransactionEditor* startEdit(void);
   MyMoneyTransaction transaction(void);
+
+  /**
+   * Show (or hide) the extended dialog keys for 'Skip' and 'Ignore'
+   * depending on the value of the parameter @a visible which defaults
+   * to @a true.
+   */
+  void showExtendedKeys(bool visible = true);
+
+  /**
+   * Return the extended result code. Usage of the returned
+   * value only makes sense, once the dialog has been executed.
+   * Before execution it returns @a Cancel.
+   */
+  KMyMoneyUtils::EnterScheduleResultCodeE resultCode(void) const;
 
 protected:
   /// Overridden for internal reasons. No API changes.
@@ -65,6 +80,8 @@ public slots:
 private slots:
   void slotSetupSize(void);
   void slotShowHelp(void);
+  void slotIgnore(void);
+  void slotSkip(void);
 
 private:
   KEnterScheduleDlgPrivate*  d;

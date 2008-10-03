@@ -29,6 +29,7 @@
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -58,6 +59,7 @@ public:
   KMyMoneyRegister::Transaction* m_item;
   QWidgetList                    m_tabOrderWidgets;
   bool                           m_showWarningOnce;
+  KMyMoneyUtils::EnterScheduleResultCodeE m_extendedReturnCode;
 };
 
 KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& schedule) :
@@ -65,9 +67,13 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   d(new KEnterScheduleDlgPrivate)
 {
   d->m_schedule = schedule;
-  buttonOk->setGuiItem(KStdGuiItem::ok());
+  d->m_extendedReturnCode = KMyMoneyUtils::Enter;
+  buttonOk->setIconSet(KGlobal::iconLoader()->loadIconSet("key_enter", KIcon::NoGroup, KIcon::SizeSmall, true, true));
+  buttonSkip->setIconSet(KGlobal::iconLoader()->loadIconSet("player_fwd", KIcon::NoGroup, KIcon::SizeSmall, true, true));
   buttonCancel->setGuiItem(KStdGuiItem::cancel());
   buttonHelp->setGuiItem(KStdGuiItem::help());
+  buttonIgnore->setHidden(true);
+  buttonSkip->setHidden(true);
 
   // make sure, we have a tabbar with the form
   KMyMoneyTransactionForm::TabBar* tabbar = m_form->tabBar(m_form->parentWidget());
@@ -98,6 +104,8 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   m_type->setText(KMyMoneyUtils::scheduleTypeToString(d->m_schedule.type()));
 
   connect(buttonHelp, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
+  connect(buttonIgnore, SIGNAL(clicked()), this, SLOT(slotIgnore()));
+  connect(buttonSkip, SIGNAL(clicked()), this, SLOT(slotSkip()));
 
   // force the initial height to be as small as possible
   QTimer::singleShot(0, this, SLOT(slotSetupSize()));
@@ -106,6 +114,31 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
 KEnterScheduleDlg::~KEnterScheduleDlg()
 {
   delete d;
+}
+
+KMyMoneyUtils::EnterScheduleResultCodeE KEnterScheduleDlg::resultCode(void) const
+{
+  if(result() == QDialog::Accepted)
+    return d->m_extendedReturnCode;
+  return KMyMoneyUtils::Cancel;
+}
+
+void KEnterScheduleDlg::showExtendedKeys(bool visible)
+{
+  buttonIgnore->setShown(visible);
+  buttonSkip->setShown(visible);
+}
+
+void KEnterScheduleDlg::slotIgnore(void)
+{
+  d->m_extendedReturnCode = KMyMoneyUtils::Ignore;
+  accept();
+}
+
+void KEnterScheduleDlg::slotSkip(void)
+{
+  d->m_extendedReturnCode = KMyMoneyUtils::Skip;
+  accept();
 }
 
 MyMoneyTransaction KEnterScheduleDlg::transaction(void)
