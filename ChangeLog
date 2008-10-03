@@ -2,6 +2,8 @@
 2008-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Ignore' and 'Skip' buttons to EnterSchedule dialog and show
     them during reconciliation start and auto entry during appl startup
+  * Move icon draw logic from StdTransaction to Transaction to have it
+    for investment transactions as well
 
 2008-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show correct message if statement balance is not included in statement

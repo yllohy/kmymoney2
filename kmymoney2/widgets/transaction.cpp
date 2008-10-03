@@ -419,6 +419,9 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
     // paint the grid
     paintRegisterGrid(painter, row, col, cellRect, cg);
 
+    // possible icons
+    paintRegisterIcons(painter, row, col, cellRect, cg);
+
     // and the focus
     paintRegisterCellFocus(painter, row, col, cellRect, cg);
   }
@@ -426,6 +429,24 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
   painter->restore();
 }
 
+void Transaction::paintRegisterIcons(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg)
+{
+  if(row == 0 && col == DetailColumn && painter) {
+    if(m_erronous || !m_transaction.value("kmm-attachment").isEmpty()) {
+      QRect cellRect;
+      cellRect.setX(0);
+      cellRect.setY(0);
+      cellRect.setWidth(m_parent->columnWidth(col));
+      cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
+      if(m_erronous) {
+        markAsErronous(painter, row, col, cellRect);
+      }
+      if(!m_transaction.value("kmm-attachment").isEmpty()) {
+        markAttachment(painter, row, col, cellRect);
+      }
+    }
+  }
+}
 void Transaction::paintRegisterCellBackground(QPainter* painter, int row, int col, const QRect& r, const QBrush& backgroundBrush)
 {
   Q_UNUSED(row);
@@ -1165,30 +1186,6 @@ int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetric
       nw = w;
   }
   return nw;
-}
-
-void StdTransaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& _cg)
-{
-  Transaction::paintRegisterCell(painter, row, col, r, selected, _cg);
-
-  if(row == 0 && col == DetailColumn && painter) {
-    if(m_erronous) {
-      QRect cellRect;
-      cellRect.setX(0);
-      cellRect.setY(0);
-      cellRect.setWidth(m_parent->columnWidth(col));
-      cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
-      markAsErronous(painter, row, col, cellRect);
-    }
-    if(!m_transaction.value("kmm-attachment").isEmpty()) {
-      QRect cellRect;
-      cellRect.setX(0);
-      cellRect.setY(0);
-      cellRect.setWidth(m_parent->columnWidth(col));
-      cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
-      markAttachment(painter, row, col, cellRect);
-    }
-  }
 }
 
 void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)

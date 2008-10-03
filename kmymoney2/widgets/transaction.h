@@ -141,7 +141,7 @@ public:
 
   /**
     * paints a cell of the register for the transaction. Uses paintRegisterCellSetup(), paintRegisterCellText()
-    * paintRegisterGrid() and paintRegisterCellFocus() to actually do the job.
+    * paintRegisterGrid(), paintRegisterIcons() and paintRegisterCellFocus() to actually do the job.
     *
     * @param painter pointer to the QPainter object
     * @param row vertical index of cell in register
@@ -155,6 +155,7 @@ public:
   virtual void paintRegisterCellText(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg, int align, const QString& txt);
   virtual void paintRegisterCellBackground(QPainter* painter, int row, int col, const QRect& r, const QBrush& backgroundBrush);
   virtual void paintRegisterGrid(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg) const;
+  virtual void paintRegisterIcons(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg);
 
   virtual void paintFormCell(QPainter* /* painter */, int /* row */, int /* col */, const QRect& /* r */, bool /* selected */, const QColorGroup& /* cg */);
 
@@ -293,7 +294,6 @@ public:
   virtual ~StdTransaction() {}
 
   virtual const char* className(void) { return "StdTransaction"; }
-  virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
   bool formCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
   void registerCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
