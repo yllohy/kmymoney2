@@ -51,6 +51,20 @@ bool StdTransactionDownloaded::paintRegisterCellSetup(QPainter* painter, int& ro
   return rc;
 }
 
+InvestTransactionDownloaded::InvestTransactionDownloaded(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+    InvestTransaction(parent, transaction, split, uniqueId)
+{
+}
 
+bool InvestTransactionDownloaded::paintRegisterCellSetup(QPainter* painter, int& row, int& col, QRect& cellRect, QRect& textRect, QColorGroup& cg, QBrush& brush)
 
+{
+  bool rc = Transaction::paintRegisterCellSetup(painter, row, col, cellRect, textRect, cg, brush);
+  // if not selected paint in selected background color
+  if(!isSelected()) {
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::importedTransactionColor());
+    brush = QBrush(cg.base());
+  }
+  return rc;
+}
 

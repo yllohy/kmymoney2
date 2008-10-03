@@ -2206,7 +2206,12 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
       break;
 
     case MyMoneyAccount::Investment:
-      t = new KMyMoneyRegister::InvestTransaction(parent, transaction, s, uniqueId);
+      if(transaction.isImported())
+        t = new KMyMoneyRegister::InvestTransactionDownloaded(parent, transaction, s, uniqueId);
+      else if(s.isMatched())
+        t = new KMyMoneyRegister::InvestTransaction/* Matched */(parent, transaction, s, uniqueId);
+      else
+        t = new KMyMoneyRegister::InvestTransaction(parent, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::CertificateDep:

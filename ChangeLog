@@ -4,6 +4,7 @@
     them during reconciliation start and auto entry during appl startup
   * Move icon draw logic from StdTransaction to Transaction to have it
     for investment transactions as well
+  * Display imported investment transaction with the correct background
 
 2008-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show correct message if statement balance is not included in statement
