@@ -68,8 +68,8 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
 {
   d->m_schedule = schedule;
   d->m_extendedReturnCode = KMyMoneyUtils::Enter;
-  buttonOk->setIconSet(KGlobal::iconLoader()->loadIconSet("key_enter", KIcon::NoGroup, KIcon::SizeSmall, true, true));
-  buttonSkip->setIconSet(KGlobal::iconLoader()->loadIconSet("player_fwd", KIcon::NoGroup, KIcon::SizeSmall, true, true));
+  buttonOk->setIconSet(KGlobal::iconLoader()->loadIconSet("key_enter", KIcon::NoGroup, KIcon::SizeSmall, true));
+  buttonSkip->setIconSet(KGlobal::iconLoader()->loadIconSet("player_fwd", KIcon::NoGroup, KIcon::SizeSmall, true));
   buttonCancel->setGuiItem(KStdGuiItem::cancel());
   buttonHelp->setGuiItem(KStdGuiItem::help());
   buttonIgnore->setHidden(true);
