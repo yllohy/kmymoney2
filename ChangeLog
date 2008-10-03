@@ -5,6 +5,7 @@
   * Move icon draw logic from StdTransaction to Transaction to have it
     for investment transactions as well
   * Display imported investment transaction with the correct background
+  * Updated French translation from Patrick Petit
 
 2008-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show correct message if statement balance is not included in statement
