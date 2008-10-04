@@ -1,3 +1,5 @@
+2008-10-03 Fernando Vilas <fvilas@iname.com>
+  * Allow SQLite databases to upgrade
 
 2008-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Ignore' and 'Skip' buttons to EnterSchedule dialog and show

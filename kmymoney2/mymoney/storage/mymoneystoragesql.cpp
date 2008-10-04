@@ -464,7 +464,7 @@ int MyMoneyStorageSql::upgradeToV1() {
 int MyMoneyStorageSql::upgradeToV2() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV2");
   //SQLite3 now supports ALTER TABLE...ADD COLUMN, so only die if version < 3
-  if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
+  //if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // change kmmSplits add price fields
@@ -487,7 +487,7 @@ int MyMoneyStorageSql::upgradeToV2() {
 int MyMoneyStorageSql::upgradeToV3() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV3");
   //SQLite3 now supports ALTER TABLE...ADD COLUMN, so only die if version < 3
-  if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
+  //if (m_dbType == Sqlite3) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // The default value is given here to populate the column.
