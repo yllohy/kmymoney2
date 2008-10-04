@@ -7,6 +7,7 @@
   * Added Romanian HTML files from Cristian Onet
   * Fixed failing translation of strings containing an ampersand
     character to identify the keyboard shortcut
+  * Regenerated POT file and merged PO files
 
 2008-10-03 Fernando Vilas <fvilas@iname.com>
   * Allow SQLite databases to upgrade
