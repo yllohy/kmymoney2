@@ -4,6 +4,7 @@
   * Tranport price in imported transaction
   * Detect previously used fee and dividend categories while importing
     investment statements
+  * Added Romanian HTML files from Cristian Onet
 
 2008-10-03 Fernando Vilas <fvilas@iname.com>
   * Allow SQLite databases to upgrade
