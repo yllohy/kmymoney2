@@ -251,6 +251,12 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
     t.m_shares = MyMoneyMoney(data.units);
   }
 
+  t.m_price = MyMoneyMoney();
+  if(data.unitprice_valid == true)
+  {
+    t.m_price = MyMoneyMoney(data.unitprice);
+  }
+
   t.m_fees = MyMoneyMoney();
   if(data.fees_valid==true)
   {

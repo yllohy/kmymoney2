@@ -39,6 +39,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/investtransactioneditor.h>
 
 #include "kmymoneyutils.h"
 
@@ -370,6 +371,8 @@ QString KMyMoneyUtils::findResource(const char* type, const QString& filename)
 {
   QString language = KGlobal::locale()->language();
   QString country = KGlobal::locale()->country();
+  qDebug("lang = '%s'", language.data());
+  qDebug("ctry = '%s'", country.data());
   QString rc, mask;
 
   // check that the placeholder is present
@@ -616,4 +619,41 @@ MyMoneyTransaction KMyMoneyUtils::scheduledTransaction(const MyMoneySchedule& sc
   t.setEntryDate(QDate());
   return t;
 }
+
+void KMyMoneyUtils::previouslyUsedCategories(const QCString& investmentAccount, QCString& feesId, QCString& interestId)
+{
+  feesId = interestId = QCString();
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    MyMoneyAccount acc = file->account(investmentAccount);
+    MyMoneyTransactionFilter filter(investmentAccount);
+    filter.setReportAllSplits(false);
+    // since we assume an investment account here, we need to collect the stock accounts as well
+    filter.addAccount(acc.accountList());
+    QValueList< QPair<MyMoneyTransaction, MyMoneySplit> > list;
+    file->transactionList(list, filter);
+    QValueList< QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it_t;
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+      const MyMoneyTransaction& t = (*it_t).first;
+      const MyMoneySplit&s = (*it_t).second;
+      MyMoneySplit assetAccountSplit;
+      QValueList<MyMoneySplit> feeSplits;
+      QValueList<MyMoneySplit> interestSplits;
+      MyMoneySecurity security;
+      MyMoneySecurity currency;
+      MyMoneySplit::investTransactionTypeE transactionType;
+      InvestTransactionEditor::dissectTransaction(t, s, assetAccountSplit, feeSplits, interestSplits, security, currency, transactionType);
+      if(feeSplits.count() == 1) {
+        feesId = feeSplits.first().accountId();
+      }
+      if(interestSplits.count() == 1) {
+        interestId = interestSplits.first().accountId();
+      }
+    }
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+
+}
+
 

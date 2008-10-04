@@ -82,6 +82,7 @@ public:
     EAction m_eAction;
     MyMoneyMoney m_shares;
     MyMoneyMoney m_fees;
+    MyMoneyMoney m_price;
     // should be trading symbol followed by name, e.g. "DIS The Disney Corporation"
     // if there is no symbol, then it's a space followed by the name, e.g. " PennyStock Co., Inc."
     QString m_strSecurity;

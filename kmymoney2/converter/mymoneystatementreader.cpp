@@ -59,9 +59,12 @@ class MyMoneyStatementReaderPrivate
       transactionsCount(0),
       transactionsAdded(0),
       transactionsMatched(0),
-      transactionsDuplicate(0)
+      transactionsDuplicate(0),
+      scannedCategories(false)
     {}
 
+    const QCString& feeId(const MyMoneyAccount& invAcc);
+    const QCString& interestId(const MyMoneyAccount& invAcc);
     MyMoneyAccount                 lastAccount;
     QValueList<MyMoneyTransaction> transactions;
     QValueList<MyMoneyPayee>       payees;
@@ -69,7 +72,48 @@ class MyMoneyStatementReaderPrivate
     int                            transactionsAdded;
     int                            transactionsMatched;
     int                            transactionsDuplicate;
+  private:
+    void scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
+  private:
+    QCString                       m_feeId;
+    QCString                       m_interestId;
+    bool                           scannedCategories;
 };
+
+
+const QCString& MyMoneyStatementReaderPrivate::feeId(const MyMoneyAccount& invAcc)
+{
+  scanCategories(m_feeId, invAcc, MyMoneyFile::instance()->expense(), i18n("_Fees"));
+  return m_feeId;
+}
+
+const QCString& MyMoneyStatementReaderPrivate::interestId(const MyMoneyAccount& invAcc)
+{
+  scanCategories(m_interestId, invAcc, MyMoneyFile::instance()->income(), i18n("_Dividend"));
+  return m_interestId;
+}
+
+void MyMoneyStatementReaderPrivate::scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName)
+{
+  if(!scannedCategories) {
+    KMyMoneyUtils::previouslyUsedCategories(invAcc.id(), m_feeId, m_interestId);
+    scannedCategories = true;
+  }
+
+  if(id.isEmpty()) {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyAccount acc = file->accountByName(defaultName);
+    // it it does not exist, we have to create it
+    if(acc.id().isEmpty()) {
+      MyMoneyAccount parent = parentAccount;
+      acc.setName( defaultName );
+      acc.setAccountType( parent.accountType() );
+      acc.setCurrencyId(parent.currencyId());
+      file->addAccount( acc, parent);
+    }
+    id = acc.id();
+  }
+}
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
   d(new MyMoneyStatementReaderPrivate),
@@ -459,7 +503,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
       MyMoneySplit s2;
       s2.setMemo(t_in.m_strMemo);
-      s2.setAccountId(findOrCreateIncomeAccount("_Dividend"));
+      s2.setAccountId(d->interestId(thisaccount));
       s2.setShares(-t_in.m_amount);
       s2.setValue(-t_in.m_amount);
       t.addSplit(s2);
@@ -487,7 +531,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // This should probably change.  It would be more consistent to ALWAYS
       // interpret the 'amount' as the cash account part.
 
-      s1.setAccountId(findOrCreateIncomeAccount("_Dividend"));
+      s1.setAccountId(d->interestId(thisaccount));
       s1.setShares(t_in.m_amount);
       s1.setValue(t_in.m_amount);
 
@@ -496,15 +540,20 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // it belongs to.
       MyMoneySplit s2;
       s2.setMemo(t_in.m_strMemo);
-      s2.setValue(0);
       s2.setAction(MyMoneySplit::ActionDividend);
       s2.setAccountId(thisaccount.id());
       t.addSplit(s2);
 
-      transfervalue = -t_in.m_amount-t_in.m_fees;
+      transfervalue = -t_in.m_amount - t_in.m_fees;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
+      if(!t_in.m_price.isZero()) {
+        s1.setPrice(t_in.m_price);
+      } else {
+        s1.setPrice(((t_in.m_amount - t_in.m_fees) / t_in.m_shares).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
+      }
+
       s1.setShares(t_in.m_shares);
       s1.setAction(MyMoneySplit::ActionBuyShares);
 
@@ -779,7 +828,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
     s.setValue(t_in.m_fees);
     s.setShares(t_in.m_fees);
-    s.setAccountId(findOrCreateExpenseAccount("_Fees"));
+    s.setAccountId(d->feeId(thisaccount));
     t.addSplit(s);
   }
 
@@ -995,75 +1044,6 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
     (*m_progressCallback)(current, total, msg);
 }
 
-const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& searchname)
-{
-  QCString result;
-
-  MyMoneyFile *file = MyMoneyFile::instance();
-
-  // First, try to find this account as an income account
-  MyMoneyAccount acc = file->income();
-  QCStringList list = acc.accountList();
-  QCStringList::ConstIterator it_accid = list.begin();
-  while ( it_accid != list.end() )
-  {
-    acc = file->account(*it_accid);
-    if ( acc.name() == searchname )
-    {
-      result = *it_accid;
-      break;
-    }
-    ++it_accid;
-  }
-
-  // If we did not find the account, now we must create one.
-  if ( result.isEmpty() )
-  {
-    MyMoneyAccount acc;
-    acc.setName( searchname );
-    acc.setAccountType( MyMoneyAccount::Income );
-    MyMoneyAccount income = file->income();
-    file->addAccount( acc, income );
-    result = acc.id();
-  }
-
-  return result;
-}
-
-const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString& searchname)
-{
-  QCString result;
-
-  MyMoneyFile *file = MyMoneyFile::instance();
-
-  // First, try to find this account as an income account
-  MyMoneyAccount acc = file->expense();
-  QCStringList list = acc.accountList();
-  QCStringList::ConstIterator it_accid = list.begin();
-  while ( it_accid != list.end() )
-  {
-    acc = file->account(*it_accid);
-    if ( acc.name() == searchname )
-    {
-      result = *it_accid;
-      break;
-    }
-    ++it_accid;
-  }
-
-  // If we did not find the account, now we must create one.
-  if ( result.isEmpty() )
-  {
-    MyMoneyAccount acc;
-    acc.setName( searchname );
-    acc.setAccountType( MyMoneyAccount::Expense );
-    MyMoneyAccount expense = file->expense();
-    file->addAccount( acc, expense );
-    result = acc.id();
-  }
-
-  return result;
-}
 
 #include "mymoneystatementreader.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:
