@@ -308,7 +308,7 @@
                                         <cstring>m_closeButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Close</string>
+                                        <string>Close</string>
                                     </property>
                                 </widget>
                             </vbox>

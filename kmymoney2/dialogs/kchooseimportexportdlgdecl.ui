@@ -210,7 +210,7 @@ Once you have chosen an import type please press the OK button.</string>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;OK</string>
+                        <string>OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>
@@ -225,7 +225,7 @@ Once you have chosen an import type please press the OK button.</string>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>

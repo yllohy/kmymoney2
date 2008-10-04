@@ -68,7 +68,7 @@
                                 <cstring>m_textTab</cstring>
                             </property>
                             <attribute name="title">
-                                <string>Te&amp;xt</string>
+                                <string>Text</string>
                             </attribute>
                             <vbox>
                                 <property name="name">

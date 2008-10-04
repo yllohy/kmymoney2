@@ -153,7 +153,7 @@
                                 <cstring>m_addButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Add ...</string>
+                                <string>Add ...</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -161,7 +161,7 @@
                                 <cstring>m_editButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Edit ...</string>
+                                <string>Edit ...</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -169,7 +169,7 @@
                                 <cstring>m_deleteButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Delete ...</string>
+                                <string>Delete ...</string>
                             </property>
                         </widget>
                         <spacer>
@@ -245,7 +245,7 @@
                         <cstring>m_closeButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Close</string>
+                        <string>Close</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>

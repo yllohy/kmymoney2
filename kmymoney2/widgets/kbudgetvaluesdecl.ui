@@ -339,7 +339,7 @@
                         <cstring>m_yearlyButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Yearly</string>
+                        <string>Yearly</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">
@@ -347,7 +347,7 @@
                         <cstring>m_individualButton</cstring>
                     </property>
                     <property name="text">
-                        <string>I&amp;ndividual</string>
+                        <string>Individual</string>
                     </property>
                 </widget>
                 <spacer>

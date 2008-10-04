@@ -86,7 +86,7 @@
                                 <cstring>continueBtn</cstring>
                             </property>
                             <property name="text">
-                                <string>Continue to &amp;edit splits</string>
+                                <string>Continue to edit splits</string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>
@@ -97,7 +97,7 @@
                                 <cstring>changeBtn</cstring>
                             </property>
                             <property name="text">
-                                <string>Change &amp;total amount of transaction to %1.</string>
+                                <string>Change total amount of transaction to %1.</string>
                             </property>
                         </widget>
                         <widget class="QRadioButton">
@@ -108,7 +108,7 @@
                                 <bool>false</bool>
                             </property>
                             <property name="text">
-                                <string>&amp;Distribute difference of %1 among all splits.</string>
+                                <string>Distribute difference of %1 among all splits.</string>
                             </property>
                         </widget>
                         <widget class="QRadioButton">
@@ -116,7 +116,7 @@
                                 <cstring>leaveBtn</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Leave %1 unassigned.</string>
+                                <string>Leave %1 unassigned.</string>
                             </property>
                         </widget>
                     </vbox>
@@ -198,7 +198,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -220,7 +220,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>

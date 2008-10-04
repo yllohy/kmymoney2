@@ -130,7 +130,7 @@
                                 <cstring>radioButton9</cstring>
                             </property>
                             <property name="text">
-                                <string>Scheduled &amp;and Future Transactions</string>
+                                <string>Scheduled and Future Transactions</string>
                             </property>
                             <property name="buttonGroupId">
                                 <number>0</number>
@@ -141,7 +141,7 @@
                                 <cstring>radioButton10</cstring>
                             </property>
                             <property name="text">
-                                <string>History-&amp;based</string>
+                                <string>History-based</string>
                             </property>
                             <property name="buttonGroupId">
                                 <number>1</number>

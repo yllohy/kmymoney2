@@ -232,7 +232,7 @@
                         <cstring>buttonHelp</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Help</string>
+                        <string>Help</string>
                     </property>
                 </widget>
                 <spacer>
@@ -302,7 +302,7 @@
                         <cstring>buttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Cancel processing of schedule entry.</string>

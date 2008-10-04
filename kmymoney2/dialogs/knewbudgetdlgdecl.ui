@@ -121,7 +121,7 @@
                                 </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>O&amp;K</string>
+                                <string>OK</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -137,7 +137,7 @@
                                 </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>&amp;Cancel</string>
+                                <string>Cancel</string>
                             </property>
                         </widget>
                     </hbox>

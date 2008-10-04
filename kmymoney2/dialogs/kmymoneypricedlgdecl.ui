@@ -63,7 +63,7 @@
                                 <cstring>m_newButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;New</string>
+                                <string>New</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -71,7 +71,7 @@
                                 <cstring>m_editButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Modify</string>
+                                <string>Modify</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -79,7 +79,7 @@
                                 <cstring>m_deleteButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Delete</string>
+                                <string>Delete</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -87,7 +87,7 @@
                                 <cstring>m_deleteRangeButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Delete &amp;Range ...</string>
+                                <string>Delete Range ...</string>
                             </property>
                         </widget>
                         <spacer>
@@ -112,7 +112,7 @@
                                 <cstring>m_onlineQuoteButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Online &amp;Quotes</string>
+                                <string>Online Quotes</string>
                             </property>
                         </widget>
                     </vbox>
@@ -171,7 +171,7 @@
                                 <cstring>m_closeButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Close</string>
+                                <string>Close</string>
                             </property>
                             <property name="autoDefault">
                                 <bool>true</bool>

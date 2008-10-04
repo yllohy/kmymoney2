@@ -318,7 +318,7 @@
                         <cstring>finishBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Finish</string>
+                        <string>Finish</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -326,7 +326,7 @@
                         <cstring>cancelBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -334,7 +334,7 @@
                         <cstring>clearAllBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>Clear &amp;All</string>
+                        <string>Clear All</string>
                     </property>
                 </widget>
                 <spacer>

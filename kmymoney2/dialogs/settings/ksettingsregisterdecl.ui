@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>632</width>
-            <height>353</height>
+            <height>361</height>
         </rect>
     </property>
     <property name="caption">
@@ -28,7 +28,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Displa&amp;y</string>
+                    <string>Display</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -39,7 +39,10 @@
                             <cstring>kcfg_ShowGrid</cstring>
                         </property>
                         <property name="text">
-                            <string>Show a &amp;grid in the register</string>
+                            <string>Show a grid in the register</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -47,7 +50,10 @@
                             <cstring>kcfg_LedgerLens</cstring>
                         </property>
                         <property name="text">
-                            <string>&amp;Use the ledger lens</string>
+                            <string>Use the ledger lens</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Using the ledger lens shows the details for the transaction that has focus in the ledger. Usually, when using the transaction form, only a one line summary is displayed for each transaction as the details are shown in the form.</string>
@@ -66,7 +72,10 @@
                             <cstring>kcfg_AlwaysShowNrField</cstring>
                         </property>
                         <property name="text">
-                            <string>&amp;Always show a No. field</string>
+                            <string>Always show a No. field</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -74,7 +83,10 @@
                             <cstring>kcfg_ShowFancyMarker</cstring>
                         </property>
                         <property name="text">
-                            <string>Show group header &amp;between transactions</string>
+                            <string>Show group header between transactions</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Draws a larger header above each group of transaction. The grouping depends on the current sort order.</string>
@@ -207,7 +219,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>D&amp;ata entry</string>
+                    <string>Data entry</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -226,7 +238,10 @@
                             <cstring>kcfg_AutoIncCheckNumber</cstring>
                         </property>
                         <property name="text">
-                            <string>Auto increment check num&amp;ber</string>
+                            <string>Auto increment check number</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -242,7 +257,10 @@
                             <cstring>kcfg_EnterMovesBetweenFields</cstring>
                         </property>
                         <property name="text">
-                            <string>&amp;Use Enter to move between fields</string>
+                            <string>Use Enter to move between fields</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget">
@@ -314,7 +332,7 @@
                             <bool>false</bool>
                         </property>
                         <property name="selectedId" stdset="0">
-                            <number>0</number>
+                            <number>-1</number>
                         </property>
                         <vbox>
                             <property name="name">

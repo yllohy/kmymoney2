@@ -112,7 +112,7 @@ Click OK to perform the backup. If your system does not use an automounter, make
                                 <cstring>chooseButton</cstring>
                             </property>
                             <property name="text">
-                                <string>C&amp;hoose...</string>
+                                <string>Choose...</string>
                             </property>
                         </widget>
                     </hbox>
@@ -180,7 +180,7 @@ Click OK to perform the backup. If your system does not use an automounter, make
                         <cstring>btnOK</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;OK</string>
+                        <string>OK</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -194,7 +194,7 @@ Click OK to perform the backup. If your system does not use an automounter, make
                         <cstring>btnCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

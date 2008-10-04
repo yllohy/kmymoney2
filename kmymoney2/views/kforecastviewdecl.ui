@@ -361,7 +361,7 @@
                     <cstring>summary</cstring>
                 </property>
                 <attribute name="title">
-                    <string>S&amp;ummary</string>
+                    <string>Summary</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -482,7 +482,7 @@
                     <cstring>detail</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Det&amp;ail</string>
+                    <string>Detail</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -506,7 +506,7 @@
                     <cstring>advanced</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Adva&amp;nced</string>
+                    <string>Advanced</string>
                 </attribute>
                 <vbox>
                     <property name="name">

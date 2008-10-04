@@ -125,7 +125,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         <cstring>m_qbuttonBrowse</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Browse...</string>
+                        <string>Browse...</string>
                     </property>
                 </widget>
             </hbox>
@@ -436,7 +436,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         <cstring>m_qbuttonOk</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Export</string>
+                        <string>Export</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -450,7 +450,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         <cstring>m_qbuttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

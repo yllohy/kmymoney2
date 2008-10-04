@@ -111,7 +111,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                         <cstring>m_qbuttonBrowse</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Browse...</string>
+                        <string>Browse...</string>
                     </property>
                 </widget>
             </hbox>
@@ -190,7 +190,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                                         <cstring>m_scanButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Scan</string>
+                                        <string>Scan</string>
                                     </property>
                                 </widget>
                             </hbox>
@@ -359,7 +359,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                         <cstring>m_qbuttonOk</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Import</string>
+                        <string>Import</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -373,7 +373,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                         <cstring>m_qbuttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

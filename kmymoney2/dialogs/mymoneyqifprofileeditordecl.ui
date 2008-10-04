@@ -780,7 +780,7 @@
                         <cstring>m_helpButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Help</string>
+                        <string>Help</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -788,7 +788,7 @@
                         <cstring>m_newButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;New</string>
+                        <string>New</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -796,7 +796,7 @@
                         <cstring>m_deleteButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Delete</string>
+                        <string>Delete</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -804,7 +804,7 @@
                         <cstring>m_renameButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Re&amp;name</string>
+                        <string>Rename</string>
                     </property>
                 </widget>
                 <spacer>
@@ -829,7 +829,7 @@
                         <cstring>m_resetButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Reset</string>
+                        <string>Reset</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -837,7 +837,7 @@
                         <cstring>m_okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                     <property name="accel">
                         <string></string>

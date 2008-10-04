@@ -175,7 +175,7 @@
                                 <cstring>btnAddEntry</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Add</string>
+                                <string>Add</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -183,7 +183,7 @@
                                 <cstring>btnEditEntry</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Edit</string>
+                                <string>Edit</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -191,7 +191,7 @@
                                 <cstring>btnRemoveEntry</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Remove</string>
+                                <string>Remove</string>
                             </property>
                         </widget>
                         <spacer>

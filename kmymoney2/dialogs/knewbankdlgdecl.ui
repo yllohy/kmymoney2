@@ -244,7 +244,7 @@
                         <cstring>okBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>
@@ -255,7 +255,7 @@
                         <cstring>cancelBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>

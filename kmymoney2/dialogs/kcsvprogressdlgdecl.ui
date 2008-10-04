@@ -132,7 +132,7 @@ You can cancel the process at any time by clicking on the Cancel button.</string
                                     </property>
                                     <property stdset="1">
                                         <name>text</name>
-                                        <string>&amp;Browse</string>
+                                        <string>Browse</string>
                                     </property>
                                 </widget>
                             </hbox>
@@ -322,7 +322,7 @@ You can cancel the process at any time by clicking on the Cancel button.</string
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Run</string>
+                        <string>Run</string>
                     </property>
                 </widget>
             </hbox>
@@ -499,7 +499,7 @@ You can cancel the process at any time by clicking on the Cancel button.</string
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Close</string>
+                        <string>Close</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>

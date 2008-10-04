@@ -227,7 +227,7 @@
                         <bool>true</bool>
                     </property>
                     <property name="text">
-                        <string>&amp;Help</string>
+                        <string>Help</string>
                     </property>
                     <property name="accel">
                         <string>F1</string>
@@ -258,7 +258,7 @@
                         <cstring>buttonClose</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Close</string>
+                        <string>Close</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

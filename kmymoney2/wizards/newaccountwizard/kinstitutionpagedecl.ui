@@ -68,7 +68,7 @@ Enter the account number used by the institution to identify the account.</strin
                                 <cstring>m_newInstitutionButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Ne&amp;w Institution</string>
+                                <string>New Institution</string>
                             </property>
                         </widget>
                         <widget class="QLabel" row="1" column="0">

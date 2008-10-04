@@ -244,7 +244,7 @@
                                 <cstring>m_amountButton</cstring>
                             </property>
                             <property name="text">
-                                <string>To &amp;amount</string>
+                                <string>To amount</string>
                             </property>
                         </widget>
                         <widget class="QRadioButton">
@@ -380,7 +380,7 @@ xx</string>
                         <cstring>m_okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -394,7 +394,7 @@ xx</string>
                         <cstring>m_cancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>

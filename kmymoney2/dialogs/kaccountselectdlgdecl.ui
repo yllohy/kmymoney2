@@ -77,7 +77,7 @@
                                         <cstring>m_createButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Create</string>
+                                        <string>Create</string>
                                     </property>
                                 </widget>
                                 <widget class="KMyMoneyCategory" row="2" column="0" rowspan="1" colspan="2">
@@ -171,7 +171,7 @@
                         <cstring>m_kButtonAbort</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Abort</string>
+                        <string>Abort</string>
                     </property>
                 </widget>
                 <spacer>
@@ -196,7 +196,7 @@
                         <cstring>m_qbuttonOk</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -204,7 +204,7 @@
                         <cstring>m_qbuttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Skip</string>
+                        <string>Skip</string>
                     </property>
                 </widget>
             </hbox>

@@ -99,7 +99,7 @@
                         <cstring>buttonOk</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Ok</string>
+                        <string>Ok</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -107,7 +107,7 @@
                         <cstring>buttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>

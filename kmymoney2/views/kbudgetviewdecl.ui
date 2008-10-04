@@ -115,7 +115,7 @@
                                         <cstring>m_newButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;New</string>
+                                        <string>New</string>
                                     </property>
                                 </widget>
                                 <widget class="KPushButton">
@@ -123,7 +123,7 @@
                                         <cstring>m_renameButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Ren</string>
+                                        <string>Ren</string>
                                     </property>
                                 </widget>
                                 <widget class="KPushButton">
@@ -323,7 +323,7 @@
                                         <cstring>m_cbBudgetSubaccounts</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Incl&amp;ude subaccounts</string>
+                                        <string>Include subaccounts</string>
                                     </property>
                                 </widget>
                                 <widget class="QLayoutWidget">
