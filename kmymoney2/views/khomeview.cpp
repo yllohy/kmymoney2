@@ -1381,11 +1381,19 @@ void KHomeView::showIncomeExpenseSummary(void)
         if(!(*it_s).shares().isZero()) {
           MyMoneyAccount acc = file->account((*it_s).accountId());
           if(acc.isIncomeExpense()) {
+            MyMoneyMoney value;
+            if(acc.currencyId() != file->baseCurrency().id()) {
+              ReportAccount repAcc = ReportAccount(acc.id());
+              MyMoneyMoney curPrice = repAcc.baseCurrencyPrice((*it_t).postDate());
+              value = ((*it_s).shares() * MyMoneyMoney(-1, 1)) * curPrice;
+            } else {
+              value = ((*it_s).shares() * MyMoneyMoney(-1, 1));
+            }
             //the balance is stored as negative number
             if(acc.accountType() == MyMoneyAccount::Income) {
-              incomeValue += ((*it_s).shares() * MyMoneyMoney(-1, 1));
+              incomeValue += value;
             } else {
-              expenseValue += (*it_s).shares() * MyMoneyMoney(-1, 1);
+              expenseValue += value;
             }
           }
         }
