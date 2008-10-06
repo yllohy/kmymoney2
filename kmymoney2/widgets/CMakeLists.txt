@@ -26,8 +26,8 @@ SET(kmymoney_STAT_HEADERS
     kmymoneyaccountcompletion.h kmymoneycompletion.h kmymoneycombo.h 
     kbudgetvalues.h kaccounttemplateselector.h stdtransactiondownloaded.h
     stdtransactionmatched.h kmymoneyaccounttreebase.h
-    scheduledtransaction.h
-)
+    scheduledtransaction.h kmymoneyaccounttreeforecast.h 
+    )
 
 KMM_CREATE_LINKS( ${kmymoney_STAT_HEADERS} )
 
@@ -52,7 +52,7 @@ kbudgetvalues.cpp kmymoneyforecastlistviewitem.cpp
 kaccounttemplateselector.cpp transactionsortoption.cpp 
 kbudgetvaluesdecl.cpp selectedtransaction.cpp stdtransactiondownloaded.cpp
 stdtransactionmatched.cpp kmymoneyaccounttreebase.cpp
-scheduledtransaction.cpp
+scheduledtransaction.cpp kmymoneyaccounttreeforecast.cpp
 # we have to check, if we can add the generated file in a different way
 kbudgetvaluesdecl.moc.cpp
 kaccounttemplateselectordecl.cpp
@@ -91,7 +91,8 @@ kmymoneytitlelabel.cpp kguiutils.cpp kmymoneyaccounttreebudget.cpp
 register.cpp registeritem.cpp transaction.cpp
 transactionform.cpp kmymoneychecklistitem.cpp kmymoneylistviewitem.cpp
 kmymoneyselector.cpp kbudgetvalues.cpp kaccounttemplateselector.cpp 
-kmymoneyaccounttreebase.cpp
+kmymoneyaccounttreebase.cpp kmymoneyaccounttreeforecast.cpp scheduledtransaction.cpp
+stdtransactiondownloaded.cpp stdtransactionmatched.cpp 
 )
 
 KDE3_AUTOMOC(${libkmymoney_la_SOURCES})

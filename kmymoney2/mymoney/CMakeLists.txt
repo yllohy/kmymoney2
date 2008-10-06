@@ -35,6 +35,7 @@ SET(mymoney_HEADERS
     mymoneysubject.h mymoneytransactionfilter.h
     mymoneytransaction.h mymoneyutils.h
     mymoneybudget.h mymoneyobjectcontainer.h
+    mymoneyforecast.h
     )
 
 KDE3_AUTOMOC(${kmm_mymoney_LIB_SRCS})
