@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-04 19:15+0200\n"
-"PO-Revision-Date: 2008-09-12 22:30+0200\n"
+"PO-Revision-Date: 2008-10-05 22:01+0200\n"
 "Last-Translator: Jose Jorge <jjorge@free.fr>\n"
 "Language-Team: português <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -497,8 +497,7 @@ msgid "Create a new asset account"
 msgstr "Criar uma nova conta de activos"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1305
-msgid ""
-"If the asset account does not yet exist, press this button to create it."
+msgid "If the asset account does not yet exist, press this button to create it."
 msgstr "Se a conta de activos não existir, carregue neste botão para a criar."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1511
@@ -785,10 +784,8 @@ msgstr "Conta preferida"
 
 # TODO: Verify
 #: wizards/newaccountwizard/rc.cpp:15
-msgid ""
-"Mark this checkbox if the account should be maintained as preferred account"
-msgstr ""
-"Marque este checkbox caso a conta deva ser mantida como conta preferida"
+msgid "Mark this checkbox if the account should be maintained as preferred account"
+msgstr "Marque este checkbox caso a conta deva ser mantida como conta preferida"
 
 #: wizards/newaccountwizard/rc.cpp:16
 msgid ""
@@ -1023,9 +1020,8 @@ msgid "Select the institution which manages this account or leave empty"
 msgstr "Seleccionar conta ou vazio"
 
 #: wizards/newaccountwizard/rc.cpp:58
-#, fuzzy
 msgid "New Institution"
-msgstr "Nova &Instituição"
+msgstr "Nova Instituição"
 
 #: wizards/newaccountwizard/rc.cpp:60
 msgid ""
@@ -1033,8 +1029,7 @@ msgid ""
 "the so called account number. Enter that number here.\n"
 "\n"
 "KMyMoney currently uses this number only for some online banking functions."
-msgstr ""
-"Contas a unique número conta número Enter número n número para alguns ligado."
+msgstr "Contas a unique número conta número Enter número n número para alguns ligado."
 
 #: wizards/newaccountwizard/rc.cpp:62
 msgid "Enter the International Bank Account Number into this field"
@@ -1224,8 +1219,7 @@ msgid "Refinance existing loan"
 msgstr "Refinanciar um empréstimo existente"
 
 #: wizards/newaccountwizard/rc.cpp:92
-msgid ""
-"Check this if you are refinancing a loan that already exists in KMyMoney"
+msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
 msgstr ""
 "Ative isto se você está refinanciando um financiamento que já existe no "
 "KMyMoney"
@@ -1381,8 +1375,7 @@ msgstr ""
 
 #: wizards/newuserwizard/rc.cpp:2
 msgid "I have a checking account that I want to manage with KMyMoney"
-msgstr ""
-"Eu tenho uma conta corrente que desejo que seja gerenciada com o KMyMoney"
+msgstr "Eu tenho uma conta corrente que desejo que seja gerenciada com o KMyMoney"
 
 #: wizards/newuserwizard/rc.cpp:3
 msgid "The name of the instititution that issued the account."
@@ -1766,8 +1759,7 @@ msgstr "* Reconstruindo a lista de filhos para"
 
 #: mymoney/mymoneyfile.cpp:1536
 msgid "  * Unable to update account data for account %1 in engine"
-msgstr ""
-"  * Não foi possível actualizar os dados da conta para a conta %1 no motor"
+msgstr "  * Não foi possível actualizar os dados da conta para a conta %1 no motor"
 
 #: mymoney/mymoneyfile.cpp:1554
 msgid "  * Payee %1 recreated with fixed id"
@@ -1802,8 +1794,7 @@ msgid "  * Payee id updated in split of schedule '%1'."
 msgstr "  * Id do beneficiário actualizado na parcela do agendamento '%1'."
 
 #: mymoney/mymoneyfile.cpp:1649
-msgid ""
-"  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
+msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
 msgstr "  * Parcela na transação '%1' agendada contém valor != 0 e cotas == 0."
 
 #: mymoney/mymoneyfile.cpp:1650
@@ -1844,8 +1835,7 @@ msgstr "Terminado! Dados estão consistentes."
 
 #: mymoney/mymoneyfile.cpp:1732
 msgid "Finish! %1 problem(s) corrected. %2 problem(s) still present."
-msgstr ""
-"Terminado! %1 porblema(s) corrigido(s). %2 problema(s) ainda presente(s)."
+msgstr "Terminado! %1 porblema(s) corrigido(s). %2 problema(s) ainda presente(s)."
 
 #: mymoney/mymoneyscheduled.cpp:1055
 msgid "Any"
@@ -2557,8 +2547,7 @@ msgstr "Importar Extracto XML..."
 
 #: kmymoney2.cpp:1670
 msgid "Error importing %1: This file is not a valid KMM statement file."
-msgstr ""
-"Erro ao importar %1: Este arquivo não é um arquivo de extrado KMM válido."
+msgstr "Erro ao importar %1: Este arquivo não é um arquivo de extrado KMM válido."
 
 #: kmymoney2.cpp:1670
 msgid "Invalid Statement"
@@ -2801,8 +2790,7 @@ msgid "Adjusting budgets ..."
 msgstr "Ajustando agendamentos..."
 
 #: kmymoney2.cpp:2664
-msgid ""
-"Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
+msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
 msgstr ""
 "Não foi possível trocar a categoria <b>%1</b> com a categoria <b>%2</b>. "
 "Motivo: %3"
@@ -2845,8 +2833,7 @@ msgstr ""
 
 #: kmymoney2.cpp:2759
 msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
-msgstr ""
-"Não foi possível apagar uma sub-categoria da categoria <b>%1</b>. Motivo: %2"
+msgstr "Não foi possível apagar uma sub-categoria da categoria <b>%1</b>. Motivo: %2"
 
 #: kmymoney2.cpp:2770
 msgid "Do you really want to delete account <b>%1</b>?"
@@ -3275,8 +3262,7 @@ msgid "Checking for overdue schedules..."
 msgstr "Verificação eventos vencidos..."
 
 #: kmymoney2.cpp:5535
-msgid ""
-"You must first select a KMyMoney file before you can import a statement."
+msgid "You must first select a KMyMoney file before you can import a statement."
 msgstr ""
 "Você deve primeiro seleccionar um ficheiro do KMyMoney antes de poder "
 "importar um extracto."
@@ -3408,8 +3394,7 @@ msgstr ""
 "2</b>!"
 
 #: converter/mymoneytemplate.cpp:309
-msgid ""
-"Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
+msgid "Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
 msgstr ""
 "Tipo <b>%1</b> de flag inválido para conta <b>%3</b> no arquivo de modelo <b>"
 "%2</b>!"
@@ -3668,14 +3653,12 @@ msgid "Unable to import"
 msgstr "Não foi possível importar"
 
 #: converter/mymoneystatementreader.cpp:86
-#, fuzzy
 msgid "_Fees"
-msgstr "Taxas"
+msgstr "_Taxas"
 
 #: converter/mymoneystatementreader.cpp:92
-#, fuzzy
 msgid "_Dividend"
-msgstr "Dividendos"
+msgstr "_Dividendos"
 
 #: converter/mymoneystatementreader.cpp:215
 #, c-format
@@ -3683,9 +3666,8 @@ msgid "Importing statement for account %1"
 msgstr "Importando um extracto para a conta %1"
 
 #: converter/mymoneystatementreader.cpp:271
-#, fuzzy
 msgid "  Statement balance is not contained in statement."
-msgstr "Saldo inicial deste extracto:"
+msgstr "  O orçamento deste extracto não está nele."
 
 #: converter/mymoneystatementreader.cpp:273
 msgid "  Statement balance on %1 is reported to be %2"
@@ -3753,8 +3735,7 @@ msgstr ""
 "%2"
 
 #: converter/mymoneystatementreader.cpp:969
-msgid ""
-"<b>You have downloaded a statement for the following account:</b><br><br>"
+msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr "<b>Você obteve um extracto para a seguinte conta:</b><br><br>"
 
 #: converter/mymoneystatementreader.cpp:970
@@ -3807,8 +3788,7 @@ msgstr ""
 
 #: converter/mymoneygncreader.cpp:115
 msgid "%1: Sorry. This importer cannot handle version %2 of element %3"
-msgstr ""
-"%1: Desculpe. Este importador não pode gerir a versão %2 do elemento %3"
+msgstr "%1: Desculpe. Este importador não pode gerir a versão %2 do elemento %3"
 
 #: converter/mymoneygncreader.cpp:189
 #, c-format
@@ -3832,8 +3812,7 @@ msgstr "Agendamento%1"
 
 #: converter/mymoneygncreader.cpp:258
 msgid "This version of the importer cannot handle multi-book files."
-msgstr ""
-"Esta versão do importador não pode manipular ficheiros com livros múltiplos."
+msgstr "Esta versão do importador não pode manipular ficheiros com livros múltiplos."
 
 #: converter/mymoneygncreader.cpp:905
 msgid "Invalid header for file. Should be 'gnc-v2'"
@@ -3913,8 +3892,7 @@ msgstr "Carregando agendamentos..."
 #: converter/mymoneygncreader.cpp:1721
 #, c-format
 msgid "Can't find template transaction for schedule %1"
-msgstr ""
-"Não foi possível encontrar um modelo de transação para o agendamento %1"
+msgstr "Não foi possível encontrar um modelo de transação para o agendamento %1"
 
 #: converter/mymoneygncreader.cpp:1896
 msgid "Reorganizing accounts..."
@@ -4077,8 +4055,7 @@ msgstr ""
 
 #: converter/mymoneygncreader.cpp:2402
 msgid "Schedule %1 has interval of %2 which is not currently available"
-msgstr ""
-"O agendamento %1 possui intervalo de %2 que não está atualmente disponível"
+msgstr "O agendamento %1 possui intervalo de %2 que não está atualmente disponível"
 
 #: converter/mymoneygncreader.cpp:2403
 msgid "Schedule %1 dropped at user request"
@@ -4426,13 +4403,11 @@ msgstr "Todas as moedas convertidas para %1\n"
 
 #: reports/listtable.cpp:164 reports/pivottable.cpp:1485
 msgid "All values shown in %1 unless otherwise noted"
-msgstr ""
-"Todos os valores exibidos em %1, a menos que anotados de maneira diferente"
+msgstr "Todos os valores exibidos em %1, a menos que anotados de maneira diferente"
 
 #: reports/listtable.cpp:165 reports/pivottable.cpp:1250
 msgid "All values shown in %1 unless otherwise noted\n"
-msgstr ""
-"Todos os valores exibidos em %1, a menos que anotados de maneira diferente\n"
+msgstr "Todos os valores exibidos em %1, a menos que anotados de maneira diferente\n"
 
 #: dialogs/kequitypriceupdatedlg.cpp:73 dialogs/kfindtransactiondlg.cpp:208
 #: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:206 dialogs/rc.cpp:800
@@ -4825,8 +4800,7 @@ msgstr "KMyMoney"
 
 #: main.cpp:104
 msgid "Initial idea, much initial source code, Project admin"
-msgstr ""
-"Ideia inicial, muito do código fonte original, Administrador do Projecto"
+msgstr "Ideia inicial, muito do código fonte original, Administrador do Projecto"
 
 #: main.cpp:105
 msgid "Core engine, Release Manager, Project admin"
@@ -5114,7 +5088,7 @@ msgstr ""
 
 #: rc.cpp:54
 msgid "Show account limit information on the Homepage"
-msgstr ""
+msgstr "Mostrar os limites das contas na página de início"
 
 #: rc.cpp:56
 msgid "Hide closed accounts"
@@ -5217,8 +5191,7 @@ msgid "Sort order of register in search dialog"
 msgstr "Ordenação do registro na janela de busca"
 
 #: rc.cpp:83
-msgid ""
-"Default reconciliation state for transactions entered during reconciliation"
+msgid "Default reconciliation state for transactions entered during reconciliation"
 msgstr ""
 "Estado de reconciliação por omissão para as transacções inseridas durante a "
 "reconciliação"
@@ -5257,12 +5230,11 @@ msgstr "Pular data de abertura ao obter transacções"
 
 #: rc.cpp:92
 msgid "Include future transaction when using Schedule Forecast"
-msgstr ""
+msgstr "Incluir as transacções futuras na Previsão de Agendamentos"
 
 #: rc.cpp:93
-#, fuzzy
 msgid "Include scheduled transactions when using Schedule Forecast"
-msgstr "Incluir Transacções Agendadas"
+msgstr "Incluir as transacções agendadas na Previsão de Agendamentos"
 
 #: rc.cpp:94 widgets/rc.cpp:158 widgets/rc.cpp:160
 msgid "..."
@@ -5693,8 +5665,7 @@ msgstr "Livro de registos"
 
 #: views/kmymoneyview.cpp:317
 msgid "Creating transactions can only be performed in the ledger view"
-msgstr ""
-"A criação de transacções só pode ser executada na visão do livro de registros"
+msgstr "A criação de transacções só pode ser executada na visão do livro de registros"
 
 #: views/kmymoneyview.cpp:331
 msgid "Modifying transactions can only be performed in the ledger view"
@@ -6688,8 +6659,7 @@ msgid ""
 "A budget with the name '%1' already exists. It is not advisable to have "
 "multiple budgets with the same identification name. Are you sure you would "
 "like to rename the budget?"
-msgstr ""
-"A com nome é não até multiple com identificação nome tal como até rename?"
+msgstr "A com nome é não até multiple com identificação nome tal como até rename?"
 
 #: views/kbudgetview.cpp:635 views/kbudgetview.cpp:749
 msgid "Unable to modify budget"
@@ -6740,9 +6710,8 @@ msgid "New"
 msgstr "Novo"
 
 #: views/rc.cpp:13
-#, fuzzy
 msgid "Ren"
-msgstr "&Rnc"
+msgstr "Ren"
 
 #: views/rc.cpp:14
 msgid "Del"
@@ -6769,9 +6738,8 @@ msgid "Assignments"
 msgstr "Atribuições"
 
 #: views/rc.cpp:23
-#, fuzzy
 msgid "Include subaccounts"
-msgstr "Incl&uir as sub-contas"
+msgstr "Incluir as sub-contas"
 
 #: dialogs/settings/rc.cpp:23 views/rc.cpp:32
 msgid "Forecast Settings"
@@ -6838,9 +6806,8 @@ msgid "Detail"
 msgstr "Detalhe"
 
 #: views/rc.cpp:52
-#, fuzzy
 msgid "Advanced"
-msgstr "Ava&nçado"
+msgstr "Avançado"
 
 #: views/rc.cpp:53
 msgid "Budget Forecast"
@@ -7107,8 +7074,7 @@ msgid "Cannot edit transactions in the context of a category."
 msgstr "Não é possível editar transacções no contexto de uma categoria."
 
 #: views/kgloballedgerview.cpp:1396
-msgid ""
-"Cannot edit investment transactions and non-investment transactions together."
+msgid "Cannot edit investment transactions and non-investment transactions together."
 msgstr ""
 "Não é possível editar transacções de investimento e de não-investimento ao "
 "mesmo tempo."
@@ -7119,8 +7085,7 @@ msgstr "editar multiple nos."
 
 #: views/kgloballedgerview.cpp:1414
 msgid "Cannot edit investment transactions in the context of this account."
-msgstr ""
-"Não é possível editar transacções de investimentos no contexto desta conta."
+msgstr "Não é possível editar transacções de investimentos no contexto desta conta."
 
 #: views/kforecastview.cpp:154
 msgid "Scheduled"
@@ -7227,19 +7192,16 @@ msgid "More ..."
 msgstr "Mais ..."
 
 #: views/khomeview.cpp:608
-#, fuzzy
 msgid "Enter schedule"
-msgstr "Entrar Agendamento"
+msgstr "Entrar agendamento"
 
 #: views/khomeview.cpp:610
-#, fuzzy
 msgid "Skip schedule"
-msgstr "Ignorar agendamento..."
+msgstr "Ignorar agendamento"
 
 #: views/khomeview.cpp:613
-#, fuzzy
 msgid "Edit schedule"
-msgstr "Editar Agendamento"
+msgstr "Editar agendamento"
 
 #: views/khomeview.cpp:617
 msgid " (%1 payments)"
@@ -7266,22 +7228,19 @@ msgid ""
 "Before KMyMoney can give you detailed information about your financial "
 "status, you need to create at least one account. Until then, KMyMoney shows "
 "the welcome page instead."
-msgstr ""
+msgstr "Antes que KMyMoney lhe possa dar informações financeiras, deve criar pelo menos uma conta. Por agora, KMyMoney mostra-lhe a página de bemvindas."
 
 #: views/khomeview.cpp:1246
-#, fuzzy
 msgid "Assets and Liabilities"
-msgstr "Ativos & Obrigações"
+msgstr "Activos e Obrigações"
 
 #: views/khomeview.cpp:1250
-#, fuzzy
 msgid "Asset Accounts"
-msgstr "Conta de Activos"
+msgstr "Contas de Activos"
 
 #: views/khomeview.cpp:1258
-#, fuzzy
 msgid "Liability Accounts"
-msgstr "Contas de passivo"
+msgstr "Contas de Passivo"
 
 #: views/khomeview.cpp:1334
 msgid "Total Assets"
@@ -7292,29 +7251,24 @@ msgid "Total Liabilities"
 msgstr "Total dos Passivos"
 
 #: views/khomeview.cpp:1409
-#, fuzzy
 msgid "Incomes and Expenses This Month"
-msgstr "Receitas e Despesas Deste Mês"
+msgstr "Receitas e Despesas Neste Mês"
 
 #: views/khomeview.cpp:1415 views/khomeview.cpp:1533
-#, fuzzy
 msgid "Incomes"
-msgstr "Receita"
+msgstr "Receitas"
 
 #: views/khomeview.cpp:1418 views/khomeview.cpp:1539
-#, fuzzy
 msgid "Expenses"
-msgstr "Despesa"
+msgstr "Despesas"
 
 #: views/khomeview.cpp:1421
-#, fuzzy
 msgid "Profit/Loss"
-msgstr "Total de Rendimentos/Percas"
+msgstr "Rendimentos/Percas"
 
 #: views/khomeview.cpp:1527
-#, fuzzy
 msgid "Schedules This Month"
-msgstr "Receitas Agendadas Neste Mês"
+msgstr "Agendamentos Neste Mês"
 
 # TODO: próximo/seguinte?
 # TODO: abaixo igual
@@ -7420,8 +7374,7 @@ msgstr "Aceita investimentos<br>"
 #: dialogs/konlinebankingsetupwizard.cpp:147
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:162
 msgid "Supports bill payment (but not supported by KMyMoney yet)<br>"
-msgstr ""
-"Aceita pagamento de facturas (mas ainda não é suportado pelo KMyMoney)<br>"
+msgstr "Aceita pagamento de facturas (mas ainda não é suportado pelo KMyMoney)<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:151
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:166
@@ -8047,8 +8000,7 @@ msgstr "Aceita os dados escritos e guarda-los como um agendamento"
 
 #: dialogs/transactioneditor.cpp:595
 msgid "Use this to schedule the transaction for later entry into the ledger."
-msgstr ""
-"Use isto para agendar a transacção para ser inserida mais tarde no registo."
+msgstr "Use isto para agendar a transacção para ser inserida mais tarde no registo."
 
 #: dialogs/transactioneditor.cpp:597
 msgid ""
@@ -8065,13 +8017,11 @@ msgid ""
 msgstr "Inserir ou agendar?"
 
 #: dialogs/transactioneditor.cpp:656
-msgid ""
-"The balance of account <b>%1</b> dropped below the warning balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr "O balanceamento da conta <b>%1</b> passou além do nivél de alerta %2."
 
 #: dialogs/transactioneditor.cpp:662
-msgid ""
-"The balance of account <b>%1</b> dropped below the minimum balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the minimum balance of %2."
 msgstr "O balanceamento da conta <b>%1</b> passou além do nivél mínimo %2."
 
 #: dialogs/transactioneditor.cpp:668
@@ -8163,8 +8113,7 @@ msgstr "Conta modificada.  Antiga: \"%1\", Nova: \"%2\""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:107
 msgid "Account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Conta modificada<br>&nbsp;&nbsp;&nbsp; Antiga: <b>%1</b> Nova: <b>%2</b><p>"
+msgstr "Conta modificada<br>&nbsp;&nbsp;&nbsp; Antiga: <b>%1</b> Nova: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:115
 msgid ""
@@ -8175,10 +8124,8 @@ msgstr ""
 "Depois:<b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid ""
-"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Categoria modificada<br>&nbsp;&nbsp;&nbsp;Antiga <b>%1</b>; Nova<b>%2</b><p>"
+msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgstr "Categoria modificada<br>&nbsp;&nbsp;&nbsp;Antiga <b>%1</b>; Nova<b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:151
 #: dialogs/kconfirmmanualenterdlg.cpp:153
@@ -8187,13 +8134,11 @@ msgstr "empty"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:157
 msgid "Memo changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Memo modificado<br>&nbsp;&nbsp;&nbsp; Antes: <b>%1</b> Depois: <b>%2</b><p>"
+msgstr "Memo modificado<br>&nbsp;&nbsp;&nbsp; Antes: <b>%1</b> Depois: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:166
 msgid "Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"Valor modificado<br>&nbsp;&nbsp;&nbsp; Antes: <b>%1</b>, Depois: <b>%2</b><p>"
+msgstr "Valor modificado<br>&nbsp;&nbsp;&nbsp; Antes: <b>%1</b>, Depois: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:175
 msgid ""
@@ -8470,8 +8415,7 @@ msgstr "Mover o item seleccionado para cima"
 # TODO: Verify acima??
 #: dialogs/settings/ksettingshome.cpp:54
 msgid "Use this to move the selected item up by one position in the list."
-msgstr ""
-"Use isto para mover o item seleccionado uma posição para cima na lista."
+msgstr "Use isto para mover o item seleccionado uma posição para cima na lista."
 
 #: dialogs/settings/ksettingshome.cpp:55
 msgid "&Down"
@@ -8483,8 +8427,7 @@ msgstr "Mover o item seleccionado para baixo"
 
 #: dialogs/settings/ksettingshome.cpp:58
 msgid "Use this to move the selected item down by one position in the list."
-msgstr ""
-"Use isto para mover o item seleccionado uma posição para baixo na lista."
+msgstr "Use isto para mover o item seleccionado uma posição para baixo na lista."
 
 #: dialogs/settings/rc.cpp:1
 msgid "Color settings"
@@ -8575,14 +8518,12 @@ msgid "Forecast Method"
 msgstr "Método de Previsão"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled and Future Transactions"
-msgstr "Transacções &Agendadas e Futuras"
+msgstr "Transacções Agendadas e Futuras"
 
 #: dialogs/settings/rc.cpp:29
-#, fuzzy
 msgid "History-based"
-msgstr "&Baseado no Histórico"
+msgstr "Baseado no Histórico"
 
 #: dialogs/settings/rc.cpp:30
 msgid "History-based settings"
@@ -8772,8 +8713,7 @@ msgstr "Não mostrar agendamentos encerrados"
 
 #: dialogs/settings/rc.cpp:76
 msgid "This option hides all finished schedules in the schedules view."
-msgstr ""
-"Esta opção oculta todos os agendamentos encerrados na visão de agendamentos."
+msgstr "Esta opção oculta todos os agendamentos encerrados na visão de agendamentos."
 
 #: dialogs/settings/rc.cpp:78
 msgid "Don't show transactions prior to"
@@ -8785,8 +8725,7 @@ msgstr "Não mostrar as transacções reconciliadas"
 
 #: dialogs/settings/rc.cpp:80
 msgid "This option hides all reconciled transactions in the ledger view."
-msgstr ""
-"Esta opção esconde todas as transacções reconciliadas no livro de registos."
+msgstr "Esta opção esconde todas as transacções reconciliadas no livro de registos."
 
 #: dialogs/settings/rc.cpp:81 widgets/rc.cpp:22
 msgid "GPG encryption settings"
@@ -8936,14 +8875,12 @@ msgstr ""
 "manualmente com a roda do mouse"
 
 #: dialogs/settings/rc.cpp:102
-#, fuzzy
 msgid "Information display"
-msgstr "Informação do Empréstimo"
+msgstr "Informação mostrada"
 
 #: dialogs/settings/rc.cpp:103
-#, fuzzy
 msgid "Show Account Limit Information"
-msgstr "Informação da conta"
+msgstr "Mostra o limite da conta"
 
 #: dialogs/settings/rc.cpp:107 widgets/rc.cpp:47
 msgid ""
@@ -9003,9 +8940,8 @@ msgid "Register settings"
 msgstr "Configurações do registo"
 
 #: dialogs/settings/rc.cpp:123
-#, fuzzy
 msgid "Display"
-msgstr "&Visualização"
+msgstr "Visualização"
 
 #: dialogs/settings/rc.cpp:126
 msgid ""
@@ -9020,14 +8956,12 @@ msgstr ""
 "detalhes mostrados no formulário."
 
 #: dialogs/settings/rc.cpp:128
-#, fuzzy
 msgid "Always show a No. field"
-msgstr "Sempre mostr&ar um campo Nr."
+msgstr "Sempre mostrar um campo Nr."
 
 #: dialogs/settings/rc.cpp:129
-#, fuzzy
 msgid "Show group header between transactions"
-msgstr "Mostrar o ca&beçalho de grupo entre as transacções"
+msgstr "Mostrar o cabeçalho de grupo entre as transacções"
 
 #: dialogs/settings/rc.cpp:130
 msgid ""
@@ -9070,9 +9004,8 @@ msgstr ""
 "alternará a ordenação entre <i>ascendente</i> e <i> descendente</i>."
 
 #: dialogs/settings/rc.cpp:137
-#, fuzzy
 msgid "Data entry"
-msgstr "Entrada de d&ados"
+msgstr "Entrada de dados"
 
 #: dialogs/settings/rc.cpp:141
 msgid "Use Enter to move between fields"
@@ -9102,21 +9035,19 @@ msgstr ""
 
 #: dialogs/settings/rc.cpp:147
 msgid "Autofill"
-msgstr ""
+msgstr "Preencher automaticamente"
 
 #: dialogs/settings/rc.cpp:148
 msgid "No Autofill"
-msgstr ""
+msgstr "Não preencher automaticamente"
 
 #: dialogs/settings/rc.cpp:149
-#, fuzzy
 msgid "Don't do autofill of transaction data at all."
-msgstr "Preencher automaticamente com os dados da transação anterior"
+msgstr "Nunca preencher automaticamente os dados."
 
 #: dialogs/settings/rc.cpp:150
-#, fuzzy
 msgid "Same transaction if amount differs less than"
-msgstr "porcento."
+msgstr "Mesma transacção se o valor diferir por menos de"
 
 #: dialogs/settings/rc.cpp:151
 msgid ""
@@ -9127,6 +9058,9 @@ msgid ""
 "\n"
 "Selecting 0% will list all transactions."
 msgstr ""
+"Colecta todas as transacções para o beneficiário. Trata todas as transacções que se referem à mesma categoria e de valor +/- X % como idênticas. Se mais de uma transacção for encontrada, uma lista delas é proposta.\n"
+"\n"
+"Escolhendo 0% vai listar todas as transacções ."
 
 #: dialogs/settings/rc.cpp:152
 msgid ""
@@ -9143,17 +9077,17 @@ msgstr ""
 msgid ""
 "_: Same transaction if amount differs less than percent.\n"
 "percent."
-msgstr "porcento."
+msgstr "percento."
 
 #: dialogs/settings/rc.cpp:154
 msgid "with previously most often used transaction for the payee"
-msgstr ""
+msgstr "com a transacção anterior mais atribuída ao beneficiário"
 
 #: dialogs/settings/rc.cpp:155
 msgid ""
 "The data of the last transaction assigned to the category used most often "
 "for this payee is autofilled into the transaction editor."
-msgstr ""
+msgstr "Os dados da última transacção atribuída à categoria mais utilizada para o beneficiário são preenchidos automaticamente no editor de transacções."
 
 #: dialogs/settings/rc.cpp:157
 msgid "Match transactions within days"
@@ -9179,8 +9113,7 @@ msgstr "Remover a entrada de fonte seleccionada"
 #: dialogs/settings/ksettingsonlinequotes.cpp:61
 #: widgets/kmymoneyonlinequoteconfig.cpp:61
 msgid "Use this to delete the selected online source entry"
-msgstr ""
-"Use isto para remover a entrada de fonte de cotação em linha seleccionada"
+msgstr "Use isto para remover a entrada de fonte de cotação em linha seleccionada"
 
 #: dialogs/settings/ksettingsonlinequotes.cpp:66
 #: widgets/kmymoneyonlinequoteconfig.cpp:66
@@ -9212,8 +9145,7 @@ msgid "Accept splits and return to transaction form"
 msgstr "Aceitar divisões e retornar ao formulário de transacção"
 
 #: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
+msgid "Use this to accept all changes to the splits and return to the transaction"
 msgstr ""
 "Use isto para aceitar todas as mudanças feitas às divisões e retornar à "
 "transacção"
@@ -9225,8 +9157,7 @@ msgstr ""
 "transacção"
 
 #: dialogs/ksplittransactiondlg.cpp:87
-msgid ""
-"Use this to reject all changes to the splits and return to the transaction"
+msgid "Use this to reject all changes to the splits and return to the transaction"
 msgstr ""
 "Use isto para rejeitar todas as mudanças feitas às divisões e retornar à "
 "transacção"
@@ -9412,8 +9343,7 @@ msgid "will be calculated"
 msgstr "será calculado"
 
 #: dialogs/kmymoneysplittable.cpp:627
-msgid ""
-"You are about to delete the selected split. Do you really want to continue?"
+msgid "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
 "Você está prestes a remover a parcela seleccionada. Você deseja realmente "
 "continuar?"
@@ -9440,20 +9370,17 @@ msgid "Account to import to"
 msgstr "Conta para a qual importar"
 
 #: dialogs/rc.cpp:4
-#, fuzzy
 msgid "Abort"
-msgstr "C&ancelar"
+msgstr "Cancelar"
 
 #: dialogs/rc.cpp:5 dialogs/rc.cpp:66 dialogs/rc.cpp:299 dialogs/rc.cpp:389
 #: dialogs/rc.cpp:421 dialogs/rc.cpp:774 dialogs/rc.cpp:840
-#, fuzzy
 msgid "Ok"
-msgstr "&Ok"
+msgstr "Ok"
 
 #: dialogs/rc.cpp:6 dialogs/rc.cpp:169
-#, fuzzy
 msgid "Skip"
-msgstr "&Saltar"
+msgstr "Saltar"
 
 # TODO: Verify
 #: dialogs/rc.cpp:8
@@ -9489,9 +9416,8 @@ msgid ""
 msgstr "Ponto de Montagem:"
 
 #: dialogs/rc.cpp:11
-#, fuzzy
 msgid "Choose..."
-msgstr "E&scolher..."
+msgstr "Escolher..."
 
 #: dialogs/rc.cpp:12
 msgid "Mount this directory before backing up."
@@ -9556,14 +9482,12 @@ msgid "Please choose what you wish to do with the above changes"
 msgstr "Por favor, escolha o que deseja fazer com as mudanças acima"
 
 #: dialogs/rc.cpp:31
-msgid ""
-"Discard the changes and enter the original transaction into the register."
+msgid "Discard the changes and enter the original transaction into the register."
 msgstr "Descartar as mudanças e introduzir a transacção original no registo."
 
 #: dialogs/rc.cpp:32
 msgid "Enter these new values this one time, for this occurence only."
-msgstr ""
-"Introduzir estes novos valores desta vez, para esta ocorrência somente."
+msgstr "Introduzir estes novos valores desta vez, para esta ocorrência somente."
 
 #: dialogs/rc.cpp:33
 msgid "Set all further occurences in this schedule to be these values."
@@ -9591,9 +9515,8 @@ msgid "Choose the csv file:"
 msgstr "Escolha o ficheiro csv:"
 
 #: dialogs/rc.cpp:39
-#, fuzzy
 msgid "Browse"
-msgstr "&Navegar"
+msgstr "Navegar"
 
 #: dialogs/rc.cpp:40
 msgid "Between These Dates"
@@ -9608,9 +9531,8 @@ msgid "End on:"
 msgstr "Termina em:"
 
 #: dialogs/rc.cpp:43
-#, fuzzy
 msgid "Run"
-msgstr "&Proceder"
+msgstr "Proceder"
 
 #: dialogs/rc.cpp:44
 msgid "Progress Info"
@@ -9641,9 +9563,8 @@ msgid "Convert to"
 msgstr "Converter em"
 
 #: dialogs/rc.cpp:61
-#, fuzzy
 msgid "To amount"
-msgstr "P&ara a quantia"
+msgstr "Para a quantia"
 
 #: dialogs/rc.cpp:62
 msgid "Exchange rate / Price"
@@ -9683,8 +9604,7 @@ msgstr "F1"
 
 #: dialogs/rc.cpp:80
 msgid "If this button is not activated, select the base currency first."
-msgstr ""
-"Se este botão não estiver activado, seleccione a moeda de base primeiro."
+msgstr "Se este botão não estiver activado, seleccione a moeda de base primeiro."
 
 #: dialogs/rc.cpp:81
 msgid ""
@@ -9760,8 +9680,7 @@ msgstr "A quantia é uma estimação porque varia a cada pagamento"
 # TODO: Verify
 #: dialogs/rc.cpp:117
 msgid "Enter this schedule into the register automatically when it is due"
-msgstr ""
-"Inscrever este agendamento no registo automaticamente quando estará devido"
+msgstr "Inscrever este agendamento no registo automaticamente quando estará devido"
 
 #: dialogs/rc.cpp:118
 msgid "This schedule will end at some time"
@@ -9956,36 +9875,34 @@ msgid "Type:"
 msgstr "Tipo:"
 
 #: dialogs/rc.cpp:167
-#, fuzzy
 msgid "Enter"
-msgstr "&Entrar"
+msgstr "Aceitar"
 
 #: dialogs/rc.cpp:168
 msgid ""
 "Enter the transaction and advance the next due date of this schedule to the "
 "next payment date."
-msgstr ""
+msgstr "Inserir o agendamento e avançar a data do próximo pagamento para o seguinte."
 
 #: dialogs/rc.cpp:170
 msgid ""
 "Do not enter the transaction but advance the next due date of this schedule "
 "to the next payment date."
-msgstr ""
+msgstr "Não inserir os pagamentos deste agendamento e avançar a data do próximo pagamento para o seguinte."
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Ignore"
-msgstr "Ignorar Capitalização"
+msgstr "Ignorar"
 
 #: dialogs/rc.cpp:172
 msgid ""
 "Do not enter or skip payments for this schedule but continue with the next "
 "schedule."
-msgstr ""
+msgstr "Não inserir ou saltar os pagamentos deste agendamento e continuar com o agendamento seguinte."
 
 #: dialogs/rc.cpp:174
 msgid "Cancel processing of schedule entry."
-msgstr ""
+msgstr "Anular o processamento deste agendamento."
 
 #: dialogs/rc.cpp:175
 msgid "Update Stock and Currency Prices"
@@ -9996,14 +9913,12 @@ msgid "List of known Equities, and the date they were last updated on."
 msgstr "Lista de Acções conhecidas, e a data da última actualização de valor."
 
 #: dialogs/rc.cpp:178
-#, fuzzy
 msgid "Update All"
-msgstr "&Actualizar Tudo"
+msgstr "Actualizar Tudo"
 
 #: dialogs/rc.cpp:179
-#, fuzzy
 msgid "Update Selected"
-msgstr "Act&ualizar Seleccionados"
+msgstr "Actualizar Seleccionados"
 
 #: dialogs/rc.cpp:180
 msgid "Status:"
@@ -10282,35 +10197,30 @@ msgid "Online Quotes - Select price source"
 msgstr "Cotações em linha - Seleccione a fonte de valores"
 
 #: dialogs/rc.cpp:280
-msgid ""
-"This price source is not known to KMyMoney. Please select an option below."
+msgid "This price source is not known to KMyMoney. Please select an option below."
 msgstr ""
 "Esta fonte de valores não é conhecida pelo KMyMoney. Por favor seleccione "
 "uma opção abaixo."
 
 #: dialogs/rc.cpp:281
-#, fuzzy
 msgid "Do not perform online quotes for this investment"
-msgstr "&Não levantar cotações em linha para este investimento"
+msgstr "Não levantar cotações em linha para este investimento"
 
 #: dialogs/rc.cpp:282
-#, fuzzy
 msgid "Select a known KMyMoney source from the list below"
-msgstr "Seleccione uma fonte conhecida do KMyMoney a partir da lista a&baixo"
+msgstr "Seleccione uma fonte conhecida do KMyMoney a partir da lista abaixo"
 
 #: dialogs/rc.cpp:283
-#, fuzzy
 msgid ""
 "Use the following name for the price source.\n"
 "(Click Help for further information.)"
 msgstr ""
-"&Use o seguinte nome para a fonte de valores.\n"
+"Use o seguinte nome para a fonte de valores.\n"
 "(Clique em Ajuda para mais informacções.)"
 
 #: dialogs/rc.cpp:284
-#, fuzzy
 msgid "Always use this selection for this price source."
-msgstr "Sempre us&ar esta selecção para esta fonte de valores."
+msgstr "Sempre usar esta selecção para esta fonte de valores."
 
 #: dialogs/rc.cpp:286
 msgid ""
@@ -10335,9 +10245,8 @@ msgid "QIF File to Import:"
 msgstr "Arquivo QIF a Importar:"
 
 #: dialogs/rc.cpp:290
-#, fuzzy
 msgid "Scan"
-msgstr "&Procurar"
+msgstr "Procurar"
 
 #: dialogs/rc.cpp:293
 msgid "Import options"
@@ -10392,9 +10301,8 @@ msgid "Show all stored prices"
 msgstr "Mostrar todos os preços armazenados"
 
 #: dialogs/rc.cpp:336
-#, fuzzy
 msgid "Delete Range ..."
-msgstr "Apagar Inte&rvalo..."
+msgstr "Apagar Intervalo..."
 
 #: dialogs/rc.cpp:339
 msgid "New Account Dialog"
@@ -10539,8 +10447,7 @@ msgstr "Nova Acção Ordinária"
 
 #: dialogs/rc.cpp:399 dialogs/rc.cpp:400
 msgid "Trading Symbol of the stock or mutual fund, not required."
-msgstr ""
-"Símbolo Comercial da acção ou fundo comum de investimento, não requerido."
+msgstr "Símbolo Comercial da acção ou fundo comum de investimento, não requerido."
 
 #: dialogs/rc.cpp:407 dialogs/rc.cpp:408
 msgid "Name of the company, or mutual fund."
@@ -11382,9 +11289,8 @@ msgid "Difference:"
 msgstr "Diferença:"
 
 #: dialogs/rc.cpp:727
-#, fuzzy
 msgid "Edit Transactions..."
-msgstr "&Editar Transacções..."
+msgstr "Editar Transacções..."
 
 #: dialogs/rc.cpp:730
 msgid "Security List Editor"
@@ -11399,9 +11305,8 @@ msgid "Cash Fraction"
 msgstr "Fração do Dinheiro"
 
 #: dialogs/rc.cpp:739
-#, fuzzy
 msgid "Add ..."
-msgstr "&Adicionar..."
+msgstr "Adicionar..."
 
 #: dialogs/rc.cpp:742
 msgid "Show national currencies"
@@ -11466,24 +11371,21 @@ msgid "How do you want to proceed?"
 msgstr "Como deseja proceder?"
 
 #: dialogs/rc.cpp:770
-#, fuzzy
 msgid "Continue to edit splits"
-msgstr "Continuar a &editar as divisões"
+msgstr "Continuar a editar as divisões"
 
 #: dialogs/rc.cpp:771
-#, fuzzy, c-format
+#, c-format
 msgid "Change total amount of transaction to %1."
-msgstr "Modificar a quantia &total da transacção para %1."
+msgstr "Modificar a quantia total da transacção para %1."
 
 #: dialogs/rc.cpp:772
-#, fuzzy
 msgid "Distribute difference of %1 among all splits."
-msgstr "&Distribuir a diferença de %1 entre todas as divisões."
+msgstr "Distribuir a diferença de %1 entre todas as divisões."
 
 #: dialogs/rc.cpp:773
-#, fuzzy
 msgid "Leave %1 unassigned."
-msgstr "D&eixar %1 sem atribuição."
+msgstr "Deixar %1 sem atribuição."
 
 #: dialogs/rc.cpp:776
 msgid "Split transaction"
@@ -11644,17 +11546,15 @@ msgid "Input filter location"
 msgstr "Localização do filtro de entrada"
 
 #: dialogs/rc.cpp:838
-#, fuzzy
 msgid "Rename"
-msgstr "Re&nomear"
+msgstr "Renomear"
 
 #: dialogs/kselecttransactionsdlg.cpp:44
 msgid "Select Transaction"
 msgstr "Seleccionar Transacção"
 
 #: dialogs/kselecttransactionsdlg.cpp:45
-msgid ""
-"Select a transaction and press the OK button or use Cancel to select none."
+msgid "Select a transaction and press the OK button or use Cancel to select none."
 msgstr ""
 "Selecione uma transação e pressione 'OK' ou use o 'Cancelar' para não "
 "seleccionar nenhuma."
@@ -11706,8 +11606,7 @@ msgid "Skip this transaction"
 msgstr "Saltar esta transacção"
 
 #: dialogs/kaccountselectdlg.cpp:67
-msgid ""
-"Use this to skip importing this transaction and proceed with the next one."
+msgid "Use this to skip importing this transaction and proceed with the next one."
 msgstr ""
 "Use isto para omitir a importação desta transacção e prosseguir para a "
 "seguinte."
@@ -11725,10 +11624,8 @@ msgid "Accepts the selected action and continues"
 msgstr "Aceita a acção seleccionada e continua"
 
 #: dialogs/kaccountselectdlg.cpp:79
-msgid ""
-"Use this to accept the selection and continue processing the transaction"
-msgstr ""
-"Use isto para aceitar a selecção e continuar o processamento da transacção"
+msgid "Use this to accept the selection and continue processing the transaction"
+msgstr "Use isto para aceitar a selecção e continuar o processamento da transacção"
 
 #: dialogs/kaccountselectdlg.cpp:82
 msgid "&Abort"
@@ -11879,8 +11776,7 @@ msgstr ""
 "contidos em seus pagamentos periódicos."
 
 #: dialogs/knewloanwizard.cpp:139
-msgid ""
-"Use this to create a new account to which the initial payment should be made"
+msgid "Use this to create a new account to which the initial payment should be made"
 msgstr ""
 "Use isto para criar uma nova conta para a qual o pagamento inicial deve ser "
 "feito"
@@ -11926,8 +11822,7 @@ msgstr ""
 "deixe-o vazio para que seja calculado automaticamente."
 
 #: dialogs/knewloanwizard.cpp:248
-msgid ""
-"Please enter the date, the first payment for this loan was/is due this year."
+msgid "Please enter the date, the first payment for this loan was/is due this year."
 msgstr ""
 "Por favor, introduza a data em que o primeiro pagamento para este "
 "financiamento venceu/vence neste ano."
@@ -12051,8 +11946,7 @@ msgstr ""
 "critérios."
 
 #: dialogs/kfindtransactiondlg.cpp:250
-msgid ""
-"Warning: Filtering by Category will exclude all transfers from the results."
+msgid "Warning: Filtering by Category will exclude all transfers from the results."
 msgstr ""
 "Aviso: a filtragem por Categoria vai excluir todos os transferimentos dos "
 "resultados."
@@ -12075,8 +11969,7 @@ msgstr "Encontrei %1 transacções que correspondem"
 
 #: dialogs/knewbankdlg.cpp:94
 msgid "The institution name field is empty.  Please enter the name."
-msgstr ""
-"O campo de nome da instituição está vazio.  Por favor, introduza o nome."
+msgstr "O campo de nome da instituição está vazio.  Por favor, introduza o nome."
 
 #: dialogs/knewbankdlg.cpp:94
 msgid "Adding New Institution"
@@ -12385,9 +12278,9 @@ msgid "Last reconciliation"
 msgstr "Última reconciliação"
 
 #: widgets/register.cpp:2266
-#, fuzzy, c-format
+#, c-format
 msgid "Online Statement Balance: %1"
-msgstr "Extracto: %1"
+msgstr "Orçamento do Extracto: %1"
 
 #: widgets/register.cpp:2270
 msgid "This year"
@@ -12668,9 +12561,8 @@ msgid "Period"
 msgstr "Período"
 
 #: widgets/rc.cpp:21
-#, fuzzy
 msgid "Individual"
-msgstr "I&ndividual"
+msgstr "Individual"
 
 #: widgets/rc.cpp:23
 msgid ""
@@ -12748,8 +12640,7 @@ msgstr "Página Relatório"
 
 #: widgets/rc.cpp:53
 msgid "<p>On this tab, you set the basic properties of this report.</p>"
-msgstr ""
-"<p>Nesta página, você configura as propriedades básicas deste relatório.</p>"
+msgstr "<p>Nesta página, você configura as propriedades básicas deste relatório.</p>"
 
 #: widgets/rc.cpp:54
 msgid "Report Name"
@@ -12821,10 +12712,8 @@ msgid "Totals"
 msgstr "Totais"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
-msgid ""
-"<p>Choose what kind of accounts to display as the rows of this report.</p>"
-msgstr ""
-"<p>Selecione que tipo de contas exibir como linhas neste relatório.</p>"
+msgid "<p>Choose what kind of accounts to display as the rows of this report.</p>"
+msgstr "<p>Selecione que tipo de contas exibir como linhas neste relatório.</p>"
 
 #: widgets/rc.cpp:71
 msgid "Columns"
@@ -12836,8 +12725,7 @@ msgstr "Bi-Mensalmente"
 
 #: widgets/rc.cpp:78
 msgid "<p>Choose how large of a time period each column should encompass</p>"
-msgstr ""
-"<p>Selecione quão largo de um período de tempo cada coluna deve abranger</p>"
+msgstr "<p>Selecione quão largo de um período de tempo cada coluna deve abranger</p>"
 
 #: widgets/rc.cpp:79
 msgid "Income & Expenses"
@@ -12901,13 +12789,11 @@ msgstr "<p>Selecione esta opção para mostrar a coluna Memo</p>"
 
 #: widgets/rc.cpp:103
 msgid "<p>Select this option to show the Shares column for investments</p>"
-msgstr ""
-"<p>Selecione esta opção para mostrar a coluna Cotas para investimentos</p>"
+msgstr "<p>Selecione esta opção para mostrar a coluna Cotas para investimentos</p>"
 
 #: widgets/rc.cpp:105
 msgid "<p>Select this option to show the Price column for investments</p>"
-msgstr ""
-"<p>Selecione esta opção para mostrar a coluna Preço para os investimentos</p>"
+msgstr "<p>Selecione esta opção para mostrar a coluna Preço para os investimentos</p>"
 
 #: widgets/rc.cpp:107
 msgid "<p>Select this option to show the Reconciled column</p>"
@@ -12958,8 +12844,7 @@ msgid "Hide Split Transaction Details"
 msgstr "Ocultar Detalhes da Parcela da Transação"
 
 #: widgets/rc.cpp:124
-msgid ""
-"Do not display the individual transactions that make up a split transaction"
+msgid "Do not display the individual transactions that make up a split transaction"
 msgstr ""
 "Não exibir transacções individuais que fazem parte de uma parcela de "
 "transação"
@@ -12984,8 +12869,7 @@ msgstr "Tipo de Gráfico"
 
 #: widgets/rc.cpp:130
 msgid "<p>Select what form you would like the chart to be drawn as.</p>"
-msgstr ""
-"<p>Selecione a forma que você gostaria que o gráfico fosse desenhado.</p>"
+msgstr "<p>Selecione a forma que você gostaria que o gráfico fosse desenhado.</p>"
 
 #: widgets/rc.cpp:131
 msgid "Line"
@@ -13231,62 +13115,3 @@ msgstr "Últimos 3 meses até 3 próximos meses"
 msgid "User defined"
 msgstr "Definido pelo utilizador"
 
-#~ msgid "S&ummary"
-#~ msgstr "Res&umo"
-
-#~ msgid "Det&ail"
-#~ msgstr "Det&alhe"
-
-#~ msgid "Assets"
-#~ msgstr "Activo"
-
-#~ msgid "Liabilities"
-#~ msgstr "Passivo"
-
-#~ msgid "Total Incomes This Month"
-#~ msgstr "Total Receitas Deste Mês"
-
-#~ msgid "Total Expenses This Month"
-#~ msgstr "Total Despesas Deste Mês"
-
-#~ msgid "Scheduled Expenses This Month"
-#~ msgstr "Despesas Agendadas Neste Mês"
-
-#~ msgid "Scheduled Transfers This Month"
-#~ msgstr "Transferimentos Agendados Neste Mês"
-
-# TODO: lentes?
-#~ msgid "&Use the ledger lens"
-#~ msgstr "&Usar lupa do livro de registro"
-
-#~ msgid ""
-#~ "_: Same transaction if amount differs less than percent.\n"
-#~ "Same transaction if amount differs less than"
-#~ msgstr "Mesma transação se a quantia diferir menos de"
-
-#~ msgid "&Create"
-#~ msgstr "&Criar"
-
-#~ msgid "Ca&ncel"
-#~ msgstr "A&nular"
-
-#~ msgid "Co&nfigure"
-#~ msgstr "Con&figurar"
-
-#~ msgid "Te&xt"
-#~ msgstr "Te&xto"
-
-#~ msgid "Online &Quotes"
-#~ msgstr "&Cotações Em Linha"
-
-#~ msgid "O&K"
-#~ msgstr "O&K"
-
-#~ msgid "&Edit ..."
-#~ msgstr "&Editar..."
-
-#~ msgid "&Delete ..."
-#~ msgstr "&Apagar ..."
-
-#~ msgid "&Yearly"
-#~ msgstr "An&ual"
