@@ -437,6 +437,7 @@ protected slots:
   void slotAccountMapOnline(void);
   void slotAccountUnmapOnline(void);
   void slotAccountUpdateOnline(void);
+  void slotAccountUpdateOnlineAll(void);
 
   void slotManageGpgKeys(void);
   void slotKeySelected(int idx);

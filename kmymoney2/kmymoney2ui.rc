@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="34" name="kmymoney2" >
+<kpartgui version="35" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
@@ -60,6 +60,7 @@
    <Action name="account_online_unmap" />
    <Action name="account_online_map" />
    <Action name="account_online_update" />
+   <Action name="account_online_update_all" />
   </Menu>
   <Menu name="category" >
    <text>&amp;Category</text>
@@ -236,6 +237,10 @@
   <Action name="currency_delete" />
   <Action name="currency_setbase" />
  </Menu>
+ <Menu name="account_online_menu">
+  <Action name="account_online_update" />
+  <Action name="account_online_update_all" />
+ </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>
   <Action name="file_new" />
@@ -249,7 +254,7 @@
   <Action name="account_open" />
   <Action name="account_edit" />
   <Action name="account_reconcile" />
-  <Action name="account_online_update" />
+  <Action name="account_online_update_menu" />
   <Action name="account_chart" />
   <Separator lineSeparator="true"/>
   <Action name="edit_find_transaction" />

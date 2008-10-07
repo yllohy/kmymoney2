@@ -352,8 +352,13 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Show balance chart..."), "kchart_chrt", 0, this, SLOT(slotAccountChart()), actionCollection(), "account_chart");
 #endif
   new KAction(i18n("Map to online account"), "news_subscribe", 0, this, SLOT(slotAccountMapOnline()), actionCollection(), "account_online_map");
-  new KAction(i18n("Update account..."), "reload", 0, this, SLOT(slotAccountUpdateOnline()), actionCollection(), "account_online_update");
   new KAction(i18n("Unmap account"), "", 0, this, SLOT(slotAccountUnmapOnline()), actionCollection(), "account_online_unmap");
+  KActionMenu* menu = new KActionMenu(i18n("Update"), QIconSet(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small,
+                                      KIcon::SizeSmall)), actionCollection(), "account_online_update_menu");
+  // activating the menu button is the same as selecting the current account
+  connect( menu, SIGNAL( activated() ), this, SLOT(slotAccountUpdateOnline()));
+  menu->insert(new KAction(i18n("Update account..."), "", 0, this, SLOT(slotAccountUpdateOnline()), actionCollection(), "account_online_update"));
+  menu->insert(new KAction(i18n("Update all accounts..."), "", 0, this, SLOT(slotAccountUpdateOnlineAll()), actionCollection(), "account_online_update_all"));
 
   // *******************
   // The categories menu
@@ -4905,6 +4910,8 @@ void KMyMoney2App::slotUpdateActions(void)
   action("account_transaction_report")->setEnabled(false);
   action("account_online_map")->setEnabled(false);
   action("account_online_update")->setEnabled(false);
+  action("account_online_update_all")->setEnabled(false);
+  action("account_online_update_menu")->setEnabled(false);
   action("account_online_unmap")->setEnabled(false);
 #ifdef HAVE_KDCHART
   action("account_chart")->setEnabled(false);
@@ -5055,6 +5062,20 @@ void KMyMoney2App::slotUpdateActions(void)
     }
   }
 
+  QValueList<MyMoneyAccount> accList;
+  file->accountList(accList);
+  QValueList<MyMoneyAccount>::const_iterator it_a;
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p = m_onlinePlugins.end();
+  for(it_a = accList.begin(); (it_p == m_onlinePlugins.end()) && (it_a != accList.end()); ++it_a) {
+    if ( !(*it_a).onlineBankingSettings().value("provider").isEmpty() ) {
+      // check if provider is available
+      it_p = m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider"));
+      if(it_p != m_onlinePlugins.end()) {
+        action("account_online_update_all")->setEnabled(true);
+        action("account_online_update_menu")->setEnabled(true);
+      }
+    }
+  }
   MyMoneyFileBitArray skip(IMyMoneyStorage::MaxRefCheckBits);
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
@@ -5092,6 +5113,7 @@ void KMyMoney2App::slotUpdateActions(void)
             it_p = m_onlinePlugins.find(m_selectedAccount.onlineBankingSettings().value("provider"));
             if(it_p != m_onlinePlugins.end()) {
               action("account_online_update")->setEnabled(true);
+              action("account_online_update_menu")->setEnabled(true);
             }
           } else
             action("account_online_map")->setEnabled(m_onlinePlugins.count() > 0);
@@ -5791,6 +5813,24 @@ void KMyMoney2App::slotAccountMapOnline(void)
       } catch(MyMoneyException* e) {
         KMessageBox::error(this, i18n("Unable to map account to online account: %1").arg(e->what()));
         delete e;
+      }
+    }
+  }
+}
+
+void KMyMoney2App::slotAccountUpdateOnlineAll(void)
+{
+  QValueList<MyMoneyAccount> accList;
+  MyMoneyFile::instance()->accountList(accList);
+  QValueList<MyMoneyAccount>::const_iterator it_a;
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p = m_onlinePlugins.end();
+  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
+    if ( !(*it_a).onlineBankingSettings().value("provider").isEmpty() ) {
+      // check if provider is available
+      it_p = m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider"));
+      if(it_p != m_onlinePlugins.end()) {
+        // plugin found, call it
+        (*it_p)->updateAccount(*it_a);
       }
     }
   }
