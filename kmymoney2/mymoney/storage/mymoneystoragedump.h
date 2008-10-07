@@ -49,7 +49,7 @@ public:
 
 private:
   void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
-  void dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp);
+  void dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp, int indent = 0);
   const QString reconcileToString(MyMoneySplit::reconcileFlagE flag) const;
 };
 

@@ -340,12 +340,14 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   }
 }
 
-void MyMoneyStorageDump::dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp)
+void MyMoneyStorageDump::dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp, int indent)
 {
-  s << headline << "\n";
+  QString ind;
+  ind.fill(' ', indent);
+  s << ind << headline << "\n";
   QMap<QCString, QString>::const_iterator it;
   for(it = kvp.pairs().begin(); it != kvp.pairs().end(); ++it) {
-    s << "    '" << it.key() << "' = '" << it.data() << "'\n";
+    s << ind << "  '" << it.key() << "' = '" << it.data() << "'\n";
   }
 }
 
@@ -357,12 +359,8 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
   s << "  Commodity = [" << it_t.commodity() << "]\n";
   s << "  Memo = " << it_t.memo() << "\n";
   s << "  BankID = " << it_t.bankID() << "\n";
-  s << "  KVP: " << "\n";
-  QMap<QCString, QString>kvp = it_t.pairs();
-  QMap<QCString, QString>::Iterator it;
-  for(it = kvp.begin(); it != kvp.end(); ++it) {
-    s << "    '" << it.key() << "' = '" << it.data() << "'\n";
-  }
+  dumpKVP("KVP:", s, it_t, 2);
+
   s << "  Splits\n";
   s << "  ------\n";
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -398,6 +396,8 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
     if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
       s << "    ReconcileDate = " << (*it_s).reconcileDate().toString(Qt::ISODate) << "\n";
     }
+    s << "    BankID = " << (*it_s).bankID() << "\n";
+    dumpKVP("KVP:", s, (*it_s), 4);
     s << "\n";
   }
   s << "\n";

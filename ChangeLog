@@ -2,6 +2,8 @@
 2008-10-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation from Bert Keuter
   * Added feature to update all online accounts at once
+  * Dump some more values
+  * Fix problem with duplicate dividend transactions
 
 2008-10-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge

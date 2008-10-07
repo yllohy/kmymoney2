@@ -304,7 +304,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
   result = notMatched;
   sm = MyMoneySplit();
 
-  MyMoneyTransactionFilter filter(m_account.id());
+  MyMoneyTransactionFilter filter(si.accountId());
   filter.setReportAllSplits(false);
   filter.setDateFilter(ti.postDate().addDays(-m_days), ti.postDate().addDays(m_days));
   filter.setAmountFilter(si.shares(), si.shares());
