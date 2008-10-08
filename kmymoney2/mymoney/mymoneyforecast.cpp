@@ -368,7 +368,7 @@ MyMoneyMoney MyMoneyForecast::accountMovingAverage(const MyMoneyAccount &acc, co
     balanceVariation += (balanceAfter - balanceBefore); //add the balance variation between days
   }
   //calculate average of the variations
-  return balanceVariation / MyMoneyMoney(forecastTerms,1);
+  return (balanceVariation / MyMoneyMoney(forecastTerms,1)).convert(10000);
 }
 
 MyMoneyMoney MyMoneyForecast::accountWeightedMovingAverage(const MyMoneyAccount &acc, const int trendDay, const int totalWeight)
@@ -382,7 +382,7 @@ MyMoneyMoney MyMoneyForecast::accountWeightedMovingAverage(const MyMoneyAccount 
     balanceVariation += ( (balanceAfter - balanceBefore) * MyMoneyMoney(weight, 1) ); //add the balance variation between days multiplied by its weight
   }
   //calculate average of the variations
-  return balanceVariation / MyMoneyMoney(totalWeight, 1);
+  return (balanceVariation / MyMoneyMoney(totalWeight, 1)).convert(10000);
 }
 
 void MyMoneyForecast::calculateHistoricDailyBalances()
@@ -406,6 +406,7 @@ void MyMoneyForecast::calculateHistoricDailyBalances()
         //balance of the day is the balance of the day before multiplied by the trend for the day
         m_accountList[acc.id()][f_day] = balanceDayBefore;
         m_accountList[acc.id()][f_day] += accountDailyTrend; //movement trend for that particular day
+        m_accountList[acc.id()][f_day] = m_accountList[acc.id()][f_day].convert(acc.fraction());
         //m_accountList[acc.id()][f_day] += m_accountListPast[acc.id()][f_day.addDays(-historyDays())];
         f_day = f_day.addDays(1);
       }
