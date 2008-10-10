@@ -142,7 +142,7 @@ void ObjectInfoTable::constructScheduleTable ( void )
   {
     MyMoneySchedule schedule = *it_schedule;
 
-    MyMoneyAccount account = schedule.account();
+    ReportAccount account = schedule.account();
 
     if ( m_config.includes ( account ) )  {
       //get fraction for account
@@ -153,6 +153,12 @@ void ObjectInfoTable::constructScheduleTable ( void )
         fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
 
       TableRow scheduleRow;
+
+      //convert to base currency if needed
+      MyMoneyMoney xr = MyMoneyMoney(1,1);
+      if (m_config.isConvertCurrency() && account.isForeignCurrency()) {
+        xr = account.baseCurrencyPrice(QDate::currentDate()).reduce();
+      }
 
       // help for sort and render functions
       scheduleRow["rank"] = "0";
@@ -170,7 +176,7 @@ void ObjectInfoTable::constructScheduleTable ( void )
       //to get the payee we must look into the splits of the transaction
       MyMoneyTransaction transaction = schedule.transaction();
       MyMoneySplit split = transaction.splitByAccount ( account.id(), true );
-      scheduleRow["value"] = split.value().toString();
+      scheduleRow["value"] = (split.value() * xr).toString();
       MyMoneyPayee payee = file->payee ( split.payeeId() );
       scheduleRow["payee"] = payee.name();
       m_rows += scheduleRow;
@@ -238,6 +244,7 @@ void ObjectInfoTable::constructAccountTable ( void )
        && account.accountType() != MyMoneyAccount::Stock
        && !account.isClosed())
     {
+      MyMoneyMoney value;
       accountRow["rank"] = "0";
       accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
       accountRow["institution"] = (file->institution(account.institutionId())).name();
@@ -257,11 +264,18 @@ void ObjectInfoTable::constructAccountTable ( void )
 
       //investment accounts show the balances of all its subaccounts
       if(account.accountType() == MyMoneyAccount::Investment) {
-        MyMoneyMoney value = investmentBalance(account);
-        accountRow["currentbalance"] = value.toString();
+        value = investmentBalance(account);
       } else {
-        accountRow["currentbalance"] = (file->balance(account.id())).toString();
+        value = file->balance(account.id());
       }
+
+      //convert to base currency if needed
+      if (m_config.isConvertCurrency() && account.isForeignCurrency()) {
+        MyMoneyMoney xr = account.baseCurrencyPrice(QDate::currentDate()).reduce();
+        value = value * xr;
+      }
+      accountRow["currentbalance"] = value.toString();
+
       m_rows += accountRow;
     }
     ++it_account;
@@ -286,6 +300,12 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
        || account.accountType() == MyMoneyAccount::AssetLoan ) 
        && !account.isClosed())
     {
+      //convert to base currency if needed
+      MyMoneyMoney xr = MyMoneyMoney(1,1);
+      if (m_config.isConvertCurrency() && account.isForeignCurrency()) {
+         xr = account.baseCurrencyPrice(QDate::currentDate()).reduce();
+      }
+
       accountRow["rank"] = "0";
       accountRow["topcategory"] = KMyMoneyUtils::accountTypeToString(account.accountGroup());
       accountRow["institution"] = (file->institution(account.institutionId())).name();
@@ -297,13 +317,16 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
       //accountRow["currency"] = (file->currency(account.currencyId())).tradingSymbol();
       accountRow["currencyname"] = (file->currency(account.currencyId())).name();
       accountRow["payee"] = file->payee(loan.payee()).name();
-      accountRow["loanamount"] = loan.loanAmount().toString();
-      accountRow["interestrate"] = (loan.interestRate(QDate::currentDate())/MyMoneyMoney(100,1)).toString();
+      accountRow["loanamount"] = (loan.loanAmount() * xr).toString();
+      accountRow["interestrate"] = (loan.interestRate(QDate::currentDate())/MyMoneyMoney(100,1)*xr).toString();
       accountRow["nextinterestchange"] = loan.nextInterestChange().toString( Qt::ISODate );
-      accountRow["periodicpayment"] = loan.periodicPayment().toString();
-      accountRow["finalpayment"] = loan.finalPayment().toString();
+      accountRow["periodicpayment"] = (loan.periodicPayment() * xr).toString();
+      accountRow["finalpayment"] = (loan.finalPayment() * xr).toString();
       accountRow["favorite"] = account.value("PreferredAccount");
-      accountRow["currentbalance"] = (file->balance(account.id())).toString();
+
+      MyMoneyMoney value = file->balance(account.id());
+      value = value * xr;
+      accountRow["currentbalance"] = value.toString();
       m_rows += accountRow;
     }
     ++it_account;

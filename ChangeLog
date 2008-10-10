@@ -1,4 +1,8 @@
 
+2008-10-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed balance of general information reports when converting to
+    base currency
+
 2008-10-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed calculation of forecast for stocks which caused an overflow
     of MyMoneyMoney members
