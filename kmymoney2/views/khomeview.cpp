@@ -242,6 +242,10 @@ void KHomeView::loadView(void)
           case 9:         // budget
               showBudget();
               break;
+          case 10:         // cash flow summary
+              showCashFlowSummary();
+              break;
+
 
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -1526,6 +1530,7 @@ void KHomeView::showSchedulesSummary(void)
 
   amountScheduledIncome.replace(" ","&nbsp;");
   amountScheduledExpense.replace(" ","&nbsp;");
+  amountScheduledTransfer.replace(" ","&nbsp;");
 
   //print header
   m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
@@ -1711,6 +1716,416 @@ MyMoneyMoney KHomeView::forecastPaymentBalance(const MyMoneyAccount& acc, const 
   }
   m_accountList[acc.id()][paymentDate] = m_accountList[acc.id()][paymentDate] + payment;
   return m_accountList[acc.id()][paymentDate];
+}
+
+void KHomeView::showCashFlowSummary()
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
+
+  //Add total income and expenses for this month
+  MyMoneyTransactionFilter filter;
+  MyMoneyMoney incomeValue;
+  MyMoneyMoney expenseValue;
+  QDate startOfMonth = QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1);
+  QDate endOfMonth = QDate(QDate::currentDate().year(), QDate::currentDate().month(), QDate::currentDate().daysInMonth());
+
+  //get transaction for current month
+  filter.setDateFilter(startOfMonth, endOfMonth);
+  filter.setReportAllSplits(false);
+
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
+  //if no transaction then skip and print total in zero
+  if(transactions.size() > 0) {
+    //get all transactions for this month
+    for(; it_t != transactions.end(); ++it_t ) {
+      const QValueList<MyMoneySplit>& splits = (*it_t).splits();
+      QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
+      for(; it_s != splits.end(); ++it_s ) {
+        if(!(*it_s).shares().isZero()) {
+          MyMoneyAccount acc = file->account((*it_s).accountId());
+          if(acc.isIncomeExpense()) {
+            MyMoneyMoney value;
+            if(acc.currencyId() != file->baseCurrency().id()) {
+              ReportAccount repAcc = ReportAccount(acc.id());
+              MyMoneyMoney curPrice = repAcc.baseCurrencyPrice((*it_t).postDate());
+              value = ((*it_s).shares() * MyMoneyMoney(-1, 1)) * curPrice;
+            } else {
+              value = ((*it_s).shares() * MyMoneyMoney(-1, 1));
+            }
+            //the balance is stored as negative number
+            if(acc.accountType() == MyMoneyAccount::Income) {
+              incomeValue += value;
+            } else {
+              expenseValue += value;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //format income and expenses
+  QString amountIncome = incomeValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountExpense = expenseValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  amountIncome.replace(" ","&nbsp;");
+  amountExpense.replace(" ","&nbsp;");
+
+  //calculate schedules
+
+  //Add all schedules for this month
+  MyMoneyMoney scheduledIncome;
+  MyMoneyMoney scheduledExpense;
+  MyMoneyMoney scheduledLiquidTransfer;
+  MyMoneyMoney scheduledOtherTransfer;
+
+  //get overdues and schedules until the end of this month
+  QValueList<MyMoneySchedule> schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
+      MyMoneySchedule::OCCUR_ANY,
+      MyMoneySchedule::STYPE_ANY,
+      QDate(),
+            endOfMonth);
+
+  //Remove the finished schedules
+  QValueList<MyMoneySchedule>::Iterator finished_it;
+  for (finished_it=schedule.begin(); finished_it!=schedule.end();) {
+    if ((*finished_it).isFinished()) {
+      finished_it = schedule.remove(finished_it);
+      continue;
+    }
+    ++finished_it;
+  }
+
+  //add incomes and expenses
+  QValueList<MyMoneySchedule>::Iterator sched_it;
+  for (sched_it=schedule.begin(); sched_it!=schedule.end();) {
+    QDate nextDate = (*sched_it).nextDueDate();
+    int cnt = 0;
+
+    while(nextDate.isValid() && nextDate <= endOfMonth) {
+      ++cnt;
+      nextDate = (*sched_it).nextPayment(nextDate);
+        // for single occurence nextDate will not change, so we
+        // better get out of here.
+      if((*sched_it).occurence() == MyMoneySchedule::OCCUR_ONCE)
+        break;
+    }
+
+    MyMoneyAccount acc = (*sched_it).account();
+    if(acc.id()) {
+      MyMoneyTransaction transaction = (*sched_it).transaction();
+      // only show the entry, if it is still active
+
+      MyMoneySplit sp = transaction.splitByAccount(acc.id(), true);
+
+      MyMoneyMoney value = (sp.value()*cnt);
+
+      //calculate foreign currency if necessary
+      if(acc.currencyId() != file->baseCurrency().id()) {
+        ReportAccount repAcc = ReportAccount(acc.id());
+        MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+        value = value * curPrice;
+      }
+
+      //check if transfer
+      if((*sched_it).type() == MyMoneySchedule::TYPE_TRANSFER )
+      {
+        //assign depending on account type
+        switch(acc.accountType()) {
+          case MyMoneyAccount::Checkings:
+          case MyMoneyAccount::Savings:
+          case MyMoneyAccount::CreditCard:
+          {
+            //go through the splits and assign to liquid or other transfers
+            const QValueList<MyMoneySplit> splits = transaction.splits();
+            QValueList<MyMoneySplit>::const_iterator split_it;
+            for (split_it = splits.begin(); split_it != splits.end(); ++split_it) {
+              if( (*split_it).accountId() != acc.id() ) {
+                ReportAccount repSplitAcc = ReportAccount((*split_it).accountId());
+                value = (*split_it).value();
+
+                //convert to foreign currency if needed
+                if(acc.currencyId() != file->baseCurrency().id()) {
+                  ReportAccount repAcc = ReportAccount(acc.id());
+                  MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+                  value = value * curPrice;
+                }
+
+                if(repSplitAcc.isLiquidLiability()) {
+                  scheduledLiquidTransfer += value;
+                }
+
+                if( !repSplitAcc.isLiquidLiability() && !repSplitAcc.isLiquidAsset() ) {
+                  scheduledOtherTransfer += value;
+                }
+              }
+            }
+            break;
+          }
+          case MyMoneyAccount::Investment:
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::AssetLoan:
+          {
+            //go through the splits and assign to liquid or other transfers
+            const QValueList<MyMoneySplit> splits = transaction.splits();
+            QValueList<MyMoneySplit>::const_iterator split_it;
+            for (split_it = splits.begin(); split_it != splits.end(); ++split_it) {
+              if( (*split_it).accountId() != acc.id() ) {
+                ReportAccount repSplitAcc = ReportAccount((*split_it).accountId());
+                value = (*split_it).value();
+
+                //convert to foreign currency if needed
+                if(acc.currencyId() != file->baseCurrency().id()) {
+                  ReportAccount repAcc = ReportAccount(acc.id());
+                  MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+                  value = value * curPrice;
+                }
+
+                if(repSplitAcc.isLiquidAsset()) {
+                  scheduledLiquidTransfer -= value;
+                }
+
+                if( !repSplitAcc.isLiquidLiability() && !repSplitAcc.isLiquidAsset() ) {
+                  scheduledOtherTransfer += value;
+                }
+              }
+            }
+            break;
+          }
+          case MyMoneyAccount::Liability:
+          case MyMoneyAccount::Loan:
+          {
+          }
+          default:
+            break;
+        }
+        
+      } else if(sp.value().isNegative()) {
+        //add to scheduled income or expense based on sign
+        scheduledExpense += value;
+      } else {
+        scheduledIncome += value;
+      }
+    }
+    ++sched_it;
+  }
+
+  //format the currency strings
+  QString amountScheduledIncome = scheduledIncome.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountScheduledExpense = scheduledExpense.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountScheduledLiquidTransfer = scheduledLiquidTransfer.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountScheduledOtherTransfer = scheduledOtherTransfer.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+
+  amountScheduledIncome.replace(" ","&nbsp;");
+  amountScheduledExpense.replace(" ","&nbsp;");
+  amountScheduledLiquidTransfer.replace(" ","&nbsp;");
+  amountScheduledOtherTransfer.replace(" ","&nbsp;");
+
+  //get liquid assets and liabilities
+  QValueList<MyMoneyAccount> accounts;
+  QValueList<MyMoneyAccount>::const_iterator account_it;
+  MyMoneyMoney liquidAssets;
+  MyMoneyMoney liquidLiabilities;
+
+  // get list of all accounts
+  file->accountList(accounts);
+  for(account_it = accounts.begin(); account_it != accounts.end();) {
+    if(!(*account_it).isClosed()) {
+      switch((*account_it).accountType()) {
+        //group all assets into one list
+        case MyMoneyAccount::Checkings:
+        case MyMoneyAccount::Savings:
+        case MyMoneyAccount::Cash:
+        {
+          MyMoneyMoney value = MyMoneyFile::instance()->balance((*account_it).id(), QDate::currentDate());
+          //calculate balance for foreign currency accounts
+          if((*account_it).currencyId() != file->baseCurrency().id()) {
+            ReportAccount repAcc = ReportAccount((*account_it).id());
+            MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+            MyMoneyMoney baseValue = value * curPrice;
+            liquidAssets += baseValue;
+          } else {
+            liquidAssets += value;
+          }
+          break;
+        }
+        //group the liabilities into the other
+        case MyMoneyAccount::CreditCard:
+        {
+          MyMoneyMoney value;
+          value = MyMoneyFile::instance()->balance((*account_it).id(), QDate::currentDate());
+          //calculate balance if foreign currency
+          if((*account_it).currencyId() != file->baseCurrency().id()) {
+            ReportAccount repAcc = ReportAccount((*account_it).id());
+            MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+            MyMoneyMoney baseValue = value * curPrice;
+            liquidLiabilities += baseValue;
+          } else {
+            liquidLiabilities += value;
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    ++account_it;
+  }
+  //calculate net worth
+  MyMoneyMoney liquidWorth = liquidAssets+liquidLiabilities;
+
+    //format assets, liabilities and net worth
+  QString amountLiquidAssets = liquidAssets.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountLiquidLiabilities = liquidLiabilities.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountLiquidWorth = liquidWorth.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  amountLiquidAssets.replace(" ","&nbsp;");
+  amountLiquidLiabilities.replace(" ","&nbsp;");
+  amountLiquidWorth.replace(" ","&nbsp;");
+  
+  //show the summary
+  m_part->write("<div class=\"shadow\"><div class=\"displayblock\"><div class=\"summaryheader\">" + i18n("Cash Flow Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+
+  //print header
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  //income and expense title
+  m_part->write("<tr class=\"itemtitle\">");
+  m_part->write("<td class=\"left\" colspan=\"4\">");
+  m_part->write(i18n("Incomes and Expenses of Current Month"));
+  m_part->write("</td></tr>");
+  //column titles
+  m_part->write("<tr class=\"item\">");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Incomes"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Scheduled Incomes"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Expenses"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Scheduled Expenses"));
+  m_part->write("</td>");
+  m_part->write("</tr>");
+
+
+  //add row with banding
+  m_part->write(QString("<tr class=\"row-even\" style=\"font-weight:bold;\">"));
+
+  //print current incomes
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(amountIncome));
+  
+  //print the scheduled income
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(amountScheduledIncome));
+
+  //print current expenses
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountExpense,  true)));
+  
+  //print the scheduled expenses
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledExpense,  true)));
+  m_part->write("</tr>");
+
+  m_part->write("</table>");
+  
+  //print header of assets and liabilities
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  //income and expense title
+  m_part->write("<tr class=\"itemtitle\">");
+  m_part->write("<td class=\"left\" colspan=\"4\">");
+  m_part->write(i18n("Liquid Assets and Liabilities"));
+  m_part->write("</td></tr>");
+  //column titles
+  m_part->write("<tr class=\"item\">");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Liquid Assets"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Transfers to Liquid Liabilities"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Liquid Liabilities"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Other Transfers"));
+  m_part->write("</td>");
+  m_part->write("</tr>");
+
+  //add row with banding
+  m_part->write(QString("<tr class=\"row-even\" style=\"font-weight:bold;\">"));
+
+  //print current liquid assets
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountLiquidAssets, liquidAssets.isNegative())));
+  
+  //print the scheduled transfers
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledLiquidTransfer, scheduledLiquidTransfer.isNegative())));
+
+  //print current liabilities
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountLiquidLiabilities,  liquidLiabilities.isNegative())));
+
+  //print the scheduled transfers
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledOtherTransfer, scheduledOtherTransfer.isNegative())));
+
+
+  m_part->write("</tr>");
+
+  m_part->write("</table>");
+
+  //final conclusion
+  MyMoneyMoney profitValue = incomeValue + expenseValue + scheduledIncome + scheduledExpense;
+  MyMoneyMoney expectedAsset = liquidAssets + scheduledIncome + scheduledExpense + scheduledLiquidTransfer + scheduledOtherTransfer;
+  MyMoneyMoney expectedLiabilities = liquidLiabilities - scheduledLiquidTransfer;
+
+  QString amountExpectedAsset = expectedAsset.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountExpectedLiabilities = expectedLiabilities.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountProfit = profitValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  amountProfit.replace(" ","&nbsp;");
+  amountExpectedAsset.replace(" ","&nbsp;");
+  amountExpectedLiabilities.replace(" ","&nbsp;");
+  
+  
+  
+  //print header of assets and liabilities
+  m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+  //income and expense title
+  m_part->write("<tr class=\"itemtitle\">");
+  m_part->write("<td class=\"left\" colspan=\"4\">");
+  m_part->write(i18n("Cash Flow Status"));
+  m_part->write("</td></tr>");
+  //column titles
+  m_part->write("<tr class=\"item\">");
+  m_part->write("<td>&nbsp;</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Expected Liquid Assets"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Expected Liquid Liabilities"));
+  m_part->write("</td>");
+  m_part->write("<td width=\"25%\" class=\"center\">");
+  m_part->write(i18n("Expected Profit/Loss"));
+  m_part->write("</td>");
+  m_part->write("</tr>");
+
+  //add row with banding
+  m_part->write(QString("<tr class=\"row-even\" style=\"font-weight:bold;\">"));
+  m_part->write("<td>&nbsp;</td>");
+
+  //print expected assets
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountExpectedAsset, expectedAsset.isNegative())));
+
+  //print expected liabilities
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountExpectedLiabilities, expectedLiabilities.isNegative())));
+
+  //print expected profit
+  m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountProfit, profitValue.isNegative())));
+
+  m_part->write("</tr>");
+
+  m_part->write("</table>");
+
+  m_part->write("</div></div>");
+
+  
 }
 
 // Make sure, that these definitions are only used within this file

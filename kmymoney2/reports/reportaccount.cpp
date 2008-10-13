@@ -311,4 +311,21 @@ QString ReportAccount::topParentName( void ) const
   return m_nameHierarchy.first();
 }
 
+bool ReportAccount::isLiquidAsset( void ) const
+{
+  return accountType() == MyMoneyAccount::Cash || 
+      accountType() == MyMoneyAccount::Checkings || 
+      accountType() == MyMoneyAccount::Savings;
+}
+
+
+bool ReportAccount::isLiquidLiability( void ) const
+{
+  return accountType() == MyMoneyAccount::CreditCard;
+  
+}
+
+
+
+
 }  // end namespace reports

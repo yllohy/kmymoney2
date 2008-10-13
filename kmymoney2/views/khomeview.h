@@ -76,6 +76,7 @@ protected:
   void showIncomeExpenseSummary(void);
   void showSchedulesSummary(void);
   void showBudget(void);
+  void showCashFlowSummary(void);
 
   const QString link(const QString& view, const QString& query, const QString& title = QString()) const;
   const QString linkend(void) const;
