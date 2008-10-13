@@ -32,10 +32,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "mymoneyforecast.h"
 #include "../kmymoneyutils.h"
 #include "../kmymoneyglobalsettings.h"
 #include "mymoneyfile.h"
-#include "mymoneyforecast.h"
 #include "mymoneytransactionfilter.h"
 
 MyMoneyForecast::MyMoneyForecast() :
@@ -130,7 +130,7 @@ void MyMoneyForecast::pastTransactions()
         MyMoneyAccount acc = file->account((*it_s).accountId());
         if(isForecastAccount(acc) //If it is one of the accounts we are checking, add the amount of the transaction
           && ( (acc.openingDate() < (*it_t).postDate() && skipOpeningDate())
-           || !skipOpeningDate() ) ){ //dont take the opening day of the account to calculate balance
+           || !skipOpeningDate() ) ){ //don't take the opening day of the account to calculate balance
           dailyBalances balance;
           //FIXME deal with leap years
           balance = m_accountListPast[acc.id()];
@@ -310,7 +310,7 @@ MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, i
     throw new MYMONEYEXCEPTION("Illegal arguments when calling calculateAccountTrend. trendDays must be higher than 0");
   }
 
-  //If it is a new account, we dont take into account the first day
+  //If it is a new account, we don't take into account the first day
   //because it is usually a weird one and it would mess up the trend
   if(openingDate.daysTo(QDate::currentDate())<trendDays){
     startDate = (acc.openingDate()).addDays(1);
@@ -345,10 +345,10 @@ MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, i
   //calculate trend of the account in the past period
   MyMoneyMoney accTrend;
 
-  if(openingDate.daysTo(QDate::currentDate())<trendDays){ //dont take into account the first day of the account
+  //don't take into account the first day of the account
+  if(openingDate.daysTo(QDate::currentDate())<trendDays) {
     accTrend = netIncome/MyMoneyMoney(openingDate.daysTo(QDate::currentDate())-1,1);
-  }
-  else {
+  } else {
     accTrend = netIncome/MyMoneyMoney(trendDays,1);
   }
   return accTrend;
@@ -357,7 +357,7 @@ MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, i
 MyMoneyMoney MyMoneyForecast::accountMovingAverage(const MyMoneyAccount &acc, const int trendDay, const int forecastTerms)
 {
   //Calculate a daily trend for the account based on the accounts of a given number of terms
-  //With a term of 1 month and 3 terms, it calculates the trend taking the transactions occured at that day and the day before,
+  //With a term of 1 month and 3 terms, it calculates the trend taking the transactions occurred at that day and the day before,
   //for the last 3 months
   MyMoneyMoney balanceVariation;
 

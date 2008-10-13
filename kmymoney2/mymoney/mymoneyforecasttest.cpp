@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
+#include "mymoneyforecasttest.h"
 
+#include <iostream>
 #include <qvaluelist.h>
 
-#include "mymoneyforecasttest.h"
 #include "mymoneybudget.h"
 
 #include <kmymoney/mymoneyexception.h>
@@ -169,19 +169,18 @@ void MyMoneyForecastTest::testDoForecastInit() {
 void MyMoneyForecastTest::testDoForecast() {
   //set up environment
   MyMoneyForecast a;
-  
+
   MyMoneyAccount a_checking = file->account(acChecking);
   MyMoneyAccount a_credit = file->account(acCredit);
-  
+
   //test empty forecast
   a.doForecast(); //this is just to check nothing goes wrong if forecast is run agains an empty template
-  
+
   //setup some transactions
   TransactionHelper t1( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT1, acChecking, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionDeposit, -(this->moT2), acCredit, acParent);
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionTransfer, this->moT1, acCredit, acChecking);
-  
-  
+
   a.setForecastMethod(1);
   a.setForecastDays(3);
   a.setAccountsCycle(1);
@@ -190,22 +189,21 @@ void MyMoneyForecastTest::testDoForecast() {
   a.setHistoryMethod(0); //moving average
   a.doForecast();
 
-  //checking didnt have balance variations, so the forecast should be equal to the current balance
+  //checking didn't have balance variations, so the forecast should be equal to the current balance
   MyMoneyMoney b_checking = file->balance(a_checking.id(), QDate::currentDate());
-  
+
   CPPUNIT_ASSERT(a.forecastBalance(a_checking, QDate::currentDate().addDays(1))==b_checking);
   CPPUNIT_ASSERT(a.forecastBalance(a_checking, QDate::currentDate().addDays(2))==b_checking);
   CPPUNIT_ASSERT(a.forecastBalance(a_checking, QDate::currentDate().addDays(3))==b_checking);
   CPPUNIT_ASSERT(a.forecastBalance(a_checking, QDate::currentDate())==b_checking);
-  
   //credit had a variation so the forecast should be different for each day
   MyMoneyMoney b_credit = file->balance(a_credit.id(), QDate::currentDate());
-  
+
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, 0) == b_credit);
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(1)) == (b_credit+(moT2-moT1)));
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(2)) == (b_credit+((moT2-moT1)*2)));
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(3)) == b_credit+((moT2-moT1)*3));
-  
+
   a.setHistoryMethod(1); //weighted moving average
   a.doForecast();
 
@@ -218,7 +216,7 @@ void MyMoneyForecastTest::testDoForecast() {
   TransactionHelper t4( QDate::currentDate().addDays(-2), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   TransactionHelper t5( QDate::currentDate().addDays(-10), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   TransactionHelper t6( QDate::currentDate().addDays(-3), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
-  
+
   a.setForecastMethod(1);
   a.setForecastDays(3);
   a.setAccountsCycle(1);
