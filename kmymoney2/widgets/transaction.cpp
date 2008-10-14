@@ -429,7 +429,7 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
   painter->restore();
 }
 
-void Transaction::paintRegisterIcons(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg)
+void Transaction::paintRegisterIcons(QPainter* painter, int row, int col, const QRect& /*r*/, const QColorGroup& /*cg*/)
 {
   if(row == 0 && col == DetailColumn && painter) {
     if(m_erronous || !m_transaction.value("kmm-attachment").isEmpty()) {

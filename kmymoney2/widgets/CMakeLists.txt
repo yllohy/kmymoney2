@@ -5,12 +5,12 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${K
 LINK_DIRECTORIES(${KDE3_LIB_DIR})
 ########### custom command #############
 
-# create the config.h file out of the config.h.cmake
+# create the makekdewidgets.ini config.h file out of the config.h.cmake
 CONFIGURE_FILE  (${CMAKE_CURRENT_SOURCE_DIR}/makekdewidgets.in ${CMAKE_CURRENT_BINARY_DIR}/makekdewidgets @ONLY)
 
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/kmmwidgets.cpp
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets ${CMAKE_CURRENT_BINARY_DIR}/kmmwidgets.cpp
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets 
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets 
 	)
 
