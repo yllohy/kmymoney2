@@ -2,6 +2,7 @@
 2008-10-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed some Krazy warnings in forecast
   * Added CashFlow Summary to Home Page
+  * Fixed Schedule calculation in CashFlow Summary
 
 2008-10-09 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed balance of general information reports when converting to
