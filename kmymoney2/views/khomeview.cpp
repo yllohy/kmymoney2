@@ -1822,8 +1822,24 @@ void KHomeView::showCashFlowSummary()
       MyMoneyMoney value = (sp.value()*cnt);
 
       // take care of the autoCalc stuff
-      QMap<QCString, MyMoneyMoney> balanceMap;
-      KMyMoneyUtils::calculateAutoLoan(*sched_it, transaction, balanceMap);
+      if((*sched_it).type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+        QDate nextDate = (*sched_it).nextPayment((*sched_it).lastPayment());
+        // make sure we have all 'starting balances' so that the autocalc works
+        QValueList<MyMoneySplit>::const_iterator it_s;
+        QMap<QCString, MyMoneyMoney> balanceMap;
+
+        for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s ) {
+          MyMoneyAccount acc = file->account((*it_s).accountId());
+            // collect all overdues on the first day
+            QDate schedDate = nextDate;
+            if(QDate::currentDate() >= nextDate)
+              schedDate = QDate::currentDate().addDays(1);
+
+            balanceMap[acc.id()] += file->balance(acc.id());
+        }
+
+        KMyMoneyUtils::calculateAutoLoan(*sched_it, transaction, balanceMap);
+      }
 
       //calculate foreign currency if necessary
       if(acc.currencyId() != file->baseCurrency().id()) {
