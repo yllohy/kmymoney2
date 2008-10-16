@@ -1308,7 +1308,7 @@ QString PivotTable::renderCSV( void ) const
 
         bool isUsed = false;
         for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
-          isUsed = it_row.data()[ m_rowTypeList[i] ][0].isUsed();
+          isUsed |= it_row.data()[ m_rowTypeList[i] ][0].isUsed();
 
         while ( column < m_numColumns ) {
           //show columns
