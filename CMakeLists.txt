@@ -3,6 +3,12 @@ PROJECT(KMyMoney)
 
 # The cmake version we need
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+# Note that RPM creation using CPack requires version >=2.4
+
+# cmake 2.4 proposed to add this policy
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 # Search the KDE3 packages and set the 
 FIND_PACKAGE(KDE3 REQUIRED)
@@ -14,7 +20,7 @@ ENDIF (PERL_FOUND)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
 
-#set a variable to install the html doc correctly
+# set a variable to install the html doc correctly
 SET(KDE3HTMLDIR share/doc/HTML)
 
 FIND_PACKAGE(MSGFMT REQUIRED)
@@ -27,6 +33,7 @@ IF(MEINPROC_FOUND)
 	MESSAGE(STATUS "Program meinproc found (${MEINPROC_EXECUTABLE})")
 ENDIF(MEINPROC_FOUND)
 
+# Using this option will make 'make' very verbose
 #SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # check for JPEG
@@ -151,12 +158,26 @@ ADD_CUSTOM_TARGET(messages
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/admin/extract-merge.sh
 )
 
+
+SET(CPACK_PACKAGE_VERSION_MAJOR "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "9")
+SET(CPACK_PACKAGE_VERSION_PATCH "CVS")
+
+# When building with 'make package', use these cpack generators
+SET(CPACK_GENERATOR "TBZ2")
+
+# When building with 'make package_source', use these cpack generators
+SET(CPACK_SOURCE_GENERATOR "TBZ2")
+# don't include files matching these into the source packages
+SET(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/CVS/")
+
+# This will create the cpack configuration files.
+INCLUDE(CPack)
+
+
+
 # later will include
 # ADD_SUBDIRECTORY( developer-doc ) 
 
 ########### install files ###############
-
-
-
-
 
