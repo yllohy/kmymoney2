@@ -98,9 +98,13 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     // make sure, we show the correct start page
     showPage(m_pagePreviousPostpone);
 
-    startBalance = MyMoneyMoney(value);
+    MyMoneyMoney factor(1,1);
+    if(d->m_account.accountGroup() == MyMoneyAccount::Liability)
+      factor = -factor;
+
+    startBalance = MyMoneyMoney(value)*factor;
     value = account.value("statementBalance");
-    endBalance = MyMoneyMoney(value);
+    endBalance = MyMoneyMoney(value)*factor;
 
     m_previousBalance->setValue(startBalance);
     m_endingBalance->setValue(endBalance);
