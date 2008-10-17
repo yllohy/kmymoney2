@@ -213,7 +213,7 @@ void KBudgetView::slotReloadView(void)
 void KBudgetView::loadBudgets(void)
 {
   QCString id;
-  
+
   ::timetrace("Start KBudgetView::loadBudgets");
 
   // remember which item is currently selected
@@ -313,7 +313,7 @@ void KBudgetView::slotRefreshView(void)
 void KBudgetView::loadAccounts(void)
 {
   QMap<QCString, bool> isOpen;
-  
+
   ::timetrace("start load budget account view");
 
   // if no budgets are selected, don't load the accounts
@@ -359,7 +359,7 @@ void KBudgetView::loadAccounts(void)
   m_transactionCountMap = file->transactionCountMap();
 
   m_accountTree->setBaseCurrency(file->baseCurrency());
-  
+
   bool haveUnusedBudgets = false;
 
   // create the items
@@ -682,6 +682,7 @@ void KBudgetView::slotBudgetedAmountChanged(void)
   m_budget.setAccount(accountGroup, account->id());
 
   account->setBudget(m_budget);
+  m_accountTotal->setValue(accountGroup.totalBalance());
 
   m_updateButton->setEnabled(!(selectedBudget() == m_budget));
   m_resetButton->setEnabled(!(selectedBudget() == m_budget));
