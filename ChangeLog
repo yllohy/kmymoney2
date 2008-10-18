@@ -1,5 +1,9 @@
 
-2008-10-15 Alvaro Soliverez <asoliverez@gmail.com>
+2008-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem during online price update when neither the security
+    nor the currency is the base currency
+
+2008-10-18 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed calculation of assets and liabilities in CashFlow summary
 
 2008-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>

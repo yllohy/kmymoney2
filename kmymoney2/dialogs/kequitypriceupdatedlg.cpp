@@ -184,27 +184,34 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
   {
     MyMoneyPrice pr = file->price(pair.first,pair.second);
     if(pr.source() != "KMyMoney") {
-      const QCString& foreignCurrency = file->foreignCurrency(pair.first, pair.second);
-      // check that the foreign currency is still in use
-      QValueList<MyMoneyAccount>::const_iterator it_a;
-      QValueList<MyMoneyAccount> list;
-      file->accountList(list);
-      for(it_a = list.begin(); it_a != list.end(); ++it_a) {
-        // if it's an account denominated in the foreign currency
-        // keep it
-        if(((*it_a).currencyId() == foreignCurrency)
-        && !(*it_a).isClosed())
-          break;
-        // if it's an investment traded in the foreign currency
-        // keep it
-        if((*it_a).isInvest() && !(*it_a).isClosed()) {
-          MyMoneySecurity sec = file->security((*it_a).currencyId());
-          if(sec.tradingCurrency() == foreignCurrency)
+      bool keep = true;
+      if((pair.first == file->baseCurrency().id())
+      || (pair.second == file->baseCurrency().id())) {
+        const QCString& foreignCurrency = file->foreignCurrency(pair.first, pair.second);
+        // check that the foreign currency is still in use
+        QValueList<MyMoneyAccount>::const_iterator it_a;
+        QValueList<MyMoneyAccount> list;
+        file->accountList(list);
+        for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+          // if it's an account denominated in the foreign currency
+          // keep it
+          if(((*it_a).currencyId() == foreignCurrency)
+          && !(*it_a).isClosed())
             break;
+          // if it's an investment traded in the foreign currency
+          // keep it
+          if((*it_a).isInvest() && !(*it_a).isClosed()) {
+            MyMoneySecurity sec = file->security((*it_a).currencyId());
+            if(sec.tradingCurrency() == foreignCurrency)
+              break;
+          }
         }
+        // if it is in use, it_a is not equal to list.end()
+        if(it_a == list.end())
+          keep = false;
       }
-      // if it is in use, it_a is not equal to list.end()
-      if(it_a != list.end()) {
+
+      if(keep) {
         KListViewItem* item = new KListViewItem(lvEquityList,
           symbol,
           i18n("%1 units in %2").arg(pair.first,pair.second));
