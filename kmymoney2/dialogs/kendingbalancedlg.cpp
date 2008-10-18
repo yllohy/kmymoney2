@@ -283,12 +283,11 @@ void KEndingBalanceDlg::slotReloadEditWidgets(void)
   // load the payee and category widgets with data from the engine
   m_payeeEdit->loadPayees(MyMoneyFile::instance()->payeeList());
 
+  // a user request to show all categories in both selectors due to a valid use case.
   AccountSet aSet;
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.load(m_interestCategoryEdit->selector());
-
-  aSet.clear();
-  aSet.addAccountGroup(MyMoneyAccount::Expense);
   aSet.load(m_chargesCategoryEdit->selector());
 
   // reselect currently selected items

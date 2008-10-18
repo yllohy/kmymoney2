@@ -2,6 +2,7 @@
 2008-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem during online price update when neither the security
     nor the currency is the base currency
+  * Show all categories in both selectors during reconciliation start
 
 2008-10-18 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed calculation of assets and liabilities in CashFlow summary
