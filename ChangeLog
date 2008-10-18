@@ -1,4 +1,7 @@
 
+2008-10-15 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed calculation of assets and liabilities in CashFlow summary
+
 2008-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update total field when changing a budget
   * Fixed sign problem when postponing reconciliation of liability accounts

@@ -1720,42 +1720,51 @@ MyMoneyMoney KHomeView::forecastPaymentBalance(const MyMoneyAccount& acc, const 
 
 void KHomeView::showCashFlowSummary()
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
-
-  //Add total income and expenses for this month
   MyMoneyTransactionFilter filter;
   MyMoneyMoney incomeValue;
   MyMoneyMoney expenseValue;
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
+
+  //set start and end of month dates
   QDate startOfMonth = QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1);
   QDate endOfMonth = QDate(QDate::currentDate().year(), QDate::currentDate().month(), QDate::currentDate().daysInMonth());
 
-  //get transaction for current month
+  //Add total income and expenses for this month
+  //get transactions for current month
   filter.setDateFilter(startOfMonth, endOfMonth);
   filter.setReportAllSplits(false);
 
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
-  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
   //if no transaction then skip and print total in zero
   if(transactions.size() > 0) {
+    QValueList<MyMoneyTransaction>::const_iterator it_transaction;
+
     //get all transactions for this month
-    for(; it_t != transactions.end(); ++it_t ) {
-      const QValueList<MyMoneySplit>& splits = (*it_t).splits();
-      QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
-      for(; it_s != splits.end(); ++it_s ) {
-        if(!(*it_s).shares().isZero()) {
-          MyMoneyAccount acc = file->account((*it_s).accountId());
-          if(acc.isIncomeExpense()) {
+    for(it_transaction = transactions.begin(); it_transaction != transactions.end(); ++it_transaction ) {
+
+      //get the splits for each transaction
+      const QValueList<MyMoneySplit>& splits = (*it_transaction).splits();
+      QValueList<MyMoneySplit>::const_iterator it_split;
+      for(it_split = splits.begin(); it_split != splits.end(); ++it_split) {
+        if(!(*it_split).shares().isZero()) {
+          ReportAccount repSplitAcc = ReportAccount((*it_split).accountId());
+
+          //only add if it is an income or expense
+          if(repSplitAcc.isIncomeExpense()) {
             MyMoneyMoney value;
-            if(acc.currencyId() != file->baseCurrency().id()) {
-              ReportAccount repAcc = ReportAccount(acc.id());
-              MyMoneyMoney curPrice = repAcc.baseCurrencyPrice((*it_t).postDate());
-              value = ((*it_s).shares() * MyMoneyMoney(-1, 1)) * curPrice;
+
+            //convert to base currency if necessary
+            if(repSplitAcc.currencyId() != file->baseCurrency().id()) {
+              MyMoneyMoney curPrice = repSplitAcc.baseCurrencyPrice((*it_transaction).postDate());
+              value = ((*it_split).shares() * MyMoneyMoney(-1, 1)) * curPrice;
             } else {
-              value = ((*it_s).shares() * MyMoneyMoney(-1, 1));
+              value = ((*it_split).shares() * MyMoneyMoney(-1, 1));
             }
-            //the balance is stored as negative number
-            if(acc.accountType() == MyMoneyAccount::Income) {
+
+            //store depending on account type
+            if(repSplitAcc.accountType() == MyMoneyAccount::Income) {
               incomeValue += value;
             } else {
               expenseValue += value;
@@ -1819,12 +1828,11 @@ void KHomeView::showCashFlowSummary()
 
       MyMoneySplit sp = transaction.splitByAccount(acc.id(), true);
 
-      MyMoneyMoney value = (sp.value()*cnt);
-
       // take care of the autoCalc stuff
       if((*sched_it).type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
         QDate nextDate = (*sched_it).nextPayment((*sched_it).lastPayment());
-        // make sure we have all 'starting balances' so that the autocalc works
+
+        //make sure we have all 'starting balances' so that the autocalc works
         QValueList<MyMoneySplit>::const_iterator it_s;
         QMap<QCString, MyMoneyMoney> balanceMap;
 
@@ -1837,28 +1845,20 @@ void KHomeView::showCashFlowSummary()
 
             balanceMap[acc.id()] += file->balance(acc.id());
         }
-
         KMyMoneyUtils::calculateAutoLoan(*sched_it, transaction, balanceMap);
       }
 
-      //calculate foreign currency if necessary
-      if(acc.currencyId() != file->baseCurrency().id()) {
-        ReportAccount repAcc = ReportAccount(acc.id());
-        MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
-        value = value * curPrice;
-      }
       //go through the splits and assign to liquid or other transfers
       const QValueList<MyMoneySplit> splits = transaction.splits();
       QValueList<MyMoneySplit>::const_iterator split_it;
       for (split_it = splits.begin(); split_it != splits.end(); ++split_it) {
         if( (*split_it).accountId() != acc.id() ) {
           ReportAccount repSplitAcc = ReportAccount((*split_it).accountId());
-          value = (*split_it).value();
+          MyMoneyMoney value = (*split_it).shares();
 
           //convert to foreign currency if needed
-          if(acc.currencyId() != file->baseCurrency().id()) {
-            ReportAccount repAcc = ReportAccount(acc.id());
-            MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+          if(repSplitAcc.currencyId() != file->baseCurrency().id()) {
+            MyMoneyMoney curPrice = repSplitAcc.baseCurrencyPrice(QDate::currentDate());
             value = value * curPrice;
           }
 
@@ -1871,6 +1871,7 @@ void KHomeView::showCashFlowSummary()
              && !repSplitAcc.isLiquidAsset() ) {
             scheduledOtherTransfer += value;
           } else if(repSplitAcc.isIncomeExpense()) {
+            //income and expenses are stored as negative values
             if(repSplitAcc.accountType() == MyMoneyAccount::Income)
               scheduledIncome -= value;
             if(repSplitAcc.accountType() == MyMoneyAccount::Expense)
