@@ -1,6 +1,8 @@
 
 2008-10-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed multi currency calculation of transaction reports
+  * Fixed spelling mistake in Home View
+  * Changed current Summary to Assets and Liabilities Summary
 
 2008-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem during online price update when neither the security
