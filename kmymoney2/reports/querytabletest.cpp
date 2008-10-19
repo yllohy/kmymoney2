@@ -496,8 +496,8 @@ void QueryTableTest::testInvestment(void)
   CPPUNIT_ASSERT(MyMoneyMoney(rows[1]["price"])==MyMoneyMoney(100.00));
   CPPUNIT_ASSERT(MyMoneyMoney(rows[3]["price"])==MyMoneyMoney(120.00));
   CPPUNIT_ASSERT(MyMoneyMoney(rows[5]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(rows[7]["price"])==MyMoneyMoney(  0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(rows[10]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[7]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(rows[10]["price"])==MyMoneyMoney(120.00));
 
   CPPUNIT_ASSERT(MyMoneyMoney(rows[2]["shares"])==MyMoneyMoney(1000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(rows[4]["shares"])==MyMoneyMoney(-200.00));
