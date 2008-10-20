@@ -949,6 +949,14 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Income and Expenses This Year"),
       i18n("Default Report")
     ));
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eExpenseIncome,
+      MyMoneyReport::eYears,
+      MyMoneyTransactionFilter::allDates,
+      true,
+      i18n("Income and Expenses By Year"),
+      i18n("Default Report")
+    ));
 
 #ifdef HAVE_KDCHART
     list.push_back(MyMoneyReport(
