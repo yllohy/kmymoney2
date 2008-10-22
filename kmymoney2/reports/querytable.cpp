@@ -543,7 +543,7 @@ void QueryTable::constructTransactionTable(void)
     // if the split is still unknown, use the first one. I have seen this
     // happen with a transaction that has only a single split referencing an income or expense
     // account and has an amount and value of 0. Such a transaction will fall through
-    // the above logic and leave 'is' pointing to S_end which causes the remainder
+    // the above logic and leave 'it_split' pointing to splits.end() which causes the remainder
     // of this to end in an infinite loop.
     if(it_split == splits.end()) {
       it_split = splits.begin();
@@ -754,7 +754,7 @@ void QueryTable::constructTransactionTable(void)
             qA ["memo"] = (*it_split).memo();
 
             if (! splitAcc.isIncomeExpense()) {
-              qA["category"] = ((*it_split).shares().isNegative()) ? 
+              qA["category"] = ((*it_split).shares().isNegative()) ?
                   i18n("Transfer from %1").arg(splitAcc.fullName())
                 : i18n("Transfer to %1").arg(splitAcc.fullName());
               qA["topcategory"] = splitAcc.topParentName();
