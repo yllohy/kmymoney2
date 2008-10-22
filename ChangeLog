@@ -1,4 +1,8 @@
 
+2008-10-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Make sure to show the correct balance in the ledger view if no
+    transactions are displayed
+
 2008-10-20 Alvaro Soliverez <asoliverez@gmail.com>
   * Added default report Income and Expenses By Year
 

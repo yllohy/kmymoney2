@@ -514,6 +514,9 @@ void KGlobalLedgerView::loadView(void)
       }
     }
 
+    // we need at least the balance for the account we currently show
+    actBalance[m_account.id()] = MyMoneyMoney(0,1);
+
     // determine balances (actual, cleared). We do this by getting the actual
     // balance of all entered transactions from the engine and walk the list
     // of transactions backward. Also re-select a transaction if it was
