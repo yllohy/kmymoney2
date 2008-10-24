@@ -80,6 +80,7 @@
 
   .summarytable { /*this style is used by the tables in the financial summary */
     border: thin solid WindowText; 
+margin-top:-1px;
   }
 
   .summarytable td { /*this style is used by the tables in the financial summary */
