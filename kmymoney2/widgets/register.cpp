@@ -1067,7 +1067,8 @@ void Register::suppressAdjacentMarkers(void)
   while(p) {
     KMyMoneyRegister::GroupMarker* m = dynamic_cast<KMyMoneyRegister::GroupMarker*>(p);
     if(m) {
-      if(lastWasGroupMarker) {
+      // make adjacent group marker invisible except those that show statement information
+      if(lastWasGroupMarker && (dynamic_cast<KMyMoneyRegister::StatementGroupMarker*>(m) == 0)) {
         m->setVisible(false);
       }
       lastWasGroupMarker = true;

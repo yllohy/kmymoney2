@@ -5,6 +5,7 @@
 
 2008-10-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Vincenzo Reale
+  * Added patch by Cristian Onet to fix statement marker problem
 
 2008-10-24 Robert Wadley <robntina@users.sourceforge.net>
   * Fixed some issues with the html when kmm is used on wide screens
