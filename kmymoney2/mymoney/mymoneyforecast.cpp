@@ -128,8 +128,18 @@ void MyMoneyForecast::pastTransactions()
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         MyMoneyAccount acc = file->account((*it_s).accountId());
+
+        //workaround for stock accounts which have faulty opening dates
+        QDate openingDate;
+        if(acc.accountType() == MyMoneyAccount::Stock) {
+          MyMoneyAccount parentAccount = file->account(acc.parentAccountId());
+          openingDate = parentAccount.openingDate();
+        } else {
+          openingDate = acc.openingDate();
+        }
+
         if(isForecastAccount(acc) //If it is one of the accounts we are checking, add the amount of the transaction
-          && ( (acc.openingDate() < (*it_t).postDate() && skipOpeningDate())
+           && ( (openingDate < (*it_t).postDate() && skipOpeningDate())
            || !skipOpeningDate() ) ){ //don't take the opening day of the account to calculate balance
           dailyBalances balance;
           //FIXME deal with leap years
@@ -219,15 +229,32 @@ void MyMoneyForecast::calculateAccountTrendList()
 
     auxForecastTerms = forecastCycles();
     if(skipOpeningDate()) {
-      if(acc.openingDate() > historyStartDate() ) { //if acc opened after forecast period
-        auxForecastTerms = 1 + ((acc.openingDate().daysTo(historyEndDate()) + 1)/ accountsCycle()); // set forecastTerms to a lower value, to calculate only based on how long this account was opened
+
+      QDate openingDate;
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        MyMoneyAccount parentAccount = file->account(acc.parentAccountId());
+        openingDate = parentAccount.openingDate();
+      } else {
+        openingDate = acc.openingDate();
+      }
+
+      if(openingDate > historyStartDate() ) { //if acc opened after forecast period
+        auxForecastTerms = 1 + ((openingDate.daysTo(historyEndDate()) + 1)/ accountsCycle()); // set forecastTerms to a lower value, to calculate only based on how long this account was opened
       }
     }
 
     switch (historyMethod())
     {
+      //moving average
+      case 0:
+      { 
+        for(int t_day = 1; t_day <= accountsCycle(); t_day++)
+          m_accountTrendList[acc.id()][t_day] = accountMovingAverage(acc, t_day, auxForecastTerms); //moving average
+        break;
+      }
+      //weighted moving average
       case 1:
-      { //weighted moving average
+      { 
         //calculate total weight for moving average
         if(auxForecastTerms == forecastCycles()) {
           totalWeight = (auxForecastTerms * (auxForecastTerms + 1))/2; //totalWeight is the triangular number of auxForecastTerms
@@ -240,10 +267,13 @@ void MyMoneyForecast::calculateAccountTrendList()
           m_accountTrendList[acc.id()][t_day] = accountWeightedMovingAverage(acc, t_day, totalWeight);
         break;
       }
-      case 0:
-      { //moving average
+      case 2:
+      { 
+        //calculate mean term
+        MyMoneyMoney meanTerms = MyMoneyMoney((auxForecastTerms * (auxForecastTerms + 1))/2, 1) / MyMoneyMoney(auxForecastTerms, 1);
+
         for(int t_day = 1; t_day <= accountsCycle(); t_day++)
-          m_accountTrendList[acc.id()][t_day] = accountMovingAverage(acc, t_day, auxForecastTerms); //moving average
+          m_accountTrendList[acc.id()][t_day] = accountLinearRegression(acc, t_day, auxForecastTerms, meanTerms);
         break;
       }
       default:
@@ -385,6 +415,46 @@ MyMoneyMoney MyMoneyForecast::accountWeightedMovingAverage(const MyMoneyAccount 
   return (balanceVariation / MyMoneyMoney(totalWeight, 1)).convert(10000);
 }
 
+MyMoneyMoney MyMoneyForecast::accountLinearRegression(const MyMoneyAccount &acc, const int trendDay, const int actualTerms, const MyMoneyMoney meanTerms)
+{
+  MyMoneyMoney meanBalance, totalBalance, totalTerms;
+  totalTerms = MyMoneyMoney(actualTerms, 1);
+
+  //calculate mean balance
+  for(int it_terms = forecastCycles() - actualTerms; (trendDay+(accountsCycle()*it_terms)) <= historyDays(); ++it_terms) //sum for each term
+  {
+    totalBalance += m_accountListPast[acc.id()][historyStartDate().addDays(trendDay+(accountsCycle()*it_terms)-1)];
+  }
+  meanBalance = totalBalance / MyMoneyMoney(actualTerms,1);
+  meanBalance = meanBalance.convert(10000);
+
+  //calculate b1
+
+  //first calculate x - mean x multiplied by y - mean y
+  MyMoneyMoney totalXY, totalSqX;
+  for(int it_terms = forecastCycles() - actualTerms, term = 1; (trendDay+(accountsCycle()*it_terms)) <= historyDays(); ++it_terms, ++term) //sum for each term
+  {
+    MyMoneyMoney balance = m_accountListPast[acc.id()][historyStartDate().addDays(trendDay+(accountsCycle()*it_terms)-1)];
+
+    MyMoneyMoney balMeanBal = balance - meanBalance;
+    MyMoneyMoney termMeanTerm = (MyMoneyMoney(term, 1) - meanTerms);
+
+    totalXY += (balMeanBal * termMeanTerm).convert(10000);
+
+    totalSqX += (termMeanTerm * termMeanTerm).convert(10000);
+  }
+  totalXY = (totalXY / MyMoneyMoney(actualTerms,1)).convert(10000);
+  totalSqX = (totalSqX / MyMoneyMoney(actualTerms,1)).convert(10000);
+
+  //check zero
+  if(totalSqX.isZero())
+    return MyMoneyMoney(0,1);
+
+  MyMoneyMoney linReg = (totalXY/totalSqX).convert(10000);
+
+  return linReg;
+}
+
 void MyMoneyForecast::calculateHistoricDailyBalances()
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -399,16 +469,40 @@ void MyMoneyForecast::calculateHistoricDailyBalances()
     //set the starting balance of the account
     setStartingBalance(acc);
 
-    for(QDate f_day = forecastStartDate(); f_day <= forecastEndDate(); ) {
-      for(int t_day = 1; t_day <= accountsCycle(); ++t_day) {
-        MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day.addDays(-1))];//balance of the day before
-        MyMoneyMoney accountDailyTrend = m_accountTrendList[acc.id()][t_day]; //trend for that day
-        //balance of the day is the balance of the day before multiplied by the trend for the day
-        m_accountList[acc.id()][f_day] = balanceDayBefore;
-        m_accountList[acc.id()][f_day] += accountDailyTrend; //movement trend for that particular day
-        m_accountList[acc.id()][f_day] = m_accountList[acc.id()][f_day].convert(acc.fraction());
-        //m_accountList[acc.id()][f_day] += m_accountListPast[acc.id()][f_day.addDays(-historyDays())];
-        f_day = f_day.addDays(1);
+    switch(historyMethod()) {
+      case 0:
+      case 1:
+      {
+        for(QDate f_day = forecastStartDate(); f_day <= forecastEndDate(); ) {
+          for(int t_day = 1; t_day <= accountsCycle(); ++t_day) {
+            MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day.addDays(-1))];//balance of the day before
+            MyMoneyMoney accountDailyTrend = m_accountTrendList[acc.id()][t_day]; //trend for that day
+            //balance of the day is the balance of the day before multiplied by the trend for the day
+            m_accountList[acc.id()][f_day] = balanceDayBefore;
+            m_accountList[acc.id()][f_day] += accountDailyTrend; //movement trend for that particular day
+            m_accountList[acc.id()][f_day] = m_accountList[acc.id()][f_day].convert(acc.fraction());
+            //m_accountList[acc.id()][f_day] += m_accountListPast[acc.id()][f_day.addDays(-historyDays())];
+            f_day = f_day.addDays(1);
+          }
+        }
+      }
+      break;
+      case 2:
+      {
+        QDate baseDate = QDate::currentDate().addDays(-accountsCycle());
+        for(int t_day = 1; t_day <= accountsCycle(); ++t_day) {
+          int f_day = 1;
+          QDate fDate = baseDate.addDays(accountsCycle()+1);
+          while (fDate <= forecastEndDate()) {
+
+            //the calculation is based on the balance for the last month, that is then multiplied by the trend
+            m_accountList[acc.id()][fDate] = m_accountListPast[acc.id()][baseDate] + (m_accountTrendList[acc.id()][t_day] * MyMoneyMoney(f_day,1));
+            m_accountList[acc.id()][fDate] = m_accountList[acc.id()][fDate].convert(acc.fraction());
+            ++f_day;
+            fDate = baseDate.addDays(accountsCycle() * f_day);
+          }
+          baseDate = baseDate.addDays(1);
+        }
       }
     }
   }
@@ -1080,11 +1174,14 @@ void MyMoneyForecast::setStartingBalance(const MyMoneyAccount &acc)
 
   //Get current account balance
   if ( acc.isInvest() ) { //investments require special treatment
-      //get the security id of that account
+    //get the security id of that account
     MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
-    if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
+
+    //only do it if the security is not an actual currency
+    if ( ! undersecurity.isCurrency() )
     {
-      MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
+      //set the default value
+      MyMoneyMoney rate = MyMoneyMoney ( 1, 1 );
         //get te
       MyMoneyPrice price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), QDate::currentDate() );
       if ( price.isValid() )
@@ -1095,6 +1192,53 @@ void MyMoneyForecast::setStartingBalance(const MyMoneyAccount &acc)
     }
   } else {
     m_accountList[acc.id()][QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate());
+  }
+
+  //if the method is linear regression, we have to add the opening balance to m_accountListPast
+  if(forecastMethod() == eHistoric && historyMethod() == 2) {
+    //FIXME workaround for stock opening dates
+    QDate openingDate;
+    if(acc.accountType() == MyMoneyAccount::Stock) {
+      MyMoneyAccount parentAccount = file->account(acc.parentAccountId());
+      openingDate = parentAccount.openingDate();
+    } else {
+      openingDate = acc.openingDate();
+    }
+
+    //add opening balance only if it opened after the history start
+    if(openingDate >= historyStartDate()) {
+
+      MyMoneyMoney openingBalance;
+
+      openingBalance = file->balance(acc.id(), openingDate);
+
+      //calculate running sum
+      QMap<QCString, QCString>::Iterator it_n;
+      for(QDate it_date = openingDate; it_date <= historyEndDate(); it_date = it_date.addDays(1) ) {
+        //investments require special treatment
+        if ( acc.isInvest() ) { 
+          //get the security id of that account
+          MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
+
+          //only do it if the security is not an actual currency
+          if ( ! undersecurity.isCurrency() ) 
+          {
+            //set the default value
+            MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); 
+
+            //get the rate for that specific date
+            MyMoneyPrice price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), it_date );
+            if ( price.isValid() )
+            {
+              rate = price.rate ( undersecurity.tradingCurrency() );
+            }
+            m_accountListPast[acc.id()][it_date] += openingBalance * rate;
+          }
+        } else {
+          m_accountListPast[acc.id()][it_date] += openingBalance;
+        }
+      }
+    }
   }
 }
   

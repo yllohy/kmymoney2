@@ -48,6 +48,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     CPPUNIT_TEST ( testBeginForecastDate );
     CPPUNIT_TEST ( testHistoryDays );
     CPPUNIT_TEST ( testCreateBudget );
+    CPPUNIT_TEST ( testLinearRegression );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -74,6 +75,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     void testBeginForecastDate();
     void testHistoryDays();
     void testCreateBudget();
+    void testLinearRegression();
 
   protected:
     MyMoneyForecast *m;

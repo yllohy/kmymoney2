@@ -239,7 +239,8 @@ void MyMoneyForecastTest::testDoForecast() {
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(3);
-  a.setBeginForecastDay(0);  a.setHistoryMethod(1); //weighted moving average
+  a.setBeginForecastDay(0);
+  a.setHistoryMethod(1);
   a.doForecast();
 
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, 0) == b_credit);
@@ -314,6 +315,7 @@ void MyMoneyForecastTest::testGetForecastBalance()
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
+  a.setHistoryMethod(0);
   a.doForecast();
   
   MyMoneyAccount a_checking = file->account(acChecking);
@@ -636,6 +638,7 @@ void MyMoneyForecastTest::testSkipOpeningDate()
   a.setForecastDays(3);
   a.setAccountsCycle(2);
   a.setForecastCycles(1);
+  a.setHistoryMethod(0);
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -661,6 +664,7 @@ void MyMoneyForecastTest::testAccountMinimumBalanceDateList() {
   a.setForecastDays(6);
   a.setAccountsCycle(2);
   a.setForecastCycles(3);
+  a.setHistoryMethod(0);
   a.setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
@@ -952,4 +956,21 @@ void MyMoneyForecastTest::testCreateBudget()
 
   //test valid results
   CPPUNIT_ASSERT(c.forecastBalance(a_parent, QDate(QDate::currentDate().year(), QDate::currentDate().month()+1, 1) ) == (moT2));
+}
+
+void MyMoneyForecastTest::testLinearRegression() {
+  //set up environment
+  MyMoneyForecast a;
+
+  MyMoneyAccount a_checking = file->account(acChecking);
+  MyMoneyAccount a_credit = file->account(acCredit);
+
+  //setup some transactions
+  TransactionHelper t1( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT1, acChecking, acSolo);
+  TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionDeposit, -(this->moT2), acCredit, acParent);
+  TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionTransfer, this->moT1, acCredit, acChecking);
+
+//TODO Add tests specific for linear regression
+  
+  
 }

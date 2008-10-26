@@ -246,6 +246,11 @@ private:
   MyMoneyMoney accountWeightedMovingAverage(const MyMoneyAccount& acc, const int trendDay, const int totalWeight);
 
   /**
+   * Returns the linear regression for a given @p trendDay
+   */
+  MyMoneyMoney accountLinearRegression(const MyMoneyAccount &acc, const int trendDay, const int totalWeight, const MyMoneyMoney meanTerms);
+
+  /**
    * calculate daily forecast trend based on historic transactions
    */
   void calculateAccountTrendList(void);
