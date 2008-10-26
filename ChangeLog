@@ -1,5 +1,10 @@
+
+2008-10-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Italian translation from Vincenzo Reale
+
 2008-10-24 Robert Wadley <robntina@users.sourceforge.net>
-  * Fixed some issues with the html when kmm is used on wide screens and other small fixes.
+  * Fixed some issues with the html when kmm is used on wide screens
+    and other small fixes.
 
 2008-10-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure to show the correct balance in the ledger view if no
