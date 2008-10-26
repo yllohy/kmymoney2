@@ -871,10 +871,17 @@ void PivotTable::calculateBudgetMapping( void )
           case MyMoneyBudget::AccountGroup::eMax:
           case MyMoneyBudget::AccountGroup::eMonthly:
             // place the single monthly value in each column of the report
-            while ( column < m_numColumns )
-            {
-              assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
-              ++column;
+            // only add the value if columns are monthly or longer
+            if(m_config_f.columnType() == MyMoneyReport::eBiMonths
+               || m_config_f.columnType() == MyMoneyReport::eMonths
+               || m_config_f.columnType() == MyMoneyReport::eYears
+               || m_config_f.columnType() == MyMoneyReport::eQuarters) {
+              value = value * MyMoneyMoney(m_config_f.columnType(), 1);
+              while ( column < m_numColumns )
+              {
+                assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                ++column;
+              }
             }
             break;
           case MyMoneyBudget::AccountGroup::eMonthByMonth:
@@ -887,13 +894,30 @@ void PivotTable::calculateBudgetMapping( void )
               if((*it_period).startDate() > columnDate(column) ) {
                 ++column;
               } else {
-                if((*it_period).startDate().month() >= m_beginDate.month()
-                   && (*it_period).startDate().month() <= m_endDate.month()
-                   && (*it_period).startDate().month() == columnDate(column).month()) {
-                  value = (*it_period).amount() * reverse;
-                  assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                switch(m_config_f.columnType()) {
+                  case MyMoneyReport::eYears:
+                  {
+                    if((*it_period).startDate().year() >= m_beginDate.year()
+                         && (*it_period).startDate().year() <= m_endDate.year()
+                         && (*it_period).startDate().year() == columnDate(column).year()) {
+                      value = (*it_period).amount() * reverse;
+                      assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                         }
+                     ++it_period;
+                     break;
+                  }
+                  case MyMoneyReport::eMonths:
+                  {
+                    if((*it_period).startDate().month() >= m_beginDate.month()
+                      && (*it_period).startDate().month() <= m_endDate.month()
+                      && (*it_period).startDate().month() == columnDate(column).month()) {
+                      value = (*it_period).amount() * reverse;
+                      assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                    }
+                    ++it_period;
+                    break;
+                  }
                 }
-                ++it_period;
               }
             }
             break;
