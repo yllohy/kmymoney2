@@ -1039,7 +1039,7 @@ void KNewLoanWizard::slotAdditionalFees(void)
         fees += (*it).value();
       }
     }
-    m_additionalCost->setText(fees.abs().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
+    m_additionalCost->setText(fees.formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
   }
 
   delete dlg;

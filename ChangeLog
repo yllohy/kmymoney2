@@ -1,4 +1,8 @@
 
+2008-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed sign problem in display of loan information when
+    sum of additional fees was negative
+
 2008-10-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Budget reports when columns longer than a month
   * Added Linear Regression method to Forecast History Methods
