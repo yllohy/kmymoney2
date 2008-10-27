@@ -117,6 +117,10 @@
    <label>Firsttime switch to start new user wizard</label>
    <default>true</default>
   </entry>
+  <entry name="showTitleBar" type="Bool">
+   <label>Show title bar on each view</label>
+   <default>true</default>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">

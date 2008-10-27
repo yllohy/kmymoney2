@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>614</width>
-            <height>409</height>
+            <height>438</height>
         </rect>
     </property>
     <property name="caption">
@@ -433,6 +433,14 @@
                                 </property>
                             </widget>
                         </grid>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_showTitleBar</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Show title bar on each page</string>
+                        </property>
                     </widget>
                     <spacer>
                         <property name="name">

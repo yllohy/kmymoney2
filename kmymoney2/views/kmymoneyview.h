@@ -163,6 +163,8 @@ private:
   fileTypeE m_fileType;
 
 private:
+  void addTitleBar(QWidget* parent, const QString& title);
+
   void ungetString(QIODevice *qfile, char * buf, int len);
 
   /**
@@ -436,6 +438,8 @@ public:
 
   void loadAncientCurrencies(void);
 
+  void showTitleBar(bool show);
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget
@@ -597,7 +601,7 @@ signals:
 
 };
 
-class KMyMoneyTitleLabel;
+class KMyMoneyViewBasePrivate;
 
 /**
   * This class is an abstract base class that all specific views
@@ -608,10 +612,10 @@ class KMyMoneyViewBase : public QWidget
   Q_OBJECT
 public:
   KMyMoneyViewBase(QWidget* parent, const char *name, const QString& title);
-  virtual ~KMyMoneyViewBase() {}
+  virtual ~KMyMoneyViewBase();
 
   void setTitle(const QString& title);
-  QVBoxLayout* layout(void) const { return m_viewLayout; }
+  QVBoxLayout* layout(void) const;
   void addWidget(QWidget* w);
 
   /**
@@ -623,9 +627,7 @@ public:
     * @retval true view was capable to edit the transactions and did so
     */
   bool editTransactions(const QValueList<MyMoneyTransaction>& transactions) const { Q_UNUSED(transactions)  return false; }
-
-protected:
-  KMyMoneyTitleLabel*    m_titleLabel;
-  QVBoxLayout*           m_viewLayout;
+private:
+  KMyMoneyViewBasePrivate* d;
 };
 #endif

@@ -90,7 +90,7 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
   m_needReload(true)
 {
   m_part = new KHTMLPart(this, "htmlpart_km2");
-  m_viewLayout->addWidget(m_part->view());
+  addWidget(m_part->view());
 
   m_filename = KMyMoneyUtils::findResource("appdata", QString("html/home%1.html"));
 
@@ -1633,12 +1633,12 @@ void KHomeView::showCashFlowSummary()
             value = value * curPrice;
           }
 
-          if(( repSplitAcc.isLiquidLiability() 
+          if(( repSplitAcc.isLiquidLiability()
              || repSplitAcc.isLiquidAsset() )
              && acc.accountGroup() != repSplitAcc.accountGroup()) {
             scheduledLiquidTransfer += value;
-          } else if(repSplitAcc.isAssetLiability() 
-             && !repSplitAcc.isLiquidLiability() 
+          } else if(repSplitAcc.isAssetLiability()
+             && !repSplitAcc.isLiquidLiability()
              && !repSplitAcc.isLiquidAsset() ) {
             scheduledOtherTransfer += value;
           } else if(repSplitAcc.isIncomeExpense()) {
@@ -1725,7 +1725,7 @@ void KHomeView::showCashFlowSummary()
   amountLiquidAssets.replace(" ","&nbsp;");
   amountLiquidLiabilities.replace(" ","&nbsp;");
   amountLiquidWorth.replace(" ","&nbsp;");
-  
+
   //show the summary
   m_part->write("<div class=\"shadow\"><div class=\"displayblock\"><div class=\"summaryheader\">" + i18n("Cash Flow Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
 
@@ -1758,19 +1758,19 @@ void KHomeView::showCashFlowSummary()
 
   //print current income
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountIncome, incomeValue.isNegative())));
-  
+
   //print the scheduled income
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledIncome, scheduledIncome.isNegative())));
 
   //print current expenses
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountExpense,  expenseValue.isNegative())));
-  
+
   //print the scheduled expenses
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledExpense,  scheduledExpense.isNegative())));
   m_part->write("</tr>");
 
   m_part->write("</table>");
-  
+
   //print header of assets and liabilities
   m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
   //income and expense title
@@ -1799,7 +1799,7 @@ void KHomeView::showCashFlowSummary()
 
   //print current liquid assets
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountLiquidAssets, liquidAssets.isNegative())));
-  
+
   //print the scheduled transfers
   m_part->write(QString("<td align=\"right\">%2</td>").arg(showColoredAmount(amountScheduledLiquidTransfer, scheduledLiquidTransfer.isNegative())));
 
@@ -1825,9 +1825,9 @@ void KHomeView::showCashFlowSummary()
   amountProfit.replace(" ","&nbsp;");
   amountExpectedAsset.replace(" ","&nbsp;");
   amountExpectedLiabilities.replace(" ","&nbsp;");
-  
-  
-  
+
+
+
   //print header of assets and liabilities
   m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
   //income and expense title
@@ -1868,7 +1868,7 @@ void KHomeView::showCashFlowSummary()
 
   m_part->write("</div></div>");
 
-  
+
 }
 
 // Make sure, that these definitions are only used within this file

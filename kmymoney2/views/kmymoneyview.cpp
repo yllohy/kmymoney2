@@ -35,6 +35,7 @@
 #include <qcursor.h>
 #include <qregexp.h>
 #include <qlayout.h>
+#include <qobjectlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -107,6 +108,9 @@
 #include "kbudgetview.h"
 #include "kforecastview.h"
 
+#include <kmymoney/kmymoneytitlelabel.h>
+
+
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
 
@@ -114,6 +118,7 @@
 
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
 #define RECOVER_KEY_ID        "0xD2B08440"
+
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
@@ -130,6 +135,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 0
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home", iconSize));
+
   m_homeView = new KHomeView(m_homeViewFrame, "HomeView");
   connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -141,6 +147,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
     DesktopIcon("institutions", iconSize));
+  addTitleBar(m_institutionsViewFrame, i18n("Institutions"));
   m_institutionsView = new KInstitutionsView(m_institutionsViewFrame, "InstitutionsView");
   connect(m_institutionsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -154,6 +161,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
     DesktopIcon("accounts", iconSize));
+  addTitleBar(m_accountsViewFrame, i18n("Accounts"));
   m_accountsView = new KAccountsView(m_accountsViewFrame, "AccountsView");
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -167,6 +175,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
     DesktopIcon("schedule", iconSize));
+  addTitleBar(m_scheduleViewFrame, i18n("Schedule"));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "ScheduledView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
   connect(m_scheduledView, SIGNAL(scheduleSelected(const MyMoneySchedule&)), kmymoney2, SLOT(slotSelectSchedule(const MyMoneySchedule&)));
@@ -177,6 +186,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories", iconSize));
+  addTitleBar(m_categoriesViewFrame, i18n("Categories"));
   m_categoriesView = new KCategoriesView(m_categoriesViewFrame, "CategoriesView");
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -187,6 +197,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 5
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("payee", iconSize));
+  addTitleBar(m_payeesViewFrame, i18n("Payees"));
   m_payeesView = new KPayeesView(m_payeesViewFrame, "PayeesView");
   connect(kmymoney2, SIGNAL(payeeCreated(const QCString&)), m_payeesView, SLOT(slotSelectPayeeAndTransaction(const QCString&)));
   connect(kmymoney2, SIGNAL(payeeRename()), m_payeesView, SLOT(slotStartRename()));
@@ -213,7 +224,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("investments", iconSize));
-
+  addTitleBar(m_investmentViewFrame, i18n("Investments"));
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "InvestmentView");
   connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -228,6 +239,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 9
   m_budgetViewFrame = addVBoxPage(i18n("Budgets"), i18n("Budgets"),
     DesktopIcon("budget", iconSize));
+  addTitleBar(m_budgetViewFrame, i18n("Budgets"));
   m_budgetView = new KBudgetView(m_budgetViewFrame, "BudgetView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_budgetView, SLOT(slotRefreshView()));
   connect(m_budgetView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowBudgetContextMenu()));
@@ -237,6 +249,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 10
   m_forecastViewFrame = addVBoxPage( i18n("Forecast"), i18n("Forecast"),
                                      DesktopIcon("forcast", iconSize));
+  addTitleBar(m_forecastViewFrame, i18n("Forecast"));
   m_forecastView = new KForecastView(m_forecastViewFrame, "ForecastView");
 
 
@@ -264,6 +277,28 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 KMyMoneyView::~KMyMoneyView()
 {
   removeStorage();
+}
+
+void KMyMoneyView::addTitleBar(QWidget* parent, const QString& title)
+{
+  KMyMoneyTitleLabel* label = new KMyMoneyTitleLabel( parent, "titleLabel" );
+  label->setMinimumSize( QSize( 100, 30 ) );
+  label->setRightImageFile("pics/titlelabel_background.png" );
+  label->setText(title);
+}
+
+void KMyMoneyView::showTitleBar(bool show)
+{
+  QObjectList *l = queryList( 0, "titleLabel" );
+  QObjectListIterator it( *l ); // iterate over the labels
+  QObject *obj;
+
+  while ( (obj = it.current()) != 0 ) {
+        // for each found object...
+    ++it;
+    ((QWidget*)obj)->setShown( show );
+  }
+  delete l; // delete the list, not the objects
 }
 
 bool KMyMoneyView::showPage(int index)
@@ -1605,6 +1640,8 @@ void KMyMoneyView::slotRefreshViews()
     connect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), m_investmentView, SLOT(slotSelectAccount(const MyMoneyObject&)));
   }
 
+  showTitleBar(KMyMoneyGlobalSettings::showTitleBar());
+
   m_accountsView->slotLoadAccounts();
   m_institutionsView->slotLoadAccounts();
   m_categoriesView->slotLoadAccounts();
@@ -2203,34 +2240,49 @@ KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QString& ico
 
 #include "../widgets/kmymoneytitlelabel.h"
 
+class KMyMoneyViewBasePrivate {
+  public:
+    QFrame* m_titleLine;
+    KMyMoneyTitleLabel* m_titleLabel;
+    QVBoxLayout* m_viewLayout;
+};
+
 KMyMoneyViewBase::KMyMoneyViewBase(QWidget* parent, const char* name, const QString& title) :
-  QWidget(parent, name)
+  QWidget(parent, name),
+  d(new KMyMoneyViewBasePrivate)
 {
-  m_viewLayout = new QVBoxLayout(this);
-  m_viewLayout->setSpacing( 6 );
-  m_viewLayout->setMargin( 0 );
+  d->m_viewLayout = new QVBoxLayout(this);
+  d->m_viewLayout->setSpacing( 6 );
+  d->m_viewLayout->setMargin( 0 );
 
-  m_titleLabel = new KMyMoneyTitleLabel( this, "titleLabel" );
-  m_titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  m_titleLabel->setRightImageFile("pics/titlelabel_background.png" );
-  m_titleLabel->setText(title);
-  m_viewLayout->addWidget( m_titleLabel );
+  d->m_titleLabel = new KMyMoneyTitleLabel( this, "titleLabel" );
+  d->m_titleLabel->setMinimumSize( QSize( 100, 30 ) );
+  d->m_titleLabel->setRightImageFile("pics/titlelabel_background.png" );
+  d->m_titleLabel->setText(title);
+  d->m_viewLayout->addWidget( d->m_titleLabel );
 
-  QFrame* titleLine = new QFrame( this, "titleLine" );
-  titleLine->setFrameShape( QFrame::HLine );
-  titleLine->setFrameShadow( QFrame::Sunken );
-  titleLine->setFrameShape( QFrame::HLine );
-  m_viewLayout->addWidget( titleLine );
+#if 0
+  d->m_titleLine = new QFrame( this, "titleLine" );
+  d->m_titleLine->setFrameShape( QFrame::HLine );
+  d->m_titleLine->setFrameShadow( QFrame::Sunken );
+  d->m_titleLine->setFrameShape( QFrame::HLine );
+  d->m_viewLayout->addWidget( d->m_titleLine );
+#endif
 }
 
-void KMyMoneyViewBase::setTitle(const QString& title)
+KMyMoneyViewBase::~KMyMoneyViewBase()
 {
-  m_titleLabel->setText(title);
+  delete d;
 }
 
 void KMyMoneyViewBase::addWidget(QWidget* w)
 {
-  m_viewLayout->addWidget(w);
+  d->m_viewLayout->addWidget(w);
+}
+
+QVBoxLayout* KMyMoneyViewBase::layout(void) const
+{
+  return d->m_viewLayout;
 }
 
 #include "kmymoneyview.moc"

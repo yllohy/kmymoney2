@@ -316,7 +316,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name ) :
   m_needReload(false)
 {
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
-  m_viewLayout->addWidget( m_reportTabWidget );
+  addWidget( m_reportTabWidget );
   m_reportTabWidget->setHoverCloseButton( true );
 
   m_listTab = (new QWidget( m_reportTabWidget, "indextab" ));

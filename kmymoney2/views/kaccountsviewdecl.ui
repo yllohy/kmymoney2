@@ -19,31 +19,6 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="KMyMoneyTitleLabel">
-            <property name="name">
-                <cstring>titleLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Accounts</string>
-            </property>
-            <property name="rightImageFile">
-                <string>pics/titlelabel_background.png</string>
-            </property>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
         <widget class="QTabWidget">
             <property name="name">
                 <cstring>m_tab</cstring>
