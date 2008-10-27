@@ -28,6 +28,8 @@
 #include <klineedit.h>
 #include <keditlistbox.h>
 #include <kcombobox.h>
+#include <kmessagebox.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -170,8 +172,14 @@ void KSettingsGpg::show(void)
 
 void KSettingsGpg::slotStatusChanged(bool state)
 {
+  static bool oncePerSession = true;
   if(state && !KGPGFile::GPGAvailable())
     state = false;
+
+  if((state == true) && (oncePerSession == true) && isVisible()) {
+    KMessageBox::information(this, QString("<qt>%1</qt>").arg(i18n("You have turned on the GPG encryption support. This means, that new files will be stored encrypted. Exisiting files will not be encrypted automatically.  To achieve encryption of existing files, please use the <b>File/Save as...</b> feature and store the file under a different name. Once confident with the result, feel free to delete the old file and rename the encrypted one to the old name.")), i18n("GPG encryption activated"), "GpgEncryptionActivated");
+    oncePerSession = false;
+  }
 
   m_idGroup->setEnabled(state);
   kcfg_EncryptRecover->setEnabled(state);
