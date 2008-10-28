@@ -1,4 +1,7 @@
 
+2008-10-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Romanian translation from Cristian Onet
+
 2008-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign problem in display of loan information when
     sum of additional fees was negative
