@@ -165,7 +165,7 @@ class StatementGroupMarker : public FancyDateGroupMarker
 public:
   StatementGroupMarker(Register* parent, CashFlowDirection dir, const QDate& date, const QString& txt );
   CashFlowDirection sortType(void) const { return m_dir; }
-  virtual int sortSamePostDate(void) const { return 4; }
+  virtual int sortSamePostDate(void) const { return 3; }
 private:
   CashFlowDirection        m_dir;
 };

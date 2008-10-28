@@ -1,6 +1,7 @@
 
 2008-10-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation from Cristian Onet
+  * Added patch by Cristian Onet to solve a ledger sorting problem
 
 2008-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign problem in display of loan information when

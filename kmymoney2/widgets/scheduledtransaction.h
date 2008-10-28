@@ -69,7 +69,7 @@ public:
   bool canHaveFocus(void) const { return true; }
   virtual bool isScheduled(void) const { return true; }
 
-  virtual int sortSamePostDate(void) const { return 3; }
+  virtual int sortSamePostDate(void) const { return 4; }
 
 //   virtual void paintRegisterGrid(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg) const;
 
