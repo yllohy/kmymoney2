@@ -2,6 +2,7 @@
 2008-10-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added signal transactionsSelected() to plugins' viewinterface
   * Added signal accountReconciled to plugins' viewinterface
+  * Updated Romanian translation from Cristian Onet
 
 2008-10-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Forecast unit test
