@@ -42,6 +42,9 @@ class KPopupMenu;
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/export.h>
 class KMyMoneyViewBase;
+namespace KMyMoneyRegister {
+  class SelectedTransactions;
+};
 
 namespace KMyMoneyPlugin {
 
@@ -73,9 +76,45 @@ public:
   virtual void addWidget(KMyMoneyViewBase* view, QWidget* w) = 0;
 
 signals:
+  /**
+   * This signal is emitted when a new account has been selected by
+   * the GUI. If no account is selected or the selection is removed,
+   * @a account is identical to MyMoneyAccount(). This signal is used
+   * by plugins to get information about changes.
+   */
   void accountSelected(const MyMoneyAccount& acc);
-  void transactionsSelected(const QValueList<MyMoneyTransaction>& list);
+
+  /**
+   * This signal is emitted when a transaction/list of transactions has been selected by
+   * the GUI. If no transaction is selected or the selection is removed,
+   * @p transactions is identical to an empty QValueList. This signal is used
+   * by plugins to get information about changes.
+   */
+  void transactionsSelected(const KMyMoneyRegister::SelectedTransactions& transactions);
+
+  /**
+   * This signal is emitted when a new institution has been selected by
+   * the GUI. If no institution is selected or the selection is removed,
+   * @a institution is identical to MyMoneyInstitution(). This signal is used
+   * by plugins to get information about changes.
+   */
   void institutionSelected(const MyMoneyInstitution& institution);
+
+  /**
+   * This signal is emitted when an account has been successfully reconciled
+   * and all transactions are updated in the engine. It can be used by plugins
+   * to create reconciliation reports.
+   *
+   * @param account the account data
+   * @param date the reconciliation date as provided through the dialog
+   * @param startingBalance the starting balance as provided through the dialog
+   * @param endingBalance the ending balance as provided through the dialog
+   * @param transactionList reference to QValueList of QPair containing all
+   *        transaction/split pairs processed by the reconciliation.
+   */
+  void accountReconciled(const MyMoneyAccount& account, const QDate& date, const MyMoneyMoney& startingBalance, const MyMoneyMoney& endingBalance, const QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& transactionList);
+
+
   void viewStateChanged(bool);
   void kmmFilePlugin(unsigned int);
 };
