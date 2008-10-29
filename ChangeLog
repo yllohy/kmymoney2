@@ -1,4 +1,7 @@
 
+2008-10-28 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed Forecast unit test
+
 2008-10-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation from Cristian Onet
   * Added patch by Cristian Onet to solve a ledger sorting problem

@@ -699,6 +699,7 @@ void MyMoneyForecastTest::testAccountMaximumBalanceDateList() {
   a.setForecastDays(6);
   a.setAccountsCycle(2);
   a.setForecastCycles(3);
+  a.setHistoryMethod(0);
   a.setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
