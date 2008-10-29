@@ -26,6 +26,7 @@
 
 #include "../../kmymoney2.h"
 #include "../../views/kmymoneyview.h"
+#include "selectedtransaction.h"
 #include "kmmviewinterface.h"
 
 KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyView* view, QObject* parent, const char* name) :
@@ -34,6 +35,8 @@ KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyVi
   m_view(view)
 {
   connect(app, SIGNAL(accountSelected(const MyMoneyAccount&)), this, SIGNAL(accountSelected(const MyMoneyAccount&)));
+  connect(app, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)), this, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)));
+
   connect(app, SIGNAL(institutionSelected(const MyMoneyInstitution&)), this, SIGNAL(institutionSelected(const MyMoneyInstitution&)));
 
   connect(m_view, SIGNAL(viewStateChanged(bool)), this, SIGNAL(viewStateChanged(bool)));

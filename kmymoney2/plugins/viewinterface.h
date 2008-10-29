@@ -74,6 +74,7 @@ public:
 
 signals:
   void accountSelected(const MyMoneyAccount& acc);
+  void transactionsSelected(const QValueList<MyMoneyTransaction>& list);
   void institutionSelected(const MyMoneyInstitution& institution);
   void viewStateChanged(bool);
   void kmmFilePlugin(unsigned int);
