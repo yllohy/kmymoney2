@@ -332,7 +332,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   // create the searchline widget
   // and insert it into the existing layout
   m_searchWidget = new KListViewSearchLineWidget(m_payeesList, this);
-  KPayeesViewDeclLayout->insertWidget(2, m_searchWidget);
+  KPayeesViewDeclLayout->insertWidget(0, m_searchWidget);
 
   m_transactionView->setSorting(-1);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);
