@@ -98,11 +98,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
                       i18n("Use this to close the dialog and abort the operation"));
   m_cancelButton->setGuiItem(cancelButtenItem);
 
-  KGuiItem okButtenItem( i18n( "&Ok" ),
-                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Close dialog"),
-                      i18n("Use this to accept and store data"));
-  m_okButton->setGuiItem(okButtenItem);
+  m_okButton->setGuiItem(KStdGuiItem::ok());
 
   KGuiItem deleteButtenItem( i18n( "&Delete" ),
                       QIconSet(il->loadIcon("editdelete", KIcon::Small, KIcon::SizeSmall)),

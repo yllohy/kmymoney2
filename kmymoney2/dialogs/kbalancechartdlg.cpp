@@ -202,7 +202,7 @@ KBalanceChartDlg::KBalanceChartDlg(const MyMoneyAccount& account, QWidget* paren
   KPushButton* buttonOk = new KPushButton( this, "buttonOk" );
   buttonOk->setAutoDefault( TRUE );
   buttonOk->setDefault( TRUE );
-  buttonOk->setText(i18n("&Ok"));
+  buttonOk->setText(i18n("&OK"));
   Layout1->addWidget( buttonOk );
 #endif
   KPushButton* buttonClose = new KPushButton( this, "buttonClose" );

@@ -380,7 +380,7 @@ xx</string>
                         <cstring>m_okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>OK</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

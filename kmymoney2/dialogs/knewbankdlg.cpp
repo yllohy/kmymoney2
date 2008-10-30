@@ -48,11 +48,7 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
   KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem okButtenItem( i18n("&Ok" ),
-                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Accepts the entered data and stores it"),
-                    i18n("Use this to accept the data."));
-  okBtn->setGuiItem(okButtenItem);
+  okBtn->setGuiItem(KStdGuiItem::ok());
 
   KGuiItem cancelButtenItem( i18n( "&Cancel" ),
                     QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),

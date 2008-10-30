@@ -49,11 +49,7 @@ KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 void KUpdateStockPriceDlg::init()
 {
   KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem okButtenItem( i18n("&Ok" ),
-                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Accepts the entered data and stores it"),
-                    i18n("Use this to accept the data."));
-  m_okButton->setGuiItem(okButtenItem);
+  m_okButton->setGuiItem(KStdGuiItem::ok());
 
   KGuiItem cancelButtenItem( i18n( "&Cancel" ),
                     QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),

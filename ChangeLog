@@ -1,4 +1,7 @@
 
+2008-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed "Ok" --> "OK"
+
 2008-10-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added signal transactionsSelected() to plugins' viewinterface
   * Added signal accountReconciled to plugins' viewinterface

@@ -72,12 +72,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
                       i18n("Create a new account/category"),
                       i18n("Use this to add a new account/category to the file"));
   m_createButton->setGuiItem(createButtenItem);
-
-  KGuiItem okButtenItem( i18n("&Ok" ),
-                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Accepts the selected action and continues"),
-                    i18n("Use this to accept the selection and continue processing the transaction"));
-  m_qbuttonOk->setGuiItem(okButtenItem);
+  m_qbuttonOk->setGuiItem(KStdGuiItem::ok());
 
   KGuiItem abortButtenItem( i18n("&Abort" ),
                     QIconSet(il->loadIcon("stop", KIcon::Small, KIcon::SizeSmall)),
