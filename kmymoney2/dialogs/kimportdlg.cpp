@@ -61,13 +61,9 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
   loadAccounts();
 
   // load button icons
-  KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Abort operation"),
-                      i18n("Use this to abort the export operation"));
-  m_qbuttonCancel->setGuiItem(cancelButtenItem);
+  m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
 
+  KIconLoader* il = KGlobal::iconLoader();
   KGuiItem okButtenItem( i18n( "&Import" ),
                       QIconSet(il->loadIcon("fileimport", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Start operation"),

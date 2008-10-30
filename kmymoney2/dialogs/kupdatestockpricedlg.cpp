@@ -26,7 +26,6 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kiconloader.h>
 #include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
@@ -48,14 +47,8 @@ KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 
 void KUpdateStockPriceDlg::init()
 {
-  KIconLoader* il = KGlobal::iconLoader();
   m_okButton->setGuiItem(KStdGuiItem::ok());
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Reject all changes to the data and closes the dialog"),
-                    i18n("Use this to reject all changes."));
-  m_cancelButton->setGuiItem(cancelButtenItem);
+  m_cancelButton->setGuiItem(KStdGuiItem::cancel());
 
   connect(m_okButton, SIGNAL(clicked()), this, SLOT(accept()));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));

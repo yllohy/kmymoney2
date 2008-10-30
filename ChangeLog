@@ -1,6 +1,7 @@
 
 2008-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed "Ok" --> "OK"
+  * Use KStdGuiItem where appropriate
 
 2008-10-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added signal transactionsSelected() to plugins' viewinterface

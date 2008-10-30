@@ -32,7 +32,6 @@
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
-#include <kiconloader.h>
 #include <kguiitem.h>
 #include <klineedit.h>
 
@@ -47,14 +46,8 @@
 KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
-  KIconLoader* il = KGlobal::iconLoader();
   okBtn->setGuiItem(KStdGuiItem::ok());
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Reject all changes to the data and closes the dialog"),
-                    i18n("Use this to reject all changes."));
-  cancelBtn->setGuiItem(cancelButtenItem);
+  cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
   nameEdit->setFocus();
   nameEdit->setText(institution.name());

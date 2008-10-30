@@ -60,11 +60,7 @@ KExportDlg::KExportDlg(QWidget *parent)
 
   // load button icons
   KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Abort operation"),
-                      i18n("Use this to abort the export operation"));
-  m_qbuttonCancel->setGuiItem(cancelButtenItem);
+  m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
 
   KGuiItem okButtenItem( i18n( "&Export" ),
                       QIconSet(il->loadIcon("fileexport", KIcon::Small, KIcon::SizeSmall)),

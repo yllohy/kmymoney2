@@ -85,34 +85,19 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   loadProfileListFromConfig();
 
   // load button icons
-  KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem resetButtonItem( i18n( "&Reset" ),
-                    QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Reset all settings"),
-                    i18n("Use this to reset all settings to the state they were when the dialog was opened."));
-  m_resetButton->setGuiItem(resetButtonItem);
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Close dialog"),
-                      i18n("Use this to close the dialog and abort the operation"));
-  m_cancelButton->setGuiItem(cancelButtenItem);
-
+  m_resetButton->setGuiItem(KStdGuiItem::reset());
+  m_cancelButton->setGuiItem(KStdGuiItem::cancel());
   m_okButton->setGuiItem(KStdGuiItem::ok());
+  m_deleteButton->setGuiItem(KStdGuiItem::del());
+  m_helpButton->setGuiItem(KStdGuiItem::help());
 
-  KGuiItem deleteButtenItem( i18n( "&Delete" ),
-                      QIconSet(il->loadIcon("editdelete", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Delete the selected profile"),
-                      i18n("Use this to delete the selected profile"));
-  m_deleteButton->setGuiItem(deleteButtenItem);
-
+  KIconLoader* il = KGlobal::iconLoader();
   KGuiItem newButtenItem( i18n( "&New" ),
                       QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Create a new profile"),
                       i18n("Use this to create a new QIF import/export profile"));
   m_newButton->setGuiItem(newButtenItem);
 
-  m_helpButton->setGuiItem(KStdGuiItem::help());
 
   connect(m_profileListBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotLoadProfileFromConfig(const QString&)));
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));

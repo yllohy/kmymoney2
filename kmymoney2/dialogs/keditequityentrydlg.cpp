@@ -68,24 +68,9 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
   btnOK->setGuiItem(KStdGuiItem::ok());
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Cancel the operation"),
-                    i18n("Use this to dismiss all the changes made in this dialog."));
-  btnCancel->setGuiItem(cancelButtenItem);
-
-  KGuiItem removeButtenItem( i18n( "&Delete" ),
-                    QIconSet(il->loadIcon("delete", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Delete this entry"),
-                    i18n("Remove this price information from the price history"));
-  btnRemoveEntry->setGuiItem(removeButtenItem);
-
-  KGuiItem addButtenItem( i18n( "&Add" ),
-                    QIconSet(il->loadIcon("file_new", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Add a new entry"),
-                    i18n("Create a new price information entry."));
-  btnAddEntry->setGuiItem(addButtenItem);
+  btnCancel->setGuiItem(KStdGuiItem::cancel());
+  btnRemoveEntry->setGuiItem(KStdGuiItem::remove());
+  btnAddEntry->setGuiItem(KStdGuiItem::add());
 
   KGuiItem editButtenItem( i18n( "&Edit" ),
                     QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),

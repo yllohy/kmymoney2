@@ -56,12 +56,7 @@ KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
   btnOK->setGuiItem(KStdGuiItem::ok());
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Cancel the backup operation"),
-                    i18n("Use this to abort the backup and to return to KMyMoney."));
-  btnCancel->setGuiItem(cancelButtenItem);
+  btnCancel->setGuiItem(KStdGuiItem::cancel());
 
   KGuiItem chooseButtenItem( i18n("C&hoose..."),
                     QIconSet(il->loadIcon("folder", KIcon::Small, KIcon::SizeSmall)),

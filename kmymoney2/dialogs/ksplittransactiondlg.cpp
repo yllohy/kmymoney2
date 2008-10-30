@@ -81,11 +81,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                     i18n("Use this to accept all changes to the splits and return to the transaction"));
   finishBtn->setGuiItem(finishButtenItem);
 
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Reject all changes to the splits and return to transaction form"),
-                    i18n("Use this to reject all changes to the splits and return to the transaction"));
-  cancelBtn->setGuiItem(cancelButtenItem);
+  cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
   KGuiItem clearButtenItem( i18n( "Clear &All" ),
                     QIconSet(il->loadIcon("edittrash", KIcon::Small, KIcon::SizeSmall)),

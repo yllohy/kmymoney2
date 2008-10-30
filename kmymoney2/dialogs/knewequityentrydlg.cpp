@@ -28,7 +28,6 @@
 // KDE Includes
 
 #include <kpushbutton.h>
-#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -52,14 +51,8 @@ KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
   connect(edtEquityName, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
 
   // add icons to buttons
-  KIconLoader *il = KGlobal::iconLoader();
   btnOK->setGuiItem(KStdGuiItem::ok());
-
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Cancel the operation"),
-                    i18n("Use this to dismiss all the changes made in this dialog."));
-  btnCancel->setGuiItem(cancelButtenItem);
+  btnCancel->setGuiItem(KStdGuiItem::cancel());
 
   slotDataChanged();
 
