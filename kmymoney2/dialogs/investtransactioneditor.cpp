@@ -443,6 +443,10 @@ void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& 
 
     // return id
     id = acc.id();
+
+    if(!id.isEmpty()) {
+      slotUpdateSecurity(id);
+    }
   }
 }
 
@@ -713,8 +717,12 @@ void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
   bool currencyKnown = !m_currency.id().isEmpty();
   if(!currencyKnown) {
     m_currency.setTradingSymbol("???");
-  } else if(typeid(*(d->m_activity)) != typeid(Invest::Split(this))) {
-    dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"))->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+  } else {
+    if(typeid(*(d->m_activity)) != typeid(Invest::Split(this))) {
+      dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"))->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+    } else {
+      dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"))->setPrecision(-1);
+    }
   }
 
   updatePriceMode();

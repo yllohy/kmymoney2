@@ -3,6 +3,7 @@
   * Changed "Ok" --> "OK"
   * Use KStdGuiItem where appropriate
   * Fixed placement of search bar in payees view
+  * Fixed http://bugs.kde.org/show_bug.cgi?id=173907
 
 2008-10-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added signal transactionsSelected() to plugins' viewinterface
