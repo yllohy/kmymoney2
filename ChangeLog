@@ -1,4 +1,7 @@
 
+2008-10-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed http://bugs.kde.org/show_bug.cgi?id=173908
+
 2008-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed "Ok" --> "OK"
   * Use KStdGuiItem where appropriate

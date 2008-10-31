@@ -2405,15 +2405,22 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
 
 void KMyMoney2App::slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
+  QString dontShowAgain = "CreateNewInvestments";
   if(KMessageBox::questionYesNo(this,
     QString("<qt>")+i18n("The security <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
-          "Do you want to create it?").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
-    KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewInvestments") == KMessageBox::Yes) {
+          "Do you want to create it?").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create security"),
+    KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain) == KMessageBox::Yes) {
     KNewInvestmentWizard dlg;
+    dlg.setName(account.name());
     if(dlg.exec() == QDialog::Accepted) {
       dlg.createObjects(parent.id());
       account = dlg.account();
     }
+  } else {
+    // in case the user said no but turned on the don't show again selection, we will enable
+    // the message no matter what. Otherwise, the user is not able to use this feature
+    // in the future anymore.
+    KMessageBox::enableMessage(dontShowAgain);
   }
 }
 

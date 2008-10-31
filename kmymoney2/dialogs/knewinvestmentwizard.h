@@ -58,6 +58,11 @@ public:
   ~KNewInvestmentWizard();
 
   /**
+   * This method sets the name in the name widget.
+   */
+  void setName(const QString& name);
+
+  /**
     * Depending on the constructor used, this method either
     * creates all necessary objects for the investment or updates
     * them.

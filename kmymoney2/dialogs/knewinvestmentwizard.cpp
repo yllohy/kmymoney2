@@ -59,7 +59,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
   init1();
 
   // load the widgets with the data
-  m_investmentName->setText(m_account.name());
+  setName(m_account.name());
   m_security = MyMoneyFile::instance()->security(m_account.currencyId());
 
   init2();
@@ -80,7 +80,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
   m_createAccount = false;
 
   // load the widgets with the data
-  m_investmentName->setText(security.name());
+  setName(security.name());
 
   init2();
 
@@ -145,6 +145,11 @@ void KNewInvestmentWizard::init2(void)
 
 KNewInvestmentWizard::~KNewInvestmentWizard()
 {
+}
+
+void KNewInvestmentWizard::setName(const QString& name)
+{
+  m_investmentName->setText(name);
 }
 
 void KNewInvestmentWizard::next(void)
