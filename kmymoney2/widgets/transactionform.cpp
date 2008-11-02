@@ -406,7 +406,6 @@ void TransactionForm::adjustColumn(Column col)
     w = QMAX(dateInput.sizeHint().width(), valInput.sizeHint().width());
   }
 
-#ifndef KMM_DESIGNER
   if(m_transaction) {
     QString txt;
     QFontMetrics fontMetrics(KMyMoneyGlobalSettings::listCellFont());
@@ -422,7 +421,6 @@ void TransactionForm::adjustColumn(Column col)
       w = QMAX(w, fontMetrics.width(txt)+10);
     }
   }
-#endif
 
   if(col < numCols())
     setColumnWidth( col, w );

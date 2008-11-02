@@ -72,6 +72,7 @@ class MyMoneyStatementReaderPrivate
     int                            transactionsAdded;
     int                            transactionsMatched;
     int                            transactionsDuplicate;
+    QMap<QString, bool>            uniqIds;
   private:
     void scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
   private:
@@ -493,8 +494,28 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
 
     s1.setAccountId(thisaccount.id());
-    if ( ! t_in.m_strBankID.isEmpty() )
-      s1.setBankID(t_in.m_strBankID);
+    if( ! t_in.m_strBankID.isEmpty() ) {
+      QString base(t_in.m_strBankID);
+      if(d->uniqIds.find(base) != d->uniqIds.end()) {
+        // make sure that id's are unique from this point on by appending a -#
+        // postfix if needed
+        int idx = 1;
+        QString hash;
+        for(;;) {
+          hash = QString("%1-%2").arg(base).arg(idx);
+          QMap<QString, bool>::const_iterator it;
+          it = d->uniqIds.find(hash);
+          if(it == d->uniqIds.end()) {
+            d->uniqIds[hash] = true;
+            break;
+          }
+          ++idx;
+        }
+        base = hash;
+      }
+
+      s1.setBankID(base);
+    }
 
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
