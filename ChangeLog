@@ -1,4 +1,8 @@
 
+2008-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Cristian Onet which fixes a
+    crash in the the accounts icon view
+
 2008-10-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed http://bugs.kde.org/show_bug.cgi?id=173908
 

@@ -588,22 +588,22 @@ void KAccountsView::slotUpdateIconPos(unsigned int action)
   if(action != KMyMoneyView::preSave)
     return;
 
+  MyMoneyFileTransaction ft;
   KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
   for(;p; p = dynamic_cast<KMyMoneyAccountIconItem*>(p->nextItem())) {
     const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(p->itemObject());
     if(acc.value("kmm-iconpos") != point(p->pos())) {
       MyMoneyAccount a(acc);
       a.setValue("kmm-iconpos", point(p->pos()));
-      MyMoneyFileTransaction ft;
       try {
         MyMoneyFile::instance()->modifyAccount(a);
-        ft.commit();
       } catch(MyMoneyException* e) {
         kdDebug(2) << "Unable to update icon pos: " << e->what();
         delete e;
       }
     }
   }
+  ft.commit();
 }
 
 
