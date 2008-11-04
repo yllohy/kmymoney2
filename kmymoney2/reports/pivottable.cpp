@@ -896,27 +896,34 @@ void PivotTable::calculateBudgetMapping( void )
               } else {
                 switch(m_config_f.columnType()) {
                   case MyMoneyReport::eYears:
+                  case MyMoneyReport::eBiMonths:
+                  case MyMoneyReport::eQuarters:
+                  case MyMoneyReport::eMonths:
                   {
-                    if((*it_period).startDate().year() >= m_beginDate.year()
-                         && (*it_period).startDate().year() <= m_endDate.year()
-                         && (*it_period).startDate().year() == columnDate(column).year()) {
+                    if((*it_period).startDate().month() >= m_beginDate.month()
+                         && (*it_period).startDate().month() <= m_endDate.month()
+                         && (*it_period).startDate().year() >= columnDate(column).year()
+                         && (*it_period).startDate().month() >= columnDate(column).month()
+                         && (*it_period).startDate() < (columnDate(column).addMonths(m_config_f.columnType()))) {
                       value = (*it_period).amount() * reverse;
                       assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
                          }
                      ++it_period;
                      break;
                   }
-                  case MyMoneyReport::eMonths:
+/*                  case MyMoneyReport::eMonths:
                   {
                     if((*it_period).startDate().month() >= m_beginDate.month()
                       && (*it_period).startDate().month() <= m_endDate.month()
                       && (*it_period).startDate().month() == columnDate(column).month()) {
                       value = (*it_period).amount() * reverse;
-                      assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                      assignCell( outergroup, splitAccount, column, value, true  );
                     }
                     ++it_period;
                     break;
-                  }
+                  }*/
+                  default:
+                    break;
                 }
               }
             }
