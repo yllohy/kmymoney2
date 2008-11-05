@@ -116,7 +116,17 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
   m_num = 0;
   m_denom = 1;
 
-  QRegExp regExp("(\\-?\\d+)/(\\d+)");
+  QRegExp regExp;
+
+  // take care of prices given in the form "8 5/16"
+  regExp.setPattern("(\\d+)\\s+(\\d+/\\d+)");
+  if(regExp.search(pszAmount) > -1) {
+    *this = MyMoneyMoney(regExp.cap(1)) + MyMoneyMoney(regExp.cap(2));
+    return;
+  }
+
+  // take care of our internal representation
+  regExp.setPattern("(\\-?\\d+)/(\\d+)");
   if(regExp.search(pszAmount) > -1) {
     // string matches the internal representation
     fromString(pszAmount);

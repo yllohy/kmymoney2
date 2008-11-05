@@ -166,6 +166,11 @@ void MyMoneyMoneyTest::testStringConstructor()
   CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
   CPPUNIT_ASSERT(m1->m_denom == 1000);
   delete m1;
+
+  m1 = new MyMoneyMoney("1 5/8");
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(13));
+  CPPUNIT_ASSERT(m1->m_denom == 8);
+  delete m1;
 }
 
 void MyMoneyMoneyTest::testConvert()
