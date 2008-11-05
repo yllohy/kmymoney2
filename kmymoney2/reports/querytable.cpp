@@ -1032,7 +1032,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     //get price for the day of the transaction if we have to calculate base currency
     //we are using the value of the split which is in deep currency
     if ( m_config.isConvertCurrency() ) {
-      price = account.baseCurrencyPrice(endingDate); //we only need base currency because the value is in deep currency
+      price = account.baseCurrencyPrice((*it_transaction).postDate()); //we only need base currency because the value is in deep currency
     } else {
       price = MyMoneyMoney(1,1);
     }
