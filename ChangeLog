@@ -2,6 +2,9 @@
 2008-11-04 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed budget reports when month-by-month are displayed
     for non-monthly columns
+  * Fixed Cashflow summary schedules when multiple occurences
+    happen during the month
+  * Added properties initialization to MyMoneyForecast constructor
 
 2008-11-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Cristian Onet which fixes a

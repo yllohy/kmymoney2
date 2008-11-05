@@ -39,6 +39,8 @@
 #include "mymoneytransactionfilter.h"
 
 MyMoneyForecast::MyMoneyForecast() :
+    m_forecastMethod(0),
+    m_historyMethod(0),
     m_skipOpeningDate(true),
     m_includeUnusedAccounts(false),
     m_forecastDone(false)

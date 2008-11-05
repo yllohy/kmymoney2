@@ -1625,7 +1625,9 @@ void KHomeView::showCashFlowSummary()
       for (split_it = splits.begin(); split_it != splits.end(); ++split_it) {
         if( (*split_it).accountId() != acc.id() ) {
           ReportAccount repSplitAcc = ReportAccount((*split_it).accountId());
-          MyMoneyMoney value = (*split_it).shares();
+
+          //get the shares and multiply by the quantity of occurences in the period
+          MyMoneyMoney value = (*split_it).shares() * cnt;
 
           //convert to foreign currency if needed
           if(repSplitAcc.currencyId() != file->baseCurrency().id()) {
