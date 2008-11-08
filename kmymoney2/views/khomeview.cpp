@@ -1364,10 +1364,49 @@ void KHomeView::showBudget(void)
 
     PivotGrid grid = table.grid();
 
-    //table header
-    m_part->write("<div class=\"shadow\"><div class=\"displayblock\"><div class=\"summaryheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+    //div header
+    m_part->write("<div class=\"shadow\"><div class=\"displayblock\"><div class=\"summaryheader\">" + i18n("Budget") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+
+    //display budget summary
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-      //asset and liability titles
+    m_part->write("<tr class=\"itemtitle\">");
+    m_part->write("<td class=\"left\" colspan=\"3\">");
+    m_part->write(i18n("Current Month Summary"));
+    m_part->write("</td></tr>");
+    m_part->write("<tr class=\"item\">");
+    m_part->write("<td class=\"right\" width=\"33%\">");
+    m_part->write(i18n("Budgeted"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"right\" width=\"33%\">");
+    m_part->write(i18n("Actual"));
+    m_part->write("</td>");
+    m_part->write("<td class=\"right\" width=\"33%\">");
+    m_part->write(i18n("Difference"));
+    m_part->write("</td></tr>");
+
+    m_part->write(QString("<tr class=\"row-odd\">"));
+
+    MyMoneyMoney totalBudgetValue = grid.m_total[eBudget].m_total;
+    MyMoneyMoney totalActualValue = grid.m_total[eActual].m_total;
+    MyMoneyMoney totalBudgetDiffValue = grid.m_total[eBudgetDiff].m_total;
+
+    QString totalBudgetAmount = totalBudgetValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    QString totalActualAmount = totalActualValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    QString totalBudgetDiffAmount = totalBudgetDiffValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+
+    m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(totalBudgetAmount, totalBudgetValue.isNegative())));
+    m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(totalActualAmount, totalActualValue.isNegative())));
+    m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(totalBudgetDiffAmount, totalBudgetDiffValue.isNegative())));
+    m_part->write("</tr>");
+    m_part->write("</table>");
+
+    //budget overrun
+    m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
+    m_part->write("<tr class=\"itemtitle\">");
+    m_part->write("<td class=\"left\" colspan=\"4\">");
+    m_part->write(i18n("Budget Overruns"));
+    m_part->write("</td></tr>");
     m_part->write("<tr class=\"item\">");
     m_part->write("<td class=\"left\" width=\"30%\">");
     m_part->write(i18n("Account"));
@@ -1754,7 +1793,6 @@ void KHomeView::showCashFlowSummary()
   m_part->write("</td>");
   m_part->write("</tr>");
 
-
   //add row with banding
   m_part->write(QString("<tr class=\"row-even\" style=\"font-weight:bold;\">"));
 
@@ -1774,8 +1812,9 @@ void KHomeView::showCashFlowSummary()
   m_part->write("</table>");
 
   //print header of assets and liabilities
+  m_part->write("<div class=\"gap\">&nbsp;</div>\n");
   m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
-  //income and expense title
+  //assets and liabilities title
   m_part->write("<tr class=\"itemtitle\">");
   m_part->write("<td class=\"left\" colspan=\"4\">");
   m_part->write(i18n("Liquid Assets and Liabilities"));
@@ -1830,7 +1869,8 @@ void KHomeView::showCashFlowSummary()
 
 
 
-  //print header of assets and liabilities
+  //print header of cash flow status
+  m_part->write("<div class=\"gap\">&nbsp;</div>\n");
   m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\" class=\"summarytable\" >");
   //income and expense title
   m_part->write("<tr class=\"itemtitle\">");
