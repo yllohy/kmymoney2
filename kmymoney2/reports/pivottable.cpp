@@ -783,7 +783,7 @@ void PivotTable::calculateBudgetMapping( void )
         }
         ++budgets_it;
       }
-      //if we cant find a matching budget, take the first of the list
+      //if we can't find a matching budget, take the first of the list
       if( budget.id() == "" )
         budget = budgets[0];
 
@@ -901,27 +901,16 @@ void PivotTable::calculateBudgetMapping( void )
                   case MyMoneyReport::eMonths:
                   {
                     if((*it_period).startDate().month() >= m_beginDate.month()
-                         && (*it_period).startDate().month() <= m_endDate.month()
-                         && (*it_period).startDate().year() >= columnDate(column).year()
-                         && (*it_period).startDate().month() >= columnDate(column).month()
-                         && (*it_period).startDate() < (columnDate(column).addMonths(m_config_f.columnType()))) {
-                      value = (*it_period).amount() * reverse;
-                      assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
-                         }
-                     ++it_period;
-                     break;
-                  }
-/*                  case MyMoneyReport::eMonths:
-                  {
-                    if((*it_period).startDate().month() >= m_beginDate.month()
-                      && (*it_period).startDate().month() <= m_endDate.month()
-                      && (*it_period).startDate().month() == columnDate(column).month()) {
-                      value = (*it_period).amount() * reverse;
-                      assignCell( outergroup, splitAccount, column, value, true  );
+                        && (*it_period).startDate().month() <= m_endDate.month()
+                        && (*it_period).startDate().year() == columnDate(column).year()
+                        && (*it_period).startDate().month() <= columnDate(column).month()
+                        && (*it_period).startDate() > (columnDate(column).addMonths(-m_config_f.columnType()))) {
+                            value = (*it_period).amount() * reverse;
+                            assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
                     }
                     ++it_period;
                     break;
-                  }*/
+                  }
                   default:
                     break;
                 }

@@ -1,4 +1,7 @@
 
+2008-11-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed budget reports when using non-monthly columns
+
 2008-11-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Added summary to budget in Home Page
   * Added gaps to tables in Home Page
