@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: kmymoney2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-04 19:15+0200\n"
-"PO-Revision-Date: 2008-08-11 09:48+0800\n"
+"PO-Revision-Date: 2008-11-12 09:14+0800\n"
 "Last-Translator: Roy Qu <royqh1979@gmail.com>\n"
 "Language-Team: Chinese Simplified <kde-i18n-doc@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
+"X-Generator: Lokalize 0.3\n"
 "X-Poedit-Language: Chinese\n"
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -836,8 +836,7 @@ msgstr "账户号码"
 msgid ""
 "Please select the required options. Please use the <b>What's this?</b> "
 "feature to see more information about the items."
-msgstr ""
-"请选择必须的选项。请使用<b>这是什么</b>特性来查看关于这些项目的详细信息。"
+msgstr "请选择必须的选项。请使用<b>这是什么</b>特性来查看关于这些项目的详细信息。"
 
 #: wizards/newaccountwizard/rc.cpp:23
 msgid "What is the type of the loan?"
@@ -921,8 +920,7 @@ msgstr "在记录开始前的余额"
 msgid ""
 "Enter the ending balance found on the statement that is the last one before "
 "you want to start recording this loan in KMyMoney."
-msgstr ""
-"输入此贷款在你想要开始在KMyMoney中记录的日期前，最后一张对账单上的期末余额。"
+msgstr "输入此贷款在你想要开始在KMyMoney中记录的日期前，最后一张对账单上的期末余额。"
 
 #: wizards/newaccountwizard/rc.cpp:38
 msgid ""
@@ -1018,9 +1016,8 @@ msgid "Select the institution which manages this account or leave empty"
 msgstr "选择管理此帐户的金融机构，或者留为空白。"
 
 #: wizards/newaccountwizard/rc.cpp:58
-#, fuzzy
 msgid "New Institution"
-msgstr "新建金融机构(&w)"
+msgstr "新建金融机构"
 
 #: wizards/newaccountwizard/rc.cpp:60
 msgid ""
@@ -1125,8 +1122,7 @@ msgstr "偿还额（本金和利息）"
 msgid ""
 "Please enter the amount you pay for principal and interest or leave the "
 "field empty to calculate it."
-msgstr ""
-"请输入您需要偿还的本金和利息金额，或者留为空白以让KMymoney自动计算它们。"
+msgstr "请输入您需要偿还的本金和利息金额，或者留为空白以让KMymoney自动计算它们。"
 
 #: wizards/newaccountwizard/rc.cpp:76
 msgid "Balloon payment"
@@ -1634,8 +1630,7 @@ msgstr "未知"
 msgid ""
 "Account %1 contains an opening balance. Please use a KMyMoney version >= 0.8 "
 "and < 0.9 to correct the problem."
-msgstr ""
-"帐户%1中包含一个开盘余额。请使用版本>=0.8并且<0.9的KMyMoney来修正该问题。"
+msgstr "帐户%1中包含一个开盘余额。请使用版本>=0.8并且<0.9的KMyMoney来修正该问题。"
 
 #: mymoney/mymoneyaccount.cpp:597
 msgid ""
@@ -1680,9 +1675,8 @@ msgid "Opening Balances"
 msgstr "开户"
 
 #: mymoney/mymoneyfile.cpp:398
-#, fuzzy
 msgid "Cannot remove transaction that references a closed account."
-msgstr "无法在此账户上下文里编辑投资交易。"
+msgstr "无法删除引用了已关闭账户的交易。"
 
 #: mymoney/mymoneyfile.cpp:1414 mymoney/mymoneyfile.cpp:1433
 #: mymoney/mymoneyfile.cpp:1447 mymoney/mymoneyfile.cpp:1469
@@ -1734,9 +1728,8 @@ msgid "  * Payee id updated in split of transaction '%1'."
 msgstr "  * 已更新了交易“%1”的划分里的收/付款人id。"
 
 #: mymoney/mymoneyfile.cpp:1596
-#, fuzzy
 msgid "  * shares set to value in split of transaction '%1'."
-msgstr "  * 在交易“%1”的划分里用股份设定了数额。"
+msgstr "  * 用交易“%1”的划分里的数额设定了股份。"
 
 #: mymoney/mymoneyfile.cpp:1599
 msgid "  * value set to shares in split of transaction '%1'."
@@ -1746,8 +1739,7 @@ msgstr "  * 在交易“%1”的划分里用股份设定了数额。"
 msgid ""
 "  * Split %2 in transaction '%1' contains a reference to invalid account %3. "
 "Please fix manually."
-msgstr ""
-"  * 交易“%1”的划分%2里包含一个指向非法账户“%3”的引用。请手工修正此问题。"
+msgstr "  * 交易“%1”的划分%2里包含一个指向非法账户“%3”的引用。请手工修正此问题。"
 
 #: mymoney/mymoneyfile.cpp:1616
 msgid "  * action marked as interest in split of transaction '%1'."
@@ -1767,19 +1759,16 @@ msgid "    Shares set to value."
 msgstr "    用值设定了股份。"
 
 #: mymoney/mymoneyfile.cpp:1658
-#, fuzzy
 msgid "  * Removed bankid from split in scheduled transaction '%1'."
-msgstr "  * 已更新了交易“%1”的划分里的收/付款人id。"
+msgstr "  * 从计划交易“%1”的划分里删除了银行id。"
 
 #: mymoney/mymoneyfile.cpp:1671
-#, fuzzy
 msgid "  * shares set to value in split in schedule '%1'."
-msgstr "  * 交易计划“%1”的划分中的数额已填写为股份值"
+msgstr "  * 用交易计划“%1”的划分中的数额设定了股份。"
 
 #: mymoney/mymoneyfile.cpp:1674
-#, fuzzy
 msgid "  * value set to shares in split in schedule '%1'."
-msgstr "  * 交易计划“%1”的划分中的数额已填写为股份值"
+msgstr "  * 用交易计划“%1”的划分中的股份值设定了数额。"
 
 #: mymoney/mymoneyfile.cpp:1680
 msgid ""
@@ -2038,9 +2027,8 @@ msgid "Update account..."
 msgstr "更新账户..."
 
 #: kmymoney2.cpp:356
-#, fuzzy
 msgid "Unmap account"
-msgstr "贷款账户"
+msgstr "取消账户映射"
 
 #: kmymoney2.cpp:361
 msgid "New category..."
@@ -2522,12 +2510,11 @@ msgstr "错误的对帐单"
 
 #: kmymoney2.cpp:1705
 msgid "The statement has been processed with the following results:"
-msgstr ""
+msgstr "该对帐单已经被处理，结果如下："
 
 #: kmymoney2.cpp:1705
-#, fuzzy
 msgid "Statement stats"
-msgstr "对帐单详细信息"
+msgstr "对帐单状态"
 
 #: kmymoney2.cpp:1711
 msgid "Exporting file..."
@@ -2812,12 +2799,11 @@ msgstr "无法修改账户“%1”。原因：%2"
 msgid ""
 "KMyMoney has detected some overdue schedules for this account. Do you want "
 "to enter those scheduled transactions now?"
-msgstr ""
+msgstr "KMyMoney检测到此账户存在过期计划。现在是否应该输入这些计划的交易？"
 
 #: kmymoney2.cpp:2945
-#, fuzzy
 msgid "Scheduled transactions found"
-msgstr "定期交易"
+msgstr "发现计划交易"
 
 #: kmymoney2.cpp:3042
 msgid ""
@@ -3262,17 +3248,15 @@ msgid ""
 "Do you really want to remove the mapping of account <b>%1</b> to an online "
 "account? Depending on the details of the online banking method used, this "
 "action cannot be reverted."
-msgstr ""
+msgstr "你真的要删除账户<b>%1</b>到网上银行的映射吗？因为某些网上银行的限制，这项操作是不可撤销的。"
 
 #: kmymoney2.cpp:5722
-#, fuzzy
 msgid "Remove mapping to online account"
-msgstr "映射到网上账户"
+msgstr "删除到网上账户的映射"
 
-#: kmymoney2.cpp:5733
-#, fuzzy, c-format
+#: kmymoney2.cpp:5733, c-format
 msgid "Unable to unmap account from online account: %1"
-msgstr "无法将账户映射到网银账户：%1"
+msgstr "无法将取消到到网银账户的映射：%1"
 
 #: kmymoney2.cpp:5751
 msgid "Select online banking plugin"
@@ -3446,8 +3430,7 @@ msgid ""
 "This QIF file contains investment transactions.  You are trying to import "
 "this file into an account which is not an investment account.  These "
 "transactions will be ignored."
-msgstr ""
-"此QIF文件中包含投资交易，而您正试图将它导入一个非投资账户。这些交易将被忽略。"
+msgstr "此QIF文件中包含投资交易，而您正试图将它导入一个非投资账户。这些交易将被忽略。"
 
 #: converter/mymoneyqifreader.cpp:1000
 msgid "Invalid account for investments"
@@ -3565,59 +3548,52 @@ msgid "Unable to import"
 msgstr "无法导入"
 
 #: converter/mymoneystatementreader.cpp:86
-#, fuzzy
 msgid "_Fees"
 msgstr "费用"
 
 #: converter/mymoneystatementreader.cpp:92
-#, fuzzy
 msgid "_Dividend"
 msgstr "红利"
 
-#: converter/mymoneystatementreader.cpp:215
-#, fuzzy, c-format
+#: converter/mymoneystatementreader.cpp:215, c-format
 msgid "Importing statement for account %1"
-msgstr "使用%1插件导入对帐单"
+msgstr "导入账户%1的对帐单"
 
 #: converter/mymoneystatementreader.cpp:271
-#, fuzzy
 msgid "  Statement balance is not contained in statement."
-msgstr "期初余额"
+msgstr "在对帐单中未包含期末余额。"
 
 #: converter/mymoneystatementreader.cpp:273
 msgid "  Statement balance on %1 is reported to be %2"
-msgstr ""
+msgstr "对帐单报告账户%1的余额是%2"
 
 #: converter/mymoneystatementreader.cpp:275
-#, fuzzy
 msgid "  Transactions"
-msgstr "交易数目"
+msgstr "交易"
 
 #: converter/mymoneystatementreader.cpp:276
 msgid "    %1 processed"
-msgstr ""
+msgstr "%1项已处理"
 
 #: converter/mymoneystatementreader.cpp:277
 msgid "    %1 added"
-msgstr ""
+msgstr "%1项已添加"
 
 #: converter/mymoneystatementreader.cpp:278
 msgid "    %1 matched"
-msgstr ""
+msgstr "%1项匹配"
 
 #: converter/mymoneystatementreader.cpp:279
-#, fuzzy
 msgid "    %1 duplicates"
-msgstr "复制"
+msgstr "%1项重复"
 
 #: converter/mymoneystatementreader.cpp:280
-#, fuzzy
 msgid "  Payees"
-msgstr "收款人"
+msgstr "收/付款人"
 
 #: converter/mymoneystatementreader.cpp:281
 msgid "    %1 created"
-msgstr ""
+msgstr "%1项已创建"
 
 #: converter/mymoneystatementreader.cpp:347
 #, c-format
@@ -3926,8 +3902,7 @@ msgstr "%1不是一个投资账户。您想为它建立一个账户吗？"
 msgid ""
 "An Investment account must be a child of an Asset account\n"
 "Account %1 will be stored under the main Asset account"
-msgstr ""
-"投资账户<b>必须</b>是资产账户的子账户。 账户%1将会被存储在主资产账户下。"
+msgstr "投资账户<b>必须</b>是资产账户的子账户。 账户%1将会被存储在主资产账户下。"
 
 #: converter/mymoneygncreader.cpp:2396
 msgid ""
@@ -4111,8 +4086,7 @@ msgstr "?"
 msgid ""
 "<p>...that you can change the sort order of ledger entries by\n"
 "right-clicking the header of the ledger view?\n"
-msgstr ""
-"<p>...通过右击分类帐试图的表头，您可以对分类帐目的排序顺序进行修改？</p>\n"
+msgstr "<p>...通过右击分类帐试图的表头，您可以对分类帐目的排序顺序进行修改？</p>\n"
 
 #: _tips.cpp:9
 msgid ""
@@ -4501,9 +4475,8 @@ msgid "Closing Balance"
 msgstr "收盘余额"
 
 #: reports/listtable.cpp:478 reports/listtable.cpp:479
-#, fuzzy
 msgid "Calculated"
-msgstr "计算"
+msgstr "已计算"
 
 #: reports/listtable.cpp:560 reports/listtable.cpp:562
 #: reports/pivottable.cpp:1450 reports/pivottable.cpp:1798
@@ -4523,7 +4496,6 @@ msgid "Transfers"
 msgstr "转账"
 
 #: reports/pivottable.cpp:1863
-#, fuzzy
 msgid "Legend"
 msgstr "账簿"
 
@@ -4724,7 +4696,7 @@ msgstr "另一个KMyMoney的进程已经在运行。是否退出？"
 
 #: main.cpp:289
 msgid "Uncaught error. Please report the details to the developers"
-msgstr ""
+msgstr "未捕捉到错误。请将详细情况报告给开发者"
 
 #: _translatorinfo.cpp:1
 msgid ""
@@ -4852,7 +4824,7 @@ msgstr "在计划到期前...天产生交易记录"
 
 #: dialogs/settings/rc.cpp:162 rc.cpp:32
 msgid "Number of days to preview schedules in ledger"
-msgstr ""
+msgstr "预览账簿的交易计划的天数"
 
 #: dialogs/settings/rc.cpp:138 rc.cpp:33
 msgid "Insert transaction type into No. field for new transactions"
@@ -4940,7 +4912,7 @@ msgstr "在程序结束时保存（手工调整后的）主页视图字体大小
 
 #: rc.cpp:54
 msgid "Show account limit information on the Homepage"
-msgstr ""
+msgstr "在主页中显示账户限制信息"
 
 #: rc.cpp:56
 msgid "Hide closed accounts"
@@ -5081,12 +5053,11 @@ msgstr "在取回交易时跳过开盘日期"
 
 #: rc.cpp:92
 msgid "Include future transaction when using Schedule Forecast"
-msgstr ""
+msgstr "在使用交易计划预报时，包括未来的交易"
 
 #: rc.cpp:93
-#, fuzzy
 msgid "Include scheduled transactions when using Schedule Forecast"
-msgstr "包含计划交易"
+msgstr "在使用交易计划预报时，包括计划的交易"
 
 #: rc.cpp:94 widgets/rc.cpp:158 widgets/rc.cpp:160
 msgid "..."
@@ -5121,8 +5092,7 @@ msgid ""
 "A payee with the name '%1' already exists. It is not advisable to have "
 "multiple payees with the same identification name. Are you sure you would "
 "like to rename the payee?"
-msgstr ""
-"名为“%1”的交款人已存在。不建议多个交款人使用同一个名称。是否重命名该交款人？"
+msgstr "名为“%1”的交款人已存在。不建议多个交款人使用同一个名称。是否重命名该交款人？"
 
 #: views/kpayeesview.cpp:459 views/kpayeesview.cpp:777
 msgid "Unable to modify payee"
@@ -5686,8 +5656,7 @@ msgstr ""
 msgid ""
 "Can't open or create database %1\n"
 "Retry SaveAsDatabase and click Help for further info"
-msgstr ""
-"无法打开和创建数据库%1]n 重试“另存为数据库”，并点击“帮助”以获取更多信息。"
+msgstr "无法打开和创建数据库%1]n 重试“另存为数据库”，并点击“帮助”以获取更多信息。"
 
 #: views/kmymoneyview.cpp:1358
 msgid "Afghanistan Afghani"
@@ -6493,8 +6462,7 @@ msgid ""
 "A budget with the name '%1' already exists. It is not advisable to have "
 "multiple budgets with the same identification name. Are you sure you would "
 "like to rename the budget?"
-msgstr ""
-"已经存在名为\"%1\"的预算。不建议多个预算使用同样的名字。是否重命名该预算？"
+msgstr "已经存在名为\"%1\"的预算。不建议多个预算使用同样的名字。是否重命名该预算？"
 
 #: views/kbudgetview.cpp:635 views/kbudgetview.cpp:749
 msgid "Unable to modify budget"
@@ -6543,9 +6511,8 @@ msgid "New"
 msgstr "新建"
 
 #: views/rc.cpp:13
-#, fuzzy
 msgid "Ren"
-msgstr "重命名(&R)"
+msgstr "重命名"
 
 #: views/rc.cpp:14
 msgid "Del"
@@ -6572,9 +6539,8 @@ msgid "Assignments"
 msgstr "人物"
 
 #: views/rc.cpp:23
-#, fuzzy
 msgid "Include subaccounts"
-msgstr "包括子账户(&u)"
+msgstr "包括子账户"
 
 #: dialogs/settings/rc.cpp:23 views/rc.cpp:32
 msgid "Forecast Settings"
@@ -6641,9 +6607,8 @@ msgid "Detail"
 msgstr "详细信息"
 
 #: views/rc.cpp:52
-#, fuzzy
 msgid "Advanced"
-msgstr "高级(&n)"
+msgstr "高级"
 
 #: views/rc.cpp:53
 msgid "Budget Forecast"
@@ -6875,18 +6840,16 @@ msgid "Account closed"
 msgstr "账户已关闭"
 
 #: views/kgloballedgerview.cpp:1315
-#, fuzzy
 msgid "Cannot create transactions when no account is selected."
-msgstr "无法处理未被选中的交易。"
+msgstr "没有选择账户，因此无法创建交易。"
 
 #: views/kgloballedgerview.cpp:1320
 msgid "Cannot create transactions in the context of a category."
 msgstr "无法在交易类别上下文里创建交易。"
 
 #: views/kgloballedgerview.cpp:1324
-#, fuzzy
 msgid "Cannot create transactions in a closed account."
-msgstr "无法在交易类别上下文里创建交易。"
+msgstr "在关闭的账户里无法创建交易。"
 
 #: views/kgloballedgerview.cpp:1336
 msgid "Cannot process transaction with focus if it is not selected."
@@ -6998,14 +6961,12 @@ msgid "Overdue payments"
 msgstr "已过期支出"
 
 #: views/khomeview.cpp:419 views/khomeview.cpp:483 views/khomeview.cpp:517
-#, fuzzy
 msgid "Balance after"
-msgstr "余额："
+msgstr "期末余额"
 
 #: views/khomeview.cpp:468
-#, fuzzy
 msgid "Today's payments"
-msgstr "本日植入"
+msgstr "本日支付"
 
 #: views/khomeview.cpp:502
 msgid "Future payments"
@@ -7020,17 +6981,14 @@ msgid "More ..."
 msgstr "更多..."
 
 #: views/khomeview.cpp:608
-#, fuzzy
 msgid "Enter schedule"
 msgstr "输入交易计划"
 
 #: views/khomeview.cpp:610
-#, fuzzy
 msgid "Skip schedule"
-msgstr "跳过交易计划..."
+msgstr "跳过交易计划"
 
 #: views/khomeview.cpp:613
-#, fuzzy
 msgid "Edit schedule"
 msgstr "编辑交易计划"
 
@@ -7043,7 +7001,6 @@ msgid "To Minimum Balance / Maximum Credit"
 msgstr "到最小余额/最大信用额"
 
 #: views/khomeview.cpp:937
-#, fuzzy
 msgid "%1 Day Forecast"
 msgstr "%1 天预报"
 
@@ -7061,19 +7018,18 @@ msgid ""
 "status, you need to create at least one account. Until then, KMyMoney shows "
 "the welcome page instead."
 msgstr ""
+"您至少需要先创建一个账户，KMyMoney才可以显示您的财政状况的具体信息。作为代替， "
+"KMyMoney将会显示欢迎页。"
 
 #: views/khomeview.cpp:1246
-#, fuzzy
 msgid "Assets and Liabilities"
 msgstr "资产与负债"
 
 #: views/khomeview.cpp:1250
-#, fuzzy
 msgid "Asset Accounts"
 msgstr "资产账户"
 
 #: views/khomeview.cpp:1258
-#, fuzzy
 msgid "Liability Accounts"
 msgstr "负债账户"
 
@@ -7086,29 +7042,24 @@ msgid "Total Liabilities"
 msgstr "总负债"
 
 #: views/khomeview.cpp:1409
-#, fuzzy
 msgid "Incomes and Expenses This Month"
 msgstr "本月收入和支出"
 
 #: views/khomeview.cpp:1415 views/khomeview.cpp:1533
-#, fuzzy
 msgid "Incomes"
 msgstr "收入"
 
 #: views/khomeview.cpp:1418 views/khomeview.cpp:1539
-#, fuzzy
 msgid "Expenses"
 msgstr "支出"
 
 #: views/khomeview.cpp:1421
-#, fuzzy
 msgid "Profit/Loss"
-msgstr "收益/损失总计"
+msgstr "收益/损失"
 
 #: views/khomeview.cpp:1527
-#, fuzzy
 msgid "Schedules This Month"
-msgstr "本月计划收入"
+msgstr "本月计划"
 
 #: views/khomeview.cpp:1584
 msgid "Budget Overruns"
@@ -7154,11 +7105,10 @@ msgid "Error connecting to bank: %1"
 msgstr "连接到银行时出错：%1"
 
 #: plugins/ofximport/ofximporterplugin.cpp:615
-#, fuzzy
 msgid ""
 "Unable to import %1 using the OFX importer plugin.  The plugin returned the "
 "following error:<p>%2"
-msgstr "无法使用OFX导入插件导入%1。插件返回下列错误：%2"
+msgstr "无法使用OFX导入插件导入%1。插件返回下列错误：<p>%2"
 
 #: plugins/ofximport/ofximporterplugin.cpp:646
 msgid "Importing process terminated unexpectedly."
@@ -7310,9 +7260,8 @@ msgstr ""
 "入，并且单独为在家中访问网银指定了一个分开的PIN或者密码。"
 
 #: plugins/ofximport/dialogs/rc.cpp:12 plugins/ofximport/dialogs/rc.cpp:30
-#, fuzzy
 msgid "Identify as"
-msgstr "身份认证"
+msgstr "认证为"
 
 #: dialogs/rc.cpp:681 dialogs/rc.cpp:751 plugins/ofximport/dialogs/rc.cpp:13
 msgid "Password"
@@ -7371,50 +7320,49 @@ msgid "STATUS:"
 msgstr "状态："
 
 #: plugins/ofximport/dialogs/rc.cpp:29
-#, fuzzy
 msgid "OFX Details"
-msgstr "详细信息"
+msgstr "OFX详细信息"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:57
 msgid "Quicken Windows 2005"
-msgstr ""
+msgstr "Quicken Windows 2005"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:58
 msgid "Quicken Windows 2006"
-msgstr ""
+msgstr "Quicken Windows 2006"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:59
 msgid "Quicken Windows 2007"
-msgstr ""
+msgstr "Quicken Windows 2007"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:60
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
 msgid "Quicken Windows 2008"
-msgstr ""
+msgstr "Quicken Windows 2008"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:63
 msgid "MS-Money 2003"
-msgstr ""
+msgstr "MS-Money 2003"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:64
 msgid "MS-Money 2004"
-msgstr ""
+msgstr "MS-Money 2004"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:65
 msgid "MS-Money 2005"
-msgstr ""
+msgstr "MS-Money 2005"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:66
 msgid "MS-Money 2006"
-msgstr ""
+msgstr "MS-Money 2006"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:67
 msgid "MS-Money 2007"
-msgstr ""
+msgstr "MS-Money 2007"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:68
 msgid "MS-Money Plus"
-msgstr ""
+msgstr "MS-Money Plus"
 
 #: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:157
 msgid "The HTTP request failed."
@@ -7902,8 +7850,7 @@ msgstr "账户和转账账户相同。请修改其中之一。"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:84
 msgid "Payee changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
-"付款人有变化。<br>&nbsp;&nbsp;&nbsp;原为： <b>%1</b>, 现为: <b>%2</b><p>"
+msgstr "付款人有变化。<br>&nbsp;&nbsp;&nbsp;原为： <b>%1</b>, 现为: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:92
 #: dialogs/kconfirmmanualenterdlg.cpp:100
@@ -7918,8 +7865,7 @@ msgstr "账户有变化。<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2
 msgid ""
 "Transfer account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</"
 "b><p>"
-msgstr ""
-"转账账户有变化.<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2</b><p>"
+msgstr "转账账户有变化.<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
 msgid ""
@@ -7943,8 +7889,7 @@ msgstr "金额有变化。<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2
 msgid ""
 "Reconciliation flag changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%"
 "2</b><p>"
-msgstr ""
-"对帐标志有变化。<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2</b><p>"
+msgstr "对帐标志有变化。<br>&nbsp;&nbsp;&nbsp;原为: <b>%1</b>, 现为: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:182
 msgid "Fatal error in determining data: "
@@ -8304,14 +8249,12 @@ msgid "Forecast Method"
 msgstr "预报方式"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled and Future Transactions"
-msgstr "计划与未来交易(&a)"
+msgstr "计划与未来交易"
 
 #: dialogs/settings/rc.cpp:29
-#, fuzzy
 msgid "History-based"
-msgstr "基于历史(&b)"
+msgstr "基于历史"
 
 #: dialogs/settings/rc.cpp:30
 msgid "History-based settings"
@@ -8650,14 +8593,12 @@ msgid ""
 msgstr "如果使用鼠标滚轮手动修改了字体大小，在关闭程序时自动记住当时的设置。"
 
 #: dialogs/settings/rc.cpp:102
-#, fuzzy
 msgid "Information display"
-msgstr "贷款信息"
+msgstr "信息显示"
 
 #: dialogs/settings/rc.cpp:103
-#, fuzzy
 msgid "Show Account Limit Information"
-msgstr "账户信息"
+msgstr "显示账户限制信息"
 
 #: dialogs/settings/rc.cpp:107 widgets/rc.cpp:47
 msgid ""
@@ -8713,9 +8654,8 @@ msgid "Register settings"
 msgstr "账簿设置"
 
 #: dialogs/settings/rc.cpp:123
-#, fuzzy
 msgid "Display"
-msgstr "显示(&y)"
+msgstr "显示"
 
 #: dialogs/settings/rc.cpp:126
 msgid ""
@@ -8729,14 +8669,12 @@ msgstr ""
 "示一行摘要信息。"
 
 #: dialogs/settings/rc.cpp:128
-#, fuzzy
 msgid "Always show a No. field"
-msgstr "始终显示序号栏(&A)"
+msgstr "始终显示序号栏"
 
 #: dialogs/settings/rc.cpp:129
-#, fuzzy
 msgid "Show group header between transactions"
-msgstr "在交易间显示组标题(&b)"
+msgstr "在交易间显示组标题"
 
 #: dialogs/settings/rc.cpp:130
 msgid ""
@@ -8775,9 +8713,8 @@ msgstr ""
 "修改排序顺序。双击选中项，可以 切换是以<i>升序</i>还是<i>降序</i>来排序。"
 
 #: dialogs/settings/rc.cpp:137
-#, fuzzy
 msgid "Data entry"
-msgstr "数据项(&a)"
+msgstr "数据项"
 
 #: dialogs/settings/rc.cpp:141
 msgid "Use Enter to move between fields"
@@ -8805,21 +8742,19 @@ msgstr "在账户对帐时所输入的交易的缺省对帐状态"
 
 #: dialogs/settings/rc.cpp:147
 msgid "Autofill"
-msgstr ""
+msgstr "自动填写"
 
 #: dialogs/settings/rc.cpp:148
 msgid "No Autofill"
-msgstr ""
+msgstr "不自动填写"
 
 #: dialogs/settings/rc.cpp:149
-#, fuzzy
 msgid "Don't do autofill of transaction data at all."
-msgstr "根据过去的交易数据自动填写新记录"
+msgstr "不自动填写交易数据"
 
 #: dialogs/settings/rc.cpp:150
-#, fuzzy
 msgid "Same transaction if amount differs less than"
-msgstr "百分比。"
+msgstr "同一笔交易，如果金额差异少于"
 
 #: dialogs/settings/rc.cpp:151
 msgid ""
@@ -8830,6 +8765,10 @@ msgid ""
 "\n"
 "Selecting 0% will list all transactions."
 msgstr ""
+"收集给定收/付款人的全部交易。所有同一类别，并且数额差在+/- X %内的交易被视为 "
+"同一条交易。如果找到一条以上的交易，那么它们将以列表的形式展现给用户。\n"
+"\n"
+"选择0%将会列出所有交易。"
 
 #: dialogs/settings/rc.cpp:152
 msgid ""
@@ -8848,13 +8787,13 @@ msgstr "百分比。"
 
 #: dialogs/settings/rc.cpp:154
 msgid "with previously most often used transaction for the payee"
-msgstr ""
+msgstr "用此收/付款人过去最常发生的交易"
 
 #: dialogs/settings/rc.cpp:155
 msgid ""
 "The data of the last transaction assigned to the category used most often "
 "for this payee is autofilled into the transaction editor."
-msgstr ""
+msgstr "此收/付款人过去最常发生的交易类别里的最新一条交易的数据将会被自动填写到交易编辑器里。"
 
 #: dialogs/settings/rc.cpp:157
 msgid "Match transactions within days"
@@ -9056,8 +8995,7 @@ msgstr "调整交易"
 msgid ""
 "KMyMoney has calculated the following amounts for interest and amortization "
 "according to recorded payments between %1 and %2."
-msgstr ""
-"按照已记录的从%1到%2的支付信息，KMyMoney已经完成了对利息和分期偿还额的计算。"
+msgstr "按照已记录的从%1到%2的支付信息，KMyMoney已经完成了对利息和分期偿还额的计算。"
 
 #: dialogs/kbalancechartdlg.cpp:59
 #, c-format
@@ -9127,14 +9065,12 @@ msgstr "中止"
 
 #: dialogs/rc.cpp:5 dialogs/rc.cpp:66 dialogs/rc.cpp:299 dialogs/rc.cpp:389
 #: dialogs/rc.cpp:421 dialogs/rc.cpp:774 dialogs/rc.cpp:840
-#, fuzzy
 msgid "Ok"
-msgstr "确定(&O)"
+msgstr "确定"
 
 #: dialogs/rc.cpp:6 dialogs/rc.cpp:169
-#, fuzzy
 msgid "Skip"
-msgstr "跳过（&S)"
+msgstr "跳过"
 
 #: dialogs/rc.cpp:8
 msgid ""
@@ -9166,9 +9102,8 @@ msgid ""
 msgstr "挂载点："
 
 #: dialogs/rc.cpp:11
-#, fuzzy
 msgid "Choose..."
-msgstr "选择(&C)..."
+msgstr "选择..."
 
 #: dialogs/rc.cpp:12
 msgid "Mount this directory before backing up."
@@ -9261,9 +9196,8 @@ msgid "Choose the csv file:"
 msgstr "选择CSV文件。"
 
 #: dialogs/rc.cpp:39
-#, fuzzy
 msgid "Browse"
-msgstr "浏览(&B)"
+msgstr "浏览"
 
 #: dialogs/rc.cpp:40
 msgid "Between These Dates"
@@ -9278,9 +9212,8 @@ msgid "End on:"
 msgstr "结束日期："
 
 #: dialogs/rc.cpp:43
-#, fuzzy
 msgid "Run"
-msgstr "运行(&R)"
+msgstr "运行"
 
 #: dialogs/rc.cpp:44
 msgid "Progress Info"
@@ -9311,9 +9244,8 @@ msgid "Convert to"
 msgstr "转换为"
 
 #: dialogs/rc.cpp:61
-#, fuzzy
 msgid "To amount"
-msgstr "到金额(&a)"
+msgstr "到金额"
 
 #: dialogs/rc.cpp:62
 msgid "Exchange rate / Price"
@@ -9618,28 +9550,27 @@ msgstr "输入"
 msgid ""
 "Enter the transaction and advance the next due date of this schedule to the "
 "next payment date."
-msgstr ""
+msgstr "输入交易，并将此交易计划的到期日前进到下次支付的时间点。"
 
 #: dialogs/rc.cpp:170
 msgid ""
 "Do not enter the transaction but advance the next due date of this schedule "
 "to the next payment date."
-msgstr ""
+msgstr "不输入交易，但将此交易计划的到期日前进到下次支付的时间点。"
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Ignore"
-msgstr "不区分大小写"
+msgstr "忽略"
 
 #: dialogs/rc.cpp:172
 msgid ""
 "Do not enter or skip payments for this schedule but continue with the next "
 "schedule."
-msgstr ""
+msgstr "不输入或跳过此交易计划的支付，继续处理下一项计划。"
 
 #: dialogs/rc.cpp:174
 msgid "Cancel processing of schedule entry."
-msgstr ""
+msgstr "取消计划交易项的处理"
 
 #: dialogs/rc.cpp:175
 msgid "Update Stock and Currency Prices"
@@ -9650,14 +9581,12 @@ msgid "List of known Equities, and the date they were last updated on."
 msgstr "已经资产列表，和它们最近一次更新日期。"
 
 #: dialogs/rc.cpp:178
-#, fuzzy
 msgid "Update All"
-msgstr "全部更新(&A)"
+msgstr "全部更新"
 
 #: dialogs/rc.cpp:179
-#, fuzzy
 msgid "Update Selected"
-msgstr "更新被选中的项目(&S)"
+msgstr "更新被选中的项目"
 
 #: dialogs/rc.cpp:180
 msgid "Status:"
@@ -9934,26 +9863,22 @@ msgid ""
 msgstr "KMyMoney不认识这个价格来源。请选择下面的选项。"
 
 #: dialogs/rc.cpp:281
-#, fuzzy
 msgid "Do not perform online quotes for this investment"
-msgstr "对这项投资使用在线报价。"
+msgstr "不对这项投资使用在线报价"
 
 #: dialogs/rc.cpp:282
-#, fuzzy
 msgid "Select a known KMyMoney source from the list below"
-msgstr "从下面的列表中选择一个KMyMoney已知的报价。"
+msgstr "从下面的列表中选择一个已知的KMyMoney报价源"
 
 #: dialogs/rc.cpp:283
-#, fuzzy
 msgid ""
 "Use the following name for the price source.\n"
 "(Click Help for further information.)"
-msgstr "对这个价格来源使用下面的名称(&U)（点击“帮助”以获取更多信息）"
+msgstr "对这个价格来源使用下面的名称。\n（点击“帮助”以获取更多信息）"
 
 #: dialogs/rc.cpp:284
-#, fuzzy
 msgid "Always use this selection for this price source."
-msgstr "对这个价格来源始终使用此选项(&A)"
+msgstr "对这个价格来源始终使用此选择。"
 
 #: dialogs/rc.cpp:286
 msgid ""
@@ -9976,9 +9901,8 @@ msgid "QIF File to Import:"
 msgstr "要导入的QIF文件："
 
 #: dialogs/rc.cpp:290
-#, fuzzy
 msgid "Scan"
-msgstr "扫描(&S)"
+msgstr "扫描"
 
 #: dialogs/rc.cpp:293
 msgid "Import options"
@@ -10033,9 +9957,8 @@ msgid "Show all stored prices"
 msgstr "显示全部保存的价格"
 
 #: dialogs/rc.cpp:336
-#, fuzzy
 msgid "Delete Range ..."
-msgstr "区域删除(&R)..."
+msgstr "区域删除..."
 
 #: dialogs/rc.cpp:339
 msgid "New Account Dialog"
@@ -10969,9 +10892,8 @@ msgid "Difference:"
 msgstr "差额："
 
 #: dialogs/rc.cpp:727
-#, fuzzy
 msgid "Edit Transactions..."
-msgstr "编辑交易(&E)..."
+msgstr "编辑交易..."
 
 #: dialogs/rc.cpp:730
 msgid "Security List Editor"
@@ -10986,9 +10908,8 @@ msgid "Cash Fraction"
 msgstr "现金比例"
 
 #: dialogs/rc.cpp:739
-#, fuzzy
 msgid "Add ..."
-msgstr "添加(&A)..."
+msgstr "添加..."
 
 #: dialogs/rc.cpp:742
 msgid "Show national currencies"
@@ -11052,24 +10973,20 @@ msgid "How do you want to proceed?"
 msgstr "您想如何继续？"
 
 #: dialogs/rc.cpp:770
-#, fuzzy
 msgid "Continue to edit splits"
-msgstr "继续编辑拆分(&e)"
+msgstr "继续编辑拆分"
 
-#: dialogs/rc.cpp:771
-#, fuzzy, c-format
+#: dialogs/rc.cpp:771, c-format
 msgid "Change total amount of transaction to %1."
 msgstr "将交易总额改为%1。"
 
 #: dialogs/rc.cpp:772
-#, fuzzy
 msgid "Distribute difference of %1 among all splits."
-msgstr "将差额%1均摊到各拆分中。(&D)"
+msgstr "将差额%1均摊到各拆分中。"
 
 #: dialogs/rc.cpp:773
-#, fuzzy
 msgid "Leave %1 unassigned."
-msgstr "保持%1未指派状态。(&L)"
+msgstr "保持%1未指派状态。"
 
 #: dialogs/rc.cpp:776
 msgid "Split transaction"
@@ -11224,9 +11141,8 @@ msgid "Input filter location"
 msgstr "输入过滤器地址"
 
 #: dialogs/rc.cpp:838
-#, fuzzy
 msgid "Rename"
-msgstr "重命名(&n)"
+msgstr "重命名"
 
 #: dialogs/kselecttransactionsdlg.cpp:44
 msgid "Select Transaction"
@@ -11916,10 +11832,9 @@ msgstr "之前的交易可能已被过滤"
 msgid "Last reconciliation"
 msgstr "上次对帐"
 
-#: widgets/register.cpp:2266
-#, fuzzy, c-format
+#: widgets/register.cpp:2266, c-format
 msgid "Online Statement Balance: %1"
-msgstr "对帐单金额：%1"
+msgstr "网上对帐单余额：%1"
 
 #: widgets/register.cpp:2270
 msgid "This year"
@@ -11954,9 +11869,8 @@ msgid "Future transactions"
 msgstr "未来的交易"
 
 #: widgets/register.cpp:2278
-#, fuzzy
 msgid "Next week"
-msgstr "上周"
+msgstr "下周"
 
 #: widgets/kmymoneycalendar.cpp:131 widgets/register.cpp:2279
 msgid "Next month"
@@ -11971,9 +11885,8 @@ msgid "Previous fiscal year"
 msgstr "上一财年"
 
 #: widgets/register.cpp:2292
-#, fuzzy
 msgid "Next fiscal year"
-msgstr "上财年"
+msgstr "下一财年"
 
 #: widgets/register.cpp:2324
 msgid ""
@@ -12200,9 +12113,8 @@ msgid "Period"
 msgstr "周期"
 
 #: widgets/rc.cpp:21
-#, fuzzy
 msgid "Individual"
-msgstr "个人(&n)"
+msgstr "个人"
 
 #: widgets/rc.cpp:23
 msgid ""
@@ -13844,3 +13756,4 @@ msgstr "用户自定义"
 
 #~ msgid "Error importing statement."
 #~ msgstr "导入对帐单时出错"
+
