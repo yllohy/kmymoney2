@@ -1,3 +1,6 @@
+2008-11-15 Fernando Vilas <fvilas@iname.com>
+  * Updated SQLite driver detection to work with Qt3 and Qt4. Patch from Tony
+  Bloomfield
 
 2008-11-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated simplified Chinese translation by Roy Qu

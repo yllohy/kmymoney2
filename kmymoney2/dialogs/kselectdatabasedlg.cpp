@@ -106,7 +106,7 @@ const KURL KSelectDatabaseDlg::selectedURL() {
 }
 
 void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
-  if (driver->text().section(' ', 0, 0) == "QSQLITE3"){
+  if (m_map.driverToType(driver->text().section(' ', 0, 0)) == Sqlite3){
     textDbName->clear();
     textHostName->setEnabled (false);  // but not host (how about user/password?)
     if (m_mode == IO_WriteOnly) getFileName(); // saveAs dialog - try to get file name now
@@ -117,7 +117,7 @@ void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
 }
 
 void KSelectDatabaseDlg::slotOKPressed () {
-  if (listDrivers->currentText().section(' ', 0, 0) == "QSQLITE3"){
+  if (m_map.driverToType(listDrivers->currentText().section(' ', 0, 0)) == Sqlite3){
     getFileName();   // SQLITE needs a file name
     if (textDbName->text().isEmpty()) reject();
     else accept();
