@@ -115,6 +115,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
       m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
       m_criteriaTab->insertTab( m_tab2, i18n( "Rows/Columns"), 1 );
       connect(m_tab2->m_comboRows, SIGNAL(highlighted(int)), this, SLOT(slotRowTypeChanged(int)));
+      connect(m_tab2->m_comboColumns, SIGNAL(activated(int)), this, SLOT(slotColumnTypeChanged(int)));
       //control the state of the includeTransfer check
       connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateCheckTransfers()));
 
@@ -264,6 +265,13 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 void KReportConfigurationFilterDlg::slotRowTypeChanged(int row)
 {
   m_tab2->m_checkTotalColumn->setEnabled(row == 0);
+}
+
+void KReportConfigurationFilterDlg::slotColumnTypeChanged(int row)
+{
+  if(m_tab2->m_comboBudget->isEnabled() && row < 2) {
+    m_tab2->m_comboColumns->setCurrentItem(2);
+  }
 }
 
 void KReportConfigurationFilterDlg::slotReset(void)

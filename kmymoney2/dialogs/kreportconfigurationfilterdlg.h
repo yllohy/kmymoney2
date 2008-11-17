@@ -59,6 +59,7 @@ protected:
 
 protected slots:
   void slotRowTypeChanged(int);
+  void slotColumnTypeChanged(int);
   void slotReset(void);
   void slotSearch(void);
   void slotShowHelp(void);
