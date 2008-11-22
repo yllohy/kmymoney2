@@ -676,6 +676,7 @@ private:
   int upgradeToV1();
   int upgradeToV2();
   int upgradeToV3();
+  int upgradeToV4();
 //  long long unsigned getRecCount(const QString& table);
   int createTables();
   void createTable(const MyMoneyDbTable& t);

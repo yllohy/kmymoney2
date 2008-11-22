@@ -51,7 +51,7 @@
 #define TRACE(a) ::timetrace(a)
 
 //***************** THE CURRENT VERSION OF THE DATABASE LAYOUT ****************
-unsigned int MyMoneyDbDef::m_currentVersion = 3;
+unsigned int MyMoneyDbDef::m_currentVersion = 4;
 
 // subclass QSqlQuery for performance tracing
 
@@ -212,7 +212,7 @@ try {
 
 void MyMoneyStorageSql::close(bool logoff) {
   DBG("*** Entering MyMoneyStorageSql::close");
-  if (!QSqlDatabase::open()) {
+  if (QSqlDatabase::open()) {
     if (logoff) {
       startCommitUnit(__func__);
       m_logonUser = QString();
@@ -278,6 +278,10 @@ int MyMoneyStorageSql::upgradeDb() {
       ++m_majorVersion;
       break;
     case 3:
+      if ((rc = upgradeToV4()) != 0) return (1);
+      ++m_majorVersion;
+      break;
+    case 4:
       break;
     default:
       qFatal("Unknown version number in database - %d", m_majorVersion);
@@ -508,6 +512,21 @@ int MyMoneyStorageSql::upgradeToV3() {
   }
   //The default is less than any useful value, so as each schedule is hit, it will update
   //itself to the appropriate value.
+  endCommitUnit(__func__);
+  return 0;
+}
+
+int MyMoneyStorageSql::upgradeToV4() {
+  DBG("*** Entering MyMoneyStorageSql::upgradeToV4");
+  startCommitUnit(__func__);
+  MyMoneySqlQuery q(this);
+  QStringList list;
+  list << "transactionId" << "splitId";
+  q.prepare (MyMoneyDbIndex("kmmSplits", "kmmTx_Split", list, false).generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmSplits index on (transactionId, splitId)");
+    return (1);
+  }
   endCommitUnit(__func__);
   return 0;
 }
@@ -2384,10 +2403,9 @@ const QMap<QCString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (c
   int progress = 0;
 //  m_payeeList.clear();
   QString whereClause;
-  if (tidList.isEmpty()) {
-    whereClause = " WHERE txType = 'N' ";
-  } else {
-    whereClause = " WHERE id IN " + tidList;
+  whereClause = " WHERE txType = 'N' ";
+  if (! tidList.isEmpty()) {
+    whereClause += " AND id IN " + tidList;
   }
   if (!dateClause.isEmpty()) whereClause += QString(" and " + dateClause);
   const MyMoneyDbTable& t = m_db.m_tables["kmmTransactions"];
@@ -2395,10 +2413,9 @@ const QMap<QCString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (c
   q.prepare (QString(t.selectAllString(false) + whereClause + " ORDER BY id;"));
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("reading Transaction")));
   const MyMoneyDbTable& ts = m_db.m_tables["kmmSplits"];
-  if (tidList.isEmpty()) {
-    whereClause = " WHERE txType = 'N' ";
-  } else {
-    whereClause = " WHERE transactionId IN " + tidList;
+  whereClause = " WHERE txType = 'N' ";
+  if (! tidList.isEmpty()) {
+    whereClause += " AND transactionId IN " + tidList;
   }
   if (!dateClause.isEmpty()) whereClause += QString(" and " + dateClause);
   MyMoneySqlQuery qs(const_cast <MyMoneyStorageSql*> (this));

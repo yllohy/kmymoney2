@@ -86,8 +86,8 @@ MyMoneyFile::MyMoneyFile() :
 MyMoneyFile::~MyMoneyFile()
 {
   _instance = 0;
-  delete d;
   delete m_storage;
+  delete d;
 }
 
 MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage) :
