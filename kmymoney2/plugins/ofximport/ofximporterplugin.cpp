@@ -183,13 +183,11 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
 
   if(data.amount_valid==true)
   {
+    t.m_amount = MyMoneyMoney(data.amount);
     // if this is an investment statement, reverse the sign.  not sure
     // why this is needed, so I suppose it's a bit of a hack for the moment.
-    double sign = 1.0;
     if (data.invtransactiontype_valid==true)
-      sign=-1.0;
-
-    t.m_amount = MyMoneyMoney(sign * data.amount);
+      t.m_amount = -t.m_amount;
   }
 
   if(data.check_number_valid==true)
@@ -237,11 +235,11 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
     struct OfxSecurityData* secdata = data.security_data_ptr;
 
     if(secdata->ticker_valid==true){
-      t.m_strSecurity += secdata->ticker;
+      t.m_strSymbol = secdata->ticker;
     }
 
     if(secdata->secname_valid==true){
-      t.m_strSecurity += QString(" ") + secdata->secname;
+      t.m_strSecurity = secdata->secname;
     }
   }
 

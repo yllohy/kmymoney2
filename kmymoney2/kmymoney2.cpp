@@ -151,9 +151,10 @@ class KMyMoneyPrivate
 {
 public:
   KMyMoneyPrivate() :
-    m_moveToAccountSelector(0), m_pluginDlg(0)
+    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0)
   {}
 
+  MyMoneyFileTransaction*  m_ft;
   kMyMoneyAccountSelector* m_moveToAccountSelector;
   KPluginDlg*              m_pluginDlg;
 };
@@ -1499,6 +1500,8 @@ void KMyMoney2App::slotQifImport(void)
       // disable all standard widgets during the import
       setEnabled(false);
 
+      d->m_ft = new MyMoneyFileTransaction();
+
       m_qifReader->startImport();
     }
     delete dlg;
@@ -1511,6 +1514,7 @@ void KMyMoney2App::slotQifImportFinished(void)
 {
   if(m_qifReader != 0) {
     m_qifReader->finishImport();
+    d->m_ft->commit();
 #if 0
     // fixme: re-enable the QIF import menu options
     if(m_qifReader->finishImport()) {
@@ -1544,6 +1548,9 @@ void KMyMoney2App::slotQifImportFinished(void)
     delete m_qifReader;
     m_qifReader = 0;
   }
+  delete d->m_ft;
+  d->m_ft = 0;
+
   slotStatusProgressBar(-1, -1);
   ready();
 
@@ -2173,6 +2180,60 @@ void KMyMoney2App::slotInstitutionDelete(void)
   }
 }
 
+const MyMoneyAccount& KMyMoney2App::findAccount(const MyMoneyAccount& acc, const MyMoneyAccount& parent) const
+{
+  static MyMoneyAccount nullAccount;
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyAccount> parents;
+  try {
+    // search by id
+    if(!acc.id().isEmpty()) {
+      return file->account(acc.id());
+    }
+    // collect the parents. in case parent does not have an id, we scan the all top-level accounts
+    if(parent.id().isEmpty()) {
+      parents << file->asset();
+      parents << file->liability();
+      parents << file->income();
+      parents << file->expense();
+      parents << file->equity();
+    } else {
+      parents << parent;
+    }
+    QValueList<MyMoneyAccount>::const_iterator it_p;
+    for(it_p = parents.begin(); it_p != parents.end(); ++it_p) {
+      MyMoneyAccount parentAccount = *it_p;
+      // search by name (allow hierarchy)
+      int pos;
+      // check for ':' in the name and use it as separator for a hierarchy
+      QString name = acc.name();
+      while((pos = name.find(MyMoneyFile::AccountSeperator)) != -1) {
+        QString part = name.left(pos);
+        QString remainder = name.mid(pos+1);
+        const MyMoneyAccount& existingAccount = file->subAccountByName(parentAccount, part);
+        if(existingAccount.id().isEmpty()) {
+          return existingAccount;
+        }
+        parentAccount = existingAccount;
+        name = remainder;
+      }
+      const MyMoneyAccount& existingAccount = file->subAccountByName(parentAccount, name);
+      if(!existingAccount.id().isEmpty()) {
+        if(acc.accountType() != MyMoneyAccount::UnknownAccountType) {
+          if(acc.accountType() != existingAccount.accountType())
+            continue;
+        }
+        return existingAccount;
+      }
+    }
+  } catch (MyMoneyException *e) {
+    KMessageBox::error(0, i18n("Unable to find account: %1").arg(e->what()));
+    delete e;
+  }
+  return nullAccount;
+}
+
 void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -2199,6 +2260,8 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       newAccount.removeAccountIds();              // and no sub-account ids
       newAccount.setName(remainder);
     }
+    if(newAccount.currencyId().isEmpty())
+      newAccount.setCurrencyId(file->baseCurrency().id());
 
     const MyMoneySecurity& sec = file->security(newAccount.currencyId());
     // Check the opening balance
@@ -2363,7 +2426,7 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
         MyMoneyAccount parent = wizard->parentAccount();
         file->addAccount(acc, parent);
 
-        // tell the wizard about the accound id which it
+        // tell the wizard about the account id which it
         // needs to create a possible schedule and transactions
         wizard->setAccount(acc);
 
@@ -4495,7 +4558,7 @@ void KMyMoney2App::slotTransactionsAccept(void)
       // reload transaction in case it got changed during the course of this loop
       MyMoneyTransaction t = MyMoneyFile::instance()->transaction((*it_t).transaction().id());
       if(t.isImported()) {
-        t.deletePair("Imported");
+        t.setImported(false);
         if(!m_selectedAccount.id().isEmpty()) {
           QValueList<MyMoneySplit> list = t.splits();
           QValueList<MyMoneySplit>::const_iterator it_s;

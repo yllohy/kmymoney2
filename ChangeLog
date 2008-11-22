@@ -1,4 +1,11 @@
 
+2008-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reworked QIF import with lots of improvements (incl. patches from
+    Allan Anderson)
+    Needs thorough testing and a lot of code cleanup
+  * Adapted statement reader to work with new QIF importer
+  * Allow dividend payments w/o reference to security
+
 2008-11-22 Fernando Vilas <fvilas@iname.com>
   * Added db index from user manual to schema
   * Fixed db not logging out when KMM closes (fixes open warning annoyance)

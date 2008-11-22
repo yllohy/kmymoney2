@@ -587,9 +587,11 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     else
       postDate->setDate(QDate::currentDate());
 
-    // security
-    security->completion()->setSelected(m_split.accountId());
-    security->slotItemSelected(m_split.accountId());
+    // security (but only if it's not the investment account)
+    if(m_split.accountId() != m_account.id()) {
+      security->completion()->setSelected(m_split.accountId());
+      security->slotItemSelected(m_split.accountId());
+    }
 
     // activity
     activity->setActivity(d->m_activity->type());
@@ -928,8 +930,8 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
 
       t.setCommodity(security.tradingCurrency());
     } else {
-      qDebug("InvestTransactionEditor::createTransaction: no security selected!");
-      return false;
+      s0.setAccountId(m_account.id());
+      t.setCommodity(m_account.currencyId());
     }
   }
 

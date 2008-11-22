@@ -98,8 +98,9 @@ private:
     */
   void signalProgress(int current, int total, const QString& = "");
 
-  void processTransactionEntry(const MyMoneyStatement::Transaction&);
-  void processSecurityEntry(const MyMoneyStatement::Security&);
+  void processTransactionEntry(const MyMoneyStatement::Transaction& t_in);
+  void processSecurityEntry(const MyMoneyStatement::Security& s_in);
+  void processPriceEntry(const MyMoneyStatement::Price& p_in);
 
   enum SelectCreateMode {
     Create = 0,
@@ -117,6 +118,8 @@ private:
     * @param account Reference to MyMoneyAccount object
     */
   bool selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
+
+  const QCString checkCategory(const QString& name, const MyMoneyMoney& value, const MyMoneyMoney& value2);
 
 signals:
   /**

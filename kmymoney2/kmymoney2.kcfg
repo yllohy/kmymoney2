@@ -316,7 +316,32 @@
    <default>true</default>
   </entry>
  </group>
-
+ <group name="QIF Options">
+  <entry name="qifCash" type="String">
+   <label>additional names for cash account</label>
+   <default>Bar</default>
+  </entry>
+  <entry name="qifBank" type="String">
+   <label>additional names for checking account</label>
+   <default>Banca,Banque</default>
+  </entry>
+  <entry name="qifCreditCard" type="String">
+   <label>additional names for credit card account</label>
+   <default>Kreditkarte</default>
+  </entry>
+  <entry name="qifAsset" type="String">
+   <label>additional names for asset account</label>
+   <default>And. Kto.</default>
+  </entry>
+  <entry name="qifOpeningBalance" type="String">
+   <label>additional names for opening balance payee</label>
+   <default>Eröffnungssaldo</default>
+  </entry>
+  <entry name="qifInvoice" type="String">
+   <label>additional names for invoice accounts</label>
+   <default>Rechnung</default>
+  </entry>
+ </group>
 </kcfg>
 <!-- 
   <entry name="" type="">

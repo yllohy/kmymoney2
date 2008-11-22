@@ -219,6 +219,12 @@ public:
   bool isImported(void) const;
 
   /**
+   * Sets the imported state of this transaction to be the value of @a state .
+   * @p state defaults to @p true.
+   */
+  void setImported(bool state = true);
+
+  /**
     * This static method returns the id which will be assigned to the
     * first split added to a transaction. This ID can be used to figure
     * out the split that references the account through which a transaction

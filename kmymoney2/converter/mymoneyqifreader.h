@@ -45,6 +45,7 @@
 #include "../mymoney/mymoneytransaction.h"
 
 class MyMoneyFileTransaction;
+class MyMoneyQifReaderPrivate;
 
 /**
   * @author Thomas Baumgart
@@ -52,6 +53,30 @@ class MyMoneyFileTransaction;
 class MyMoneyQifReader : public QObject
 {
   Q_OBJECT
+  friend class MyMoneyQifReaderPrivate;
+
+private:
+  typedef enum {
+    EntryUnknown = 0,
+    EntryAccount,
+    EntryTransaction,
+    EntryCategory,
+    EntryMemorizedTransaction,
+    EntryInvestmentTransaction,
+    EntrySecurity,
+    EntryPrice,
+    EntryPayee,
+    EntryClass,
+    EntrySkip
+  } QifEntryTypeE;
+
+  struct qSplit
+  {
+    QString      m_strCategoryName;
+    QString      m_strMemo;
+    QString      m_amount;
+  };
+
 
 public:
   MyMoneyQifReader();
@@ -151,10 +176,18 @@ private:
   void processMSAccountEntry(const MyMoneyAccount::accountTypeE accountType = MyMoneyAccount::Checkings);
 
   /**
+   * This method scans the m_qifEntry object as a payee record specified by Quicken
+   */
+  void processPayeeEntry(void);
+
+  /**
     * This method scans the m_qifEntry object as an account record specified
-    * by Quicken.
+    * by Quicken. In case @p resetAccountId is @p true (the default), the
+    * global account id will be reset.
+    *
+    * The id of the account will be returned.
     */
-  void processAccountEntry(void);
+  QCString processAccountEntry(bool resetAccountId = true);
 
   /**
     * This method scans the m_qifEntry object as a category record specified
@@ -195,6 +228,11 @@ private:
   void processQifEntry(void);
 
   /**
+   * This method process a line starting with an exclamation mark
+   */
+  void processQifSpecial(const QString& _line);
+
+  /**
     * This method is used to get the account id of the split for
     * a transaction from the text found in the QIF $ or L record.
     * If an account with the name is not found, the user is asked
@@ -222,6 +260,13 @@ private:
     *         @p id is not found in @p lines
     */
   const QString extractLine(const QChar id, int cnt = 1);
+
+  /**
+    * This method examines each line in the QStringList object @p m_qifEntry,
+    * searching for split entries, which it extracts into a struct qSplit and
+    * stores all splits found in @p listqSplits .
+    */
+  void extractSplits(QValueList<qSplit>& listqSplits) const;
 
   enum SelectCreateMode {
     Create = 0,
@@ -262,6 +307,7 @@ private:
     * @param mode Is either Create or Select depending on the above table
     * @param account Reference to MyMoneyAccount object
     */
+
   void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account, const MyMoneyMoney& openingBalance = MyMoneyMoney());
 
   /**
@@ -284,7 +330,7 @@ private:
     */
   static const QCString findOrCreateExpenseAccount(const QString& searchname);
 
-  void processQifLine(void);
+  // void processQifLine(void);
 
 signals:
   /**
@@ -298,7 +344,7 @@ private slots:
   void slotReceivedErrorFromFilter(KProcess* /* proc */, char *buff, int len);
   // void slotReceivedDataFromFilter(void);
   // void slotReceivedErrorFromFilter(void);
-  void slotProcessBuffers(void);
+  void slotProcessData(void);
 
   /**
     * This slot is used to be informed about the end of the filtering process.
@@ -308,16 +354,7 @@ private slots:
 
 
 private:
-  enum QifEntryType {
-     EntryUnknown = 0,
-     EntryAccount,
-     EntryTransaction,
-     EntryCategory,
-     EntryMemorizedTransaction,
-     EntryInvestmentTransaction,
-     EntrySecurity,
-     EntryPrice
-  };
+  MyMoneyQifReaderPrivate*  d;
 
   KProcess                m_filter;
   QString                 m_filename;
@@ -331,10 +368,12 @@ private:
   QMap<QString, QString>  m_investmentMap;
   QFile                   *m_file;
   char                    m_buffer[1024];
+  QCString                m_lineBuffer;
   QStringList             m_qifEntry;
   int                     m_extractedLine;
   QString                 m_qifLine;
-  int                     m_entryType;
+  QStringList             m_qifLines;
+  QifEntryTypeE           m_entryType;
   bool                    m_skipAccount;
   bool                    m_processingData;
   bool                    m_userAbort;

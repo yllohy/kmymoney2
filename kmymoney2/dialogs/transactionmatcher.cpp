@@ -37,7 +37,7 @@ TransactionMatcher::TransactionMatcher(const MyMoneyAccount& acc) :
 {
 }
 
-void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTransaction ti, MyMoneySplit si)
+void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTransaction ti, MyMoneySplit si, bool allowImportedTransactions)
 {
   const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
 
@@ -73,7 +73,7 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
   // selected) account.
 
   // verify, that tm is a manually (non-matched) transaction and ti an imported one
-  if(sm.isMatched() || tm.isImported())
+  if(sm.isMatched() || (!allowImportedTransactions && tm.isImported()))
     throw new MYMONEYEXCEPTION(i18n("First transaction does not match requirement for matching"));
   if(!ti.isImported())
     throw new MYMONEYEXCEPTION(i18n("Second transaction does not match requirement for matching"));
@@ -165,14 +165,6 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
     sm.setReconcileFlag(MyMoneySplit::Cleared);
   }
 
-#if 0 // there has been a request to keep the original payee
-  // We use the imported payee and keep the previous one for unmatch
-  if(sm.payeeId() != si.payeeId()) {
-    sm.setValue("kmm-orig-payee", sm.payeeId());
-    sm.setPayeeId(si.payeeId());
-  }
-#endif
-
   // if we don't have a payee assigned to the manually entered transaction
   // we use the one we found in the imported transaction
   if(sm.payeeId().isEmpty() && !si.payeeId().isEmpty()) {
@@ -188,10 +180,12 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
 
   // combine the two memos into one
   QString memo = sm.memo();
-  if(!memo.isEmpty() && !si.memo().isEmpty())
-    memo += "\n";
-  if(!si.memo().isEmpty())
+  if(!si.memo().isEmpty() && si.memo() != memo) {
+    sm.setValue("kmm-orig-memo", memo);
+    if(!memo.isEmpty())
+      memo += "\n";
     memo += si.memo();
+  }
   sm.setMemo(memo);
 
   // remember the split we matched
@@ -231,20 +225,14 @@ void TransactionMatcher::unmatch(const MyMoneyTransaction& _t, const MyMoneySpli
       sm.setPayeeId(QCString(sm.value("kmm-orig-payee")));
     }
 
-    // restore memo
-    QString memo = sm.memo();
-    if(!si.memo().isEmpty()) {
-      int pos = memo.findRev(si.memo());
-      if(pos != -1) {
-        memo = memo.left(pos);
-        if(memo.endsWith("\n"))
-          memo = memo.left(pos-1);
-        sm.setMemo(memo);
-      }
+    // restore memo if modified
+    if(!sm.value("kmm-orig-memo").isEmpty()) {
+      sm.setMemo(sm.value("kmm-orig-memo"));
     }
 
     sm.deletePair("kmm-orig-postdate");
     sm.deletePair("kmm-orig-payee");
+    sm.deletePair("kmm-orig-memo");
     sm.deletePair("kmm-match-split");
     tm.modifySplit(sm);
 
@@ -261,6 +249,7 @@ void TransactionMatcher::accept(const MyMoneyTransaction& _t, const MyMoneySplit
     sm.removeMatch();
     sm.deletePair("kmm-orig-postdate");
     sm.deletePair("kmm-orig-payee");
+    sm.deletePair("kmm-orig-memo");
     sm.deletePair("kmm-match-split");
     tm.modifySplit(sm);
 
@@ -276,25 +265,29 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
   const QValueList<MyMoneySplit>& splits = tm.splits();
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
-    // check for duplicate (we can only do that, if we have a bankID)
-    if(!si.bankID().isEmpty()) {
-      if((*it_s).bankID() == si.bankID()) {
-        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
-        result = matchedDuplicate;
-        break;
+    // we only check for duplicates / matches if the sign
+    // of the amount for this split is identical
+    if((*it_s).shares() == si.shares()) {
+      // check for duplicate (we can only do that, if we have a bankID)
+      if(!si.bankID().isEmpty()) {
+        if((*it_s).bankID() == si.bankID()) {
+          lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+          result = matchedDuplicate;
+          break;
+        }
+        // in case the stored split already has a bankid
+        // assigned, it must be a different one and therefore
+        // will certainly not match
+        if(!(*it_s).bankID().isEmpty())
+          continue;
       }
-      // in case the stored split already has a bankid
-      // assigned, it must be a different one and therefore
-      // will certainly not match
-      if(!(*it_s).bankID().isEmpty())
-        continue;
-    }
-    // check if this is the one that matches
-    if((*it_s).accountId() == si.accountId()
-    && (*it_s).shares() == si.shares()
-    && !(*it_s).isMatched()) {
-      lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
-      result = matched;
+      // check if this is the one that matches
+      if((*it_s).accountId() == si.accountId()
+      && (*it_s).shares() == si.shares()
+      && !(*it_s).isMatched()) {
+        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+        result = matched;
+      }
     }
   }
 }

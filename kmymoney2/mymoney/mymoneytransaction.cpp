@@ -341,6 +341,14 @@ bool MyMoneyTransaction::isImported(void) const
   return value("Imported").lower() == QString("true");
 }
 
+void MyMoneyTransaction::setImported(bool state)
+{
+  if(state)
+    setValue("Imported", "true");
+  else
+    deletePair("Imported");
+}
+
 bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;

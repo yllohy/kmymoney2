@@ -42,6 +42,7 @@
 #include <kabc/addressee.h>
 #include <kabc/stdaddressbook.h>
 #include <kmessagebox.h>
+#include <kactivelabel.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -324,6 +325,8 @@ FilePage::FilePage(Wizard* wizard, const char* name) :
 bool FilePage::isComplete(void) const
 {
   bool rc = m_mandatoryGroup->isEnabled();
+  m_existingFileLabel->hide();
+  m_finishLabel->show();
   if(rc) {
     // if a filename is present, check that
     // a) the file does not exist
@@ -338,6 +341,8 @@ bool FilePage::isComplete(void) const
         }
       }
     }
+    m_existingFileLabel->setHidden(rc);
+    m_finishLabel->setShown(rc);
   }
   return rc;
 }

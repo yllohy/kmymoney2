@@ -1488,7 +1488,8 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
         case ValueColumn1:
           align |= Qt::AlignLeft;
           fieldEditable = true;
-          txt = m_security.name();
+          if(m_account.isInvest())
+            txt = m_security.name();
           break;
 
         case LabelColumn2:
@@ -1670,7 +1671,8 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
 
         case SecurityColumn:
           align |= Qt::AlignLeft;
-          txt = m_security.name();
+          if(m_account.isInvest())
+            txt = m_security.name();
           break;
 
         case ReconcileFlagColumn:

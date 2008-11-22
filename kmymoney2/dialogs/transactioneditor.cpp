@@ -556,7 +556,7 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule, 
         // if we have a categorization, make sure we remove
         // the 'imported' flag automagically
         if((*it_ts).splitCount() > 1)
-          (*it_ts).deletePair("Imported");
+          (*it_ts).setImported(false);
 
         // create information about min and max balances
         QValueList<MyMoneySplit>::const_iterator it_s;

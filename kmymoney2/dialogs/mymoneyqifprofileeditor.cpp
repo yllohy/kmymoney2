@@ -98,7 +98,6 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
                       i18n("Use this to create a new QIF import/export profile"));
   m_newButton->setGuiItem(newButtenItem);
 
-
   connect(m_profileListBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotLoadProfileFromConfig(const QString&)));
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_okButton, SIGNAL(clicked()), this, SLOT(slotOk()));
@@ -114,7 +113,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_editAccountDelimiter, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setAccountDelimiter(const QString&)));
   connect(m_editVoidMark, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setVoidMark(const QString&)));
 
-  connect(m_editDateFormat, SIGNAL(highlighted(const QString&)), &m_profile, SLOT(setDateFormat(const QString&)));
+  //connect(m_editDateFormat, SIGNAL(highlighted(const QString&)), &m_profile, SLOT(setDateFormat(const QString&)));
   connect(m_editApostrophe, SIGNAL(highlighted(const QString&)), &m_profile, SLOT(setApostropheFormat(const QString&)));
 
   connect(m_editAmounts, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotAmountTypeSelected(QListViewItem*)));
@@ -125,7 +124,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_editInputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editInputFilterLocation, SLOT(setURL(const QString&)));
 
   connect(m_editInputFilterFileType, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterFileType(const QString&)));
-  
+
   connect(m_editOutputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptExport(const QString&)));
   connect(m_editOutputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editOutputFilterLocation, SLOT(setURL(const QString&)));
 
@@ -288,8 +287,8 @@ void MyMoneyQifProfileEditor::showProfile(void)
   m_editInputFilterLocation->setURL(m_profile.filterScriptImport());
   m_editOutputFilterLocation->setURL(m_profile.filterScriptExport());
   m_editInputFilterFileType->setText(m_profile.filterFileType());
-	  
-  m_editDateFormat->setCurrentText(m_profile.dateFormat());
+
+  m_editDateFormat->setCurrentText(m_profile.outputDateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
 
   m_attemptMatch->setChecked(m_profile.attemptMatchDuplicates());

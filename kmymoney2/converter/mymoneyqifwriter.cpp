@@ -109,10 +109,10 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   s << "CX" << endl;
   s << "P" << m_qifProfile.openingBalanceText() << endl;
   s << "L";
-  if(m_qifProfile.accountDelimiter()[0])
+  if(m_qifProfile.accountDelimiter().length())
     s << m_qifProfile.accountDelimiter()[0];
   s << account.name();
-  if(m_qifProfile.accountDelimiter()[1])
+  if(m_qifProfile.accountDelimiter().length() > 1)
     s << m_qifProfile.accountDelimiter()[1];
   s << endl;
   s << "^" << endl;

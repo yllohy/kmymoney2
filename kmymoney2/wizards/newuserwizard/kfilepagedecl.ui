@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>303</height>
+            <height>350</height>
         </rect>
     </property>
     <vbox>
@@ -45,13 +45,33 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>41</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
         <widget class="KActiveLabel">
             <property name="name">
-                <cstring>kActiveLabel2</cstring>
+                <cstring>m_existingFileLabel</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>255</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>Either the currently selected file exists or the selected directory does not exist. Please make sure, that
+
+&lt;ul&gt;
+&lt;li&gt;the selected directory exists and&lt;/li&gt;
+&lt;li&gt;the filename is not currently used in this directory.&lt;/li&gt;
+&lt;/ul&gt;</string>
+            </property>
+        </widget>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>m_finishLabel</cstring>
             </property>
             <property name="focusPolicy">
                 <enum>NoFocus</enum>

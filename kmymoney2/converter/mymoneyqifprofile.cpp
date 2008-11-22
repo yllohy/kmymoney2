@@ -18,6 +18,9 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qregexp.h>
+#include <qvaluevector.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -33,19 +36,113 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/mymoneymoney.h"
 
-MyMoneyQifProfile::MyMoneyQifProfile()
-  : m_isDirty(false)
+/*
+ * CENTURY_BREAK is used to identfy the century for a two digit year
+ *
+ * if yr is < CENTURY_BREAK it is in 2000
+ * if yr is >= CENTURY_BREAK it is in 1900
+ *
+ * so with CENTURY_BREAK being 70 the following will happen:
+ *
+ *  00..69  ->  2000..2069
+ *  70..99  ->  1970..1999
+ */
+#define CENTURY_BREAK 70
+
+class MyMoneyQifProfilePrivate {
+  public:
+    MyMoneyQifProfilePrivate() {
+      m_changeCount.resize(3, 0);
+      m_lastValue.resize(3, 0);
+      m_largestValue.resize(3, 0);
+    }
+
+    void getThirdPosition(void);
+    void dissectDate(QValueVector<QString>& parts, const QString& txt) const;
+
+    QValueVector<int>    m_changeCount;
+    QValueVector<int>    m_lastValue;
+    QValueVector<int>    m_largestValue;
+    QMap<QChar, int>     m_partPos;
+};
+
+void MyMoneyQifProfilePrivate::dissectDate(QValueVector<QString>& parts, const QString& txt) const
+{
+  QRegExp nonDelimChars("[ 0-9a-zA-Z]");
+  int part = 0;                 // the current part we scan
+  int posFirstDelim = -1,       // the position of the first delimiter
+  posSecondDelim = -1;      // the position of the second delimiter
+  int pos;                      // the current scan position
+  int maxPartSize = txt.length() > 6 ? 4 : 2;
+                                // the maximum size of a part
+
+  // separate the parts of the date and keep the locations of the delimiters
+  for(pos = 0; pos < txt.length(); ++pos) {
+    if(nonDelimChars.search(txt[pos]) == -1) {
+      posFirstDelim = posSecondDelim;
+      posSecondDelim = pos;
+      ++part;
+      maxPartSize = -1;         // make sure to pick the right one depending if next char is numeric or not
+    } else {
+      // check if the part is over and we did not see a delimiter
+      if(parts[part].length() == maxPartSize) {
+        ++part;
+        maxPartSize = -1;
+      }
+      if(maxPartSize == -1) {
+        maxPartSize = txt[pos].isDigit() ? 2 : 3;
+        if(part == 2)
+          maxPartSize = 4;
+      }
+      parts[part] += txt[pos];
+    }
+  }
+
+  if(posFirstDelim == -1) {
+    posFirstDelim = posSecondDelim;
+    posSecondDelim = -1;
+  }
+}
+
+
+void MyMoneyQifProfilePrivate::getThirdPosition(void)
+{
+  // if we have detected two parts we can calculate the third and its position
+  if(m_partPos.count() == 2) {
+    QValueList<QChar> partsPresent = m_partPos.keys();
+    QStringList partsAvail = QStringList::split(",", "d,m,y");
+    int missingIndex = -1;
+    int value = 0;
+    for(int i = 0; i < 3; ++i) {
+      if(!partsPresent.contains(partsAvail[i][0])) {
+        missingIndex = i;
+      } else {
+        value += m_partPos[partsAvail[i][0]];
+      }
+    }
+    m_partPos[partsAvail[missingIndex][0]] = 3 - value;
+  }
+}
+
+
+
+MyMoneyQifProfile::MyMoneyQifProfile() :
+  d(new MyMoneyQifProfilePrivate),
+  m_isDirty(false)
 {
   clear();
 }
 
-MyMoneyQifProfile::MyMoneyQifProfile(const QString& name)
+MyMoneyQifProfile::MyMoneyQifProfile(const QString& name) :
+  d(new MyMoneyQifProfilePrivate),
+  m_isDirty(false)
 {
   loadProfile(name);
 }
 
 MyMoneyQifProfile::~MyMoneyQifProfile()
 {
+  delete d;
 }
 
 void MyMoneyQifProfile::clear(void)
@@ -180,12 +277,24 @@ void MyMoneyQifProfile::setProfileType(const QString& type)
   m_profileType = type;
 }
 
-void MyMoneyQifProfile::setDateFormat(const QString& dateFormat)
+void MyMoneyQifProfile::setOutputDateFormat(const QString& dateFormat)
 {
   if(m_dateFormat != dateFormat)
     m_isDirty = true;
 
   m_dateFormat = dateFormat;
+}
+
+void MyMoneyQifProfile::setInputDateFormat(const QString& dateFormat)
+{
+  int j = -1;
+  if(dateFormat.length() > 0) {
+    for(int i = 0; i < dateFormat.length()-1; ++i) {
+      if(dateFormat[i] == '%') {
+        d->m_partPos[dateFormat[++i]] = ++j;
+      }
+    }
+  }
 }
 
 void MyMoneyQifProfile::setApostropheFormat(const QString& apostropheFormat)
@@ -220,13 +329,13 @@ void MyMoneyQifProfile::setAmountThousands(const QChar& def, const QChar& chr)
   m_thousands[def] = ch;
 }
 
-const QChar MyMoneyQifProfile::amountDecimal(const QChar& def) const
+QChar MyMoneyQifProfile::amountDecimal(const QChar& def) const
 {
   QChar chr = m_decimal[def];
   return chr;
 }
 
-const QChar MyMoneyQifProfile::amountThousands(const QChar& def) const
+QChar MyMoneyQifProfile::amountThousands(const QChar& def) const
 {
   QChar chr = m_thousands[def];
   return chr;
@@ -260,7 +369,7 @@ void MyMoneyQifProfile::setVoidMark(const QString& txt)
   m_voidMark = txt;
 }
 
-const QString MyMoneyQifProfile::accountDelimiter(void) const
+QString MyMoneyQifProfile::accountDelimiter(void) const
 {
   QString rc;
 
@@ -275,7 +384,7 @@ const QString MyMoneyQifProfile::accountDelimiter(void) const
   return rc;
 }
 
-const QString MyMoneyQifProfile::date(const QDate& datein) const
+QString MyMoneyQifProfile::date(const QDate& datein) const
 {
   const char* format = m_dateFormat.latin1();
   QString buffer;
@@ -337,7 +446,43 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
 
 const QDate MyMoneyQifProfile::date(const QString& datein) const
 {
-  QString scannedParts[3];
+  // in case we don't know the format, we return an invalid date
+  if(d->m_partPos.count() != 3)
+    return QDate();
+
+  QValueVector<QString> scannedParts(3);
+  d->dissectDate(scannedParts, datein);
+
+  int yr, mon, day;
+  bool ok;
+  yr = scannedParts[d->m_partPos['y']].toInt();
+  mon = scannedParts[d->m_partPos['m']].toInt(&ok);
+  if(!ok) {
+    QStringList monthNames = QStringList::split(",", "jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec");
+    int j;
+    for(j = 1; j <= 12; ++j) {
+      if((KGlobal::locale()->calendar()->monthName(j, 2000, true).lower() == scannedParts[d->m_partPos['m']].lower())
+      || (monthNames[j-1] == scannedParts[d->m_partPos['m']].lower())) {
+        mon = j;
+        break;
+      }
+    }
+    if(j == 13) {
+      qWarning("Unknown month '%s'", scannedParts[d->m_partPos['m']].data());
+      return QDate();
+    }
+  }
+
+  day = scannedParts[d->m_partPos['d']].toInt();
+  if(yr < 100) {  // two digit year information?
+    if(yr < CENTURY_BREAK)   // less than the CENTURY_BREAK we assume this century
+      yr += 2000;
+    else
+      yr += 1900;
+  }
+  return QDate(yr, mon, day);
+
+#if 0
   QString scannedDelim[2];
   QString formatParts[3];
   QString formatDelim[2];
@@ -509,9 +654,10 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
     }
   }
   return QDate(yr, mon, day);
+#endif
 }
 
-const QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const
+QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const
 {
   QChar realDelim = delim;
   QString buffer;
@@ -534,7 +680,7 @@ const QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const
   return buffer;
 }
 
-const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& valuein) const
+QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& valuein) const
 {
   unsigned char _decimalSeparator;
   unsigned char _thousandsSeparator;
@@ -557,7 +703,7 @@ const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& val
   return res;
 }
 
-const MyMoneyMoney MyMoneyQifProfile::value(const QChar& def, const QString& valuein) const
+MyMoneyMoney MyMoneyQifProfile::value(const QChar& def, const QString& valuein) const
 {
   unsigned char _decimalSeparator;
   unsigned char _thousandsSeparator;
@@ -610,6 +756,214 @@ void MyMoneyQifProfile::setAttemptMatchDuplicates(bool f)
     m_isDirty = true;
 
   m_attemptMatchDuplicates = f;
+}
+
+QString MyMoneyQifProfile::inputDateFormat(void) const
+{
+  QStringList list;
+  possibleDateFormats(list);
+  if(list.count() == 1)
+    return list.first();
+  return QString();
+}
+
+void MyMoneyQifProfile::possibleDateFormats(QStringList& list) const
+{
+  QStringList defaultList = QStringList::split(":", "y,m,d:y,d,m:m,d,y:m,y,d:d,m,y:d,y,m");
+  list.clear();
+  QStringList::const_iterator it_d;
+  for(it_d = defaultList.begin(); it_d != defaultList.end(); ++it_d) {
+    QStringList parts = QStringList::split(",", *it_d);
+    int i;
+    for(i = 0; i < 3; ++i) {
+      if(d->m_partPos.contains(parts[i][0])) {
+        if(d->m_partPos[parts[i][0]] != i)
+          break;
+      }
+      // months can't be larger than 12
+      if(parts[i] == "m" && d->m_largestValue[i] > 12)
+        break;
+      // days can't be larger than 31
+      if(parts[i] == "d" && d->m_largestValue[i] > 31)
+        break;
+    }
+    // matches all tests
+    if(i == 3) {
+      QString format = *it_d;
+      format.replace('y', "%y");
+      format.replace('m', "%m");
+      format.replace('d', "%d");
+      format.replace(',', " ");
+      list << format;
+    }
+  }
+}
+
+void MyMoneyQifProfile::autoDetect(const QStringList& lines)
+{
+  m_dateFormat = QString();
+  m_decimal.clear();
+  m_thousands.clear();
+
+  QString numericRecords = "BT$OIQ";
+  QStringList::const_iterator it;
+  // section: used to switch between different QIF sections,
+  // because the Record identifiers are ambigous between sections
+  // eg. in transaction records, T identifies a total amount, in
+  // account sections it's the type.
+  //
+  // 0 - unknown
+  // 1 - account
+  // 2 - transactions
+  // 3 - prices
+  int section = 0;
+  QRegExp price("\"(.*)\",(.*),\"(.*)\"");
+  for(it = lines.begin(); it != lines.end(); ++it) {
+    QChar c((*it)[0]);
+    if(c == '!') {
+      QString sname = (*it).lower();
+      section = 0;
+      if(sname.startsWith("!account"))
+        section = 1;
+      else if(sname.startsWith("!type")) {
+        if(sname.startsWith("!type:cat")
+           || sname.startsWith("!type:payee")
+           || sname.startsWith("!type:security")
+           || sname.startsWith("!type:class")) {
+          section = 0;
+        } else if(sname.startsWith("!type:price")) {
+          section = 3;
+        } else
+          section = 2;
+      }
+    }
+
+    switch(section) {
+      case 1:
+        if(c == 'B') {
+          scanNumeric((*it).mid(1), m_decimal[c], m_thousands[c]);
+        }
+        break;
+      case 2:
+        if(numericRecords.contains(c)) {
+          scanNumeric((*it).mid(1), m_decimal[c], m_thousands[c]);
+        } else if((c == 'D') && (m_dateFormat.isEmpty())) {
+          if(d->m_partPos.count() != 3) {
+            scanDate((*it).mid(1));
+            if(d->m_partPos.count() == 2) {
+              // if we have detected two parts we can calculate the third and its position
+              d->getThirdPosition();
+            }
+          }
+        }
+        break;
+      case 3:
+        if(price.search(*it) != -1) {
+          scanNumeric(price.cap(2), m_decimal['P'], m_thousands['P']);
+          scanDate(price.cap(3));
+        }
+        break;
+    }
+  }
+
+  if(d->m_partPos.count() != 3) {
+    QMap<int, int> sortedPos;
+    for(int i = 0; i < 3; ++i) {
+      sortedPos[d->m_changeCount[i]] = i;
+    }
+
+    QMap<int, int>::const_iterator it_a;
+    QMap<int, int>::const_iterator it_b;
+    switch(sortedPos.count()) {
+      case 1: // all the same
+        // let the user decide, we can't figure it out
+        break;
+
+      case 2: // two are the same, we treat the largest as the day
+              // if it's 20% larger than the other one and let the
+              // user pick the other two
+        {
+          it_b = sortedPos.begin();
+          it_a = it_b;
+          ++it_b;
+          double a = d->m_changeCount[*it_a];
+          double b = d->m_changeCount[*it_b];
+          if(b > (a * 1.2)) {
+            d->m_partPos['d'] = *it_b;
+          }
+        }
+        break;
+
+      case 3: // three different, we check if they are 20% apart each
+        it_b = sortedPos.begin();
+        for(int i = 0; i < 2; ++i) {
+          it_a = it_b;
+          ++it_b;
+          double a = d->m_changeCount[*it_a];
+          double b = d->m_changeCount[*it_b];
+          if(b > (a * 1.2)) {
+            switch(i) {
+              case 0:
+                d->m_partPos['y'] = *it_a;
+                break;
+              case 1:
+                d->m_partPos['d'] = *it_b;
+                break;
+            }
+          }
+        }
+        d->getThirdPosition();
+        break;
+    }
+  }
+}
+
+void MyMoneyQifProfile::scanNumeric(const QString& txt, QChar& decimal, QChar& thousands) const
+{
+  QChar first, second;
+  QRegExp numericChars("[0-9-()]");
+  for(int i = 0; i < txt.length(); ++i) {
+    if(numericChars.search(txt[i]) == -1) {
+      first = second;
+      second = txt[i];
+    }
+  }
+  if(!second.isNull())
+    decimal = second;
+  if(!first.isNull())
+    thousands = first;
+}
+
+void MyMoneyQifProfile::scanDate(const QString& txt) const
+{
+  // extract the parts from the txt
+  QValueVector<QString> parts(3);             // the various parts of the date
+  d->dissectDate(parts, txt);
+
+  // now analyse the parts
+  for(int i = 0; i < 3; ++i) {
+    bool ok;
+    int value = parts[i].toInt(&ok);
+    if(!ok) {  // this should happen only if the part is non-numeric -> month
+      d->m_partPos['m'] = i;
+    } else {
+      if(value != d->m_lastValue[i]) {
+        d->m_changeCount[i]++;
+        d->m_lastValue[i] = value;
+        if(value > d->m_largestValue[i])
+          d->m_largestValue[i] = value;
+      }
+      // if it's > 31 it can only be years
+      if(value > 31) {
+        d->m_partPos['y'] = i;
+      }
+      // and if it's in between 12 and 32 and we already identified the
+      // position for the year it must be days
+      if((value > 12) && (value < 32) && d->m_partPos.contains('y')) {
+        d->m_partPos['d'] = i;
+      }
+    }
+  }
 }
 
 #include "mymoneyqifprofile.moc"

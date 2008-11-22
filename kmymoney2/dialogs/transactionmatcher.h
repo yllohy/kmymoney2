@@ -66,12 +66,15 @@ public:
    * The application of the match depends on the following items:
    *
    * - both share values of @p sm and @p si must be identical
-   * - @p tm must be a non-imported, non-matched transaction
+   * - @p tm must be a non-imported (see below), non-matched transaction
    * - @p ti must be an imported transaction
+   *
+   * If @p allowImportedTransactions is true, @p tm may be an imported transaction. The
+   * default of @p allowImportedTransactions is @p false.
    *
    * In case of errors, an exception is thrown.
    */
-  void match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTransaction ti, MyMoneySplit si);
+  void match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTransaction ti, MyMoneySplit si, bool allowImportedTransactions = false);
 
   /**
    * This method is used to unmatch a previously matched transaction (see match() and findMatch() )

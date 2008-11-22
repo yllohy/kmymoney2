@@ -536,6 +536,10 @@ public:
 
   KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode);
 
+  const MyMoneyAccount& findAccount(const MyMoneyAccount& acc, const MyMoneyAccount& parent) const;
+
+  void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal);
+
 k_dcop:
   // Note: Don't use e.g. filename(void) but use filename() because
   // otherwise the kidl compiler produces uncompilable results.
@@ -606,8 +610,6 @@ protected:
   virtual void resizeEvent(QResizeEvent*);
 
   void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
-
-  void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal);
 
   /**
     * This method checks, if an account can be closed or not. An account

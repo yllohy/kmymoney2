@@ -58,33 +58,37 @@ public:
 
   enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
 
-  struct Split
-  {
+  class Split {
+  public:
+    Split() : m_reconcile(MyMoneySplit::NotReconciled) {}
     QString      m_strCategoryName;
     QString      m_strMemo;
+    QString      m_accountId;
     MyMoneySplit::reconcileFlagE m_reconcile;
     MyMoneyMoney m_amount;
 
   };
 
-  struct Transaction
-  {
+  class Transaction {
+  public:
+    Transaction() : m_reconcile(MyMoneySplit::NotReconciled) {}
     QDate m_datePosted;
     QString m_strPayee;
     QString m_strMemo;
     QString m_strNumber;
     QString m_strBankID;
     MyMoneyMoney m_amount;
+    MyMoneySplit::reconcileFlagE m_reconcile;
 
     // the following members are only used for investment accounts (m_eType==etInvestment)
     // eaNone means the action, shares, and security can be ignored.
-    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaEnd };
+    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaShrsin, eaShrsout, eaStksplit, eaFees, eaEnd };
     EAction m_eAction;
     MyMoneyMoney m_shares;
     MyMoneyMoney m_fees;
     MyMoneyMoney m_price;
-    // should be trading symbol followed by name, e.g. "DIS The Disney Corporation"
-    // if there is no symbol, then it's a space followed by the name, e.g. " PennyStock Co., Inc."
+    QString m_interestCategory;
+    QString m_strSymbol;
     QString m_strSecurity;
     QValueList<Split> m_listSplits;
   };

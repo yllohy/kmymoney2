@@ -33,6 +33,7 @@ class QDate;
 // Project Includes
 
 class MyMoneyMoney;
+class MyMoneyQifProfilePrivate;
 
 /**
   * @author Thomas Baumgart
@@ -47,31 +48,46 @@ public:
   MyMoneyQifProfile(const QString& name);
   ~MyMoneyQifProfile();
 
-  const QString& profileName(void) const { return m_profileName; };
+  const QString& profileName(void) const { return m_profileName; }
   void setProfileName(const QString& name);
 
   void loadProfile(const QString& name);
   void saveProfile(void);
 
   const QDate date(const QString& datein) const;
-  const QString date(const QDate& datein) const;
+  QString date(const QDate& datein) const;
 
-  const MyMoneyMoney value(const QChar& def, const QString& valuein) const;
-  const QString value(const QChar& def, const MyMoneyMoney& valuein) const;
+  MyMoneyMoney value(const QChar& def, const QString& valuein) const;
+  QString value(const QChar& def, const MyMoneyMoney& valuein) const;
 
-  const QString& dateFormat(void) const { return m_dateFormat; };
-  const QString& apostropheFormat(void) const { return m_apostropheFormat; };
-  const QChar amountDecimal(const QChar& def) const;
-  const QChar amountThousands(const QChar& def) const;
-  const QString& profileDescription(void) const { return m_profileDescription; };
-  const QString& profileType(void) const { return m_profileType; };
-  const QString& openingBalanceText(void) const { return m_openingBalanceText; };
-  const QString accountDelimiter(void) const;
-  const QString& voidMark(void) const { return m_voidMark; };
-  const QString& filterScriptImport(void) const { return m_filterScriptImport; };
-  const QString& filterScriptExport(void) const { return m_filterScriptExport; };
-  const QString& filterFileType(void) const { return m_filterFileType; };
+  const QString& outputDateFormat(void) const { return m_dateFormat; }
+  QString inputDateFormat(void) const;
+  const QString& apostropheFormat(void) const { return m_apostropheFormat; }
+  QChar amountDecimal(const QChar& def) const;
+  QChar amountThousands(const QChar& def) const;
+  const QString& profileDescription(void) const { return m_profileDescription; }
+  const QString& profileType(void) const { return m_profileType; }
+  const QString& openingBalanceText(void) const { return m_openingBalanceText; }
+  QString accountDelimiter(void) const;
+  const QString& voidMark(void) const { return m_voidMark; }
+  const QString& filterScriptImport(void) const { return m_filterScriptImport; }
+  const QString& filterScriptExport(void) const { return m_filterScriptExport; }
+  const QString& filterFileType(void) const { return m_filterFileType; }
   bool attemptMatchDuplicates(void) const { return m_attemptMatchDuplicates; }
+
+  /**
+   * This method scans all strings contained in @a lines and tries to figure
+   * out the settings for m_decimal, m_thousands and m_dateFormat
+   */
+  void autoDetect(const QStringList& lines);
+
+  /**
+   * This method returns a list of possible date formats the user
+   * can choose from. If autoDetect() has not been run, the @a list
+   * contains all possible date formats, in the other case, the @a list
+   * is adjusted to those that will match the data scanned.
+   */
+  void possibleDateFormats(QStringList& list) const;
 
   /**
     * This method presets the member variables with the default values.
@@ -86,7 +102,8 @@ public:
 public slots:
   void setProfileDescription(const QString& desc);
   void setProfileType(const QString& type);
-  void setDateFormat(const QString& dateFormat);
+  void setOutputDateFormat(const QString& dateFormat);
+  void setInputDateFormat(const QString& dateFormat);
   void setApostropheFormat(const QString& apostropheFormat);
   void setAmountDecimal(const QChar& def, const QChar& chr);
   void setAmountThousands(const QChar& def, const QChar& chr);
@@ -99,9 +116,12 @@ public slots:
   void setAttemptMatchDuplicates(bool);
 
 private:
-  const QString twoDigitYear(const QChar delim, int yr) const;
+  QString twoDigitYear(const QChar delim, int yr) const;
+  void scanNumeric(const QString& txt, QChar& decimal, QChar& thousands) const;
+  void scanDate(const QString& txt) const;
 
 private:
+  MyMoneyQifProfilePrivate* d;
   bool      m_isDirty;
   QString   m_profileName;
   QString   m_profileDescription;

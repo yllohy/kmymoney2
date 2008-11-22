@@ -370,8 +370,7 @@ void Div::showWidgets(void) const
 
 bool Div::isComplete(void) const
 {
-  bool rc = Activity::isComplete();
-  rc &= haveAssetAccount();
+  bool rc = haveAssetAccount();
   rc &= haveInterest(false);
   return rc;
 }
