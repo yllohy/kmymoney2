@@ -372,8 +372,6 @@ QString KMyMoneyUtils::findResource(const char* type, const QString& filename)
 {
   QString language = KGlobal::locale()->language();
   QString country = KGlobal::locale()->country();
-  qDebug("lang = '%s'", language.data());
-  qDebug("ctry = '%s'", country.data());
   QString rc, mask;
 
   // check that the placeholder is present
