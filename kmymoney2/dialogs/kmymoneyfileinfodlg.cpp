@@ -75,8 +75,12 @@ KMyMoneyFileInfoDlg::KMyMoneyFileInfoDlg(QWidget *parent, const char *name )
   filter.setReportAllSplits(false);
   m_transactionCount->setText(QString("%1").arg(storage->transactionList(filter).count()));
   m_scheduleCount->setText(QString("%1").arg(storage->scheduleList().count()));
-  m_priceCount->setText(QString("%1").arg(storage->priceList().count()));
-
+  MyMoneyPriceList list = storage->priceList();
+  MyMoneyPriceList::const_iterator it_p;
+  int pCount = 0;
+  for(it_p = list.begin(); it_p != list.end(); ++it_p)
+    pCount += (*it_p).count();
+  m_priceCount->setText(QString("%1").arg(pCount));
 }
 
 KMyMoneyFileInfoDlg::~KMyMoneyFileInfoDlg()

@@ -5,6 +5,8 @@
     Needs thorough testing and a lot of code cleanup
   * Adapted statement reader to work with new QIF importer
   * Allow dividend payments w/o reference to security
+  * Renamed a bunch of i18n-ed html files
+  * Display correct number of prices in file info dialog
 
 2008-11-22 Fernando Vilas <fvilas@iname.com>
   * Added db index from user manual to schema
