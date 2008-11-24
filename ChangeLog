@@ -2,6 +2,7 @@
 2008-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store multiple XML statement files for QIF import (debug feature)
   * Fixed bko #175949 ('New' transaction does not honor the selected tab)
+  * Improved detection of existing accounts in QIF importer
 
 2008-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked QIF import with lots of improvements (incl. patches from
