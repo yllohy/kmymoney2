@@ -1,4 +1,7 @@
 
+2008-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Store multiple XML statement files for QIF import (debug feature)
+
 2008-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked QIF import with lots of improvements (incl. patches from
     Allan Anderson)

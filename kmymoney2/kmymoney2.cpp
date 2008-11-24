@@ -151,12 +151,14 @@ class KMyMoneyPrivate
 {
 public:
   KMyMoneyPrivate() :
-    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0)
+    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0)
   {}
+  void unlinkStatementXML(void);
 
   MyMoneyFileTransaction*  m_ft;
   kMyMoneyAccountSelector* m_moveToAccountSelector;
   KPluginDlg*              m_pluginDlg;
+  int                      statementXMLindex;
 };
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
@@ -1489,6 +1491,10 @@ void KMyMoney2App::slotQifImport(void)
     if(dlg->exec()) {
       KMSTATUS(i18n("Importing file..."));
       m_qifReader = new MyMoneyQifReader;
+
+      // remove all kmm-statement-#.txt files
+      d->unlinkStatementXML();
+
       connect(m_qifReader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
 
       m_qifReader->setURL(dlg->filename());
@@ -1689,7 +1695,7 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   bool result = false;
 
   // keep a copy of the statement
-  MyMoneyStatement::writeXMLFile(s, "/home/thb/kmm-statement.txt");
+  MyMoneyStatement::writeXMLFile(s, QString("/home/thb/kmm-statement-%1.txt").arg(d->statementXMLindex++));
 
   // we use an object on the heap here, so that we can check the presence
   // of it during slotUpdateActions() by looking at the pointer.
@@ -5632,6 +5638,9 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
   {
     KMSTATUS(i18n("Importing a statement via Web Connect"));
 
+    // remove the statement files
+    d->unlinkStatementXML();
+
     QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
     while ( it_plugin != m_importerPlugins.end() )
     {
@@ -5933,6 +5942,16 @@ KMStatus::KMStatus (const QString &text)
 KMStatus::~KMStatus()
 {
   kmymoney2->slotStatusMsg(m_prevText);
+}
+
+void KMyMoneyPrivate::unlinkStatementXML(void)
+{
+  QDir d("/home/thb", "kmm-statement*");
+  for(int i=0; i < d.count(); ++i) {
+    qDebug("Remove %s", d[i].data());
+    d.remove(QString("/home/thb/%1").arg(d[i]));
+  }
+  statementXMLindex = 0;
 }
 
 #include "kmymoney2.moc"
