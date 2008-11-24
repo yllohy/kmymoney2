@@ -898,6 +898,32 @@ void StdTransaction::setupFormHeader(const QCString& id)
   }
 }
 
+KMyMoneyRegister::Action StdTransaction::actionType(void) const
+{
+  KMyMoneyRegister::Action action=ActionNone;
+
+  // if at least one split is referencing an income or
+  // expense account, we will not call it a transfer
+  QValueList<MyMoneySplit>::const_iterator it_s;
+
+  for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+    if((*it_s).accountId() == m_split.accountId())
+      continue;
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+    if(acc.accountGroup() == MyMoneyAccount::Income
+    || acc.accountGroup() == MyMoneyAccount::Expense) {
+      // otherwise, we have to determine between deposit and withdrawal
+      action = m_split.shares().isNegative() ? ActionWithdrawal : ActionDeposit;
+      break;
+    }
+  }
+    // otherwise, it's a transfer
+  if(it_s == m_transaction.splits().end())
+    action = ActionTransfer;
+
+  return action;
+}
+
 void StdTransaction::loadTab(TransactionForm* form)
 {
   TabBar* bar = form->tabBar();
@@ -906,29 +932,8 @@ void StdTransaction::loadTab(TransactionForm* form)
     bar->setTabEnabled(bar->tabAt(i)->identifier(), true);
   }
 
-  // if at least one split is referencing an income or
-  // expense account, we will not call it a transfer
-  QValueList<MyMoneySplit>::const_iterator it_s;
-
   if(m_transaction.splitCount() > 0) {
-    KMyMoneyRegister::Action action=ActionNone;
-
-    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).accountId() == m_split.accountId())
-        continue;
-      MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-      if(acc.accountGroup() == MyMoneyAccount::Income
-      || acc.accountGroup() == MyMoneyAccount::Expense) {
-        // otherwise, we have to determine between deposit and withdrawal
-        action = m_split.shares().isNegative() ? ActionWithdrawal : ActionDeposit;
-        break;
-      }
-    }
-    // otherwise, it's a transfer
-    if(it_s == m_transaction.splits().end())
-      action = ActionTransfer;
-
-    bar->setCurrentTab(action);
+    bar->setCurrentTab(actionType());
   }
   bar->setSignalEmission(TabBar::SignalAlways);
 }

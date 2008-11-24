@@ -181,6 +181,8 @@ public:
   virtual void tabOrderInForm(QWidgetList& tabOrderWidgets) const = 0;
   virtual void tabOrderInRegister(QWidgetList& tabOrderWidgets) const = 0;
 
+  virtual KMyMoneyRegister::Action actionType(void) const = 0;
+
   QWidget* focusWidget(QWidget*) const;
   void arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const;
 
@@ -308,6 +310,7 @@ public:
   void arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets);
   void tabOrderInForm(QWidgetList& tabOrderWidgets) const;
   void tabOrderInRegister(QWidgetList& tabOrderWidgets) const;
+  KMyMoneyRegister::Action actionType(void) const;
 
   int numRowsRegister(bool expanded) const;
 
@@ -365,6 +368,7 @@ public:
   void arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets);
   void tabOrderInForm(QWidgetList& tabOrderWidgets) const;
   void tabOrderInRegister(QWidgetList& tabOrderWidgets) const;
+  KMyMoneyRegister::Action actionType(void) const { return KMyMoneyRegister::ActionNone; }
 
   int numRowsRegister(bool expanded) const;
 

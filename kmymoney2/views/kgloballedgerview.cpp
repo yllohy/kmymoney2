@@ -975,6 +975,11 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
   if(!m_inEditMode) {
     KMyMoneyRegister::SelectedTransactions list(m_register);
     if(list.count() > 0 && !list[0].transaction().id().isEmpty()) {
+      // the new transaction to be created will have the same type
+      // as the one that currently has the focus
+      KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(m_register->focusItem());
+      if(t)
+        d->m_action = t->actionType();
       m_register->clearSelection();
     }
     m_register->selectItem(m_register->lastItem());
