@@ -988,9 +988,9 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
         price = price * account.baseCurrencyPrice(startingDate);
     }
   }if ( m_config.isConvertCurrency() ) {
-    price = account.deepCurrencyPrice(endingDate) * account.baseCurrencyPrice(endingDate);
+    price = account.deepCurrencyPrice(startingDate) * account.baseCurrencyPrice(startingDate);
   } else {
-    price = account.deepCurrencyPrice(endingDate);
+    price = account.deepCurrencyPrice(startingDate);
   }
 
 

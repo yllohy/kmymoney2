@@ -1,3 +1,5 @@
+2008-11-05 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed starting balance price in investment performance report
 
 2008-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store multiple XML statement files for QIF import (debug feature)
