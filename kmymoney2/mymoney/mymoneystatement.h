@@ -87,7 +87,8 @@ public:
     MyMoneyMoney m_shares;
     MyMoneyMoney m_fees;
     MyMoneyMoney m_price;
-    QString m_interestCategory;
+    QString m_strInterestCategory;
+    QString m_strBrokerageAccount;
     QString m_strSymbol;
     QString m_strSecurity;
     QValueList<Split> m_listSplits;

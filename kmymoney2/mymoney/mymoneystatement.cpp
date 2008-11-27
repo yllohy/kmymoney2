@@ -71,6 +71,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
       p.setAttribute("shares", (*it_t).m_shares.toString());
       p.setAttribute("action", kActionText[(*it_t).m_eAction]);
       p.setAttribute("security", (*it_t).m_strSecurity);
+      p.setAttribute("brokerageaccount", (*it_t).m_strBrokerageAccount);
     }
 
     // add all the splits we know of (might be empty)
@@ -162,6 +163,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
         {
           t.m_shares = MyMoneyMoney(c.attribute("shares"));
           t.m_strSecurity = c.attribute("security");
+          t.m_strBrokerageAccount = c.attribute("brokerageaccount");
           int i = kActionText.findIndex(c.attribute("action",kActionText[1]));
           if ( i != -1 )
             t.m_eAction = static_cast<Transaction::EAction>(i);

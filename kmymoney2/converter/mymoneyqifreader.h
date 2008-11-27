@@ -330,6 +330,8 @@ private:
     */
   static const QCString findOrCreateExpenseAccount(const QString& searchname);
 
+  QCString transferAccount(QString name);
+
   // void processQifLine(void);
 
 signals:

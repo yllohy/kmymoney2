@@ -2198,19 +2198,19 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
     case MyMoneyAccount::Equity:
       if(s.accountId().isEmpty())
         s.setAccountId(parent->account().id());
-      if(transaction.isImported())
-        t = new KMyMoneyRegister::StdTransactionDownloaded(parent, transaction, s, uniqueId);
-      else if(s.isMatched())
+      if(s.isMatched())
         t = new KMyMoneyRegister::StdTransactionMatched(parent, transaction, s, uniqueId);
+      else if(transaction.isImported())
+        t = new KMyMoneyRegister::StdTransactionDownloaded(parent, transaction, s, uniqueId);
       else
         t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::Investment:
-      if(transaction.isImported())
-        t = new KMyMoneyRegister::InvestTransactionDownloaded(parent, transaction, s, uniqueId);
-      else if(s.isMatched())
+      if(s.isMatched())
         t = new KMyMoneyRegister::InvestTransaction/* Matched */(parent, transaction, s, uniqueId);
+      else if(transaction.isImported())
+        t = new KMyMoneyRegister::InvestTransactionDownloaded(parent, transaction, s, uniqueId);
       else
         t = new KMyMoneyRegister::InvestTransaction(parent, transaction, s, uniqueId);
       break;

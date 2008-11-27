@@ -4580,7 +4580,7 @@ void KMyMoney2App::slotTransactionsAccept(void)
         }
         MyMoneyFile::instance()->modifyTransaction(t);
       }
-      else if((*it_t).split().isMatched()) {
+      if((*it_t).split().isMatched()) {
         // reload split in case it got changed during the course of this loop
         MyMoneySplit s = t.splitById((*it_t).split().id());
         TransactionMatcher matcher(m_selectedAccount);

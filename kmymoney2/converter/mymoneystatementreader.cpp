@@ -503,8 +503,17 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   // If the user has chosen to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
+  QCString brokerageactid;
+
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
   {
+    // determine the brokerage account
+    brokerageactid = m_account.value("kmm-brokerage-account").utf8();
+    if (brokerageactid.isEmpty() )
+    {
+      brokerageactid = file->accountByName(m_account.brokerageName()).id();
+    }
+
     // find the security transacted, UNLESS this transaction didn't
     // involve any security.
     if ( (t_in.m_eAction != MyMoneyStatement::Transaction::eaNone)
@@ -615,10 +624,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
       MyMoneySplit s2;
       s2.setMemo(t_in.m_strMemo);
-      if(t_in.m_interestCategory.isEmpty())
+      if(t_in.m_strInterestCategory.isEmpty())
         s2.setAccountId(d->interestId(thisaccount));
       else
-        s2.setAccountId(d->interestId(t_in.m_interestCategory));
+        s2.setAccountId(d->interestId(t_in.m_strInterestCategory));
 
       s2.setShares(-t_in.m_amount - t_in.m_fees);
       s2.setValue(s2.shares());
@@ -657,10 +666,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // This should probably change.  It would be more consistent to ALWAYS
       // interpret the 'amount' as the cash account part.
 
-      if(t_in.m_interestCategory.isEmpty())
+      if(t_in.m_strInterestCategory.isEmpty())
         s1.setAccountId(d->interestId(thisaccount));
       else
-        s1.setAccountId(d->interestId(t_in.m_interestCategory));
+        s1.setAccountId(d->interestId(t_in.m_strInterestCategory));
       s1.setShares(t_in.m_amount);
       s1.setValue(t_in.m_amount);
 
@@ -677,10 +686,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaFees)
     {
-      if(t_in.m_interestCategory.isEmpty())
+      if(t_in.m_strInterestCategory.isEmpty())
         s1.setAccountId(d->feeId(thisaccount));
       else
-        s1.setAccountId(d->feeId(t_in.m_interestCategory));
+        s1.setAccountId(d->feeId(t_in.m_strInterestCategory));
       s1.setShares(t_in.m_amount);
       s1.setValue(t_in.m_amount);
 
@@ -951,52 +960,17 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           }
         }
       }
-#if 0
-      else {
-        QValueList<MyMoneyStatement::Split>::const_iterator it_s;
-        for(it_s = t_in.m_listSplits.begin(); it_s != t_in.m_listSplits.end(); ++it_s) {
-          MyMoneySplit s2;
-          s2.setAccountId(QCString((*it_s).m_accountId));
-          MyMoneyAccount acc = file->account(s2.accountId());
-          if(acc.isAssetLiability()) {
-            s2.setPayeeId(s1.payeeId());
-          }
-          s2.setMemo((*it_s).m_strMemo);
-          s2.setShares((*it_s).m_amount);
-          s2.setValue((*it_s).m_amount);
-          t.addSplit(s2);
-
-        }
-        // detail information about splits is provided in the statement
-      }
-#endif
     }
   }
 
   t.addSplit(s1);
 
-#if 0
-  // The fees has to be added AFTER the interest, because
-  // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
-  // ordered this way.
-  if ( !t_in.m_fees.isZero() )
-  {
-    MyMoneySplit s;
-    s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
-    s.setValue(t_in.m_fees);
-    s.setShares(t_in.m_fees);
-    s.setAccountId(d->feeId(thisaccount));
-    t.addSplit(s);
-  }
-#endif
-
   // Add the 'account' split if it's needed
   if ( ! transfervalue.isZero() )
   {
-    QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
-    if (brokerageactid.isEmpty() )
-    {
-      brokerageactid = file->accountByName(m_account.brokerageName()).id();
+    // in case the transaction has a reference to the brokerage account, we use it
+    if(!t_in.m_strBrokerageAccount.isEmpty()) {
+      brokerageactid = file->accountByName(t_in.m_strBrokerageAccount).id();
     }
 
     if ( !brokerageactid.isEmpty() )
@@ -1007,16 +981,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s.setValue(transfervalue);
       s.setShares(transfervalue);
       s.setAccountId(brokerageactid);
-      t.addSplit(s);
-    }
-    else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
-    {
-      MyMoneySplit s;
-      s.setMemo(t_in.m_strMemo);
-      s.setValue(transfervalue);
-      s.setShares(transfervalue);
-      s.setAccountId((QCString)t_in.m_listSplits[2].m_accountId);
-//      s.setAccountId(thisaccount.id());
       t.addSplit(s);
     }
   }
@@ -1213,7 +1177,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
   accountSelect.setMode(false);
   accountSelect.showAbortButton(true);
   accountSelect.m_qifEntry->hide();
-QString accname;
+  QString accname;
   bool done = false;
   while ( !done )
   {
@@ -1260,7 +1224,7 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
     (*m_progressCallback)(current, total, msg);
 }
 
-
+#if 0
 const QCString MyMoneyStatementReader::checkCategory(const QString& name, const MyMoneyMoney& value, const MyMoneyMoney& value2)
 {
 //Borrowed from MyMoneyQifReader
@@ -1311,6 +1275,7 @@ const QCString MyMoneyStatementReader::checkCategory(const QString& name, const 
   }
   return accountId;
 }
+#endif
 
 #include "mymoneystatementreader.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:
