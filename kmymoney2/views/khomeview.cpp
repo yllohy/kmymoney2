@@ -912,7 +912,7 @@ void KHomeView::showFavoriteReports(void)
 
 void KHomeView::showForecast(void)
 {
-  QMap<QCString, QCString> nameIdx;
+  QMap<QString, MyMoneyAccount> nameIdx;
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accList;
 
@@ -921,10 +921,23 @@ void KHomeView::showForecast(void)
     doForecast();
 
   accList = m_forecast.accountList();
+
+  //add it to a map to have it ordered by name
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for ( ; accList_t != accList.end(); ++accList_t )
   {
-    nameIdx[(*accList_t).id()] = (*accList_t).id();
+    QString key = (*accList_t).name();
+    if(nameIdx[key].id().isEmpty()) {
+      nameIdx[key] = *accList_t;
+            //take care of accounts with duplicate names
+    } else if(nameIdx[key].id() != (*accList_t).id()) {
+      key = (*accList_t).name() + "[%1]";
+      int dup = 2;
+      while(!nameIdx[key.arg(dup)].id().isEmpty()
+             && nameIdx[key.arg(dup)].id() != (*accList_t).id())
+        ++dup;
+      nameIdx[key.arg(dup)] = *accList_t;
+    }
   }
 
   if(nameIdx.count() > 0) {
@@ -956,33 +969,33 @@ void KHomeView::showForecast(void)
     // Now output entries
     i = 0;
 
-    QMap<QCString, QCString>::ConstIterator it_n;
-    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
-      MyMoneyAccount acc = file->account(*it_n);
+    QMap<QString, MyMoneyAccount>::ConstIterator it_account;
+    for(it_account = nameIdx.begin(); it_account != nameIdx.end(); ++it_account) {
+      //MyMoneyAccount acc = (*it_n);
 
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       m_part->write(QString("<td width=\"40%\">") +
-          link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>");
+          link(VIEW_LEDGER, QString("?id=%1").arg((*it_account).id())) + (*it_account).name() + linkend() + "</td>");
 
       int dropZero = -1; //account dropped below zero
       int dropMinimum = -1; //account dropped below minimum balance
-      QString minimumBalance = acc.value("minimumBalance");
+      QString minimumBalance = (*it_account).value("minimumBalance");
       MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
       MyMoneySecurity currency;
       MyMoneyMoney forecastBalance;
 
       //change account to deep currency if account is an investment
-      if(acc.isInvest()) {
-        MyMoneySecurity underSecurity = file->security(acc.currencyId());
+      if((*it_account).isInvest()) {
+        MyMoneySecurity underSecurity = file->security((*it_account).currencyId());
         currency = file->security(underSecurity.tradingCurrency());
       } else {
-        currency = file->security(acc.currencyId());
+        currency = file->security((*it_account).currencyId());
       }
 
       for (int f = beginDay; f <= m_forecast.forecastDays(); f += m_forecast.accountsCycle()) {
-        forecastBalance = m_forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
+        forecastBalance = m_forecast.forecastBalance(*it_account, QDate::currentDate().addDays(f));
         QString amount;
-        amount = forecastBalance.formatMoney(acc, currency);
+        amount = forecastBalance.formatMoney( *it_account, currency);
         amount.replace(" ","&nbsp;");
         m_part->write(QString("<td width=\"%1%\" align=\"right\">").arg(colWidth));
         m_part->write(QString("%1</td>").arg(showColoredAmount(amount, forecastBalance.isNegative())));
@@ -993,10 +1006,10 @@ void KHomeView::showForecast(void)
       //Check if the account is going to be below zero or below the minimal balance in the forecast period
 
       //Check if the account is going to be below minimal balance
-      dropMinimum = m_forecast.daysToMinimumBalance(acc);
+      dropMinimum = m_forecast.daysToMinimumBalance(*it_account);
 
       //Check if the account is going to be below zero in the future
-      dropZero = m_forecast.daysToZeroBalance(acc);
+      dropZero = m_forecast.daysToZeroBalance(*it_account);
 
 
       // spit out possible warnings
@@ -1013,11 +1026,11 @@ void KHomeView::showForecast(void)
           case -1:
             break;
           case 0:
-            msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency));
+            msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg((*it_account).name()).arg(minBalance.formatMoney(*it_account, currency));
             msg = showColoredAmount(msg, true);
             break;
           default:
-            msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency)).arg(dropMinimum-1);
+            msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg((*it_account).name()).arg(minBalance.formatMoney(*it_account, currency)).arg(dropMinimum-1);
             msg = showColoredAmount(msg, true);
             break;
         }
@@ -1032,24 +1045,24 @@ void KHomeView::showForecast(void)
            case -1:
              break;
            case 0:
-             if(acc.accountGroup() == MyMoneyAccount::Asset) {
-               msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
+             if((*it_account).accountGroup() == MyMoneyAccount::Asset) {
+               msg = i18n("The balance of %1 is below %2 today.").arg((*it_account).name()).arg(MyMoneyMoney().formatMoney(*it_account, currency));
                msg = showColoredAmount(msg, true);
                break;
              }
-             if(acc.accountGroup() == MyMoneyAccount::Liability) {
-               msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
+             if((*it_account).accountGroup() == MyMoneyAccount::Liability) {
+               msg = i18n("The balance of %1 is above %2 today.").arg((*it_account).name()).arg(MyMoneyMoney().formatMoney(*it_account, currency));
                break;
              }
              break;
            default:
-             if(acc.accountGroup() == MyMoneyAccount::Asset) {
-               msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
+             if((*it_account).accountGroup() == MyMoneyAccount::Asset) {
+               msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg((*it_account).name()).arg(MyMoneyMoney().formatMoney(*it_account, currency)).arg(dropZero);
                msg = showColoredAmount(msg, true);
                break;
              }
-             if(acc.accountGroup() == MyMoneyAccount::Liability) {
-               msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
+             if((*it_account).accountGroup() == MyMoneyAccount::Liability) {
+               msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg((*it_account).name()).arg(MyMoneyMoney().formatMoney(*it_account, currency)).arg(dropZero);
                break;
              }
          }

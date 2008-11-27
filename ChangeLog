@@ -1,4 +1,8 @@
-2008-11-05 Alvaro Soliverez <asoliverez@gmail.com>
+
+2008-11-26 Alvaro Soliverez <asoliverez@gmail.com>
+  * Sort accounts by name in home page forecast
+
+2008-11-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed starting balance price in investment performance report
 
 2008-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
