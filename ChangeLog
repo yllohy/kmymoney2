@@ -5,6 +5,7 @@
   * Fixed more QIF importer issues
   * If an imported transaction is also matched, then accepting the 
     transaction will remove both flags at once
+  * Allow asset/liability accounts to receive VAT splits
 
 2008-11-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Sort accounts by name in home page forecast

@@ -995,17 +995,29 @@ void KNewAccountDlg::loadVatAccounts(void)
   QValueList<MyMoneyAccount>::Iterator it;
   QCStringList loadListExpense;
   QCStringList loadListIncome;
+  QCStringList loadListAsset;
+  QCStringList loadListLiability;
   for(it = list.begin(); it != list.end(); ++it) {
     if(!(*it).value("VatRate").isEmpty()) {
       if((*it).accountType() == MyMoneyAccount::Expense)
         loadListExpense += (*it).id();
-      else
+      else if((*it).accountType() == MyMoneyAccount::Income)
         loadListIncome += (*it).id();
+      else if((*it).accountType() == MyMoneyAccount::Asset)
+        loadListAsset += (*it).id();
+      else if((*it).accountType() == MyMoneyAccount::Liability)
+        loadListLiability += (*it).id();
     }
   }
   AccountSet vatSet;
-  vatSet.load(m_vatAccount, i18n("Income"), loadListIncome, true);
-  vatSet.load(m_vatAccount, i18n("Expense"), loadListExpense, false);
+  if(!loadListAsset.isEmpty())
+    vatSet.load(m_vatAccount, i18n("Asset"), loadListAsset, true);
+  if(!loadListLiability.isEmpty())
+    vatSet.load(m_vatAccount, i18n("Liability"), loadListLiability, false);
+  if(!loadListIncome.isEmpty())
+    vatSet.load(m_vatAccount, i18n("Income"), loadListIncome, false);
+  if(!loadListExpense.isEmpty())
+    vatSet.load(m_vatAccount, i18n("Expense"), loadListExpense, false);
 }
 
 void KNewAccountDlg::slotLoadInstitutions(const QString& name)
