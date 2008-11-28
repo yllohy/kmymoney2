@@ -1,4 +1,8 @@
 
+2008-11-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't create multiple payees if the name contains meta characters
+    of regular expression (e.g. parans)
+
 2008-11-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * A merged transaction has precedence over an imported transaction
     in the ledger

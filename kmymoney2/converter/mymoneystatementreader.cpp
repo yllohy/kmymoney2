@@ -770,7 +770,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             break;
 
           case MyMoneyPayee::matchName:
-            keys << (*it_p).name();
+            keys << QRegExp::escape((*it_p).name());
             // tricky fall through here
 
           case MyMoneyPayee::matchKey:
@@ -868,9 +868,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         // is called in the context of an automatic procedure it
         // might distract the user.
         payee.setName(payeename);
-        QStringList keys;
-        keys << payeename;
-        payee.setMatchData(MyMoneyPayee::matchName, true, keys);
+        payee.setMatchData(MyMoneyPayee::matchName, true, QStringList());
 
         try {
           file->addPayee(payee);
