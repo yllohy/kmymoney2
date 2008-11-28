@@ -654,7 +654,7 @@ bool KMyMoneySelector::contains(const QString& txt) const
 
 void KMyMoneySelector::slotListRightMouse(QListViewItem* it_v, const QPoint& pos, int /* col */)
 {
-  if(it_v->rtti() == 1) {
+  if(it_v && (it_v->rtti() == 1)) {
     KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
     if(it_c->type() == QCheckListItem::CheckBox) {
       // the following is copied from QCheckListItem::activate() et al
