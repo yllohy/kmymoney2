@@ -1,4 +1,9 @@
 
+2008-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved QIF date format detection
+  * Detect dividend transactions as investment transactions even if they
+    don't have a reference to a stock account
+
 2008-11-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't create multiple payees if the name contains meta characters
     of regular expression (e.g. parans)

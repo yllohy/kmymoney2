@@ -404,14 +404,24 @@ QString KMyMoneyUtils::findResource(const char* type, const QString& filename)
 const MyMoneySplit KMyMoneyUtils::stockSplit(const MyMoneyTransaction& t)
 {
   QValueList<MyMoneySplit>::ConstIterator it_s;
+  MyMoneySplit investmentAccountSplit;
   for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
     if(!(*it_s).accountId().isEmpty()) {
       MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
       if(acc.isInvest()) {
         return *it_s;
       }
+      // if we have a reference to an investment account, we remember it here
+      if(acc.accountType() == MyMoneyAccount::Investment)
+        investmentAccountSplit = *it_s;
     }
   }
+  // if we haven't found a stock split, we see if we've seen
+  // an investment account on the way. If so, we return it.
+  if(!investmentAccountSplit.id().isEmpty())
+    return investmentAccountSplit;
+
+  // if none was found, we return an empty split.
   return MyMoneySplit();
 }
 

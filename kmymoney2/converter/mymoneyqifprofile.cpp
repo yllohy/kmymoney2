@@ -868,8 +868,27 @@ void MyMoneyQifProfile::autoDetect(const QStringList& lines)
 
   if(d->m_partPos.count() != 3) {
     QMap<int, int> sortedPos;
+    // make sure to reset the known parts for the following algorithm
+    if(d->m_partPos.contains('y')) {
+      d->m_changeCount[d->m_partPos['y']] = -1;
+      for(int i = 0; i < 3; ++i) {
+        if(d->m_partPos['y'] == i)
+          continue;
+        // can we say for sure that we hit the day field?
+        if(d->m_largestValue[i] > 12) {
+          d->m_partPos['d'] = i;
+        }
+      }
+    }
+    if(d->m_partPos.contains('d'))
+      d->m_changeCount[d->m_partPos['d']] = -1;
+    if(d->m_partPos.contains('m'))
+      d->m_changeCount[d->m_partPos['m']] = -1;
+
     for(int i = 0; i < 3; ++i) {
-      sortedPos[d->m_changeCount[i]] = i;
+      if(d->m_changeCount[i] != -1) {
+        sortedPos[d->m_changeCount[i]] = i;
+      }
     }
 
     QMap<int, int>::const_iterator it_a;
@@ -912,9 +931,10 @@ void MyMoneyQifProfile::autoDetect(const QStringList& lines)
             }
           }
         }
-        d->getThirdPosition();
         break;
     }
+    // extract the last if necessary and possible date position
+    d->getThirdPosition();
   }
 }
 
