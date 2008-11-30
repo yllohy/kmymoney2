@@ -69,7 +69,7 @@ kmmwidgets.cpp:	$(srcdir)/kmymoney.widgets
 # Hence the quick hack to include the required objects from the
 # libkmm_mymoney.so directly into libkmymoney.so
 libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY -DKMM_DESIGNER
-libkmymoney_la_LDFLAGS = `ls ../mymoney/*.lo` $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
+libkmymoney_la_LDFLAGS = `ls ../mymoney/*.lo` $(KDE_LDFLAGS) $(QT_LDFLAGS) $(X_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
 if INSTALL_QTDESIGNER_SUPPORT
 install-exec-local: libkmymoney.la

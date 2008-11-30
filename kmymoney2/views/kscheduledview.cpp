@@ -120,9 +120,11 @@ KScheduledView::~KScheduledView()
   writeConfig();
 }
 
-void KScheduledView::refresh(bool full, const QCString schedId)
+void KScheduledView::refresh(bool full, const QCString& schedId)
 {
   m_qlistviewScheduled->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
+
+  QPoint startPoint = QPoint(m_qlistviewScheduled->contentsX(), m_qlistviewScheduled->contentsY());
 
   m_qlistviewScheduled->clear();
 
@@ -249,6 +251,8 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     if (m_openLoans)
       itemLoans->setOpen(true);
+
+    m_qlistviewScheduled->setContentsPos(startPoint.x(), startPoint.y());
 
   } catch (MyMoneyException *e)
   {
