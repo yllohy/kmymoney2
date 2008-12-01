@@ -154,7 +154,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_inEditMode(false)
 {
   d->m_mousePressFilter = new MousePressFilter((QWidget*)this);
-  setupDefaultAction();
+  d->m_action = KMyMoneyRegister::ActionNone;;
 
   // create the toolbar frame at the top of the view
   m_toolbarFrame = new QFrame(this);
@@ -951,10 +951,7 @@ void KGlobalLedgerView::slotNewTransaction(KMyMoneyRegister::Action id)
 
 void KGlobalLedgerView::slotNewTransaction(void)
 {
-  if(!m_inEditMode) {
-    setupDefaultAction();
-    emit newTransaction();
-  }
+  slotNewTransaction(KMyMoneyRegister::ActionNone);
 }
 
 void KGlobalLedgerView::setupDefaultAction(void)
@@ -973,8 +970,12 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
   bool rc = false;
 
   if(!m_inEditMode) {
+    // in case we don't know the type of transaction to be created,
+    // have at least one selected transaction and the id of
+    // this transaction is not empty, we take it as template for the
+    // transaction to be created
     KMyMoneyRegister::SelectedTransactions list(m_register);
-    if(list.count() > 0 && !list[0].transaction().id().isEmpty()) {
+    if((d->m_action == KMyMoneyRegister::ActionNone) && (list.count() > 0) && (!list[0].transaction().id().isEmpty())) {
       // the new transaction to be created will have the same type
       // as the one that currently has the focus
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(m_register->focusItem());
@@ -982,6 +983,13 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
         d->m_action = t->actionType();
       m_register->clearSelection();
     }
+
+    // if we still don't have an idea which type of transaction
+    // to create, we use the default.
+    if(d->m_action == KMyMoneyRegister::ActionNone) {
+      setupDefaultAction();
+    }
+
     m_register->selectItem(m_register->lastItem());
     m_register->updateRegister();
     rc = true;
@@ -1124,8 +1132,8 @@ TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::Selected
       // for some reason, this only works reliably if delayed a bit
       QTimer::singleShot(10, focusWidget, SLOT(setFocus()));
 
-      // make sure to have the default action preset for next round
-      setupDefaultAction();
+      // preset to 'I have no idea which type to create' for the next round.
+      d->m_action = KMyMoneyRegister::ActionNone;
     }
   }
   return editor;

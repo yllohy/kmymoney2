@@ -1,4 +1,8 @@
 
+2008-12-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Revisited fix for bko #175949. Using the tab directly to create
+    a new transaction did not honor the pressed tab
+
 2008-11-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use QT_LDFLAGS and X_LDFLAGS when building the widget library
   * Keep position of schedule view if item was deleted
