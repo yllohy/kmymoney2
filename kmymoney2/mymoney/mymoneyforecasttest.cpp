@@ -953,10 +953,10 @@ void MyMoneyForecastTest::testCreateBudget()
   c.setForecastCycles(1);
   c.createBudget(budget, QDate::currentDate().addYears(-2), QDate::currentDate().addYears(-1), QDate::currentDate().addMonths(-2), QDate::currentDate().addMonths(6), true);
 
-  MyMoneyMoney c_parent = c.forecastBalance(a_parent, QDate(QDate::currentDate().year(), QDate::currentDate().month()+1, 1) );
+  MyMoneyMoney c_parent = c.forecastBalance(a_parent, QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1) );
 
   //test valid results
-  CPPUNIT_ASSERT(c.forecastBalance(a_parent, QDate(QDate::currentDate().year(), QDate::currentDate().month()+1, 1) ) == (moT2));
+  CPPUNIT_ASSERT(c.forecastBalance(a_parent, QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1) ) == (moT2));
 }
 
 void MyMoneyForecastTest::testLinearRegression() {

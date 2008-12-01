@@ -1,4 +1,7 @@
 
+2008-11-26 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed createBudget forecast unit tests to check dates correctly
+
 2008-12-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Revisited fix for bko #175949. Using the tab directly to create
     a new transaction did not honor the pressed tab
