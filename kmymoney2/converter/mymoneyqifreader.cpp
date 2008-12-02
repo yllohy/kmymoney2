@@ -1440,6 +1440,13 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   }
   else if (action == "buy")
   {
+    QString tmp = extractLine('L');
+    if((xAction == true)
+    && (d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true)) {
+      tr.m_strBrokerageAccount = tmp;
+      transferAccount(tmp);           // make sure the account exists
+    }
+
     d->st.m_listPrices += price;
     tr.m_shares = quantity;
     tr.m_eAction = (MyMoneyStatement::Transaction::eaBuy);
@@ -1448,6 +1455,12 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   }
   else if (action == "sell")
   {
+    QString tmp = extractLine('L');
+    if((xAction == true)
+    && (d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true)) {
+      tr.m_strBrokerageAccount = tmp;
+      transferAccount(tmp);           // make sure the account exists
+    }
     d->st.m_listPrices += price;
     tr.m_shares = -quantity;
     s1.m_amount = -amount - fees;
