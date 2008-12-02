@@ -828,7 +828,7 @@ void MyMoneyQifReader::processCategoryEntry(void)
     m_account = acc;
 }
 
-QCString MyMoneyQifReader::transferAccount(QString name)
+QCString MyMoneyQifReader::transferAccount(QString name, bool useBrokerage)
 {
   QCString accountId;
   QStringList tmpEntry = m_qifEntry;   // keep temp copies
@@ -843,7 +843,7 @@ QCString MyMoneyQifReader::transferAccount(QString name)
   // in case we found a reference to an investment account, we need
   // to switch to the brokerage account instead.
   MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
-  if(acc.accountType() == MyMoneyAccount::Investment) {
+  if(useBrokerage && (acc.accountType() == MyMoneyAccount::Investment)) {
     name = acc.brokerageName();
     m_qifEntry.clear();               // and construct a temp entry to create/search the account
     m_qifEntry << QString("N%1").arg(name);
@@ -1093,13 +1093,13 @@ void MyMoneyQifReader::processTransactionEntry(void)
     for(count = 1; !extractLine('$', count).isEmpty(); ++count)
     {
       MyMoneyStatement::Split s2 = s1;
-      s2.m_amount = (-m_qifProfile.value('$', listqSplits[count-1].m_amount));//amount of split
-      s2.m_strMemo = listqSplits[count-1].m_strMemo;//Memo in split
-      tmp = listqSplits[count-1].m_strCategoryName;//                Category in split
+      s2.m_amount = (-m_qifProfile.value('$', listqSplits[count-1].m_amount));   // Amount of split
+      s2.m_strMemo = listqSplits[count-1].m_strMemo;                             // Memo in split
+      tmp = listqSplits[count-1].m_strCategoryName;                              // Category in split
 
       if(d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)))
       {
-        accountId = transferAccount(tmp);
+        accountId = transferAccount(tmp, false);
 
       } else {
         pos = tmp.findRev("--");
@@ -1118,17 +1118,18 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
           if ( account.accountType() == MyMoneyAccount::Investment )
           {
-            kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to an investment account. Transaction ignored." << endl;
-            return;
+            kdDebug(0) << "Line " << m_linenumber << ": Cannot convert a split transfer to/from an investment account. Split removed. Total amount adjusted from " << tr.m_amount.formatMoney("", 2) << " to " << (tr.m_amount + s2.m_amount).formatMoney("", 2) << "\n";
+            tr.m_amount += s2.m_amount;
+            continue;
           }
           if ( account.id() == m_account.id() )
           {
-            kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
+            kdDebug(0) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
             accountId = QCString();
           }
 
         } catch (MyMoneyException *e) {
-          kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
+          kdDebug(0) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
           accountId = QCString();
           delete e;
         }
@@ -1138,6 +1139,8 @@ void MyMoneyQifReader::processTransactionEntry(void)
         s2.m_accountId = accountId;
         s2.m_strCategoryName = tmp;
         tr.m_listSplits += s2;
+        if(tr.m_listSplits.count() == 1)
+          tr.m_strMemo = s2.m_strMemo;
       }
       else
       {
@@ -1152,7 +1155,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   d->st.m_listTransactions +=tr;
 }
 
-void MyMoneyQifReader::processInvestmentTransactionEntry()
+void MyMoneyQifReader::processInvestmentTransactionEntry(void)
 {
 //   kdDebug(2) << "Investment Transaction:" << m_qifEntry.count() << " lines" << endl;
   /*

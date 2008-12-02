@@ -330,7 +330,13 @@ private:
     */
   static const QCString findOrCreateExpenseAccount(const QString& searchname);
 
-  QCString transferAccount(QString name);
+  /**
+   * This method returns the account id for a given account @a name. In
+   * case @a name references an investment account and @a useBrokerage is @a true
+   * (the default), the id of the corresponding brokerage account will be
+   * returned. In case an account is not existant, it will be created.
+   */
+  QCString transferAccount(QString name, bool useBrokerage = true);
 
   // void processQifLine(void);
 
