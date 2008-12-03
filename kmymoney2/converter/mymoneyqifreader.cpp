@@ -149,37 +149,40 @@ QString MyMoneyQifReaderPrivate::accountTypeToQif(MyMoneyAccount::accountTypeE t
 QString MyMoneyQifReaderPrivate::typeToAccountName(const QString& type) const
 {
   if(type == "reinvdiv")
-    return i18n("Reinvested dividend");
+    return i18n("Category name", "Reinvested dividend");
 
   if(type == "reinvlg")
-    return i18n("Reinvested dividend (long term)");
+    return i18n("Category name", "Reinvested dividend (long term)");
 
   if(type == "reinvsh")
-    return i18n("Reinvested dividend (short term)");
+    return i18n("Category name", "Reinvested dividend (short term)");
 
   if (type == "div")
-    return i18n("Dividend");
+    return i18n("Category name", "Dividend");
 
   if(type == "intinc")
-    return i18n("Interest");
+    return i18n("Category name", "Interest");
 
   if(type == "cgshort")
-      return i18n("Capital Gain (short term)");
+    return i18n("Category name", "Capital Gain (short term)");
 
   if( type == "cgmid")
-    return i18n("Capital Gain (mid term)");
+    return i18n("Category name", "Capital Gain (mid term)");
 
   if(type == "cglong")
-    return i18n("Capital Gain (long term)");
+    return i18n("Category name", "Capital Gain (long term)");
 
   if(type == "rtrncap")
-    return i18n("Returned capital");
+    return i18n("Category name", "Returned capital");
 
   if(type == "miscinc")
-    return i18n("Miscellaneous income");
+    return i18n("Category name", "Miscellaneous income");
 
   if(type == "miscexp")
-    return i18n("Miscellaneous expense");
+    return i18n("Category name", "Miscellaneous expense");
+
+  if(type == "sell" || type == "buy")
+    return i18n("Category name", "Investment fees");
 
   return i18n("Unknown QIF type %1").arg(type);
 }
@@ -1215,22 +1218,19 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     }
   }
 
-  MyMoneyStatement::Split s1;
   // 'M' field: Memo
   QString memo = extractLine('M');
   tr.m_strMemo = extractLine('M');
-  s1.m_strMemo = extractLine('M');
   // '#' field: BankID
   QString bankid = extractLine('#');
   if ( ! bankid.isEmpty() )
     tr.m_strBankID = bankid;
 
   // 'O' field: Fees
-  MyMoneyMoney fees = m_qifProfile.value('T', extractLine('O'));
+  tr.m_fees = m_qifProfile.value('T', extractLine('O'));
   // 'T' field: Amount
   MyMoneyMoney amount = m_qifProfile.value('T', extractLine('T'));
   tr.m_amount = amount;
-  s1.m_amount = amount-fees;
 
   MyMoneyStatement::Price price;
 
@@ -1338,7 +1338,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   }
 
   // Whether to create a cash split for the other side of the value
-  MyMoneyMoney cashsplit;
   QString accountname ;//= extractLine('L');
   if ( action == "reinvdiv" || action == "reinvlg" || action == "reinvsh" )
   {
@@ -1379,7 +1378,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
 
     // For historic reasons (coming from the OFX importer) the statement
     // reader expects the dividend with a reverse sign. So we just do that.
-    tr.m_amount = -(amount - fees);
+    tr.m_amount = -(amount - tr.m_fees);
 
     // We need an extra split which will be the zero-amount investment split
     // that serves to mark this transaction as a cash dividend and note which
@@ -1389,7 +1388,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     s2.m_strCategoryName = extractLine('Y');
     tr.m_listSplits.append(s2);
   }
-  else if (action == "miscexp" || action == "xout")
+  else if (action == "miscexp")
   {
     tr.m_eAction = (MyMoneyStatement::Transaction::eaFees);
     QString tmp = extractLine('L');
@@ -1450,8 +1449,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     d->st.m_listPrices += price;
     tr.m_shares = quantity;
     tr.m_eAction = (MyMoneyStatement::Transaction::eaBuy);
-
-    cashsplit = -amount;
   }
   else if (action == "sell")
   {
@@ -1463,22 +1460,16 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     }
     d->st.m_listPrices += price;
     tr.m_shares = -quantity;
-    s1.m_amount = -amount - fees;
-    tr.m_amount = -amount - fees;
-    tr.m_eAction = (MyMoneyStatement::Transaction::eaBuy);
-
-    cashsplit = amount;
+    tr.m_eAction = (MyMoneyStatement::Transaction::eaSell);
   }
   else if ( action == "shrsin" )
   {
     tr.m_shares = quantity;
-    s1.m_amount = MyMoneyMoney();
     tr.m_eAction = (MyMoneyStatement::Transaction::eaShrsin);
   }
   else if ( action == "shrsout" )
   {
     tr.m_shares = -quantity;
-    s1.m_amount = MyMoneyMoney();
     tr.m_eAction = (MyMoneyStatement::Transaction::eaShrsout);
   }
   else if ( action == "stksplit" )
@@ -1501,63 +1492,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     return;
   }
   d->st.m_strAccountName = accountname;
-
-  // The fees has to be added AFTER the interest, because
-  // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
-  // ordered this way.
-  // The above comment might not be applicable anymore (ipwizard: 17.11.08)
-  if ( ! fees.isZero() )
-  {
-    MyMoneyStatement::Split s;
-    s.m_strMemo = i18n("(Fees) %1").arg(memo);
-    s.m_amount = fees;
-    s.m_strCategoryName = "_Fees";
-    tr.m_listSplits.append(s);
-  }
-
-  // If there is a brokerage account, add a final split to stash the -value of the
-  // transaction there, if needed based on the type of transaction
-#if 0
-  QCString accountid;
-  accountname = extractLine('L');
-  if ( accountname.isEmpty() )
-  {
-    accountid = m_account.value("kmm-brokerage-account").utf8();
-    if (accountid.isEmpty() )
-    {
-      accountid = file->accountByName(m_account.brokerageName()).id();
-    }
-  }
-  else
-  {
-    if(d->isTransfer(accountname, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)))
-    {
-      accountid = file->nameToAccount(accountname);
-      if(accountid.isEmpty()) {
-        MyMoneyAccount account;
-        account.setName(accountname);
-        selectOrCreateAccount(Select, account);
-        accountid = account.id();
-      }
-    }
-    else
-    {
-      // L field with income/expense categories not supported in investments
-      kdDebug(2) << "Line " << m_linenumber << ": L field with income/expense categories not supported in investments" << endl;
-    }
-  }
-
-  if ( ! accountid.isEmpty() && ! cashsplit.isZero() )
-  {
-    // FIXME This may not deal with foreign currencies properly
-    MyMoneyStatement::Split s;
-    s.m_strMemo = memo;
-    s.m_amount = cashsplit;
-    s.m_accountId = accountid;
-    s.m_strCategoryName = accountname;
-    // tr.m_listSplits.append(s);
-  }
-#endif
   d->st.m_listTransactions +=tr;
 
   /*************************************************************************

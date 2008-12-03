@@ -632,16 +632,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setShares(-t_in.m_amount - t_in.m_fees);
       s2.setValue(s2.shares());
       t.addSplit(s2);
-
-      if ( !t_in.m_fees.isZero() )
-      {
-        MyMoneySplit s;
-        s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
-        s.setValue(t_in.m_fees);
-        s.setShares(t_in.m_fees);
-        s.setAccountId(d->feeId(thisaccount));
-        t.addSplit(s);
-      }
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
     {
@@ -700,9 +690,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
              (t_in.m_eAction==MyMoneyStatement::Transaction::eaSell))
     {
       if(!t_in.m_price.isZero()) {
-        s1.setPrice(t_in.m_price);
+        s1.setPrice(t_in.m_price.abs());
       } else {
-        s1.setPrice(((t_in.m_amount - t_in.m_fees) / t_in.m_shares).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
+        MyMoneyMoney total;
+        if(t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy)
+          total = t_in.m_amount - t_in.m_fees;
+        else
+          total = t_in.m_amount + t_in.m_fees;
+        s1.setPrice((total / t_in.m_shares).abs().convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
       }
 
       s1.setShares(t_in.m_shares);
@@ -740,6 +735,15 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       {
         // Warning!! Your transaction is being thrown away.
       }
+    }
+    if ( !t_in.m_fees.isZero() )
+    {
+      MyMoneySplit s;
+      s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
+      s.setValue(t_in.m_fees);
+      s.setShares(t_in.m_fees);
+      s.setAccountId(d->feeId(thisaccount));
+      t.addSplit(s);
     }
   }
   else

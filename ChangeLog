@@ -1,4 +1,7 @@
 
+2008-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some more QIF importer problems
+
 2008-12-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Remove transfers to/from investment accounts in split transactions
     during QIF import
