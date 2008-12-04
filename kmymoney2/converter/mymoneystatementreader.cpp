@@ -693,10 +693,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         s1.setPrice(t_in.m_price.abs());
       } else {
         MyMoneyMoney total;
-        if(t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy)
-          total = t_in.m_amount - t_in.m_fees;
-        else
-          total = t_in.m_amount + t_in.m_fees;
+        total = t_in.m_amount - t_in.m_fees;
         s1.setPrice((total / t_in.m_shares).abs().convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
       }
 

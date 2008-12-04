@@ -1460,6 +1460,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
     }
     d->st.m_listPrices += price;
     tr.m_shares = -quantity;
+    tr.m_amount = -amount;
     tr.m_eAction = (MyMoneyStatement::Transaction::eaSell);
   }
   else if ( action == "shrsin" )

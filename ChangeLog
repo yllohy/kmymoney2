@@ -1,6 +1,7 @@
 
 2008-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for manual OFX configuration
+  * Fixed a sign problem when importing investment sales transations via QIF
 
 2008-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some more QIF importer problems
