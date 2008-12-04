@@ -517,7 +517,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     // find the security transacted, UNLESS this transaction didn't
     // involve any security.
     if ( (t_in.m_eAction != MyMoneyStatement::Transaction::eaNone)
-      && (t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend)
+      && (t_in.m_eAction != MyMoneyStatement::Transaction::eaInterest)
       && (t_in.m_eAction != MyMoneyStatement::Transaction::eaFees))
     {
       // the correct account is the stock account which matches two criteria:
@@ -540,7 +540,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           thisaccount = file->account(*it_account);
           found = true;
 
-          if(t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend) // Bug #1581788: Should not update a price for cash dividends
+          // Don't update price if there is no price information contained in the transaction
+          if(t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend
+          && t_in.m_eAction != MyMoneyStatement::Transaction::eaShrsin
+          && t_in.m_eAction != MyMoneyStatement::Transaction::eaShrsout)
           {
             // update the price, while we're here.  in the future, this should be
             // an option
@@ -673,6 +676,18 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       t.addSplit(s2);
 
       transfervalue = -t_in.m_amount - t_in.m_fees;
+    }
+    else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaInterest)
+    {
+      if(t_in.m_strInterestCategory.isEmpty())
+        s1.setAccountId(d->interestId(thisaccount));
+      else
+        s1.setAccountId(d->interestId(t_in.m_strInterestCategory));
+      s1.setShares(t_in.m_amount);
+      s1.setValue(t_in.m_amount);
+
+      transfervalue = -t_in.m_amount;
+
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaFees)
     {
@@ -1057,6 +1072,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               // no need to do anything here
               break;
             case TransactionMatcher::matched:
+            case TransactionMatcher::matchedExact:
               matcher.match(tm, matchedSplit, t, s1, true);
               d->transactionsMatched++;
               break;

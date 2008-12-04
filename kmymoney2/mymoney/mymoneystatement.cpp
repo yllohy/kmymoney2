@@ -36,7 +36,7 @@
 #include "mymoneystatement.h"
 
 const QStringList kAccountTypeTxt = QStringList::split(",","none,checkings,savings,investment,creditcard,invalid");
-const QStringList kActionText = QStringList::split(",","none,buy,sell,reinvestdividend,cashdividend,add,remove,stocksplit,fees,invalid");
+const QStringList kActionText = QStringList::split(",","none,buy,sell,reinvestdividend,cashdividend,add,remove,stocksplit,fees,interest,invalid");
 
 void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
 {

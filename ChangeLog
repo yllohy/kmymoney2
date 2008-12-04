@@ -2,6 +2,9 @@
 2008-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for manual OFX configuration
   * Fixed a sign problem when importing investment sales transations via QIF
+  * The transaction matcher now uses transaction matching on the same date
+    in favor over those that match on different dates.
+  * More fixes to the QIF importer
 
 2008-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some more QIF importer problems

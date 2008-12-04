@@ -285,8 +285,13 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
       if((*it_s).accountId() == si.accountId()
       && (*it_s).shares() == si.shares()
       && !(*it_s).isMatched()) {
-        lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
-        result = matched;
+        if(tm.postDate() == ti.postDate()) {
+          lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+          result = matchedExact;
+        } else if(result != matchedExact) {
+          lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
+          result = matched;
+        }
       }
     }
   }
@@ -329,7 +334,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
     QValueList<MyMoneySchedule>::iterator it_sch;
     // find all schedules that have a reference to the current account
     list = MyMoneyFile::instance()->scheduleList(m_account.id());
-    for(it_sch = list.begin(); (result != matched) && (it_sch != list.end()); ++it_sch) {
+    for(it_sch = list.begin(); (result != matched && result != matchedExact) && (it_sch != list.end()); ++it_sch) {
       // get the next due date adjusted by the weekend switch
       QDate nextDueDate = (*it_sch).nextDueDate();
       if((*it_sch).isOverdue() ||
@@ -337,7 +342,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
          && nextDueDate <= ti.postDate().addDays(m_days))) {
         MyMoneyTransaction st = KMyMoneyUtils::scheduledTransaction(*it_sch);
         checkTransaction(st, ti, si, lastMatch, result);
-        if(result == matched) {
+        if(result == matched || result == matchedExact) {
           sm = lastMatch.second;
           rc = new MyMoneySchedule(*it_sch);
         }

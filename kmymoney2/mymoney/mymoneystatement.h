@@ -82,7 +82,7 @@ public:
 
     // the following members are only used for investment accounts (m_eType==etInvestment)
     // eaNone means the action, shares, and security can be ignored.
-    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaShrsin, eaShrsout, eaStksplit, eaFees, eaEnd };
+    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaShrsin, eaShrsout, eaStksplit, eaFees, eaInterest, eaEnd };
     EAction m_eAction;
     MyMoneyMoney m_shares;
     MyMoneyMoney m_fees;

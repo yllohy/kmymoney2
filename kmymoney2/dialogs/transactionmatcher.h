@@ -37,6 +37,7 @@ public:
   typedef enum {
     notMatched = 0,          ///< no matching transaction found
     matched,                 ///< matching transaction found
+    matchedExact,            ///< matching transaction found with exact same date
     matchedDuplicate         ///< duplicate matching transaction found
   } autoMatchResultE;
 
