@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 #include <curl/curl.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -49,6 +50,7 @@
 #include <klistview.h>
 #include <klistviewsearchline.h>
 #include <kcombobox.h>
+#include <kurlrequester.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -77,7 +79,7 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
   dlg->setMinimumDuration(0);
   kapp->processEvents();
 
-  m_listLayout->insertWidget(1, new KListViewSearchLineWidget(m_listFi, FIPage, 0));
+  tabLayout->insertWidget(0, new KListViewSearchLineWidget(m_listFi, tab, 0));
 
   OfxPartner::setDirectory(locateLocal("appdata", ""));
   try {
@@ -129,52 +131,88 @@ bool KOnlineBankingSetupWizard::finishFiPage(void)
 {
   bool result = false;
 
-  // Get the fipids for the selected bank
-  QListViewItem* item = m_listFi->currentItem();
-  if ( item )
-  {
-    QString bank = item->text(0);
-    m_textDetails->clear();
-    m_textDetails->append(QString("<p>Details for %1:</p>").arg(bank));
-    vector<string> fipids = OfxPartner::FipidForBank(bank);
+  m_bankInfo.clear();
+  OfxFiServiceInfo info;
 
-    m_bankInfo.clear();
-    vector<string>::const_iterator it_fipid = fipids.begin();
-    while ( it_fipid != fipids.end() )
+  if(m_selectionTab->currentPageIndex() == 0) {
+
+    // Get the fipids for the selected bank
+    QListViewItem* item = m_listFi->currentItem();
+    if ( item )
     {
-      // For each fipid, get the connection details
-      OfxFiServiceInfo info = OfxPartner::ServiceInfo(*it_fipid);
+      QString bank = item->text(0);
+      m_textDetails->clear();
+      m_textDetails->append(QString("<p>Details for %1:</p>").arg(bank));
+      vector<string> fipids = OfxPartner::FipidForBank(bank);
 
-      // Print them to the text browser
-      QString message = QString("<p>Fipid: %1<br>").arg(*it_fipid);
-
-      // If the bank supports retrieving statements
-      if ( info.accountlist )
+      vector<string>::const_iterator it_fipid = fipids.begin();
+      while ( it_fipid != fipids.end() )
       {
-        m_bankInfo.push_back(info);
+        // For each fipid, get the connection details
+        info = OfxPartner::ServiceInfo(*it_fipid);
 
-        message += QString("URL: %1<br>Org: %2<br>Fid: %3<br>").arg(info.url,info.org,info.fid);
-        if ( info.statements )
-          message += i18n("Supports online statements<br>");
-        if ( info.investments )
-          message += i18n("Supports investments<br>");
-        if ( info.billpay )
-          message += i18n("Supports bill payment (but not supported by KMyMoney yet)<br>");
-      }
-      else
-      {
-        message += i18n("Does not support online banking</p>");
-      }
-      m_textDetails->append(message);
+        // Print them to the text browser
+        QString message = QString("<p>Fipid: %1<br>").arg(*it_fipid);
 
-      ++it_fipid;
+        // If the bank supports retrieving statements
+        if ( info.accountlist )
+        {
+          m_bankInfo.push_back(info);
+
+          message += QString("URL: %1<br>Org: %2<br>Fid: %3<br>").arg(info.url,info.org,info.fid);
+          if ( info.statements )
+            message += i18n("Supports online statements<br>");
+          if ( info.investments )
+            message += i18n("Supports investments<br>");
+          if ( info.billpay )
+            message += i18n("Supports bill payment (but not supported by KMyMoney yet)<br>");
+        }
+        else
+        {
+          message += i18n("Does not support online banking</p>");
+        }
+        m_textDetails->append(message);
+
+        ++it_fipid;
+      }
+      result = true;
     }
+    else
+      // error!  No current item
+      KMessageBox::sorry(this,i18n("Please choose a bank."));
+
+  } else {  // manual entry of values
+    if(m_fid->text().isEmpty()
+    || m_url->url().isEmpty()
+    || m_bankName->text().isEmpty()) {
+      KMessageBox::sorry(this,i18n("Please fill all fields with values."));
+    }
+
+    m_textDetails->clear();
+    m_textDetails->append(QString("<p>Details for %1:</p>").arg(m_bankName->text()));
+
+    memset(&info, 0, sizeof(OfxFiServiceInfo));
+    strncpy(info.fid, m_fid->text().data(), OFX_FID_LENGTH-1);
+    strncpy(info.org, m_bankName->text().latin1(), OFX_ORG_LENGTH-1);
+    strncpy(info.url, m_url->url().data(), OFX_URL_LENGTH-1);
+    info.accountlist = 1;
+    info.statements = 1;
+    info.billpay = 1;
+    info.investments = 1;
+
+    m_bankInfo.push_back(info);
+
+    QString message;
+    message += QString("URL: %1<br>Org: %2<br>Fid: %3<br>").arg(info.url,info.org,info.fid);
+    if ( info.statements )
+      message += i18n("Supports online statements<br>");
+    if ( info.investments )
+      message += i18n("Supports investments<br>");
+    if ( info.billpay )
+      message += i18n("Supports bill payment (but not supported by KMyMoney yet)<br>");
+    m_textDetails->append(message);
     result = true;
   }
-  else
-    // error!  No current item
-    KMessageBox::sorry(this,i18n("Please choose a bank."));
-
   return result;
 }
 
