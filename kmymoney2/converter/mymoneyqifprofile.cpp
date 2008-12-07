@@ -807,6 +807,7 @@ void MyMoneyQifProfile::autoDetect(const QStringList& lines)
 
   QString numericRecords = "BT$OIQ";
   QStringList::const_iterator it;
+  int datesScanned = 0;
   // section: used to switch between different QIF sections,
   // because the Record identifiers are ambigous between sections
   // eg. in transaction records, T identifies a total amount, in
@@ -850,6 +851,7 @@ void MyMoneyQifProfile::autoDetect(const QStringList& lines)
         } else if((c == 'D') && (m_dateFormat.isEmpty())) {
           if(d->m_partPos.count() != 3) {
             scanDate((*it).mid(1));
+            ++datesScanned;
             if(d->m_partPos.count() == 2) {
               // if we have detected two parts we can calculate the third and its position
               d->getThirdPosition();
@@ -861,12 +863,17 @@ void MyMoneyQifProfile::autoDetect(const QStringList& lines)
         if(price.search(*it) != -1) {
           scanNumeric(price.cap(2), m_decimal['P'], m_thousands['P']);
           scanDate(price.cap(3));
+          ++datesScanned;
         }
         break;
     }
   }
 
-  if(d->m_partPos.count() != 3) {
+  // the following algorithm is only applied if we have more
+  // than 20 dates found. Smaller numbers have shown that the
+  // results are inaccurate which leads to a reduced number of
+  // date formats presented to choose from.
+  if(d->m_partPos.count() != 3 && datesScanned > 20) {
     QMap<int, int> sortedPos;
     // make sure to reset the known parts for the following algorithm
     if(d->m_partPos.contains('y')) {
