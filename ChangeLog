@@ -1,4 +1,7 @@
 
+2008-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added more debug output to statement reader
+
 2008-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for manual OFX configuration
   * Fixed a sign problem when importing investment sales transations via QIF

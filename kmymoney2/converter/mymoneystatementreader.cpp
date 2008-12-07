@@ -279,6 +279,8 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
   else if(s.m_listTransactions.count() == 0)
     messages += i18n("Importing statement without transactions");
 
+  qDebug("Importing statement for '%s'", m_account.name().data());
+
   //
   // Process the securities
   //
@@ -300,6 +302,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
   if ( !m_userAbort )
   {
     try {
+      qDebug("Processing transactions (%s)", m_account.name().data());
       signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
       int progress = 0;
       QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
@@ -309,6 +312,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
         signalProgress(++progress, 0);
         ++it_t;
       }
+      qDebug("Processing transactions done (%s)", m_account.name().data());
 
     } catch(MyMoneyException* e) {
       if(e->what() == "USERABORT")
@@ -344,7 +348,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
       if(e->what() == "USERABORT")
         m_userAbort = true;
       else
-        qDebug("Caught exception from processTransactionEntry() not caused by USERABORT: %s", e->what().data());
+        qDebug("Caught exception from processPriceEntry() not caused by USERABORT: %s", e->what().data());
       delete e;
     }
     signalProgress(-1, -1);
@@ -397,6 +401,8 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
     m_ft->commit();
   delete m_ft;
   m_ft = 0;
+
+  qDebug("Importing statement for '%s' done", m_account.name().data());
 
   return rc;
 }
@@ -466,6 +472,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   MyMoneyFile* file = MyMoneyFile::instance();
 
   MyMoneyTransaction t;
+
+  QString dbgMsg;
+  dbgMsg = QString("Process %1, '%3', %2").arg(t_in.m_datePosted.toString(Qt::ISODate)).arg(t_in.m_amount.formatMoney("", 2)).arg(t_in.m_strBankID);
+  qDebug("%s", dbgMsg.data());
 
   // mark it imported for the view
   t.setImported();
@@ -1061,6 +1071,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     if(result != TransactionMatcher::matchedDuplicate) {
       d->transactionsAdded++;
       file->addTransaction(t);
+      qDebug("Transaction added");
 
       if(o) {
         if(typeid(*o) == typeid(MyMoneyTransaction)) {
@@ -1073,6 +1084,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               break;
             case TransactionMatcher::matched:
             case TransactionMatcher::matchedExact:
+              qDebug("Detected as match");
               matcher.match(tm, matchedSplit, t, s1, true);
               d->transactionsMatched++;
               break;
@@ -1109,10 +1121,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       }
     } else {
       d->transactionsDuplicate++;
+      qDebug("Detected as duplicate");
     }
     delete o;
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding or matching imported transaction with id '%1': %2").arg(t_in.m_strBankID).arg(e->what()));
+    qDebug("%s", message.data());
     delete e;
 
     int result = KMessageBox::warningContinueCancel(0, message);
