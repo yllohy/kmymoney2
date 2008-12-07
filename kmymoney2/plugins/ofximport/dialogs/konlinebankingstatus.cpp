@@ -28,6 +28,9 @@
 
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
+#include <qspinbox.h>
+#include <qdatetimeedit.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -65,7 +68,24 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_textOnlineAccount->setText(account);
 
   m_appId = new OfxAppVersion(m_applicationCombo, settings.value("appId"));
-  
+
+  int numDays = 60;
+  QString snumDays = settings.value("kmmofx-numRequestDays");
+  if (!snumDays.isEmpty())
+    numDays = snumDays.toInt();
+  m_numdaysSpin->setValue(numDays);
+  m_todayRB->setChecked(settings.value("kmmofx-todayMinus").isEmpty() || settings.value("kmmofx-todayMinus").toInt() != 0);
+  m_lastUpdateRB->setChecked(!settings.value("kmmofx-lastUpdate").isEmpty() && settings.value("kmmofx-lastUpdate").toInt() != 0);
+  m_lastUpdateTXT->setText(acc.value("lastImportedTransactionDate"));
+  m_pickDateRB->setChecked(!settings.value("kmmofx-pickDate").isEmpty() && settings.value("kmmofx-pickDate").toInt() != 0);
+  QString specificDate = settings.value("kmmofx-specificDate");
+  if (!specificDate.isEmpty())
+    m_specificDate->setDate(QDate::fromString(specificDate));
+  else
+    m_specificDate->setDate(QDate::currentDate());
+  m_specificDate->setMaxValue(QDate::currentDate());
+  m_payeeidRB->setChecked(settings.value("kmmofx-preferPayeeid").isEmpty() || settings.value("kmmofx-preferPayeeid").toInt() != 0);
+  m_nameRB->setChecked(!settings.value("kmmofx-preferName").isEmpty() && settings.value("kmmofx-preferName").toInt() != 0);
 #else
   m_textOnlineStatus->setText(i18n("Disabled. No online banking services are available"));
 #endif

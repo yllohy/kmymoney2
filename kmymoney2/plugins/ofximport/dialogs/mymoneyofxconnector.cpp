@@ -116,6 +116,22 @@ QString MyMoneyOfxConnector::password(void) const { return m_fiSettings.value("p
 QString MyMoneyOfxConnector::accountnum(void) const { return m_fiSettings.value("accountid"); }
 QString MyMoneyOfxConnector::url(void) const { return m_fiSettings.value("url"); }
 
+QDate MyMoneyOfxConnector::statementStartDate(void) const {
+  if ((m_fiSettings.value("kmmofx-todayMinus").toInt() != 0) && !m_fiSettings.value("kmmofx-numRequestDays").isEmpty())
+  {
+    return QDate::currentDate().addDays(-m_fiSettings.value("kmmofx-numRequestDays").toInt());
+  }
+  else if ((m_fiSettings.value("kmmofx-lastUpdate").toInt() != 0) && !m_account.value("lastImportedTransactionDate").isEmpty())
+  {
+    return QDate::fromString(m_account.value("lastImportedTransactionDate"), Qt::ISODate);
+  }
+  else if ((m_fiSettings.value("kmmofx-pickDate").toInt() != 0) && !m_fiSettings.value("kmmofx-specificDate").isEmpty())
+  {
+    return QDate::fromString(m_fiSettings.value("kmmofx-specificDate"));
+  }
+  return QDate::currentDate().addMonths(-2);
+}
+
 #if LIBOFX_IS_VERSION(0,9,0)
 OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
 {
@@ -216,7 +232,7 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
 #endif
 
 #if LIBOFX_IS_VERSION(0,9,0)
-const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) const
+const QByteArray MyMoneyOfxConnector::statementRequest(void) const
 {
   OfxFiLogin fi;
   memset(&fi,0,sizeof(OfxFiLogin));
@@ -247,7 +263,7 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   strncpy(account.account_number,accountnum().latin1(),OFX_ACCTID_LENGTH-1);
   account.account_type = accounttype();
 
-  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
+  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(statementStartDate()).toTime_t() );
   QString request = szrequest;
   // remove the trailing zero
   QByteArray result = request.utf8();
@@ -258,7 +274,7 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   return result;
 }
 #else
-const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) const
+const QByteArray MyMoneyOfxConnector::statementRequest(void) const
 {
   OfxFiLogin fi;
   memset(&fi,0,sizeof(OfxFiLogin));
@@ -277,7 +293,7 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
   account.type = accounttype();
 
-  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
+  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(statementStartDate()).toTime_t() );
   QString request = szrequest;
   // remove the trailing zero
   QByteArray result = request.utf8();
@@ -318,7 +334,7 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::message(const QString& _msgType, c
       .subtag(_request));
 }
 
-MyMoneyOfxConnector::Tag MyMoneyOfxConnector::investmentRequest(const QDate& _dtstart) const
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::investmentRequest(void) const
 {
   QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
   QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));

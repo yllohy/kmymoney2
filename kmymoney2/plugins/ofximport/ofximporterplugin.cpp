@@ -20,6 +20,9 @@
 
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qradiobutton.h>
+#include <qspinbox.h>
+#include <qdatetimeedit.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -203,16 +206,27 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   {
     t.m_strBankID = QString("REF ") + data.reference_number;
   }
-
-  if(data.payee_id_valid==true)
-  {
-    t.m_strPayee = data.payee_id;
+  // Decide whether to import NAME or PAYEEID if both are present in the download
+  if (pofx->m_preferName) {
+    if(data.name_valid==true)
+    {
+      t.m_strPayee = data.name;
+    }
+    else if(data.payee_id_valid==true)
+    {
+      t.m_strPayee = data.payee_id;
+    }
   }
-  else if(data.name_valid==true)
-  {
-    t.m_strPayee = data.name;
+  else {
+    if(data.payee_id_valid==true)
+    {
+      t.m_strPayee = data.payee_id;
+    }
+    else if(data.name_valid==true)
+    {
+      t.m_strPayee = data.name;
+    }
   }
-
   if(data.memo_valid==true){
     t.m_strMemo = data.memo;
   }
@@ -567,6 +581,13 @@ MyMoneyKeyValueContainer OfxImporterPlugin::onlineBankingSettings(const MyMoneyK
     kvp.deletePair("appId");
     if(!m_statusDlg->appId().isEmpty())
       kvp.setValue("appId", m_statusDlg->appId());
+    kvp.setValue("kmmofx-numRequestDays", QString::number(m_statusDlg->m_numdaysSpin->value()));
+    kvp.setValue("kmmofx-todayMinus", QString::number(m_statusDlg->m_todayRB->isChecked()));
+    kvp.setValue("kmmofx-lastUpdate", QString::number(m_statusDlg->m_lastUpdateRB->isChecked()));
+    kvp.setValue("kmmofx-pickDate", QString::number(m_statusDlg->m_pickDateRB->isChecked()));
+    kvp.setValue("kmmofx-specificDate", m_statusDlg->m_specificDate->date().toString());
+    kvp.setValue("kmmofx-preferPayeeid", QString::number(m_statusDlg->m_payeeidRB->isChecked()));
+    kvp.setValue("kmmofx-preferName", QString::number(m_statusDlg->m_nameRB->isChecked()));
   }
   return kvp;
 }
@@ -590,6 +611,8 @@ bool OfxImporterPlugin::updateAccount(const MyMoneyAccount& acc)
 {
   try {
     if(!acc.id().isEmpty()) {
+      // Save the value of preferName to be used by ofxTransactionCallback
+      m_preferName = acc.onlineBankingSettings().value("kmmofx-preferName").toInt() != 0;
       KOfxDirectConnectDlg dlg(acc);
 
       connect(&dlg, SIGNAL(statementReady(const QString&)),

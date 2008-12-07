@@ -898,7 +898,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
         try {
           file->addPayee(payee);
-          qDebug("%s created", payee.name().data());
+          qDebug("Payee '%s' created", payee.name().data());
           d->payees << payee;
           payeeid = payee.id();
           s1.setPayeeId(payeeid);

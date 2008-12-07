@@ -132,6 +132,7 @@ protected:
 
 private:
   bool m_valid;
+  bool m_preferName;
   QValueList<MyMoneyStatement> m_statementlist;
   QValueList<MyMoneyStatement::Security> m_securitylist;
   QString m_fatalerror;

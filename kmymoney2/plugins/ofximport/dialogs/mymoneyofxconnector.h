@@ -85,12 +85,19 @@ class MyMoneyOfxConnector
 public:
   MyMoneyOfxConnector(const MyMoneyAccount& _account);
   QString url(void) const;
-  const QByteArray statementRequest(const QDate& _dtstart) const;
+
+  /**
+   * Constructs the request for a statement. The first date
+   * for which transactions will be requested is determined
+   * by statementStartDate()
+   */
+  const QByteArray statementRequest(void) const;
   const QByteArray accountInfoRequest(void) const;
 
   const QByteArray statementResponse(const QDate& _dtstart) const;
 
-protected:
+private:
+  QDate statementStartDate(void) const;
   QString iban(void) const;
   QString fiorg(void) const;
   QString fiid(void) const;

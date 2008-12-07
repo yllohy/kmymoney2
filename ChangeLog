@@ -1,6 +1,7 @@
 
 2008-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added more debug output to statement reader
+  * Added patch provided from Greg Darke to add more settings to OFX plugin
 
 2008-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for manual OFX configuration

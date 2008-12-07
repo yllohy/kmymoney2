@@ -64,7 +64,7 @@ void KOfxDirectConnectDlg::init(void)
 {
   show();
 
-  QByteArray request = m_connector.statementRequest(QDate::currentDate().addMonths(-2));
+  QByteArray request = m_connector.statementRequest();
 
   // For debugging, dump out the request
 #if 0
