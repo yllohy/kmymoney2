@@ -1084,7 +1084,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               break;
             case TransactionMatcher::matched:
             case TransactionMatcher::matchedExact:
-              qDebug("Detected as match");
+              qDebug("Detected as match to transaction '%s'", tm.id().data());
               matcher.match(tm, matchedSplit, t, s1, true);
               d->transactionsMatched++;
               break;
