@@ -87,6 +87,12 @@ class MyMoneyQifReaderPrivate {
     QString typeToAccountName(const QString& type) const;
 
     /**
+     * Converts the QIF reconcile state to the KMyMoney reconcile state
+     */
+    MyMoneySplit::reconcileFlagE reconcileState(const QString& state) const;
+
+  public:
+    /**
      * the statement that is currently collected/processed
      */
     MyMoneyStatement st;
@@ -204,6 +210,19 @@ bool MyMoneyQifReaderPrivate::isTransfer(QString& tmp, const QString& leftDelim,
   }
   return rc;
 }
+
+MyMoneySplit::reconcileFlagE MyMoneyQifReaderPrivate::reconcileState(const QString& state) const
+{
+  QString tmp = extractLine('C');
+  if(tmp == "X" || tmp == "R")        // Reconciled
+    return MyMoneySplit::Reconciled;
+
+  if(tmp == "*")                      // Cleared
+    return MyMoneySplit::Cleared;
+
+  return MyMoneySplit::NotReconciled;
+}
+
 
 MyMoneyQifReader::MyMoneyQifReader() :
   d(new MyMoneyQifReaderPrivate)
@@ -986,7 +1005,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   tmp = extractLine('#');
   if(!tmp.isEmpty())
   {
-     tr.m_strBankID = ("ID " + tmp);
+     tr.m_strBankID = QString("ID %1").arg(tmp);
   }
 
 #if 0
@@ -1021,12 +1040,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       tr.m_strPayee = tmp;
   }
 
-  tmp = extractLine('C');
-  if(tmp == "X") {
-    tr.m_reconcile = MyMoneySplit::Reconciled;
-  } else if(tmp == "*")               // Cleared
-    tr.m_reconcile = MyMoneySplit::Cleared;
-
+  tr.m_reconcile = d->reconcileState(extractLine('C'));
   tr.m_strMemo = extractLine('M');
   s1.m_strMemo = tr.m_strMemo;
   // tr.m_listSplits.append(s1);
@@ -1221,10 +1235,33 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   // 'M' field: Memo
   QString memo = extractLine('M');
   tr.m_strMemo = extractLine('M');
+  unsigned long h;
+
+  h = MyMoneyTransaction::hash(m_qifEntry.join(";"));
+
+  QString hashBase;
+  hashBase.sprintf("%s-%07lx", m_qifProfile.date(extractLine('D')).toString(Qt::ISODate).data(), h);
+  int idx = 1;
+  QString hash;
+  for(;;) {
+    hash = QString("%1-%2").arg(hashBase).arg(idx);
+    QMap<QString, bool>::const_iterator it;
+    it = d->m_hashMap.find(hash);
+    if(it == d->m_hashMap.end()) {
+      d->m_hashMap[hash] = true;
+      break;
+    }
+    ++idx;
+  }
+  tr.m_strBankID = hash;
+
   // '#' field: BankID
-  QString bankid = extractLine('#');
-  if ( ! bankid.isEmpty() )
-    tr.m_strBankID = bankid;
+  QString tmp = extractLine('#');
+  if ( ! tmp.isEmpty() )
+    tr.m_strBankID = QString("ID %1").arg(tmp);
+
+  // Reconciliation flag
+  tr.m_reconcile = d->reconcileState(extractLine('C'));
 
   // 'O' field: Fees
   tr.m_fees = m_qifProfile.value('T', extractLine('O'));

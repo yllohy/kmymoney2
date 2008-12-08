@@ -1,6 +1,8 @@
 
 2008-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some print issues in the CSS file
+  * Fixed some more QIF importer and statement reader problems
+  * Fixed payee matching for name matching mode
 
 2008-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added more debug output to statement reader

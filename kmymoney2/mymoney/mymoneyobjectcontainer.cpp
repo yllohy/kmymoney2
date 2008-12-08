@@ -122,7 +122,7 @@ const MyMoneyAccount& MyMoneyObjectContainer::account(const QCString& id)
   QMap<QCString, MyMoneyObject const *>::iterator it;
   it = m_map.find(id);
   if(it == m_map.end()) {
-    /* not found, need toload from engine */
+    /* not found, need to load from engine */
     MyMoneyAccount x = m_storage->account(id);
     MyMoneyAccount* item = new MyMoneyAccount(x);
     assignFraction(dynamic_cast<MyMoneyAccount*>(item));

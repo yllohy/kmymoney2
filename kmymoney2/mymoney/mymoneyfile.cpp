@@ -464,9 +464,9 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
     m_storage->modifyInstitution(institution);
   }
   acc.setInstitutionId(QCString());
-  addNotification(acc.id(), false);
 
   m_storage->removeAccount(acc);
+  addNotification(acc.id(), false);
   d->m_cache.clear(acc.id());
 }
 
@@ -525,8 +525,6 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(institution.id(), false);
-
   QValueList<QCString>::ConstIterator it_a;
   MyMoneyInstitution inst = MyMoneyFile::institution(institution.id());
 
@@ -540,6 +538,8 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
   blockSignals(blocked);
 
   m_storage->removeInstitution(institution);
+
+  addNotification(institution.id(), false);
 }
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
@@ -920,9 +920,9 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(payee.id(), false);
-
   m_storage->removePayee(payee);
+
+  addNotification(payee.id(), false);
 }
 
 void MyMoneyFile::accountList(QValueList<MyMoneyAccount>& list, const QCStringList& idlist, const bool recursive) const
@@ -1312,10 +1312,9 @@ void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(sched.id(), false);
-
   m_storage->removeSchedule(sched);
 
+  addNotification(sched.id(), false);
 }
 
 const MyMoneySchedule MyMoneyFile::schedule(const QCString& id) const
@@ -1828,8 +1827,9 @@ void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(security.id(), false);
   m_storage->removeSecurity(security);
+
+  addNotification(security.id(), false);
 }
 
 const MyMoneySecurity& MyMoneyFile::security(const QCString& id) const
@@ -1889,8 +1889,9 @@ void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(currency.id(), false);
   m_storage->removeCurrency(currency);
+
+  addNotification(currency.id(), false);
 }
 
 const MyMoneySecurity& MyMoneyFile::currency(const QCString& id) const
@@ -2058,8 +2059,9 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
   checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
-  addNotification(report.id(), false);
   m_storage->removeReport(report);
+
+  addNotification(report.id(), false);
 }
 
 
@@ -2118,8 +2120,9 @@ void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
   checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
-  addNotification(budget.id(), false);
   m_storage->removeBudget(budget);
+
+  addNotification(budget.id(), false);
 }
 
 

@@ -65,6 +65,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
     p.setAttribute("number", (*it_t).m_strNumber);
     p.setAttribute("amount", (*it_t).m_amount.toString());
     p.setAttribute("bankid", (*it_t).m_strBankID);
+    p.setAttribute("reconcile", (*it_t).m_reconcile);
 
     if (m_eType == etInvestment)
     {
@@ -83,6 +84,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
       split.setAttribute("reconcile", (*it_s).m_reconcile);
       split.setAttribute("category", (*it_s).m_strCategoryName);
       split.setAttribute("memo", (*it_s).m_strMemo);
+      split.setAttribute("reconcile", (*it_s).m_reconcile);
       p.appendChild(split);
     }
 
@@ -158,6 +160,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
         t.m_strNumber = c.attribute("number");
         t.m_strPayee = c.attribute("payee");
         t.m_strBankID = c.attribute("bankid");
+        t.m_reconcile = static_cast<MyMoneySplit::reconcileFlagE>(c.attribute("reconcile").toInt());
 
         if (m_eType == etInvestment)
         {

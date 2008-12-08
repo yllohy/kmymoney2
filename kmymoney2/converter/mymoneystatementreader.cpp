@@ -796,7 +796,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             break;
 
           case MyMoneyPayee::matchName:
-            keys << QRegExp::escape((*it_p).name());
+            keys << QString("^%1$").arg(QRegExp::escape((*it_p).name()));
             // tricky fall through here
 
           case MyMoneyPayee::matchKey:
@@ -987,6 +987,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
   }
 
+  s1.setReconcileFlag(t_in.m_reconcile);
   t.addSplit(s1);
 
   // Add the 'account' split if it's needed
@@ -1005,6 +1006,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s.setValue(transfervalue);
       s.setShares(transfervalue);
       s.setAccountId(brokerageactid);
+      s.setReconcileFlag(t_in.m_reconcile);
       t.addSplit(s);
     }
   }
@@ -1027,6 +1029,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setMemo((*it_s).m_strMemo);
       s2.setShares((*it_s).m_amount);
       s2.setValue((*it_s).m_amount);
+      s2.setReconcileFlag((*it_s).m_reconcile);
       t.addSplit(s2);
     }
 
