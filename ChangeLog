@@ -1,4 +1,7 @@
 
+2008-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some print issues in the CSS file
+
 2008-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added more debug output to statement reader
   * Added patch provided from Greg Darke to add more settings to OFX plugin
