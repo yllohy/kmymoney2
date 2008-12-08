@@ -213,11 +213,10 @@ bool MyMoneyQifReaderPrivate::isTransfer(QString& tmp, const QString& leftDelim,
 
 MyMoneySplit::reconcileFlagE MyMoneyQifReaderPrivate::reconcileState(const QString& state) const
 {
-  QString tmp = extractLine('C');
-  if(tmp == "X" || tmp == "R")        // Reconciled
+  if(state == "X" || state == "R")        // Reconciled
     return MyMoneySplit::Reconciled;
 
-  if(tmp == "*")                      // Cleared
+  if(state == "*")                      // Cleared
     return MyMoneySplit::Cleared;
 
   return MyMoneySplit::NotReconciled;
