@@ -77,7 +77,7 @@ void MyMoneyQifProfilePrivate::dissectDate(QValueVector<QString>& parts, const Q
                                 // the maximum size of a part
 
   // separate the parts of the date and keep the locations of the delimiters
-  for(pos = 0; pos < txt.length(); ++pos) {
+  for(pos = 0; pos < txt.length() && part < 3; ++pos) {
     if(nonDelimChars.search(txt[pos]) == -1) {
       posFirstDelim = posSecondDelim;
       posSecondDelim = pos;
@@ -94,13 +94,20 @@ void MyMoneyQifProfilePrivate::dissectDate(QValueVector<QString>& parts, const Q
         if(part == 2)
           maxPartSize = 4;
       }
-      parts[part] += txt[pos];
+      if(part < 3)
+        parts[part] += txt[pos];
     }
   }
 
   if(posFirstDelim == -1) {
     posFirstDelim = posSecondDelim;
     posSecondDelim = -1;
+  }
+
+  if(part == 3) { // invalid date
+    for(int i = 0; i < 3; ++i) {
+      parts[i] = "0";
+    }
   }
 }
 
@@ -973,7 +980,7 @@ void MyMoneyQifProfile::scanDate(const QString& txt) const
     int value = parts[i].toInt(&ok);
     if(!ok) {  // this should happen only if the part is non-numeric -> month
       d->m_partPos['m'] = i;
-    } else {
+    } else if(value != 0) {
       if(value != d->m_lastValue[i]) {
         d->m_changeCount[i]++;
         d->m_lastValue[i] = value;
