@@ -1,4 +1,12 @@
 
+2008-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't discard final line during QIF import if it does not contain a LF
+  * Categories don't override account information during QIF import
+  * Don't create duplicate opening balance transaction if same file
+    is imported more than once. Present a warning if amount differs and let
+    the user manually correct it.
+  * Mark imported opening balance transactions as imported (diff. background)
+
 2008-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some print issues in the CSS file
   * Fixed some more QIF importer and statement reader problems

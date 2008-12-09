@@ -322,8 +322,11 @@ public:
     * @param acc reference to account for which the opening balance transaction
     *            should be created
     * @param balance reference to the value of the opening balance transaction
+    *
+    * @returns The created MyMoneyTransaction object. In case no transaction has been
+    *          created, the id of the object is empty.
     */
-  void createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance);
+  MyMoneyTransaction createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance);
 
   /**
     * Retrieve the opening balance transaction for the account @p acc.

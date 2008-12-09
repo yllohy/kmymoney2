@@ -637,8 +637,9 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   addNotification(parent.id());
 }
 
-void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance)
+MyMoneyTransaction MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance)
 {
+  MyMoneyTransaction t;
   // if the opening balance is not zero, we need
   // to create the respective transaction
   if(!balance.isZero()) {
@@ -652,7 +653,6 @@ void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, con
       modifyAccount(openAcc);
     }
 
-    MyMoneyTransaction t;
     MyMoneySplit s;
 
     t.setPostDate(acc.openingDate());
@@ -671,6 +671,7 @@ void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, con
 
     addTransaction(t);
   }
+  return t;
 }
 
 const QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const

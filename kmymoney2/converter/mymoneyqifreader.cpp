@@ -317,6 +317,10 @@ void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *bu
 
 void MyMoneyQifReader::slotImportFinished(void)
 {
+  // check if the last EOL char was missing and add the trailing line
+  if(!m_lineBuffer.isEmpty()) {
+    m_qifLines << QString::fromUtf8(m_lineBuffer.stripWhiteSpace());
+  }
   qDebug("Read %d bytes", m_pos);
   QTimer::singleShot(0, this, SLOT(slotProcessData()));
 }
@@ -824,29 +828,28 @@ void MyMoneyQifReader::processPayeeEntry(void)
 void MyMoneyQifReader::processCategoryEntry(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  m_account = MyMoneyAccount();
-  m_account.setName(extractLine('N'));
-  m_account.setDescription(extractLine('D'));
+  MyMoneyAccount account = MyMoneyAccount();
+  account.setName(extractLine('N'));
+  account.setDescription(extractLine('D'));
 
   MyMoneyAccount parentAccount;
   if(!extractLine('I').isEmpty()) {
-    m_account.setAccountType(MyMoneyAccount::Income);
+    account.setAccountType(MyMoneyAccount::Income);
     parentAccount = file->income();
   } else if(!extractLine('E').isEmpty()) {
-    m_account.setAccountType(MyMoneyAccount::Expense);
+    account.setAccountType(MyMoneyAccount::Expense);
     parentAccount = file->expense();
   }
 
   // check if we can find the account already in the file
-  MyMoneyAccount acc = kmymoney2->findAccount(m_account, MyMoneyAccount());
+  MyMoneyAccount acc = kmymoney2->findAccount(account, MyMoneyAccount());
 
   // if not, we just create it
   if(acc.id().isEmpty()) {
     MyMoneyAccount brokerage;
     MyMoneyMoney balance;
-    kmymoney2->createAccount(m_account, parentAccount, brokerage, balance);
-  } else
-    m_account = acc;
+    kmymoney2->createAccount(account, parentAccount, brokerage, balance);
+  }
 }
 
 QCString MyMoneyQifReader::transferAccount(QString name, bool useBrokerage)
@@ -938,10 +941,34 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
       MyMoneyFileTransaction ft;
       try {
-        m_account.setOpeningDate(m_qifProfile.date(extractLine('D')));
-        file->modifyAccount(m_account);
-        file->createOpeningBalanceTransaction(m_account, m_qifProfile.value('T', extractLine('T')));
-        ft.commit();
+        bool needCreate = true;
+
+        // check if we already have an opening balance transaction
+        QCString tid = file->openingBalanceTransaction(m_account);
+        MyMoneyTransaction ot;
+        if(!tid.isEmpty()) {
+          ot = file->transaction(tid);
+          MyMoneySplit s0 = ot.splitByAccount(m_account.id());
+          // if the value is the same, we can silently skip this transaction
+          if(s0.shares() == m_qifProfile.value('T', extractLine('T'))) {
+            needCreate = false;
+          }
+          if(needCreate) {
+            // in case we create it anyway, we issue a warning to the user to check it manually
+            KMessageBox::sorry(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has imported a second opening balance transaction into account <b>%1</b> which differs from the one found already on file. Please correct this manually once the import is done.").arg(m_account.name())), i18n("Opening balance problem"));
+          }
+        }
+
+        if(needCreate) {
+          m_account.setOpeningDate(m_qifProfile.date(extractLine('D')));
+          file->modifyAccount(m_account);
+          MyMoneyTransaction t = file->createOpeningBalanceTransaction(m_account, m_qifProfile.value('T', extractLine('T')));
+          if(!t.id().isEmpty()) {
+            t.setImported();
+            file->modifyTransaction(t);
+          }
+          ft.commit();
+        }
         // remember which account we created
         d->st.m_accountId = m_account.id();
       } catch(MyMoneyException* e) {
