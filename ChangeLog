@@ -6,6 +6,9 @@
     is imported more than once. Present a warning if amount differs and let
     the user manually correct it.
   * Mark imported opening balance transactions as imported (diff. background)
+  * Fixed QIF Buy/Sell action if given an account but not BuyX/SellX action
+  * Enhanced price recording such that security can also be referenced
+    by name by the importer
 
 2008-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some print issues in the CSS file

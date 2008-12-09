@@ -1506,8 +1506,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   else if (action == "buy")
   {
     QString tmp = extractLine('L');
-    if((xAction == true)
-    && (d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true)) {
+    if(d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true) {
       tr.m_strBrokerageAccount = tmp;
       transferAccount(tmp);           // make sure the account exists
     }
@@ -1519,11 +1518,11 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   else if (action == "sell")
   {
     QString tmp = extractLine('L');
-    if((xAction == true)
-    && (d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true)) {
+    if(d->isTransfer(tmp, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1, 1)) == true) {
       tr.m_strBrokerageAccount = tmp;
       transferAccount(tmp);           // make sure the account exists
     }
+
     d->st.m_listPrices += price;
     tr.m_shares = -quantity;
     tr.m_amount = -amount;
@@ -2234,7 +2233,7 @@ void MyMoneyQifReader::processPriceEntry(void)
       price.m_strSecurity = priceExp.cap(1);
       QString pricestr = priceExp.cap(2);
       QString datestr = priceExp.cap(3);
-      kdDebug(2) << "Price:" << price.m_strSecurity << " / " << pricestr << " / " << datestr << endl;
+      kdDebug(0) << "Price:" << price.m_strSecurity << " / " << pricestr << " / " << datestr << endl;
 
       // Only add the price if the date is valid.  If invalid, fail silently.  See note above.
       // Also require the price value to not have any slashes.  Old prices will be something like

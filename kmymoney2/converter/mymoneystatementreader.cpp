@@ -77,7 +77,8 @@ class MyMoneyStatementReaderPrivate
     int                            transactionsMatched;
     int                            transactionsDuplicate;
     QMap<QString, bool>            uniqIds;
-    QMap<QString, MyMoneySecurity> securities;
+    QMap<QString, MyMoneySecurity> securitiesBySymbol;
+    QMap<QString, MyMoneySecurity> securitiesByName;
   private:
     void scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
     QCString nameToId(const QString&name, MyMoneyAccount& parent);
@@ -334,7 +335,8 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
       QValueList<MyMoneySecurity> slist = MyMoneyFile::instance()->securityList();
       QValueList<MyMoneySecurity>::const_iterator it_s;
       for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
-        d->securities[(*it_s).tradingSymbol()] = *it_s;
+        d->securitiesBySymbol[(*it_s).tradingSymbol()] = *it_s;
+        d->securitiesByName[(*it_s).name()] = *it_s;
       }
 
       int progress = 0;
@@ -409,12 +411,20 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
 
 void MyMoneyStatementReader::processPriceEntry(const MyMoneyStatement::Price& p_in)
 {
-  if(d->securities.contains(p_in.m_strSecurity)) {
+  if(d->securitiesBySymbol.contains(p_in.m_strSecurity)) {
 
-    MyMoneyPrice price(d->securities[p_in.m_strSecurity].id(),
+    MyMoneyPrice price(d->securitiesBySymbol[p_in.m_strSecurity].id(),
                        MyMoneyFile::instance()->baseCurrency().id(),
                        p_in.m_date,
                        p_in.m_amount, "QIF");
+    MyMoneyFile::instance()->addPrice(price);
+
+  } else if(d->securitiesByName.contains(p_in.m_strSecurity)) {
+
+    MyMoneyPrice price(d->securitiesByName[p_in.m_strSecurity].id(),
+                       MyMoneyFile::instance()->baseCurrency().id(),
+                                             p_in.m_date,
+                                             p_in.m_amount, "QIF");
     MyMoneyFile::instance()->addPrice(price);
   }
 
