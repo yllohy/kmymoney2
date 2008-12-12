@@ -569,7 +569,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             // an option
             QCString basecurrencyid = file->baseCurrency().id();
             MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
-            if ( !price.isValid() )
+            if ( !price.isValid()  && !t_in.m_amount.isZero() && !t_in.m_shares.isZero())
             {
               MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted,
                   t_in.m_amount / t_in.m_shares, i18n("Statement Importer") );
@@ -729,7 +729,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       } else {
         MyMoneyMoney total;
         total = t_in.m_amount - t_in.m_fees;
-        s1.setPrice((total / t_in.m_shares).abs().convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
+        if(!t_in.m_shares.isZero())
+          s1.setPrice((total / t_in.m_shares).abs().convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
       }
 
       s1.setShares(t_in.m_shares);
@@ -740,6 +741,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     else if ((t_in.m_eAction==MyMoneyStatement::Transaction::eaShrsin) ||
               (t_in.m_eAction==MyMoneyStatement::Transaction::eaShrsout))
     {
+      s1.setValue(MyMoneyMoney());
       s1.setShares(t_in.m_shares);
       s1.setAction(MyMoneySplit::ActionAddShares);
     }

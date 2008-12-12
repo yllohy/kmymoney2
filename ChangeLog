@@ -1,4 +1,7 @@
 
+2008-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More changes to the QIF importer
+
 2008-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't discard final line during QIF import if it does not contain a LF
   * Categories don't override account information during QIF import

@@ -1948,6 +1948,9 @@ void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)
 
 void MyMoneyFile::addPrice(const MyMoneyPrice& price)
 {
+  if(price.rate(QCString()).isZero())
+    return;
+
   checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache

@@ -339,6 +339,7 @@ private:
   QCString transferAccount(QString name, bool useBrokerage = true);
 
   // void processQifLine(void);
+  void createOpeningBalance(MyMoneyAccount::_accountTypeE accType = MyMoneyAccount::Checkings);
 
 signals:
   /**

@@ -881,6 +881,77 @@ QCString MyMoneyQifReader::transferAccount(QString name, bool useBrokerage)
   return accountId;
 }
 
+void MyMoneyQifReader::createOpeningBalance(MyMoneyAccount::_accountTypeE accType)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  // if we don't have a name for the current account we need to extract the name from the L-record
+  if(m_account.name().isEmpty()) {
+    QString name = extractLine('L');
+    if(name.isEmpty()) {
+      name = i18n("QIF imported, no account name supplied");
+    }
+    d->isTransfer(name, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1,1));
+    QStringList entry = m_qifEntry;   // keep a temp copy
+    m_qifEntry.clear();               // and construct a temp entry to create/search the account
+    m_qifEntry << QString("N%1").arg(name);
+    m_qifEntry << QString("T%1").arg(d->accountTypeToQif(accType));
+    m_qifEntry << QString("D%1").arg(i18n("Autogenerate by QIF importer"));
+    processAccountEntry();
+    m_qifEntry = entry;               // restore local copy
+  }
+
+  MyMoneyFileTransaction ft;
+  try {
+    bool needCreate = true;
+
+    MyMoneyAccount acc = m_account;
+    // in case we're dealing with an investment account, we better use
+    // the accompanying brokerage account for the opening balance
+    acc = file->accountByName(m_account.brokerageName());
+
+    // check if we already have an opening balance transaction
+    QCString tid = file->openingBalanceTransaction(acc);
+    MyMoneyTransaction ot;
+    if(!tid.isEmpty()) {
+      ot = file->transaction(tid);
+      MyMoneySplit s0 = ot.splitByAccount(acc.id());
+          // if the value is the same, we can silently skip this transaction
+      if(s0.shares() == m_qifProfile.value('T', extractLine('T'))) {
+        needCreate = false;
+      }
+      if(needCreate) {
+            // in case we create it anyway, we issue a warning to the user to check it manually
+        KMessageBox::sorry(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has imported a second opening balance transaction into account <b>%1</b> which differs from the one found already on file. Please correct this manually once the import is done.").arg(acc.name())), i18n("Opening balance problem"));
+      }
+    }
+
+    if(needCreate) {
+      acc.setOpeningDate(m_qifProfile.date(extractLine('D')));
+      file->modifyAccount(acc);
+      MyMoneyTransaction t = file->createOpeningBalanceTransaction(acc, m_qifProfile.value('T', extractLine('T')));
+      if(!t.id().isEmpty()) {
+        t.setImported();
+        file->modifyTransaction(t);
+      }
+      ft.commit();
+    }
+
+    // make sure to use the updated version of the account
+    if(m_account.id() == acc.id())
+      m_account = acc;
+
+    // remember which account we created
+    d->st.m_accountId = m_account.id();
+  } catch(MyMoneyException* e) {
+    KMessageBox::detailedError(0,
+                               i18n("Error while creating opening balance transaction"),
+                                    QString("%1(%2):%3").arg(e->file()).arg(e->line()).arg(e->what()),
+                                            i18n("File access error"));
+    delete e;
+  }
+}
+
 void MyMoneyQifReader::processTransactionEntry(void)
 {
   ++m_transactionsProcessed;
@@ -922,62 +993,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   if(d->firstTransaction) {
     // check if this is an opening balance transaction and process it out of the statement
     if(!payee.isEmpty() && ((payee.lower() == "opening balance") || KMyMoneyGlobalSettings::qifOpeningBalance().lower().contains(payee.lower()))) {
-      // if we don't have a name for the current account we need to extract the name from the L-record
-      if(m_account.name().isEmpty()) {
-        QString name = extractLine('L');
-        if(name.isEmpty()) {
-          name = i18n("QIF imported, no account name supplied");
-        }
-        d->isTransfer(name, m_qifProfile.accountDelimiter().left(1), m_qifProfile.accountDelimiter().mid(1,1));
-        QStringList entry = m_qifEntry;   // keep a temp copy
-        m_qifEntry.clear();               // and construct a temp entry to create/search the account
-        m_qifEntry << QString("N%1").arg(name);
-        m_qifEntry << QString("T%1").arg(d->accountTypeToQif(m_account.accountType()));
-        m_qifEntry << QString("D%1").arg(i18n("Autogenerate by QIF importer"));
-        processAccountEntry();
-        m_qifEntry = entry;               // restore local copy
-      }
-      qDebug("Found opening balance transaction in account '%s'", m_account.name().data());
-
-      MyMoneyFileTransaction ft;
-      try {
-        bool needCreate = true;
-
-        // check if we already have an opening balance transaction
-        QCString tid = file->openingBalanceTransaction(m_account);
-        MyMoneyTransaction ot;
-        if(!tid.isEmpty()) {
-          ot = file->transaction(tid);
-          MyMoneySplit s0 = ot.splitByAccount(m_account.id());
-          // if the value is the same, we can silently skip this transaction
-          if(s0.shares() == m_qifProfile.value('T', extractLine('T'))) {
-            needCreate = false;
-          }
-          if(needCreate) {
-            // in case we create it anyway, we issue a warning to the user to check it manually
-            KMessageBox::sorry(0, QString("<qt>%1</qt>").arg(i18n("KMyMoney has imported a second opening balance transaction into account <b>%1</b> which differs from the one found already on file. Please correct this manually once the import is done.").arg(m_account.name())), i18n("Opening balance problem"));
-          }
-        }
-
-        if(needCreate) {
-          m_account.setOpeningDate(m_qifProfile.date(extractLine('D')));
-          file->modifyAccount(m_account);
-          MyMoneyTransaction t = file->createOpeningBalanceTransaction(m_account, m_qifProfile.value('T', extractLine('T')));
-          if(!t.id().isEmpty()) {
-            t.setImported();
-            file->modifyTransaction(t);
-          }
-          ft.commit();
-        }
-        // remember which account we created
-        d->st.m_accountId = m_account.id();
-      } catch(MyMoneyException* e) {
-        KMessageBox::detailedError(0,
-                    i18n("Error while creating opening balance transaction"),
-                    QString("%1(%2):%3").arg(e->file()).arg(e->line()).arg(e->what()),
-                    i18n("File access error"));
-        delete e;
-      }
+      createOpeningBalance();
       d->firstTransaction = false;
       return;
     }
@@ -1230,7 +1246,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
 
   MyMoneyStatement::Transaction tr;
   d->st.m_eType = MyMoneyStatement::etInvestment;
-  // mark it imported for the view
 
 //  t.setCommodity(m_account.currencyId());
   // 'D' field: Date
@@ -1485,6 +1500,12 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   }
   else if (action == "xin" || action == "xout")
   {
+    QString payee = extractLine('P');
+    if(!payee.isEmpty() && ((payee.lower() == "opening balance") || KMyMoneyGlobalSettings::qifOpeningBalance().lower().contains(payee.lower()))) {
+      createOpeningBalance(MyMoneyAccount::Investment);
+      return;
+    }
+
     tr.m_eAction = (MyMoneyStatement::Transaction::eaNone);
     MyMoneyStatement::Split s2;
     QString tmp = extractLine('L');
@@ -1497,6 +1518,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
         s2.m_strCategoryName = d->typeToAccountName(action);
       }
     }
+
     if(action == "xout")
       tr.m_amount = -tr.m_amount;
 
@@ -1977,7 +1999,8 @@ QCString MyMoneyQifReader::processAccountEntry(bool resetAccountId)
     MyMoneyMoney balance;
     // in case it's a stock account, we need to setup a fix investment account
     if(account.isInvest()) {
-      acc.setName(i18n("Standard name for QIF investment portfolio account", "QIF investment portfolio"));
+      acc.setName(i18n("%1 (Investment)").arg(account.name()));    // use the same name for the investment account
+      acc.setDescription(i18n("Autogenerated by QIF importer from type Mutual account entry"));
       acc.setAccountType(MyMoneyAccount::Investment);
       parentAccount = file->asset();
       kmymoney2->createAccount(acc, parentAccount, brokerage, MyMoneyMoney());

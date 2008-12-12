@@ -1505,7 +1505,7 @@ QString KHomeView::showColoredAmount(const QString& amount, bool isNegative)
   return amount;
 }
 
-void KHomeView::doForecast()
+void KHomeView::doForecast(void)
 {
   //clear m_accountList because forecast is about to changed
   m_accountList.clear();
