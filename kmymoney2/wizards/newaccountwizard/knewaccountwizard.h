@@ -27,6 +27,7 @@ class QString;
 // Project Includes
 
 #include <kmymoney/kmymoneywizard.h>
+class MyMoneyPrice;
 
 /**
   * @author Thomas Baumgart
@@ -99,7 +100,7 @@ public:
    * This method returns the value of the opening balance
    * entered by the user
    */
-  MyMoneyMoney openingBalance(void);
+  MyMoneyMoney openingBalance(void) const;
 
   /**
    * This method returns the interest rate as factor, ie an
@@ -126,6 +127,11 @@ public:
    * Otherwise the returned object might contain unexpected results.
    */
   MyMoneyAccount brokerageAccount(void) const;
+
+  /**
+   * This method returns the conversion rate
+   */
+  MyMoneyPrice conversionRate(void) const;
 
 protected:
   /**

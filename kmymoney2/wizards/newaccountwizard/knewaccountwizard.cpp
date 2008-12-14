@@ -323,7 +323,7 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
   return m_schedule;
 }
 
-MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void)
+MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void) const
 {
   // equity accounts don't have an opening balance
   if(m_accountTypePage->accountType() == MyMoneyAccount::Equity)
@@ -337,6 +337,21 @@ MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void)
     return m_generalLoanInfoPage->m_openingBalance->value();
   }
   return m_accountTypePage->m_openingBalance->value();
+}
+
+MyMoneyPrice NewAccountWizard::Wizard::conversionRate(void) const
+{
+  if(MyMoneyFile::instance()->baseCurrency().id() == m_accountTypePage->m_currencyComboBox->security().id())
+    return MyMoneyPrice(MyMoneyFile::instance()->baseCurrency().id(),
+                        m_accountTypePage->m_currencyComboBox->security().id(),
+                        m_accountTypePage->m_openingDate->date(),
+                        MyMoneyMoney(1,1),
+                        i18n("User"));
+  return MyMoneyPrice(MyMoneyFile::instance()->baseCurrency().id(),
+                      m_accountTypePage->m_currencyComboBox->security().id(),
+                      m_accountTypePage->m_openingDate->date(),
+                      m_accountTypePage->m_conversionRate->value(),
+                      i18n("User"));
 }
 
 bool NewAccountWizard::Wizard::moneyBorrowed(void) const
@@ -448,9 +463,16 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   m_currencyComboBox->setSecurity(MyMoneyFile::instance()->baseCurrency());
 
   m_mandatoryGroup->add(m_accountName);
+  m_mandatoryGroup->add(m_conversionRate->lineedit());
+
+  m_conversionRate->setPrecision(KMyMoneyGlobalSettings::pricePrecision());
+  m_conversionRate->setValue(MyMoneyMoney(1,1));
+  slotUpdateCurrency();
+
   connect(m_typeSelection, SIGNAL(itemSelected(int)), this, SLOT(slotUpdateType(int)));
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
   connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotUpdateCurrency()));
+  connect(m_conversionRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateConversionRate(const QString&)));
 }
 
 void AccountTypePage::slotUpdateType(int i)
@@ -492,6 +514,21 @@ void AccountTypePage::slotUpdateCurrency(void)
   acc.setAccountType(accountType());
 
   m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction()));
+
+  bool show =  m_currencyComboBox->security().id() != MyMoneyFile::instance()->baseCurrency().id();
+  m_conversionLabel->setShown(show);
+  m_conversionRate->setShown(show);
+  m_conversionExample->setShown(show);
+  m_conversionRate->setEnabled(show);       // make sure to include/exclude in mandatoryGroup
+  m_mandatoryGroup->changed();
+  slotUpdateConversionRate(m_conversionRate->lineedit()->text());
+}
+
+void AccountTypePage::slotUpdateConversionRate(const QString& txt)
+{
+  m_conversionExample->setText(i18n("1 %1 equals %2").
+      arg(MyMoneyFile::instance()->baseCurrency().tradingSymbol()).
+      arg(MyMoneyMoney(txt).formatMoney(m_currencyComboBox->security().tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision())));
 }
 
 void AccountTypePage::slotLoadWidgets(void)
@@ -501,10 +538,17 @@ void AccountTypePage::slotLoadWidgets(void)
 
 bool AccountTypePage::isComplete(void) const
 {
-  bool rc = KMyMoneyWizardPage::isComplete();
-
+  // check that the conversion rate is positive if enabled
+  bool rc = !m_conversionRate->isVisible() || (!m_conversionRate->value().isZero() && !m_conversionRate->value().isNegative());
   if(!rc) {
-    QToolTip::add(m_wizard->m_nextButton, i18n("No account name supplied"));
+    QToolTip::add(m_wizard->m_nextButton, i18n("Conversion rate is not positive"));
+
+  } else {
+    rc = KMyMoneyWizardPage::isComplete();
+
+    if(!rc) {
+      QToolTip::add(m_wizard->m_nextButton, i18n("No account name supplied"));
+    }
   }
   hideShowPages(accountType());
   return rc;
@@ -1520,6 +1564,9 @@ void AccountSummaryPage::enterPage(void)
   else
     p = new KListViewItem(group, p, i18n("Type"), m_wizard->m_accountTypePage->m_typeSelection->currentText());
   p = new KListViewItem(group, p, i18n("Currency"), m_wizard->currency().name());
+  if(m_wizard->currency().id() != MyMoneyFile::instance()->baseCurrency().id()) {
+    p = new KListViewItem(group, p, i18n("Conversion rate"), m_wizard->conversionRate().rate(QCString()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
+  }
   p = new KListViewItem(group, p, i18n("Opening date"), KGlobal::locale()->formatDate(acc.openingDate()));
   if(!acc.isLoan() || !m_wizard->openingBalance().isZero())
     p = new KListViewItem(group, p, i18n("Opening balance"), m_wizard->openingBalance().formatMoney(acc, sec));

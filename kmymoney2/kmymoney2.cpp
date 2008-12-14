@@ -2436,9 +2436,13 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
         // needs to create a possible schedule and transactions
         wizard->setAccount(acc);
 
+        // store a possible conversion rate for the currency
+        if(acc.currencyId() != file->baseCurrency().id()) {
+          file->addPrice(wizard->conversionRate());
+        }
+
         // create the opening balance transaction if any
         file->createOpeningBalanceTransaction(acc, wizard->openingBalance());
-
         // create the payout transaction for loans if any
         MyMoneyTransaction payoutTransaction = wizard->payoutTransaction();
         if(payoutTransaction.splits().count() > 0) {

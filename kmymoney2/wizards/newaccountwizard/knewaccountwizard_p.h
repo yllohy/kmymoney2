@@ -111,6 +111,7 @@ private slots:
   void slotLoadWidgets(void);
   void slotUpdateType(int i);
   void slotUpdateCurrency(void);
+  void slotUpdateConversionRate(const QString&);
 };
 
 class BrokeragePage : public KBrokeragePageDecl, public WizardPage<Wizard>

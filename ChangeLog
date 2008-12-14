@@ -2,6 +2,7 @@
 2008-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Czech translation from Marek Stopka
   * Removed blank in front of synopsis
+  * Added mandatory price entry for new foreign account
 
 2008-12-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed crash in forecast view when displaying stock in foreign currency
