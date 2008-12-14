@@ -96,7 +96,7 @@ kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   m_contextMenu = new KPopupMenu(this);
   KIconLoader *il = KGlobal::iconLoader();
   m_contextMenu->insertTitle(il->loadIcon("transaction", KIcon::MainToolbar), i18n("Split Options"));
-  m_contextMenu->insertItem(il->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
+  m_contextMenu->insertItem(il->loadIcon("edit", KIcon::Small), i18n("Edit..."), this, SLOT(slotStartEdit()));
   m_contextMenuDuplicate = m_contextMenu->insertItem(il->loadIcon("editcopy", KIcon::Small), i18n("Duplicate"), this, SLOT(slotDuplicateSplit()));
   m_contextMenuDelete = m_contextMenu->insertItem(il->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),

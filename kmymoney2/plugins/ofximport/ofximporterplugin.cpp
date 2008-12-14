@@ -61,7 +61,7 @@ OfxImporterPlugin::~OfxImporterPlugin()
 
 void OfxImporterPlugin::createActions(void)
 {
-  new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotImportFile()), actionCollection(), "file_import_ofx");
+  new KAction(i18n("OFX..."), "", 0, this, SLOT(slotImportFile()), actionCollection(), "file_import_ofx");
 }
 
 void OfxImporterPlugin::slotImportFile(void)

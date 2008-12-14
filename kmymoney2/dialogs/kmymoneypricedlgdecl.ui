@@ -87,7 +87,7 @@
                                 <cstring>m_deleteRangeButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Delete Range ...</string>
+                                <string>Delete Range...</string>
                             </property>
                         </widget>
                         <spacer>

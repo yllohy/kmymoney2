@@ -300,16 +300,16 @@ void KMyMoney2App::initActions(void)
   KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
   KStdAction::print(this, SLOT(slotPrintView()), actionCollection());
 
-  new KAction(i18n("Open database ..."), "",0,this,SLOT(slotOpenDatabase()),actionCollection(),"open_database");
-  new KAction(i18n("Save as database ..."), "",0,this,SLOT(slotSaveAsDatabase()),actionCollection(),"saveas_database");
+  new KAction(i18n("Open database..."), "",0,this,SLOT(slotOpenDatabase()),actionCollection(),"open_database");
+  new KAction(i18n("Save as database..."), "",0,this,SLOT(slotSaveAsDatabase()),actionCollection(),"saveas_database");
   new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
-  new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
-  new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
-  new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
+  new KAction(i18n("QIF..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
+  new KAction(i18n("Gnucash..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
+  new KAction(i18n("Statement file..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
 
-  new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
-  new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotSaveAccountTemplates()), actionCollection(), "file_export_template");
-  new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
+  new KAction(i18n("Account Template..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
+  new KAction(i18n("Account Template..."), "", 0, this, SLOT(slotSaveAccountTemplates()), actionCollection(), "file_export_template");
+  new KAction(i18n("QIF..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "view_personal_data");
 
 #if KMM_DEBUG
@@ -375,9 +375,9 @@ void KMyMoney2App::initActions(void)
   // The tools menu
   // **************
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "tools_qif_editor");
-  new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tools_security_editor");
-  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tools_currency_editor");
-  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tools_price_editor");
+  new KAction(i18n("Securities..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tools_security_editor");
+  new KAction(i18n("Currencies..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tools_currency_editor");
+  new KAction(i18n("Prices..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tools_price_editor");
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "tools_update_prices");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "tools_consistency_check");
   new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "tools_performancetest");
@@ -2681,7 +2681,7 @@ void KMyMoney2App::slotAccountDelete(void)
     MyMoneyAccount newCategory = file->account(categoryId);
     try {
       {
-        KMSTATUS(i18n("Adjusting transactions ..."));
+        KMSTATUS(i18n("Adjusting transactions..."));
         /*
           m_selectedAccount.id() is the old id, categoryId the new one
           Now search all transactions and schedules that reference m_selectedAccount.id()
@@ -2706,7 +2706,7 @@ void KMyMoney2App::slotAccountDelete(void)
       }
       // now fix all schedules
       {
-        KMSTATUS(i18n("Adjusting schedules ..."));
+        KMSTATUS(i18n("Adjusting schedules..."));
         QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
         QValueList<MyMoneySchedule>::iterator it_s;
 
@@ -2724,7 +2724,7 @@ void KMyMoney2App::slotAccountDelete(void)
       }
       // now fix all budgets
       {
-        KMSTATUS(i18n("Adjusting budgets ..."));
+        KMSTATUS(i18n("Adjusting budgets..."));
         QValueList<MyMoneyBudget> blist = file->budgetList();
         QValueList<MyMoneyBudget>::const_iterator it_b;
         for(it_b = blist.begin(); it_b != blist.end(); ++it_b) {
@@ -5747,7 +5747,7 @@ void KMyMoney2App::slotAutoSave(void)
 {
   if(!m_inAutoSaving) {
     m_inAutoSaving = true;
-    KMSTATUS(i18n("Auto saving ..."));
+    KMSTATUS(i18n("Auto saving..."));
 
     //calls slotFileSave if needed, and restart the timer
     //it the file is not saved, reinitializes the countdown.

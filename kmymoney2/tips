@@ -8,8 +8,8 @@ right-clicking the header of the ledger view?
 <tip category="KMyMoney|Ledger">
 <html>
 <p>...that you can easily move to the other side of a transfer transaction
-by opening the context menu with the right mouse button and selecting the
-'Goto ...' function?
+by opening the context menu with the right mouse button and selecting one of the
+'Goto' functions?
 </html>
 </tip>
 
@@ -113,7 +113,7 @@ an account? You can also make the transaction form visible.
 cases that heavily depend on your data? You can save your data in an
 anonymized way for this support.<p>
 Just open your data file and immediately
-select <b>File/Save as ...</b>. In the <b>Save As...</b> dialog
+select <b>File/Save as...</b>. In the <b>Save As...</b> dialog
 select the filter <b>Anonymous Files</b> and make sure your file gets
 the extensions <b>.anon.xml</b>. <p>
 To verify, how the data looks like you are about to send away, you can open

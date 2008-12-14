@@ -87,7 +87,7 @@
                 <enum>NoFocus</enum>
             </property>
             <property name="text">
-                <string>You can change the configuration options at any time using the configuration dialog. Just select the &lt;b&gt;Configure KMyMoney ...&lt;/b&gt; option in the &lt;b&gt;Settings&lt;/b&gt; menu.</string>
+                <string>You can change the configuration options at any time using the configuration dialog. Just select the &lt;b&gt;Configure KMyMoney...&lt;/b&gt; option in the &lt;b&gt;Settings&lt;/b&gt; menu.</string>
             </property>
         </widget>
     </vbox>

@@ -572,9 +572,9 @@ void KHomeView::showPayments(void)
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
         m_part->write("<td>");
         if(m_showAllSchedules) {
-          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less ...") + linkend());
+          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less...") + linkend());
         } else {
-          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More ...") + linkend());
+          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More...") + linkend());
         }
         m_part->write("</td><td></td><td></td><td></td><td></td>");
         m_part->write("</tr>");
