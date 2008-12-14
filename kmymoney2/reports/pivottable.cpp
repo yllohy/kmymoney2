@@ -341,6 +341,13 @@ void PivotTable::init(void)
     calculateRunningSums();
 
   //
+  // Calculate Moving Average
+  //
+
+  if ( m_config_f.isIncludingMovingAverage() )
+    calculateMovingAverage();
+
+  //
   // Convert all values to the deep currency
   //
 
@@ -859,6 +866,7 @@ void PivotTable::calculateBudgetMapping( void )
 
         const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
         MyMoneyMoney value = (*periods.begin()).amount() * reverse;
+        MyMoneyMoney price = MyMoneyMoney(1,1);
         unsigned column = 1;
 
         // based on the kind of budget it is, deal accordingly
@@ -879,6 +887,11 @@ void PivotTable::calculateBudgetMapping( void )
               value = value * MyMoneyMoney(m_config_f.columnType(), 1);
               while ( column < m_numColumns )
               {
+                //convert to base currency if the category is in foreign currency
+                if ( m_config_f.isConvertCurrency() && splitAccount.isForeignCurrency()) {
+                  price = splitAccount.baseCurrencyPrice(columnDate(column));
+                  value = value * price;
+                }
                 assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
                 ++column;
               }
@@ -906,6 +919,12 @@ void PivotTable::calculateBudgetMapping( void )
                         && (*it_period).startDate().month() <= columnDate(column).month()
                         && (*it_period).startDate() > (columnDate(column).addMonths(-m_config_f.columnType()))) {
                             value = (*it_period).amount() * reverse;
+
+                            //convert to base currency if the category is in foreign currency
+                            if ( m_config_f.isConvertCurrency() && splitAccount.isForeignCurrency()) {
+                              price = splitAccount.baseCurrencyPrice(columnDate(column));
+                              value = value * price;
+                            }
                             assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
                     }
                     ++it_period;
@@ -2411,7 +2430,121 @@ void PivotTable::loadRowTypeList()
     m_rowTypeList.append(eForecast);
     m_columnTypeHeaderList.append(i18n("Forecast"));
   }
+
+  if(m_config_f.isIncludingMovingAverage()) {
+    m_rowTypeList.append(eAverage);
+    m_columnTypeHeaderList.append(i18n("Moving Average"));
+  }
 }
+
+
+void PivotTable::calculateMovingAverage (void)
+{
+  int delta = m_config_f.movingAverageDays()/2;
+
+  //go through the data and add the moving average
+  PivotGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        unsigned column = 1;
+
+        //check whether columns are days or months
+        if(m_config_f.columnType() == MyMoneyReport::eDays) {
+          while(column < m_numColumns) {
+            MyMoneyMoney totalPrice = MyMoneyMoney( 0, 1 );
+
+            QDate averageStart = columnDate(column).addDays(-delta);
+            QDate averageEnd = columnDate(column).addDays(delta);
+            for(QDate averageDate = averageStart; averageDate <= averageEnd; averageDate = averageDate.addDays(1)) {
+              if(m_config_f.isConvertCurrency()) {
+                totalPrice += it_row.key().deepCurrencyPrice(averageDate) * it_row.key().baseCurrencyPrice(averageDate);
+              } else {
+                totalPrice += it_row.key().deepCurrencyPrice(averageDate);
+              }
+              totalPrice = totalPrice.convert(10000);
+            }
+
+            //calculate the average price
+            MyMoneyMoney averagePrice = totalPrice / MyMoneyMoney ((averageStart.daysTo(averageEnd) + 1), 1);
+
+            //get the actual value, multiply by the average price and save that value
+            MyMoneyMoney averageValue = it_row.data()[eActual][column] * averagePrice;
+            it_row.data()[eAverage][column] = averageValue.convert(10000);
+
+            ++column;
+          }
+        } else {
+          //if columns are months
+          while(column < m_numColumns) {
+            QDate averageStart = columnDate(column);
+
+            //set the right start date depending on the column type
+            switch(m_config_f.columnType()) {
+              case MyMoneyReport::eYears:
+              {
+                averageStart = QDate(columnDate(column).year(), 1, 1);
+                break;
+              }
+              case MyMoneyReport::eBiMonths:
+              {
+                averageStart = QDate(columnDate(column).year(), columnDate(column).month()-1, 1);
+                break;
+              }
+              case MyMoneyReport::eQuarters:
+              {
+                averageStart = QDate(columnDate(column).year(), columnDate(column).month()-2, 1);
+                break;
+              }
+              case MyMoneyReport::eMonths:
+              {
+                averageStart = QDate(columnDate(column).year(), columnDate(column).month(), 1);
+                break;
+              }
+              case MyMoneyReport::eWeeks:
+              {
+                averageStart = columnDate(column).addDays(-columnDate(column).dayOfWeek() + 1);
+                break;
+              }
+              default:
+                break;
+            }
+
+            //gather the actual data and calculate the average
+            MyMoneyMoney totalPrice = MyMoneyMoney(0, 1);
+            QDate averageEnd = columnDate(column);
+            for(QDate averageDate = averageStart; averageDate <= averageEnd; averageDate = averageDate.addDays(1)) {
+              if(m_config_f.isConvertCurrency()) {
+                totalPrice += it_row.key().deepCurrencyPrice(averageDate) * it_row.key().baseCurrencyPrice(averageDate);
+              } else {
+                totalPrice += it_row.key().deepCurrencyPrice(averageDate);
+              }
+              totalPrice = totalPrice.convert(10000);
+            }
+
+            MyMoneyMoney averagePrice = totalPrice / MyMoneyMoney ((averageStart.daysTo(averageEnd) + 1), 1);
+            MyMoneyMoney averageValue = it_row.data()[eActual][column] * averagePrice;
+
+            //fill in the average
+            it_row.data()[eAverage][column] = averageValue.convert(10000);
+
+            ++column;
+          }
+        }
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
+
+
 
 } // namespace
 // vim:cin:si:ai:et:ts=2:sw=2:

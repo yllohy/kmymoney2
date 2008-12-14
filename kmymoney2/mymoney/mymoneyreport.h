@@ -121,6 +121,8 @@ public:
   const QCString& budget(void) const { return m_budgetId; }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
   bool isIncludingForecast(void) const { return m_includeForecast; }
+  bool isIncludingMovingAverage(void) const { return m_includeMovingAverage; }
+  int movingAverageDays(void) const { return m_movingAverageDays; }
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -146,6 +148,8 @@ public:
   void setIncludingUnusedAccounts( bool _f ) { m_includeUnusedAccounts = _f; }
   void setShowingRowTotals( bool _f ) { m_showRowTotals = _f; }
   void setIncludingForecast( bool _f ) { m_includeForecast = _f; }
+  void setIncludingMovingAverage( bool _f ) { m_includeMovingAverage = _f; }
+  void setMovingAverageDays( int _days ) { m_movingAverageDays = _days; }
 
   /**
     * Sets the budget used for this report
@@ -459,7 +463,17 @@ private:
    * Whether this report should include forecast balance
    */
   bool m_includeForecast;
+  /**
+   * Whether this report should include moving average
+   */
+  bool m_includeMovingAverage;
+  /**
+   * The amount of days that spans each moving average
+   */
+  int m_movingAverageDays;
 
+
+  
 };
 
 #endif // MYMONEYREPORT_H

@@ -255,6 +255,11 @@ protected:
     void calculateForecast(void);
 
   /**
+    * This method calculates moving average for a report
+    */
+    void calculateMovingAverage(void);
+
+  /**
     * Calculate the row and column totals
     *
     * This function will set the m_total members of all the TGrid objects.  Be sure the values are

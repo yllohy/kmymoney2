@@ -128,8 +128,32 @@ PivotGridRowSet::PivotGridRowSet( unsigned _numcolumns )
   insert(eBudget, PivotGridRow(_numcolumns));
   insert(eBudgetDiff, PivotGridRow(_numcolumns));
   insert(eForecast, PivotGridRow(_numcolumns));
+  insert(eAverage, PivotGridRow(_numcolumns));
 }
 
+PivotGridRowSet PivotGrid::rowSet(QCString id)
+{
+  
+  //go through the data and get the row that matches the id
+  PivotGrid::iterator it_outergroup = begin();
+  while ( it_outergroup != end() )
+  {
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        if(it_row.key().id() == id)
+          return it_row.data();
+
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
 
 } // namespace
 // vim:cin:si:ai:et:ts=2:sw=2:

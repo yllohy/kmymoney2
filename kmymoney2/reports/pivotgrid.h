@@ -36,7 +36,7 @@
 
 namespace reports {
 
-  enum ERowType {eActual, eBudget, eBudgetDiff, eForecast };
+  enum ERowType {eActual, eBudget, eBudgetDiff, eForecast, eAverage };
 
   /**
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:
@@ -137,7 +137,13 @@ namespace reports {
     // default sort order
     static const unsigned m_kDefaultSortOrder;
   };
-  class PivotGrid: public QMap<QString,PivotOuterGroup> { public: PivotGridRowSet m_total; };
+  class PivotGrid: public QMap<QString,PivotOuterGroup> 
+  { 
+    public: 
+      PivotGridRowSet rowSet (QCString id);
+
+      PivotGridRowSet m_total; 
+  };
 
 }
 
