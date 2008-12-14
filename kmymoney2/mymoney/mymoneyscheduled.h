@@ -478,6 +478,8 @@ public:
    */
   static QString scheduleTypeToString(MyMoneySchedule::typeE type);
 
+  int variation(void) const;
+  void setVariation(int var);
 
 private:
   /**

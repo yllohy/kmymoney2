@@ -3,6 +3,7 @@
   * Updated Czech translation from Marek Stopka
   * Removed blank in front of synopsis
   * Added mandatory price entry for new foreign account
+  * Added online quote button to new account wizard
 
 2008-12-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Added moving average reports for investments

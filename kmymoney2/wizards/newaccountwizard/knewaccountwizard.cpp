@@ -57,6 +57,7 @@
 #include <kmymoney/kguiutils.h>
 
 #include "../../dialogs/ksplittransactiondlg.h"
+#include "../../dialogs/kequitypriceupdatedlg.h"
 #include "../../kmymoney2.h"
 
 using namespace NewAccountWizard;
@@ -444,7 +445,8 @@ KMyMoneyWizardPage* InstitutionPage::nextPage(void) const
 
 AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   KAccountTypePageDecl(wizard),
-  WizardPage<Wizard>(StepAccount, this, wizard, name)
+  WizardPage<Wizard>(StepAccount, this, wizard, name),
+  m_showPriceWarning(true)
 {
   m_typeSelection->insertItem(i18n("Checking"), MyMoneyAccount::Checkings);
   m_typeSelection->insertItem(i18n("Savings"), MyMoneyAccount::Savings);
@@ -473,6 +475,8 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
   connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotUpdateCurrency()));
   connect(m_conversionRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateConversionRate(const QString&)));
+  connect(m_conversionRate, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPriceWarning()));
+  connect(m_onlineQuote, SIGNAL(clicked()), this, SLOT(slotGetOnlineQuote()));
 }
 
 void AccountTypePage::slotUpdateType(int i)
@@ -519,9 +523,38 @@ void AccountTypePage::slotUpdateCurrency(void)
   m_conversionLabel->setShown(show);
   m_conversionRate->setShown(show);
   m_conversionExample->setShown(show);
+  m_onlineQuote->setShown(show);
   m_conversionRate->setEnabled(show);       // make sure to include/exclude in mandatoryGroup
   m_mandatoryGroup->changed();
   slotUpdateConversionRate(m_conversionRate->lineedit()->text());
+}
+
+void AccountTypePage::slotGetOnlineQuote(void)
+{
+  QCString id = MyMoneyFile::instance()->baseCurrency().id()+" "+m_currencyComboBox->security().id();
+  KEquityPriceUpdateDlg dlg(this, id);
+  if(dlg.exec() == QDialog::Accepted) {
+    MyMoneyPrice price = dlg.price(id);
+    if(price.isValid()) {
+      m_conversionRate->setValue(price.rate(m_currencyComboBox->security().id()));
+      if(price.date() != m_openingDate->date()) {
+        priceWarning(true);
+      }
+    }
+  }
+}
+
+void AccountTypePage::slotPriceWarning(void)
+{
+  priceWarning(false);
+}
+
+void AccountTypePage::priceWarning(bool always)
+{
+  if(m_showPriceWarning || always) {
+    KMessageBox::information(this, i18n("Please make sure to enter the correct conversion for the selected opening date. If you requested an online quote it might be provided for a different date."), i18n("Check date"));
+  }
+  m_showPriceWarning = false;
 }
 
 void AccountTypePage::slotUpdateConversionRate(const QString& txt)
@@ -1564,10 +1597,10 @@ void AccountSummaryPage::enterPage(void)
   else
     p = new KListViewItem(group, p, i18n("Type"), m_wizard->m_accountTypePage->m_typeSelection->currentText());
   p = new KListViewItem(group, p, i18n("Currency"), m_wizard->currency().name());
+  p = new KListViewItem(group, p, i18n("Opening date"), KGlobal::locale()->formatDate(acc.openingDate()));
   if(m_wizard->currency().id() != MyMoneyFile::instance()->baseCurrency().id()) {
     p = new KListViewItem(group, p, i18n("Conversion rate"), m_wizard->conversionRate().rate(QCString()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
   }
-  p = new KListViewItem(group, p, i18n("Opening date"), KGlobal::locale()->formatDate(acc.openingDate()));
   if(!acc.isLoan() || !m_wizard->openingBalance().isZero())
     p = new KListViewItem(group, p, i18n("Opening balance"), m_wizard->openingBalance().formatMoney(acc, sec));
 

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>798</width>
-            <height>684</height>
+            <height>640</height>
         </rect>
     </property>
     <property name="caption">
@@ -179,7 +179,7 @@
                     </column>
                     <column>
                         <property name="text">
-                            <string>Amount</string>
+                            <string>Quantity</string>
                         </property>
                     </column>
                     <column>
@@ -269,13 +269,51 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QCheckBox">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>m_estimateEdit</cstring>
+                        <cstring>layout7</cstring>
                     </property>
-                    <property name="text">
-                        <string>The amount is an estimate because it varies for each payment</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>m_estimateEdit</cstring>
+                            </property>
+                            <property name="text">
+                                <string>The amount is an estimate because it varies for each payment</string>
+                            </property>
+                        </widget>
+                        <widget class="KIntSpinBox">
+                            <property name="name">
+                                <cstring>m_variation</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="value">
+                                <number>10</number>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer5</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>21</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -462,6 +500,12 @@
         <signal>clicked()</signal>
         <receiver>KEditScheduleDlgDecl</receiver>
         <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_estimateEdit</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_variation</receiver>
+        <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>

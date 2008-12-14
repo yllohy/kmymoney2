@@ -128,8 +128,13 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
     }
   }
 
-  connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  // if list is empty, add the request price pair
+  if(lvEquityList->firstChild() == 0) {
+    addPricePair(currencyIds, true);
+  }
+
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
   connect(btnUpdateAll, SIGNAL(clicked()), this, SLOT(slotUpdateAllClicked()));
 
@@ -174,7 +179,7 @@ KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
 
 }
 
-void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
+void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair, bool dontCheckExistance)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -192,7 +197,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
         QValueList<MyMoneyAccount>::const_iterator it_a;
         QValueList<MyMoneyAccount> list;
         file->accountList(list);
-        for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+        for(it_a = list.begin(); !dontCheckExistance && it_a != list.end(); ++it_a) {
           // if it's an account denominated in the foreign currency
           // keep it
           if(((*it_a).currencyId() == foreignCurrency)
@@ -207,7 +212,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
           }
         }
         // if it is in use, it_a is not equal to list.end()
-        if(it_a == list.end())
+        if(it_a == list.end() && !dontCheckExistance)
           keep = false;
       }
 
@@ -232,7 +237,7 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
 
   QString symbol = inv.tradingSymbol();
   QString id = inv.id();
-  if ( ! lvEquityList->findItem(id,ID_COL,Qt::ExactMatch) )
+  if ( ! lvEquityList->findItem(id, ID_COL, Qt::ExactMatch) )
   {
     // check that the security is still in use
     QValueList<MyMoneyAccount>::const_iterator it_a;
@@ -280,7 +285,37 @@ void KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
   lbStatus->append(message);
 }
 
-void KEquityPriceUpdateDlg::slotOKClicked()
+MyMoneyPrice KEquityPriceUpdateDlg::price(const QCString& id) const
+{
+  MyMoneyPrice price;
+  QListViewItem* item;
+
+  if((item = lvEquityList->findItem(id, ID_COL, Qt::ExactMatch)) != 0) {
+    MyMoneyMoney rate(item->text(PRICE_COL));
+    if ( !rate.isZero() )
+    {
+      QCString id = item->text(ID_COL).utf8();
+
+        // if the ID has a space, then this is TWO ID's, so it's a currency quote
+      if ( QString(id).contains(" ") )
+      {
+        QStringList ids = QStringList::split(" ",QString(id));
+        QCString fromid = ids[0].utf8();
+        QCString toid = ids[1].utf8();
+        price = MyMoneyPrice(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
+      }
+      else
+      // otherwise, it's a security quote
+      {
+        MyMoneySecurity security = MyMoneyFile::instance()->security(id);
+        price = MyMoneyPrice(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, item->text(SOURCE_COL));
+      }
+    }
+  }
+  return price;
+}
+
+void KEquityPriceUpdateDlg::storePrices(void)
 {
   // update the new prices into the equities
 
@@ -333,13 +368,6 @@ void KEquityPriceUpdateDlg::slotOKClicked()
     qDebug("Unable to add price information for %s", name.data());
     delete e;
   }
-
-  accept();
-}
-
-void KEquityPriceUpdateDlg::slotCancelClicked()
-{
-  reject();
 }
 
 void KEquityPriceUpdateDlg::slotUpdateSelection(void)
@@ -354,7 +382,7 @@ void KEquityPriceUpdateDlg::slotUpdateSelection(void)
     btnUpdateSelected->setEnabled(true);
 }
 
-void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
+void KEquityPriceUpdateDlg::slotUpdateSelectedClicked(void)
 {
   QListViewItem* item = lvEquityList->firstChild();
   int skipCnt = 1;
@@ -373,7 +401,7 @@ void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
     logErrorMessage("No security selected.");
 }
 
-void KEquityPriceUpdateDlg::slotUpdateAllClicked()
+void KEquityPriceUpdateDlg::slotUpdateAllClicked(void)
 {
   QListViewItem* item = lvEquityList->firstChild();
   if ( item )
@@ -386,11 +414,6 @@ void KEquityPriceUpdateDlg::slotUpdateAllClicked()
   else
     logErrorMessage("Security list is empty.");
 }
-
-void KEquityPriceUpdateDlg::slotConfigureClicked()
-{
-}
-
 
 void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _symbol)
 {

@@ -106,12 +106,18 @@ public:
 
 private:
   void hideShowPages(MyMoneyAccount::accountTypeE i) const;
+  void priceWarning(bool);
 
 private slots:
   void slotLoadWidgets(void);
   void slotUpdateType(int i);
   void slotUpdateCurrency(void);
   void slotUpdateConversionRate(const QString&);
+  void slotGetOnlineQuote(void);
+  void slotPriceWarning(void);
+
+private:
+  bool m_showPriceWarning;
 };
 
 class BrokeragePage : public KBrokeragePageDecl, public WizardPage<Wizard>

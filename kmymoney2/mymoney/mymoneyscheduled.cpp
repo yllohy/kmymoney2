@@ -1167,3 +1167,24 @@ QString MyMoneySchedule::weekendOptionToString(MyMoneySchedule::weekendOptionE w
   return text;
 }
 
+#if 0
+int MyMoneySchedule::variation(void) const
+{
+  int rc = 0;
+  if(!isFixed()) {
+    QString var = value("kmm-variation");
+    if(var.isEmpty())
+      rc = 10;
+    else
+      rc = var.toInt();
+  }
+  return rc;
+}
+
+void MyMoneySchedule::setVariation(int var)
+{
+  deletePair("kmm-variation");
+  if(var != 0)
+    setValue("kmm-variation", QString("%1").arg(var));
+}
+#endif

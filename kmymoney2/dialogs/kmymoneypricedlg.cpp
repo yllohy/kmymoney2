@@ -217,10 +217,12 @@ void KMyMoneyPriceDlg::slotOnlinePriceUpdate(void)
   if(item)
   {
     KEquityPriceUpdateDlg dlg(this, (item->text(COMMODITY_COL)+" "+item->text(CURRENCY_COL)).utf8());
-    dlg.exec();
+    if(dlg.exec() == QDialog::Accepted)
+      dlg.storePrices();
   } else {
     KEquityPriceUpdateDlg dlg(this);
-    dlg.exec();
+    if(dlg.exec() == QDialog::Accepted)
+      dlg.storePrices();
   }
 }
 

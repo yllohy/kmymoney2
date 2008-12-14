@@ -2532,7 +2532,8 @@ void KMyMoney2App::slotOnlinePriceUpdate(void)
 {
   if(!m_selectedInvestment.id().isEmpty()) {
     KEquityPriceUpdateDlg dlg(0, m_selectedInvestment.currencyId());
-    dlg.exec();
+    if(dlg.exec() == QDialog::Accepted)
+      dlg.storePrices();
   }
 }
 
@@ -5617,7 +5618,8 @@ const QCStringList KMyMoney2App::instanceList(void) const
 void KMyMoney2App::slotEquityPriceUpdate(void)
 {
   KEquityPriceUpdateDlg dlg(this);
-  dlg.exec();
+  if(dlg.exec() == QDialog::Accepted)
+    dlg.storePrices();
 }
 
 void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
