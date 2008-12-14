@@ -1,11 +1,12 @@
+# translation of cs.po to
 # translation of kmymoney2-cs.po to
 #
 # Marek Stopka <mstopka@opensuse.org>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: kmymoney2-cs\n"
+"Project-Id-Version: cs\n"
 "POT-Creation-Date: 2008-10-04 19:15+0200\n"
-"PO-Revision-Date: 2008-11-23 21:58+0100\n"
+"PO-Revision-Date: 2008-12-14 14:59+0100\n"
 "Last-Translator: Marek Stopka <mstopka@opensuse.org>\n"
 "Language-Team:  <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -312,15 +313,15 @@ msgstr "Měsíční splátka kreditní karty %1"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:626
 msgid "Finish entry and create account"
-msgstr ""
+msgstr "Ukončit průvodce a vytvořit účet"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:628
 msgid "Finish entry and create account and schedule"
-msgstr ""
+msgstr "Ukončit průvodce, vytvořit účet a finanční plán"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:631
 msgid "Next due date is prior to opening date"
-msgstr ""
+msgstr "Nalší datum splatnosti je dřívější, než je datum otevření"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:635
 msgid "No account selected"
@@ -328,15 +329,15 @@ msgstr "Nebyl vybrán účet"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:639
 msgid "No amount for payment selected"
-msgstr ""
+msgstr "Pro platbu nebyla zadaná žádná částka"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:643
 msgid "No payee for payment selected"
-msgstr "Nebyl vybrán plátce/příjemce pro platbu"
+msgstr "Pro platbu nebyl vybrán žádný plátce/příjemce"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:647
 msgid "No name assigned for schedule"
-msgstr "Nebylo zadáno jméno pro finanční plán"
+msgstr "Pro finanční plán nebylo zadáno žádné jméno"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:728
 msgid "No payee supplied"
@@ -367,27 +368,26 @@ msgstr "Roky"
 #: wizards/newaccountwizard/knewaccountwizard.cpp:882
 #, c-format
 msgid "KMyMoney has calculated the amount of the loan as %1."
-msgstr ""
+msgstr "KMyMoney spočítal, že výše půjčky je %1."
 
 #: dialogs/knewloanwizard.cpp:818
 #: wizards/newaccountwizard/knewaccountwizard.cpp:889
 msgid "KMyMoney has calculated the interest rate to %1%."
-msgstr "KMyMoney spočítal úrokovou sazbu ve výši\" %1%\"."
+msgstr "KMyMoney spočítal úrokovou sazbu ve výši %1%."
 
 #: dialogs/knewloanwizard.cpp:831
 #: wizards/newaccountwizard/knewaccountwizard.cpp:902
 msgid ""
 "KMyMoney has calculated a periodic payment of %1 to cover principal and "
 "interest."
-msgstr ""
-"KMyMoney spočítal pravidelnou platbu \"%1\" na pokrytí splátky a úroku."
+msgstr "KMyMoney spočítal pravidelnou platbu %1 na pokrytí splátky a úroku."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:914
 #, c-format
 msgid ""
 "The number of payments has been decremented and the balloon payment has been "
 "modified to %1."
-msgstr "Počet splátek byl snížen a poslední platba byla upravena na \"%1\"."
+msgstr "Počet splátek byl snížen a poslední platba byla upravena na %1."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:922
 #: wizards/newaccountwizard/knewaccountwizard.cpp:942
@@ -484,10 +484,8 @@ msgid "Create a new asset account"
 msgstr "Vytvořit nový účet aktiv"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1305
-msgid ""
-"If the asset account does not yet exist, press this button to create it."
-msgstr ""
-"Pokud účet aktiv neexistuje, stiskněte toto tlačítko pro jeho vytvoření."
+msgid "If the asset account does not yet exist, press this button to create it."
+msgstr "Pokud účet aktiv neexistuje, stiskněte toto tlačítko pro jeho vytvoření."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1511
 msgid "Account information"
@@ -797,8 +795,7 @@ msgid "Preferred account"
 msgstr "Upřednostňovaný účet"
 
 #: wizards/newaccountwizard/rc.cpp:15
-msgid ""
-"Mark this checkbox if the account should be maintained as preferred account"
+msgid "Mark this checkbox if the account should be maintained as preferred account"
 msgstr ""
 "Zatrhněte tento přepínač pokud by měl být tento účet veden jako "
 "upřednostňovaný"
@@ -956,7 +953,7 @@ msgstr ""
 
 #: wizards/newaccountwizard/rc.cpp:42
 msgid "Due date of first payment to be recorded"
-msgstr ""
+msgstr "Datum provedení první platby, která má být zaznamenána"
 
 #: wizards/newaccountwizard/rc.cpp:43
 msgid ""
@@ -1020,9 +1017,8 @@ msgid "Select the institution which manages this account or leave empty"
 msgstr "Vyberte instituci, která spravuje tento účet, nebo ponechte prázdné"
 
 #: wizards/newaccountwizard/rc.cpp:58
-#, fuzzy
 msgid "New Institution"
-msgstr "No&vá instituce"
+msgstr "Nová instituce"
 
 #: wizards/newaccountwizard/rc.cpp:60
 msgid ""
@@ -1228,10 +1224,8 @@ msgid "Refinance existing loan"
 msgstr "Refinancovat existující úvěr"
 
 #: wizards/newaccountwizard/rc.cpp:92
-msgid ""
-"Check this if you are refinancing a loan that already exists in KMyMoney"
-msgstr ""
-"Zvilte tuto volbu, pokud refinancujete úvěr, který již v KMyMoney existuje"
+msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
+msgstr "Zvilte tuto volbu, pokud refinancujete úvěr, který již v KMyMoney existuje"
 
 #: dialogs/rc.cpp:634 wizards/newaccountwizard/rc.cpp:93
 msgid "Asset Account"
@@ -1769,8 +1763,7 @@ msgstr "* Plátce/Příjemce %1 byl znovu vytvořen s fixovaným id"
 
 #: mymoney/mymoneyfile.cpp:1583
 msgid "  * Payee id updated in split of transaction '%1'."
-msgstr ""
-"* ID plátce/příjemce bylo aktualizováno při rozdělování transakce \"%1\"."
+msgstr "* ID plátce/příjemce bylo aktualizováno při rozdělování transakce \"%1\"."
 
 #: mymoney/mymoneyfile.cpp:1596
 msgid "  * shares set to value in split of transaction '%1'."
@@ -1795,8 +1788,7 @@ msgid "  * Payee id updated in split of schedule '%1'."
 msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1649
-msgid ""
-"  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
+msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
 msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1650
@@ -1859,7 +1851,7 @@ msgstr "Každé dva týdny"
 
 #: kmymoneyutils.cpp:135 mymoney/mymoneyscheduled.cpp:1066
 msgid "Every other week"
-msgstr ""
+msgstr "Každý druhý týden"
 
 #: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1068
 msgid "Every three weeks"
@@ -1904,7 +1896,7 @@ msgstr "Ročně"
 
 #: kmymoneyutils.cpp:159 mymoney/mymoneyscheduled.cpp:1090
 msgid "Every other year"
-msgstr ""
+msgstr "Každý druhý rok"
 
 #: mymoney/mymoneyscheduled.cpp:1100
 msgid "Bill"
@@ -2599,7 +2591,7 @@ msgstr "Barvy"
 #: dialogs/rc.cpp:337 dialogs/settings/rc.cpp:104 kmymoney2.cpp:1769
 #: widgets/rc.cpp:33
 msgid "Online Quotes"
-msgstr ""
+msgstr "Vyhledat hodnotu online"
 
 #: kmymoney2.cpp:1770 reports/pivottable.cpp:2392 views/kmymoneyview.cpp:238
 #: views/kreportsview.cpp:1319 views/rc.cpp:30 views/rc.cpp:42
@@ -2776,8 +2768,7 @@ msgid "Adjusting budgets ..."
 msgstr ""
 
 #: kmymoney2.cpp:2664
-msgid ""
-"Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
+msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
 msgstr ""
 
 #: kmymoney2.cpp:2685
@@ -3042,11 +3033,11 @@ msgstr ""
 #: kmymoney2.cpp:3943
 #, c-format
 msgid "Budget %1"
-msgstr ""
+msgstr "Rozpočet %1"
 
 #: kmymoney2.cpp:3953
 msgid "Budget %1 (%2)"
-msgstr ""
+msgstr "Rozpočet %1 (%2)"
 
 #: kmymoney2.cpp:3968 kmymoney2.cpp:4017
 msgid "Unable to add budget: %1, thrown in %2:%3"
@@ -3075,7 +3066,7 @@ msgstr ""
 
 #: kmymoney2.cpp:4042
 msgid "Select year"
-msgstr ""
+msgstr "Vyberte rok"
 
 #: kmymoney2.cpp:4042
 msgid "Budget year"
@@ -3206,8 +3197,7 @@ msgid "Checking for overdue schedules..."
 msgstr ""
 
 #: kmymoney2.cpp:5535
-msgid ""
-"You must first select a KMyMoney file before you can import a statement."
+msgid "You must first select a KMyMoney file before you can import a statement."
 msgstr ""
 
 #: kmymoney2.cpp:5541
@@ -3330,8 +3320,7 @@ msgid "Invalid top-level account type <b>%1</b> in template file <b>%2</b>!"
 msgstr ""
 
 #: converter/mymoneytemplate.cpp:309
-msgid ""
-"Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
+msgid "Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
 msgstr ""
 
 #: converter/mymoneytemplate.cpp:398 converter/mymoneytemplate.cpp:401
@@ -3551,19 +3540,17 @@ msgid "Unable to import"
 msgstr ""
 
 #: converter/mymoneystatementreader.cpp:86
-#, fuzzy
 msgid "_Fees"
-msgstr "Poplatky"
+msgstr "_Poplatky"
 
 #: converter/mymoneystatementreader.cpp:92
-#, fuzzy
 msgid "_Dividend"
-msgstr "Dividenda"
+msgstr "_Dividenda"
 
 #: converter/mymoneystatementreader.cpp:215
 #, c-format
 msgid "Importing statement for account %1"
-msgstr ""
+msgstr "Importuji výpis pro účet %1"
 
 #: converter/mymoneystatementreader.cpp:271
 msgid "  Statement balance is not contained in statement."
@@ -3575,23 +3562,23 @@ msgstr ""
 
 #: converter/mymoneystatementreader.cpp:275
 msgid "  Transactions"
-msgstr ""
+msgstr "  Transakce"
 
 #: converter/mymoneystatementreader.cpp:276
 msgid "    %1 processed"
-msgstr ""
+msgstr "    %1 zpracováno"
 
 #: converter/mymoneystatementreader.cpp:277
 msgid "    %1 added"
-msgstr ""
+msgstr "    %1 přidáno"
 
 #: converter/mymoneystatementreader.cpp:278
 msgid "    %1 matched"
-msgstr ""
+msgstr "    %1 spárováno"
 
 #: converter/mymoneystatementreader.cpp:279
 msgid "    %1 duplicates"
-msgstr ""
+msgstr "    %1 duplicitních"
 
 #: converter/mymoneystatementreader.cpp:280
 msgid "  Payees"
@@ -3599,7 +3586,7 @@ msgstr "Plátci/Příjemci"
 
 #: converter/mymoneystatementreader.cpp:281
 msgid "    %1 created"
-msgstr ""
+msgstr "    %1 vytvořeno"
 
 #: converter/mymoneystatementreader.cpp:347
 #, c-format
@@ -3621,15 +3608,14 @@ msgstr ""
 
 #: converter/mymoneystatementreader.cpp:892
 msgid "Schedule found"
-msgstr ""
+msgstr "Finanční plán nalezen"
 
 #: converter/mymoneystatementreader.cpp:921
 msgid "Problem adding or matching imported transaction with id '%1': %2"
 msgstr ""
 
 #: converter/mymoneystatementreader.cpp:969
-msgid ""
-"<b>You have downloaded a statement for the following account:</b><br><br>"
+msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr ""
 
 #: converter/mymoneystatementreader.cpp:970
@@ -3971,7 +3957,7 @@ msgstr "Nemůžu vytvořit nový finanční plán."
 
 #: kmymoneyutils.cpp:201
 msgid "&Filter"
-msgstr ""
+msgstr "&Filtr"
 
 #: kmymoneyutils.cpp:203
 msgid "Filter out accounts"
@@ -3999,7 +3985,7 @@ msgstr ""
 
 #: kmymoneyutils.cpp:239
 msgid "Networth forecast"
-msgstr ""
+msgstr "Předpověď čistého jmění"
 
 #: kmymoneyutils.cpp:240
 msgid "Forecast (history)"
@@ -4964,8 +4950,7 @@ msgid "Sort order of register in search dialog"
 msgstr ""
 
 #: rc.cpp:83
-msgid ""
-"Default reconciliation state for transactions entered during reconciliation"
+msgid "Default reconciliation state for transactions entered during reconciliation"
 msgstr ""
 
 #: rc.cpp:84
@@ -6460,7 +6445,7 @@ msgstr ""
 
 #: views/rc.cpp:11
 msgid "Your budgets"
-msgstr ""
+msgstr "Vaše rozpočty"
 
 #: dialogs/rc.cpp:333 dialogs/rc.cpp:836 dialogs/settings/rc.cpp:119
 #: views/rc.cpp:12 widgets/rc.cpp:48 widgets/rc.cpp:147
@@ -6496,13 +6481,12 @@ msgid "Assignments"
 msgstr ""
 
 #: views/rc.cpp:23
-#, fuzzy
 msgid "Include subaccounts"
-msgstr "Uzavřít účet"
+msgstr "Včetně podúčtů"
 
 #: dialogs/settings/rc.cpp:23 views/rc.cpp:32
 msgid "Forecast Settings"
-msgstr ""
+msgstr "Nastavení předpovědí"
 
 #: views/rc.cpp:33
 msgid "Days to Forecast:"
@@ -6820,8 +6804,7 @@ msgid "Cannot edit transactions in the context of a category."
 msgstr ""
 
 #: views/kgloballedgerview.cpp:1396
-msgid ""
-"Cannot edit investment transactions and non-investment transactions together."
+msgid "Cannot edit investment transactions and non-investment transactions together."
 msgstr ""
 
 #: views/kgloballedgerview.cpp:1404
@@ -6937,19 +6920,16 @@ msgid "More ..."
 msgstr "Více..."
 
 #: views/khomeview.cpp:608
-#, fuzzy
 msgid "Enter schedule"
-msgstr "Vložit finanční plán..."
+msgstr "Vložit finanční plán"
 
 #: views/khomeview.cpp:610
-#, fuzzy
 msgid "Skip schedule"
-msgstr "Přeskočit finanční plán..."
+msgstr "Přeskočit finanční plán"
 
 #: views/khomeview.cpp:613
-#, fuzzy
 msgid "Edit schedule"
-msgstr "Upravit finanční plán..."
+msgstr "Upravit finanční plán"
 
 #: views/khomeview.cpp:617
 msgid " (%1 payments)"
@@ -6979,17 +6959,14 @@ msgid ""
 msgstr ""
 
 #: views/khomeview.cpp:1246
-#, fuzzy
 msgid "Assets and Liabilities"
-msgstr "Celková pasiva"
+msgstr "Aktiva a pasiva"
 
 #: views/khomeview.cpp:1250
-#, fuzzy
 msgid "Asset Accounts"
-msgstr "Účet aktiv"
+msgstr "Účty aktiv"
 
 #: views/khomeview.cpp:1258
-#, fuzzy
 msgid "Liability Accounts"
 msgstr "Účty pasiv"
 
@@ -7002,29 +6979,24 @@ msgid "Total Liabilities"
 msgstr "Celková pasiva"
 
 #: views/khomeview.cpp:1409
-#, fuzzy
 msgid "Incomes and Expenses This Month"
 msgstr "Příjmy a výdaje tento měsíc"
 
 #: views/khomeview.cpp:1415 views/khomeview.cpp:1533
-#, fuzzy
 msgid "Incomes"
-msgstr "Příjem"
+msgstr "Příjmy"
 
 #: views/khomeview.cpp:1418 views/khomeview.cpp:1539
-#, fuzzy
 msgid "Expenses"
-msgstr "Výdaj"
+msgstr "Výdaje"
 
 #: views/khomeview.cpp:1421
-#, fuzzy
 msgid "Profit/Loss"
-msgstr "Celkové zisky/ztráty"
+msgstr "Zisky/ztráty"
 
 #: views/khomeview.cpp:1527
-#, fuzzy
 msgid "Schedules This Month"
-msgstr "Naplánované přijmy tento měsíc"
+msgstr "Plány na tento měsíc"
 
 #: views/khomeview.cpp:1584
 msgid "Budget Overruns"
@@ -7384,7 +7356,7 @@ msgstr ""
 #: widgets/kmymoneyaccountselector.cpp:182 widgets/register.cpp:64
 #: widgets/register.cpp:545 widgets/transaction.cpp:1485
 msgid "Security"
-msgstr "Bezpoečnost"
+msgstr "Cenina"
 
 #: dialogs/investtransactioneditor.cpp:211
 msgid "Asset account"
@@ -7448,7 +7420,7 @@ msgstr ""
 #: dialogs/kgncpricesourcedlg.cpp:49
 #, c-format
 msgid "Quote source: %1"
-msgstr ""
+msgstr "Zdroj kurzu: %1"
 
 #: dialogs/keditequityentrydlg.cpp:84 dialogs/kmymoneypricedlg.cpp:62
 #: dialogs/ksecuritylisteditor.cpp:69
@@ -7704,13 +7676,11 @@ msgid ""
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:656
-msgid ""
-"The balance of account <b>%1</b> dropped below the warning balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:662
-msgid ""
-"The balance of account <b>%1</b> dropped below the minimum balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the minimum balance of %2."
 msgstr ""
 
 #: dialogs/transactioneditor.cpp:668
@@ -7802,8 +7772,7 @@ msgid ""
 msgstr ""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid ""
-"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:151
@@ -8037,7 +8006,7 @@ msgstr ""
 
 #: dialogs/keditscheduledlg.cpp:277
 msgid "Next due date"
-msgstr ""
+msgstr "Další datum splatnosti"
 
 #: dialogs/settings/ksettingshome.cpp:51
 msgid "&Up"
@@ -8152,12 +8121,11 @@ msgid "Forecast Method"
 msgstr "Metoda předpovědí"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled and Future Transactions"
-msgstr "Naplánované &a budoucí transakce"
+msgstr "Naplánované a budoucí transakce"
 
 #: dialogs/settings/rc.cpp:29
-#, fuzzy
+
 msgid "History-based"
 msgstr "Založená na historii"
 
@@ -8475,14 +8443,12 @@ msgid ""
 msgstr ""
 
 #: dialogs/settings/rc.cpp:102
-#, fuzzy
 msgid "Information display"
-msgstr "Informace o úvěru"
+msgstr ""
 
 #: dialogs/settings/rc.cpp:103
-#, fuzzy
 msgid "Show Account Limit Information"
-msgstr "Informace o účtu"
+msgstr "Zobrazit informace o limitu účtu"
 
 #: dialogs/settings/rc.cpp:107 widgets/rc.cpp:47
 msgid ""
@@ -8532,9 +8498,8 @@ msgid "Register settings"
 msgstr ""
 
 #: dialogs/settings/rc.cpp:123
-#, fuzzy
 msgid "Display"
-msgstr "Denně"
+msgstr "Zobrazit"
 
 #: dialogs/settings/rc.cpp:126
 msgid ""
@@ -8627,9 +8592,8 @@ msgid "Don't do autofill of transaction data at all."
 msgstr ""
 
 #: dialogs/settings/rc.cpp:150
-#, fuzzy
 msgid "Same transaction if amount differs less than"
-msgstr "procent."
+msgstr ""
 
 #: dialogs/settings/rc.cpp:151
 msgid ""
@@ -8720,8 +8684,7 @@ msgid "Accept splits and return to transaction form"
 msgstr ""
 
 #: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
+msgid "Use this to accept all changes to the splits and return to the transaction"
 msgstr ""
 
 #: dialogs/ksplittransactiondlg.cpp:86
@@ -8729,8 +8692,7 @@ msgid "Reject all changes to the splits and return to transaction form"
 msgstr ""
 
 #: dialogs/ksplittransactiondlg.cpp:87
-msgid ""
-"Use this to reject all changes to the splits and return to the transaction"
+msgid "Use this to reject all changes to the splits and return to the transaction"
 msgstr ""
 
 #: dialogs/ksplittransactiondlg.cpp:90
@@ -8904,8 +8866,7 @@ msgid "will be calculated"
 msgstr ""
 
 #: dialogs/kmymoneysplittable.cpp:627
-msgid ""
-"You are about to delete the selected split. Do you really want to continue?"
+msgid "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
 
 #: dialogs/knewbankdlg.cpp:54 dialogs/kupdatestockpricedlg.cpp:55
@@ -9023,8 +8984,7 @@ msgid "Please choose what you wish to do with the above changes"
 msgstr ""
 
 #: dialogs/rc.cpp:31
-msgid ""
-"Discard the changes and enter the original transaction into the register."
+msgid "Discard the changes and enter the original transaction into the register."
 msgstr ""
 
 #: dialogs/rc.cpp:32
@@ -9053,9 +9013,8 @@ msgid "Choose the csv file:"
 msgstr ""
 
 #: dialogs/rc.cpp:39
-#, fuzzy
 msgid "Browse"
-msgstr "Makléř"
+msgstr "Procházet"
 
 #: dialogs/rc.cpp:40
 msgid "Between These Dates"
@@ -9102,9 +9061,8 @@ msgid "Convert to"
 msgstr ""
 
 #: dialogs/rc.cpp:61
-#, fuzzy
 msgid "To amount"
-msgstr "Půjčených peněz"
+msgstr ""
 
 #: dialogs/rc.cpp:62
 msgid "Exchange rate / Price"
@@ -9188,7 +9146,7 @@ msgstr ""
 
 #: dialogs/rc.cpp:99
 msgid "Frequency:"
-msgstr ""
+msgstr "Pravidelnost (frekvence):"
 
 #: dialogs/rc.cpp:100
 msgid "Payment information"
@@ -9201,31 +9159,31 @@ msgstr ""
 
 #: dialogs/rc.cpp:112
 msgid "Do nothing"
-msgstr ""
+msgstr "Neprovádět nic"
 
 #: dialogs/rc.cpp:115
 msgid "If this schedule occurs on the weekend:"
-msgstr ""
+msgstr "Pokud transakce nastane o víkendu:"
 
 #: dialogs/rc.cpp:116
 msgid "The amount is an estimate because it varies for each payment"
-msgstr ""
+msgstr "Částka je jen přibližná, neboť se mění při každé platbě"
 
 #: dialogs/rc.cpp:117
 msgid "Enter this schedule into the register automatically when it is due"
-msgstr ""
+msgstr "Vkládat tuto naplánovanou transakci automaticky do finančního deníku"
 
 #: dialogs/rc.cpp:118
 msgid "This schedule will end at some time"
-msgstr ""
+msgstr "Tento finanční plán má známý konec"
 
 #: dialogs/rc.cpp:119
 msgid "Number of transactions remaining:"
-msgstr ""
+msgstr "Počet zbývajících transakcí:"
 
 #: dialogs/rc.cpp:120
 msgid "Date of final transaction:"
-msgstr ""
+msgstr "Datum poslední transakce:"
 
 #: dialogs/rc.cpp:124
 msgid "Reconciliation Wizard"
@@ -9375,9 +9333,8 @@ msgid "Type:"
 msgstr ""
 
 #: dialogs/rc.cpp:167
-#, fuzzy
 msgid "Enter"
-msgstr "Vložit..."
+msgstr "Vložit"
 
 #: dialogs/rc.cpp:168
 msgid ""
@@ -9392,9 +9349,8 @@ msgid ""
 msgstr ""
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Ignore"
-msgstr "Příjem"
+msgstr "Ignorovat"
 
 #: dialogs/rc.cpp:172
 msgid ""
@@ -9685,8 +9641,7 @@ msgid "Online Quotes - Select price source"
 msgstr ""
 
 #: dialogs/rc.cpp:280
-msgid ""
-"This price source is not known to KMyMoney. Please select an option below."
+msgid "This price source is not known to KMyMoney. Please select an option below."
 msgstr ""
 
 #: dialogs/rc.cpp:281
@@ -9775,12 +9730,11 @@ msgstr ""
 
 #: dialogs/rc.cpp:332
 msgid "Show all stored prices"
-msgstr ""
+msgstr "Zobrazit všechny uložené ceny"
 
 #: dialogs/rc.cpp:336
-#, fuzzy
 msgid "Delete Range ..."
-msgstr "Odstranit účet..."
+msgstr "Odstranit rozsah..."
 
 #: dialogs/rc.cpp:339
 msgid "New Account Dialog"
@@ -10505,7 +10459,7 @@ msgstr ""
 
 #: dialogs/rc.cpp:658
 msgid "Next due date:"
-msgstr ""
+msgstr "Další datum splatnosti:"
 
 #: dialogs/rc.cpp:665
 msgid "Final Payment:"
@@ -10614,9 +10568,8 @@ msgid "Difference:"
 msgstr ""
 
 #: dialogs/rc.cpp:727
-#, fuzzy
 msgid "Edit Transactions..."
-msgstr "Nahrávám transakce..."
+msgstr "Upravit transakce..."
 
 #: dialogs/rc.cpp:730
 msgid "Security List Editor"
@@ -10694,9 +10647,8 @@ msgid "How do you want to proceed?"
 msgstr ""
 
 #: dialogs/rc.cpp:770
-#, fuzzy
 msgid "Continue to edit splits"
-msgstr "Pokračovat na další stránce"
+msgstr "Pokračovat v rozdělování transakce"
 
 #: dialogs/rc.cpp:771
 #, c-format
@@ -10861,17 +10813,15 @@ msgid "Input filter location"
 msgstr ""
 
 #: dialogs/rc.cpp:838
-#, fuzzy
 msgid "Rename"
-msgstr "Refinancovat"
+msgstr "Přejmenovat"
 
 #: dialogs/kselecttransactionsdlg.cpp:44
 msgid "Select Transaction"
 msgstr ""
 
 #: dialogs/kselecttransactionsdlg.cpp:45
-msgid ""
-"Select a transaction and press the OK button or use Cancel to select none."
+msgid "Select a transaction and press the OK button or use Cancel to select none."
 msgstr ""
 
 #: dialogs/knewinvestmentwizard.cpp:58
@@ -10921,8 +10871,7 @@ msgid "Skip this transaction"
 msgstr ""
 
 #: dialogs/kaccountselectdlg.cpp:67
-msgid ""
-"Use this to skip importing this transaction and proceed with the next one."
+msgid "Use this to skip importing this transaction and proceed with the next one."
 msgstr ""
 
 #: dialogs/kaccountselectdlg.cpp:72
@@ -10938,8 +10887,7 @@ msgid "Accepts the selected action and continues"
 msgstr ""
 
 #: dialogs/kaccountselectdlg.cpp:79
-msgid ""
-"Use this to accept the selection and continue processing the transaction"
+msgid "Use this to accept the selection and continue processing the transaction"
 msgstr ""
 
 #: dialogs/kaccountselectdlg.cpp:82
@@ -11074,8 +11022,7 @@ msgid ""
 msgstr ""
 
 #: dialogs/knewloanwizard.cpp:139
-msgid ""
-"Use this to create a new account to which the initial payment should be made"
+msgid "Use this to create a new account to which the initial payment should be made"
 msgstr ""
 
 #: dialogs/knewloanwizard.cpp:208
@@ -11112,8 +11059,7 @@ msgid ""
 msgstr ""
 
 #: dialogs/knewloanwizard.cpp:248
-msgid ""
-"Please enter the date, the first payment for this loan was/is due this year."
+msgid "Please enter the date, the first payment for this loan was/is due this year."
 msgstr ""
 
 #: dialogs/knewloanwizard.cpp:250
@@ -11217,8 +11163,7 @@ msgid "Takes the current criteria and searches for matching transactions."
 msgstr ""
 
 #: dialogs/kfindtransactiondlg.cpp:250
-msgid ""
-"Warning: Filtering by Category will exclude all transfers from the results."
+msgid "Warning: Filtering by Category will exclude all transfers from the results."
 msgstr ""
 
 #: dialogs/kfindtransactiondlg.cpp:259
@@ -11255,11 +11200,11 @@ msgstr ""
 
 #: widgets/kmymoneypriceview.cpp:126
 msgid "Commodity"
-msgstr ""
+msgstr "Komodita"
 
 #: widgets/kmymoneypriceview.cpp:130
 msgid "Source"
-msgstr ""
+msgstr "Zdroj"
 
 #: widgets/kmymoneypriceview.cpp:143
 msgid "Price Options"
@@ -11814,7 +11759,7 @@ msgstr ""
 
 #: widgets/rc.cpp:21
 msgid "Individual"
-msgstr ""
+msgstr "Vlastní"
 
 #: widgets/rc.cpp:23
 msgid ""
@@ -11837,7 +11782,7 @@ msgstr ""
 
 #: widgets/rc.cpp:27
 msgid "User ID"
-msgstr ""
+msgstr "Uživatelské ID"
 
 #: widgets/rc.cpp:29
 msgid "Recovery encryption"
@@ -11845,7 +11790,7 @@ msgstr ""
 
 #: widgets/rc.cpp:30
 msgid "Also encrypt with kmymoney-recover key"
-msgstr ""
+msgstr "Zašifrovat také kmymoney klíčem obnovy"
 
 #: widgets/rc.cpp:32
 msgid ""
@@ -11874,19 +11819,19 @@ msgstr ""
 
 #: widgets/rc.cpp:54
 msgid "Report Name"
-msgstr ""
+msgstr "Jméno výkazu"
 
 #: widgets/rc.cpp:55
 msgid "<p>Choose a name for this report.</p>"
-msgstr ""
+msgstr "<p>Vyberte jméno pro tento výkaz.</p>"
 
 #: widgets/rc.cpp:57
 msgid "<p>Enter a comment to help you remember the details of this report.</p>"
-msgstr ""
+msgstr "<p>Zadejte komentář, abyste si lépe zapamatovali podrobnosti o tomto výkazu.</p>"
 
 #: widgets/rc.cpp:58
 msgid "Convert values to base currency"
-msgstr ""
+msgstr "Převést hodnoty na základní měnu"
 
 #: widgets/rc.cpp:59
 msgid ""
@@ -11899,14 +11844,14 @@ msgstr ""
 
 #: widgets/rc.cpp:60
 msgid "Mark as a favorite report"
-msgstr ""
+msgstr "Zvolit jako oblíbený výkaz"
 
 #: widgets/rc.cpp:61
 msgid ""
 "<p>Select this option to notate this report as one of your favorites.</"
 "p><p>All your favorite reports are grouped in one place on the report list "
 "for easy access.</p>"
-msgstr ""
+msgstr "<p>Zvolte tuto možnost, abyste tento výkaz označili jako oblíbený.</p><p>Všechny vaše oblíbené výkazy budou snadno dostupné v jedné skupině.</p>"
 
 #: widgets/rc.cpp:62 widgets/rc.cpp:87
 msgid "Rows/Columns Tab"
@@ -11920,19 +11865,18 @@ msgstr ""
 
 #: widgets/rc.cpp:66
 msgid "Top-Level"
-msgstr ""
+msgstr "Vrchní úroveň"
 
 #: widgets/rc.cpp:67
 msgid "Groups"
-msgstr ""
+msgstr "Skupiny"
 
 #: widgets/rc.cpp:68
 msgid "Totals"
 msgstr ""
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
-msgid ""
-"<p>Choose what kind of accounts to display as the rows of this report.</p>"
+msgid "<p>Choose what kind of accounts to display as the rows of this report.</p>"
 msgstr ""
 
 #: widgets/rc.cpp:71
@@ -12060,8 +12004,7 @@ msgid "Hide Split Transaction Details"
 msgstr ""
 
 #: widgets/rc.cpp:124
-msgid ""
-"Do not display the individual transactions that make up a split transaction"
+msgid "Do not display the individual transactions that make up a split transaction"
 msgstr ""
 
 #: widgets/rc.cpp:125
@@ -12328,35 +12271,3 @@ msgstr "Minulé 3 měsíce a následující 3 měsíce"
 msgid "User defined"
 msgstr "Nastaveno uživatelem"
 
-#~ msgid "S&ummary"
-#~ msgstr "So&uhrn"
-
-#~ msgid "Det&ail"
-#~ msgstr "P&odrobnosti"
-
-#~ msgid "Assets"
-#~ msgstr "Aktiva"
-
-#~ msgid "Liabilities"
-#~ msgstr "Pasiva"
-
-#~ msgid "Total Incomes This Month"
-#~ msgstr "Celkové příjmy za tento měsíc"
-
-#~ msgid "Total Expenses This Month"
-#~ msgstr "Celkové výdaje za tento měsíc"
-
-#~ msgid "Scheduled Expenses This Month"
-#~ msgstr "Naplánované výdaje tento měsíc"
-
-#~ msgid "Scheduled Transfers This Month"
-#~ msgstr "Naplánované převody tento měsíc"
-
-#~ msgid "Te&xt"
-#~ msgstr "Te&xt"
-
-#~ msgid "O&K"
-#~ msgstr "O&K"
-
-#~ msgid "&Yearly"
-#~ msgstr "&Ročně"
