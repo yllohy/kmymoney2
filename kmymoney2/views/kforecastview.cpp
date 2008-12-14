@@ -511,7 +511,6 @@ QValueList<MyMoneyPrice> KForecastView::getAccountPrices(const MyMoneyAccount& a
     try {
       if(acc.isInvest()) {
         security = file->security(acc.currencyId());
-        prices += file->price(acc.currencyId(), security.tradingCurrency());
         if(security.tradingCurrency() != file->baseCurrency().id()) {
           MyMoneySecurity sec = file->security(security.tradingCurrency());
           prices += file->price(sec.id(), file->baseCurrency().id());

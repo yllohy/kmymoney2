@@ -1,4 +1,7 @@
 
+2008-12-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed crash in forecast view when displaying stock in foreign currency
+
 2008-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More changes to the QIF importer
 
