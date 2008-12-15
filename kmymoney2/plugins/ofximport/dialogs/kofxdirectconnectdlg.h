@@ -31,6 +31,8 @@
 // KDE Includes
 
 class KTempFile;
+class KOfxDirectConnectDlgPrivate;
+
 namespace KIO
 {
 class Job;
@@ -75,6 +77,9 @@ protected:
   KTempFile* m_tmpfile;
   MyMoneyOfxConnector m_connector;
   KIO::TransferJob* m_job;
+
+private:
+  KOfxDirectConnectDlgPrivate*	d;
 };
 
 #endif // USE_OFX_DIRECTCONNECT

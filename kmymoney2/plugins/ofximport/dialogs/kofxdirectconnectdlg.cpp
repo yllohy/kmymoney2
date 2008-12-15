@@ -24,6 +24,7 @@
 // QT Includes
 
 #include <qlabel.h>
+#include <qdir.h>
 #include <qfile.h>
 #include <qtextstream.h>
 
@@ -47,17 +48,29 @@
 #include "mymoneyofxconnector.h"
 #include "kofxdirectconnectdlg.h"
 
-KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidget *parent, const char *name)
- : KOfxDirectConnectDlgDecl(parent, name),
-   m_tmpfile(NULL),
-   m_connector(account),
-   m_job(NULL)
+
+class KOfxDirectConnectDlgPrivate
+{
+public:
+  QFile    m_fpTrace;
+};
+
+KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidget *parent, const char *name) :
+  KOfxDirectConnectDlgDecl(parent, name),
+  d(new KOfxDirectConnectDlgPrivate),
+  m_tmpfile(NULL),
+  m_connector(account),
+  m_job(NULL)
 {
 }
 
 KOfxDirectConnectDlg::~KOfxDirectConnectDlg()
 {
-    delete m_tmpfile;
+  if(d->m_fpTrace.isOpen()) {
+    d->m_fpTrace.close();
+  }
+  delete m_tmpfile;
+  delete d;
 }
 
 void KOfxDirectConnectDlg::init(void)
@@ -74,11 +87,28 @@ void KOfxDirectConnectDlg::init(void)
   g.close();
 #endif
 
+  QDir homeDir(QDir::home());
+  if(homeDir.exists("ofxlog.txt")) {
+    d->m_fpTrace.setName(QString("%1/ofxlog.txt").arg(QDir::homeDirPath()));
+    d->m_fpTrace.open(IO_WriteOnly | IO_Append);
+  }
+
   m_job = KIO::http_post(
     m_connector.url(),
     request,
     true
   );
+  if(d->m_fpTrace.isOpen()) {
+    QByteArray data = m_connector.url().utf8();
+    d->m_fpTrace.writeBlock("url: ", 5);
+    d->m_fpTrace.writeBlock(data, strlen(data));
+    d->m_fpTrace.writeBlock("\n", 1);
+    d->m_fpTrace.writeBlock("request:\n", 9);
+    d->m_fpTrace.writeBlock(request, request.size());
+    d->m_fpTrace.writeBlock("\n", 1);
+    d->m_fpTrace.writeBlock("response:\n", 10);
+  }
+
   m_job->addMetaData("content-type", "Content-type: application/x-ofx" );
   connect(m_job,SIGNAL(result(KIO::Job*)),this,SLOT(slotOfxFinished(KIO::Job*)));
   connect(m_job,SIGNAL(data(KIO::Job*, const QByteArray&)),this,SLOT(slotOfxData(KIO::Job*,const QByteArray&)));
@@ -120,6 +150,11 @@ void KOfxDirectConnectDlg::slotOfxData(KIO::Job*,const QByteArray& _ba)
 //     throw new MYMONEYEXCEPTION("Not currently connected!!");
     kdDebug(2) << "void ofxdcon::slotOfxData():: Not currently connected!" << endl;
   *(m_tmpfile->textStream()) << QString(_ba);
+
+  if(d->m_fpTrace.isOpen()) {
+    d->m_fpTrace.writeBlock(_ba, _ba.size());
+  }
+
   setDetails(QString("Got %1 bytes").arg(_ba.size()));
 }
 
@@ -127,6 +162,10 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
 {
   kProgress1->advance(1);
   setStatus("Completed.");
+
+  if(d->m_fpTrace.isOpen()) {
+    d->m_fpTrace.writeBlock("\nCompleted\n\n\n\n", 14);
+  }
 
   int error = m_job->error();
 

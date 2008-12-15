@@ -1,4 +1,7 @@
 
+2008-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added OFX trace functionality
+
 2008-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Czech translation from Marek Stopka
   * Removed blank in front of synopsis
