@@ -350,6 +350,8 @@ void MyMoneyQifReader::slotProcessData(void)
 
   m_qifProfile.setInputDateFormat(list.first());
 
+  qDebug("Selected date format: '%s'", list.first().data());
+
   signalProgress(0, m_qifLines.count(), i18n("Importing QIF ..."));
   QStringList::iterator it;
   for(it = m_qifLines.begin(); m_userAbort == false && it != m_qifLines.end(); ++it) {
