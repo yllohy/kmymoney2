@@ -1,4 +1,8 @@
 
+2008-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed MyMoneyQifProfile::possibleDateFormats so that it
+    always delivers at least one possible format
+
 2008-12-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed display of total rows in charts
 

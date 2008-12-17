@@ -804,6 +804,18 @@ void MyMoneyQifProfile::possibleDateFormats(QStringList& list) const
       list << format;
     }
   }
+  // if we haven't found any, then there's something wrong.
+  // in this case, we present the full list and let the user decide
+  if(list.count() == 0) {
+    for(it_d = defaultList.begin(); it_d != defaultList.end(); ++it_d) {
+      QString format = *it_d;
+      format.replace('y', "%y");
+      format.replace('m', "%m");
+      format.replace('d', "%d");
+      format.replace(',', " ");
+      list << format;
+    }
+  }
 }
 
 void MyMoneyQifProfile::autoDetect(const QStringList& lines)
