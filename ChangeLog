@@ -1,4 +1,7 @@
 
+2008-12-15 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed display of total rows in charts
+
 2008-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added OFX trace functionality
 

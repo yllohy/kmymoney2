@@ -1989,7 +1989,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     case MyMoneyReport::eDetailEnd:
     case MyMoneyReport::eDetailAll:
     {
-      unsigned rowNum = 1;
+      unsigned rowNum = 0;
 
       // iterate over outer groups
       PivotGrid::const_iterator it_outergroup = m_grid.begin();
@@ -2010,22 +2010,22 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           {
             //show actual data
             if( showActual ) {
-              _view.params().setLegendText( rowNum-1, it_row.key().name() );
               rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eActual);
+              _view.params().setLegendText( rowNum-1, it_row.key().name() );
             }
 
             //show budget data
             if ( showBudget )
             {
-              _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_row.key().name() ) );
               rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eBudget);
+              _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_row.key().name() ) );
             }
 
             //show forecast data
             if ( showForecast )
             {
-              _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_row.key().name() ) );
               rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eForecast);
+              _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_row.key().name() ) );
             }
 
             ++it_row;
@@ -2035,17 +2035,19 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         ++it_outergroup;
       }
 
+      /*
       if ( accountSeries )
         data.expand( rowNum-1, m_numColumns-1 );
       else
         data.expand( m_numColumns-1, rowNum-1 );
+      */
 
     }
     break;
 
     case MyMoneyReport::eDetailTop:
     {
-      unsigned rowNum = 1;
+      unsigned rowNum = 0;
 
       // iterate over outer groups
       PivotGrid::const_iterator it_outergroup = m_grid.begin();
@@ -2057,36 +2059,37 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         while ( it_innergroup != (*it_outergroup).end() )
         {
           if( showActual ) {
-            _view.params().setLegendText( rowNum-1, it_innergroup.key() );
             rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eActual);
+            _view.params().setLegendText( rowNum-1, it_innergroup.key() );
           }
           //show budget data
           if ( showBudget )
           {
-            _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_innergroup.key() ) );
             rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eBudget);
+            _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_innergroup.key() ) );
           }
 
           //show forecast data
           if ( showForecast )
           {
-            _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_innergroup.key() ) );
             rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eForecast);
+            _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_innergroup.key() ) );
           }
           ++it_innergroup;
         }
         ++it_outergroup;
       }
-      if ( accountSeries )
+      /*if ( accountSeries )
         data.expand( rowNum-1, m_numColumns-1 );
       else
         data.expand( m_numColumns-1, rowNum-1 );
+      */
     }
     break;
 
     case MyMoneyReport::eDetailGroup:
     {
-      unsigned rowNum = 1;
+      unsigned rowNum = 0;
 
       // iterate over outer groups
       PivotGrid::const_iterator it_outergroup = m_grid.begin();
@@ -2094,22 +2097,22 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       {
         //show actual data
         if( showActual ) {
-          _view.params().setLegendText( rowNum-1, it_outergroup.key() );
           rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eActual);
+          _view.params().setLegendText( rowNum-1, it_outergroup.key() );
         }
 
         //show budget data
         if ( showBudget )
         {
-          _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_outergroup.key()) );
           rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eBudget);
+          _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_outergroup.key()) );
         }
 
         //show forecast data
         if ( showForecast )
         {
-          _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_outergroup.key()) );
           rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eForecast);
+          _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_outergroup.key()) );
         }
         ++it_outergroup;
       }
@@ -2118,8 +2121,8 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       {
         //show actual data
         if( showActual ) {
-          _view.params().setLegendText( rowNum-1, i18n("Total") );
           rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eActual);
+          _view.params().setLegendText( rowNum-1, i18n("Total") );
         }
 
         //show budget data
@@ -2136,23 +2139,23 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           _view.params().setLegendText( rowNum-1, i18n("Forecast Total") );
         }
       }
-      else
+      /*else
       {
         if ( accountSeries )
           data.expand( rowNum-1, m_numColumns-1 );
         else
           data.expand( m_numColumns-1, rowNum-1 );
-      }
+      }*/
     }
     break;
 
     case MyMoneyReport::eDetailTotal:
     {
-      unsigned rowNum = 1;
+      unsigned rowNum = 0;
       //show actual data
       if( showActual ) {
-        _view.params().setLegendText( rowNum-1, i18n("Total") );
         rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eActual);
+        _view.params().setLegendText( rowNum-1, i18n("Total") );
       }
 
       //show budget data
@@ -2212,13 +2215,23 @@ void PivotTable::drawChart( KReportChartView& ) const { }
 
 unsigned PivotTable::drawChartRowSet(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const PivotGridRowSet& rowSet, const ERowType rowType ) const
 {
+  //only add a row if one has been added before
+  // TODO: This is inefficient. Really we should total up how many rows
+  // there will be and allocate it all at once.
+  if(rowNum > 0) {
+    if ( accountSeries )
+      data.expand( rowNum+1, m_numColumns-1 );
+    else
+      data.expand( m_numColumns-1, rowNum+1 );
+  }
+
   // Columns
   if ( seriesTotals )
   {
     if ( accountSeries )
-      data.setCell( rowNum-1, 0, rowSet[rowType].m_total.toDouble() );
+      data.setCell( rowNum, 0, rowSet[rowType].m_total.toDouble() );
     else
-      data.setCell( 0, rowNum-1, rowSet[rowType].m_total.toDouble() );
+      data.setCell( 0, rowNum, rowSet[rowType].m_total.toDouble() );
   }
   else
   {
@@ -2226,38 +2239,31 @@ unsigned PivotTable::drawChartRowSet(unsigned rowNum, const bool seriesTotals, c
     while ( column < m_numColumns )
     {
       if ( accountSeries )
-        data.setCell( rowNum-1, column-1, rowSet[rowType][column].toDouble() );
+        data.setCell( rowNum, column-1, rowSet[rowType][column].toDouble() );
       else
-        data.setCell( column-1, rowNum-1, rowSet[rowType][column].toDouble() );
+        data.setCell( column-1, rowNum, rowSet[rowType][column].toDouble() );
       ++column;
     }
   }
-  // TODO: This is inefficient. Really we should total up how many rows
-  // there will be and allocate it all at once.
-  if ( accountSeries )
-    data.expand( ++rowNum, m_numColumns-1 );
-  else
-    data.expand( m_numColumns-1, ++rowNum );
 
-  return rowNum;
+  return ++rowNum;
 }
 
 unsigned PivotTable::drawChartTotal(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const ERowType rowType ) const
 {
-  //only add a row if one has been added before
-  if(rowNum > 1) {
+  if(rowNum > 0) {
     if ( accountSeries )
-      data.expand( ++rowNum, m_numColumns-1 );
+      data.expand( rowNum+1, m_numColumns-1 );
     else
-      data.expand( m_numColumns-1, ++rowNum );
+      data.expand( m_numColumns-1, rowNum+1 );
   }
 
   if ( seriesTotals )
   {
     if ( accountSeries )
-      data.setCell( rowNum-1, 0, m_grid.m_total[rowType].m_total.toDouble() );
+      data.setCell( rowNum, 0, m_grid.m_total[rowType].m_total.toDouble() );
     else
-      data.setCell( 0, rowNum-1, m_grid.m_total[rowType].m_total.toDouble() );
+      data.setCell( 0, rowNum, m_grid.m_total[rowType].m_total.toDouble() );
   }
   else
   {
@@ -2266,13 +2272,13 @@ unsigned PivotTable::drawChartTotal(unsigned rowNum, const bool seriesTotals, co
     while ( totalColumn < m_numColumns )
     {
       if ( accountSeries )
-        data.setCell(rowNum-1, totalColumn-1, m_grid.m_total[rowType][totalColumn].toDouble() );
+        data.setCell(rowNum, totalColumn-1, m_grid.m_total[rowType][totalColumn].toDouble() );
       else
-        data.setCell( totalColumn-1, rowNum-1, m_grid.m_total[rowType][totalColumn].toDouble() );
+        data.setCell( totalColumn-1, rowNum, m_grid.m_total[rowType][totalColumn].toDouble() );
       ++totalColumn;
     }
   }
-  return rowNum;
+  return ++rowNum;
 }
 
 QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol, int prec) const
