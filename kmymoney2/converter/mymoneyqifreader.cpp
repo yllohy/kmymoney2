@@ -1079,9 +1079,9 @@ void MyMoneyQifReader::processTransactionEntry(void)
   tmp = extractLine('N');
   if (!tmp.isEmpty())
     tr.m_strNumber = tmp;
-  tmp = extractLine('P');
-  if(!tmp.isEmpty()) {
-      tr.m_strPayee = tmp;
+
+  if(!payee.isEmpty()) {
+      tr.m_strPayee = payee;
   }
 
   tr.m_reconcile = d->reconcileState(extractLine('C'));
@@ -1200,7 +1200,9 @@ void MyMoneyQifReader::processTransactionEntry(void)
         s2.m_accountId = accountId;
         s2.m_strCategoryName = tmp;
         tr.m_listSplits += s2;
-        if(tr.m_listSplits.count() == 1)
+        // in case the transaction does not have a memo and we
+        // process the first split just copy the memo over
+        if(tr.m_listSplits.count() == 1 && tr.m_strMemo.isEmpty())
           tr.m_strMemo = s2.m_strMemo;
       }
       else

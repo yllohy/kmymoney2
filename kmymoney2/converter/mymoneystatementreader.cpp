@@ -483,9 +483,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   MyMoneyTransaction t;
 
+#if 0
   QString dbgMsg;
   dbgMsg = QString("Process %1, '%3', %2").arg(t_in.m_datePosted.toString(Qt::ISODate)).arg(t_in.m_amount.formatMoney("", 2)).arg(t_in.m_strBankID);
   qDebug("%s", dbgMsg.data());
+#endif
 
   // mark it imported for the view
   t.setImported();
@@ -798,7 +800,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     try {
       QValueList<MyMoneyPayee> pList = file->payeeList();
       QValueList<MyMoneyPayee>::const_iterator it_p;
-      QMap<QCString, int> matchMap;
+      QMap<int, QCString> matchMap;
       for(it_p = pList.begin(); it_p != pList.end(); ++it_p) {
         bool ignoreCase;
         QStringList keys;
@@ -808,65 +810,36 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             break;
 
           case MyMoneyPayee::matchName:
-            keys << QString("^%1$").arg(QRegExp::escape((*it_p).name()));
+            keys << QString("%1").arg(QRegExp::escape((*it_p).name()));
             // tricky fall through here
 
           case MyMoneyPayee::matchKey:
             for(it_s = keys.begin(); it_s != keys.end(); ++it_s) {
               QRegExp exp(*it_s, !ignoreCase);
               if(exp.search(payeename) != -1) {
-                matchMap[(*it_p).id()] = 0;
-                break;
+                matchMap[exp.matchedLength()] = (*it_p).id();
               }
             }
             break;
         }
       }
 
-
       // at this point we can have several scenarios:
       // a) multiple matches
       // b) a single match
       // c) no match at all
       //
-      // for c) we just don't do anything, for b) we take the one we found
-      // in case of a) we take the one we find most with this account
+      // for c) we just do nothing, for b) we take the one we found
+      // in case of a) we take the one with the largest matchedLength()
+      // which happens to be the last one in the map
       if(matchMap.count() > 1) {
-      // check if the account changed. If so, we need to reload the transactions
-        if(thisaccount.id() != d->lastAccount.id()) {
-          d->transactions.clear();
-          MyMoneyTransactionFilter filter(thisaccount.id());
-          filter.setReportAllSplits(false);
-          MyMoneyFile::instance()->transactionList(d->transactions, filter);
-          d->lastAccount = thisaccount;
-        }
-
-        QValueList<MyMoneyTransaction>::const_iterator it_t;
-        for(it_t = d->transactions.begin(); it_t != d->transactions.end(); ++it_t) {
-          const QValueList<MyMoneySplit>& splits = (*it_t).splits();
-          QValueList<MyMoneySplit>::const_iterator it_s;
-          for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
-            if((*it_s).accountId() == d->lastAccount.id()) {
-              QMap<QCString, int>::iterator it_m;
-              it_m = matchMap.find(((*it_s).payeeId()));
-              if(it_m != matchMap.end()) {
-                (*it_m)++;
-              }
-            }
-          }
-        }
-        int hits = 0;
-        QMap<QCString, int>::iterator it_m;
-        for(it_m = matchMap.begin(); it_m != matchMap.end(); ++it_m) {
-          if((*it_m) > hits) {
-            payeeid = it_m.key();
-            hits = (*it_m);
-          }
-        }
-
+        QMap<int, QCString>::const_iterator it_m = matchMap.end();
+        --it_m;
+        payeeid = *it_m;
       } else if(matchMap.count() == 1)
-        payeeid = matchMap.begin().key();
+        payeeid = *(matchMap.begin());
 
+      // if we did not find a matching payee, we throw an exception and try to create it
       if(payeeid.isEmpty())
         throw new MYMONEYEXCEPTION("payee not matched");
 

@@ -1,4 +1,9 @@
 
+2008-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reworked matching logic so that in case of multiple payees match,
+    the one with the largest match is taken. This returns the name
+    matching to the 'old' functionality of partial matching.
+
 2008-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed MyMoneyQifProfile::possibleDateFormats so that it
     always delivers at least one possible format
