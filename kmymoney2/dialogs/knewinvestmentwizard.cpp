@@ -19,6 +19,7 @@
 // QT Includes
 
 #include <qcheckbox.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
