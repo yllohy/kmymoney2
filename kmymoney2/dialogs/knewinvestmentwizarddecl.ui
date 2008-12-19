@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>584</width>
-            <height>389</height>
+            <height>385</height>
         </rect>
     </property>
     <property name="caption">
@@ -28,12 +28,38 @@
             </property>
             <widget class="QLabel">
                 <property name="name">
+                    <cstring>m_introLabel</cstring>
+                </property>
+                <property name="text">
+                    <string>This wizard allows you to create a new investment.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer8</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Fixed</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>10</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel">
+                <property name="name">
                     <cstring>textLabel1</cstring>
                 </property>
                 <property name="text">
-                    <string>This wizard allows you to create a new investment.
-
-The first step in this process requires to select the type of investment. The following steps collect more details about the investment from you.</string>
+                    <string>The first step in this process requires to select the type of investment. The following steps collect more details about the investment from you.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -52,7 +78,7 @@ The first step in this process requires to select the type of investment. The fo
                 <property name="sizeHint">
                     <size>
                         <width>20</width>
-                        <height>41</height>
+                        <height>30</height>
                     </size>
                 </property>
             </spacer>

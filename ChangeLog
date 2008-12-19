@@ -1,4 +1,7 @@
 
+2008-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Show different intro when editing an investment with the wizard
+
 2008-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked matching logic so that in case of multiple payees match,
     the one with the largest match is taken. This returns the name

@@ -119,6 +119,11 @@ void KNewInvestmentWizard::init1(void)
   connect(m_useFinanceQuote, SIGNAL(toggled(bool)), this, SLOT(slotSourceChanged(bool)));
 
   m_createAccount = true;
+
+  // Update label in case of edit
+  if(!m_account.id().isEmpty()) {
+    m_introLabel->setText(i18n("This wizard allows you to modify the selected investment."));
+  }
 }
 
 void KNewInvestmentWizard::init2(void)
