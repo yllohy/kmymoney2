@@ -2244,6 +2244,10 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  // make sure we have a currency. If none is assigned, we assume base currency
+  if(newAccount.currencyId().isEmpty())
+    newAccount.setCurrencyId(file->baseCurrency().id());
+
   MyMoneyFileTransaction ft;
   try
   {
@@ -2266,8 +2270,6 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       newAccount.removeAccountIds();              // and no sub-account ids
       newAccount.setName(remainder);
     }
-    if(newAccount.currencyId().isEmpty())
-      newAccount.setCurrencyId(file->baseCurrency().id());
 
     const MyMoneySecurity& sec = file->security(newAccount.currencyId());
     // Check the opening balance
