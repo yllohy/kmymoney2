@@ -28,7 +28,6 @@
 #endif
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <kmymoney/export.h>
@@ -51,9 +50,6 @@ typedef std::string String;
 
 //typedef for data type to store currency with.
 typedef long long DLONG;
-
-// typedef for id lists
-typedef QValueList<QCString> QCStringList;
 
 typedef QString String;
 #endif // 0
@@ -121,7 +117,7 @@ private:
   void *m_p;
   int m_line;
   size_t m_size;
-  QCString m_file;
+  QString m_file;
 };
 
 typedef QMap<void *, _CheckMemoryEntry> CheckMemoryTable;
@@ -189,9 +185,8 @@ KMYMONEY_EXPORT QString dateToString(const QDate& date);
  */
 KMYMONEY_EXPORT QDate stringToDate(const QString& str);
 
-KMYMONEY_EXPORT QCString QCStringEmpty(const QString&);
 KMYMONEY_EXPORT QString QStringEmpty(const QString&);
 
-KMYMONEY_EXPORT unsigned long extractId(const QCString& txt);
+KMYMONEY_EXPORT unsigned long extractId(const QString& txt);
 
 #endif

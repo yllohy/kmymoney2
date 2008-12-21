@@ -22,7 +22,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qdatetime.h>
 #include <qpainter.h>
 
@@ -92,7 +91,7 @@ public:
   virtual const QString& sortPayee(void) const { return QString::null; }
   virtual const MyMoneyMoney& sortValue(void) const { return nullValue; }
   virtual const QString& sortNumber(void) const { return QString::null; }
-  virtual const QCString& sortEntryOrder(void) const { return nullCString; }
+  virtual const QString& sortEntryOrder(void) const { return QString::null; }
   virtual CashFlowDirection sortType(void) const { return Deposit; }
   virtual const QString& sortCategory(void) const { return QString::null; }
   virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return MyMoneySplit::MaxReconcileState; }
@@ -148,7 +147,7 @@ public:
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
   virtual void paintFormCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
 
-  virtual const QCString& id(void) const { return MyMoneyObject::emptyId(); }
+  virtual const QString& id(void) const { return MyMoneyObject::emptyId(); }
 
   /**
     * Sets the parent of this item to be the register @p parent
@@ -219,7 +218,6 @@ protected:
 private:
   static QDate             nullDate;
   static MyMoneyMoney      nullValue;
-  static QCString          nullCString;
 };
 
 } // namespace

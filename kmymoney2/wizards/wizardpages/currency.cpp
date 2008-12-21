@@ -54,9 +54,9 @@ void Currency::selectCurrency(const MyMoneySecurity& sec)
   }
 }
 
-QCString Currency::selectedCurrency(void) const
+QString Currency::selectedCurrency(void) const
 {
-  QCString id;
+  QString id;
   if(m_currencyList->selectedItem()) {
     id = m_currencyList->selectedItem()->text(1);
   }

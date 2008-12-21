@@ -90,7 +90,7 @@ public slots:
 protected:
   virtual bool acceptDrag (QDropEvent* event) const;
   virtual void startDrag(void);
-  const KMyMoneyAccountTreeBaseItem* findItem(const QCString& id) const;
+  const KMyMoneyAccountTreeBaseItem* findItem(const QString& id) const;
 
   /**
     * This method checks, if account @p accFrom can be dropped onto
@@ -342,7 +342,7 @@ public:
     *
     * @return const reference to id of object
     */
-  const QCString& id(void) const;
+  const QString& id(void) const;
 
   /**
     * Helper method to show the right order

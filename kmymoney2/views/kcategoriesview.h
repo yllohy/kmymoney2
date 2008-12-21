@@ -86,7 +86,7 @@ public slots:
 
 protected:
   void loadAccounts(void);
-  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QStringList& accountList);
 
 protected slots:
   void slotUpdateProfit(void);
@@ -128,8 +128,8 @@ signals:
   void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
-  QMap<QCString, MyMoneySecurity>     m_securityMap;
-  QMap<QCString, unsigned long>       m_transactionCountMap;
+  QMap<QString, MyMoneySecurity>      m_securityMap;
+  QMap<QString, unsigned long>        m_transactionCountMap;
 
   KMyMoneyAccountTreeItem*            m_incomeItem;
   KMyMoneyAccountTreeItem*            m_expenseItem;

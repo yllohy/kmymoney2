@@ -122,9 +122,9 @@ void kMyMoneyAccountSelector::setSelectionMode(QListView::SelectionMode mode)
   KMyMoneySelector::setSelectionMode(mode);
 }
 
-const QCStringList kMyMoneyAccountSelector::accountList(const  QValueList<MyMoneyAccount::accountTypeE>& filterList) const
+QStringList kMyMoneyAccountSelector::accountList(const  QValueList<MyMoneyAccount::accountTypeE>& filterList) const
 {
-  QCStringList    list;
+  QStringList    list;
   QListViewItemIterator it;
   QListViewItem* it_v;
   QValueList<MyMoneyAccount::accountTypeE>::ConstIterator it_f;
@@ -200,10 +200,10 @@ bool kMyMoneyAccountSelector::contains(const QString& txt) const
 }
 
 # if 0
-void kMyMoneyAccountSelector::update(const QCString& /* id */)
+void kMyMoneyAccountSelector::update(const QString& /* id */)
 {
   QListViewItem* it_v = m_listView->currentItem();
-  QCString previousHighlighted;
+  QString previousHighlighted;
   bool state = false;
 
   if(m_selMode == QListView::Multi && it_v) {
@@ -216,8 +216,8 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
     }
   }
 
-  QCStringList list = selectedAccounts();
-  QCStringList::Iterator it;
+  QStringList list = selectedAccounts();
+  QStringList::Iterator it;
 
   if(!m_typeList.isEmpty())
     loadList(m_typeList);
@@ -301,14 +301,14 @@ void AccountSet::clear(void)
 
 int AccountSet::load(kMyMoneyAccountSelector* selector)
 {
-  QCStringList list;
-  QCStringList::ConstIterator it_l;
+  QStringList list;
+  QStringList::ConstIterator it_l;
   int count = 0;
   int typeMask = 0;
-  QCString currentId;
+  QString currentId;
 
   if(selector->selectionMode() == QListView::Single) {
-    QCStringList list;
+    QStringList list;
     selector->selectedItems(list);
     if(list.count() > 0)
       currentId = list.first();
@@ -443,7 +443,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
   return count;
 }
 
-int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName, const QValueList<QString>& accountIdList, const bool clear)
 {
   int count = 0;
   QListViewItem* item = 0;
@@ -457,7 +457,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
   item = selector->newItem(baseName);
   ++m_count;
 
-  QValueList<QCString>::ConstIterator it;
+  QValueList<QString>::ConstIterator it;
   for(it = accountIdList.begin(); it != accountIdList.end(); ++it)   {
     const MyMoneyAccount& acc = m_file->account(*it);
     if(acc.isClosed())
@@ -480,9 +480,9 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
   return count;
 }
 
-int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QCStringList& list)
+int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QStringList& list)
 {
-  QCStringList::ConstIterator it_l;
+  QStringList::ConstIterator it_l;
   int count = 0;
 
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {

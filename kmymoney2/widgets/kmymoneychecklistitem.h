@@ -45,12 +45,12 @@ class KMyMoneyCheckListItem : public QObject, public QCheckListItem
 
   Q_OBJECT
 public:
-  KMyMoneyCheckListItem(QListView *parent, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
-  KMyMoneyCheckListItem(QListView *parent, QListViewItem* after, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
-  KMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
+  KMyMoneyCheckListItem(QListView *parent, const QString& txt, const QString& key, const QString& id, Type type = QCheckListItem::CheckBox);
+  KMyMoneyCheckListItem(QListView *parent, QListViewItem* after, const QString& txt, const QString& key, const QString& id, Type type = QCheckListItem::CheckBox);
+  KMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, const QString& key, const QString& id, Type type = QCheckListItem::CheckBox);
   ~KMyMoneyCheckListItem();
 
-  const QCString& id(void) const { return m_id; };
+  const QString& id(void) const { return m_id; };
 
   /**
     * use my own paint method
@@ -83,7 +83,7 @@ protected:
 
 private:
   QString              m_key;
-  QCString             m_id;
+  QString              m_id;
   // copied from KListViewItem()
   unsigned int         m_isOdd : 1;
   unsigned int         m_isKnown : 1;

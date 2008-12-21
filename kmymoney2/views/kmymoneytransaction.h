@@ -50,11 +50,11 @@ public:
   KMyMoneyTransaction(const MyMoneyTransaction& t);
   ~KMyMoneyTransaction();
 
-  void setSplitId(const QCString& id);
-  const QCString& splitId(void) const { return m_splitId; };
+  void setSplitId(const QString& id);
+  const QString& splitId(void) const { return m_splitId; };
 
 private:
-  QCString    m_splitId;
+  QString    m_splitId;
 };
 
 

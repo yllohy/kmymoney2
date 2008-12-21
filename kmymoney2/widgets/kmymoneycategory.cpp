@@ -77,7 +77,7 @@ KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool spli
   }
 
   m_completion = new kMyMoneyAccountCompletion(this, 0);
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
   connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
 }
 
@@ -115,7 +115,7 @@ kMyMoneyAccountSelector* KMyMoneyCategory::selector(void) const
   return dynamic_cast<kMyMoneyAccountSelector*>(KMyMoneyCombo::selector());
 }
 
-void KMyMoneyCategory::setCurrentText(const QCString& id)
+void KMyMoneyCategory::setCurrentTextById(const QString& id)
 {
   if(!id.isEmpty())
     setCurrentText(MyMoneyFile::instance()->accountToCategory(id));
@@ -124,9 +124,9 @@ void KMyMoneyCategory::setCurrentText(const QCString& id)
   setSuppressObjectCreation(false);
 }
 
-void KMyMoneyCategory::slotItemSelected(const QCString& id)
+void KMyMoneyCategory::slotItemSelected(const QString& id)
 {
-  setCurrentText(id);
+  setCurrentTextById(id);
 
   m_completion->hide();
 
@@ -192,7 +192,7 @@ KMyMoneySecurity::~KMyMoneySecurity()
 {
 }
 
-void KMyMoneySecurity::setCurrentText(const QCString& id)
+void KMyMoneySecurity::setCurrentTextById(const QString& id)
 {
   if(!id.isEmpty())
     KMyMoneyCategory::setCurrentText(MyMoneyFile::instance()->account(id).name());

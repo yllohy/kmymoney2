@@ -107,7 +107,7 @@ bool Activity::createCategorySplits(const MyMoneyTransaction& t, KMyMoneyCategor
     if(!cat->isSplitTransaction()) {
       splits.clear();
       MyMoneySplit s1;
-      QCString categoryId;
+      QString categoryId;
       categoryId = cat->selectedItem();
       if(!categoryId.isEmpty()) {
         s1.setAccountId(categoryId);
@@ -128,7 +128,7 @@ void Activity::createAssetAccountSplit(MyMoneySplit& split, const MyMoneySplit& 
 {
   KMyMoneyCategory* cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("asset-account"));
   if(!isMultiSelection() || (isMultiSelection() && !cat->currentText().isEmpty())) {
-    QCString categoryId;
+    QString categoryId;
     categoryId = cat->selectedItem();
     split.setAccountId(categoryId);
   }

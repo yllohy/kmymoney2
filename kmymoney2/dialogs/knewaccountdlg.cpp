@@ -397,8 +397,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   // and certainly no children in case we create a new account
   if(!m_isEditing) {
     m_account.clearId();
-    m_account.setParentAccountId(QCString());
-    QCStringList::ConstIterator it;
+    m_account.setParentAccountId(QString());
+    QStringList::ConstIterator it;
     while((it = m_account.accountList().begin()) != m_account.accountList().end())
       m_account.removeAccountId(*it);
 
@@ -416,7 +416,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_vatRate->setValue(MyMoneyMoney(m_account.value("VatRate"))*MyMoneyMoney(100,1));
     } else {
       if(!m_account.value("VatAccount").isEmpty()) {
-        QCString accId = m_account.value("VatAccount").latin1();
+        QString accId = m_account.value("VatAccount").latin1();
         try {
           // make sure account exists
           MyMoneyFile::instance()->account(accId);
@@ -508,7 +508,7 @@ void KNewAccountDlg::okClicked()
     }
     else
     {
-      m_account.setInstitutionId(QCString());
+      m_account.setInstitutionId(QString());
     }
   }
 
@@ -619,7 +619,7 @@ void KNewAccountDlg::okClicked()
   accept();
 }
 
-void KNewAccountDlg::loadKVP(const QCString& key, kMyMoneyEdit* widget)
+void KNewAccountDlg::loadKVP(const QString& key, kMyMoneyEdit* widget)
 {
   if(!widget)
     return;
@@ -631,7 +631,7 @@ void KNewAccountDlg::loadKVP(const QCString& key, kMyMoneyEdit* widget)
   }
 }
 
-void KNewAccountDlg::loadKVP(const QCString& key, KLineEdit* widget)
+void KNewAccountDlg::loadKVP(const QString& key, KLineEdit* widget)
 {
   if(!widget)
     return;
@@ -639,7 +639,7 @@ void KNewAccountDlg::loadKVP(const QCString& key, KLineEdit* widget)
   widget->setText(m_account.value(key));
 }
 
-void KNewAccountDlg::storeKVP(const QCString& key, const QString& text, const QString& value)
+void KNewAccountDlg::storeKVP(const QString& key, const QString& text, const QString& value)
 {
   if(text.isEmpty())
     m_account.deletePair(key);
@@ -647,12 +647,12 @@ void KNewAccountDlg::storeKVP(const QCString& key, const QString& text, const QS
     m_account.setValue(key, value);
 }
 
-void KNewAccountDlg::storeKVP(const QCString& key, kMyMoneyEdit* widget)
+void KNewAccountDlg::storeKVP(const QString& key, kMyMoneyEdit* widget)
 {
   storeKVP(key, widget->lineedit()->text(), widget->text());
 }
 
-void KNewAccountDlg::storeKVP(const QCString& key, KLineEdit* widget)
+void KNewAccountDlg::storeKVP(const QString& key, KLineEdit* widget)
 {
   storeKVP(key, widget->text(), widget->text());
 }
@@ -710,7 +710,7 @@ const MyMoneyAccount& KNewAccountDlg::parentAccount(void)
   return m_parentAccount;
 }
 
-void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& accountId)
+void KNewAccountDlg::initParentWidget(QString parentId, const QString& accountId)
 {
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -767,7 +767,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
         assetTopLevelAccount->setOpen(true);
 
-        for ( QCStringList::ConstIterator it = assetAccount.accountList().begin();
+        for ( QStringList::ConstIterator it = assetAccount.accountList().begin();
               it != assetAccount.accountList().end();
               ++it )
         {
@@ -785,7 +785,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = acc.accountList();
+          QStringList subAccounts = acc.accountList();
           if (subAccounts.count() >= 1)
           {
             showSubAccounts(subAccounts, accountItem, parentId, acc.id());
@@ -807,7 +807,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
         liabilityTopLevelAccount->setOpen(true);
 
-        for ( QCStringList::ConstIterator it = liabilityAccount.accountList().begin();
+        for ( QStringList::ConstIterator it = liabilityAccount.accountList().begin();
               it != liabilityAccount.accountList().end();
               ++it )
         {
@@ -825,7 +825,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = acc.accountList();
+          QStringList subAccounts = acc.accountList();
           if (subAccounts.count() >= 1)
           {
             showSubAccounts(subAccounts, accountItem, parentId, acc.id());
@@ -850,14 +850,14 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
         incomeTopLevelAccount->setOpen(true);
 
-        for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
+        for ( QStringList::ConstIterator it = incomeAccount.accountList().begin();
               it != incomeAccount.accountList().end();
               ++it )
         {
           KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(incomeTopLevelAccount,
               file->account(*it));
 
-          QCString id = file->account(*it).id();
+          QString id = file->account(*it).id();
           if(parentId == id) {
             m_parentItem = accountItem;
           } else if(accountId == id) {
@@ -866,7 +866,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = file->account(*it).accountList();
+          QStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
           {
             showSubAccounts(subAccounts, accountItem, parentId, accountId);
@@ -889,14 +889,14 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
         expenseTopLevelAccount->setOpen(true);
 
-        for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
+        for ( QStringList::ConstIterator it = expenseAccount.accountList().begin();
               it != expenseAccount.accountList().end();
               ++it )
         {
           KMyMoneyAccountTreeBaseItem *accountItem = new KMyMoneyAccountTreeItem(expenseTopLevelAccount,
               file->account(*it));
 
-          QCString id = file->account(*it).id();
+          QString id = file->account(*it).id();
           if(parentId == id) {
             m_parentItem = accountItem;
           } else if(accountId == id) {
@@ -905,7 +905,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = file->account(*it).accountList();
+          QStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
           {
             showSubAccounts(subAccounts, accountItem, parentId, accountId);
@@ -932,17 +932,17 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   m_qlistviewParentAccounts->setEnabled(true);
 }
 
-void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem,
-                                     const QCString& parentId, const QCString& accountId)
+void KNewAccountDlg::showSubAccounts(QStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem,
+                                     const QString& parentId, const QString& accountId)
 {
   MyMoneyFile *file = MyMoneyFile::instance();
 
-  for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
+  for ( QStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KMyMoneyAccountTreeBaseItem *accountItem  = new KMyMoneyAccountTreeItem(parentItem,
           file->account(*it));
 
-    QCString id = file->account(*it).id();
+    QString id = file->account(*it).id();
     if(parentId == id) {
       m_parentItem = accountItem;
     } else if(accountId == id) {
@@ -951,7 +951,7 @@ void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeB
       m_accountItem = accountItem;
     }
 
-    QCStringList subAccounts = file->account(*it).accountList();
+    QStringList subAccounts = file->account(*it).accountList();
     if (subAccounts.count() >= 1)
     {
       showSubAccounts(subAccounts, accountItem, parentId, accountId);
@@ -993,10 +993,10 @@ void KNewAccountDlg::loadVatAccounts(void)
   QValueList<MyMoneyAccount> list;
   MyMoneyFile::instance()->accountList(list);
   QValueList<MyMoneyAccount>::Iterator it;
-  QCStringList loadListExpense;
-  QCStringList loadListIncome;
-  QCStringList loadListAsset;
-  QCStringList loadListLiability;
+  QStringList loadListExpense;
+  QStringList loadListIncome;
+  QStringList loadListAsset;
+  QStringList loadListLiability;
   for(it = list.begin(); it != list.end(); ++it) {
     if(!(*it).value("VatRate").isEmpty()) {
       if((*it).accountType() == MyMoneyAccount::Expense)
@@ -1094,7 +1094,7 @@ void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
   try {
     oldType = m_account.accountType();
     if(oldType != type) {
-      QCString parentId;
+      QString parentId;
       switch(MyMoneyAccount::accountGroup(type)) {
         case MyMoneyAccount::Asset:
           parentId = file->asset().id();
@@ -1112,7 +1112,7 @@ void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
           qWarning("Unknown account group in KNewAccountDlg::slotAccountTypeChanged()");
           break;
       }
-      initParentWidget(parentId, QCString());
+      initParentWidget(parentId, QString());
       m_account.setAccountType(type);
     }
   } catch(MyMoneyException *e) {

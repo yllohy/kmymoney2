@@ -83,14 +83,14 @@ public:
   KBudgetView(QWidget *parent=0, const char *name=0);
   ~KBudgetView();
   void show();
-  
+
   /**
    * Override the base class behaviour to restore the layout. Do not
    * do this in show() because show() itself may change the layout
    * in undesired ways.
    */
   void polish(void);
-  
+
   /**
     * This method is used to suppress updates for specific times
     * (e.g. during creation of a new MyMoneyFile object when the
@@ -125,14 +125,14 @@ public slots:
 protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
-  bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStringList& accountList, const MyMoneyBudget& budget);
+  bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QStringList& accountList, const MyMoneyBudget& budget);
 
   /**
    * This method loads all available budgets into the budget list widget. If a budget is
    * currently selected it remains selected if it is still present.
    */
   void loadBudgets(void);
-  void ensureBudgetVisible(const QCString& id);
+  void ensureBudgetVisible(const QString& id);
   const MyMoneyBudget& selectedBudget(void) const;
   KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
   void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
@@ -200,7 +200,7 @@ private:
 
   MyMoneyBudget                       m_budget;
 
-  QMap<QCString, unsigned long>       m_transactionCountMap;
+  QMap<QString, unsigned long>        m_transactionCountMap;
   QStringList                         m_yearList;
 
   KMyMoneyAccountTreeBudgetItem*      m_incomeItem;
@@ -211,7 +211,7 @@ private:
 
   // set if we are in the selection of a different budget
   bool                                m_inSelection;
-  
+
   void adaptHideUnusedButton(void);
 
   static const int m_iBudgetYearsAhead;

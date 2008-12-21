@@ -25,7 +25,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qstringlist.h>
@@ -123,7 +122,7 @@ public:
     * @param id id assigned to the account
     * @param right account definition
     */
-  MyMoneyAccount(const QCString& id, const MyMoneyAccount& right);
+  MyMoneyAccount(const QString& id, const MyMoneyAccount& right);
 
   /**
     * This is the constructor for an account that is described by a
@@ -187,7 +186,7 @@ public:
     *         an internal account
     * @see setInstitution
     */
-  const QCString& institutionId(void) const { return m_institution; }
+  const QString& institutionId(void) const { return m_institution; }
 
   /**
     * This method returns the name of the account
@@ -233,16 +232,16 @@ public:
 
   /**
     * This method is used to return the ID of the parent account
-    * @return QCString with the ID of the parent of this account
+    * @return QString with the ID of the parent of this account
     */
-  const QCString& parentAccountId(void) const { return m_parentAccount; };
+  const QString& parentAccountId(void) const { return m_parentAccount; };
 
   /**
     * This method returns the list of the account id's of
     * subordinate accounts
     * @return QStringList account ids
     */
-  const QCStringList& accountList(void) const { return m_accountList; };
+  const QStringList& accountList(void) const { return m_accountList; };
 
   /**
     * This method returns the number of entries in the m_accountList
@@ -254,14 +253,14 @@ public:
     * This method is used to add an account id as sub-ordinate account
     * @param account const QString reference to account ID
     */
-  void addAccountId(const QCString& account);
+  void addAccountId(const QString& account);
 
   /**
     * This method is used to remove an account from the list of
     * sub-ordinate accounts.
     * @param account const QString reference to account ID to be removed
     */
-  void removeAccountId(const QCString& account);
+  void removeAccountId(const QString& account);
 
   /**
     * This method is used to remove all accounts from the list of
@@ -306,7 +305,7 @@ public:
     * @param id id of the institution this account belongs to
     * @see institution
     */
-  void setInstitutionId(const QCString& id);
+  void setInstitutionId(const QString& id);
 
   /**
     * This method is used to set the opening date information of an
@@ -336,7 +335,7 @@ public:
     * This method is used to set a new parent account id
     * @param parent QString reference to new parent account
     */
-  void setParentAccountId(const QCString& parent);
+  void setParentAccountId(const QString& parent);
 
   /**
     * This method is used to update m_lastModified to the current date
@@ -354,14 +353,14 @@ public:
     *
     * @return id of currency
     */
-  const QCString& currencyId(void) const { return m_currencyId; };
+  const QString& currencyId(void) const { return m_currencyId; };
 
   /**
     * This method sets the id of the currency used with this account.
     *
     * @param id ID of currency to be associated with this account.
     */
-  void setCurrencyId(const QCString& id);
+  void setCurrencyId(const QString& id);
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
 
@@ -374,7 +373,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   /**
     * This member returns the balance of this account based on
@@ -550,7 +549,7 @@ private:
     * This member variable keeps the ID of the MyMoneyInstitution object
     * that this object belongs to.
     */
-  QCString m_institution;
+  QString m_institution;
 
   /**
     * This member variable keeps the name of the account
@@ -594,17 +593,17 @@ private:
   /**
     * This member holds the ID's of all sub-ordinate accounts
     */
-  QCStringList m_accountList;
+  QStringList m_accountList;
 
   /**
     * This member contains the ID of the parent account
     */
-  QCString m_parentAccount;
+  QString m_parentAccount;
 
   /**
     * This member contains the ID of the currency associated with this account
     */
-  QCString m_currencyId;
+  QString m_currencyId;
 
   /**
     * This member holds the balance of all transactions stored in the journal
@@ -660,8 +659,8 @@ public:
   void setInterestCalculation(const interestDueE onReception);
   const QDate nextInterestChange(void) const;
   void setNextInterestChange(const QDate& date);
-  const QCString schedule(void) const;
-  void setSchedule(const QCString& sched);
+  const QString schedule(void) const;
+  void setSchedule(const QString& sched);
   bool fixedInterestRate(void) const;
   void setFixedInterestRate(const bool fixed);
   const MyMoneyMoney finalPayment(void) const;
@@ -674,10 +673,10 @@ public:
   void setPeriodicPayment(const MyMoneyMoney& payment);
   int interestCompounding(void) const;
   void setInterestCompounding(int frequency);
-  const QCString payee(void) const;
-  void setPayee(const QCString& payee);
-  const QCString interestAccountId(void) const;
-  void setInterestAccountId(const QCString& id);
+  const QString payee(void) const;
+  void setPayee(const QString& payee);
+  const QString interestAccountId(void) const;
+  void setInterestAccountId(const QString& id);
 
   /**
     * This method checks if a reference to the given object exists. It returns,
@@ -688,7 +687,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
 };
 

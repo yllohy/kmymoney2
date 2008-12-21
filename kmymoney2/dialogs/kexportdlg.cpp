@@ -91,12 +91,12 @@ KExportDlg::KExportDlg(QWidget *parent)
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this, SLOT(checkData()));
   connect(m_qcheckboxAccount, SIGNAL(toggled(bool)), this, SLOT(checkData()));
   connect(m_qcheckboxCategories, SIGNAL(toggled(bool)), this, SLOT(checkData()));
-  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(checkData(const QCString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QString&)), this, SLOT(checkData(const QString&)));
   connect(m_profileComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
   connect(m_kmymoneydateStart, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
   connect(m_kmymoneydateEnd, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
 
-  checkData(QCString());
+  checkData(QString());
 }
 
 KExportDlg::~KExportDlg()
@@ -184,7 +184,7 @@ void KExportDlg::writeConfig(void)
   kconfig->sync();
 }
 
-void KExportDlg::checkData(const QCString& accountId)
+void KExportDlg::checkData(const QString& accountId)
 {
   bool  okEnabled = false;
 
@@ -252,21 +252,21 @@ void KExportDlg::loadAccounts(void)
 */
 }
 
-const QCString KExportDlg::accountId() const
+QString KExportDlg::accountId() const
 {
   return m_lastAccount;
 }
 
 /*
-void KExportDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
+void KExportDlg::addCategories(QStringList& strList, const QString& id, const QString& leadIn) const
 {
   MyMoneyFile *file = MyMoneyFile::instance();
   QString name;
 
   MyMoneyAccount account = file->account(id);
 
-  QCStringList accList = account.accountList();
-  QCStringList::ConstIterator it_a;
+  QStringList accList = account.accountList();
+  QStringList::ConstIterator it_a;
 
   for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
     account = file->account(*it_a);
@@ -275,7 +275,7 @@ void KExportDlg::addCategories(QStringList& strList, const QCString& id, const Q
   }
 }
 
-const QCString KExportDlg::accountId(const QString& account) const
+QString KExportDlg::accountId(const QString& account) const
 {
   return MyMoneyFile::instance()->nameToAccount(account);
 }

@@ -200,7 +200,7 @@ void KReportConfigurationFilterDlg::slotSearch(void)
     if(m_tab2->m_comboBudget->isEnabled()) {
       m_currentState.setBudget(m_budgets[m_tab2->m_comboBudget->currentItem()].id(), m_initialState.rowType() == MyMoneyReport::eBudgetActual);
     } else {
-      m_currentState.setBudget(QCString(), false);
+      m_currentState.setBudget(QString(), false);
     }
   }
   else if ( m_tab3 )
@@ -571,7 +571,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   // Payees Filter
   //
 
-  QCStringList payees;
+  QStringList payees;
   if ( m_initialState.payees(payees) )
   {
     if ( payees.empty() )
@@ -593,7 +593,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   // Accounts Filter
   //
 
-  QCStringList accounts;
+  QStringList accounts;
   if ( m_initialState.accounts(accounts) )
   {
     m_accountsView->selectAllItems(false);

@@ -52,7 +52,7 @@ ReportAccount::ReportAccount( const ReportAccount& copy ):
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 }
 
-ReportAccount::ReportAccount( const QCString& accountid ):
+ReportAccount::ReportAccount( const QString& accountid ):
   MyMoneyAccount( MyMoneyFile::instance()->account(accountid) )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
@@ -73,8 +73,8 @@ void ReportAccount::calculateAccountHierarchy( void )
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  QCString resultid = id();
-  QCString parentid = parentAccountId();
+  QString resultid = id();
+  QString parentid = parentAccountId();
 
 #ifdef DEBUG_HIDE_SENSITIVE
   m_nameHierarchy.prepend(file->account(resultid).id());
@@ -291,8 +291,8 @@ ReportAccount ReportAccount::topParent( void ) const
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  QCString resultid = id();
-  QCString parentid = parentAccountId();
+  QString resultid = id();
+  QString parentid = parentAccountId();
 
   while (!file->isStandardAccount(parentid))
   {
@@ -313,8 +313,8 @@ QString ReportAccount::topParentName( void ) const
 
 bool ReportAccount::isLiquidAsset( void ) const
 {
-  return accountType() == MyMoneyAccount::Cash || 
-      accountType() == MyMoneyAccount::Checkings || 
+  return accountType() == MyMoneyAccount::Cash ||
+      accountType() == MyMoneyAccount::Checkings ||
       accountType() == MyMoneyAccount::Savings;
 }
 
@@ -322,7 +322,7 @@ bool ReportAccount::isLiquidAsset( void ) const
 bool ReportAccount::isLiquidLiability( void ) const
 {
   return accountType() == MyMoneyAccount::CreditCard;
-  
+
 }
 
 

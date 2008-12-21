@@ -86,7 +86,7 @@ public:
     *
     * @param list reference to id list
     */
-  void selectedItems(QCStringList& list) const;
+  void selectedItems(QStringList& list) const;
 
   /**
     * Convenience method for above method. Requires more resources.
@@ -94,7 +94,7 @@ public:
     *
     * @todo Deprecated after 1.0
     */
-  QCStringList selectedItems(void) const;
+  QStringList selectedItems(void) const;
 
   /**
     * This method returns the list of all item ids.
@@ -102,7 +102,7 @@ public:
     *
     * @param list reference to id list
     */
-  void itemList(QCStringList& list) const;
+  void itemList(QStringList& list) const;
 
   /**
     * Convenience method for above method. Requires more resources.
@@ -110,7 +110,7 @@ public:
     *
     * @todo Deprecated after 1.0
     */
-  QCStringList itemList(void) const;
+  QStringList itemList(void) const;
 
   /**
     * This method returns an information if all items
@@ -133,7 +133,7 @@ public:
     *              @p true checked
     *              @p false not checked (default)
     */
-  void setSelected(const QCString& id, const bool state = false);
+  void setSelected(const QString& id, const bool state = false);
 
   /**
     * Return a pointer to the KListView object
@@ -157,7 +157,7 @@ public:
     * @param itemList of item ids to apply @p state to
     * @param state select items if @p true, deselect otherwise
     */
-  void selectItems(const QCStringList& itemList, const bool state);
+  void selectItems(const QStringList& itemList, const bool state);
 
   /**
     * Protect an entry from selection. Protection is controlled by
@@ -167,7 +167,7 @@ public:
     * @param protect if true, the entry specified by @p accId cannot be
     *                selected. If false, it can be selected. Defaults to @p true.
     */
-  void protectItem(const QCString& itemId, const bool protect = true);
+  void protectItem(const QString& itemId, const bool protect = true);
 
   /**
     * This method modifies the width of the widget to match its optimal size
@@ -178,9 +178,9 @@ public:
   /**
     * This method removes an item with a given id from the list.
     *
-    * @param id QCString containing id of item to be removed
+    * @param id QString containing id of item to be removed
     */
-  void removeItem(const QCString& id);
+  void removeItem(const QString& id);
 
   /**
     * This method creates a new top level KMyMoneyCheckListItem object in the list view.
@@ -190,13 +190,13 @@ public:
     *
     * @return pointer to newly created object
     */
-  QListViewItem* newItem(const QString& name, const QString& key = QString(), const QCString& id = QCString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
+  QListViewItem* newItem(const QString& name, const QString& key = QString(), const QString& id = QString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
 
   /**
     * Same as above, but create the item following the item pointed to by @c after.
     * If @c after is 0, then behave as previous method
     */
-  QListViewItem* newItem(const QString& name, QListViewItem* after, const QString& key = QString(), const QCString& id = QCString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
+  QListViewItem* newItem(const QString& name, QListViewItem* after, const QString& key = QString(), const QString& id = QString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
 
   /**
     * This method creates a new selectable object depending on the
@@ -212,7 +212,7 @@ public:
     *
     * @return pointer to newly created object
     */
-  QListViewItem* newItem(QListViewItem* parent, const QString& name, const QString& key, const QCString& id);
+  QListViewItem* newItem(QListViewItem* parent, const QString& name, const QString& key, const QString& id);
 
   /**
     * This method creates a new selectable object depending on the
@@ -228,7 +228,7 @@ public:
     *
     * @return pointer to newly created object
     */
-  QListViewItem* newTopItem(const QString& name, const QString& key, const QCString& id);
+  QListViewItem* newTopItem(const QString& name, const QString& key, const QString& id);
 
   /**
     * This method checks if a given @a item matches the given regular expression @a exp.
@@ -258,7 +258,7 @@ public:
     *
     * @param id id to be used to find a QListViewItem pointer for
     */
-  QListViewItem* item(const QCString& id) const;
+  QListViewItem* item(const QString& id) const;
 
   /**
     * This method returns, if any of the items in the selector contains
@@ -296,7 +296,7 @@ public slots:
 signals:
   void stateChanged(void);
 
-  void itemSelected(const QCString& id);
+  void itemSelected(const QString& id);
 
 protected:
   /**
@@ -305,7 +305,7 @@ protected:
     * @param list list of selected ids
     * @param item pointer to item to start with
     */
-  void selectedItems(QCStringList& list, QListViewItem* item) const;
+  void selectedItems(QStringList& list, QListViewItem* item) const;
 
   /**
     * Helper method for allItemsSelected() to traverse the tree.
@@ -329,7 +329,7 @@ protected:
     * @param itemList list of ids to be selected
     * @param state selection state (@a true = selected, @a false = not selected)
     */
-  void selectSubItems(QListViewItem* item, const QCStringList& itemList, const bool state);
+  void selectSubItems(QListViewItem* item, const QStringList& itemList, const bool state);
 
 public slots:
   /**
@@ -356,7 +356,7 @@ protected slots:
     * calls m_listView->ensureItemVisible() for the last selected item
     * in this widget.
     *
-    * @sa ensureItemVisible(), setSelected(const QCString&)
+    * @sa ensureItemVisible(), setSelected(const QString&)
     */
   void slotShowSelected(void);
 
@@ -375,7 +375,7 @@ protected slots:
 
 protected:
   KListView*                m_listView;
-  QCStringList              m_itemList;
+  QStringList               m_itemList;
   QString                   m_baseName;
   QListView::SelectionMode  m_selMode;
   QHBoxLayout*              m_layout;

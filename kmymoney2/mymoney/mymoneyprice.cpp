@@ -41,7 +41,7 @@ MyMoneyPrice::MyMoneyPrice() :
 {
 }
 
-MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDomElement& node)
+MyMoneyPrice::MyMoneyPrice(const QString& from, const QString& to, const QDomElement& node)
 {
   if("PRICE" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not PRICE");
@@ -59,7 +59,7 @@ MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDomE
     qDebug("Price with zero value loaded");
 }
 
-MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source) :
+MyMoneyPrice::MyMoneyPrice(const QString& from, const QString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source) :
   m_fromSecurity(from),
   m_toSecurity(to),
   m_date(date),
@@ -76,7 +76,7 @@ MyMoneyPrice::~MyMoneyPrice()
 {
 }
 
-const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
+const MyMoneyMoney MyMoneyPrice::rate(const QString& id) const
 {
   static MyMoneyMoney dummyPrice(1,1);
 
@@ -107,7 +107,7 @@ bool MyMoneyPrice::operator == (const MyMoneyPrice &right) const
       ((m_source.length() == 0 && right.m_source.length() == 0) || (m_source == right.m_source)));
 }
 
-bool MyMoneyPrice::hasReferenceTo(const QCString& id) const
+bool MyMoneyPrice::hasReferenceTo(const QString& id) const
 {
   return (id == m_fromSecurity) || (id == m_toSecurity);
 }

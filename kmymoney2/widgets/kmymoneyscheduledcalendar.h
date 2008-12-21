@@ -68,7 +68,7 @@ public:
 
   void refresh() { m_scheduledDateTable->refresh(); }
 
-  void setFilterAccounts(const QCStringList& list) { m_scheduledDateTable->setFilterAccounts(list); }
+  void setFilterAccounts(const QStringList& list) { m_scheduledDateTable->setFilterAccounts(list); }
 
 signals:
   void enterClicked(const MyMoneySchedule&, const QDate&);

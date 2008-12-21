@@ -113,7 +113,7 @@ kMyMoneySplitTable::~kMyMoneySplitTable()
 {
 }
 
-void kMyMoneySplitTable::setup(const QMap<QCString, MyMoneyMoney>& priceInfo)
+void kMyMoneySplitTable::setup(const QMap<QString, MyMoneyMoney>& priceInfo)
 {
   m_priceInfo = priceInfo;
 }
@@ -790,7 +790,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   m_editCategory = new KMyMoneyCategory();
   m_editCategory->setHint(i18n("Category"));
   m_editCategory->setFont(cellFont);
-  connect(m_editCategory, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
+  connect(m_editCategory, SIGNAL(createItem(const QString&, QString&)), this, SIGNAL(createCategory(const QString&, QString&)));
   connect(m_editCategory, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
 
   m_editMemo = new kMyMoneyLineEdit(0, 0, false, AlignLeft|AlignVCenter);
@@ -870,7 +870,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
 void kMyMoneySplitTable::slotLoadEditWidgets(void)
 {
   // reload category widget
-  QCString categoryId = m_editCategory->selectedItem();
+  QString categoryId = m_editCategory->selectedItem();
 
   AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Asset);

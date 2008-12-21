@@ -109,7 +109,7 @@ void KMyMoneySelector::slotItemSelected(QListViewItem *item)
   }
 }
 
-QListViewItem* KMyMoneySelector::newItem(const QString& name, QListViewItem* after, const QString& key, const QCString& id, QCheckListItem::Type type)
+QListViewItem* KMyMoneySelector::newItem(const QString& name, QListViewItem* after, const QString& key, const QString& id, QCheckListItem::Type type)
 {
   QListViewItem* item;
   if(after)
@@ -122,12 +122,12 @@ QListViewItem* KMyMoneySelector::newItem(const QString& name, QListViewItem* aft
   return item;
 }
 
-QListViewItem* KMyMoneySelector::newItem(const QString& name, const QString& key, const QCString& id, QCheckListItem::Type type)
+QListViewItem* KMyMoneySelector::newItem(const QString& name, const QString& key, const QString& id, QCheckListItem::Type type)
 {
   return newItem(name, 0, key, id, type);
 }
 
-QListViewItem* KMyMoneySelector::newTopItem(const QString& name, const QString& key, const QCString& id)
+QListViewItem* KMyMoneySelector::newTopItem(const QString& name, const QString& key, const QString& id)
 {
   QListViewItem* p;
 
@@ -144,7 +144,7 @@ QListViewItem* KMyMoneySelector::newTopItem(const QString& name, const QString& 
   return p;
 }
 
-QListViewItem* KMyMoneySelector::newItem(QListViewItem* parent, const QString& name, const QString& key, const QCString& id)
+QListViewItem* KMyMoneySelector::newItem(QListViewItem* parent, const QString& name, const QString& key, const QString& id)
 {
   QListViewItem* p;
 
@@ -161,7 +161,7 @@ QListViewItem* KMyMoneySelector::newItem(QListViewItem* parent, const QString& n
   return p;
 }
 
-void KMyMoneySelector::protectItem(const QCString& itemId, const bool protect)
+void KMyMoneySelector::protectItem(const QString& itemId, const bool protect)
 {
   QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
   QListViewItem* it_v;
@@ -189,7 +189,7 @@ void KMyMoneySelector::protectItem(const QCString& itemId, const bool protect)
   }
 }
 
-QListViewItem* KMyMoneySelector::item(const QCString& id) const
+QListViewItem* KMyMoneySelector::item(const QString& id) const
 {
   QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
   QListViewItem* it_v;
@@ -288,7 +288,7 @@ bool KMyMoneySelector::allItemsSelected(const QListViewItem *item) const
   return true;
 }
 
-void KMyMoneySelector::removeItem(const QCString& id)
+void KMyMoneySelector::removeItem(const QString& id)
 {
   QListViewItem* it_v;
   QListViewItemIterator it;
@@ -350,7 +350,7 @@ void KMyMoneySelector::selectAllItems(const bool state)
   emit stateChanged();
 }
 
-void KMyMoneySelector::selectItems(const QCStringList& itemList, const bool state)
+void KMyMoneySelector::selectItems(const QStringList& itemList, const bool state)
 {
   QListViewItem* it_v;
 
@@ -366,7 +366,7 @@ void KMyMoneySelector::selectItems(const QCStringList& itemList, const bool stat
   emit stateChanged();
 }
 
-void KMyMoneySelector::selectSubItems(QListViewItem* item, const QCStringList& itemList, const bool state)
+void KMyMoneySelector::selectSubItems(QListViewItem* item, const QStringList& itemList, const bool state)
 {
   QListViewItem* it_v;
 
@@ -396,7 +396,7 @@ void KMyMoneySelector::selectAllSubItems(QListViewItem* item, const bool state)
   }
 }
 
-void KMyMoneySelector::selectedItems(QCStringList& list) const
+void KMyMoneySelector::selectedItems(QStringList& list) const
 {
   QListViewItem*  it_v;
 
@@ -420,7 +420,7 @@ void KMyMoneySelector::selectedItems(QCStringList& list) const
   }
 }
 
-void KMyMoneySelector::selectedItems(QCStringList& list, QListViewItem* item) const
+void KMyMoneySelector::selectedItems(QStringList& list, QListViewItem* item) const
 {
   QListViewItem* it_v;
 
@@ -436,7 +436,7 @@ void KMyMoneySelector::selectedItems(QCStringList& list, QListViewItem* item) co
   }
 }
 
-void KMyMoneySelector::itemList(QCStringList& list) const
+void KMyMoneySelector::itemList(QStringList& list) const
 {
   QListViewItemIterator it;
   QListViewItem* it_v;
@@ -458,7 +458,7 @@ void KMyMoneySelector::itemList(QCStringList& list) const
   }
 }
 
-void KMyMoneySelector::setSelected(const QCString& id, const bool state)
+void KMyMoneySelector::setSelected(const QString& id, const bool state)
 {
   QListViewItemIterator it;
   QListViewItem* it_v;
@@ -689,16 +689,16 @@ void KMyMoneySelector::slotListRightMouse(QListViewItem* it_v, const QPoint& pos
   }
 }
 
-QCStringList KMyMoneySelector::selectedItems(void) const
+QStringList KMyMoneySelector::selectedItems(void) const
 {
-  QCStringList list;
+  QStringList list;
   selectedItems(list);
   return list;
 }
 
-QCStringList KMyMoneySelector::itemList(void) const
+QStringList KMyMoneySelector::itemList(void) const
 {
-  QCStringList list;
+  QStringList list;
   itemList(list);
   return list;
 }

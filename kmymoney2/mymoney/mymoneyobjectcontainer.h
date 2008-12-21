@@ -25,7 +25,7 @@
 // QT Includes
 
 #include <qobject.h>
-#include <qcstring.h>
+#include <qstring.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,11 +53,11 @@ public:
   MyMoneyObjectContainer();
   ~MyMoneyObjectContainer();
 
-  const MyMoneyAccount& account(const QCString& id);
-  const MyMoneyPayee& payee(const QCString& id);
-  const MyMoneySecurity& security(const QCString& id);
-  const MyMoneyInstitution& institution(const QCString& id);
-  const MyMoneySchedule& schedule(const QCString& id);
+  const MyMoneyAccount& account(const QString& id);
+  const MyMoneyPayee& payee(const QString& id);
+  const MyMoneySecurity& security(const QString& id);
+  const MyMoneyInstitution& institution(const QString& id);
+  const MyMoneySchedule& schedule(const QString& id);
 
   void account(QValueList<MyMoneyAccount>& list);
   void payee(QValueList<MyMoneyPayee>& list);
@@ -74,7 +74,7 @@ public:
   void preloadPayee(const MyMoneyPayee& payee);
   void preloadInstitution(const MyMoneyInstitution& institution);
 
-  void clear(const QCString& id);
+  void clear(const QString& id);
   void clear(IMyMoneyStorage* storage = 0);
 
   const MyMoneyAccount& accountByName(const QString& name) const;
@@ -84,13 +84,13 @@ public:
    * with a copy from the engine. The object is identified by its @a id.
    * If the object is unknown or the @a id is empty, nothing is done.
    */
-  void refresh(const QCString& id);
+  void refresh(const QString& id);
 
 private:
   void assignFraction(MyMoneyAccount* acc);
 
 private:
-  QMap<QCString, MyMoneyObject const *>  m_map;
+  QMap<QString, MyMoneyObject const *>   m_map;
   IMyMoneyStorage*                       m_storage;
 };
 

@@ -214,7 +214,7 @@ void KAccountsView::loadIconView(void)
   ::timetrace("start load accounts icon view");
 
   // remember the positions of the icons
-  QMap<QCString, QPoint> posMap;
+  QMap<QString, QPoint> posMap;
   KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
   for(;p; p = dynamic_cast<KMyMoneyAccountIconItem*>(p->nextItem()))
     posMap[p->itemObject().id()] = p->pos();
@@ -300,12 +300,12 @@ void KAccountsView::loadIconView(void)
 
 void KAccountsView::loadListView(void)
 {
-  QMap<QCString, bool> isOpen;
+  QMap<QString, bool> isOpen;
 
   ::timetrace("start load accounts list view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
-  QCString selectedItemId = (item) ? item->id() : QCString();
+  QString selectedItemId = (item) ? item->id() : QString();
 
   // keep a map of all 'expanded' accounts
   QListViewItemIterator it_lvi(m_accountTree);
@@ -404,7 +404,7 @@ void KAccountsView::loadListView(void)
   ::timetrace("done load accounts list view");
 }
 
-bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
+bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QStringList& accountList)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -412,7 +412,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked()
                          || !KMyMoneyGlobalSettings::hideClosedAccounts();
 
-  QCStringList::const_iterator it_a;
+  QStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     const MyMoneyAccount& acc = file->account(*it_a);
     QValueList<MyMoneyPrice> prices;

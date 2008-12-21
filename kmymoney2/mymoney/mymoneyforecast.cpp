@@ -163,7 +163,7 @@ void MyMoneyForecast::pastTransactions()
     purgeForecastAccountsList(m_accountListPast);
 
   //calculate running sum
-  QMap<QCString, QCString>::Iterator it_n;
+  QMap<QString, QString>::Iterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
     m_accountListPast[acc.id()][historyStartDate().addDays(-1)] = file->balance(acc.id(), historyStartDate().addDays(-1));
@@ -207,7 +207,7 @@ bool MyMoneyForecast::isForecastAccount(const MyMoneyAccount& acc)
   {
     setForecastAccountList();
   }
-  QMap<QCString, QCString>::Iterator it_n;
+  QMap<QString, QString>::Iterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     if(*it_n == acc.id())
     {
@@ -224,7 +224,7 @@ void MyMoneyForecast::calculateAccountTrendList()
   int totalWeight = 0;
 
   //Calculate account trends
-  QMap<QCString, QCString>::Iterator it_n;
+  QMap<QString, QString>::Iterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
     m_accountTrendList[acc.id()][0] = MyMoneyMoney(0,1); // for today, the trend is 0
@@ -311,7 +311,7 @@ QValueList<MyMoneyAccount> MyMoneyForecast::accountList(void)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> accList;
-  QCStringList emptyStringList;
+  QStringList emptyStringList;
   //Get all accounts from the file and check if they are present
   file->accountList(accList, emptyStringList, false);
   QValueList<MyMoneyAccount>::iterator accList_t = accList.begin();
@@ -463,7 +463,7 @@ void MyMoneyForecast::calculateHistoricDailyBalances()
   calculateAccountTrendList();
 
   //Calculate account daily balances
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, QString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
@@ -555,7 +555,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
     purgeForecastAccountsList(m_accountList);
 
   //adjust value of investments to deep currency
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, QString>::ConstIterator it_n;
   for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
     MyMoneyAccount acc = file->account ( *it_n );
 
@@ -627,8 +627,8 @@ void MyMoneyForecast::addFutureTransactions(void)
 
     {
       s << "Already present transactions\n";
-      QMap<QCString, dailyBalances>::Iterator it_a;
-      QMap<QCString, QCString>::ConstIterator it_n;
+      QMap<QString, dailyBalances>::Iterator it_a;
+      QMap<QString, QString>::ConstIterator it_n;
       for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
       MyMoneyAccount acc = file->account(*it_n);
       it_a = m_accountList.find(*it_n);
@@ -685,7 +685,7 @@ void MyMoneyForecast::addScheduledTransactions (void)
             if(!(*it).isFinished() && nextDate != QDate()) {
               // make sure we have all 'starting balances' so that the autocalc works
               QValueList<MyMoneySplit>::const_iterator it_s;
-              QMap<QCString, MyMoneyMoney> balanceMap;
+              QMap<QString, MyMoneyMoney> balanceMap;
 
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
                 MyMoneyAccount acc = file->account((*it_s).accountId());
@@ -751,8 +751,8 @@ void MyMoneyForecast::addScheduledTransactions (void)
 #if 0
 {
   s << "\n\nAdded scheduled transactions\n";
-  QMap<QCString, dailyBalances>::Iterator it_a;
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, dailyBalances>::Iterator it_a;
+  QMap<QString, QString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
   MyMoneyAccount acc = file->account(*it_n);
   it_a = m_accountList.find(*it_n);
@@ -771,7 +771,7 @@ void MyMoneyForecast::calculateScheduledDailyBalances (void)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   //Calculate account daily balances
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, QString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
@@ -979,9 +979,9 @@ int MyMoneyForecast::calculateBeginForecastDay()
   return fDays;
 }
 
-void MyMoneyForecast::purgeForecastAccountsList(QMap<QCString, dailyBalances>& accountList)
+void MyMoneyForecast::purgeForecastAccountsList(QMap<QString, dailyBalances>& accountList)
 {
-  QMap<QCString, QCString>::Iterator it_n;
+  QMap<QString, QString>::Iterator it_n;
   for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ) {
     if(!accountList.contains(*it_n)) {
       m_nameIdx.remove(it_n);
@@ -1063,7 +1063,7 @@ void MyMoneyForecast::createBudget ( MyMoneyBudget& budget, QDate historyStart, 
     budget.setBudgetStart ( budgetStart );
 
     //go through all the accounts and add them to budget
-    QMap<QCString, QCString>::ConstIterator it_nc;
+    QMap<QString, QString>::ConstIterator it_nc;
     for ( it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc ) {
       MyMoneyAccount acc = file->account ( *it_nc );
 
@@ -1109,7 +1109,7 @@ QValueList<MyMoneyAccount> MyMoneyForecast::budgetAccountList(void)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> accList;
-  QCStringList emptyStringList;
+  QStringList emptyStringList;
   //Get all accounts from the file and check if they are of the right type to calculate forecast
   file->accountList(accList, emptyStringList, false);
   QValueList<MyMoneyAccount>::iterator accList_t = accList.begin();
@@ -1131,7 +1131,7 @@ void MyMoneyForecast::calculateHistoricMonthlyBalances()
   MyMoneyFile* file = MyMoneyFile::instance();
 
   //Calculate account monthly balances
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, QString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
@@ -1153,7 +1153,7 @@ void MyMoneyForecast::calculateScheduledMonthlyBalances()
   MyMoneyFile* file = MyMoneyFile::instance();
 
 //Calculate account monthly balances
-  QMap<QCString, QCString>::ConstIterator it_n;
+  QMap<QString, QString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
@@ -1214,7 +1214,6 @@ void MyMoneyForecast::setStartingBalance(const MyMoneyAccount &acc)
       openingBalance = file->balance(acc.id(), openingDate);
 
       //calculate running sum
-      QMap<QCString, QCString>::Iterator it_n;
       for(QDate it_date = openingDate; it_date <= historyEndDate(); it_date = it_date.addDays(1) ) {
         //investments require special treatment
         if ( acc.isInvest() ) {

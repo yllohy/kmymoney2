@@ -50,10 +50,10 @@ KCategoryReassignDlg::~KCategoryReassignDlg()
 {
 }
 
-QCString KCategoryReassignDlg::show(const MyMoneyAccount& category)
+QString KCategoryReassignDlg::show(const MyMoneyAccount& category)
 {
   if (category.id().isEmpty())
-   return QCString(); // no payee available? nothing can be selected...
+   return QString(); // no payee available? nothing can be selected...
 
   AccountSet set;
   set.addAccountGroup(MyMoneyAccount::Income);
@@ -64,8 +64,8 @@ QCString KCategoryReassignDlg::show(const MyMoneyAccount& category)
   m_category->selector()->removeItem(category.id());
 
   // make sure the available categories have the same currency
-  QCStringList list;
-  QCStringList::const_iterator it_a;
+  QStringList list;
+  QStringList::const_iterator it_a;
   m_category->selector()->itemList(list);
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
@@ -79,12 +79,12 @@ QCString KCategoryReassignDlg::show(const MyMoneyAccount& category)
   // if there is no category for reassignment left, we bail out
   if(list.isEmpty()) {
     KMessageBox::sorry(this, QString("<qt>")+i18n("At least one transaction/schedule still references the category <b>%1</b>.  However, at least one category with the same currency must exist so that the transactions/schedules can be reassigned.").arg(category.name())+QString("</qt>"));
-    return QCString();
+    return QString();
   }
 
   // execute dialog and if aborted, return empty string
   if (this->exec() == QDialog::Rejected)
-    return QCString();
+    return QString();
 
   // otherwise return index of selected payee
   return m_category->selectedItem();

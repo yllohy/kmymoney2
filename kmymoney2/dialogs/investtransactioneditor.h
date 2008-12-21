@@ -96,19 +96,19 @@ public:
   const MyMoneySecurity& security(void) const { return m_security; }
 
 protected slots:
-  void slotCreateSecurity(const QString& name, QCString& id);
-  void slotCreateFeeCategory(const QString& name, QCString& id);
-  void slotCreateInterestCategory(const QString& name, QCString& id);
+  void slotCreateSecurity(const QString& name, QString& id);
+  void slotCreateFeeCategory(const QString& name, QString& id);
+  void slotCreateInterestCategory(const QString& name, QString& id);
 
   int slotEditInterestSplits(void);
   int slotEditFeeSplits(void);
   void slotReloadEditWidgets(void);
 
   void slotUpdateActivity(MyMoneySplit::investTransactionTypeE);
-  void slotUpdateSecurity(const QCString& stockId);
-  void slotUpdateInterestCategory(const QCString& id);
+  void slotUpdateSecurity(const QString& stockId);
+  void slotUpdateInterestCategory(const QString& id);
   void slotUpdateInterestVisibility(const QString&);
-  void slotUpdateFeeCategory(const QCString& id);
+  void slotUpdateFeeCategory(const QString& id);
   void slotUpdateFeeVisibility(const QString&);
   void slotUpdateTotalAmount(void);
 

@@ -56,7 +56,7 @@ class FilterFail {
         m_storage (storage)
     {}
 
-    inline bool operator() (const QPair<QCString, MyMoneyTransaction>& transactionPair)
+    inline bool operator() (const QPair<QString, MyMoneyTransaction>& transactionPair)
     { return (*this) (transactionPair.second); }
 
     inline bool operator() (const MyMoneyTransaction& transaction)
@@ -260,7 +260,7 @@ class MyMoneyDbIndex {
 
 /**
   * The MyMoneyDbTable class is a representation of a db table.
-  * It has a list of the columns (pointers to MyMoneyDbColumn types) and a 
+  * It has a list of the columns (pointers to MyMoneyDbColumn types) and a
   * list of any indices that may be on the table.
   * Additionally, a string for a parameterized query for each of some common
   * tasks on a table is created by the ctor.
@@ -372,7 +372,7 @@ class MyMoneyDbView {
 };
 
 /**
-  * The MyMoneyDbDef class is 
+  * The MyMoneyDbDef class is
   */
 class MyMoneyDbDef  {
   friend class MyMoneyStorageSql;
@@ -525,29 +525,29 @@ public:
   void modifyBudget(const MyMoneyBudget& bud);
   void removeBudget(const MyMoneyBudget& bud);
 
-  unsigned long transactionCount  (const QCString& aid = QCString()) const;
-  inline const QMap<QCString, unsigned long> transactionCountMap () const
+  unsigned long transactionCount  (const QString& aid = QString()) const;
+  inline const QMap<QString, unsigned long> transactionCountMap () const
       {return (m_transactionCountMap);};
   /**
     * the storage manager also needs the following read entry points
     */
-  const QMap<QCString, MyMoneyAccount> fetchAccounts (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyMoney> fetchBalance(const QCStringList& id, const QDate& date) const;
-  const QMap<QCString, MyMoneyBudget> fetchBudgets (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneySecurity> fetchCurrencies (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyInstitution> fetchInstitutions (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyPayee> fetchPayees (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyAccount> fetchAccounts (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyMoney> fetchBalance(const QStringList& id, const QDate& date) const;
+  const QMap<QString, MyMoneyBudget> fetchBudgets (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneySecurity> fetchCurrencies (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyInstitution> fetchInstitutions (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyPayee> fetchPayees (const QStringList& idList = QStringList (), bool forUpdate = false) const;
   const  MyMoneyPriceList fetchPrices (const QStringList& fromIdList = QStringList (), const QStringList& toIdList = QStringList(), bool forUpdate = false) const;
   const  MyMoneyPrice fetchSinglePrice (const QString& fromIdList, const QString& toIdList, const QDate& date, bool exactDate, bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyReport> fetchReports (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneySchedule> fetchSchedules (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneySecurity> fetchSecurities (const QStringList& idList = QStringList (), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyTransaction> fetchTransactions (const QString& tidList = QString (), const QString& dateClause = QString(), bool forUpdate = false) const;
-  const QMap<QCString, MyMoneyTransaction> fetchTransactions (const MyMoneyTransactionFilter& filter) const;
-  bool isReferencedByTransaction(const QCString& id) const;
+  const QMap<QString, MyMoneyReport> fetchReports (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneySchedule> fetchSchedules (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneySecurity> fetchSecurities (const QStringList& idList = QStringList (), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyTransaction> fetchTransactions (const QString& tidList = QString (), const QString& dateClause = QString(), bool forUpdate = false) const;
+  const QMap<QString, MyMoneyTransaction> fetchTransactions (const MyMoneyTransactionFilter& filter) const;
+  bool isReferencedByTransaction(const QString& id) const;
 
-  void readPayees(const QCString&);
-  void readPayees(const QValueList<QCString> payeeList = QValueList<QCString>());
+  void readPayees(const QString&);
+  void readPayees(const QValueList<QString> payeeList = QValueList<QString>());
   void readTransactions(const MyMoneyTransactionFilter& filter);
   void setProgressCallback(void(*callback)(int, int, const QString&));
 
@@ -616,7 +616,7 @@ private:
   void writeCurrency(const MyMoneySecurity& currency, MyMoneySqlQuery& q);
   void writeReport (const MyMoneyReport& rep, MyMoneySqlQuery& q);
   void writeBudget (const MyMoneyBudget& bud, MyMoneySqlQuery& q);
-  void writeKeyValuePairs(const QString& kvpType, const QString& kvpId, const QMap<QCString, QString>& pairs);
+  void writeKeyValuePairs(const QString& kvpType, const QString& kvpId, const QMap<QString, QString>& pairs);
   void writeKeyValuePair(const QString& kvpType, const QString& kvpId,
                          const QString& kvpKey, const QString& kvpData);
   // read routines
@@ -743,12 +743,12 @@ private:
    * This member variable holds a list of those accounts for which all
    * transactions are in memory, thus saving reading them again
    */
-//  QValueList<QCString> m_accountsLoaded;
+//  QValueList<QString> m_accountsLoaded;
   /**
     * This member variable is used when loading transactions to list all
     * referenced payees, which can then be read into memory (if not already there)
     */
-//  QValueList<QCString> m_payeeList;
+//  QValueList<QString> m_payeeList;
 
   void alert(QString s) const {qDebug("%s", s.ascii());}; // FIXME: remove...
   /** The following keeps track of commitment units (known as transactions in SQL
@@ -773,7 +773,7 @@ private:
     * probably be moved into the MyMoneyAccount object; maybe we will do that once
     * the database code has been properly checked out
     */
-  QMap<QCString, unsigned long> m_transactionCountMap;
+  QMap<QString, unsigned long> m_transactionCountMap;
   /**
     * These member variables hold the user name and date/time of logon
     */

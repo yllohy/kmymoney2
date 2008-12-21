@@ -200,7 +200,7 @@ void MyMoneySplitTest::testSetValue() {
 }
 
 void MyMoneySplitTest::testSetAction() {
-	CPPUNIT_ASSERT(m->action() == QCString());
+	CPPUNIT_ASSERT(m->action() == QString());
 	m->setAction(MyMoneySplit::BuyShares);
 	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionBuyShares);
 	m->setAction(MyMoneySplit::SellShares);
@@ -302,5 +302,5 @@ void MyMoneySplitTest::testReadXML() {
 	} catch(MyMoneyException *e) {
 		delete e;
 	}
-	
+
 }

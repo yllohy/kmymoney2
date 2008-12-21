@@ -62,7 +62,7 @@
 #define SOURCE_COL      4
 
 KMyMoneyPriceItem::KMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
-  KMyMoneyListViewItem(view, QString(), QString(), QCString()),
+  KMyMoneyListViewItem(view, QString(), QString(), QString()),
   m_pr(pr)
 {
   MyMoneySecurity from, to;
@@ -74,7 +74,7 @@ KMyMoneyPriceItem::KMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
     m_pr = MyMoneyFile::instance()->price(m_pr.from(), m_pr.to(), m_pr.date());
 
   if(m_pr.isValid()) {
-    QCString priceBase = m_pr.to();
+    QString priceBase = m_pr.to();
     from = MyMoneyFile::instance()->security(m_pr.from());
     to = MyMoneyFile::instance()->security(m_pr.to());
     if(!to.isCurrency()) {
@@ -105,9 +105,9 @@ int KMyMoneyPriceItem::compare(QListViewItem* i, int col, bool ascending) const
       break;
 
     case PRICE_COL:   // value
-      if(m_pr.rate(QCString()) > item->m_pr.rate(QCString()))
+      if(m_pr.rate(QString()) > item->m_pr.rate(QString()))
         rc = 1;
-      else if(m_pr.rate(QCString()) < item->m_pr.rate(QCString()))
+      else if(m_pr.rate(QString()) < item->m_pr.rate(QString()))
         rc = -1;
       break;
 

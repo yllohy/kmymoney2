@@ -245,15 +245,15 @@ void KImportDlg::loadAccounts(void)
     m_accountComboBox->setCurrentText(current);
 }
 
-void KImportDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
+void KImportDlg::addCategories(QStringList& strList, const QString& id, const QString& leadIn) const
 {
   MyMoneyFile *file = MyMoneyFile::instance();
   QString name;
 
   MyMoneyAccount account = file->account(id);
 
-  QCStringList accList = account.accountList();
-  QCStringList::ConstIterator it_a;
+  QStringList accList = account.accountList();
+  QStringList::ConstIterator it_a;
 
   for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
     account = file->account(*it_a);

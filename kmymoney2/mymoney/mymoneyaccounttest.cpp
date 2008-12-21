@@ -43,9 +43,9 @@ void MyMoneyAccountTest::testEmptyConstructor() {
 }
 
 void MyMoneyAccountTest::testConstructor() {
-	QCString id = "A000001";
+	QString id = "A000001";
 	QString institutionid = "B000001";
-	QCString parent = "Parent";
+	QString parent = "Parent";
 	MyMoneyAccount r;
 	MyMoneySplit s;
 	r.setAccountType(MyMoneyAccount::Asset);
@@ -54,7 +54,7 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setDescription("Desc");
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
-	r.setValue(QCString("key"), "value");
+	r.setValue(QString("key"), "value");
 	s.setShares(MyMoneyMoney(1,1));
 	r.adjustBalance(s);
 	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
@@ -73,10 +73,10 @@ void MyMoneyAccountTest::testConstructor() {
 	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
 	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(1,1));
 
-	QMap<QCString, QString> copy;
+	QMap<QString, QString> copy;
 	copy = r.pairs();
 	CPPUNIT_ASSERT(copy.count() == 1);
-	CPPUNIT_ASSERT(copy[QCString("key")] == "value");
+	CPPUNIT_ASSERT(copy[QString("key")] == "value");
 }
 
 void MyMoneyAccountTest::testSetFunctions() {
@@ -103,9 +103,9 @@ void MyMoneyAccountTest::testSetFunctions() {
 }
 
 void MyMoneyAccountTest::testCopyConstructor() {
-	QCString id = "A000001";
-	QCString institutionid = "B000001";
-	QCString parent = "ParentAccount";
+	QString id = "A000001";
+	QString institutionid = "B000001";
+	QString parent = "ParentAccount";
 	MyMoneyAccount r;
 	r.setAccountType(MyMoneyAccount::Expense);
 	r.setOpeningDate(QDate::currentDate());
@@ -176,7 +176,7 @@ void MyMoneyAccountTest::testAdjustBalance() {
 	a.adjustBalance(s);
 	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(-4,1));
 	s.setShares(MyMoneyMoney(4,1));
-	s.setAction(QCString());
+	s.setAction(QString());
 	a.adjustBalance(s);
 	CPPUNIT_ASSERT(a.balance().isZero());
 }
@@ -185,7 +185,7 @@ void MyMoneyAccountTest::testSubAccounts()
 {
 	MyMoneyAccount a;
 	a.setAccountType(MyMoneyAccount::Checkings);
-	
+
 	a.addAccountId("Subaccount1");
 	CPPUNIT_ASSERT(a.accountList().count() == 1);
 	a.addAccountId("Subaccount1");
@@ -272,9 +272,9 @@ void MyMoneyAccountTest::testEquality()
 }
 
 void MyMoneyAccountTest::testWriteXML() {
-	QCString id = "A000001";
-	QCString institutionid = "B000001";
-	QCString parent = "Parent";
+	QString id = "A000001";
+	QString institutionid = "B000001";
+	QString parent = "Parent";
 
 	MyMoneyAccount r;
 	r.setAccountType(MyMoneyAccount::Asset);
@@ -285,7 +285,7 @@ void MyMoneyAccountTest::testWriteXML() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setInstitutionId(institutionid);
-	r.setValue(QCString("key"), "value");
+	r.setValue(QString("key"), "value");
 	r.addAccountId("A000002");
 	// CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	// CPPUNIT_ASSERT(r.value("key") == "value");

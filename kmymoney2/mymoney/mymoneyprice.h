@@ -30,7 +30,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qcstring.h>
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qpair.h>
@@ -72,8 +71,8 @@ class KMYMONEY_EXPORT MyMoneyPrice
 {
 public:
   MyMoneyPrice();
-  MyMoneyPrice(const QCString& from, const QCString& to, const QDomElement& node);
-  MyMoneyPrice(const QCString& from, const QCString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source = QString());
+  MyMoneyPrice(const QString& from, const QString& to, const QDomElement& node);
+  MyMoneyPrice(const QString& from, const QString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source = QString());
   virtual ~MyMoneyPrice();
 
   /**
@@ -108,12 +107,12 @@ public:
     * @p 3/1 even though the price information kept with the object was @p 1/3, but based on the other
     * conversion direction (from ADF to GBP).
     */
-  const MyMoneyMoney rate(const QCString& id) const;
+  const MyMoneyMoney rate(const QString& id) const;
 
   const QDate& date(void) const { return m_date; };
   const QString& source(void) const { return m_source; };
-  const QCString& from(void) const { return m_fromSecurity; };
-  const QCString& to(void) const { return m_toSecurity; };
+  const QString& from(void) const { return m_fromSecurity; };
+  const QString& to(void) const { return m_toSecurity; };
 
   /**
     * Check whether the object is valid or not. A MyMoneyPrice object
@@ -140,11 +139,11 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  bool hasReferenceTo(const QCString& id) const;
+  bool hasReferenceTo(const QString& id) const;
 
 private:
-  QCString      m_fromSecurity;
-  QCString      m_toSecurity;
+  QString       m_fromSecurity;
+  QString       m_toSecurity;
   QDate         m_date;
   MyMoneyMoney  m_rate;
   MyMoneyMoney  m_invRate;
@@ -152,7 +151,7 @@ private:
 };
 
 
-typedef QPair<QCString, QCString> MyMoneySecurityPair;
+typedef QPair<QString, QString> MyMoneySecurityPair;
 typedef QMap<QDate, MyMoneyPrice> MyMoneyPriceEntries;
 typedef QMap<MyMoneySecurityPair, MyMoneyPriceEntries> MyMoneyPriceList;
 

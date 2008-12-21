@@ -34,14 +34,14 @@ void MyMoneyObjectTest::testEmptyConstructor() {
 }
 
 void MyMoneyObjectTest::testConstructor() {
-	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount a(QString("thb"), MyMoneyAccount());
 
 	CPPUNIT_ASSERT(!a.id().isEmpty());
-	CPPUNIT_ASSERT(a.id() == QCString("thb"));
+	CPPUNIT_ASSERT(a.id() == QString("thb"));
 }
 
 void MyMoneyObjectTest::testClearId() {
-	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount a(QString("thb"), MyMoneyAccount());
 
 	CPPUNIT_ASSERT(!a.id().isEmpty());
 	a.clearId();
@@ -49,23 +49,23 @@ void MyMoneyObjectTest::testClearId() {
 }
 
 void MyMoneyObjectTest::testCopyConstructor() {
-	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount a(QString("thb"), MyMoneyAccount());
 	MyMoneyAccount b(a);
 
 	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
 }
 
 void MyMoneyObjectTest::testAssignmentConstructor() {
-	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount a(QString("thb"), MyMoneyAccount());
 	MyMoneyAccount b = a;
 
 	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
 }
 
 void MyMoneyObjectTest::testEquality() {
-	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
-	MyMoneyAccount b(QCString("thb"), MyMoneyAccount());
-	MyMoneyAccount c(QCString("ace"), MyMoneyAccount());
+	MyMoneyAccount a(QString("thb"), MyMoneyAccount());
+	MyMoneyAccount b(QString("thb"), MyMoneyAccount());
+	MyMoneyAccount c(QString("ace"), MyMoneyAccount());
 
 	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
 	CPPUNIT_ASSERT(!(a.MyMoneyObject::operator==(c)));

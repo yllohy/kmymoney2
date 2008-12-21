@@ -60,7 +60,7 @@ KEditLoanWizard::KEditLoanWizard(const MyMoneyAccount& account, QWidget *parent,
             "not be in the future. The default will be today.").arg(KGlobal::locale()->formatDate(account.openingDate(), true)));
   m_account = account;
   try {
-    QCString id = m_account.value("schedule").latin1();
+    QString id = m_account.value("schedule");
     m_schedule = file->schedule(id);
   } catch (MyMoneyException *e) {
     delete e;
@@ -108,7 +108,7 @@ KEditLoanWizard::~KEditLoanWizard()
 void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QCString paymentAccountId, interestAccountId;
+  QString paymentAccountId, interestAccountId;
 
   m_nameEdit->loadText(m_account.name());
   m_loanAmountEdit->loadText(m_account.loanAmount().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
@@ -501,7 +501,7 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
 const MyMoneyTransaction KEditLoanWizard::transaction() const
 {
   MyMoneyTransaction t = KNewLoanWizard::transaction();
-  MyMoneySplit s = t.splitByAccount(QCString("Phony-ID"));
+  MyMoneySplit s = t.splitByAccount(QString("Phony-ID"));
 
   s.setAccountId(m_account.id());
   t.modifySplit(s);

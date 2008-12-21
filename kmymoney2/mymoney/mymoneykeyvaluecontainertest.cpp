@@ -70,7 +70,7 @@ void MyMoneyKeyValueContainerTest::testClear() {
 }
 
 void MyMoneyKeyValueContainerTest::testRetrieveList() {
-	QMap<QCString, QString> copy;
+	QMap<QString, QString> copy;
 
 	copy = m->pairs();
 	CPPUNIT_ASSERT(copy.count() == 0);
@@ -134,7 +134,7 @@ void MyMoneyKeyValueContainerTest::testReadXML() {
 		" </KEYVALUE-PAIRS>\n"
 		"</KVP-CONTAINER>\n");
 
-	
+
 	QDomDocument doc;
 	QDomElement node;
 	doc.setContent(ref_false);

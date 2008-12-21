@@ -52,10 +52,10 @@ class KEquityPriceUpdateDlg : public KEquityPriceUpdateDlgDecl
 {
   Q_OBJECT
 public:
-  KEquityPriceUpdateDlg(QWidget *parent, const QCString& securityId = QCString());
+  KEquityPriceUpdateDlg(QWidget *parent, const QString& securityId = QString());
   ~KEquityPriceUpdateDlg();
   void storePrices(void);
-  MyMoneyPrice price(const QCString& id) const;
+  MyMoneyPrice price(const QString& id) const;
 
 protected slots:
   void slotUpdateSelectedClicked(void);

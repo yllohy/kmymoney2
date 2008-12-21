@@ -37,7 +37,7 @@ class SelectedTransaction
 {
 public:
   SelectedTransaction() {}
-  SelectedTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const QCString& scheduleId = QCString()) :
+  SelectedTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const QString& scheduleId = QString()) :
     m_transaction(t), m_split(s), m_scheduleId(scheduleId) {}
 
   MyMoneyTransaction& transaction(void) { return m_transaction; }
@@ -46,7 +46,7 @@ public:
   const MyMoneySplit& split(void) const { return m_split; }
 
   bool isScheduled(void) const { return !m_scheduleId.isEmpty(); }
-  const QCString& scheduleId(void) const { return m_scheduleId; }
+  const QString& scheduleId(void) const { return m_scheduleId; }
 
   /**
    * checks the transaction for specific reasons which would
@@ -61,7 +61,7 @@ public:
 private:
   MyMoneyTransaction      m_transaction;
   MyMoneySplit            m_split;
-  QCString                m_scheduleId;
+  QString                 m_scheduleId;
 };
 
 class Register;

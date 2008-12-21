@@ -78,14 +78,14 @@ public:
     * @param account MyMoneyAccount filled with the relevant and available information
     * @param id account id to be used.
     */
-  void setAccount(const MyMoneyAccount& account, const QCString& id);
+  void setAccount(const MyMoneyAccount& account, const QString& id);
 
   /**
     * This method returns the name of the selected account in the combo box.
     *
-    * @return QCString containing the id of the selected account
+    * @return QString containing the id of the selected account
     */
-  const QCString& selectedAccount(void) const;
+  const QString& selectedAccount(void) const;
 
   /**
     * This method is used to set the mode of the dialog. Two modes

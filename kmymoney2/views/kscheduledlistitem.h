@@ -91,7 +91,7 @@ public:
     *
     * @return The schedule id.
     */
-  const QCString& scheduleId(void) const { return m_schedule.id(); }
+  const QString& scheduleId(void) const { return m_schedule.id(); }
 
   int compare(QListViewItem* i, int col, bool ascending) const;
 

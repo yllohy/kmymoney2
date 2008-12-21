@@ -21,6 +21,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qmap.h>
 #include <qvaluelist.h>
 
@@ -29,9 +30,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-//#include "../mymoney/mymoneyfile.h"
-//#include "../mymoney/mymoneyreport.h"
-//#include "reporttable.h"
+
 #include "reportaccount.h"
 
 namespace reports {
@@ -137,12 +136,12 @@ namespace reports {
     // default sort order
     static const unsigned m_kDefaultSortOrder;
   };
-  class PivotGrid: public QMap<QString,PivotOuterGroup> 
-  { 
-    public: 
-      PivotGridRowSet rowSet (QCString id);
+  class PivotGrid: public QMap<QString,PivotOuterGroup>
+  {
+    public:
+      PivotGridRowSet rowSet (QString id);
 
-      PivotGridRowSet m_total; 
+      PivotGridRowSet m_total;
   };
 
 }

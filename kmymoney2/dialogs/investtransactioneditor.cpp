@@ -68,7 +68,7 @@ public:
     m_parent(parent),
     m_activity(0)
   {
-    m_phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
+    m_phonyAccount = MyMoneyAccount("Phony-ID", MyMoneyAccount());
   }
 
   ~InvestTransactionEditorPrivate() {
@@ -202,9 +202,9 @@ void InvestTransactionEditor::createEditWidgets(void)
   KMyMoneySecurity* security = new KMyMoneySecurity;
   security->setHint(i18n("Security"));
   m_editWidgets["security"] = security;
-  connect(security, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateSecurity(const QCString&)));
+  connect(security, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateSecurity(const QString&)));
   connect(security, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
-  connect(security, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateSecurity(const QString&, QCString&)));
+  connect(security, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateSecurity(const QString&, QString&)));
   connect(security, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
 
   KMyMoneyCategory* asset = new KMyMoneyCategory(0, 0, false);
@@ -216,20 +216,20 @@ void InvestTransactionEditor::createEditWidgets(void)
   KMyMoneyCategory* fees = new KMyMoneyCategory(0, 0, true);
   fees->setHint(i18n("Fees"));
   m_editWidgets["fee-account"] = fees;
-  connect(fees, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateFeeCategory(const QCString&)));
+  connect(fees, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateFeeCategory(const QString&)));
   connect(fees, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(fees, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateFeeVisibility(const QString&)));
-  connect(fees, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateFeeCategory(const QString&, QCString&)));
+  connect(fees, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateFeeCategory(const QString&, QString&)));
   connect(fees, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(fees->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditFeeSplits()));
 
   KMyMoneyCategory* interest = new KMyMoneyCategory(0, 0, true);
   interest->setHint(i18n("Interest"));
   m_editWidgets["interest-account"] = interest;
-  connect(interest, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateInterestCategory(const QCString&)));
+  connect(interest, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateInterestCategory(const QString&)));
   connect(interest, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(interest, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateInterestVisibility(const QString&)));
-  connect(interest, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateInterestCategory(const QString&, QCString&)));
+  connect(interest, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateInterestCategory(const QString&, QString&)));
   connect(interest, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(interest->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditInterestSplits()));
 
@@ -270,7 +270,7 @@ void InvestTransactionEditor::createEditWidgets(void)
 
   KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
   m_editWidgets["status"] = reconcile;
-  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
+  connect(reconcile, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateButtonState()));
 
   KMyMoneyRegister::QWidgetContainer::iterator it_w;
   for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
@@ -393,7 +393,7 @@ int InvestTransactionEditor::editSplits(const QString& categoryWidgetName, const
         if(isIncome)
           fees = -fees;
 
-        QCString categoryId;
+        QString categoryId;
         setupCategoryWidget(category, splits, categoryId, slotEditSplits);
         amount->setValue(fees);
         slotUpdateTotalAmount();
@@ -432,7 +432,7 @@ bool InvestTransactionEditor::createPseudoTransaction(MyMoneyTransaction& t, con
   return true;
 }
 
-void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& id)
+void InvestTransactionEditor::slotCreateSecurity(const QString& name, QString& id)
 {
   MyMoneyAccount acc;
   QRegExp exp("([^:]+)");
@@ -450,7 +450,7 @@ void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& 
   }
 }
 
-void InvestTransactionEditor::slotCreateFeeCategory(const QString& name, QCString& id)
+void InvestTransactionEditor::slotCreateFeeCategory(const QString& name, QString& id)
 {
   MyMoneyAccount acc;
   acc.setName(name);
@@ -461,7 +461,7 @@ void InvestTransactionEditor::slotCreateFeeCategory(const QString& name, QCStrin
   id = acc.id();
 }
 
-void InvestTransactionEditor::slotUpdateFeeCategory(const QCString& id)
+void InvestTransactionEditor::slotUpdateFeeCategory(const QString& id)
 {
   haveWidget("fee-amount")->setDisabled(id.isEmpty());
 }
@@ -474,7 +474,7 @@ void InvestTransactionEditor::slotUpdateFeeVisibility(const QString& txt)
     w->setShown(haveWidget("fee-amount")->isVisible());
 }
 
-void InvestTransactionEditor::slotUpdateInterestCategory(const QCString& id)
+void InvestTransactionEditor::slotUpdateInterestCategory(const QString& id)
 {
   haveWidget("interest-amount")->setDisabled(id.isEmpty());
 }
@@ -500,7 +500,7 @@ void InvestTransactionEditor::slotUpdateInterestVisibility(const QString& txt)
     w->setShown(haveWidget("interest-amount")->isVisible());
 }
 
-void InvestTransactionEditor::slotCreateInterestCategory(const QString& name, QCString& id)
+void InvestTransactionEditor::slotCreateInterestCategory(const QString& name, QString& id)
 {
   MyMoneyAccount acc;
   acc.setName(name);
@@ -518,7 +518,7 @@ void InvestTransactionEditor::slotReloadEditWidgets(void)
   KMyMoneySecurity* security = dynamic_cast<KMyMoneySecurity*>(haveWidget("security"));
 
   AccountSet aSet;
-  QCString id;
+  QString id;
 
   // interest-account
   aSet.clear();
@@ -539,7 +539,7 @@ void InvestTransactionEditor::slotReloadEditWidgets(void)
 
 void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action */)
 {
-  QCString id;
+  QString id;
 
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(haveWidget("postdate"));
   KMyMoneyReconcileCombo* reconcile = dynamic_cast<KMyMoneyReconcileCombo*>(haveWidget("status"));
@@ -661,7 +661,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     // scan the list of selected transactions and check that they have
     // the same activity.
     KMyMoneyRegister::SelectedTransactions::iterator it_t = m_transactions.begin();
-    const QCString& action = m_item->split().action();
+    const QString& action = m_item->split().action();
     bool isNegative = m_item->split().shares().isNegative();
     bool allSameActivity = true;
     for(it_t = m_transactions.begin(); allSameActivity && (it_t != m_transactions.end()); ++it_t) {
@@ -710,7 +710,7 @@ MyMoneyMoney InvestTransactionEditor::subtotal(const QValueList<MyMoneySplit>& s
   return sum;
 }
 
-void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
+void InvestTransactionEditor::slotUpdateSecurity(const QString& stockId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount stock = file->account(stockId);
@@ -842,7 +842,7 @@ InvestTransactionEditor::priceModeE InvestTransactionEditor::priceMode(void) con
 {
   priceModeE mode = static_cast<priceModeE>(0);
   KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
-  QCString accId;
+  QString accId;
   if(!sec->currentText().isEmpty()) {
     accId = sec->selectedItem();
     if(accId.isEmpty())
@@ -870,8 +870,8 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
   int fract = acc.fraction();
 
   if(acc.currencyId() != t.commodity()) {
-    QMap<QCString, MyMoneyMoney>::Iterator it_p;
-    QCString key = t.commodity() + "-" + acc.currencyId();
+    QMap<QString, MyMoneyMoney>::Iterator it_p;
+    QString key = t.commodity() + "-" + acc.currencyId();
     it_p = m_priceInfo.find(key);
 
     // if it's not found, then collect it from the user first
@@ -921,11 +921,11 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
 
   KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
   if(!isMultiSelection() || (isMultiSelection() && !sec->currentText().isEmpty())) {
-    QCString securityId = sec->selectedItem();
+    QString securityId = sec->selectedItem();
     if(!securityId.isEmpty()) {
       s0.setAccountId(securityId);
       MyMoneyAccount stockAccount = file->account(securityId);
-      QCString currencyId = stockAccount.currencyId();
+      QString currencyId = stockAccount.currencyId();
       MyMoneySecurity security = file->security(currencyId);
 
       t.setCommodity(security.tradingCurrency());

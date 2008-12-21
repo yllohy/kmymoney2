@@ -133,7 +133,7 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   }
 }
 
-MyMoneySchedule::MyMoneySchedule(const QCString& id, const MyMoneySchedule& right) :
+MyMoneySchedule::MyMoneySchedule(const QString& id, const MyMoneySchedule& right) :
   MyMoneyObject(id)
 {
   *this = right;
@@ -186,7 +186,7 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool
       MyMoneySplit s = *it_s;
       // clear out the bankID
       if(!(*it_s).bankID().isEmpty()) {
-        s.setBankID(QCString());
+        s.setBankID(QString());
         t.modifySplit(s);
       }
 
@@ -195,7 +195,7 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool
         continue;
 
       if(!(*it_s).payeeId().isEmpty()) {
-        s.setPayeeId(QCString());
+        s.setPayeeId(QString());
         t.modifySplit(s);
       }
     }
@@ -1045,7 +1045,7 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
   parent.appendChild(el);
 }
 
-bool MyMoneySchedule::hasReferenceTo(const QCString& id) const
+bool MyMoneySchedule::hasReferenceTo(const QString& id) const
 {
   return m_transaction.hasReferenceTo(id);
 }

@@ -24,7 +24,6 @@
 // QT Includes
 
 #include <qvaluelist.h>
-#include <qcstring.h>
 #include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
@@ -56,10 +55,10 @@ public:
     *
     * @param payeeslist reference to QValueList of MyMoneyPayee objects to be contained in the list
     *
-    * @return Returns the id of the selected payee in the list or QCString() if
-    *         the dialog was aborted. QCString() is also returned if the payeeslist is empty.
+    * @return Returns the id of the selected payee in the list or QString() if
+    *         the dialog was aborted. QString() is also returned if the payeeslist is empty.
     */
-  QCString show(const QValueList<MyMoneyPayee>& payeeslist);
+  QString show(const QValueList<MyMoneyPayee>& payeeslist);
 
   /**
    * Returns true, if the names of the payees to be deleted should be copied

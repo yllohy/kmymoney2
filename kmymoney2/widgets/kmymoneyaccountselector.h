@@ -71,9 +71,9 @@ public:
     * @param list QValueList of account types to be returned. If this
     *             list is empty (the default), then the ids of all accounts
     *             will be returned.
-    * @return QCStringList of account ids
+    * @return QStringList of account ids
     */
-  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
+  QStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 
   void setSelectionMode(QListView::SelectionMode mode);
 
@@ -122,10 +122,10 @@ protected:
     * @p list and attaches them to the parent widget passed as @p parent.
     *
     * @param parent pointer to parent widget
-    * @param list QCStringList containing the ids of all subaccounts to load
+    * @param list QStringList containing the ids of all subaccounts to load
     * @return This method returns the number of accounts loaded into the list
     */
-  int loadSubAccounts(QListViewItem* parent, const QCStringList& list);
+  int loadSubAccounts(QListViewItem* parent, const QStringList& list);
 
   /**
     * This is a helper method for selectAllIncomeCategories()
@@ -150,7 +150,7 @@ protected:
   KPushButton*              m_incomeCategoriesButton;
   KPushButton*              m_expenseCategoriesButton;
   QValueList<int>           m_typeList;
-  QCStringList              m_accountList;
+  QStringList               m_accountList;
 };
 
 
@@ -166,7 +166,7 @@ public:
   void clear(void);
 
   int load(kMyMoneyAccountSelector* selector);
-  int load(kMyMoneyAccountSelector* selector, const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = false);
+  int load(kMyMoneyAccountSelector* selector, const QString& baseName, const QValueList<QString>& accountIdList, const bool clear = false);
 
   int count(void) const { return m_count; }
 
@@ -174,7 +174,7 @@ public:
   bool isHidingClosedAccounts (void) { return m_hideClosedAccounts; }
 
 protected:
-  int loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QCStringList& list);
+  int loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QStringList& list);
 
 private:
   int                                      m_count;

@@ -93,12 +93,12 @@ public:
   virtual const QString& sortPayee(void) const { return m_payee; }
   virtual const MyMoneyMoney& sortValue(void) const { return m_split.shares(); }
   virtual const QString& sortNumber(void) const { return m_split.number(); }
-  virtual const QCString& sortEntryOrder(void) const { return m_uniqueId; }
+  virtual const QString& sortEntryOrder(void) const { return m_uniqueId; }
   virtual CashFlowDirection sortType(void) const { return m_split.shares().isNegative() ? Payment : Deposit; }
   virtual const QString& sortCategory(void) const { return m_category; }
   virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return m_split.reconcileFlag(); }
 
-  virtual const QCString& id(void) const { return m_uniqueId; }
+  virtual const QString& id(void) const { return m_uniqueId; }
   const MyMoneyTransaction& transaction(void) const { return m_transaction; }
   const MyMoneySplit& split(void) const { return m_split; }
 
@@ -277,8 +277,8 @@ protected:
   QString                 m_payeeHeader;
   QString                 m_balance;
   QString                 m_categoryHeader;
-  QCString                m_splitCurrencyId;
-  QCString                m_uniqueId;
+  QString                 m_splitCurrencyId;
+  QString                 m_uniqueId;
   int                     m_formRowHeight;
   bool                    m_selected;
   bool                    m_focus;
@@ -334,7 +334,7 @@ public:
   virtual void setShowRowInForm(int row, bool show);
 
 protected:
-  void setupFormHeader(const QCString& id);
+  void setupFormHeader(const QString& id);
 
 private:
   bool m_showAccountRow;

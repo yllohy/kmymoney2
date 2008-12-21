@@ -286,7 +286,7 @@ void kMyMoneyCompletion::slotItemSelected(QListViewItem *item, const QPoint&, in
 {
   KMyMoneyListViewItem* it_v = static_cast<KMyMoneyListViewItem*>(item);
   if(it_v && it_v->isSelectable()) {
-    QCString id = it_v->id();
+    QString id = it_v->id();
     // hide the widget, so we can debug the slots that are connect
     // to the signal we emit very soon
     hide();
@@ -295,7 +295,7 @@ void kMyMoneyCompletion::slotItemSelected(QListViewItem *item, const QPoint&, in
   }
 }
 
-void kMyMoneyCompletion::setSelected(const QCString& id)
+void kMyMoneyCompletion::setSelected(const QString& id)
 {
   m_id = id;
   m_selector->setSelected(id, true);

@@ -111,7 +111,7 @@ void TransactionMatcher::match(MyMoneyTransaction tm, MyMoneySplit sm, MyMoneyTr
   {
     // find the corresponding split in the start transaction
     MyMoneySplit startSplit;
-    QCString accountid = (*it_split).accountId();
+    QString accountid = (*it_split).accountId();
     try
     {
       startSplit = startMatchTransaction.splitByAccount( accountid );
@@ -209,7 +209,7 @@ void TransactionMatcher::unmatch(const MyMoneyTransaction& _t, const MyMoneySpli
     MyMoneySplit si;
     // if we don't have a split, then we don't have a memo
     try {
-      si = ti.splitById(QCString(sm.value("kmm-match-split")));
+      si = ti.splitById(sm.value("kmm-match-split"));
     } catch(MyMoneyException* e) {
       delete e;
     }
@@ -222,7 +222,7 @@ void TransactionMatcher::unmatch(const MyMoneyTransaction& _t, const MyMoneySpli
 
     // restore payee if modified
     if(!sm.value("kmm-orig-payee").isEmpty()) {
-      sm.setPayeeId(QCString(sm.value("kmm-orig-payee")));
+      sm.setPayeeId(sm.value("kmm-orig-payee"));
     }
 
     // restore memo if modified

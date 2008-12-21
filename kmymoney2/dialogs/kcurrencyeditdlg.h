@@ -51,7 +51,7 @@ public:
   ~KCurrencyEditDlg();
 
 public slots:
-  void slotSelectCurrency(const QCString& id);
+  void slotSelectCurrency(const QString& id);
 
 protected:
   /// the resize event

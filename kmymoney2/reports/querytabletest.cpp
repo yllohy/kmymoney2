@@ -119,9 +119,9 @@ void QueryTableTest::testQueryBasics()
     QueryTable qtbl_1(filter);
 
     writeTabletoHTML(qtbl_1,"Transactions by Category.html");
-    
+
     QValueList<ListTable::TableRow> rows = qtbl_1.rows();
-    
+
     CPPUNIT_ASSERT(rows.count() == 12);
     CPPUNIT_ASSERT(rows[0]["categorytype"]=="Expense");
     CPPUNIT_ASSERT(rows[0]["category"]=="Parent");
@@ -447,12 +447,12 @@ void QueryTableTest::testInvestment(void)
 
   // Transactions
   //                         Date             Action                              Shares  Price   Stock     Asset       Income
-  InvTransactionHelper s1b1( QDate(2004,2,1), MyMoneySplit::ActionBuyShares,      1000.00, 100.00, acStock1, acChecking, QCString() );
-  InvTransactionHelper s1b2( QDate(2004,3,1), MyMoneySplit::ActionBuyShares,      1000.00, 110.00, acStock1, acChecking, QCString() );
-  InvTransactionHelper s1s1( QDate(2004,4,1), MyMoneySplit::ActionBuyShares,      -200.00, 120.00, acStock1, acChecking, QCString() );
-  InvTransactionHelper s1s2( QDate(2004,5,1), MyMoneySplit::ActionBuyShares,      -200.00, 100.00, acStock1, acChecking, QCString() );
-  InvTransactionHelper s1r1( QDate(2004,6,1), MyMoneySplit::ActionReinvestDividend, 50.00, 100.00, acStock1, QCString(), acDividends );
-  InvTransactionHelper s1r2( QDate(2004,7,1), MyMoneySplit::ActionReinvestDividend, 50.00,  80.00, acStock1, QCString(), acDividends );
+  InvTransactionHelper s1b1( QDate(2004,2,1), MyMoneySplit::ActionBuyShares,      1000.00, 100.00, acStock1, acChecking, QString() );
+  InvTransactionHelper s1b2( QDate(2004,3,1), MyMoneySplit::ActionBuyShares,      1000.00, 110.00, acStock1, acChecking, QString() );
+  InvTransactionHelper s1s1( QDate(2004,4,1), MyMoneySplit::ActionBuyShares,      -200.00, 120.00, acStock1, acChecking, QString() );
+  InvTransactionHelper s1s2( QDate(2004,5,1), MyMoneySplit::ActionBuyShares,      -200.00, 100.00, acStock1, acChecking, QString() );
+  InvTransactionHelper s1r1( QDate(2004,6,1), MyMoneySplit::ActionReinvestDividend, 50.00, 100.00, acStock1, QString(), acDividends );
+  InvTransactionHelper s1r2( QDate(2004,7,1), MyMoneySplit::ActionReinvestDividend, 50.00,  80.00, acStock1, QString(), acDividends );
   InvTransactionHelper s1c1( QDate(2004,8,1), MyMoneySplit::ActionDividend,         10.00, 100.00, acStock1, acChecking, acDividends );
   InvTransactionHelper s1c2( QDate(2004,9,1), MyMoneySplit::ActionDividend,         10.00, 120.00, acStock1, acChecking, acDividends );
   InvTransactionHelper s1y1( QDate(2004,9,15), MyMoneySplit::ActionYield,           10.00, 110.00, acStock1, acChecking, acInterest );
@@ -629,7 +629,7 @@ void QueryTableTest::testInvestment(void)
       unsigned cols;
 
       MyMoneyReport filter;
-      
+
       filter.setRowType( MyMoneyReport::eAccount );
       filter.setName("Transactions by Account");
       cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory | MyMoneyReport::eQCbalance;
@@ -651,7 +651,7 @@ void QueryTableTest::testInvestment(void)
       CPPUNIT_ASSERT( html.find(openingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Opening Balance")) > 0);
       CPPUNIT_ASSERT( html.find(closingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-702.36</td></tr>") > 0);
       CPPUNIT_ASSERT( html.find(closingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-705.69</td></tr>") > 0);
-      
+
     }
     catch(MyMoneyException *e)
     {

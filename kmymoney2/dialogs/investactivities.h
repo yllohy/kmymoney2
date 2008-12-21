@@ -70,7 +70,7 @@ protected:
 
 protected:
   InvestTransactionEditor*      m_parent;
-  QMap<QCString, MyMoneyMoney>  m_priceInfo;
+  QMap<QString, MyMoneyMoney>   m_priceInfo;
 };
 
 class Buy : public Activity

@@ -64,7 +64,7 @@ namespace reports {
   {
     m_cellUsed |= !value.isZero();
   }
-  
+
 PivotCell PivotCell::operator += (const PivotCell& right)
 {
   const MyMoneyMoney& r = static_cast<const MyMoneyMoney&>(right);
@@ -131,9 +131,9 @@ PivotGridRowSet::PivotGridRowSet( unsigned _numcolumns )
   insert(eAverage, PivotGridRow(_numcolumns));
 }
 
-PivotGridRowSet PivotGrid::rowSet(QCString id)
+PivotGridRowSet PivotGrid::rowSet(QString id)
 {
-  
+
   //go through the data and get the row that matches the id
   PivotGrid::iterator it_outergroup = begin();
   while ( it_outergroup != end() )

@@ -53,7 +53,7 @@ public:
   void filterBills(bool enable);
   void filterDeposits(bool enable);
   void filterTransfers(bool enable);
-  void setFilterAccounts(const QCStringList& list) { m_filterAccounts = list; repaintContents(false); }
+  void setFilterAccounts(const QStringList& list) { m_filterAccounts = list; repaintContents(false); }
 
 signals:
   void enterClicked(const MyMoneySchedule&, const QDate&);
@@ -65,7 +65,7 @@ protected:
 
 private:
   bool m_filterBills, m_filterDeposits, m_filterTransfers;
-  QCStringList m_filterAccounts;
+  QStringList m_filterAccounts;
   KMyMoneyBriefSchedule briefWidget;
 };
 

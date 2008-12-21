@@ -154,7 +154,7 @@ KMyMoneyAccountTreeBaseItem* KMyMoneyAccountTreeBase::selectedItem(void) const
   return dynamic_cast<KMyMoneyAccountTreeBaseItem *>(KListView::selectedItem());
 }
 
-const KMyMoneyAccountTreeBaseItem* KMyMoneyAccountTreeBase::findItem(const QCString& id) const
+const KMyMoneyAccountTreeBaseItem* KMyMoneyAccountTreeBase::findItem(const QString& id) const
 {
   // tried to use a  QListViewItemIterator  but that does not fit
   // with the constness of this method. Arghhh.
@@ -238,7 +238,7 @@ bool KMyMoneyAccountTreeBase::acceptDrag(QDropEvent* event) const
   if(rc = (acceptDrops() && event->source() == viewport())) {
     rc = false;
     KMyMoneyAccountTreeBaseItem* to = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(itemAt( contentsToViewport(event->pos()) ));
-    QCString fromId(event->encodedData("text/plain"));
+    QString fromId(event->encodedData("text/plain"));
     const KMyMoneyAccountTreeBaseItem* from = findItem(fromId);
 
     // we can only move accounts around
@@ -296,7 +296,7 @@ void KMyMoneyAccountTreeBase::slotObjectDropped(QDropEvent* event, QListViewItem
 
   KMyMoneyAccountTreeBaseItem* newParent = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(m_dropItem);
   if(newParent) {
-    QCString fromId(event->encodedData("text/plain"));
+    QString fromId(event->encodedData("text/plain"));
     const KMyMoneyAccountTreeBaseItem* from = findItem(fromId);
 
     // we can only move accounts around
@@ -576,7 +576,7 @@ KMyMoneyAccountTreeBaseItem::~KMyMoneyAccountTreeBaseItem()
 {
 }
 
-const QCString& KMyMoneyAccountTreeBaseItem::id(void) const
+const QString& KMyMoneyAccountTreeBaseItem::id(void) const
 {
   if(m_type == Institution)
     return m_institution.id();
@@ -597,7 +597,7 @@ MyMoneyMoney KMyMoneyAccountTreeBaseItem::value() const
   // calculate the new value by running down the price list
   MyMoneyMoney result = balance();
   QValueList<MyMoneyPrice>::const_iterator it_p;
-  QCString security = m_security.id();
+  QString security = m_security.id();
   for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
     result = (result * (MyMoneyMoney(1,1) / (*it_p).rate(security))).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision()));
     if((*it_p).from() == security)

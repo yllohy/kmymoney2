@@ -122,12 +122,12 @@ private:
     QDate m_endDate;
     bool m_runningSumsCalculated;
 
-    /** 
+    /**
       * For budget-vs-actual reports only, maps each account to the account which holds
       * the budget for it.  If an account is not contained in this map, it is not included
       * in the budget.
       */
-    QMap<QCString,QCString> m_budgetMap;
+    QMap<QString, QString> m_budgetMap;
 
     /**
       * This list contains the types of PivotGridRows that are going to be shown in the report
@@ -337,7 +337,7 @@ protected:
      * Draws a PivotGridRowSet in a chart for the given ERowType
      */
     unsigned drawChartRowSet(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const PivotGridRowSet& rowSet, const ERowType rowType ) const;
-    
+
    /**
      * Loads m_rowTypeList with the list of PivotGridRow types that the reporttable
      * should show

@@ -34,7 +34,7 @@ MyMoneyObjectContainer::~MyMoneyObjectContainer()
 void MyMoneyObjectContainer::clear(IMyMoneyStorage* storage)
 {
   // delete all objects
-  QMap<QCString, MyMoneyObject const *>::const_iterator it;
+  QMap<QString, MyMoneyObject const *>::const_iterator it;
   for(it = m_map.begin(); it != m_map.end(); ++it) {
     delete (*it);
   }
@@ -46,9 +46,9 @@ void MyMoneyObjectContainer::clear(IMyMoneyStorage* storage)
     m_storage = storage;
 }
 
-void MyMoneyObjectContainer::clear(const QCString& id)
+void MyMoneyObjectContainer::clear(const QString& id)
 {
-  QMap<QCString, MyMoneyObject const *>::iterator it;
+  QMap<QString, MyMoneyObject const *>::iterator it;
   it = m_map.find(id);
   if(it != m_map.end()) {
     delete (*it);
@@ -59,7 +59,7 @@ void MyMoneyObjectContainer::clear(const QCString& id)
 #define listMethod(a, T) \
 void MyMoneyObjectContainer::a(QValueList<T>& list) \
 { \
-  QMap<QCString, const MyMoneyObject*>::const_iterator it; \
+  QMap<QString, const MyMoneyObject*>::const_iterator it; \
   for(it = m_map.begin(); it != m_map.end(); ++it) { \
     const T* node = dynamic_cast<const T*>(*it); \
     if(node) { \
@@ -86,12 +86,12 @@ void MyMoneyObjectContainer::preload##a(const T& obj) \
 }
 
 #define objectAccessMethod(a, T) \
-const T& MyMoneyObjectContainer::a(const QCString& id) \
+const T& MyMoneyObjectContainer::a(const QString& id) \
 { \
   static T nullElement; \
   if(id.isEmpty()) \
     return nullElement; \
-  QMap<QCString, MyMoneyObject const *>::const_iterator it; \
+  QMap<QString, MyMoneyObject const *>::const_iterator it; \
   it = m_map.find(id); \
   if(it == m_map.end()) { \
     /* not found, need to load from engine */ \
@@ -104,7 +104,7 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
 
 void MyMoneyObjectContainer::account(QValueList<MyMoneyAccount>& list)
 {
-  QMap<QCString, const MyMoneyObject*>::const_iterator it;
+  QMap<QString, const MyMoneyObject*>::const_iterator it;
   for(it = m_map.begin(); it != m_map.end(); ++it) {
     const MyMoneyAccount* node = dynamic_cast<const MyMoneyAccount*>(*it);
     if(node) {
@@ -114,12 +114,12 @@ void MyMoneyObjectContainer::account(QValueList<MyMoneyAccount>& list)
   }
 }
 
-const MyMoneyAccount& MyMoneyObjectContainer::account(const QCString& id)
+const MyMoneyAccount& MyMoneyObjectContainer::account(const QString& id)
 {
   static MyMoneyAccount nullElement;
   if(id.isEmpty())
     return nullElement;
-  QMap<QCString, MyMoneyObject const *>::iterator it;
+  QMap<QString, MyMoneyObject const *>::iterator it;
   it = m_map.find(id);
   if(it == m_map.end()) {
     /* not found, need to load from engine */
@@ -144,7 +144,7 @@ void MyMoneyObjectContainer::assignFraction(MyMoneyAccount* acc)
 const MyMoneyAccount& MyMoneyObjectContainer::accountByName(const QString& name) const
 {
   static MyMoneyAccount nullElement;
-  QMap<QCString, MyMoneyObject const *>::const_iterator it;
+  QMap<QString, MyMoneyObject const *>::const_iterator it;
   for(it = m_map.begin(); it != m_map.end(); ++it) {
     const MyMoneyAccount* node = dynamic_cast<const MyMoneyAccount *>(*it);
     if(node) {
@@ -155,12 +155,12 @@ const MyMoneyAccount& MyMoneyObjectContainer::accountByName(const QString& name)
   return nullElement;
 }
 
-void MyMoneyObjectContainer::refresh(const QCString& id)
+void MyMoneyObjectContainer::refresh(const QString& id)
 {
   if(id.isEmpty())
     return;
 
-  QMap<QCString, MyMoneyObject const *>::const_iterator it;
+  QMap<QString, MyMoneyObject const *>::const_iterator it;
   it = m_map.find(id);
   if(it != m_map.end()) {
     const MyMoneyAccount* account = dynamic_cast<const MyMoneyAccount *>(*it);

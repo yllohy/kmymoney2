@@ -125,12 +125,12 @@ void KCategoriesView::slotLoadAccounts(void)
 
 void KCategoriesView::loadAccounts(void)
 {
-  QMap<QCString, bool> isOpen;
+  QMap<QString, bool> isOpen;
 
   ::timetrace("start load categories view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
-  QCString selectedItemId = (item) ? item->id() : QCString();
+  QString selectedItemId = (item) ? item->id() : QString();
 
   // keep a map of all 'expanded' accounts
   QListViewItemIterator it_lvi(m_accountTree);
@@ -216,13 +216,13 @@ void KCategoriesView::loadAccounts(void)
   ::timetrace("done load categories view");
 }
 
-bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
+bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QStringList& accountList)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
   bool unused = false;
 
-  QCStringList::const_iterator it_a;
+  QStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     const MyMoneyAccount& acc = file->account(*it_a);
     QValueList<MyMoneyPrice> prices;

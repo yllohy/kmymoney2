@@ -69,17 +69,17 @@ public:
     *
     * @return MyMoneySchedule object for payments
     */
-  const MyMoneySchedule schedule(void) const;
+  MyMoneySchedule schedule(void) const;
 
   /**
     * This method returns the id of the account to/from which
     * the payout should be created. If the checkbox that allows
     * to skip the creation of this transaction is checked, this
-    * method returns QCString()
+    * method returns QString()
     *
-    * @return id of account or empty QCString
+    * @return id of account or empty QString
     */
-  const QCString initialPaymentAccount(void) const;
+  QString initialPaymentAccount(void) const;
 
   /**
     * This method returns the date of the payout transaction.
@@ -88,7 +88,7 @@ public:
     *
     * @return selected date or invalid QDate if checkbox is selected.
     */
-  const QDate initialPaymentDate(void) const;
+  QDate initialPaymentDate(void) const;
 
 protected:
   /**
@@ -97,7 +97,7 @@ protected:
     *
     * @return MyMoneyTransaction object to be used within the schedule
     */
-  const MyMoneyTransaction transaction(void) const;
+  MyMoneyTransaction transaction(void) const;
 
 public slots:
   void next();
@@ -127,7 +127,7 @@ protected:
   void updatePayment(void);
   void updateFinalPayment(void);
   void updateLoanInfo(void);
-  const QString updateTermWidgets(const long double v);
+  QString updateTermWidgets(const long double v);
   void updatePeriodicPayment(void);
   void updateSummary(void);
   int calculateLoan(void);
@@ -157,7 +157,7 @@ signals:
     * @param txt The name of the payee to be created
     * @param id A connected slot should store the id of the created object in this variable
     */
-  void createPayee(const QString& txt, QCString& id);
+  void createPayee(const QString& txt, QString& id);
 
 protected:
   MyMoneyAccountLoan  m_account;

@@ -93,7 +93,7 @@ public:
 
   MyMoneySplit();
   MyMoneySplit(const QDomElement& node);
-  MyMoneySplit(const QCString& id, const MyMoneySplit& right);
+  MyMoneySplit(const QString& id, const MyMoneySplit& right);
   ~MyMoneySplit();
 
   bool operator == (const MyMoneySplit&) const;
@@ -109,7 +109,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   const MyMoneyMoney& shares(void) const { return m_shares; }
   const MyMoneyMoney& value(void) const { return m_value; }
@@ -126,29 +126,29 @@ public:
   */
   MyMoneyMoney actualPrice(void) const { return m_price; }
 
-  const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
+  const MyMoneyMoney value(const QString& transactionCurrencyId, const QString& splitCurrencyId) const;
 
   /**
    * Required to have (direct) access to the MyMoneyKeyValueContainer::value() method.
    */
-  const QString& value(const QCString& key) const { return MyMoneyKeyValueContainer::value(key); }
+  const QString& value(const QString& key) const { return MyMoneyKeyValueContainer::value(key); }
 
   /**
    * Required to have (direct) access to the MyMoneyKeyValueContainer::setValue() method.
    */
-  void setValue(const QCString& key, const QString& value) { MyMoneyKeyValueContainer::setValue(key, value); }
+  void setValue(const QString& key, const QString& value) { MyMoneyKeyValueContainer::setValue(key, value); }
 
-  const QCString& accountId(void) const { return m_account; }
+  const QString& accountId(void) const { return m_account; }
   const QString& memo(void) const { return m_memo; }
   reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; }
   const QDate& reconcileDate(void) const { return m_reconcileDate; }
-  const QCString& payeeId(void) const { return m_payee; }
-  const QCString& action(void) const { return m_action; }
+  const QString& payeeId(void) const { return m_payee; }
+  const QString& action(void) const { return m_action; }
   const QString& number(void) const { return m_number; }
   bool isAmortizationSplit(void) const { return m_action == ActionAmortization; }
   bool isAutoCalc(void) const { return (m_shares == MyMoneyMoney::autoCalc) || (m_value == MyMoneyMoney::autoCalc); }
   const QString& bankID(void) const { return m_bankID; }
-  const QCString& transactionId(void) const { return m_transactionId; }
+  const QString& transactionId(void) const { return m_transactionId; }
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -167,18 +167,18 @@ public:
     *                        the id of the currency assigned to the account that is
     *                        referenced by the split)
     */
-  void setValue(const MyMoneyMoney& value, const QCString& transactionCurrencyId, const QCString& splitCurrencyId);
+  void setValue(const MyMoneyMoney& value, const QString& transactionCurrencyId, const QString& splitCurrencyId);
 
-  void setAccountId(const QCString& account);
+  void setAccountId(const QString& account);
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);
   void setReconcileDate(const QDate& date);
-  void setPayeeId(const QCString& payee);
-  void setAction(const QCString& action);
+  void setPayeeId(const QString& payee);
+  void setAction(const QString& action);
   void setAction(investTransactionTypeE type);
   void setNumber(const QString& number);
   void setBankID(const QString& bankID) { m_bankID = bankID; };
-  void setTransactionId(const QCString& id) { m_transactionId = id; }
+  void setTransactionId(const QString& id) { m_transactionId = id; }
 
     /**
    * returns @a true if this its a transaction matched against an imported
@@ -225,17 +225,17 @@ private:
   /**
     * This member contains the ID of the transaction
     */
-  QCString      m_id;
+  QString      m_id;
 
   /**
     * This member contains the ID of the payee
     */
-  QCString      m_payee;
+  QString      m_payee;
 
   /**
     * This member contains the ID of the account
     */
-  QCString      m_account;
+  QString      m_account;
 
   /**
     */
@@ -278,7 +278,7 @@ private:
     * be conveniently limited to a menu of selections such as
     * "Buy", "Sell", "Interest", etc.
     */
-  QCString      m_action;
+  QString      m_action;
 
   /**
     * The m_number member is used to store a reference number to
@@ -300,7 +300,7 @@ private:
     * split can be found in. It is the purpose of the MyMoneyTransaction
     * object to maintain this member variable.
     */
-  QCString      m_transactionId;
+  QString      m_transactionId;
 };
 
 #endif

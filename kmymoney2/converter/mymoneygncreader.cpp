@@ -158,7 +158,7 @@ bool GncObject::isDataElement (const QString &elName, const QXmlAttributes& elAt
 }
 
 // return the variable string, decoded if required
-const QString GncObject::var (int i) const {
+QString GncObject::var (int i) const {
   return (pMain->m_decoder == 0
       ? *(m_v.at(i))
       : pMain->m_decoder->toUnicode (*(m_v.at(i))));
@@ -812,7 +812,7 @@ void GncRecurrence::terminate() {
   return ;
 }
 
-const QString GncRecurrence::getFrequency() const {
+QString GncRecurrence::getFrequency() const {
   // This function converts a gnucash 2.2 recurrence specification into it's previous equivalent
   // This will all need re-writing when MTE finishes the schedule re-write
   if (periodType() == "once") return("once");
@@ -1375,7 +1375,7 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   MyMoneySplit split;
   MyMoneyAccount splitAccount;
   // find the kmm account id coresponding to the gnc id
-  QCString kmmAccountId;
+  QString kmmAccountId;
   map_accountIds::Iterator id = m_mapIds.find(gsp->acct().utf8());
   if (id != m_mapIds.end()) {
     kmmAccountId = id.data();
@@ -1496,7 +1496,7 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   return ;
 }
 //********************************* convertTemplateTransaction **********************************************
-MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString schedName, const GncTransaction *gtx) {
+MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString& schedName, const GncTransaction *gtx) {
 
   Q_CHECK_PTR (gtx);
   MyMoneyTransaction tx;
@@ -1526,7 +1526,7 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
     convertTemplateSplit (schedName, static_cast<const GncTemplateSplit *>(gtx->getSplit (i)));
   }
   // determine the action type for the splits and link them to the template tx
-  /*QCString negativeActionType, positiveActionType;
+  /*QString negativeActionType, positiveActionType;
   if (!m_splitList.isEmpty()) { // if there are asset splits
     positiveActionType = MyMoneySplit::ActionDeposit;
     negativeActionType = MyMoneySplit::ActionWithdrawal;
@@ -1569,7 +1569,7 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
   return (tx);
 }
 //********************************* convertTemplateSplit ****************************************************
-void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncTemplateSplit *gsp) {
+void MyMoneyGncReader::convertTemplateSplit (const QString& schedName, const GncTemplateSplit *gsp) {
   Q_CHECK_PTR (gsp);
   // convertTemplateSplit
   MyMoneySplit split;
@@ -1664,7 +1664,7 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
     m_suspectSchedule = true;
   }
   // find the kmm account id coresponding to the gnc id
-  QCString kmmAccountId;
+  QString kmmAccountId;
   map_accountIds::Iterator id = m_mapIds.find(gncAccountId.utf8());
   if (id != m_mapIds.end()) {
     kmmAccountId = id.data();
@@ -1842,7 +1842,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   sc.setAutoEnter ((gsc->autoCreate() == "y") && (schedEnabled == "y"));
   //qDebug(QString("autoEnter set to %1").arg(sc.autoEnter()));
   // type
-  QCString actionType = tx.splits().first().action();
+  QString actionType = tx.splits().first().action();
   if (actionType == MyMoneySplit::ActionDeposit) {
     sc.setType((MyMoneySchedule::typeE)MyMoneySchedule::TYPE_DEPOSIT);
   } else if (actionType == MyMoneySplit::ActionTransfer) {
@@ -1922,7 +1922,7 @@ void MyMoneyGncReader::terminate () {
       if (gncdebug) qDebug("Account id %s is a child of root", (*acc).id().data());
     } else {
       // it is not under one of the main accounts, so find gnucash parent
-      QCString parentKey = (*acc).parentAccountId();
+      QString parentKey = (*acc).parentAccountId();
       if (gncdebug) qDebug ("acc %s, parent %s", (*acc).id().data(),
                               (*acc).parentAccountId().data());
       map_accountIds::Iterator id = m_mapIds.find(parentKey);
@@ -2017,7 +2017,7 @@ void MyMoneyGncReader::terminate () {
   PASS
 }
 //************************************ buildReportSection************************************
-const QString MyMoneyGncReader::buildReportSection (const QString source) {
+QString MyMoneyGncReader::buildReportSection (const QString& source) {
   TRY
   QString s = "";
   bool more = false;
@@ -2077,7 +2077,7 @@ const QString MyMoneyGncReader::buildReportSection (const QString source) {
   PASS
 }
 //************************ writeReportToFile*********************************
-bool MyMoneyGncReader::writeReportToFile (const QValueList<QString> sectionsToReport) {
+bool MyMoneyGncReader::writeReportToFile (const QValueList<QString>& sectionsToReport) {
   TRY
   unsigned int i;
   QFileDialog* fd = new QFileDialog (0, "Save report as", TRUE);
@@ -2106,7 +2106,7 @@ bool MyMoneyGncReader::writeReportToFile (const QValueList<QString> sectionsToRe
 *****************************************************************************/
 //************************ createPayee ***************************
 
-const QString MyMoneyGncReader::createPayee (const QString gncDescription) {
+QString MyMoneyGncReader::createPayee (const QString& gncDescription) {
   MyMoneyPayee payee;
   try {
     payee = m_storage->payeeByName (gncDescription);
@@ -2118,7 +2118,7 @@ const QString MyMoneyGncReader::createPayee (const QString gncDescription) {
   return (payee.id());
 }
 //************************************** createOrphanAccount *******************************
-const QCString MyMoneyGncReader::createOrphanAccount (const QString gncName) {
+QString MyMoneyGncReader::createOrphanAccount (const QString& gncName) {
   MyMoneyAccount acc;
 
   acc.setName ("orphan_" + gncName);
@@ -2187,7 +2187,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
   // investment account. if it is, no further action is needed
   MyMoneyAccount stockAcc = m_storage->account (m_mapIds[stockId.utf8()]);
   MyMoneyAccount parent;
-  QCString parentKey = stockAcc.parentAccountId();
+  QString parentKey = stockAcc.parentAccountId();
   map_accountIds::Iterator id = m_mapIds.find (parentKey);
   if (id != m_mapIds.end()) {
     parent = m_storage->account (id.data());
@@ -2198,7 +2198,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
   if (m_investmentOption == 0) {
     MyMoneyAccount invAcc (stockAcc);
     invAcc.setAccountType (MyMoneyAccount::Investment);
-    invAcc.setCurrencyId (QCString("")); // we don't know what currency it is!!
+    invAcc.setCurrencyId (QString("")); // we don't know what currency it is!!
     invAcc.setParentAccountId (parentKey); // intersperse it between old parent and child stock acct
     m_storage->addAccount (invAcc);
     m_mapIds [invAcc.id()] = invAcc.id(); // so stock account gets parented (again) to investment account later
@@ -2209,7 +2209,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
     m_storage->addAccount(invAcc, stockAcc);
     // investment option 1 creates a single investment account for all stocks
   } else if (m_investmentOption == 1) {
-    static QCString singleInvAccId = "";
+    static QString singleInvAccId = "";
     MyMoneyAccount singleInvAcc;
     bool ok = false;
     if (singleInvAccId.isEmpty()) { // if the account has not yet been created
@@ -2221,7 +2221,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
       }
       singleInvAcc.setName (invAccName);
       singleInvAcc.setAccountType (MyMoneyAccount::Investment);
-      singleInvAcc.setCurrencyId (QCString(""));
+      singleInvAcc.setCurrencyId (QString(""));
       singleInvAcc.setParentAccountId (m_storage->asset().id());
       m_storage->addAccount (singleInvAcc);
       m_mapIds [singleInvAcc.id()] = singleInvAcc.id(); // so stock account gets parented (again) to investment account later
@@ -2264,7 +2264,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
         } else {                 // a new account name was entered
           invAcc.setAccountType (MyMoneyAccount::Investment);
           invAcc.setName (invAccName);
-          invAcc.setCurrencyId (QCString(""));
+          invAcc.setCurrencyId (QString(""));
           invAcc.setParentAccountId (m_storage->asset().id());
           m_storage->addAccount (invAcc);
           ok = true;
@@ -2356,21 +2356,21 @@ void MyMoneyGncReader::signalProgress(int current, int total, const QString& msg
 }
 // error and information reporting
 //***************************** Information and error messages *********************
-void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1) {
+void MyMoneyGncReader::postMessage (const QString& source, const unsigned int code, const char* arg1) {
   postMessage (source, code, QStringList(arg1));
 }
-void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1, const char* arg2) {
+void MyMoneyGncReader::postMessage (const QString& source, const unsigned int code, const char* arg1, const char* arg2) {
   QStringList argList(arg1);
   argList.append(arg2);
   postMessage(source, code, argList);
 }
-void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1, const char* arg2, const char* arg3) {
+void MyMoneyGncReader::postMessage (const QString& source, const unsigned int code, const char* arg1, const char* arg2, const char* arg3) {
   QStringList argList(arg1);
   argList.append(arg2);
   argList.append(arg3);
   postMessage(source, code, argList);
 }
-void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const QStringList& argList) {
+void MyMoneyGncReader::postMessage (const QString& source, const unsigned int code, const QStringList& argList) {
   unsigned int i;
   GncMessageArgs *m = new GncMessageArgs;
 

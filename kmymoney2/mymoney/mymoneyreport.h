@@ -81,7 +81,7 @@ public:
 public:
   MyMoneyReport(void);
   MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _ss, const QString& _name, const QString& _comment );
-  MyMoneyReport(const QCString& id, const MyMoneyReport& right);
+  MyMoneyReport(const QString& id, const MyMoneyReport& right);
 
   /**
     * This constructor creates an object based on the data found in the
@@ -118,7 +118,7 @@ public:
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
   bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
   bool hasBudget(void) const { return !m_budgetId.isEmpty(); }
-  const QCString& budget(void) const { return m_budgetId; }
+  const QString& budget(void) const { return m_budgetId; }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
   bool isIncludingForecast(void) const { return m_includeForecast; }
   bool isIncludingMovingAverage(void) const { return m_includeMovingAverage; }
@@ -162,7 +162,7 @@ public:
     * simply checked for any non-empty string, and if so, hasBudget()
     * will return true.
     */
-  void setBudget( const QCString& _budget, bool _fa = true ) { m_budgetId = _budget; m_includeBudgetActuals=_fa; }
+  void setBudget( const QString& _budget, bool _fa = true ) { m_budgetId = _budget; m_includeBudgetActuals=_fa; }
 
   /**
     * This method allows you to clear the underlying transaction filter
@@ -325,7 +325,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
 private:
   /**
@@ -444,7 +444,7 @@ private:
   /**
     * The id of the budget associated with this report.
     */
-  QCString m_budgetId;
+  QString m_budgetId;
   /**
     * Whether this report should print the actual data to go along with
     * the budget.  This is only valid if the report has a budget.
@@ -473,7 +473,7 @@ private:
   int m_movingAverageDays;
 
 
-  
+
 };
 
 #endif // MYMONEYREPORT_H

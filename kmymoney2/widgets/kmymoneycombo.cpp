@@ -65,7 +65,7 @@ KMyMoneyCombo::KMyMoneyCombo(bool rw, QWidget *w, const char *name) :
   }
 }
 
-void KMyMoneyCombo::setCurrentText(const QCString& id)
+void KMyMoneyCombo::setCurrentTextById(const QString& id)
 {
     setCurrentText();
     if(!id.isEmpty()) {
@@ -75,12 +75,12 @@ void KMyMoneyCombo::setCurrentText(const QCString& id)
     }
 }
 
-void KMyMoneyCombo::slotItemSelected(const QCString& id)
+void KMyMoneyCombo::slotItemSelected(const QString& id)
 {
   if(editable()) {
     bool blocked = signalsBlocked();
     blockSignals(true);
-    setCurrentText(id);
+    setCurrentTextById(id);
     blockSignals(blocked);
   }
 
@@ -123,7 +123,7 @@ void KMyMoneyCombo::paintEvent(QPaintEvent* ev)
   // if we don't have an edit field, we need to paint the text onto the button
   if(!m_edit) {
     if(m_completion) {
-      QCStringList list;
+      QStringList list;
       selector()->selectedItems(list);
       if(!list.isEmpty()) {
         QString str = selector()->item(list[0])->text(0);
@@ -211,14 +211,14 @@ void KMyMoneyCombo::keyPressEvent(QKeyEvent* e)
 
 void KMyMoneyCombo::connectNotify(const char* signal)
 {
-  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QCString&)))) {
+  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QString&)))) {
     m_canCreateObjects = true;
   }
 }
 
 void KMyMoneyCombo::disconnectNotify(const char* signal)
 {
-  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QCString&)))) {
+  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QString&)))) {
     m_canCreateObjects = false;
   }
 }
@@ -234,7 +234,7 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
   if(editable() && !currentText().isEmpty()) {
     if(m_canCreateObjects) {
       if(!m_completion->selector()->contains(currentText())) {
-        QCString id;
+        QString id;
         // annouce that we go into a possible dialog to create an object
         // This can be used by upstream widgets to disable filters etc.
         emit objectCreation(true);
@@ -246,7 +246,7 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 
         // update the field to a possibly created object
         m_id = id;
-        setCurrentText(id);
+        setCurrentTextById(id);
 
         // make sure the completion does not show through
         m_completion->hide();
@@ -263,8 +263,8 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 
   // force update of hint and id if there is no text in the widget
   if(editable() && currentText().isEmpty()) {
-    QCString id = m_id;
-    m_id = QCString();
+    QString id = m_id;
+    m_id = QString();
     if(!id.isEmpty())
       emit itemSelected(m_id);
     repaint();
@@ -282,12 +282,12 @@ kMyMoneyCompletion* KMyMoneyCombo::completion(void) const
   return m_completion;
 }
 
-void KMyMoneyCombo::selectedItem(QCString& id) const
+void KMyMoneyCombo::selectedItem(QString& id) const
 {
   id = m_id;
 }
 
-void KMyMoneyCombo::selectedItems(QCStringList& list) const
+void KMyMoneyCombo::selectedItems(QStringList& list) const
 {
   if(lineEdit() && lineEdit()->text().length() == 0) {
     list.clear();
@@ -296,7 +296,7 @@ void KMyMoneyCombo::selectedItems(QCStringList& list) const
   }
 }
 
-void KMyMoneyCombo::setSelectedItem(const QCString& id)
+void KMyMoneyCombo::setSelectedItem(const QString& id)
 {
   m_completion->selector()->setSelected(id, true);
   blockSignals(true);
@@ -339,7 +339,7 @@ KMyMoneyReconcileCombo::KMyMoneyReconcileCombo(QWidget* w, const char* name) :
   KMyMoneyCombo(false, w, name)
 {
   m_completion = new kMyMoneyCompletion(this, 0);
-  // connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(itemSelected(const QCString&)));
+  // connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SIGNAL(itemSelected(const QString&)));
 
   // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
   // selector()->newTopItem(i18n("Frozen"), QString(), "F");
@@ -348,11 +348,11 @@ KMyMoneyReconcileCombo::KMyMoneyReconcileCombo(QWidget* w, const char* name) :
   selector()->newTopItem(i18n("Not reconciled"), QString(), " ");
   selector()->newTopItem(" ", QString(), "U");
 
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetState(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
+  connect(this, SIGNAL(itemSelected(const QString&)), this, SLOT(slotSetState(const QString&)));
 }
 
-void KMyMoneyReconcileCombo::slotSetState(const QCString& state)
+void KMyMoneyReconcileCombo::slotSetState(const QString& state)
 {
   setSelectedItem(state);
 }
@@ -364,7 +364,7 @@ void KMyMoneyReconcileCombo::removeDontCare(void)
 
 void KMyMoneyReconcileCombo::setState(MyMoneySplit::reconcileFlagE state)
 {
-  QCString id;
+  QString id;
   switch(state) {
     case MyMoneySplit::NotReconciled:
       id = " ";
@@ -392,7 +392,7 @@ MyMoneySplit::reconcileFlagE KMyMoneyReconcileCombo::state(void) const
 {
   MyMoneySplit::reconcileFlagE state = MyMoneySplit::NotReconciled;
 
-  QCStringList list;
+  QStringList list;
   selector()->selectedItems(list);
   if(!list.isEmpty()) {
     if(list[0] == "C")
@@ -412,24 +412,24 @@ KMyMoneyComboAction::KMyMoneyComboAction(QWidget* w, const char* name) :
   KMyMoneyCombo(false, w, name)
 {
   m_completion = new kMyMoneyCompletion(this, 0);
-  QCString num;
+  QString num;
   // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
   selector()->newTopItem(i18n("ATM"), QString(), num.setNum(KMyMoneyRegister::ActionAtm));
   selector()->newTopItem(i18n("Withdrawal"), QString(), num.setNum(KMyMoneyRegister::ActionWithdrawal));
   selector()->newTopItem(i18n("Transfer"), QString(), num.setNum(KMyMoneyRegister::ActionTransfer));
   selector()->newTopItem(i18n("Deposit"), QString(), num.setNum(KMyMoneyRegister::ActionDeposit));
   selector()->newTopItem(i18n("Cheque"), QString(), num.setNum(KMyMoneyRegister::ActionCheck));
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetAction(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
+  connect(this, SIGNAL(itemSelected(const QString&)), this, SLOT(slotSetAction(const QString&)));
 }
 
 void KMyMoneyComboAction::protectItem(int id, bool protect)
 {
-  QCString num;
+  QString num;
   selector()->protectItem(num.setNum(id), protect);
 }
 
-void KMyMoneyComboAction::slotSetAction(const QCString& act)
+void KMyMoneyComboAction::slotSetAction(const QString& act)
 {
   setSelectedItem(act);
   update();
@@ -442,14 +442,14 @@ void KMyMoneyComboAction::setAction(int action)
     kdDebug(2) << "KMyMoneyComboAction::slotSetAction(" << action << ") invalid. Replaced with 2\n";
     action = 2;
   }
-  QCString act;
+  QString act;
   act.setNum(action);
   setSelectedItem(act);
 }
 
 int KMyMoneyComboAction::action(void) const
 {
-  QCStringList list;
+  QStringList list;
   selector()->selectedItems(list);
   if(!list.isEmpty()) {
     return list[0].toInt();
@@ -462,7 +462,7 @@ KMyMoneyCashFlowCombo::KMyMoneyCashFlowCombo(QWidget* w, const char* name, MyMon
   KMyMoneyCombo(false, w, name)
 {
   m_completion = new kMyMoneyCompletion(this, 0);
-  QCString num;
+  QString num;
   // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
   if(accountType == MyMoneyAccount::Income || accountType == MyMoneyAccount::Expense) {
     // this is used for income/expense accounts to just show the reverse sense
@@ -473,20 +473,20 @@ KMyMoneyCashFlowCombo::KMyMoneyCashFlowCombo(QWidget* w, const char* name, MyMon
     selector()->newTopItem(i18n("Pay to"), QString(), num.setNum(KMyMoneyRegister::Payment));
   }
   selector()->newTopItem(" ", QString(), num.setNum(KMyMoneyRegister::Unknown));
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetDirection(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
+  connect(this, SIGNAL(itemSelected(const QString&)), this, SLOT(slotSetDirection(const QString&)));
 }
 
 void KMyMoneyCashFlowCombo::setDirection(KMyMoneyRegister::CashFlowDirection dir)
 {
   m_dir = dir;
-  QCString num;
+  QString num;
   setSelectedItem(num.setNum(dir));
 }
 
-void KMyMoneyCashFlowCombo::slotSetDirection(const QCString& id)
+void KMyMoneyCashFlowCombo::slotSetDirection(const QString& id)
 {
-  QCString num;
+  QString num;
   for(int i = KMyMoneyRegister::Deposit; i <= KMyMoneyRegister::Unknown; ++i) {
     num.setNum(i);
     if(num == id) {
@@ -500,7 +500,7 @@ void KMyMoneyCashFlowCombo::slotSetDirection(const QCString& id)
 
 void KMyMoneyCashFlowCombo::removeDontCare(void)
 {
-  QCString num;
+  QString num;
   selector()->removeItem(num.setNum(KMyMoneyRegister::Unknown));
 }
 
@@ -510,7 +510,7 @@ KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
   m_activity(MyMoneySplit::UnknownTransactionType)
 {
   m_completion = new kMyMoneyCompletion(this, 0);
-  QCString num;
+  QString num;
   // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
   selector()->newTopItem(i18n("Split shares"), QString(), num.setNum(MyMoneySplit::SplitShares));
   selector()->newTopItem(i18n("Remove shares"), QString(), num.setNum(MyMoneySplit::RemoveShares));
@@ -521,20 +521,20 @@ KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
   selector()->newTopItem(i18n("Sell shares"), QString(), num.setNum(MyMoneySplit::SellShares));
   selector()->newTopItem(i18n("Buy shares"), QString(), num.setNum(MyMoneySplit::BuyShares));
 
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetActivity(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
+  connect(this, SIGNAL(itemSelected(const QString&)), this, SLOT(slotSetActivity(const QString&)));
 }
 
 void KMyMoneyActivityCombo::setActivity(MyMoneySplit::investTransactionTypeE activity)
 {
   m_activity = activity;
-  QCString num;
+  QString num;
   setSelectedItem(num.setNum(activity));
 }
 
-void KMyMoneyActivityCombo::slotSetActivity(const QCString& id)
+void KMyMoneyActivityCombo::slotSetActivity(const QString& id)
 {
-  QCString num;
+  QString num;
   for(int i = MyMoneySplit::BuyShares; i <= MyMoneySplit::SplitShares; ++i) {
     num.setNum(i);
     if(num == id) {
@@ -554,7 +554,7 @@ KMyMoneyPayeeCombo::KMyMoneyPayeeCombo(QWidget* parent, const char * name) :
   // set to ascending sort
   selector()->listView()->setSorting(0);
 
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QString&)), this, SLOT(slotItemSelected(const QString&)));
   connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
 }
 

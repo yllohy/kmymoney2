@@ -77,7 +77,7 @@ KBalanceChartDlg::KBalanceChartDlg(const MyMoneyAccount& account, QWidget* paren
   reportCfg.setChartType(MyMoneyReport::eChartLine);
   reportCfg.setIncludingSchedules( true );
   if(account.accountType() == MyMoneyAccount::Investment) {
-    QCStringList::const_iterator it_a;
+    QStringList::const_iterator it_a;
     for(it_a = account.accountList().begin(); it_a != account.accountList().end(); ++it_a)
       reportCfg.addAccount(*it_a);
   } else

@@ -69,7 +69,7 @@ public:
     *
     * @param parentId id of parent account for the investment
     */
-  void createObjects(const QCString& parentId);
+  void createObjects(const QString& parentId);
 
   const MyMoneyAccount& account(void) const { return m_account; }
 

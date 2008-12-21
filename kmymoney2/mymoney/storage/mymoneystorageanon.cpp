@@ -166,8 +166,8 @@ void MyMoneyStorageANON::fakeTransaction(MyMoneyTransaction& tx)
 
 void MyMoneyStorageANON::fakeKeyValuePair(MyMoneyKeyValueContainer& kvp)
 {
-  QMap<QCString, QString> pairs;
-  QMap<QCString, QString>::const_iterator it;
+  QMap<QString, QString> pairs;
+  QMap<QString, QString>::const_iterator it;
 
   for(it = kvp.pairs().begin(); it != kvp.pairs().end(); ++it)
   {

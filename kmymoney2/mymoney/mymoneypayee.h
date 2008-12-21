@@ -27,7 +27,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 class QStringList;
 
 // ----------------------------------------------------------------------------
@@ -86,7 +85,7 @@ public:
   } payeeMatchType;
 
   MyMoneyPayee();
-  MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
+  MyMoneyPayee(const QString& id, const MyMoneyPayee& payee);
   MyMoneyPayee(const QString& name,
           const QString& address=QString::null,
           const QString& city=QString::null,
@@ -115,7 +114,7 @@ public:
   QString email(void) const           { return m_email; }
   QString notes(void) const           { return m_notes; }
 
-  const QCString id(void) const       { return m_id; };
+  const QString id(void) const        { return m_id; };
   const QString reference(void) const { return m_reference; };
 
   // Simple set operations
@@ -128,7 +127,6 @@ public:
   void setEmail(const QString& val)     { m_email = val; }
   void setNotes(const QString& val)     { m_notes = val; }
   void setReference(const QString& ref) { m_reference = ref; }
-  void setId(const QCString& val)       { m_id = val; }
 
   /**
    * Get all match data in one call
@@ -167,12 +165,12 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   static MyMoneyPayee null;
 };
 
-inline bool operator==(const MyMoneyPayee& lhs, const QCString& rhs) { return lhs.id() == rhs; }
+inline bool operator==(const MyMoneyPayee& lhs, const QString& rhs) { return lhs.id() == rhs; }
 
 #endif
 // vim:cin:si:ai:et:ts=2:sw=2:

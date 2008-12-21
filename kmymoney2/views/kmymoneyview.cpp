@@ -137,12 +137,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("home", iconSize));
 
   m_homeView = new KHomeView(m_homeViewFrame, "HomeView");
-  connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
-          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-  connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
-    this, SLOT(slotScheduleSelected(const QCString&)));
-  connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
-    this, SLOT(slotShowReport(const QCString&)));
+  connect(m_homeView, SIGNAL(ledgerSelected(const QString&, const QString&)),
+          this, SLOT(slotLedgerSelected(const QString&, const QString&)));
+  connect(m_homeView, SIGNAL(scheduleSelected(const QString&)),
+    this, SLOT(slotScheduleSelected(const QString&)));
+  connect(m_homeView, SIGNAL(reportSelected(const QString&)),
+    this, SLOT(slotShowReport(const QString&)));
 
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
@@ -199,12 +199,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("payee", iconSize));
   addTitleBar(m_payeesViewFrame, i18n("Payees"));
   m_payeesView = new KPayeesView(m_payeesViewFrame, "PayeesView");
-  connect(kmymoney2, SIGNAL(payeeCreated(const QCString&)), m_payeesView, SLOT(slotSelectPayeeAndTransaction(const QCString&)));
+  connect(kmymoney2, SIGNAL(payeeCreated(const QString&)), m_payeesView, SLOT(slotSelectPayeeAndTransaction(const QString&)));
   connect(kmymoney2, SIGNAL(payeeRename()), m_payeesView, SLOT(slotStartRename()));
   connect(m_payeesView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowPayeeContextMenu()));
   connect(m_payeesView, SIGNAL(selectObjects(const QValueList<MyMoneyPayee>&)), kmymoney2, SLOT(slotSelectPayees(const QValueList<MyMoneyPayee>&)));
-  connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
-          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_payeesView, SIGNAL(transactionSelected(const QString&, const QString&)),
+          this, SLOT(slotLedgerSelected(const QString&, const QString&)));
 
   // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
@@ -226,8 +226,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("investments", iconSize));
   addTitleBar(m_investmentViewFrame, i18n("Investments"));
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "InvestmentView");
-  connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
-      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_investmentView, SIGNAL(accountSelected(const QString&, const QString&)),
+      this, SLOT(slotLedgerSelected(const QString&, const QString&)));
   connect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_investmentView, SIGNAL(investmentRightMouseClick()), kmymoney2, SLOT(slotShowInvestmentContextMenu()));
 
@@ -455,10 +455,10 @@ void KMyMoneyView::enableViews(int state)
   emit viewStateChanged(state != 0);
 }
 
-void KMyMoneyView::slotLedgerSelected(const QCString& _accId, const QCString& transaction)
+void KMyMoneyView::slotLedgerSelected(const QString& _accId, const QString& transaction)
 {
   MyMoneyAccount acc = MyMoneyFile::instance()->account(_accId);
-  QCString accId(_accId);
+  QString accId(_accId);
 
   switch(acc.accountType()) {
     case MyMoneyAccount::Stock:
@@ -496,19 +496,19 @@ void KMyMoneyView::slotLedgerSelected(const QCString& _accId, const QCString& tr
   }
 }
 
-void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)
+void KMyMoneyView::slotPayeeSelected(const QString& payee, const QString& account, const QString& transaction)
 {
   showPage(pageIndex(m_payeesViewFrame));
   m_payeesView->slotSelectPayeeAndTransaction(payee, account, transaction);
 }
 
-void KMyMoneyView::slotScheduleSelected(const QCString& scheduleId)
+void KMyMoneyView::slotScheduleSelected(const QString& scheduleId)
 {
   MyMoneySchedule sched = MyMoneyFile::instance()->schedule(scheduleId);
   kmymoney2->slotSelectSchedule(sched);
 }
 
-void KMyMoneyView::slotShowReport(const QCString& reportid)
+void KMyMoneyView::slotShowReport(const QString& reportid)
 {
   showPage(pageIndex(m_reportsViewFrame));
   m_reportsView->slotOpenReport(reportid);
@@ -1557,7 +1557,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("XAG", i18n("Silver"),     "XAG", 1, 1000000), create);
 }
 
-void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction)
+void KMyMoneyView::loadAncientCurrency(const QString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QString& newId, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyPrice price(id, newId, date, rate, "KMyMoney");
@@ -1591,13 +1591,13 @@ void KMyMoneyView::loadAncientCurrencies(void)
   loadAncientCurrency("DEM", i18n("German Mark"), "DM", QDate(1998,12,31), MyMoneyMoney(100000, 195583), "EUR");
   loadAncientCurrency("FRF", i18n("French Franc"), "FF", QDate(1998,12,31), MyMoneyMoney(100000, 655957), "EUR");
   loadAncientCurrency("ITL", i18n("Italian Lira"), QChar(0x20A4), QDate(1998,12,31), MyMoneyMoney(100, 193627), "EUR");
-  loadAncientCurrency("ESP", i18n("Spanish Peseta"), QCString(), QDate(1998,12,31), MyMoneyMoney(1000, 166386), "EUR");
-  loadAncientCurrency("NLG", i18n("Dutch Guilder"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 220371), "EUR");
+  loadAncientCurrency("ESP", i18n("Spanish Peseta"), QString(), QDate(1998,12,31), MyMoneyMoney(1000, 166386), "EUR");
+  loadAncientCurrency("NLG", i18n("Dutch Guilder"), QString(), QDate(1998,12,31), MyMoneyMoney(100000, 220371), "EUR");
   loadAncientCurrency("BEF", i18n("Belgian Franc"), "Fr", QDate(1998,12,31), MyMoneyMoney(10000, 403399), "EUR");
   loadAncientCurrency("LUF", i18n("Luxembourg Franc"), "Fr", QDate(1998,12,31), MyMoneyMoney(10000, 403399), "EUR");
-  loadAncientCurrency("PTE", i18n("Portuguese Escudo"), QCString(), QDate(1998,12,31), MyMoneyMoney(1000, 200482), "EUR");
+  loadAncientCurrency("PTE", i18n("Portuguese Escudo"), QString(), QDate(1998,12,31), MyMoneyMoney(1000, 200482), "EUR");
   loadAncientCurrency("IEP", i18n("Irish Pound"), QChar(0x00A3), QDate(1998,12,31), MyMoneyMoney(1000000, 787564), "EUR");
-  loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
+  loadAncientCurrency("FIM", i18n("Finnish Markka"), QString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
   loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
 
   loadAncientCurrency("ROL", i18n("Romanian Leu"), "ROL", QDate(2005,6,30), MyMoneyMoney(1, 10000), "RON");
@@ -1620,7 +1620,7 @@ void KMyMoneyView::viewUp(void)
     return;
 }
 
-void KMyMoneyView::viewAccountList(const QCString& /*selectAccount*/)
+void KMyMoneyView::viewAccountList(const QString& /*selectAccount*/)
 {
   if(pageIndex(m_accountsViewFrame) != activePageIndex())
     showPage(1);
@@ -1695,8 +1695,8 @@ void KMyMoneyView::fixFile_2(void)
   int count = 0;
   for(it_t = transactionList.begin(); it_t != transactionList.end(); ++it_t) {
     if((*it_t).splitCount() == 2) {
-      QCString accountId;
-      QCString categoryId;
+      QString accountId;
+      QString categoryId;
       QString accountMemo;
       QString categoryMemo;
       const QValueList<MyMoneySplit>& splits = (*it_t).splits();
@@ -1736,10 +1736,10 @@ void KMyMoneyView::fixFile_1(void)
       QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
       QValueList<MyMoneyReport>::iterator it_r;
       for(it_r = reports.begin(); it_r != reports.end(); ++it_r) {
-        QCStringList list;
+        QStringList list;
         (*it_r).accounts(list);
-        QCStringList missing;
-        QCStringList::const_iterator it_a, it_b;
+        QStringList missing;
+        QStringList::const_iterator it_a, it_b;
         for(it_a = list.begin(); it_a != list.end(); ++it_a) {
           MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
           if(acc.accountType() == MyMoneyAccount::Investment) {
@@ -1764,15 +1764,15 @@ void KMyMoneyView::fixFile_1(void)
 #if 0
   if(!m_accountsView->allItemsSelected()) {
     // retrieve a list of selected accounts
-          QCStringList list;
+          QStringList list;
           m_accountsView->selectedItems(list);
 
     // if we're not in expert mode, we need to make sure
     // that all stock accounts for the selected investment
     // account are also selected
           if(!KMyMoneyGlobalSettings::expertMode()) {
-            QCStringList missing;
-            QCStringList::const_iterator it_a, it_b;
+            QStringList missing;
+            QStringList::const_iterator it_a, it_b;
             for(it_a = list.begin(); it_a != list.end(); ++it_a) {
               MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
               if(acc.accountType() == MyMoneyAccount::Investment) {
@@ -1832,7 +1832,7 @@ void KMyMoneyView::fixFile_0(void)
         MyMoneyAccount acc = *it_a;
         // tricky, force parent account to be empty so that we really
         // can re-parent it
-        acc.setParentAccountId(QCString());
+        acc.setParentAccountId(QString());
         file->reparentAccount(acc, equity);
         kdDebug(2) << __func__ << " fixed account " << acc.id() << " reparented to " << equity.id() << endl;
       }
@@ -2001,7 +2001,7 @@ void KMyMoneyView::fixTransactions_0(void)
   ::timetrace("fixTransactions: have list");
 
   QValueList<MyMoneySchedule>::Iterator it_x;
-  QCStringList interestAccounts;
+  QStringList interestAccounts;
 
   KMSTATUS(i18n("Fix transactions"));
   kmymoney2->slotStatusProgressBar(0, scheduleList.count() + transactionList.count());
@@ -2011,7 +2011,7 @@ void KMyMoneyView::fixTransactions_0(void)
   for(it_x = scheduleList.begin(); it_x != scheduleList.end(); ++it_x) {
     MyMoneyTransaction t = (*it_x).transaction();
     QValueList<MyMoneySplit>::ConstIterator it_s;
-    QCStringList accounts;
+    QStringList accounts;
     bool hasDuplicateAccounts = false;
 
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
@@ -2043,7 +2043,7 @@ void KMyMoneyView::fixTransactions_0(void)
     const char *defaultAction = 0;
     QValueList<MyMoneySplit> splits = (*it_t).splits();
     QValueList<MyMoneySplit>::Iterator it_s;
-    QCStringList accounts;
+    QStringList accounts;
 
     // check if base commodity is set. if not, set baseCurrency
     if((*it_t).commodity().isEmpty()) {

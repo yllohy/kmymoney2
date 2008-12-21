@@ -138,9 +138,9 @@ public:
 
   /**
     * This method returns the id of the currently selected account
-    * or QCString() if none is selected.
+    * or QString() if none is selected.
     */
-  const QCString accountId(void) const { return m_account.id(); }
+  const QString accountId(void) const { return m_account.id(); }
 
   /**
     * Checks if new transactions can be created in the current context
@@ -206,13 +206,13 @@ public slots:
     *
     * @param accountId Internal id used for the account to show
     * @param transactionId Internal id used for the transaction to select.
-    *                      Default is QCString() which will select the last
+    *                      Default is QString() which will select the last
     *                      transaction in the ledger if not the same account
     *
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString());
+  bool slotSelectAccount(const QString& accountId, const QString& transactionId = QString());
 
   /**
     * This method is provided for convenience and acts as the method above.
@@ -256,7 +256,7 @@ protected:
 
   void resizeEvent(QResizeEvent*);
 
-  void selectTransaction(const QCString& id);
+  void selectTransaction(const QString& id);
 
   /**
     * This method handles the focus of the keyboard. When in edit mode
@@ -288,7 +288,7 @@ protected:
     * @param actBalance map of account indexed values to be used as actual balance
     * @param clearedBalance map of account indexed values to be used as cleared balance
     */
-  void updateSummaryLine(const QMap<QCString, MyMoneyMoney>& actBalance, const QMap<QCString, MyMoneyMoney>& clearedBalance);
+  void updateSummaryLine(const QMap<QString, MyMoneyMoney>& actBalance, const QMap<QString, MyMoneyMoney>& clearedBalance);
 
   /**
     * setup the default action according to the current account type

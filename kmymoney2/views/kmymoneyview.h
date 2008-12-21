@@ -182,7 +182,7 @@ private:
   /**
     *
     */
-  void loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
+  void loadAncientCurrency(const QString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QString& newId, const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
 
   /**
     * if no base currency is defined, start the dialog and force it to be set
@@ -202,7 +202,7 @@ private:
     */
   void removeStorage(void);
 
-  void viewAccountList(const QCString& selectAccount); // Show the accounts view
+  void viewAccountList(const QString& selectAccount); // Show the accounts view
 
   static void progressCallback(int current, int total, const QString&);
 
@@ -468,7 +468,7 @@ public slots:
     * @param acc The ID of the account to be shown
     * @param transaction The ID of the transaction to be selected
     */
-  void slotLedgerSelected(const QCString& acc, const QCString& transaction = QCString());
+  void slotLedgerSelected(const QString& acc, const QString& transaction = QString());
 
   /**
     * Called, whenever the payees view should pop up and a specific
@@ -478,7 +478,7 @@ public slots:
     * @param accountId The ID of the account to be shown
     * @param transactionId The ID of the transaction to be selected
     */
-  void slotPayeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
+  void slotPayeeSelected(const QString& payeeId, const QString& accountId, const QString& transactionId);
 
   /**
     * Called, whenever the schedule view should pop up and a specific
@@ -486,7 +486,7 @@ public slots:
     *
     * @param schedule The ID of the schedule to be shown
     */
-  void slotScheduleSelected(const QCString& schedule);
+  void slotScheduleSelected(const QString& schedule);
 
   /**
     * Called, whenever the report view should pop up and a specific
@@ -494,7 +494,7 @@ public slots:
     *
     * @param reportid The ID of the report to be shown
     */
-  void slotShowReport(const QCString& reportid);
+  void slotShowReport(const QString& reportid);
 
   /**
     * Same as the above, but the caller passes in an actual report

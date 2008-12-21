@@ -68,15 +68,6 @@
 /*                               KTransactionPtrVector                            */
 /* -------------------------------------------------------------------------------*/
 
-int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
-{
-  if(s1 == s2)
-    return 0;
-  if(s1 < s2)
-    return -1;
-  return 1;
-}
-
 int KTransactionPtrVector::compareItems(const QString& s1, const QString& s2) const
 {
   if(s1 == s2)
@@ -252,13 +243,13 @@ void KTransactionPtrVector::setSortType(const TransactionSortE type)
   sort();
 }
 
-void KTransactionPtrVector::setAccountId(const QCString& id)
+void KTransactionPtrVector::setAccountId(const QString& id)
 {
   m_id = id;
   m_idMode = AccountMode;
 }
 
-void KTransactionPtrVector::setPayeeId(const QCString& id)
+void KTransactionPtrVector::setPayeeId(const QString& id)
 {
   m_id = id;
   m_idMode = PayeeMode;
@@ -294,7 +285,7 @@ void KPayeeListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
-KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transactionId) :
+KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QString& accountId, const QString& transactionId) :
   KListViewItem(view, parent)
 {
   m_accountId = accountId;
@@ -466,7 +457,7 @@ void KPayeesView::slotRenamePayee(QListViewItem* p , int /* col */, const QStrin
   }
 }
 
-void KPayeesView::ensurePayeeVisible(const QCString& id)
+void KPayeesView::ensurePayeeVisible(const QString& id)
 {
   for (QListViewItem * item = m_payeesList->firstChild(); item; item = item->itemBelow()) {
     KPayeeListItem* p = dynamic_cast<KPayeeListItem*>(item);
@@ -614,7 +605,7 @@ void KPayeesView::showTransactions(void)
   m_transactionPtrVector.setSortType(KTransactionPtrVector::SortPostDate);
 
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
-  QCString lastId;
+  QString lastId;
   int ofs = 0;
 
   for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
@@ -841,8 +832,8 @@ void KPayeesView::loadPayees(void)
   if(m_inSelection)
     return;
 
-  QMap<QCString, bool> isSelected;
-  QCString id;
+  QMap<QString, bool> isSelected;
+  QString id;
 
   ::timetrace("Start KPayeesView::loadPayees");
   readConfig();
@@ -930,7 +921,7 @@ void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
     emit transactionSelected(item->accountId(), item->transactionId());
 }
 
-void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
+void KPayeesView::slotSelectPayeeAndTransaction(const QString& payeeId, const QString& accountId, const QString& transactionId)
 {
   if(!isVisible())
     return;

@@ -20,7 +20,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qcstring.h>
 #include <qframe.h>
 #include <qlayout.h>
 #include <qtimer.h>
@@ -67,7 +66,7 @@ public:
   MousePressFilter*    m_mousePressFilter;
   KMyMoneyRegister::RegisterSearchLineWidget* m_registerSearchLine;
   QPoint               m_startPoint;
-  QCString             m_reconciliationAccount;
+  QString             m_reconciliationAccount;
   QDate                m_reconciliationDate;
   MyMoneyMoney         m_endingBalance;
   int                  m_precision;
@@ -241,7 +240,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadView()));
   connect(m_register, SIGNAL(focusChanged(KMyMoneyRegister::Transaction*)), m_form, SLOT(slotSetTransaction(KMyMoneyRegister::Transaction*)));
   connect(m_register, SIGNAL(focusChanged()), kmymoney2, SLOT(slotUpdateActions()));
-  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QString&)), this, SLOT(slotSelectAccount(const QString&)));
   connect(m_register, SIGNAL(selectionChanged(const KMyMoneyRegister::SelectedTransactions&)), this, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)));
   connect(m_register, SIGNAL(editTransaction()), this, SIGNAL(startEdit()));
   connect(m_register, SIGNAL(emptyItemSelected()), this, SLOT(slotNewTransaction()));
@@ -305,7 +304,7 @@ void KGlobalLedgerView::clear(void)
   m_transactionList.clear();
 
   // and the selected account in the combo box
-  m_accountComboBox->setSelected(QCString());
+  m_accountComboBox->setSelected(QString());
 
   // fraction defaults to two digits
   d->m_precision = 2;
@@ -324,9 +323,9 @@ void KGlobalLedgerView::loadView(void)
   KMyMoneyRegister::SelectedTransactions list;
   emit transactionsSelected(list);
 
-  QMap<QCString, bool> isSelected;
-  QCString focusItemId;
-  QCString anchorItemId;
+  QMap<QString, bool> isSelected;
+  QString focusItemId;
+  QString anchorItemId;
 
   if(!d->m_inLoading)
     d->m_startPoint = QPoint(-1, -1);
@@ -381,13 +380,13 @@ void KGlobalLedgerView::loadView(void)
   // ... and recreate it
   KMyMoneyRegister::RegisterItem* focusItem = 0;
   KMyMoneyRegister::RegisterItem* anchorItem = 0;
-  QMap<QCString, MyMoneyMoney> actBalance, clearedBalance, futureBalance;
-  QMap<QCString, MyMoneyMoney>::iterator it_b;
+  QMap<QString, MyMoneyMoney> actBalance, clearedBalance, futureBalance;
+  QMap<QString, MyMoneyMoney>::iterator it_b;
   try {
     // setup the filter to select the transactions we want to display
     // and update the sort order
     QString sortOrder;
-    QCString key;
+    QString key;
     QDate reconciliationDate = d->m_reconciliationDate;
 
     MyMoneyTransactionFilter filter(m_account.id());
@@ -426,7 +425,7 @@ void KGlobalLedgerView::loadView(void)
 
     // create the elements for the register
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
-    QMap<QCString, int>uniqueMap;
+    QMap<QString, int>uniqueMap;
     int i = 0;
     for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
       uniqueMap[(*it).first.id()]++;
@@ -527,10 +526,10 @@ void KGlobalLedgerView::loadView(void)
     || m_account.accountGroup() == MyMoneyAccount::Equity)
       factor = -factor;
 
-    QMap<QCString, int> deposits;
-    QMap<QCString, int> payments;
-    QMap<QCString, MyMoneyMoney> depositAmount;
-    QMap<QCString, MyMoneyMoney> paymentAmount;
+    QMap<QString, int> deposits;
+    QMap<QString, int> payments;
+    QMap<QString, MyMoneyMoney> depositAmount;
+    QMap<QString, MyMoneyMoney> paymentAmount;
     for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
       MyMoneyMoney balance = MyMoneyFile::instance()->balance(it_b.key());
       balance = balance * factor;
@@ -698,7 +697,7 @@ void KGlobalLedgerView::loadView(void)
   emit accountSelected(m_account);
 }
 
-void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& actBalance, const QMap<QCString, MyMoneyMoney>& clearedBalance)
+void KGlobalLedgerView::updateSummaryLine(const QMap<QString, MyMoneyMoney>& actBalance, const QMap<QString, MyMoneyMoney>& clearedBalance)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   m_leftSummaryLabel->show();
@@ -728,11 +727,11 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& ac
       m_centerSummaryLabel->hide();
       MyMoneyMoney balance;
       MyMoneySecurity base = file->baseCurrency();
-      QMap<QCString, MyMoneyMoney>::const_iterator it_b;
+      QMap<QString, MyMoneyMoney>::const_iterator it_b;
       bool approx = false;
       for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
         MyMoneyAccount stock = file->account(it_b.key());
-        QCString currencyId = stock.currencyId();
+        QString currencyId = stock.currencyId();
         MyMoneySecurity sec = file->security(currencyId);
         MyMoneyPrice priceInfo;
         MyMoneyMoney rate(1,1);
@@ -796,9 +795,9 @@ void KGlobalLedgerView::loadAccounts(void)
   m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
   if(m_account.id().isEmpty()) {
-    QCStringList list = m_accountComboBox->accountList();
+    QStringList list = m_accountComboBox->accountList();
     if(list.count()) {
-      QCStringList::Iterator it;
+      QStringList::Iterator it;
       for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
         if(!a.isInvest()) {
@@ -825,7 +824,7 @@ void KGlobalLedgerView::loadAccounts(void)
   }
 }
 
-void KGlobalLedgerView::selectTransaction(const QCString& id)
+void KGlobalLedgerView::selectTransaction(const QString& id)
 {
   if(!id.isEmpty()) {
     KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
@@ -911,7 +910,7 @@ bool KGlobalLedgerView::slotSelectAccount(const MyMoneyObject& obj)
   return rc;
 }
 
-bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& transactionId)
+bool KGlobalLedgerView::slotSelectAccount(const QString& id, const QString& transactionId)
 {
   bool    rc = true;
 
@@ -1101,7 +1100,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::Selected
       connect(editor, SIGNAL(finishEdit(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions&)));
 
       connect(editor, SIGNAL(objectCreation(bool)), d->m_mousePressFilter, SLOT(setFilterDeactive(bool)));
-      connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
+      connect(editor, SIGNAL(createPayee(const QString&, QString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QString&)));
       connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
       connect(editor, SIGNAL(createSecurity(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotInvestmentNew(MyMoneyAccount&, const MyMoneyAccount&)));
       connect(editor, SIGNAL(assignNumber(void)), kmymoney2, SLOT(slotTransactionAssignNumber()));
@@ -1273,7 +1272,7 @@ void KGlobalLedgerView::slotSortOptions(void)
 {
   KSortOptionDlg* dlg = new KSortOptionDlg(this);
 
-  QCString key;
+  QString key;
   QString sortOrder, def;
   if(isReconciliationAccount()) {
     key = "kmm-sort-reconcile";

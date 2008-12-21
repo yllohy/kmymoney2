@@ -126,10 +126,10 @@ void KCurrencyEditDlg::slotLoadCurrencies(void)
   QValueList<MyMoneySecurity>::ConstIterator it;
   QListViewItem *first = 0;
 
-  QCString localCurrency(localeconv()->int_curr_symbol);
+  QString localCurrency(localeconv()->int_curr_symbol);
   localCurrency.truncate(3);
 
-  QCString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
+  QString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
   // construct a transparent 16x16 pixmap
   QPixmap empty(16, 16);
   empty.setMask(QBitmap(16, 16, true));
@@ -182,7 +182,7 @@ void KCurrencyEditDlg::updateCurrency(void)
   }
 }
 
-void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
+void KCurrencyEditDlg::slotSelectCurrency(const QString& id)
 {
   QListViewItemIterator it(m_currencyList);
 

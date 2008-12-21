@@ -67,7 +67,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
 
   connect(m_nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   // connect(m_payeeEdit, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
-  connect(m_payeeEdit, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(m_payeeEdit, SIGNAL(createItem(const QString&, QString&)), this, SIGNAL(createPayee(const QString&, QString&)));
 
   connect(m_previousPaymentButton, SIGNAL(clicked()), this, SLOT(slotPaymentsMade()));
   connect(m_noPreviousPaymentButton, SIGNAL(clicked()), this, SLOT(slotNoPaymentsMade()));
@@ -158,7 +158,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   helpButton()->hide();
 
   // setup a phony transaction for additional fee processing
-  m_account = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
+  m_account = MyMoneyAccount("Phony-ID", MyMoneyAccount());
   m_split.setAccountId(m_account.id());
   m_split.setValue(0);
   m_transaction.addSplit(m_split);
@@ -439,7 +439,7 @@ void KNewLoanWizard::updateSummary(void)
 
   // Payment
   try {
-    QCStringList sel = m_interestAccountEdit->selectedItems();
+    QStringList sel = m_interestAccountEdit->selectedItems();
     if(sel.count() != 1)
       throw new MYMONEYEXCEPTION("Need a single selected interest category");
     MyMoneyAccount acc = MyMoneyFile::instance()->account(sel.first());
@@ -453,7 +453,7 @@ void KNewLoanWizard::updateSummary(void)
   m_summaryNextPayment->setText(KGlobal::locale()->formatDate(m_nextDueDateEdit->date(), true));
 
   try {
-    QCStringList sel = m_paymentAccountEdit->selectedItems();
+    QStringList sel = m_paymentAccountEdit->selectedItems();
     if(sel.count() != 1)
       throw new MYMONEYEXCEPTION("Need a single selected payment account");
     MyMoneyAccount acc = MyMoneyFile::instance()->account(sel.first());
@@ -927,7 +927,7 @@ int KNewLoanWizard::calculateLoan(void)
   return 1;
 }
 
-const QString KNewLoanWizard::updateTermWidgets(const long double val)
+QString KNewLoanWizard::updateTermWidgets(const long double val)
 {
   long long vl = static_cast<long long>(floorl(val));
 
@@ -979,7 +979,7 @@ void KNewLoanWizard::slotCreateCategory(void)
 
     MyMoneyFileTransaction ft;
     try {
-      QCString id;
+      QString id;
       id = file->createCategory(base, acc.name());
       if(id.isEmpty())
         throw new MYMONEYEXCEPTION("failure while creating the account hierarchy");
@@ -1022,9 +1022,9 @@ void KNewLoanWizard::loadAccountList(void)
 void KNewLoanWizard::slotAdditionalFees(void)
 {
   // KMessageBox::information(0, QString("Not yet implemented ... if you want to help, contact kmymoney2-developer@lists.sourceforge.net"), QString("Development notice"));
-  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
+  MyMoneyAccount account("Phony-ID", MyMoneyAccount());
 
-  QMap<QCString, MyMoneyMoney> priceInfo;
+  QMap<QString, MyMoneyMoney> priceInfo;
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, m_split, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), priceInfo);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
@@ -1046,7 +1046,7 @@ void KNewLoanWizard::slotAdditionalFees(void)
   updatePeriodicPayment();
 }
 
-const MyMoneyTransaction KNewLoanWizard::transaction() const
+MyMoneyTransaction KNewLoanWizard::transaction() const
 {
   MyMoneyTransaction t;
 
@@ -1080,11 +1080,11 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   sInterest.setAction(MyMoneySplit::ActionInterest);
 
   // payee
-  QCString payeeId = m_payeeEdit->selectedItem();
+  QString payeeId = m_payeeEdit->selectedItem();
   sPayment.setPayeeId(payeeId);
   sAmortization.setPayeeId(payeeId);
 
-  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
+  MyMoneyAccount account("Phony-ID", MyMoneyAccount());
   sAmortization.setAccountId(account.id());
 
   // IMPORTANT: Payment split must be the first one, because
@@ -1108,7 +1108,7 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   return t;
 }
 
-const MyMoneySchedule KNewLoanWizard::schedule() const
+MyMoneySchedule KNewLoanWizard::schedule() const
 {
   MyMoneySchedule sched(m_nameEdit->text(),
                         MyMoneySchedule::TYPE_LOANPAYMENT,
@@ -1132,7 +1132,7 @@ void KNewLoanWizard::slotReloadEditWidgets(void)
   loadAccountList();
 
   // reload payee widget
-  QCString payeeId = m_payeeEdit->selectedItem();
+  QString payeeId = m_payeeEdit->selectedItem();
 
   m_payeeEdit->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -1169,15 +1169,15 @@ int KNewLoanWizard::term(void) const
   return factor;
 }
 
-const QCString KNewLoanWizard::initialPaymentAccount(void) const
+QString KNewLoanWizard::initialPaymentAccount(void) const
 {
   if(m_dontCreatePayoutCheckBox->isChecked()) {
-    return QCString();
+    return QString();
   }
   return m_assetAccountEdit->selectedItems().first();
 }
 
-const QDate KNewLoanWizard::initialPaymentDate(void) const
+QDate KNewLoanWizard::initialPaymentDate(void) const
 {
   if(m_dontCreatePayoutCheckBox->isChecked()) {
     return QDate();

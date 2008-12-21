@@ -488,7 +488,7 @@ protected:
     * @param id id of the item to be searched
     * @return pointer to RegisterItem or 0 if not found
     */
-  RegisterItem* itemById(const QCString& id) const;
+  RegisterItem* itemById(const QString& id) const;
 
   void insertWidget(int row, int col, QWidget* w);
 

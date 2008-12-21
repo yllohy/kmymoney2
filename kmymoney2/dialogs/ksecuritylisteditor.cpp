@@ -166,7 +166,7 @@ void KSecurityListEditor::slotEditSecurity(void)
 
     KNewInvestmentWizard dlg(security, this, "KNewInvestmentWizard");
     if(dlg.exec() == QDialog::Accepted) {
-      dlg.createObjects(QCString());
+      dlg.createObjects(QString());
       security = MyMoneyFile::instance()->security(item->text(ID_COL).latin1());
       fillItem(item, security);
     }

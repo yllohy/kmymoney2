@@ -73,7 +73,7 @@ public:
     * (the default) a warning will be displayed when the balance crosses the minimum
     * or maximum balance settings for the account.
     */
-  virtual bool enterTransactions(QCString& newId, bool askForSchedule = true, bool suppressBalanceWarnings = false);
+  virtual bool enterTransactions(QString& newId, bool askForSchedule = true, bool suppressBalanceWarnings = false);
 
   /**
     * This method creates a transaction based on the contents of the current widgets,
@@ -157,13 +157,13 @@ public slots:
     *
     * @param id of the account to be used
     */
-  void slotUpdateAccount(const QCString& id);
+  void slotUpdateAccount(const QString& id);
 
 protected:
   virtual void createEditWidgets(void) = 0;
   virtual void setupFinalWidgets(void) = 0;
   virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
-  void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
+  void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
 protected slots:
   virtual void slotUpdateButtonState(void);
@@ -196,7 +196,7 @@ signals:
     * @param txt The name of the payee to be created
     * @param id A connected slot should store the id of the created object in this variable
     */
-  void createPayee(const QString& txt, QCString& id);
+  void createPayee(const QString& txt, QString& id);
 
   /**
     * This signal is sent out, when a new category needs to be created
@@ -270,7 +270,7 @@ protected:
   MyMoneyTransaction                                m_transaction;
   MyMoneySplit                                      m_split;
   QDate                                             m_lastPostDate;
-  QMap<QCString, MyMoneyMoney>                      m_priceInfo;
+  QMap<QString, MyMoneyMoney>                       m_priceInfo;
   KMyMoneyRegister::Action                          m_initialAction;
   bool                                              m_openEditSplits;
 };
@@ -315,12 +315,12 @@ protected slots:
   void slotUpdatePayment(const QString&);
   void slotUpdateDeposit(const QString&);
   void slotUpdateAmount(const QString&);
-  void slotUpdateCategory(const QCString&);
-  void slotUpdatePayee(const QCString&);
+  void slotUpdateCategory(const QString&);
+  void slotUpdatePayee(const QString&);
   void slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection);
-  void slotCreateCategory(const QString&, QCString&);
+  void slotCreateCategory(const QString&, QString&);
   void slotUpdateAction(int action);
-  void slotUpdateAccount(const QCString& id);
+  void slotUpdateAccount(const QString& id);
 
 protected:
   /**
@@ -338,17 +338,17 @@ protected:
     */
   void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
-  void setupCategoryWidget(QCString&);
+  void setupCategoryWidget(QString&);
   void updateAmount(const MyMoneyMoney& value);
-  bool isTransfer(const QCString& accId1, const QCString& accId2) const;
+  bool isTransfer(const QString& accId1, const QString& accId2) const;
 
-  void checkPayeeInSplit(MyMoneySplit& s, const QCString& payeeId);
+  void checkPayeeInSplit(MyMoneySplit& s, const QString& payeeId);
 
   /**
     * This method fills the editor widgets with the last transaction
     * that can be found for payee @a payeeId in the account @a m_account.
     */
-  void autoFill(const QCString& payeeId);
+  void autoFill(const QString& payeeId);
 
   /**
     * Extracts the amount of the transaction from the widgets depending

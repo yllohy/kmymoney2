@@ -85,14 +85,12 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
 
     MyMoneySeqAccessMgr* storage;
     MyMoneyFile* file;
-    
+
     MyMoneyMoney moT1;
     MyMoneyMoney moT2;
     MyMoneyMoney moT3;
     MyMoneyMoney moT4;
     MyMoneyMoney moT5;
-    QCString acCash;
-
 };
 
 #endif

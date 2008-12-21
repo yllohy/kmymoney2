@@ -195,7 +195,7 @@ MyMoneyTransaction NewAccountWizard::Wizard::payoutTransaction(void)
     s.setValue(-s.value());
     s.setAccountId(m_loanPayoutPage->payoutAccountId());
     MyMoneyMoney shares;
-    KCurrencyCalculator::setupSplitPrice(shares, t, s, QMap<QCString, MyMoneyMoney>(), this);
+    KCurrencyCalculator::setupSplitPrice(shares, t, s, QMap<QString, MyMoneyMoney>(), this);
     s.setShares(shares);
     t.addSplit(s);
   }
@@ -531,7 +531,7 @@ void AccountTypePage::slotUpdateCurrency(void)
 
 void AccountTypePage::slotGetOnlineQuote(void)
 {
-  QCString id = MyMoneyFile::instance()->baseCurrency().id()+" "+m_currencyComboBox->security().id();
+  QString id = MyMoneyFile::instance()->baseCurrency().id()+" "+m_currencyComboBox->security().id();
   KEquityPriceUpdateDlg dlg(this, id);
   if(dlg.exec() == QDialog::Accepted) {
     MyMoneyPrice price = dlg.price(id);
@@ -566,7 +566,7 @@ void AccountTypePage::slotUpdateConversionRate(const QString& txt)
 
 void AccountTypePage::slotLoadWidgets(void)
 {
-  m_currencyComboBox->update(QCString("x"));
+  m_currencyComboBox->update(QString("x"));
 }
 
 bool AccountTypePage::isComplete(void) const
@@ -634,7 +634,7 @@ BrokeragePage::BrokeragePage(Wizard* wizard, const char* name) :
 
 void BrokeragePage::slotLoadWidgets(void)
 {
-  m_brokerageCurrency->update(QCString("x"));
+  m_brokerageCurrency->update(QString("x"));
 }
 
 void BrokeragePage::enterPage(void)
@@ -666,11 +666,11 @@ CreditCardSchedulePage::CreditCardSchedulePage(Wizard* wizard, const char* name)
   m_mandatoryGroup->add(m_payee);
   m_mandatoryGroup->add(m_amount->lineedit());
   m_mandatoryGroup->add(m_paymentAccount);
-  connect(m_paymentAccount, SIGNAL(itemSelected(const QCString&)), object(), SIGNAL(completeStateChanged()));
-  connect(m_payee, SIGNAL(itemSelected(const QCString&)), object(), SIGNAL(completeStateChanged()));
+  connect(m_paymentAccount, SIGNAL(itemSelected(const QString&)), object(), SIGNAL(completeStateChanged()));
+  connect(m_payee, SIGNAL(itemSelected(const QString&)), object(), SIGNAL(completeStateChanged()));
   connect(m_date, SIGNAL(dateChanged(const QDate&)), object(), SIGNAL(completeStateChanged()));
 
-  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), wizard, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(m_payee, SIGNAL(createItem(const QString&, QString&)), wizard, SIGNAL(createPayee(const QString&, QString&)));
 
   m_reminderCheckBox->setChecked(true);
   connect(m_reminderCheckBox, SIGNAL(toggled(bool)), object(), SIGNAL(completeStateChanged()));
@@ -760,7 +760,7 @@ GeneralLoanInfoPage::GeneralLoanInfoPage(Wizard* wizard, const char* name) :
 
   slotLoadWidgets();
 
-  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), wizard, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(m_payee, SIGNAL(createItem(const QString&, QString&)), wizard, SIGNAL(createPayee(const QString&, QString&)));
   connect(m_anyPayments, SIGNAL(activated(int)), object(),  SIGNAL(completeStateChanged()));
   connect(m_recordings, SIGNAL(activated(int)), object(), SIGNAL(completeStateChanged()));
 
@@ -1219,7 +1219,7 @@ LoanPaymentPage::LoanPaymentPage(Wizard* wizard, const char* name) :
   WizardPage<Wizard>(StepFees, this, wizard, name),
   d(new LoanPaymentPagePrivate)
 {
-  d->phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
+  d->phonyAccount = MyMoneyAccount(QString("Phony-ID"), MyMoneyAccount());
 
   d->phonySplit.setAccountId(d->phonyAccount.id());
   d->phonySplit.setValue(0);
@@ -1276,7 +1276,7 @@ void LoanPaymentPage::enterPage(void)
 
 void LoanPaymentPage::slotAdditionalFees(void)
 {
-  QMap<QCString, MyMoneyMoney> priceInfo;
+  QMap<QString, MyMoneyMoney> priceInfo;
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(d->additionalFeesTransaction, d->phonySplit, d->phonyAccount, false, !m_wizard->moneyBorrowed(), MyMoneyMoney(0), priceInfo);
 
   // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
@@ -1310,11 +1310,11 @@ LoanSchedulePage::LoanSchedulePage(Wizard* wizard, const char* name) :
 {
   m_mandatoryGroup->add(m_interestCategory->lineEdit());
   m_mandatoryGroup->add(m_paymentAccount->lineEdit());
-  connect(m_interestCategory, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
+  connect(m_interestCategory, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateCategory(const QString&, QString&)));
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
 }
 
-void LoanSchedulePage::slotCreateCategory(const QString& name, QCString& id)
+void LoanSchedulePage::slotCreateCategory(const QString& name, QString& id)
 {
   MyMoneyAccount acc, parent;
   acc.setName(name);
@@ -1446,7 +1446,7 @@ bool LoanPayoutPage::isComplete(void) const
   return KMyMoneyWizardPage::isComplete() | m_noPayoutTransaction->isChecked();
 }
 
-const QCString& LoanPayoutPage::payoutAccountId(void) const
+const QString& LoanPayoutPage::payoutAccountId(void) const
 {
   if(m_refinanceLoan->isChecked()) {
     return m_loanAccount->selectedItem();
@@ -1508,7 +1508,7 @@ KMyMoneyAccountTreeItem* HierarchyPage::buildAccountTree
   KMyMoneyAccountTreeItem* childItem = new KMyMoneyAccountTreeItem( parent, account );
   if ( open )
     childItem->setOpen(true);
-  for ( QCStringList::ConstIterator it = account.accountList().begin();
+  for ( QStringList::ConstIterator it = account.accountList().begin();
         it != account.accountList().end();
         ++it )
   {
@@ -1533,7 +1533,7 @@ KMyMoneyAccountTreeItem* HierarchyPage::buildAccountTree
   KMyMoneyAccountTreeItem* childItem = new KMyMoneyAccountTreeItem( parent, account );
   if ( open )
     childItem->setOpen(true);
-  for ( QCStringList::ConstIterator it = account.accountList().begin();
+  for ( QStringList::ConstIterator it = account.accountList().begin();
         it != account.accountList().end();
         ++it )
   {
@@ -1577,7 +1577,7 @@ void AccountSummaryPage::enterPage(void)
   MyMoneySecurity sec = m_wizard->currency();
   // assign an id to the account inside the wizard which is required for a schedule
   // get the schedule and clear the id again in the wizards object.
-  MyMoneyAccount tmp(QCString("Phony-ID"), acc);
+  MyMoneyAccount tmp(QString("Phony-ID"), acc);
   m_wizard->setAccount(tmp);
   MyMoneySchedule sch = m_wizard->schedule();
   m_wizard->setAccount(acc);
@@ -1585,7 +1585,7 @@ void AccountSummaryPage::enterPage(void)
   m_dataList->clear();
 
   // Account data
-  QListViewItem* group = new KMyMoneyCheckListItem(m_dataList, i18n("Account information"), QString(), QCString(), QCheckListItem::RadioButtonController);
+  QListViewItem* group = new KMyMoneyCheckListItem(m_dataList, i18n("Account information"), QString(), QString(), QCheckListItem::RadioButtonController);
   group->setOpen(true);
   QListViewItem* p;
   p = new KListViewItem(group, i18n("Name"), acc.name());
@@ -1599,7 +1599,7 @@ void AccountSummaryPage::enterPage(void)
   p = new KListViewItem(group, p, i18n("Currency"), m_wizard->currency().name());
   p = new KListViewItem(group, p, i18n("Opening date"), KGlobal::locale()->formatDate(acc.openingDate()));
   if(m_wizard->currency().id() != MyMoneyFile::instance()->baseCurrency().id()) {
-    p = new KListViewItem(group, p, i18n("Conversion rate"), m_wizard->conversionRate().rate(QCString()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
+    p = new KListViewItem(group, p, i18n("Conversion rate"), m_wizard->conversionRate().rate(QString()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
   }
   if(!acc.isLoan() || !m_wizard->openingBalance().isZero())
     p = new KListViewItem(group, p, i18n("Opening balance"), m_wizard->openingBalance().formatMoney(acc, sec));
@@ -1616,7 +1616,7 @@ void AccountSummaryPage::enterPage(void)
 
   if(acc.accountType() == MyMoneyAccount::Investment) {
     if(m_wizard->m_brokeragepage->m_createBrokerageButton->isChecked()) {
-      group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Brokerage Account"), QString(), QCString(), QCheckListItem::RadioButtonController);
+      group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Brokerage Account"), QString(), QString(), QCheckListItem::RadioButtonController);
       group->setOpen(true);
       p = new KListViewItem(group, p, i18n("Name"), QString("%1 (Brokerage)").arg(acc.name()));
       p = new KListViewItem(group, p, i18n("Currency"), m_wizard->m_brokeragepage->m_brokerageCurrency->security().name());
@@ -1629,7 +1629,7 @@ void AccountSummaryPage::enterPage(void)
 
   // Loan
   if(acc.isLoan()) {
-    group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Loan information"), QString(), QCString(), QCheckListItem::RadioButtonController);
+    group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Loan information"), QString(), QString(), QCheckListItem::RadioButtonController);
     group->setOpen(true);
     if(m_wizard->moneyBorrowed()) {
       p = new KListViewItem(group, p, i18n("Amount borrowed"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
@@ -1644,7 +1644,7 @@ void AccountSummaryPage::enterPage(void)
     p = new KListViewItem(group, p, i18n("Payment account"), m_wizard->m_loanSchedulePage->m_paymentAccount->currentText());
 
     if(!m_wizard->m_loanPayoutPage->m_noPayoutTransaction->isChecked() && m_wizard->openingBalance().isZero()) {
-      group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Payout information"), QString(), QCString(), QCheckListItem::RadioButtonController);
+      group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Payout information"), QString(), QString(), QCheckListItem::RadioButtonController);
       group->setOpen(true);
       if(m_wizard->m_loanPayoutPage->m_refinanceLoan->isChecked()) {
         p = new KListViewItem(group, p, i18n("Refinance"), m_wizard->m_loanPayoutPage->m_loanAccount->currentText());
@@ -1660,7 +1660,7 @@ void AccountSummaryPage::enterPage(void)
 
   // Schedule
   if(!(sch == MyMoneySchedule())) {
-    group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Schedule information"), QString(), QCString(), QCheckListItem::RadioButtonController);
+    group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Schedule information"), QString(), QString(), QCheckListItem::RadioButtonController);
     group->setOpen(true);
     p = new KListViewItem(group, i18n("Name"), sch.name());
     if(acc.accountType() == MyMoneyAccount::CreditCard) {

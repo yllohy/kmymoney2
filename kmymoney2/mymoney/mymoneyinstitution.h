@@ -74,10 +74,10 @@ public:
   /**
     * This is the constructor for a new institution known to the current file
     *
-    * @param ID id assigned to the institution
+    * @param id id assigned to the new institution object
     * @param right institution definition
     */
-  MyMoneyInstitution(const QCString ID, const MyMoneyInstitution& right);
+  MyMoneyInstitution(const QString& id, const MyMoneyInstitution& right);
 
   /**
     * This is the constructor for an institution that is described by a
@@ -113,7 +113,7 @@ public:
     *
     * @param account id of the account to be added
     */
-  void addAccountId(const QCString& account);
+  void addAccountId(const QString& account);
 
   /**
     * This method deletes the id of an account from the account list
@@ -122,14 +122,14 @@ public:
     * @param account id of the account to be deleted
     * @return id of account deleted, otherwise empty string
     */
-  QCString removeAccountId(const QCString& account);
+  QString removeAccountId(const QString& account);
 
   /**
     * This method is used to return the set of accounts known to
     * this institution
     * return QStringList of account ids
     */
-  const QCStringList& accountList(void) const { return m_accountList; }
+  const QStringList& accountList(void) const { return m_accountList; }
 
   /**
     * This method returns the number of accounts known to
@@ -152,7 +152,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   QPixmap pixmap() const;
 
@@ -200,7 +200,7 @@ private:
     * This member variable keeps the sorted list of the account ids
     * available at this institution
     */
-  QCStringList m_accountList;
+  QStringList m_accountList;
 };
 
 #endif

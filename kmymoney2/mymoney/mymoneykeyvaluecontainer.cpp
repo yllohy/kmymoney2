@@ -39,7 +39,7 @@ MyMoneyKeyValueContainer::MyMoneyKeyValueContainer(const QDomElement& node)
     QDomNodeList nodeList = node.elementsByTagName("PAIR");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
       const QDomElement& el(nodeList.item(i).toElement());
-      m_kvp[QCString(el.attribute("key"))] = el.attribute("value");
+      m_kvp[el.attribute("key")] = el.attribute("value");
     }
   }
 }
@@ -48,9 +48,9 @@ MyMoneyKeyValueContainer::~MyMoneyKeyValueContainer()
 {
 }
 
-const QString& MyMoneyKeyValueContainer::value(const QCString& key) const
+const QString& MyMoneyKeyValueContainer::value(const QString& key) const
 {
-  QMap<QCString, QString>::ConstIterator it;
+  QMap<QString, QString>::ConstIterator it;
 
   it = m_kvp.find(key);
   if(it != m_kvp.end())
@@ -58,20 +58,20 @@ const QString& MyMoneyKeyValueContainer::value(const QCString& key) const
   return QString::null;
 }
 
-void MyMoneyKeyValueContainer::setValue(const QCString& key, const QString& value)
+void MyMoneyKeyValueContainer::setValue(const QString& key, const QString& value)
 {
   m_kvp[key] = value;
 }
 
 
-void MyMoneyKeyValueContainer::setPairs(const QMap<QCString, QString>& list)
+void MyMoneyKeyValueContainer::setPairs(const QMap<QString, QString>& list)
 {
   m_kvp = list;
 }
 
-void MyMoneyKeyValueContainer::deletePair(const QCString& key)
+void MyMoneyKeyValueContainer::deletePair(const QString& key)
 {
-  QMap<QCString, QString>::Iterator it;
+  QMap<QString, QString>::Iterator it;
 
   it = m_kvp.find(key);
   if(it != m_kvp.end())
@@ -85,7 +85,7 @@ void MyMoneyKeyValueContainer::clear(void)
 
 bool MyMoneyKeyValueContainer::operator == (const MyMoneyKeyValueContainer& right) const
 {
-  QMap<QCString, QString>::ConstIterator it_a, it_b;
+  QMap<QString, QString>::ConstIterator it_a, it_b;
 
   it_a = m_kvp.begin();
   it_b = right.m_kvp.begin();
@@ -106,7 +106,7 @@ void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& par
   if(m_kvp.count() != 0) {
     QDomElement el = document.createElement("KEYVALUEPAIRS");
 
-    QMap<QCString, QString>::ConstIterator it;
+    QMap<QString, QString>::ConstIterator it;
     for(it = m_kvp.begin(); it != m_kvp.end(); ++it)
     {
       QDomElement pair = document.createElement("PAIR");

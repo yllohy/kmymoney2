@@ -365,7 +365,7 @@ public:
     *                 for the calculation of interest. If map is empty, the engine
     *                 will be interrogated for current balances.
     */
-  static void calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances);
+  static void calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QString, MyMoneyMoney>& balances);
 
   /**
     * Return next check number for account @a acc.
@@ -393,7 +393,7 @@ public:
    * ids of those categories in @a feesId and @a interestId. The last used category
    * will be returned.
    */
-  static void previouslyUsedCategories(const QCString& investmentAccount, QCString& feesId, QCString& interestId);
+  static void previouslyUsedCategories(const QString& investmentAccount, QString& feesId, QString& interestId);
 
 };
 

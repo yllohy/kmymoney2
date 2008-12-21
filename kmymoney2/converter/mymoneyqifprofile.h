@@ -23,7 +23,6 @@
 
 #include <qobject.h>
 #include <qstring.h>
-#include <qcstring.h>
 class QDate;
 
 // ----------------------------------------------------------------------------

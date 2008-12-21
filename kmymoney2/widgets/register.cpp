@@ -1483,7 +1483,7 @@ void Register::selectedTransactions(SelectedTransactions& list) const
   if(m_focusItem && m_focusItem->isSelected() && m_focusItem->isVisible()) {
     Transaction* t = dynamic_cast<Transaction*>(m_focusItem);
     if(t) {
-      QCString id;
+      QString id;
       if(t->isScheduled())
         id = t->transaction().id();
       SelectedTransaction s(t->transaction(), t->split(), id);
@@ -1499,7 +1499,7 @@ void Register::selectedTransactions(SelectedTransactions& list) const
     if(item && item->isSelected() && item->isVisible()) {
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {
-        QCString id;
+        QString id;
         if(t->isScheduled())
           id = t->transaction().id();
         SelectedTransaction s(t->transaction(), t->split(), id);
@@ -1556,7 +1556,7 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
     if(item->hasEditorOpen() || !item->isSelectable())
       return;
 
-    QCString id = item->id();
+    QString id = item->id();
     selectItem(item);
     // selectItem() might have changed the pointers, so we
     // need to reconstruct it here
@@ -1639,7 +1639,7 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
     return;
 
   if(item->isSelectable()) {
-    QCString id = item->id();
+    QString id = item->id();
     QValueList<RegisterItem*> itemList = selectedItems();
     bool okToSelect = true;
     int cnt = itemList.count();
@@ -1966,7 +1966,7 @@ void Register::slotToggleErronousTransactions(void)
   QTimer::singleShot(500, this, SLOT(slotToggleErronousTransactions()));
 }
 
-RegisterItem* Register::itemById(const QCString& id) const
+RegisterItem* Register::itemById(const QString& id) const
 {
   if(id.isEmpty())
     return m_lastItem;

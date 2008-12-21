@@ -108,7 +108,7 @@ public:
 
   MyMoneySchedule(const QDomElement& node);
 
-  MyMoneySchedule(const QCString& id, const MyMoneySchedule& right);
+  MyMoneySchedule(const QString& id, const MyMoneySchedule& right);
 
   /**
     * Standard destructor
@@ -432,7 +432,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   /**
    * This method is used to convert the occurence type from it's

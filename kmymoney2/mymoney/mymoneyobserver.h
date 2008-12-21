@@ -30,13 +30,12 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qcstring.h>
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/export.h>
 class MyMoneySubject;
+class QString;
 
 /**
   * This is the base class to be used to construct an
@@ -45,9 +44,9 @@ class MyMoneySubject;
   * @author Thomas Baumgart
   */
 class KMYMONEY_EXPORT MyMoneyObserver {
-public: 
+public:
 	virtual ~MyMoneyObserver();
-  virtual void update(const QCString& id) = 0;
+  virtual void update(const QString& id) = 0;
 
 protected:
 	MyMoneyObserver();

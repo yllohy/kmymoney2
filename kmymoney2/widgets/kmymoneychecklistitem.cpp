@@ -31,7 +31,7 @@
 #include "kmymoneylistviewitem.h"
 #include "../kmymoneyglobalsettings.h"
 
-KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, const QString& key, const QCString& id, Type type) :
+KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, const QString& key, const QString& id, Type type) :
   QCheckListItem(parent, txt, type),
   m_key(key),
   m_id(id),
@@ -43,7 +43,7 @@ KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& t
     m_key = txt;
 }
 
-KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QString& txt, const QString& key, const QCString& id, Type type) :
+KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QString& txt, const QString& key, const QString& id, Type type) :
   QCheckListItem(parent, txt, type),
   m_key(key),
   m_id(id),
@@ -55,7 +55,7 @@ KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QStrin
     m_key = txt;
 }
 
-KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, QListViewItem* after, const QString& txt, const QString& key, const QCString& id, Type type) :
+KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, QListViewItem* after, const QString& txt, const QString& key, const QString& id, Type type) :
   QCheckListItem(parent, after, txt, type),
   m_key(key),
   m_id(id),

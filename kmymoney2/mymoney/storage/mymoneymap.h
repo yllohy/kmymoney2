@@ -271,8 +271,8 @@ protected:
 #include <kmymoney/mymoneytransaction.h>
 main()
 {
-  MyMoneyMap<QCString, MyMoneyAccount> container;
-  MyMoneyMap<QCString, MyMoneyTransaction> ct;
+  MyMoneyMap<QString, MyMoneyAccount> container;
+  MyMoneyMap<QString, MyMoneyTransaction> ct;
 
   MyMoneyAccount acc;
   acc.setName("Test");
@@ -298,7 +298,7 @@ main()
     container.dump();
 
     container.startTransaction();
-    container.remove(QCString("001"));
+    container.remove(QString("001"));
     container.dump();
     container.rollbackTransaction();
     container.dump();
@@ -306,7 +306,7 @@ main()
     b = container["001"];
     printf("b.name() = %s\n", b.name().data());
 
-    QMap<QCString, MyMoneyAccount>::ConstIterator it;
+    QMap<QString, MyMoneyAccount>::ConstIterator it;
     it = container.find("001");
     it = container.begin();
 
@@ -315,7 +315,7 @@ main()
     delete e;
   }
 
-  QMap<QCString, MyMoneyAccount> map;
+  QMap<QString, MyMoneyAccount> map;
   map["005"] = b;
   container = map;
 

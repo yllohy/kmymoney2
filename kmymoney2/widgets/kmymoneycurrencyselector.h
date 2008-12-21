@@ -66,7 +66,7 @@ public:
   void selectDisplayItem(KMyMoneySecuritySelector::displayItemE item);
   void setDisplayOnly(const bool disp);
 
-  void update(const QCString& id);
+  void update(const QString& id);
 
 public slots:
   void slotSetInitialSecurity(void);

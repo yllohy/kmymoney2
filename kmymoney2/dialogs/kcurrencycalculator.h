@@ -65,7 +65,7 @@ public:
 
   void setupPriceEditor(void);
 
-  static bool setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTransaction& t, const MyMoneySplit& s, const QMap<QCString, MyMoneyMoney>& priceInfo, QWidget* parentWidget);
+  static bool setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTransaction& t, const MyMoneySplit& s, const QMap<QString, MyMoneyMoney>& priceInfo, QWidget* parentWidget);
 
 protected:
   void updateExample(const MyMoneyMoney& price);

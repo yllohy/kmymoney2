@@ -282,32 +282,32 @@ private:
    * It returns the total amount of Forecast Days from current date.
    */
   int calculateBeginForecastDay();
-  
+
   /**
    * remove accounts from the list if the accounts has no transactions in the forecast timeframe.
    * Used for scheduled-forecast method.
    */
-  void purgeForecastAccountsList(QMap<QCString, dailyBalances>& accountList);
+  void purgeForecastAccountsList(QMap<QString, dailyBalances>& accountList);
 
   /**
    * daily forecast balance of accounts
    */
-  QMap<QCString, dailyBalances> m_accountList;
+  QMap<QString, dailyBalances> m_accountList;
 
   /**
    * daily past balance of accounts
    */
-  QMap<QCString, dailyBalances> m_accountListPast;
+  QMap<QString, dailyBalances> m_accountListPast;
 
   /**
    * daily forecast trends of accounts
    */
-  QMap<QCString, trendBalances> m_accountTrendList;
+  QMap<QString, trendBalances> m_accountTrendList;
 
   /**
    * list of forecast accounts
    */
-  QMap<QCString, QCString> m_nameIdx;
+  QMap<QString, QString> m_nameIdx;
 
   /**
    * cycle of accounts in days

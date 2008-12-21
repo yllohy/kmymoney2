@@ -108,7 +108,7 @@ void KNewInvestmentWizard::init1(void)
   m_priceMode->insertItem(i18n("Total for all shares"), 2);
 
   // load the widget with the available currencies
-  m_tradingCurrencyEdit->update(QCString());
+  m_tradingCurrencyEdit->update(QString());
 
   connect(helpButton(),SIGNAL(clicked()), this, SLOT(slotHelp(void)));
   connect(m_investmentName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
@@ -202,7 +202,7 @@ void KNewInvestmentWizard::slotHelp(void)
   kapp->invokeHelp("details.investments.newinvestmentwizard");
 }
 
-void KNewInvestmentWizard::createObjects(const QCString& parentId)
+void KNewInvestmentWizard::createObjects(const QString& parentId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 

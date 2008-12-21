@@ -45,11 +45,11 @@ class KMyMoneyListViewItem : public QObject, public KListViewItem
 
   Q_OBJECT
 public:
-  KMyMoneyListViewItem(QListView *parent, const QString& txt, const QString& key, const QCString& id);
-  KMyMoneyListViewItem(QListViewItem *parent, const QString& txt, const QString& key, const QCString& id);
+  KMyMoneyListViewItem(QListView *parent, const QString& txt, const QString& key, const QString& id);
+  KMyMoneyListViewItem(QListViewItem *parent, const QString& txt, const QString& key, const QString& id);
   ~KMyMoneyListViewItem();
 
-  const QCString& id(void) const { return m_id; };
+  const QString& id(void) const { return m_id; };
 
   /**
     * use my own paint method
@@ -77,7 +77,7 @@ public:
 
 private:
   QString              m_key;
-  QCString             m_id;
+  QString             m_id;
   // copied from KListViewItem()
   unsigned int         m_isOdd : 1;
   unsigned int         m_isKnown : 1;

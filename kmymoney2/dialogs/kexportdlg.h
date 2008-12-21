@@ -70,9 +70,9 @@ public:
   /**
     * This method returns the account id that has been selected for export
     *
-    * @return QCString with account id
+    * @return QString with account id
     */
-  const QCString accountId(void) const;
+  QString accountId(void) const;
 
   /**
     * This method returns the name of the profile that has been selected
@@ -130,7 +130,7 @@ protected slots:
     *
     * @param account The id of the selected account.
     */
-  void checkData(const QCString& account = QCString());
+  void checkData(const QString& account = QString());
 
 private:
   void readConfig(void);
@@ -162,7 +162,7 @@ private:
     * @param id Account id to add
     * @param leadIn constant leadin to be added in front of the account name
     */
-  // void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
+  // void addCategories(QStringList& strList, const QString& id, const QString& leadIn) const;
 
   /**
     * This method is used to return the account id of a given account name
@@ -171,10 +171,10 @@ private:
     * @return the ID of the account will be returned.
     *         See MyMoneyFile::nameToAccount() for details.
     */
-  // const QCString accountId(const QString& account) const;
+  // QString accountId(const QString& account) const;
 
 private:
-  QCString   m_lastAccount;
+  QString   m_lastAccount;
 };
 
 #endif

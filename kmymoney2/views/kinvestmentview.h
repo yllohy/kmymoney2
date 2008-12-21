@@ -80,7 +80,7 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
+  bool slotSelectAccount(const QString& accountId, const QString& transactionId = QString(), const bool reconciliation = false);
 
   /**
     * This method is provided for convenience and acts as the method above.
@@ -121,7 +121,7 @@ signals:
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
-  void accountSelected(const QCString& accountId, const QCString& transactionId);
+  void accountSelected(const QString& accountId, const QString& transactionId);
 
   void accountSelected(const MyMoneyObject&);
 

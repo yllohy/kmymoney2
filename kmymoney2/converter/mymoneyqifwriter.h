@@ -71,7 +71,7 @@ public:
     * @param endDate Transactions after this date will not be exported
     */
   void write(const QString& filename, const QString& profile,
-             const QCString& accountId, const bool accountData,
+             const QString& accountId, const bool accountData,
              const bool categoryData,
              const QDate& startDate, const QDate& endDate);
 
@@ -87,7 +87,7 @@ private:
     * @param startDate date from which entries are written
     * @param endDate date until which entries are written
     */
-  void writeAccountEntry(QTextStream& s, const QCString& accountId, const QDate& startDate, const QDate& endDate);
+  void writeAccountEntry(QTextStream& s, const QString& accountId, const QDate& startDate, const QDate& endDate);
 
   /**
     * This method writes the category entries to the stream
@@ -107,9 +107,9 @@ private:
     * @param accountId id of the account to be written
     * @param leadIn constant text that will be prepended to the account's name
     */
-  void writeCategoryEntry(QTextStream& s, const QCString& accountId, const QString& leadIn);
+  void writeCategoryEntry(QTextStream& s, const QString& accountId, const QString& leadIn);
 
-  void writeTransactionEntry(QTextStream &s, const MyMoneyTransaction& t, const QCString& accountId);
+  void writeTransactionEntry(QTextStream &s, const MyMoneyTransaction& t, const QString& accountId);
   void writeSplitEntry(QTextStream &s, const MyMoneySplit& t);
 
 signals:

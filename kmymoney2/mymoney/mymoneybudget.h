@@ -67,7 +67,7 @@ public:
     * This constructor creates an object based on the data found in the
     * MyMoneyBudget budget object.
     */
-  MyMoneyBudget(const QCString& id, const MyMoneyBudget& budget);
+  MyMoneyBudget(const QString& id, const MyMoneyBudget& budget);
 
   /**
     * Helper class for MyMoneyBudget
@@ -119,7 +119,7 @@ public:
     AccountGroup() : m_budgetlevel(eNone), m_budgetsubaccounts(false) {}
 
     // get functions
-    const QCString& id( void ) const { return m_id; }
+    const QString& id( void ) const { return m_id; }
     bool budgetSubaccounts( void ) const { return m_budgetsubaccounts; }
     eBudgetLevel budgetLevel( void ) const { return m_budgetlevel; }
     const PeriodGroup& period( const QDate &_date ) const { return m_periods[_date]; }
@@ -171,7 +171,7 @@ public:
     void convertToMonthByMonth(void);
 
   private:
-    QCString m_id;
+    QString m_id;
 
     eBudgetLevel             m_budgetlevel;
     bool                     m_budgetsubaccounts;
@@ -186,15 +186,15 @@ public:
   // Simple get operations
   const QString& name(void) const { return m_name; }
   const QDate& budgetStart(void) const { return m_start; }
-  QCString id(void) const { return m_id; }
-  const AccountGroup & account(const QCString _id) const;
-  bool contains(const QCString _id) const { return m_accounts.contains(_id); }
+  QString id(void) const { return m_id; }
+  const AccountGroup & account(const QString _id) const;
+  bool contains(const QString _id) const { return m_accounts.contains(_id); }
   QValueList<AccountGroup> getaccounts(void) const { return m_accounts.values(); }
 
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }
   void setBudgetStart(const QDate& _start);
-  void setAccount(const AccountGroup &_account, const QCString _id);
+  void setAccount(const AccountGroup &_account, const QString _id);
 
   /**
     * This method writes this Budget to the DOM element @p e,
@@ -238,13 +238,13 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   /**
     * This member removes all references to object identified by @p id. Used
     * to remove objects which are about to be removed from the engine.
     */
-  void removeReference(const QCString& id);
+  void removeReference(const QString& id);
 
 private:
   /**
@@ -262,7 +262,7 @@ private:
     *
     * Each account Id is stored against the AccountGroup information
     */
-  QMap<QCString, AccountGroup> m_accounts;
+  QMap<QString, AccountGroup> m_accounts;
 };
 
 #endif // MYMONEYBudget_H

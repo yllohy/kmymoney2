@@ -263,7 +263,7 @@ public:
 
 private slots:
   void slotLoadWidgets(void);
-  void slotCreateCategory(const QString& name, QCString& id);
+  void slotCreateCategory(const QString& name, QString& id);
 };
 
 
@@ -279,7 +279,7 @@ public:
 
   QWidget* initialFocusWidget(void) const { return m_noPayoutTransaction; }
 
-  const QCString& payoutAccountId(void) const;
+  const QString& payoutAccountId(void) const;
 
 private slots:
   void slotLoadWidgets(void);

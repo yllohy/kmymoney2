@@ -57,8 +57,8 @@ void KUpdateStockPriceDlg::init()
   connect(m_currency, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
 
   // load initial values into the selection widgets
-  m_currency->update(QCString());
-  m_security->update(QCString());
+  m_currency->update(QString());
+  m_security->update(QString());
 
   slotCheckData();
 }
@@ -71,8 +71,8 @@ int KUpdateStockPriceDlg::exec(void)
 
 void KUpdateStockPriceDlg::slotCheckData(void)
 {
-  QCString from = m_security->security().id();
-  QCString to   = m_currency->security().id();
+  QString from = m_security->security().id();
+  QString to   = m_currency->security().id();
 
   m_okButton->setEnabled(!from.isEmpty() && !to.isEmpty() && from != to);
 }

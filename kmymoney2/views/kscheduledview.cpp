@@ -120,7 +120,7 @@ KScheduledView::~KScheduledView()
   writeConfig();
 }
 
-void KScheduledView::refresh(bool full, const QCString& schedId)
+void KScheduledView::refresh(bool full, const QString& schedId)
 {
   m_qlistviewScheduled->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
@@ -140,7 +140,7 @@ void KScheduledView::refresh(bool full, const QCString& schedId)
 
         MyMoneyFile* file = MyMoneyFile::instance();
         MyMoneyAccount acc;
-        QCStringList::ConstIterator it_s;
+        QStringList::ConstIterator it_s;
 
         acc = file->asset();
         for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
@@ -182,7 +182,7 @@ void KScheduledView::refresh(bool full, const QCString& schedId)
       KScheduledListItem* item=0;
 
       bool bContinue=true;
-      QCStringList::iterator accIt;
+      QStringList::iterator accIt;
       for (accIt=m_filterAccounts.begin(); accIt!=m_filterAccounts.end(); ++accIt)
       {
         if (*accIt == schedData.account().id())
@@ -340,7 +340,7 @@ void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewIte
   {
     try
     {
-      QCString scheduleId = scheduleItem->scheduleId();
+      QString scheduleId = scheduleItem->scheduleId();
 
       if (!scheduleId.isEmpty()) // Top level item
       {
@@ -369,7 +369,7 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item, const QPoint&, in
 
   try
   {
-    QCString scheduleId = scheduleItem->scheduleId();
+    QString scheduleId = scheduleItem->scheduleId();
 
     if (!scheduleId.isEmpty()) // Top level item
     {
@@ -395,7 +395,7 @@ void KScheduledView::slotAccountActivated(int id)
     int accountCount=0;
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount acc;
-    QCStringList::ConstIterator it_s;
+    QStringList::ConstIterator it_s;
 
     acc = file->asset();
     for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
@@ -450,7 +450,7 @@ void KScheduledView::slotListViewCollapsed(QListViewItem* item)
   }
 }
 
-void KScheduledView::slotSelectSchedule(const QCString& schedule)
+void KScheduledView::slotSelectSchedule(const QString& schedule)
 {
   refresh(true, schedule);
 }

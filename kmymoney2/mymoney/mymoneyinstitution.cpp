@@ -34,7 +34,7 @@ MyMoneyInstitution::MyMoneyInstitution()
 {
 }
 
-MyMoneyInstitution::MyMoneyInstitution(const QCString id, const MyMoneyInstitution& right) :
+MyMoneyInstitution::MyMoneyInstitution(const QString& id, const MyMoneyInstitution& right) :
   MyMoneyObject(id)
 {
   *this = right;
@@ -88,7 +88,7 @@ MyMoneyInstitution::MyMoneyInstitution(const QDomElement& node) :
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName("ACCOUNTID");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      m_accountList << QCString(nodeList.item(i).toElement().attribute("id"));
+      m_accountList << nodeList.item(i).toElement().attribute("id");
     }
   }
 }
@@ -97,17 +97,17 @@ MyMoneyInstitution::~MyMoneyInstitution()
 {
 }
 
-void MyMoneyInstitution::addAccountId(const QCString& account)
+void MyMoneyInstitution::addAccountId(const QString& account)
 {
   // only add this account if it is not yet presently in the list
   if(m_accountList.contains(account) == 0)
     m_accountList.append(account);
 }
 
-QCString MyMoneyInstitution::removeAccountId(const QCString& account)
+QString MyMoneyInstitution::removeAccountId(const QString& account)
 {
-  QCStringList::Iterator pos;
-  QCString rc;
+  QStringList::Iterator pos;
+  QString rc;
 
   pos = m_accountList.find(account);
   if(pos != m_accountList.end()) {
@@ -157,7 +157,7 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
 
 
   QDomElement accounts = document.createElement("ACCOUNTIDS");
-  for(QCStringList::ConstIterator it = accountList().begin(); it != accountList().end(); ++it){
+  for(QStringList::ConstIterator it = accountList().begin(); it != accountList().end(); ++it){
     QDomElement temp = document.createElement("ACCOUNTID");
     temp.setAttribute("id", (*it));
     accounts.appendChild(temp);
@@ -170,7 +170,7 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
   parent.appendChild(el);
 }
 
-bool MyMoneyInstitution::hasReferenceTo(const QCString& /* id */) const
+bool MyMoneyInstitution::hasReferenceTo(const QString& /* id */) const
 {
   bool rc = false;
   return rc;

@@ -42,7 +42,7 @@ MyMoneySecurity::MyMoneySecurity() :
 {
 }
 
-MyMoneySecurity::MyMoneySecurity(const QCString& id, const QString& name, const QString& symbol, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction) :
+MyMoneySecurity::MyMoneySecurity(const QString& id, const QString& name, const QString& symbol, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction) :
   MyMoneyObject(id),
   m_name(name),
   m_securityType(SECURITY_CURRENCY)
@@ -60,7 +60,7 @@ MyMoneySecurity::MyMoneySecurity(const QCString& id, const QString& name, const 
     m_smallestAccountFraction = smallestCashFraction;
 }
 
-MyMoneySecurity::MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity) :
+MyMoneySecurity::MyMoneySecurity(const QString& id, const MyMoneySecurity& equity) :
   MyMoneyObject(id)
 {
   *this = equity;
@@ -85,7 +85,7 @@ MyMoneySecurity::MyMoneySecurity(const QDomElement& node) :
     setPartsPerUnit(node.attribute("ppu").toInt());
     setSmallestCashFraction(node.attribute("scf").toInt());
   } else {
-    setTradingCurrency(QCStringEmpty(node.attribute("trading-currency")));
+    setTradingCurrency(QStringEmpty(node.attribute("trading-currency")));
     setTradingMarket(QStringEmpty(node.attribute("trading-market")));
   }
 }
@@ -118,7 +118,7 @@ bool MyMoneySecurity::operator < (const MyMoneySecurity& right) const
 }
 
 
-bool MyMoneySecurity::hasReferenceTo(const QCString& id) const
+bool MyMoneySecurity::hasReferenceTo(const QString& id) const
 {
   return (id == m_tradingCurrency);
 }

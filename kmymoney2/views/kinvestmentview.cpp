@@ -92,8 +92,8 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name) :
     this, SLOT(slotListContextMenu(KListView*, QListViewItem*, const QPoint&)));
   connect(m_table, SIGNAL(selectionChanged(QListViewItem *)), this, SLOT(slotSelectionChanged(QListViewItem *)));
 
-  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QString&)),
+    this, SLOT(slotSelectAccount(const QString&)));
 
   connect(m_table, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), kmymoney2->action("investment_edit"), SLOT(activate()));
 
@@ -161,9 +161,9 @@ void KInvestmentView::loadAccounts(void)
   m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
   if(d->m_account.id().isEmpty()) {
-    QCStringList list = m_accountComboBox->accountList();
+    QStringList list = m_accountComboBox->accountList();
     if(list.count()) {
-      QCStringList::Iterator it;
+      QStringList::Iterator it;
       for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
         if(a.accountType() == MyMoneyAccount::Investment) {
@@ -206,7 +206,7 @@ bool KInvestmentView::slotSelectAccount(const MyMoneyObject& obj)
   return rc;
 }
 
-bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool /* reconciliation*/)
+bool KInvestmentView::slotSelectAccount(const QString& id, const QString& transactionId, const bool /* reconciliation*/)
 {
   bool    rc = true;
 
@@ -262,7 +262,7 @@ void KInvestmentView::clear(void)
   m_table->clear();
 
   // and the selected account in the combo box
-  m_accountComboBox->setSelected(QCString());
+  m_accountComboBox->setSelected(QString());
 }
 
 void KInvestmentView::loadView(void)
@@ -288,9 +288,9 @@ void KInvestmentView::loadView(void)
                          || !KMyMoneyGlobalSettings::hideClosedAccounts();
   try {
     d->m_account = file->account(d->m_account.id());
-    QCStringList securities = d->m_account.accountList();
+    QStringList securities = d->m_account.accountList();
 
-    for(QCStringList::ConstIterator it = securities.begin(); it != securities.end(); ++it) {
+    for(QStringList::ConstIterator it = securities.begin(); it != securities.end(); ++it) {
       MyMoneyAccount acc = file->account(*it);
       if(!acc.isClosed() || showClosedAccounts)
         new KInvestmentListItem(m_table, acc);

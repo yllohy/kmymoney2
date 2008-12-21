@@ -24,17 +24,17 @@
 #include "mymoneyutils.h"
 #include "mymoneyexception.h"
 
-const QCString MyMoneyObject::m_emptyId;
+const QString MyMoneyObject::m_emptyId;
 
-MyMoneyObject::MyMoneyObject(const QCString& id)
+MyMoneyObject::MyMoneyObject(const QString& id)
 {
   m_id = id;
 }
 
 MyMoneyObject::MyMoneyObject(const QDomElement& el, const bool forceId)
 {
-  m_id = QCStringEmpty(el.attribute("id"));
-  if(m_id.size() == 0 && forceId)
+  m_id = QStringEmpty(el.attribute("id"));
+  if(m_id.length() == 0 && forceId)
     throw new MYMONEYEXCEPTION("Node has no ID");
 }
 
@@ -46,7 +46,7 @@ MyMoneyObject::~MyMoneyObject()
 {
 }
 
-void MyMoneyObject::setId(const QCString& id)
+void MyMoneyObject::setId(const QString& id)
 {
   m_id = id;
 }
@@ -58,10 +58,10 @@ bool MyMoneyObject::operator == (const MyMoneyObject& right) const
 
 void MyMoneyObject::clearId(void)
 {
-  m_id = QCString();
+  m_id = QString();
 }
 
-const QCString& MyMoneyObject::emptyId(void)
+const QString& MyMoneyObject::emptyId(void)
 {
   return m_emptyId;
 }

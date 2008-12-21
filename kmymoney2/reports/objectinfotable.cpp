@@ -297,7 +297,7 @@ void ObjectInfoTable::constructAccountLoanTable ( void )
 
     if(m_config.includes(account) &&
        ( account.accountType() == MyMoneyAccount::Loan
-       || account.accountType() == MyMoneyAccount::AssetLoan ) 
+       || account.accountType() == MyMoneyAccount::AssetLoan )
        && !account.isClosed())
     {
       //convert to base currency if needed
@@ -339,7 +339,7 @@ MyMoneyMoney ObjectInfoTable::investmentBalance(const MyMoneyAccount& acc)
   MyMoneyMoney value;
 
   value = file->balance(acc.id());
-  QValueList<QCString>::const_iterator it_a;
+  QValueList<QString>::const_iterator it_a;
   for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
     MyMoneyAccount stock = file->account(*it_a);
     try {

@@ -85,7 +85,7 @@ public:
     */
   const QValueList<MyMoneySplit> getSplits(const MyMoneyTransaction& t) const;
 
-  void setup(const QMap<QCString, MyMoneyMoney>& priceInfo);
+  void setup(const QMap<QString, MyMoneyMoney>& priceInfo);
 
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
@@ -187,7 +187,7 @@ signals:
     * @param txt The name of the category to be created
     * @param id A connected slot should store the id of the created object in this variable
     */
-  void createCategory(const QString& txt, QCString& id);
+  void createCategory(const QString& txt, QString& id);
 
   /**
     * Signal is emitted, if any of the widgets enters (@a state equals @a true)
@@ -255,7 +255,7 @@ private:
   QGuardedPtr<KPushButton>      m_registerEnterButton;
   QGuardedPtr<KPushButton>      m_registerCancelButton;
 
-  QMap<QCString, MyMoneyMoney>  m_priceInfo;
+  QMap<QString, MyMoneyMoney>  m_priceInfo;
 };
 
 #endif

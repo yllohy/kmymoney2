@@ -725,7 +725,7 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
     if ( ! balance.isZero() )
     {
       MyMoneyFile* file = MyMoneyFile::instance();
-      QCString openingtxid = file->openingBalanceTransaction(m_account);
+      QString openingtxid = file->openingBalanceTransaction(m_account);
       MyMoneyFileTransaction ft;
       if ( ! openingtxid.isEmpty() )
       {
@@ -854,9 +854,9 @@ void MyMoneyQifReader::processCategoryEntry(void)
   }
 }
 
-QCString MyMoneyQifReader::transferAccount(QString name, bool useBrokerage)
+QString MyMoneyQifReader::transferAccount(QString name, bool useBrokerage)
 {
-  QCString accountId;
+  QString accountId;
   QStringList tmpEntry = m_qifEntry;   // keep temp copies
   MyMoneyAccount tmpAccount = m_account;
 
@@ -913,7 +913,7 @@ void MyMoneyQifReader::createOpeningBalance(MyMoneyAccount::_accountTypeE accTyp
     acc = file->accountByName(m_account.brokerageName());
 
     // check if we already have an opening balance transaction
-    QCString tid = file->openingBalanceTransaction(acc);
+    QString tid = file->openingBalanceTransaction(acc);
     MyMoneyTransaction ot;
     if(!tid.isEmpty()) {
       ot = file->transaction(tid);
@@ -969,7 +969,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   MyMoneyStatement::Split s1;
   MyMoneyStatement::Transaction tr;
   QString tmp;
-  QCString accountId;
+  QString accountId;
   int pos;
   QString payee = extractLine('P');
   unsigned long h;
@@ -1127,12 +1127,12 @@ void MyMoneyQifReader::processTransactionEntry(void)
         if ( account.id() == m_account.id() )
         {
           kdDebug(0) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
-          accountId = QCString();
+          accountId = QString();
         }
 
       } catch (MyMoneyException *e) {
         kdDebug(0) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
-        accountId = QCString();
+        accountId = QString();
         delete e;
       }
     }
@@ -1186,12 +1186,12 @@ void MyMoneyQifReader::processTransactionEntry(void)
           if ( account.id() == m_account.id() )
           {
             kdDebug(0) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
-            accountId = QCString();
+            accountId = QString();
           }
 
         } catch (MyMoneyException *e) {
           kdDebug(0) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
-          accountId = QCString();
+          accountId = QString();
           delete e;
         }
       }
@@ -1357,11 +1357,11 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   // search through each subordinate account
   bool found = false;
   MyMoneyAccount thisaccount = m_account;
-  QCStringList accounts = thisaccount.accountList();
-  QCStringList::const_iterator it_account = accounts.begin();
+  QStringList accounts = thisaccount.accountList();
+  QStringList::const_iterator it_account = accounts.begin();
   while( !found && it_account != accounts.end() )
   {
-    QCString currencyid = file->account(*it_account).currencyId();
+    QString currencyid = file->account(*it_account).currencyId();
     MyMoneySecurity security = file->security( currencyid );
     QString symbol = security.tradingSymbol().lower();
     QString name = security.name().lower();
@@ -1376,7 +1376,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
 #if 0
       // update the price, while we're here.  in the future, this should be
       // an option
-      QCString basecurrencyid = file->baseCurrency().id();
+      QString basecurrencyid = file->baseCurrency().id();
       MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
       if ( !price.isValid() )
       {
@@ -1806,16 +1806,16 @@ void MyMoneyQifReader::processInvestmentTransactionEntry(void)
   */
 }
 
-const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname)
+const QString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname)
 {
-  QCString result;
+  QString result;
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
   // First, try to find this account as an income account
   MyMoneyAccount acc = file->income();
-  QCStringList list = acc.accountList();
-  QCStringList::ConstIterator it_accid = list.begin();
+  QStringList list = acc.accountList();
+  QStringList::ConstIterator it_accid = list.begin();
   while ( it_accid != list.end() )
   {
     acc = file->account(*it_accid);
@@ -1845,16 +1845,16 @@ const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& search
 
 // TODO (Ace) Combine this and the previous function
 
-const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname)
+const QString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname)
 {
-  QCString result;
+  QString result;
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
   // First, try to find this account as an income account
   MyMoneyAccount acc = file->expense();
-  QCStringList list = acc.accountList();
-  QCStringList::ConstIterator it_accid = list.begin();
+  QStringList list = acc.accountList();
+  QStringList::ConstIterator it_accid = list.begin();
   while ( it_accid != list.end() )
   {
     acc = file->account(*it_accid);
@@ -1882,9 +1882,9 @@ const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searc
   return result;
 }
 
-const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
+QString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
 {
-  QCString accountId;
+  QString accountId;
   MyMoneyFile *file = MyMoneyFile::instance();
   MyMoneyAccount account;
   bool found = true;
@@ -1935,7 +1935,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
       account.setAccountType((!value.isNegative() && value2.isNegative()) ? MyMoneyAccount::Income : MyMoneyAccount::Expense);
       MyMoneyAccount brokerage;
       // clear out the parent id, because createAccount() does not like that
-      account.setParentAccountId(QCString());
+      account.setParentAccountId(QString());
       kmymoney2->createAccount(account, parent, brokerage, MyMoneyMoney());
       accountId = account.id();
     }
@@ -1944,7 +1944,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
   return accountId;
 }
 
-QCString MyMoneyQifReader::processAccountEntry(bool resetAccountId)
+QString MyMoneyQifReader::processAccountEntry(bool resetAccountId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -2054,13 +2054,13 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QCString accountId;
+  QString accountId;
   QString msg;
   QString typeStr;
   QString leadIn;
   KMyMoneyUtils::categoryTypeE type;
 
-  QMap<QString, QCString>::ConstIterator it;
+  QMap<QString, QString>::ConstIterator it;
 
   type = KMyMoneyUtils::none;
   switch(account.accountGroup()) {
@@ -2173,7 +2173,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         account = file->account(accountId);
         if ( ! balance.isZero() )
         {
-          QCString openingtxid = file->openingBalanceTransaction(account);
+          QString openingtxid = file->openingBalanceTransaction(account);
           MyMoneyFileTransaction ft;
           if ( ! openingtxid.isEmpty() )
           {

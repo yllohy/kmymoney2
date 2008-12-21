@@ -119,7 +119,7 @@ private:
     * @param id Account id to add
     * @param leadIn constant leadin to be added in front of the account name
     */
-  void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
+  void addCategories(QStringList& strList, const QString& id, const QString& leadIn) const;
 
   void readConfig(void);
   void writeConfig(void);

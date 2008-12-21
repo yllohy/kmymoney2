@@ -212,7 +212,7 @@ void KBudgetView::slotReloadView(void)
 
 void KBudgetView::loadBudgets(void)
 {
-  QCString id;
+  QString id;
 
   ::timetrace("Start KBudgetView::loadBudgets");
 
@@ -278,7 +278,7 @@ void KBudgetView::loadBudgets(void)
   ::timetrace("End KBudgetView::loadBudgets");
 }
 
-void KBudgetView::ensureBudgetVisible(const QCString& id)
+void KBudgetView::ensureBudgetVisible(const QString& id)
 {
   for (QListViewItem * item = m_budgetList->firstChild(); item; item = item->itemBelow()) {
     KBudgetListItem* p = dynamic_cast<KBudgetListItem*>(item);
@@ -312,7 +312,7 @@ void KBudgetView::slotRefreshView(void)
 
 void KBudgetView::loadAccounts(void)
 {
-  QMap<QCString, bool> isOpen;
+  QMap<QString, bool> isOpen;
 
   ::timetrace("start load budget account view");
 
@@ -329,7 +329,7 @@ void KBudgetView::loadAccounts(void)
 
   // remember the id of the current selected item
   KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
-  QCString selectedItemId = (item) ? item->id() : QCString();
+  QString selectedItemId = (item) ? item->id() : QString();
 
   // keep a map of all 'expanded' accounts
   QListViewItemIterator it_lvi(m_accountTree);
@@ -368,13 +368,13 @@ void KBudgetView::loadAccounts(void)
     m_accountTree->setBaseCurrency(security);
 
     const MyMoneyAccount& income = file->income();
-    QCStringList incSubAcctList = income.accountList();
+    QStringList incSubAcctList = income.accountList();
     m_incomeItem = new KMyMoneyAccountTreeBudgetItem(m_accountTree, income, m_budget, security, i18n("Income"));
     haveUnusedBudgets |= loadSubAccounts(m_incomeItem, incSubAcctList, m_budget);
     m_incomeItem->setSelectable(false);
 
     const MyMoneyAccount& expense = file->expense();
-    QCStringList expSubAcctList = expense.accountList();
+    QStringList expSubAcctList = expense.accountList();
     m_expenseItem = new KMyMoneyAccountTreeBudgetItem(m_accountTree, expense, m_budget, security, i18n("Expense"));
     haveUnusedBudgets |= loadSubAccounts(m_expenseItem, expSubAcctList, m_budget);
     m_expenseItem->setSelectable(false);
@@ -412,7 +412,7 @@ void KBudgetView::loadAccounts(void)
 }
 
 
-bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStringList& accountList, const MyMoneyBudget& budget)
+bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QStringList& accountList, const MyMoneyBudget& budget)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -435,7 +435,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
     }
   }
 
-  QCStringList::const_iterator it_a;
+  QStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     const MyMoneyAccount& acc = file->account(*it_a);
     QValueList<MyMoneyPrice> prices;
@@ -460,7 +460,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
       delete e;
     }
 
-    QCStringList subAcctList = acc.accountList();
+    QStringList subAcctList = acc.accountList();
     KMyMoneyAccountTreeBudgetItem *item = new KMyMoneyAccountTreeBudgetItem(parent, acc, budget, prices, security);
     unused |= loadSubAccounts(item, subAcctList, budget);
 
@@ -653,7 +653,7 @@ void KBudgetView::slotSelectAccount(QListViewItem* item)
       if (m_budget.id().isEmpty() )
         return;
 
-      QCString id = account->id();
+      QString id = account->id();
       m_leAccounts->setText(MyMoneyFile::instance()->accountToCategory(id));
       m_cbBudgetSubaccounts->setChecked(m_budget.account(id).budgetSubaccounts());
       m_accountTotal->setValue(m_budget.account(id).totalBalance());
@@ -709,7 +709,7 @@ void KBudgetView::cb_includesSubaccounts_clicked()
     return;
 
   if(selectedAccount() != 0) {
-    QCString accountID = selectedAccount()->id();
+    QString accountID = selectedAccount()->id();
     // now, we get a reference to the accountgroup, to mofify its atribute,
     // and then put the resulting account group instead of the original
 

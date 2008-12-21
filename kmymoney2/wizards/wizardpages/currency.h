@@ -39,7 +39,7 @@ public:
   Currency(QWidget* parent = 0, const char* name = 0);
   QListViewItem* insertCurrency(const MyMoneySecurity& sec);
   void selectCurrency(const MyMoneySecurity& sec);
-  QCString selectedCurrency(void) const;
+  QString selectedCurrency(void) const;
 };
 
 #endif

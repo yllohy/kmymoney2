@@ -61,7 +61,7 @@ void MyMoneySecurityTest::testNonemptyConstructor() {
 
 	MyMoneySecurity n("id", *m);
 
-	CPPUNIT_ASSERT(n.id() == QCString("id"));
+	CPPUNIT_ASSERT(n.id() == QString("id"));
 	CPPUNIT_ASSERT(n.tradingSymbol() == QString("symbol"));
 	CPPUNIT_ASSERT(n.securityType() == MyMoneySecurity::SECURITY_CURRENCY);
 	// CPPUNIT_ASSERT(n.priceHistory().count() == 1);
@@ -173,7 +173,7 @@ void MyMoneySecurityTest::testInequality () {
 /*
 void MyMoneySecurityTest::testAccountIDList () {
 	MyMoneySecurity equity;
-	QCStringList list;
+	QStringList list;
 	QString id;
 
 	// list must be empty

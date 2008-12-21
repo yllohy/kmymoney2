@@ -120,7 +120,7 @@ void KAccountSelectDlg::setHeader(const QString& msg)
   m_headerLabel->setText(msg);
 }
 
-void KAccountSelectDlg::setAccount(const MyMoneyAccount& account, const QCString& id)
+void KAccountSelectDlg::setAccount(const MyMoneyAccount& account, const QString& id)
 {
   m_account = account;
   m_accountSelector->setSelectedItem(id);
@@ -184,7 +184,7 @@ int KAccountSelectDlg::exec(void)
   return rc;
 }
 
-const QCString& KAccountSelectDlg::selectedAccount(void) const
+const QString& KAccountSelectDlg::selectedAccount(void) const
 {
   return m_accountSelector->selectedItem();
 }

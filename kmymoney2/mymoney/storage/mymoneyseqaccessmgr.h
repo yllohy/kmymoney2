@@ -122,7 +122,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount account(const QCString& id) const;
+  const MyMoneyAccount account(const QString& id) const;
 
   /**
     * This method is used to check whether a given
@@ -131,14 +131,14 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  bool isStandardAccount(const QCString& id) const;
+  bool isStandardAccount(const QString& id) const;
 
   /**
     * This method is used to set the name for the specified standard account
     * within the storage area. An exception will be thrown, if an error
     * occurs
     *
-    * @param id QCString reference to one of the standard accounts. Possible
+    * @param id QString reference to one of the standard accounts. Possible
     *           values are:
     *
     *           @li STD_ACC_LIABILITY
@@ -150,7 +150,7 @@ public:
     * @param name QString reference to the name to be set
     *
     */
-  void setAccountName(const QCString& id, const QString& name);
+  void setAccountName(const QString& id, const QString& name);
 
   /**
     * This method is used to create a new account
@@ -174,11 +174,11 @@ public:
     * This method is used to retrieve information about a payee
     * An exception will be thrown upon error conditions.
     *
-    * @param id QCString reference to id of payee
+    * @param id QString reference to id of payee
     *
     * @return MyMoneyPayee object of payee
     */
-  const MyMoneyPayee payee(const QCString& id) const;
+  const MyMoneyPayee payee(const QString& id) const;
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -331,7 +331,7 @@ public:
     * @param id id of transaction as QString.
     * @return reference to the requested transaction
     */
-  const MyMoneyTransaction transaction(const QCString& id) const;
+  const MyMoneyTransaction transaction(const QString& id) const;
 
   /**
     * This method is used to extract a transaction from the file global
@@ -341,7 +341,7 @@ public:
     * @param idx number of transaction in this account
     * @return reference to MyMoneyTransaction object
     */
-  const MyMoneyTransaction transaction(const QCString& account, const int idx) const;
+  const MyMoneyTransaction transaction(const QString& account, const int idx) const;
 
   /**
     * This method is used to determince, if the account with the
@@ -350,7 +350,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  bool hasActiveSplits(const QCString& id) const;
+  bool hasActiveSplits(const QString& id) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -363,7 +363,7 @@ public:
     * @param date return balance for specific date
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney balance(const QCString& id, const QDate& date = QDate()) const;
+  const MyMoneyMoney balance(const QString& id, const QDate& date = QDate()) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -376,7 +376,7 @@ public:
     * @param date return balance for specific date
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalBalance(const QCString& id, const QDate& date = QDate()) const;
+  const MyMoneyMoney totalBalance(const QString& id, const QDate& date = QDate()) const;
 
   /**
     * Returns the institution of a given ID
@@ -385,7 +385,7 @@ public:
     * @return MyMoneyInstitution object filled with data. If the institution
     *         could not be found, an exception will be thrown
     */
-  const MyMoneyInstitution institution(const QCString& id) const;
+  const MyMoneyInstitution institution(const QString& id) const;
 
   /**
     * This method returns an indicator if the storage object has been
@@ -465,22 +465,22 @@ public:
     * This method returns whether a given transaction is already in memory, to avoid
     * reloading it from the database
     */
-  bool isDuplicateTransaction(const QCString& id) const { return m_transactionKeys.contains(id); }
+  bool isDuplicateTransaction(const QString& id) const { return m_transactionKeys.contains(id); }
 
   /**
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
-    * @param account QCString reference to account id. If account is empty
+    * @param account QString reference to account id. If account is empty
     +                all transactions (the journal) will be counted. If account
     *                is not empty it returns the number of transactions
     *                that have splits in this account.
     *
     * @return number of transactions in journal/account
     */
-  unsigned int transactionCount(const QCString& account = QCString()) const;
+  unsigned int transactionCount(const QString& account = QString()) const;
 
-  const QMap<QCString, unsigned long> transactionCountMap(void) const;
+  const QMap<QString, unsigned long> transactionCountMap(void) const;
 
   /**
     * This method returns the number of institutions currently known to file
@@ -528,13 +528,13 @@ public:
     */
   const MyMoneyAccount equity(void) const { return account(STD_ACC_EQUITY); };
 
-  virtual void loadAccounts(const QMap<QCString, MyMoneyAccount>& acc);
-  virtual void loadTransactions(const QMap<QCString, MyMoneyTransaction>& map);
-  virtual void loadInstitutions(const QMap<QCString, MyMoneyInstitution>& map);
-  virtual void loadPayees(const QMap<QCString, MyMoneyPayee>& map);
-  virtual void loadSchedules(const QMap<QCString, MyMoneySchedule>& map);
-  virtual void loadSecurities(const QMap<QCString, MyMoneySecurity>& map);
-  virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map);
+  virtual void loadAccounts(const QMap<QString, MyMoneyAccount>& acc);
+  virtual void loadTransactions(const QMap<QString, MyMoneyTransaction>& map);
+  virtual void loadInstitutions(const QMap<QString, MyMoneyInstitution>& map);
+  virtual void loadPayees(const QMap<QString, MyMoneyPayee>& map);
+  virtual void loadSchedules(const QMap<QString, MyMoneySchedule>& map);
+  virtual void loadSecurities(const QMap<QString, MyMoneySecurity>& map);
+  virtual void loadCurrencies(const QMap<QString, MyMoneySecurity>& map);
   virtual void loadPrices(const MyMoneyPriceList& list);
 
   virtual void loadAccountId(const unsigned long id);
@@ -560,34 +560,34 @@ public:
     * This method is used to extract a value from
     * KeyValueContainer. For details see MyMoneyKeyValueContainer::value().
     *
-    * @param key const reference to QCString containing the key
+    * @param key const reference to QString containing the key
     * @return QString containing the value
     */
-  const QString value(const QCString& key) const;
+  const QString value(const QString& key) const;
 
   /**
     * This method is used to set a value in the
     * KeyValueContainer. For details see MyMoneyKeyValueContainer::setValue().
     *
-    * @param key const reference to QCString containing the key
+    * @param key const reference to QString containing the key
     * @param val const reference to QString containing the value
     */
-  void setValue(const QCString& key, const QString& val);
+  void setValue(const QString& key, const QString& val);
 
   /**
     * This method is used to delete a key-value-pair from the
     * KeyValueContainer identified by the parameter
     * @p key. For details see MyMoneyKeyValueContainer::deletePair().
     *
-    * @param key const reference to QCString containing the key
+    * @param key const reference to QString containing the key
     */
-  void deletePair(const QCString& key);
+  void deletePair(const QString& key);
 
   // documented in IMyMoneySerialize base class
-  const QMap<QCString, QString> pairs(void) const;
+  const QMap<QString, QString> pairs(void) const;
 
   // documented in IMyMoneySerialize base class
-  void setPairs(const QMap<QCString, QString>& list);
+  void setPairs(const QMap<QString, QString>& list);
 
   /**
     * This method is used to add a scheduled transaction to the engine.
@@ -627,10 +627,10 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
+    * @param id QString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneySchedule schedule(const QCString& id) const;
+  const MyMoneySchedule schedule(const QString& id) const;
 
   /**
     * This method is used to create a new security object.  The ID will be created
@@ -669,10 +669,10 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
+    * @param id QString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneySecurity security(const QCString& id) const;
+  const MyMoneySecurity security(const QString& id) const;
 
 
   /**
@@ -718,10 +718,10 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
+    * @param id QString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneySecurity currency(const QCString& id) const;
+  const MyMoneySecurity currency(const QString& id) const;
 
   /**
     * This method is used to retrieve the list of all currencies
@@ -739,7 +739,7 @@ public:
     *
     * @param accountId only search for scheduled transactions that reference
     *                  accound @p accountId. If accountId is the empty string,
-    *                  this filter is off. Default is @p QCString().
+    *                  this filter is off. Default is @p QString().
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.
     *                  Default is MyMoneySchedule::TYPE_ANY
@@ -759,7 +759,7 @@ public:
     *
     * @return const QValueList<MyMoneySchedule> list of schedule objects.
     */
-  const QValueList<MyMoneySchedule> scheduleList(const QCString& accountId = QCString(),
+  const QValueList<MyMoneySchedule> scheduleList(const QString& accountId = QString(),
                                      const MyMoneySchedule::typeE type = MyMoneySchedule::TYPE_ANY,
                                      const MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY,
                                      const MyMoneySchedule::paymentTypeE paymentType = MyMoneySchedule::STYPE_ANY,
@@ -771,7 +771,7 @@ public:
                                               int scheduleOcurrences,
                                               int schedulePaymentTypes,
                                               QDate startDate,
-                                              const QCStringList& accounts=QCStringList()) const;
+                                              const QStringList& accounts=QStringList()) const;
 
   /**
     * This method is used to retrieve the list of all reports
@@ -803,7 +803,7 @@ public:
     *
     * @param reports reference to the map of MyMoneyReport objects
     */
-  void loadReports( const QMap<QCString, MyMoneyReport>& reports );
+  void loadReports( const QMap<QString, MyMoneyReport>& reports );
 
   /**
     * This method is used to modify an existing MyMoneyReport
@@ -829,10 +829,10 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneyReport object
+    * @param id QString containing the id of the MyMoneyReport object
     * @return MyMoneyReport object
     */
-  const MyMoneyReport report( const QCString& id ) const;
+  const MyMoneyReport report( const QString& id ) const;
 
   /**
     * This method is used to remove an existing MyMoneyReport object
@@ -874,7 +874,7 @@ public:
     *
     * @param budgets reference to the map of MyMoneyBudget object
     */
-  void loadBudgets(const QMap<QCString, MyMoneyBudget>& budgets);
+  void loadBudgets(const QMap<QString, MyMoneyBudget>& budgets);
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -911,10 +911,10 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneyBudget object
+    * @param id QString containing the id of the MyMoneyBudget object
     * @return MyMoneyBudget object
     */
-  MyMoneyBudget budget( const QCString& id ) const;
+  MyMoneyBudget budget( const QString& id ) const;
 
   /**
     * This method is used to remove an existing MyMoneyBudget object
@@ -941,7 +941,7 @@ public:
     * This method retrieves a price from the price list.
     * If @p date is inValid, QDate::currentDate() is assumed.
     */
-  const MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const;
+  const MyMoneyPrice price(const QString& fromId, const QString& toId, const QDate& date, const bool exactDate) const;
 
   /**
     * This method returns a list of all price entries.
@@ -977,7 +977,7 @@ public:
   virtual void rollbackTransaction(void);
 
 protected:
-  void removeReferences(const QCString& id);
+  void removeReferences(const QString& id);
 
 private:
 
@@ -1002,7 +1002,7 @@ private:
     *
     * @param id id of the account in question
     */
-  void invalidateBalanceCache(const QCString& id);
+  void invalidateBalanceCache(const QString& id);
 
   /**
     * This member variable keeps the User information.
@@ -1065,19 +1065,19 @@ private:
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
-  MyMoneyMap<QCString, MyMoneyInstitution> m_institutionList;
+  MyMoneyMap<QString, MyMoneyInstitution> m_institutionList;
 
   /**
     * The member variable m_accountList is the container for the accounts
     * known within this file.
     */
-  MyMoneyMap<QCString, MyMoneyAccount> m_accountList;
+  MyMoneyMap<QString, MyMoneyAccount> m_accountList;
 
   /**
     * The member variable m_balanceCache is the container for the
     * accounts actual balance
     */
-  mutable QMap<QCString, MyMoneyBalanceCacheItem> m_balanceCache;
+  mutable QMap<QString, MyMoneyBalanceCacheItem> m_balanceCache;
 
   /**
     * This member keeps the date for which the m_balanceCache member
@@ -1091,24 +1091,24 @@ private:
     * transactions within this file.
     * @see m_transactionKeys
     */
-  MyMoneyMap<QCString, MyMoneyTransaction> m_transactionList;
+  MyMoneyMap<QString, MyMoneyTransaction> m_transactionList;
 
   /**
     * The member variable m_transactionKeys is used to convert
     * transaction id's into the corresponding key used in m_transactionList.
     * @see m_transactionList;
     */
-  MyMoneyMap<QCString, QCString> m_transactionKeys;
+  MyMoneyMap<QString, QString> m_transactionKeys;
 
   /**
     * A list containing all the payees that have been used
     */
-  MyMoneyMap<QCString, MyMoneyPayee> m_payeeList;
+  MyMoneyMap<QString, MyMoneyPayee> m_payeeList;
 
   /**
     * A list containing all the scheduled transactions
     */
-  MyMoneyMap<QCString, MyMoneySchedule> m_scheduleList;
+  MyMoneyMap<QString, MyMoneySchedule> m_scheduleList;
 
   /**
     * A list containing all the security information objects.  Each object
@@ -1117,19 +1117,19 @@ private:
     * to determine the cost basis for sales, as well as the source of
     * information for reports in a security account.
     */
-  MyMoneyMap<QCString, MyMoneySecurity> m_securitiesList;
+  MyMoneyMap<QString, MyMoneySecurity> m_securitiesList;
 
   /**
     * A list containing all the currency information objects.
     */
-  MyMoneyMap<QCString, MyMoneySecurity> m_currencyList;
+  MyMoneyMap<QString, MyMoneySecurity> m_currencyList;
 
-  MyMoneyMap<QCString, MyMoneyReport> m_reportList;
+  MyMoneyMap<QString, MyMoneyReport> m_reportList;
 
   /**
     * A list containing all the budget information objects.
     */
-  MyMoneyMap<QCString, MyMoneyBudget> m_budgetList;
+  MyMoneyMap<QString, MyMoneyBudget> m_budgetList;
 
   MyMoneyMap<MyMoneySecurityPair, MyMoneyPriceEntries> m_priceList;
 
@@ -1165,45 +1165,45 @@ private:
     * This method is used to get the next valid ID for a institution
     * @return id for a institution
     */
-  const QCString nextInstitutionID(void);
+  QString nextInstitutionID(void);
 
   /**
     * This method is used to get the next valid ID for an account
     * @return id for an account
     */
-  const QCString nextAccountID(void);
+  QString nextAccountID(void);
 
   /**
     * This method is used to get the next valid ID for a transaction
     * @return id for a transaction
     */
-  const QCString nextTransactionID(void);
+  QString nextTransactionID(void);
 
   /**
     * This method is used to get the next valid ID for a payee
     * @return id for a payee
     */
-  const QCString nextPayeeID(void);
+  QString nextPayeeID(void);
 
   /**
     * This method is used to get the next valid ID for a scheduled transaction
     * @return id for a scheduled transaction
     */
-  const QCString nextScheduleID(void);
+  QString nextScheduleID(void);
 
   /**
     * This method is used to get the next valid ID for an security object.
     * @return id for an security object
     */
-  const QCString nextSecurityID(void);
+  QString nextSecurityID(void);
 
-  const QCString nextReportID(void);
+  QString nextReportID(void);
 
   /**
     * This method is used to get the next valid ID for a budget object.
     * @return id for an budget object
     */
-  const QCString nextBudgetID(void);
+  QString nextBudgetID(void);
 
 
   /**
@@ -1220,7 +1220,7 @@ private:
   /**
    * This method will close a database and log the use roff
    */
-  void close(void) { };
+  void close(void) {}
 
   /**
     * This member variable is set when all transactions have been read from the database.

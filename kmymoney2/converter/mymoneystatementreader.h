@@ -119,8 +119,6 @@ private:
     */
   bool selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
-  const QCString checkCategory(const QString& name, const MyMoneyMoney& value, const MyMoneyMoney& value2);
-
 signals:
   /**
     * This signal will be emitted when the import is finished.

@@ -24,7 +24,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qcstring.h>
+#include <qstring.h>
 #include <qdom.h>
 #include <qdatetime.h>
 
@@ -58,7 +58,7 @@ public:
     *
     * @return ID of object
     */
-  const QCString& id(void) const { return m_id; };
+  const QString& id(void) const { return m_id; };
 
   /**
     * This method clears the id of the object
@@ -74,7 +74,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const = 0;
+  virtual bool hasReferenceTo(const QString& id) const = 0;
 
   /**
     * This method creates a QDomElement for the @p document
@@ -87,7 +87,7 @@ public:
 
   bool operator == (const MyMoneyObject& right) const;
 
-  static const QCString& emptyId(void);
+  static const QString& emptyId(void);
 
 protected:
   /**
@@ -95,7 +95,7 @@ protected:
     *
     * @param id ID of object
     */
-  MyMoneyObject(const QCString& id);
+  MyMoneyObject(const QString& id);
 
   /**
    * This contructor reads the id from the @p id attribute of the
@@ -113,7 +113,7 @@ protected:
    */
   MyMoneyObject(const QDomElement& node, const bool forceId = true);
 
-  void setId(const QCString& id) /* __attribute__ ((deprecated)) */;
+  void setId(const QString& id) /* __attribute__ ((deprecated)) */;
 
   /**
    * This method writes out the members contained in this object.
@@ -121,8 +121,8 @@ protected:
   void writeBaseXML(QDomDocument& document, QDomElement& el) const;
 
 protected:
-  QCString               m_id;
-  static const QCString  m_emptyId;
+  QString               m_id;
+  static const QString  m_emptyId;
 };
 
 #endif

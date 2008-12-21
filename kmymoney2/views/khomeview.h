@@ -99,9 +99,9 @@ public slots:
   void slotPrintView(void);
 
 signals:
-  void ledgerSelected(const QCString& id, const QCString& transaction);
-  void scheduleSelected(const QCString& id);
-  void reportSelected(const QCString& id);
+  void ledgerSelected(const QString& id, const QString& transaction);
+  void scheduleSelected(const QString& id);
+  void reportSelected(const QString& id);
 
 private:
 
@@ -146,7 +146,7 @@ private:
   /**
     * daily forecast balance of accounts
     */
-  QMap<QCString, dailyBalances> m_accountList;
+  QMap<QString, dailyBalances> m_accountList;
 
 };
 

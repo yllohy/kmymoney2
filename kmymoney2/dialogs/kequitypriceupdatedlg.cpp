@@ -61,7 +61,7 @@
 #define ID_COL          4
 #define SOURCE_COL      5
 
-KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& securityId) :
+KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QString& securityId) :
   KEquityPriceUpdateDlgDecl(parent),
   m_fUpdateAll(false)
 {
@@ -192,7 +192,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair, bool d
       bool keep = true;
       if((pair.first == file->baseCurrency().id())
       || (pair.second == file->baseCurrency().id())) {
-        const QCString& foreignCurrency = file->foreignCurrency(pair.first, pair.second);
+        const QString& foreignCurrency = file->foreignCurrency(pair.first, pair.second);
         // check that the foreign currency is still in use
         QValueList<MyMoneyAccount>::const_iterator it_a;
         QValueList<MyMoneyAccount> list;
@@ -285,7 +285,7 @@ void KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
   lbStatus->append(message);
 }
 
-MyMoneyPrice KEquityPriceUpdateDlg::price(const QCString& id) const
+MyMoneyPrice KEquityPriceUpdateDlg::price(const QString& id) const
 {
   MyMoneyPrice price;
   QListViewItem* item;
@@ -294,14 +294,14 @@ MyMoneyPrice KEquityPriceUpdateDlg::price(const QCString& id) const
     MyMoneyMoney rate(item->text(PRICE_COL));
     if ( !rate.isZero() )
     {
-      QCString id = item->text(ID_COL).utf8();
+      QString id = item->text(ID_COL).utf8();
 
         // if the ID has a space, then this is TWO ID's, so it's a currency quote
       if ( QString(id).contains(" ") )
       {
         QStringList ids = QStringList::split(" ",QString(id));
-        QCString fromid = ids[0].utf8();
-        QCString toid = ids[1].utf8();
+        QString fromid = ids[0].utf8();
+        QString toid = ids[1].utf8();
         price = MyMoneyPrice(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
       }
       else
@@ -334,14 +334,14 @@ void KEquityPriceUpdateDlg::storePrices(void)
       MyMoneyMoney rate(item->text(PRICE_COL));
       if ( !rate.isZero() )
       {
-        QCString id = item->text(ID_COL).utf8();
+        QString id = item->text(ID_COL).utf8();
 
         // if the ID has a space, then this is TWO ID's, so it's a currency quote
         if ( QString(id).contains(" ") )
         {
           QStringList ids = QStringList::split(" ",QString(id));
-          QCString fromid = ids[0].utf8();
-          QCString toid = ids[1].utf8();
+          QString fromid = ids[0].utf8();
+          QString toid = ids[1].utf8();
           name = QString("%1 --> %2").arg(fromid).arg(toid);
           MyMoneyPrice price(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
           file->addPrice(price);
@@ -496,7 +496,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
         date = QDate::currentDate();
 
       double price = _price;
-      QCString id = _id.utf8();
+      QString id = _id.utf8();
       MyMoneySecurity sec;
       if ( _id.contains(" ") == 0) {
         MyMoneySecurity security = MyMoneyFile::instance()->security(id);

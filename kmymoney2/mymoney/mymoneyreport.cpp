@@ -80,7 +80,7 @@ MyMoneyReport::MyMoneyReport() :
 {
 }
 
-MyMoneyReport::MyMoneyReport ( const QCString& id, const MyMoneyReport& right ) :
+MyMoneyReport::MyMoneyReport ( const QString& id, const MyMoneyReport& right ) :
     MyMoneyObject ( id )
 {
   *this = right;
@@ -442,7 +442,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
   // Payees Filter
   //
 
-  QCStringList payeelist;
+  QStringList payeelist;
   if ( payees ( payeelist ) )
   {
     if ( payeelist.empty() )
@@ -453,7 +453,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
     else
     {
       // iterate over payees, and add each one
-      QCStringList::const_iterator it_payee = payeelist.begin();
+      QStringList::const_iterator it_payee = payeelist.begin();
       while ( it_payee != payeelist.end() )
       {
         QDomElement p = doc->createElement ( "PAYEE" );
@@ -488,11 +488,11 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
   // Accounts Filter
   //
 
-  QCStringList accountlist;
+  QStringList accountlist;
   if ( accounts ( accountlist ) )
   {
     // iterate over accounts, and add each one
-    QCStringList::const_iterator it_account = accountlist.begin();
+    QStringList::const_iterator it_account = accountlist.begin();
     while ( it_account != accountlist.end() )
     {
       QDomElement p = doc->createElement ( "ACCOUNT" );
@@ -511,7 +511,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
   if ( categories ( accountlist ) )
   {
     // iterate over accounts, and add each one
-    QCStringList::const_iterator it_account = accountlist.begin();
+    QStringList::const_iterator it_account = accountlist.begin();
     while ( it_account != accountlist.end() )
     {
       QDomElement p = doc->createElement ( "CATEGORY" );
@@ -690,15 +690,15 @@ bool MyMoneyReport::read ( const QDomElement& e )
       }
       if ( "PAYEE" == c.tagName() )
       {
-        addPayee ( c.attribute ( "id" ).latin1() );
+        addPayee ( c.attribute ( "id" ) );
       }
       if ( "CATEGORY" == c.tagName() && c.hasAttribute ( "id" ) )
       {
-        addCategory ( c.attribute ( "id" ).latin1() );
+        addCategory ( c.attribute ( "id" ) );
       }
       if ( "ACCOUNT" == c.tagName() && c.hasAttribute ( "id" ) )
       {
-        addAccount ( c.attribute ( "id" ).latin1() );
+        addAccount ( c.attribute ( "id" ) );
       }
       if ( "ACCOUNTGROUP" == c.tagName() && c.hasAttribute ( "group" ) )
       {
@@ -719,9 +719,9 @@ void MyMoneyReport::writeXML ( QDomDocument& document, QDomElement& parent ) con
   parent.appendChild ( el );
 }
 
-bool MyMoneyReport::hasReferenceTo ( const QCString& id ) const
+bool MyMoneyReport::hasReferenceTo ( const QString& id ) const
 {
-  QCStringList list;
+  QStringList list;
 
   // collect all ids
   accounts ( list );

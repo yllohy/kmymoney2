@@ -86,7 +86,7 @@ TransactionEditor::~TransactionEditor()
   emit finishEdit(m_transactions);
 }
 
-void TransactionEditor::slotUpdateAccount(const QCString& id)
+void TransactionEditor::slotUpdateAccount(const QString& id)
 {
   m_account = MyMoneyFile::instance()->account(id);
 }
@@ -455,7 +455,7 @@ bool TransactionEditor::canAssignNumber(void) const
   return (number != 0) && (number->text().isEmpty());
 }
 
-void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool /* allowObjectCreation */)
+void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QString& categoryId, const char* splitEditSlot, bool /* allowObjectCreation */)
 {
   disconnect(category, SIGNAL(focusIn()), this, splitEditSlot);
 #if 0
@@ -467,13 +467,13 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
 
   switch(splits.count()) {
     case 0:
-      categoryId = QCString();
+      categoryId = QString();
       if(!category->currentText().isEmpty()) {
         category->setCurrentText();
         // make sure, we don't see the selector
         category->completion()->hide();
       }
-      category->completion()->setSelected(QCString());
+      category->completion()->setSelected(QString());
       break;
 
     case 1:
@@ -483,7 +483,7 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
       break;
 
     default:
-      categoryId = QCString();
+      categoryId = QString();
       category->setSplitTransaction();
       connect(category, SIGNAL(focusIn()), this, splitEditSlot);
 #if 0
@@ -496,9 +496,9 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
   }
 }
 
-bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule, bool suppressBalanceWarnings)
+bool TransactionEditor::enterTransactions(QString& newId, bool askForSchedule, bool suppressBalanceWarnings)
 {
-  newId = QCString();
+  newId = QString();
   MyMoneyFile* file = MyMoneyFile::instance();
 
   // make sure to run through all stuff that is tied to 'focusout events'.
@@ -546,11 +546,11 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule, 
 
     try {
       QValueList<MyMoneyTransaction>::iterator it_ts;
-      QMap<QCString, bool> minBalanceEarly;
-      QMap<QCString, bool> minBalanceAbsolute;
-      QMap<QCString, bool> maxCreditEarly;
-      QMap<QCString, bool> maxCreditAbsolute;
-      QMap<QCString, bool> accountIds;
+      QMap<QString, bool> minBalanceEarly;
+      QMap<QString, bool> minBalanceAbsolute;
+      QMap<QString, bool> maxCreditEarly;
+      QMap<QString, bool> maxCreditAbsolute;
+      QMap<QString, bool> accountIds;
 
       for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
         // if we have a categorization, make sure we remove
@@ -641,7 +641,7 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule, 
       ft.commit();
 
       // now analyse the balances and spit out warnings to the user
-      QMap<QCString, bool>::const_iterator it_a;
+      QMap<QString, bool>::const_iterator it_a;
 
       if(!suppressBalanceWarnings) {
         for(it_a = accountIds.begin(); it_a != accountIds.end(); ++it_a) {
@@ -649,7 +649,7 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule, 
           MyMoneyAccount acc = file->account(it_a.key());
           MyMoneyMoney balance = file->balance(acc.id());
           const MyMoneySecurity& sec = file->security(acc.currencyId());
-          QCString key;
+          QString key;
           key = "minBalanceEarly";
           if(!acc.value(key).isEmpty()) {
             if(minBalanceEarly[acc.id()] == false && balance < MyMoneyMoney(acc.value(key))) {
@@ -719,22 +719,22 @@ void StdTransactionEditor::createEditWidgets(void)
   account->setHint(i18n("Account"));
   m_editWidgets["account"] = account;
   connect(account, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
-  connect(account, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateAccount(const QCString&)));
+  connect(account, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateAccount(const QString&)));
 
   KMyMoneyPayeeCombo* payee = new KMyMoneyPayeeCombo;
   payee->setHint(i18n("Payer/Receiver"));
   m_editWidgets["payee"] = payee;
   connect(payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
-  connect(payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(payee, SIGNAL(createItem(const QString&, QString&)), this, SIGNAL(createPayee(const QString&, QString&)));
   connect(payee, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
-  connect(payee, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdatePayee(const QCString&)));
+  connect(payee, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdatePayee(const QString&)));
 
   KMyMoneyCategory* category = new KMyMoneyCategory(0, 0, true);
   category->setHint(i18n("Category/Account"));
   m_editWidgets["category"] = category;
-  connect(category, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateCategory(const QCString&)));
+  connect(category, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateCategory(const QString&)));
   connect(category, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
-  connect(category, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
+  connect(category, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateCategory(const QString&, QString&)));
   connect(category, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(category->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditSplits()));
   category->splitButton()->setDisabled(true);
@@ -799,7 +799,7 @@ void StdTransactionEditor::createEditWidgets(void)
 
   KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
   m_editWidgets["status"] = reconcile;
-  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
+  connect(reconcile, SIGNAL(itemSelected(const QString&)), this, SLOT(slotUpdateButtonState()));
 
   KMyMoneyRegister::QWidgetContainer::iterator it_w;
   for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
@@ -835,7 +835,7 @@ void StdTransactionEditor::createEditWidgets(void)
   m_editWidgets["number-label"] = label;
 }
 
-void StdTransactionEditor::setupCategoryWidget(QCString& categoryId)
+void StdTransactionEditor::setupCategoryWidget(QString& categoryId)
 {
   TransactionEditor::setupCategoryWidget(dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]), m_splits, categoryId, SLOT(slotEditSplits()));
 
@@ -843,7 +843,7 @@ void StdTransactionEditor::setupCategoryWidget(QCString& categoryId)
     m_shares = m_splits[0].shares();
 }
 
-bool StdTransactionEditor::isTransfer(const QCString& accId1, const QCString& accId2) const
+bool StdTransactionEditor::isTransfer(const QString& accId1, const QString& accId2) const
 {
   if(accId1.isEmpty() || accId2.isEmpty())
     return false;
@@ -932,14 +932,14 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
     }
     dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"])->setState(m_split.reconcileFlag());
 
-    QCString payeeId = m_split.payeeId();
+    QString payeeId = m_split.payeeId();
     if(!payeeId.isEmpty()) {
       payee->setSelectedItem(payeeId);
     }
 
     m_splits.clear();
     if(m_transaction.splitCount() < 2) {
-      category->completion()->setSelected(QCString());
+      category->completion()->setSelected(QString());
     } else {
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
@@ -948,7 +948,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
         m_splits.append(*it_s);
       }
     }
-    QCString categoryId;
+    QString categoryId;
     setupCategoryWidget(categoryId);
 
     if((w = haveWidget("cashflow")) != 0) {
@@ -1045,7 +1045,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
       w->setEnabled(false);
     }
 
-    category->completion()->setSelected(QCString());
+    category->completion()->setSelected(QString());
   }
 
   // allow kick off VAT processing again
@@ -1064,7 +1064,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 {
   // reload category widget
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCString categoryId = category->selectedItem();
+  QString categoryId = category->selectedItem();
 
   AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Asset);
@@ -1086,7 +1086,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 
   // reload payee widget
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
-  QCString payeeId = payee->selectedItem();
+  QString payeeId = payee->selectedItem();
 
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -1095,7 +1095,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
   }
 }
 
-void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
+void StdTransactionEditor::slotUpdatePayee(const QString& payeeId)
 {
   // we have a new payee assigned to this transaction.
   // in case there is no category assigned, no value entered and no
@@ -1106,7 +1106,7 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
   && KMyMoneyGlobalSettings::autoFillTransaction() != 0) {
     // check if category is empty
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-    QCStringList list;
+    QStringList list;
     category->selectedItems(list);
     if(!list.isEmpty())
       return;
@@ -1166,7 +1166,7 @@ struct uniqTransaction {
   int   cnt;
 };
 
-void StdTransactionEditor::autoFill(const QCString& payeeId)
+void StdTransactionEditor::autoFill(const QString& payeeId)
 {
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  list;
   MyMoneyTransactionFilter filter(m_account.id());
@@ -1271,7 +1271,7 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
         // we don't need this anymore
         if(s.action() != MyMoneySplit::ActionAmortization
         && s.action() != MyMoneySplit::ActionInterest)  {
-          s.setAction(QCString());
+          s.setAction(QString());
         }
 
         // FIXME update check number. The old comment contained
@@ -1376,7 +1376,7 @@ void StdTransactionEditor::slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirectio
   }
 }
 
-void StdTransactionEditor::slotUpdateCategory(const QCString& id)
+void StdTransactionEditor::slotUpdateCategory(const QString& id)
 {
   QLabel *categoryLabel = dynamic_cast<QLabel*>(haveWidget("category-label"));
   // qDebug("Update category to %s", id.data());
@@ -1662,7 +1662,7 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
   // block the signals to avoid popping up the split editor dialog
   // for nothing
   m_editWidgets["category"]->blockSignals(true);
-  QCString id;
+  QString id;
   setupCategoryWidget(id);
   m_editWidgets["category"]->blockSignals(false);
 
@@ -1701,7 +1701,7 @@ bool StdTransactionEditor::isComplete(void) const
   return it_w != m_editWidgets.end();
 }
 
-void StdTransactionEditor::slotCreateCategory(const QString& name, QCString& id)
+void StdTransactionEditor::slotCreateCategory(const QString& name, QString& id)
 {
   MyMoneyAccount acc, parent;
   acc.setName(name);
@@ -1818,7 +1818,7 @@ int StdTransactionEditor::slotEditSplits(void)
   return rc;
 }
 
-void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QCString& payeeId)
+void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QString& payeeId)
 {
   if(s.accountId().isEmpty() || payeeId.isEmpty())
     return;
@@ -1924,7 +1924,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   }
 
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
-  QCString payeeId;
+  QString payeeId;
   if(!isMultiSelection() || (isMultiSelection() && !payee->currentText().isEmpty())) {
     payeeId = payee->selectedItem();
     s0.setPayeeId(payeeId);
@@ -2061,7 +2061,7 @@ void StdTransactionEditor::setupFinalWidgets(void)
   addFinalWidget(haveWidget("status"));
 }
 
-void StdTransactionEditor::slotUpdateAccount(const QCString& id)
+void StdTransactionEditor::slotUpdateAccount(const QString& id)
 {
   TransactionEditor::slotUpdateAccount(id);
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);

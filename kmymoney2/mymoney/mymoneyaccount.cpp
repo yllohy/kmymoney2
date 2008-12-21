@@ -45,7 +45,7 @@ MyMoneyAccount::~MyMoneyAccount()
 {
 }
 
-MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right) :
+MyMoneyAccount::MyMoneyAccount(const QString& id, const MyMoneyAccount& right) :
   MyMoneyObject(id)
 {
   *this = right;
@@ -64,7 +64,7 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
 
   // qDebug("Reading information for account %s", acc.name().data());
 
-  setParentAccountId(QCStringEmpty(node.attribute("parentaccount")));
+  setParentAccountId(QStringEmpty(node.attribute("parentaccount")));
   setLastModified(stringToDate(QStringEmpty(node.attribute("lastmodified"))));
   setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute("lastreconciled"))));
 
@@ -82,10 +82,10 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
     }
   }
 
-  setInstitutionId(QCStringEmpty(node.attribute("institution")));
+  setInstitutionId(QStringEmpty(node.attribute("institution")));
   setNumber(QStringEmpty(node.attribute("number")));
   setOpeningDate(stringToDate(QStringEmpty(node.attribute("opened"))));
-  setCurrencyId(QCStringEmpty(node.attribute("currency")));
+  setCurrencyId(QStringEmpty(node.attribute("currency")));
 
   QString tmp = QStringEmpty(node.attribute("type"));
   bool bOK = false;
@@ -104,7 +104,7 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   }
   setDescription(node.attribute("description"));
 
-  m_id = QCStringEmpty(node.attribute("id"));
+  m_id = QStringEmpty(node.attribute("id"));
   // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   //  Process any Sub-Account information found inside the account entry.
@@ -113,7 +113,7 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName("SUBACCOUNT");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      addAccountId(QCString(nodeList.item(i).toElement().attribute("id")));
+      addAccountId(QString(nodeList.item(i).toElement().attribute("id")));
     }
   }
 
@@ -143,7 +143,7 @@ void MyMoneyAccount::setDescription(const QString& desc)
   m_description = desc;
 }
 
-void MyMoneyAccount::setInstitutionId(const QCString& id)
+void MyMoneyAccount::setInstitutionId(const QString& id)
 {
   m_institution = id;
 }
@@ -168,7 +168,7 @@ void MyMoneyAccount::setLastReconciliationDate(const QDate& date)
   m_lastReconciliationDate = date;
 }
 
-void MyMoneyAccount::setParentAccountId(const QCString& parent)
+void MyMoneyAccount::setParentAccountId(const QString& parent)
 {
   m_parentAccount = parent;
 }
@@ -178,7 +178,7 @@ void MyMoneyAccount::setAccountType(const accountTypeE type)
   m_accountType = type;
 }
 
-void MyMoneyAccount::addAccountId(const QCString& account)
+void MyMoneyAccount::addAccountId(const QString& account)
 {
   if(!m_accountList.contains(account))
     m_accountList += account;
@@ -189,9 +189,9 @@ void MyMoneyAccount::removeAccountIds(void)
   m_accountList.clear();
 }
 
-void MyMoneyAccount::removeAccountId(const QCString& account)
+void MyMoneyAccount::removeAccountId(const QString& account)
 {
-  QCStringList::Iterator it;
+  QStringList::Iterator it;
 
   it = m_accountList.find(account);
   if(it != m_accountList.end())
@@ -243,7 +243,7 @@ MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
   return accountGroup(m_accountType);
 }
 
-void MyMoneyAccount::setCurrencyId(const QCString& id)
+void MyMoneyAccount::setCurrencyId(const QString& id)
 {
   m_currencyId = id;
 }
@@ -287,7 +287,7 @@ void MyMoneyAccountLoan::setLoanAmount(const MyMoneyMoney& amount)
 const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
 {
   MyMoneyMoney rate;
-  QCString key;
+  QString key;
   QString val;
 
   if(!date.isValid())
@@ -297,7 +297,7 @@ const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
 
   QRegExp regExp("ir-(\\d{4})-(\\d{2})-(\\d{2})");
 
-  QMap<QCString, QString>::ConstIterator it;
+  QMap<QString, QString>::ConstIterator it;
 
   for(it = pairs().begin(); it != pairs().end(); ++it) {
     if(regExp.search(it.key()) > -1) {
@@ -322,7 +322,7 @@ void MyMoneyAccountLoan::setInterestRate(const QDate& date, const MyMoneyMoney& 
   if(!date.isValid())
     return;
 
-  QCString key;
+  QString key;
   key.sprintf("ir-%04d-%02d-%02d", date.year(), date.month(), date.day());
   setValue(key, value.toString());
 }
@@ -383,12 +383,12 @@ void MyMoneyAccountLoan::setInterestChangeFrequency(const int amount, const int 
   setValue("interest-changeFrequency", val);
 }
 
-const QCString MyMoneyAccountLoan::schedule(void) const
+const QString MyMoneyAccountLoan::schedule(void) const
 {
-  return QCString(value("schedule").latin1());
+  return QString(value("schedule").latin1());
 }
 
-void MyMoneyAccountLoan::setSchedule(const QCString& sched)
+void MyMoneyAccountLoan::setSchedule(const QString& sched)
 {
   setValue("schedule", sched);
 }
@@ -438,27 +438,27 @@ void MyMoneyAccountLoan::setPeriodicPayment(const MyMoneyMoney& payment)
   setValue("periodic-payment", payment.toString());
 }
 
-const QCString MyMoneyAccountLoan::payee(void) const
+const QString MyMoneyAccountLoan::payee(void) const
 {
-  return QCString(value("payee").latin1());
+  return value("payee");
 }
 
-void MyMoneyAccountLoan::setPayee(const QCString& payee)
+void MyMoneyAccountLoan::setPayee(const QString& payee)
 {
   setValue("payee", payee);
 }
 
-const QCString MyMoneyAccountLoan::interestAccountId(void) const
+const QString MyMoneyAccountLoan::interestAccountId(void) const
 {
-  return QCString();
+  return QString();
 }
 
-void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
+void MyMoneyAccountLoan::setInterestAccountId(const QString& /* id */)
 {
 
 }
 
-bool MyMoneyAccountLoan::hasReferenceTo(const QCString& id) const
+bool MyMoneyAccountLoan::hasReferenceTo(const QString& id) const
 {
   return MyMoneyAccount::hasReferenceTo(id)
          || (id == payee())
@@ -498,7 +498,7 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
   if(accountCount())
   {
     QDomElement subAccounts = document.createElement("SUBACCOUNTS");
-    QCStringList::ConstIterator it;
+    QStringList::ConstIterator it;
     for(it = accountList().begin(); it != accountList().end(); ++it)
     {
       QDomElement temp = document.createElement("SUBACCOUNT");
@@ -512,7 +512,7 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
   // Write online banking settings
   if(m_onlineBankingSettings.pairs().count()) {
     QDomElement onlinesettings = document.createElement("ONLINEBANKING");
-    QMap<QCString,QString>::const_iterator it_key = m_onlineBankingSettings.pairs().begin();
+    QMap<QString,QString>::const_iterator it_key = m_onlineBankingSettings.pairs().begin();
     while ( it_key != m_onlineBankingSettings.pairs().end() ) {
       onlinesettings.setAttribute(it_key.key(), it_key.data());
       ++it_key;
@@ -532,7 +532,7 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
   parent.appendChild(el);
 }
 
-bool MyMoneyAccount::hasReferenceTo(const QCString& id) const
+bool MyMoneyAccount::hasReferenceTo(const QString& id) const
 {
   return (id == m_institution) || (id == m_parentAccount) || (id == m_currencyId);
 }

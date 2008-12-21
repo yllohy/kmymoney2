@@ -29,6 +29,7 @@
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qptrlist.h>
+#include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -51,7 +52,7 @@ class KMYMONEY_EXPORT MyMoneyTransaction : public MyMoneyObject, public MyMoneyK
 {
 public:
   MyMoneyTransaction();
-  MyMoneyTransaction(const QCString id,
+  MyMoneyTransaction(const QString id,
                              const MyMoneyTransaction& transaction);
   /**
     * @param node reference to QDomNode
@@ -71,14 +72,14 @@ public:
   const QValueList<MyMoneySplit>& splits(void) const { return m_splits; };
   QValueList<MyMoneySplit>& splits(void) { return m_splits; };
   unsigned int splitCount(void) const { return m_splits.count(); };
-  const QCString& commodity(void) const { return m_commodity; };
+  const QString& commodity(void) const { return m_commodity; };
   const QString& bankID(void) const /*__attribute__ ((deprecated))*/ { return m_bankID; };
 
   // Simple set operations
   void setPostDate(const QDate& date);
   void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
-  void setCommodity(const QCString& commodityId) { m_commodity = commodityId; };
+  void setCommodity(const QString& commodityId) { m_commodity = commodityId; };
   void setBankID(const QString& bankID) /*__attribute__ ((deprecated))*/ { m_bankID = bankID; };
 
   bool operator == (const MyMoneyTransaction&) const;
@@ -99,7 +100,7 @@ public:
     *
     * @return reference to split within the transaction is returned
     */
-  const MyMoneySplit& splitByAccount(const QCString& accountId, const bool match = true) const;
+  const MyMoneySplit& splitByAccount(const QString& accountId, const bool match = true) const;
 
   /**
     * This method is essentially the same as the previous method, except that
@@ -111,7 +112,7 @@ public:
     *
     * @return reference to split within the transaction is returned
     */
-  const MyMoneySplit& splitByAccount(const QCStringList& accountIds, const bool match = true) const;
+  const MyMoneySplit& splitByAccount(const QStringList& accountIds, const bool match = true) const;
 
   /**
     * This method is used to extract a split from a transaction.
@@ -120,7 +121,7 @@ public:
     *
     * @return reference to split within the transaction is returned
     */
-  const MyMoneySplit& splitById(const QCString& splitId) const;
+  const MyMoneySplit& splitById(const QString& splitId) const;
 
   /**
     * This method is used to extract a split for a given payeeId
@@ -130,7 +131,7 @@ public:
     *
     * @return reference to split within the transaction is returned
     */
-  const MyMoneySplit& splitByPayee(const QCString& payeeId) const;
+  const MyMoneySplit& splitByPayee(const QString& payeeId) const;
 
   /**
     * This method is used to check if the given account is used
@@ -138,7 +139,7 @@ public:
     *
     * @param id account id that should be checked for usage
     */
-  bool accountReferenced(const QCString& id) const;
+  bool accountReferenced(const QString& id) const;
 
   /**
     * This method is used to add a split to the transaction. The split
@@ -230,9 +231,9 @@ public:
     * out the split that references the account through which a transaction
     * was entered.
     *
-    * @return QCString with ID of the first split of transactions
+    * @return QString with ID of the first split of transactions
     */
-  static const QCString firstSplitID(void);
+  static const QString firstSplitID(void);
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
 
@@ -245,7 +246,7 @@ public:
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
-  virtual bool hasReferenceTo(const QCString& id) const;
+  virtual bool hasReferenceTo(const QString& id) const;
 
   /**
     * Checks whether any split contains an autocalc split.
@@ -272,7 +273,7 @@ public:
     */
   QString accountSignature(bool includeSplitCount = false) const;
 
-  QCString uniqueSortKey(void) const;
+  QString uniqueSortKey(void) const;
 
   /**
    * This module implements an algorithm used by P.J. Weinberger
@@ -292,7 +293,7 @@ private:
   /**
     * This method returns the next id to be used for a split
     */
-  const QCString nextSplitID(void);
+  const QString nextSplitID(void);
 
 private:
   static const int SPLIT_ID_SIZE = 4;
@@ -328,7 +329,7 @@ private:
   /**
     * This member keeps the base commodity (e.g. currency) for this transaction
     */
-  QCString  m_commodity;
+  QString  m_commodity;
 
   /**
     * This member keeps the bank's unique ID for the transaction, so we can

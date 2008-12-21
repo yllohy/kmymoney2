@@ -187,7 +187,7 @@ private:
     *
     * The id of the account will be returned.
     */
-  QCString processAccountEntry(bool resetAccountId = true);
+  QString processAccountEntry(bool resetAccountId = true);
 
   /**
     * This method scans the m_qifEntry object as a category record specified
@@ -246,7 +246,7 @@ private:
     *            or the account was not found and not created the
     *            return value will be "".
     */
-  const QCString checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2);
+  QString checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2);
 
   /**
     * This method extracts the line beginning with the letter @p id
@@ -316,9 +316,9 @@ private:
     * @p searchname as a name, and returns the id if the newly created account
     *
     * @param searchname The name of the account to find or create
-    * @return QCString id of the found or created account
+    * @return QString id of the found or created account
     */
-  static const QCString findOrCreateIncomeAccount(const QString& searchname);
+  static const QString findOrCreateIncomeAccount(const QString& searchname);
 
   /**
     * This method looks up the @p searchname account by name and returns its id
@@ -326,9 +326,9 @@ private:
     * @p searchname as a name, and returns the id if the newly created account
     *
     * @param searchname The name of the account to find or create
-    * @return QCString id of the found or created account
+    * @return QString id of the found or created account
     */
-  static const QCString findOrCreateExpenseAccount(const QString& searchname);
+  static const QString findOrCreateExpenseAccount(const QString& searchname);
 
   /**
    * This method returns the account id for a given account @a name. In
@@ -336,7 +336,7 @@ private:
    * (the default), the id of the corresponding brokerage account will be
    * returned. In case an account is not existant, it will be created.
    */
-  QCString transferAccount(QString name, bool useBrokerage = true);
+  QString transferAccount(QString name, bool useBrokerage = true);
 
   // void processQifLine(void);
   void createOpeningBalance(MyMoneyAccount::_accountTypeE accType = MyMoneyAccount::Checkings);
@@ -373,7 +373,7 @@ private:
   unsigned long           m_transactionsSkipped;
   unsigned long           m_transactionsProcessed;
   QStringList             m_dontAskAgain;
-  QMap<QString, QCString> m_accountTranslation;
+  QMap<QString, QString>  m_accountTranslation;
   QMap<QString, QString>  m_investmentMap;
   QFile                   *m_file;
   char                    m_buffer[1024];

@@ -59,7 +59,7 @@ public:
                        const bool amountValid,
                        const bool deposit,
                        const MyMoneyMoney& calculatedValue,
-                       const QMap<QCString, MyMoneyMoney>& priceInfo,
+                       const QMap<QString, MyMoneyMoney>& priceInfo,
                        QWidget* parent = 0, const char* name = 0);
 
   virtual ~KSplitTransactionDlg();
@@ -105,7 +105,7 @@ protected slots:
   void reject();
   void slotClearAllSplits();
   void slotSetTransaction(const MyMoneyTransaction& t);
-  void slotCreateCategory(const QString& txt, QCString& id);
+  void slotCreateCategory(const QString& txt, QString& id);
 
   /// used internally to setup the initial size of all widgets
   void initSize(void);

@@ -20,8 +20,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qcstring.h>
-
 // ----------------------------------------------------------------------------
 // KDE Headers
 
@@ -66,14 +64,14 @@ private:
   int m_idPropMaxCredit;
   int m_idPropMinBalance;
 
-  void initParentWidget(QCString parentId, const QCString& accountId);
-  void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem, const QCString& parentId, const QCString& accountId);
+  void initParentWidget(QString parentId, const QString& accountId);
+  void showSubAccounts(QStringList accounts, KMyMoneyAccountTreeBaseItem *parentItem, const QString& parentId, const QString& accountId);
   void loadVatAccounts(void);
-  void storeKVP(const QCString& key, kMyMoneyEdit* widget);
-  void storeKVP(const QCString& key, KLineEdit* widget);
-  void storeKVP(const QCString& key, const QString& text, const QString& value);
-  void loadKVP(const QCString& key, kMyMoneyEdit* widget);
-  void loadKVP(const QCString& key, KLineEdit* widget);
+  void storeKVP(const QString& key, kMyMoneyEdit* widget);
+  void storeKVP(const QString& key, KLineEdit* widget);
+  void storeKVP(const QString& key, const QString& text, const QString& value);
+  void loadKVP(const QString& key, kMyMoneyEdit* widget);
+  void loadKVP(const QString& key, KLineEdit* widget);
 
 public:
   /**

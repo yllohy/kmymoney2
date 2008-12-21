@@ -63,10 +63,10 @@ class MyMoneyStatementReaderPrivate
       scannedCategories(false)
     {}
 
-    const QCString& feeId(const MyMoneyAccount& invAcc);
-    const QCString& interestId(const MyMoneyAccount& invAcc);
-    QCString interestId(const QString& name);
-    QCString feeId(const QString& name);
+    const QString& feeId(const MyMoneyAccount& invAcc);
+    const QString& interestId(const MyMoneyAccount& invAcc);
+    QString interestId(const QString& name);
+    QString feeId(const QString& name);
     void assignUniqueBankID(MyMoneySplit& s, const MyMoneyStatement::Transaction& t_in);
 
     MyMoneyAccount                 lastAccount;
@@ -80,28 +80,28 @@ class MyMoneyStatementReaderPrivate
     QMap<QString, MyMoneySecurity> securitiesBySymbol;
     QMap<QString, MyMoneySecurity> securitiesByName;
   private:
-    void scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
-    QCString nameToId(const QString&name, MyMoneyAccount& parent);
+    void scanCategories(QString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
+    QString nameToId(const QString&name, MyMoneyAccount& parent);
   private:
-    QCString                       m_feeId;
-    QCString                       m_interestId;
+    QString                        m_feeId;
+    QString                        m_interestId;
     bool                           scannedCategories;
 };
 
 
-const QCString& MyMoneyStatementReaderPrivate::feeId(const MyMoneyAccount& invAcc)
+const QString& MyMoneyStatementReaderPrivate::feeId(const MyMoneyAccount& invAcc)
 {
   scanCategories(m_feeId, invAcc, MyMoneyFile::instance()->expense(), i18n("_Fees"));
   return m_feeId;
 }
 
-const QCString& MyMoneyStatementReaderPrivate::interestId(const MyMoneyAccount& invAcc)
+const QString& MyMoneyStatementReaderPrivate::interestId(const MyMoneyAccount& invAcc)
 {
   scanCategories(m_interestId, invAcc, MyMoneyFile::instance()->income(), i18n("_Dividend"));
   return m_interestId;
 }
 
-QCString MyMoneyStatementReaderPrivate::nameToId(const QString&name, MyMoneyAccount& parent)
+QString MyMoneyStatementReaderPrivate::nameToId(const QString&name, MyMoneyAccount& parent)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount acc = file->accountByName(name);
@@ -115,20 +115,20 @@ QCString MyMoneyStatementReaderPrivate::nameToId(const QString&name, MyMoneyAcco
   return acc.id();
 }
 
-QCString MyMoneyStatementReaderPrivate::interestId(const QString& name)
+QString MyMoneyStatementReaderPrivate::interestId(const QString& name)
 {
   MyMoneyAccount parent = MyMoneyFile::instance()->income();
   return nameToId(name, parent);
 }
 
-QCString MyMoneyStatementReaderPrivate::feeId(const QString& name)
+QString MyMoneyStatementReaderPrivate::feeId(const QString& name)
 {
   MyMoneyAccount parent = MyMoneyFile::instance()->expense();
   return nameToId(name, parent);
 }
 
 
-void MyMoneyStatementReaderPrivate::scanCategories(QCString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName)
+void MyMoneyStatementReaderPrivate::scanCategories(QString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName)
 {
   if(!scannedCategories) {
     KMyMoneyUtils::previouslyUsedCategories(invAcc.id(), m_feeId, m_interestId);
@@ -525,7 +525,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   // If the user has chosen to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
-  QCString brokerageactid;
+  QString brokerageactid;
 
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
   {
@@ -550,11 +550,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
       // search through each subordinate account
       bool found = false;
-      QCStringList accounts = thisaccount.accountList();
-      QCStringList::const_iterator it_account = accounts.begin();
+      QStringList accounts = thisaccount.accountList();
+      QStringList::const_iterator it_account = accounts.begin();
       while( !found && it_account != accounts.end() )
       {
-        QCString currencyid = file->account(*it_account).currencyId();
+        QString currencyid = file->account(*it_account).currencyId();
         MyMoneySecurity security = file->security( currencyid );
         if((t_in.m_strSymbol.lower() == security.tradingSymbol().lower())
         || (t_in.m_strSecurity.lower() == security.name().lower()))
@@ -569,7 +569,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           {
             // update the price, while we're here.  in the future, this should be
             // an option
-            QCString basecurrencyid = file->baseCurrency().id();
+            QString basecurrencyid = file->baseCurrency().id();
             MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
             if ( !price.isValid()  && !t_in.m_amount.isZero() && !t_in.m_shares.isZero())
             {
@@ -754,7 +754,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // written.  However, if a user has an associated brokerage account,
       // we can stuff the transaction there.
 
-      QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
+      QString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
       if (brokerageactid.isEmpty() )
       {
         brokerageactid = file->accountByName(m_account.brokerageName()).id();
@@ -796,11 +796,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   QString payeename = t_in.m_strPayee;
   if(!payeename.isEmpty())
   {
-    QCString payeeid;
+    QString payeeid;
     try {
       QValueList<MyMoneyPayee> pList = file->payeeList();
       QValueList<MyMoneyPayee>::const_iterator it_p;
-      QMap<int, QCString> matchMap;
+      QMap<int, QString> matchMap;
       for(it_p = pList.begin(); it_p != pList.end(); ++it_p) {
         bool ignoreCase;
         QStringList keys;
@@ -833,7 +833,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // in case of a) we take the one with the largest matchedLength()
       // which happens to be the last one in the map
       if(matchMap.count() > 1) {
-        QMap<int, QCString>::const_iterator it_m = matchMap.end();
+        QMap<int, QString>::const_iterator it_m = matchMap.end();
         --it_m;
         payeeid = *it_m;
       } else if(matchMap.count() == 1)
@@ -896,7 +896,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         }
 
       } else if(rc == KMessageBox::No) {
-        s1.setPayeeId(QCString());
+        s1.setPayeeId(QString());
 
       } else {
         throw new MYMONEYEXCEPTION("USERABORT");
@@ -1006,7 +1006,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     QValueList<MyMoneyStatement::Split>::const_iterator it_s;
     for(it_s = t_in.m_listSplits.begin(); it_s != t_in.m_listSplits.end(); ++it_s) {
       MyMoneySplit s2;
-      s2.setAccountId(QCString((*it_s).m_accountId));
+      s2.setAccountId((*it_s).m_accountId);
       MyMoneyAccount acc = file->account(s2.accountId());
       if(acc.isAssetLiability()) {
         s2.setPayeeId(s1.payeeId());
@@ -1019,7 +1019,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
 
 #if 0
-    QCString accountId;
+    QString accountId;
     int   count;
     int cnt = 0;
     count = t_in.m_listSplits.count();
@@ -1031,7 +1031,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.clearId();
       s2.setValue(t_in.m_listSplits[cnt].m_amount);
       s2.setShares(t_in.m_listSplits[cnt].m_amount);
-      s2.setAccountId(QCString(t_in.m_listSplits[cnt].m_accountId));
+      s2.setAccountId(QString(t_in.m_listSplits[cnt].m_accountId));
 #if 0
       accountId = file->nameToAccount(t_in.m_listSplits[cnt].m_strCategoryName);
       if (accountId.isEmpty())
@@ -1059,7 +1059,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     if(result != TransactionMatcher::matchedDuplicate) {
       d->transactionsAdded++;
       file->addTransaction(t);
-      qDebug("Transaction added");
 
       if(o) {
         if(typeid(*o) == typeid(MyMoneyTransaction)) {
@@ -1089,7 +1088,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             if(editor) {
               MyMoneyTransaction torig;
               editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
-              QCString newId;
+              QString newId;
               if(editor->enterTransactions(newId, false, true)) {
                 if(!newId.isEmpty()) {
                   torig = MyMoneyFile::instance()->transaction(newId);
@@ -1129,7 +1128,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QCString accountId;
+  QString accountId;
 
   // Try to find an existing account in the engine which matches this one.
   // There are two ways to be a "matching account".  The account number can
@@ -1241,58 +1240,6 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
     (*m_progressCallback)(current, total, msg);
 }
 
-#if 0
-const QCString MyMoneyStatementReader::checkCategory(const QString& name, const MyMoneyMoney& value, const MyMoneyMoney& value2)
-{
-//Borrowed from MyMoneyQifReader
-
-  QCString accountId;
-  MyMoneyFile *file = MyMoneyFile::instance();
-  MyMoneyAccount account;
-  bool found = true;
-
-  if(!name.isEmpty()) {
-    // The category might be constructed with an arbitraty depth (number of
-    // colon delimited fields). We try to find a parent account within this
-    // hierarchy by searching the following sequence:
-    //
-    //    aaaa:bbbb:cccc:ddddd
-    //
-    // 1. search aaaa:bbbb:cccc:dddd, create nothing
-    // 2. search aaaa:bbbb:cccc     , create dddd
-    // 3. search aaaa:bbbb          , create cccc:dddd
-    // 4. search aaaa               , create bbbb:cccc:dddd
-    // 5. don't search              , create aaaa:bbbb:cccc:dddd
-
-    account.setName(name);
-    QString accName;      // part to be created (right side in above list)
-    QString parent(name); // a possible parent part (left side in above list)
-    do {
-      accountId = file->categoryToAccount(parent);
-      if(accountId.isEmpty())
-      {
-        found = false;
-        // prepare next step
-        if(!accName.isEmpty())
-          accName.prepend(':');
-        accName.prepend(parent.section(':', -1));
-        account.setName(accName);
-        parent = parent.section(':', 0, -2);
-      } else if(!accName.isEmpty())
-          account.setParentAccountId(accountId);
-    }
-    while(!parent.isEmpty() && accountId.isEmpty());
-
-    // if we did not find the category, we create it
-    if(!found) {
-      account.setAccountType((!value.isNegative() && value2.isNegative()) ? MyMoneyAccount::Income : MyMoneyAccount::Expense);
-      selectOrCreateAccount(Select, account);
-      accountId = account.id();
-    }
-  }
-  return accountId;
-}
-#endif
 
 #include "mymoneystatementreader.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:

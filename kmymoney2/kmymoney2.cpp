@@ -277,7 +277,7 @@ void KMyMoney2App::initDynamicMenus(void)
   if(menu) {
     d->m_moveToAccountSelector = new kMyMoneyAccountSelector(menu, 0, 0, false);
     menu->insertItem(d->m_moveToAccountSelector);
-    connect(d->m_moveToAccountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+    connect(d->m_moveToAccountSelector, SIGNAL(itemSelected(const QString&)), this, SLOT(slotMoveToAccount(const QString&)));
     connect(this, SIGNAL(accountSelected(const MyMoneyAccount&)), this, SLOT(slotUpdateMoveToAccountMenu()));
     connect(this, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotUpdateMoveToAccountMenu()));
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotUpdateMoveToAccountMenu()));
@@ -918,8 +918,8 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   KURL lastFile = m_fileName;
 
   // check if there are other instances which might have this file open
-  QCStringList list = instanceList();
-  QCStringList::ConstIterator it;
+  QValueList<QCString> list = instanceList();
+  QValueList<QCString>::ConstIterator it;
   bool duplicate = false;
 
   for(it = list.begin(); duplicate == false && it != list.end(); ++it) {
@@ -2083,8 +2083,8 @@ void KMyMoney2App::slotFindTransaction(void)
   if(m_searchDlg == 0) {
     m_searchDlg = new KFindTransactionDlg();
     connect(m_searchDlg, SIGNAL(destroyed()), this, SLOT(slotCloseSearchDialog()));
-    connect(m_searchDlg, SIGNAL(transactionSelected(const QCString&, const QCString&)),
-            myMoneyView, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+    connect(m_searchDlg, SIGNAL(transactionSelected(const QString&, const QString&)),
+            myMoneyView, SLOT(slotLedgerSelected(const QString&, const QString&)));
   }
   m_searchDlg->show();
   m_searchDlg->raise();
@@ -2265,7 +2265,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       } else {
         parentAccount = existingAccount;
       }
-      newAccount.setParentAccountId(QCString());  // make sure, there's no parent
+      newAccount.setParentAccountId(QString());  // make sure, there's no parent
       newAccount.clearId();                       // and no id set for adding
       newAccount.removeAccountIds();              // and no sub-account ids
       newAccount.setName(remainder);
@@ -2345,7 +2345,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
   }
 }
 
-void KMyMoney2App::slotCategoryNew(const QString& name, QCString& id)
+void KMyMoney2App::slotCategoryNew(const QString& name, QString& id)
 {
   MyMoneyAccount account;
   account.setName(name);
@@ -2419,7 +2419,7 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
   NewAccountWizard::Wizard* wizard = new NewAccountWizard::Wizard();
   connect(wizard, SIGNAL(createInstitution(MyMoneyInstitution&)), this, SLOT(slotInstitutionNew(MyMoneyInstitution&)));
   connect(wizard, SIGNAL(createAccount(MyMoneyAccount&)), this, SLOT(slotAccountNew(MyMoneyAccount&)));
-  connect(wizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+  connect(wizard, SIGNAL(createPayee(const QString&, QString&)), this, SLOT(slotPayeeNew(const QString&, QString&)));
   connect(wizard, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
   wizard->setAccount(account);
@@ -2618,7 +2618,7 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
   }
 }
 
-bool KMyMoney2App::exchangeAccountInTransaction(MyMoneyTransaction& _t, const QCString& fromId, const QCString& toId)
+bool KMyMoney2App::exchangeAccountInTransaction(MyMoneyTransaction& _t, const QString& fromId, const QString& toId)
 {
   bool rc = false;
   MyMoneyTransaction t(_t);
@@ -2680,7 +2680,7 @@ void KMyMoney2App::slotAccountDelete(void)
 
     needAskUser = false;
     KCategoryReassignDlg* dlg = new KCategoryReassignDlg(this);
-    QCString categoryId = dlg->show(m_selectedAccount);
+    QString categoryId = dlg->show(m_selectedAccount);
     delete dlg; // and kill the dialog
     if (categoryId.isEmpty())
       return; // the user aborted the dialog, so let's abort as well
@@ -2787,7 +2787,7 @@ void KMyMoney2App::slotAccountDelete(void)
       //          delete them all, but just the category itself?
       MyMoneyAccount parentAccount = file->account(m_selectedAccount.parentAccountId());
 
-      QCStringList accountsToReparent;
+      QStringList accountsToReparent;
       int result = KMessageBox::questionYesNoCancel(this, QString("<qt>")+
           i18n("Do you want to delete category <b>%1</b> with all its sub-categories or only "
                "the category itself? If you only delete the category itself, all its sub-categories "
@@ -2806,7 +2806,7 @@ void KMyMoney2App::slotAccountDelete(void)
         // case D - User wants to delete all subcategories, now check all subcats of
         //          m_selectedAccount and remember all that cannot be deleted and
         //          must be "reparented"
-        for (QCStringList::const_iterator it = m_selectedAccount.accountList().begin();
+        for (QStringList::const_iterator it = m_selectedAccount.accountList().begin();
           it != m_selectedAccount.accountList().end(); ++it)
         {
           // reparent account if a transaction is assigned
@@ -2832,7 +2832,7 @@ void KMyMoney2App::slotAccountDelete(void)
       // all good, now first reparent selected sub-categories
       try {
         MyMoneyAccount parent = file->account(m_selectedAccount.parentAccountId());
-        for (QCStringList::const_iterator it = accountsToReparent.begin(); it != accountsToReparent.end(); ++it) {
+        for (QStringList::const_iterator it = accountsToReparent.begin(); it != accountsToReparent.end(); ++it) {
           MyMoneyAccount child = file->account(*it);
           file->reparentAccount(child, parent);
         }
@@ -2892,7 +2892,7 @@ void KMyMoney2App::slotAccountEdit(void)
             category = true;
             break;
         }
-        QCString tid = file->openingBalanceTransaction(m_selectedAccount);
+        QString tid = file->openingBalanceTransaction(m_selectedAccount);
         MyMoneyTransaction t;
         MyMoneySplit s0, s1;
         KNewAccountDlg dlg(m_selectedAccount, true, category, 0, 0, caption);
@@ -2911,7 +2911,7 @@ void KMyMoney2App::slotAccountEdit(void)
               }
             } catch(MyMoneyException *e) {
               kdDebug(2) << "Error retrieving opening balance transaction " << tid << ": " << e->what() << "\n";
-              tid = QCString();
+              tid = QString();
               delete e;
             }
           }
@@ -2981,7 +2981,7 @@ void KMyMoney2App::slotAccountEdit(void)
       } else {
         KEditLoanWizard* wizard = new KEditLoanWizard(m_selectedAccount);
         connect(wizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
-        connect(wizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+        connect(wizard, SIGNAL(createPayee(const QString&, QString&)), this, SLOT(slotPayeeNew(const QString&, QString&)));
         if(wizard->exec() == QDialog::Accepted) {
           MyMoneySchedule sch = file->schedule(m_selectedAccount.value("schedule").latin1());
           if(!(m_selectedAccount == wizard->account())
@@ -3032,7 +3032,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
       if(schedules.count() > 0) {
         if(KMessageBox::questionYesNo(this, i18n("KMyMoney has detected some overdue schedules for this account. Do you want to enter those scheduled transactions now?"), i18n("Scheduled transactions found")) == KMessageBox::Yes) {
 
-          QMap<QCString, bool> skipMap;
+          QMap<QString, bool> skipMap;
           bool processedOne;
           KMyMoneyUtils::EnterScheduleResultCodeE rc = KMyMoneyUtils::Enter;
           do {
@@ -3062,7 +3062,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
         delete m_endingBalanceDlg;
       m_endingBalanceDlg = new KEndingBalanceDlg(account, this);
       if(account.isAssetLiability()) {
-        connect(m_endingBalanceDlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+        connect(m_endingBalanceDlg, SIGNAL(createPayee(const QString&, QString&)), this, SLOT(slotPayeeNew(const QString&, QString&)));
         connect(m_endingBalanceDlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
         if(m_endingBalanceDlg->exec() == QDialog::Accepted) {
@@ -3240,7 +3240,7 @@ void KMyMoney2App::slotAccountOpen(const MyMoneyObject& obj)
     return;
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  QCString id = m_selectedAccount.id();
+  QString id = m_selectedAccount.id();
 
   // if the caller passed a non-empty object, we need to select that
   if(!obj.id().isEmpty()) {
@@ -3267,7 +3267,7 @@ bool KMyMoney2App::canCloseAccount(const MyMoneyAccount& acc) const
     return false;
 
   // all children must be already closed
-  QCStringList::const_iterator it_a;
+  QStringList::const_iterator it_a;
   for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
     MyMoneyAccount a = MyMoneyFile::instance()->account(*it_a);
     if(!a.isClosed()) {
@@ -3475,7 +3475,7 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_LOANPAYMENT:
           loan_wiz = new KEditLoanWizard(schedule.account(2));
           connect(loan_wiz, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
-          connect(loan_wiz, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+          connect(loan_wiz, SIGNAL(createPayee(const QString&, QString&)), this, SLOT(slotPayeeNew(const QString&, QString&)));
           if (loan_wiz->exec() == QDialog::Accepted) {
             MyMoneyFileTransaction ft;
             try {
@@ -3672,7 +3672,7 @@ KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySched
                 break;
             }
 
-            QCString newId;
+            QString newId;
             if(m_transactionEditor->enterTransactions(newId, false)) {
               if(!newId.isEmpty()) {
                 MyMoneyTransaction t = MyMoneyFile::instance()->transaction(newId);
@@ -3702,7 +3702,7 @@ KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySched
   return rc;
 }
 
-void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QCString& id)
+void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QString& id)
 {
   bool doit = true;
 
@@ -3745,7 +3745,7 @@ void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QCString& id)
 
 void KMyMoney2App::slotPayeeNew(void)
 {
-  QCString id;
+  QString id;
   slotPayeeNew(i18n("New Payee"), id);
 
   // the callbacks should have made sure, that the payees view has been
@@ -3754,7 +3754,7 @@ void KMyMoney2App::slotPayeeNew(void)
   emit payeeCreated(id);
 }
 
-bool KMyMoney2App::payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const
+bool KMyMoney2App::payeeInList(const QValueList<MyMoneyPayee>& list, const QString& id) const
 {
   bool rc = false;
   QValueList<MyMoneyPayee>::const_iterator it_p = list.begin();
@@ -3841,7 +3841,7 @@ void KMyMoney2App::slotPayeeDelete(void)
 
       // show transaction reassignment dialog
       KPayeeReassignDlg * dlg = new KPayeeReassignDlg(this);
-      QCString payee_id = dlg->show(remainingPayees);
+      QString payee_id = dlg->show(remainingPayees);
       addToMatchList = dlg->addToMatchList();
       delete dlg; // and kill the dialog
       if (payee_id.isEmpty())
@@ -3955,7 +3955,7 @@ void KMyMoney2App::slotCurrencyNew(void)
 {
   QString sid = KInputDialog::getText(i18n("New currency"), i18n("Enter ISO 4217 code for the new currency"), QString::null, 0, 0, 0, 0, ">AAA");
   if(!sid.isEmpty()) {
-    QCString id(sid);
+    QString id(sid);
     MyMoneySecurity currency(id, i18n("New currency"));
     MyMoneyFileTransaction ft;
     try {
@@ -4385,7 +4385,7 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
       if(m_transactionEditor->slotEditSplits() == QDialog::Accepted) {
         MyMoneyFileTransaction ft;
         try {
-          QCString id;
+          QString id;
           m_transactionEditor->enterTransactions(id);
           ft.commit();
         } catch(MyMoneyException* e) {
@@ -4419,8 +4419,8 @@ void KMyMoney2App::slotTransactionsEnter(void)
   if(kmymoney2->action("transaction_enter")->isEnabled()) {
     // qDebug("KMyMoney2App::slotTransactionsEnter");
     if(m_transactionEditor) {
-      QCString accountId = m_selectedAccount.id();
-      QCString newId;
+      QString accountId = m_selectedAccount.id();
+      QString newId;
       if(m_transactionEditor->enterTransactions(newId))
         deleteTransactionEditor();
       if(!newId.isEmpty()) {
@@ -4607,13 +4607,13 @@ void KMyMoney2App::slotTransactionGotoAccount(void)
 {
   if(!m_accountGoto.isEmpty()) {
     try {
-      QCString transactionId;
+      QString transactionId;
       if(m_selectedTransactions.count() == 1) {
         transactionId = m_selectedTransactions[0].transaction().id();
       }
       // make sure to pass a copy, as myMoneyView->slotLedgerSelected() overrides
       // m_accountGoto while calling slotUpdateActions()
-      QCString accountId = m_accountGoto;
+      QString accountId = m_accountGoto;
       myMoneyView->slotLedgerSelected(accountId, transactionId);
     } catch(MyMoneyException* e) {
       delete e;
@@ -4625,14 +4625,14 @@ void KMyMoney2App::slotTransactionGotoPayee(void)
 {
   if(!m_payeeGoto.isEmpty()) {
     try {
-      QCString transactionId;
+      QString transactionId;
       if(m_selectedTransactions.count() == 1) {
         transactionId = m_selectedTransactions[0].transaction().id();
       }
       // make sure to pass copies, as myMoneyView->slotPayeeSelected() overrides
       // m_payeeGoto and m_selectedAccount while calling slotUpdateActions()
-      QCString payeeId = m_payeeGoto;
-      QCString accountId = m_selectedAccount.id();
+      QString payeeId = m_payeeGoto;
+      QString accountId = m_selectedAccount.id();
       myMoneyView->slotPayeeSelected(payeeId, accountId, transactionId);
     } catch(MyMoneyException* e) {
       delete e;
@@ -4646,7 +4646,7 @@ void KMyMoney2App::slotTransactionCreateSchedule(void)
     // make sure to have the current selected split as first split in the schedule
     MyMoneyTransaction t = m_selectedTransactions[0].transaction();
     MyMoneySplit s = m_selectedTransactions[0].split();
-    QCString splitId = s.id();
+    QString splitId = s.id();
     s.clearId();
     t.removeSplits();
     t.addSplit(s);
@@ -4674,7 +4674,7 @@ void KMyMoney2App::slotTransactionCombine(void)
   qDebug("slotTransactionCombine() not implemented yet");
 }
 
-void KMyMoney2App::slotMoveToAccount(const QCString& id)
+void KMyMoney2App::slotMoveToAccount(const QString& id)
 {
   // close the menu, if it is still open
   QWidget* w = factory()->container("transaction_move_menu", this);
@@ -4743,8 +4743,8 @@ void KMyMoney2App::slotUpdateMoveToAccountMenu(void)
     }
     // remove those accounts from the list that are denominated
     // in a different currency
-    QCStringList list = d->m_moveToAccountSelector->accountList();
-    QValueList<QCString>::const_iterator it_a;
+    QStringList list = d->m_moveToAccountSelector->accountList();
+    QValueList<QString>::const_iterator it_a;
     for(it_a = list.begin(); it_a != list.end(); ++it_a) {
       MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
       if(acc.currencyId() != m_selectedAccount.currencyId())
@@ -5336,8 +5336,8 @@ void KMyMoney2App::slotSelectTransactions(const KMyMoneyRegister::SelectedTransa
   m_selectedTransactions.clear();
   m_selectedSchedule = MyMoneySchedule();
 
-  m_accountGoto = QCString();
-  m_payeeGoto = QCString();
+  m_accountGoto = QString();
+  m_payeeGoto = QString();
   if(list.count() > 0 && !list.first().isScheduled()) {
     m_selectedTransactions = list;
     if(list.count() == 1) {
@@ -5464,7 +5464,7 @@ void KMyMoney2App::slotCurrencyDialog(void)
   connect(&dlg, SIGNAL(openContextMenu(const MyMoneySecurity&)), this, SLOT(slotShowCurrencyContextMenu()));
   connect(this, SIGNAL(currencyRename()), &dlg, SLOT(slotStartRename()));
   connect(&dlg, SIGNAL(renameCurrency(QListViewItem*, int, const QString&)), this, SLOT(slotCurrencyRename(QListViewItem*,int,const QString&)));
-  connect(this, SIGNAL(currencyCreated(const QCString&)), &dlg, SLOT(slotSelectCurrency(const QCString&)));
+  connect(this, SIGNAL(currencyCreated(const QString&)), &dlg, SLOT(slotSelectCurrency(const QString&)));
   connect(&dlg, SIGNAL(selectBaseCurrency(const MyMoneySecurity&)), this, SLOT(slotCurrencySetBase()));
 
   dlg.exec();
@@ -5600,11 +5600,11 @@ const QString KMyMoney2App::filename(void) const
   return m_fileName.url();
 }
 
-const QCStringList KMyMoney2App::instanceList(void) const
+const QValueList<QCString> KMyMoney2App::instanceList(void) const
 {
-  QCStringList list;
-  QCStringList apps = kapp->dcopClient()->registeredApplications();
-  QCStringList::ConstIterator it;
+  QValueList<QCString> list;
+  QValueList<QCString> apps = kapp->dcopClient()->registeredApplications();
+  QValueList<QCString>::ConstIterator it;
 
   for(it = apps.begin(); it != apps.end(); ++it) {
     // skip over myself
@@ -5634,7 +5634,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
 
   // Bring this window to the forefront.  This method was suggested by
   // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
-  KStartupInfo::setNewStartupId(this,asn_id);
+  KStartupInfo::setNewStartupId(this, asn_id);
 
   // Make sure we have an open file
   if ( ! myMoneyView->fileOpen() &&
@@ -5785,7 +5785,7 @@ const MyMoneyAccount& KMyMoney2App::account(const QString& key, const QString& v
   MyMoneyFile::instance()->accountList(list);
   QValueList<MyMoneyAccount> accList;
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
-    const QString& id = (*it_a).onlineBankingSettings().value(QCString(key));
+    const QString& id = (*it_a).onlineBankingSettings().value(key);
     if(id.contains(value)) {
       accList << MyMoneyFile::instance()->account((*it_a).id());
     }
@@ -5800,7 +5800,7 @@ const MyMoneyAccount& KMyMoney2App::account(const QString& key, const QString& v
   }
 
   // return reference to empty element
-  return MyMoneyFile::instance()->account(QCString());
+  return MyMoneyFile::instance()->account(QString());
 }
 
 void KMyMoney2App::setAccountOnlineParameters(const MyMoneyAccount& _acc, const MyMoneyKeyValueContainer& kvps)

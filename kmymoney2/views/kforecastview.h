@@ -64,7 +64,7 @@ protected:
     MaxViewTabs
   } ForecastViewTab;
 
-  QMap<QCString, QCString> m_nameIdx;
+  QMap<QString, QString> m_nameIdx;
 
 
   /**
@@ -105,7 +105,7 @@ protected:
 
 protected slots:
   void slotTabChanged(QWidget*);
-  
+
   /**
    * Get the list of prices for an account
    * This is used later to create an instance of KMyMoneyAccountTreeForecastItem

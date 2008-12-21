@@ -62,7 +62,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const bool amountValid,
                                            const bool deposit,
                                            const MyMoneyMoney& calculatedValue,
-                                           const QMap<QCString, MyMoneyMoney>& priceInfo,
+                                           const QMap<QString, MyMoneyMoney>& priceInfo,
                                            QWidget* parent, const char* name)
   : KSplitTransactionDlgDecl(parent, name, true),
   m_transaction(t),
@@ -101,7 +101,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   // connect signals with slots
   connect(transactionsTable, SIGNAL(transactionChanged(const MyMoneyTransaction&)),
           this, SLOT(slotSetTransaction(const MyMoneyTransaction&)));
-  connect(transactionsTable, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
+  connect(transactionsTable, SIGNAL(createCategory(const QString&, QString&)), this, SLOT(slotCreateCategory(const QString&, QString&)));
   connect(transactionsTable, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
 
   connect(transactionsTable, SIGNAL(returnPressed()), this, SLOT(accept()));
@@ -334,7 +334,7 @@ MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
   return diff;
 }
 
-void KSplitTransactionDlg::slotCreateCategory(const QString& name, QCString& id)
+void KSplitTransactionDlg::slotCreateCategory(const QString& name, QString& id)
 {
   MyMoneyAccount acc, parent;
   acc.setName(name);

@@ -22,7 +22,6 @@
 // QT Includes
 
 #include <qvaluelist.h>
-#include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -53,11 +52,11 @@ public:
     *
     * @param category reference to MyMoneyAccount object of the category to be deleted
     *
-    * @return Returns the id of the selected category in the list or QCString() if
-    *         the dialog was aborted. QCString() is also returned if the @a category
+    * @return Returns the id of the selected category in the list or QString() if
+    *         the dialog was aborted. QString() is also returned if the @a category
     *         does not have an id.
     */
-  QCString show(const MyMoneyAccount& category);
+  QString show(const MyMoneyAccount& category);
 
 protected:
   void accept(void);

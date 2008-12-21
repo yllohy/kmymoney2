@@ -150,10 +150,10 @@ protected:
   /**
     * set the widgets text area based on the item with the given @a id.
     */
-  virtual void setCurrentText(const QCString& id);
+  virtual void setCurrentTextById(const QString& id);
 
 public slots:
-  virtual void slotItemSelected(const QCString& id);
+  virtual void slotItemSelected(const QString& id);
   virtual void setEnabled(bool);
   virtual void setDisabled(bool);
 
@@ -188,7 +188,7 @@ protected:
   /**
     * set the widgets text area based on the item with the given @a id.
     */
-  virtual void setCurrentText(const QCString& id);
+  virtual void setCurrentTextById(const QString& id);
 };
 
 #endif

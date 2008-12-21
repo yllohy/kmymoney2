@@ -108,7 +108,7 @@ void StdTransactionMatched::registerCellText(QString& txt, int& align, int row, 
     MyMoneyTransaction matchedTransaction = m_split.matchedTransaction();
     MyMoneySplit matchedSplit;
     try {
-      matchedSplit = matchedTransaction.splitById(QCString(m_split.value("kmm-match-split")));
+      matchedSplit = matchedTransaction.splitById(m_split.value("kmm-match-split"));
     } catch(MyMoneyException *e) {
       delete e;
     }

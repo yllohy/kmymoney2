@@ -39,7 +39,7 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter()
   m_considerCategory = true;
 }
 
-MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QCString& id)
+MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QString& id)
 {
   m_filterSet.allFilter = 0;
   m_reportAllSplits = false;
@@ -78,16 +78,16 @@ void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
   m_text = text;
 }
 
-void MyMoneyTransactionFilter::addAccount(const QCStringList& ids)
+void MyMoneyTransactionFilter::addAccount(const QStringList& ids)
 {
-  QCStringList::ConstIterator it;
+  QStringList::ConstIterator it;
 
   m_filterSet.singleFilter.accountFilter = 1;
   for(it = ids.begin(); it != ids.end(); ++it)
     addAccount(*it);
 }
 
-void MyMoneyTransactionFilter::addAccount(const QCString& id)
+void MyMoneyTransactionFilter::addAccount(const QString& id)
 {
   if(!m_accounts.isEmpty() && !id.isEmpty()) {
     if(m_accounts.find(id) != 0)
@@ -101,16 +101,16 @@ void MyMoneyTransactionFilter::addAccount(const QCString& id)
     m_accounts.insert(id, "");
 }
 
-void MyMoneyTransactionFilter::addCategory(const QCStringList& ids)
+void MyMoneyTransactionFilter::addCategory(const QStringList& ids)
 {
-  QCStringList::ConstIterator it;
+  QStringList::ConstIterator it;
 
   m_filterSet.singleFilter.categoryFilter = 1;
   for(it = ids.begin(); it != ids.end(); ++it)
     addCategory(*it);
 }
 
-void MyMoneyTransactionFilter::addCategory(const QCString& id)
+void MyMoneyTransactionFilter::addCategory(const QString& id)
 {
   if(!m_categories.isEmpty() && !id.isEmpty()) {
     if(m_categories.find(id) != 0)
@@ -145,7 +145,7 @@ void MyMoneyTransactionFilter::setAmountFilter(const MyMoneyMoney& from, const M
   }
 }
 
-void MyMoneyTransactionFilter::addPayee(const QCString& id)
+void MyMoneyTransactionFilter::addPayee(const QString& id)
 {
   if(!m_payees.isEmpty() && !id.isEmpty()) {
     if(m_payees.find(id) != 0)
@@ -545,7 +545,7 @@ int MyMoneyTransactionFilter::splitType(const MyMoneyTransaction& t, const MyMon
     return allTypes;
 
   if(t.splitCount() == 2) {
-    QCString ida, idb;
+    QString ida, idb;
     ida = t.splits()[0].accountId();
     idb = t.splits()[1].accountId();
 
@@ -575,17 +575,17 @@ MyMoneyTransactionFilter::validityOptionE MyMoneyTransactionFilter::validTransac
   return (val == MyMoneyMoney(0,1)) ? valid : invalid;
 }
 
-bool MyMoneyTransactionFilter::includesCategory( const QCString& cat ) const
+bool MyMoneyTransactionFilter::includesCategory( const QString& cat ) const
 {
   return (! m_filterSet.singleFilter.categoryFilter) || m_categories.find( cat );
 }
 
-bool MyMoneyTransactionFilter::includesAccount( const QCString& acc ) const
+bool MyMoneyTransactionFilter::includesAccount( const QString& acc ) const
 {
   return (! m_filterSet.singleFilter.accountFilter) || m_accounts.find( acc );
 }
 
-bool MyMoneyTransactionFilter::includesPayee( const QCString& pye ) const
+bool MyMoneyTransactionFilter::includesPayee( const QString& pye ) const
 {
   return (! m_filterSet.singleFilter.payeeFilter) || m_payees.find( pye );
 }
@@ -611,7 +611,7 @@ bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) const
   return m_filterSet.singleFilter.nrFilter==1;
 }
 
-bool MyMoneyTransactionFilter::payees(QCStringList& list) const
+bool MyMoneyTransactionFilter::payees(QStringList& list) const
 {
   bool result = m_filterSet.singleFilter.payeeFilter;
 
@@ -627,7 +627,7 @@ bool MyMoneyTransactionFilter::payees(QCStringList& list) const
   return result;
 }
 
-bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
+bool MyMoneyTransactionFilter::accounts(QStringList& list) const
 {
   bool result = m_filterSet.singleFilter.accountFilter;
 
@@ -636,7 +636,7 @@ bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
     QAsciiDictIterator<char> it_account( m_accounts );
     while ( it_account.current() )
     {
-      QCString account = it_account.currentKey();
+      QString account = it_account.currentKey();
       list += account;
       ++it_account;
     }
@@ -644,7 +644,7 @@ bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
   return result;
 }
 
-bool MyMoneyTransactionFilter::categories(QCStringList& list) const
+bool MyMoneyTransactionFilter::categories(QStringList& list) const
 {
   bool result = m_filterSet.singleFilter.categoryFilter;
 
@@ -875,7 +875,7 @@ bool MyMoneyTransactionFilter::translateDateRange(dateOptionE id, QDate& start, 
   return rc;
 }
 
-void MyMoneyTransactionFilter::removeReference(const QCString& id)
+void MyMoneyTransactionFilter::removeReference(const QString& id)
 {
   if(m_accounts.find(id)) {
     qDebug("%s", (QString("Remove account '%1' from report").arg(id)).data());

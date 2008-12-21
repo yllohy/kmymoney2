@@ -173,7 +173,7 @@ MyMoneyBudget::MyMoneyBudget(const QDomElement& node) :
     clearId();
 }
 
-MyMoneyBudget::MyMoneyBudget(const QCString& id, const MyMoneyBudget& budget)
+MyMoneyBudget::MyMoneyBudget(const QString& id, const MyMoneyBudget& budget)
 {
   *this = budget;
   m_id = id;
@@ -201,7 +201,7 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
   e.setAttribute("start", m_start.toString(Qt::ISODate) );
   e.setAttribute("version", BUDGET_VERSION);
 
-  QMap<QCString, AccountGroup>::const_iterator it;
+  QMap<QString, AccountGroup>::const_iterator it;
   for(it = m_accounts.begin(); it != m_accounts.end(); ++it) {
     // only add the account if there is a budget entered
     if(!(*it).balance().isZero()) {
@@ -296,20 +296,20 @@ void MyMoneyBudget::writeXML(QDomDocument& document, QDomElement& parent) const
   parent.appendChild(el);
 }
 
-bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
+bool MyMoneyBudget::hasReferenceTo(const QString& id) const
 {
   // return true if we have an assignment for this id
   return (m_accounts.contains(id));
 }
 
-void MyMoneyBudget::removeReference(const QCString& id)
+void MyMoneyBudget::removeReference(const QString& id)
 {
   if(m_accounts.contains(id)) {
     m_accounts.remove(id);
   }
 }
 
-void MyMoneyBudget::setAccount(const AccountGroup &_account, const QCString _id)
+void MyMoneyBudget::setAccount(const AccountGroup &_account, const QString _id)
 {
   if(_account.isZero()) {
     m_accounts.remove(_id);
@@ -322,7 +322,7 @@ void MyMoneyBudget::setAccount(const AccountGroup &_account, const QCString _id)
   }
 }
 
-const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) const
+const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QString _id) const
 {
   static AccountGroup empty;
 
@@ -337,7 +337,7 @@ void MyMoneyBudget::setBudgetStart(const QDate& _start)
   m_start = QDate(_start.year(), _start.month(), 1);
   if(oldDate.isValid()) {
     int adjust = ((m_start.year() - oldDate.year())*12) + (m_start.month() - oldDate.month());
-    QMap<QCString, AccountGroup>::iterator it;
+    QMap<QString, AccountGroup>::iterator it;
     for(it = m_accounts.begin(); it != m_accounts.end(); ++it) {
       const QMap<QDate, PeriodGroup> periods = (*it).getPeriods();
       QMap<QDate, PeriodGroup>::const_iterator it_per;

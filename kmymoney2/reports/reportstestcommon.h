@@ -17,7 +17,7 @@
 
 #ifndef REPORTSTESTCOMMON_H
 #define REPORTSTESTCOMMON_H
- 
+
 #include <qvaluelist.h>
 class QDomDocument;
 
@@ -46,39 +46,40 @@ extern const MyMoneyMoney moChild;
 extern const MyMoneyMoney moThomas;
 extern const MyMoneyMoney moNoPayee;
 
-extern QCString acAsset;
-extern QCString acLiability;
-extern QCString acExpense;
-extern QCString acIncome;
-extern QCString acChecking;
-extern QCString acCredit;
-extern QCString acSolo;
-extern QCString acParent;
-extern QCString acChild;
-extern QCString acSecondChild;
-extern QCString acGrandChild1;
-extern QCString acGrandChild2;
-extern QCString acForeign;
-extern QCString acCanChecking;
-extern QCString acJpyChecking;
-extern QCString acCanCash;
-extern QCString acJpyCash;
-extern QCString inBank;
-extern QCString eqStock1;
-extern QCString eqStock2;
-extern QCString acInvestment;
-extern QCString acStock1;
-extern QCString acStock2;
-extern QCString acDividends;
-extern QCString acInterest;
-extern QCString acTax;
+extern QString acAsset;
+extern QString acLiability;
+extern QString acExpense;
+extern QString acIncome;
+extern QString acChecking;
+extern QString acCredit;
+extern QString acSolo;
+extern QString acParent;
+extern QString acChild;
+extern QString acSecondChild;
+extern QString acGrandChild1;
+extern QString acGrandChild2;
+extern QString acForeign;
+extern QString acCanChecking;
+extern QString acJpyChecking;
+extern QString acCanCash;
+extern QString acJpyCash;
+extern QString inBank;
+extern QString eqStock1;
+extern QString eqStock2;
+extern QString acInvestment;
+extern QString acStock1;
+extern QString acStock2;
+extern QString acDividends;
+extern QString acInterest;
+extern QString acTax;
+extern QString acCash;
 
 class TransactionHelper: public MyMoneyTransaction
 {
 private:
-  QCString m_id;
+  QString m_id;
 public:
-  TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid = QCString(), const QString& _payee="Test Payee" );
+  TransactionHelper( const QDate& _date, const QString& _action, MyMoneyMoney _value, const QString& _accountid, const QString& _categoryid, const QString& _currencyid = QString(), const QString& _payee="Test Payee" );
   ~TransactionHelper();
   void update(void);
 protected:
@@ -88,32 +89,32 @@ protected:
 class InvTransactionHelper: public TransactionHelper
 {
 public:
-  InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
-  void init( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
+  InvTransactionHelper( const QDate& _date, const QString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QString& _stockaccountid, const QString& _transferid, const QString& _categoryid );
+  void init( const QDate& _date, const QString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QString& _stockaccountid, const QString& _transferid, const QString& _categoryid );
 };
 
 class BudgetEntryHelper
 {
 private:
   QDate m_date;
-  QCString m_categoryid;
+  QString m_categoryid;
   bool m_applytosub;
   MyMoneyMoney m_amount;
-    
+
 public:
-  BudgetEntryHelper( void ): m_applytosub(false) {} 
-  BudgetEntryHelper( const QDate& _date, const QCString& _categoryid, bool _applytosub, const MyMoneyMoney& _amount ): m_date(_date), m_categoryid(_categoryid), m_applytosub(_applytosub), m_amount(_amount) {}
+  BudgetEntryHelper( void ): m_applytosub(false) {}
+  BudgetEntryHelper( const QDate& _date, const QString& _categoryid, bool _applytosub, const MyMoneyMoney& _amount ): m_date(_date), m_categoryid(_categoryid), m_applytosub(_applytosub), m_amount(_amount) {}
 };
 
 class BudgetHelper: public QValueList<BudgetEntryHelper>
 {
-  MyMoneyMoney budgetAmount( const QDate& _date, const QCString& _categoryid, bool& _applytosub );
+  MyMoneyMoney budgetAmount( const QDate& _date, const QString& _categoryid, bool& _applytosub );
 };
 
-extern QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="", bool _taxReport = false );
-extern void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMoney& _price );
-QCString makeEquity(const QString& _name, const QString& _symbol );
-extern void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price );
+extern QString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QString& _parent, QString _currency="", bool _taxReport = false );
+extern void makePrice(const QString& _currencyid, const QDate& _date, const MyMoneyMoney& _price );
+QString makeEquity(const QString& _name, const QString& _symbol );
+extern void makeEquityPrice(const QString& _id, const QDate& _date, const MyMoneyMoney& _price );
 extern void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc );
 extern void writeTabletoHTML( const reports::PivotTable& table, const QString& _filename = QString() );
 extern void writeTabletoHTML( const reports::QueryTable& table, const QString& _filename = QString() );

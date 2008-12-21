@@ -93,7 +93,7 @@ void MyMoneyInstitutionTest::testMyMoneyFileConstructor() {
 	CPPUNIT_ASSERT(t->manager() == "manager");
 	CPPUNIT_ASSERT(t->name() == "name");
 	CPPUNIT_ASSERT(t->sortcode() == "sortcode");
-	
+
 	delete t;
 }
 
@@ -161,7 +161,7 @@ void MyMoneyInstitutionTest::testInequality () {
 
 void MyMoneyInstitutionTest::testAccountIDList () {
 	MyMoneyInstitution institution;
-	QCStringList list;
+	QStringList list;
 	QString id;
 
 	// list must be empty
@@ -192,7 +192,7 @@ void MyMoneyInstitutionTest::testAccountIDList () {
 	list = institution.accountList();
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT(list.contains("A000002") == 1);
-	
+
 }
 
 void MyMoneyInstitutionTest::testWriteXML() {
@@ -200,7 +200,7 @@ void MyMoneyInstitutionTest::testWriteXML() {
 
 	n->addAccountId("A000001");
 	n->addAccountId("A000003");
-	n->setValue(QCString("key"), "value");
+	n->setValue(QString("key"), "value");
 
 	QDomDocument doc("TEST");
 	QDomElement el = doc.createElement("INSTITUTION-CONTAINER");
@@ -274,7 +274,7 @@ void MyMoneyInstitutionTest::testReadXML() {
 	doc.setContent(ref_ok);
 	node = doc.documentElement().firstChild().toElement();
 	try {
-		QCStringList alist;
+		QStringList alist;
 		alist << "A000001" << "A000003";
 		i = MyMoneyInstitution(node);
 
@@ -287,7 +287,7 @@ void MyMoneyInstitutionTest::testReadXML() {
 		CPPUNIT_ASSERT(i.city() == "town");
 		CPPUNIT_ASSERT(i.telephone() == "telephone");
 		CPPUNIT_ASSERT(i.accountList() == alist);
-		CPPUNIT_ASSERT(i.value(QCString("key")) == "value");
+		CPPUNIT_ASSERT(i.value(QString("key")) == "value");
 
 	} catch(MyMoneyException *e) {
 		delete e;

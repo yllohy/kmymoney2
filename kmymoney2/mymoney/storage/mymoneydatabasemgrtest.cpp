@@ -88,7 +88,7 @@ void MyMoneyDatabaseMgrTest::testCreateDb() {
     if (pwd != 0) {
       userName = QString(pwd->pw_name);
     }
-    m_url = "sql://" + userName + "@localhost/kmm_test_driver?driver=" 
+    m_url = "sql://" + userName + "@localhost/kmm_test_driver?driver="
                      + *it + "&mode=single";
     MyMoneyStorageSql *sql = m->connectToDatabase(m_url);
     CPPUNIT_ASSERT(0 != sql);
@@ -580,7 +580,7 @@ void MyMoneyDatabaseMgrTest::testAddTransactions() {
     CPPUNIT_ASSERT(s.id().isEmpty());
     t1.addSplit(s);
 
-    s.setId(QCString());  // enable re-usage of split variable
+    s.setId(QString());  // enable re-usage of split variable
     s.setAccountId("A000005");  // Salary
     s.setShares(-100000);
     s.setValue(-100000);
@@ -604,28 +604,28 @@ void MyMoneyDatabaseMgrTest::testAddTransactions() {
 
   try {
     // I spent some money, not so great
-    s.setId(QCString());  // enable re-usage of split variable
+    s.setId(QString());  // enable re-usage of split variable
     s.setAccountId("A000004");  // Grosseries
     s.setShares(10000);
     s.setValue(10000);
     CPPUNIT_ASSERT(s.id().isEmpty());
     t2.addSplit(s);
 
-    s.setId(QCString());  // enable re-usage of split variable
+    s.setId(QString());  // enable re-usage of split variable
     s.setAccountId("A000002");  // 16% sales tax
     s.setShares(1200);
     s.setValue(1200);
     CPPUNIT_ASSERT(s.id().isEmpty());
     t2.addSplit(s);
 
-    s.setId(QCString());  // enable re-usage of split variable
+    s.setId(QString());  // enable re-usage of split variable
     s.setAccountId("A000003");  // 7% sales tax
     s.setShares(400);
     s.setValue(400);
     CPPUNIT_ASSERT(s.id().isEmpty());
     t2.addSplit(s);
 
-    s.setId(QCString());  // enable re-usage of split variable
+    s.setId(QString());  // enable re-usage of split variable
     s.setAccountId("A000006");  // Checkings account
     s.setShares(-11600);
     s.setValue(-11600);
@@ -643,7 +643,7 @@ void MyMoneyDatabaseMgrTest::testAddTransactions() {
     CPPUNIT_ASSERT(t2.splitCount() == 4);
     CPPUNIT_ASSERT(m->transactionCount() == 2);
 
-    //QMap<QCString, QCString>::ConstIterator it_k;
+    //QMap<QString, QString>::ConstIterator it_k;
     MyMoneyTransactionFilter f;
     QValueList<MyMoneyTransaction> transactionList (m->transactionList(f));
     QValueList<MyMoneyTransaction>::ConstIterator it_t (transactionList.begin());
@@ -819,7 +819,7 @@ void MyMoneyDatabaseMgrTest::testBalance() {
   CPPUNIT_ASSERT(s.id().isEmpty());
   t1.addSplit(s);
 
-  s.setId(QCString());  // enable re-usage of split variable
+  s.setId(QString());  // enable re-usage of split variable
   s.setAccountId("A000002");
   s.setShares(400);
   s.setValue(400);
@@ -888,7 +888,7 @@ void MyMoneyDatabaseMgrTest::testModifyTransaction() {
     CPPUNIT_ASSERT(m->balance("A000006", QDate()) == MyMoneyMoney(100000-12600));
     CPPUNIT_ASSERT(m->totalBalance("A000001", QDate()) == MyMoneyMoney(1600));
 
-    //QMap<QCString, QCString>::ConstIterator it_k;
+    //QMap<QString, QString>::ConstIterator it_k;
     MyMoneyTransactionFilter f;
     QValueList<MyMoneyTransaction> transactionList (m->transactionList(f));
     QValueList<MyMoneyTransaction>::ConstIterator it_t (transactionList.begin());
@@ -988,7 +988,7 @@ void MyMoneyDatabaseMgrTest::testRemoveUnusedAccount() {
     CPPUNIT_ASSERT(i.accountCount() == 1);
     CPPUNIT_ASSERT(m->accountCount() == 7);
 
-    a.setInstitutionId(QCString());
+    a.setInstitutionId(QString());
     m->modifyAccount(a);
     m->removeAccount(a);
     CPPUNIT_ASSERT(m->accountCount() == 6);
@@ -1050,7 +1050,7 @@ void MyMoneyDatabaseMgrTest::testRemoveInstitution() {
   // now remove the institution and see if the account survived ;-)
   try {
     m->removeInstitution(i);
-    a.setInstitutionId(QCString());
+    a.setInstitutionId(QString());
     m->modifyAccount(a);
     a = m->account("A000006");
     CPPUNIT_ASSERT(a.institutionId().isEmpty());
@@ -1101,7 +1101,7 @@ void MyMoneyDatabaseMgrTest::testTransactionList() {
   CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
 
   filter.clear();
-  filter.addAccount("A000003");
+  filter.addAccount(QString("A000003"));
   list = m->transactionList(filter);
   CPPUNIT_ASSERT(list.count() == 1);
   CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
@@ -1151,7 +1151,7 @@ void MyMoneyDatabaseMgrTest::testSetAccountName() {
     CPPUNIT_FAIL("Unexpected exception");
   }
   try {
-    m->setAccountName(STD_ACC_ASSET, "Vermögen");
+    m->setAccountName(STD_ACC_ASSET, "Vermï¿½gen");
   } catch (MyMoneyException *e) {
     delete e;
     CPPUNIT_FAIL("Unexpected exception");
@@ -1172,7 +1172,7 @@ void MyMoneyDatabaseMgrTest::testSetAccountName() {
   MyMoneyFile::instance()->preloadCache();
 
   CPPUNIT_ASSERT(m->liability().name() == "Verbindlichkeiten");
-  CPPUNIT_ASSERT(m->asset().name() == "Vermögen");
+  CPPUNIT_ASSERT(m->asset().name() == "Vermï¿½gen");
   CPPUNIT_ASSERT(m->expense().name() == "Ausgaben");
   CPPUNIT_ASSERT(m->income().name() == "Einnahmen");
 

@@ -52,18 +52,18 @@ class MyMoneyStorageXMLPrivate
 public:
   MyMoneyStorageXMLPrivate() {}
 
-  QMap<QCString, MyMoneyInstitution> iList;
-  QMap<QCString, MyMoneyAccount> aList;
-  QMap<QCString, MyMoneyTransaction> tList;
-  QMap<QCString, MyMoneyPayee> pList;
-  QMap<QCString, MyMoneySchedule> sList;
-  QMap<QCString, MyMoneySecurity> secList;
-  QMap<QCString, MyMoneyReport> rList;
-  QMap<QCString, MyMoneyBudget> bList;
+  QMap<QString, MyMoneyInstitution> iList;
+  QMap<QString, MyMoneyAccount> aList;
+  QMap<QString, MyMoneyTransaction> tList;
+  QMap<QString, MyMoneyPayee> pList;
+  QMap<QString, MyMoneySchedule> sList;
+  QMap<QString, MyMoneySecurity> secList;
+  QMap<QString, MyMoneyReport> rList;
+  QMap<QString, MyMoneyBudget> bList;
   QMap<MyMoneySecurityPair, MyMoneyPriceEntries> prList;
 
-  QCString           m_fromSecurity;
-  QCString           m_toSecurity;
+  QString           m_fromSecurity;
+  QString           m_toSecurity;
 
 };
 
@@ -192,8 +192,8 @@ bool MyMoneyXmlContentHandler::startElement (const QString& /* namespaceURI */, 
       m_elementCount = 0;
     } else if(s == "pricepair") {
       if(atts.count()) {
-        m_reader->d->m_fromSecurity = QCString(atts.value(QString("from")));
-        m_reader->d->m_toSecurity = QCString(atts.value(QString("to")));
+        m_reader->d->m_fromSecurity = atts.value(QString("from"));
+        m_reader->d->m_toSecurity = atts.value(QString("to"));
       }
     }
 
@@ -787,13 +787,13 @@ QDomElement MyMoneyStorageXML::findChildElement(const QString& name, const QDomE
   return QDomElement();
 }
 
-QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QCString, QString> pairs)
+QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QString, QString> pairs)
 {
   if(m_doc)
   {
     QDomElement keyValPairs = m_doc->createElement("KEYVALUEPAIRS");
 
-    QMap<QCString, QString>::const_iterator it;
+    QMap<QString, QString>::const_iterator it;
     for(it = pairs.begin(); it != pairs.end(); ++it)
     {
       QDomElement pair = m_doc->createElement("PAIR");
@@ -835,7 +835,7 @@ void MyMoneyStorageXML::writePricePair(QDomElement& price, const MyMoneyPriceEnt
 void MyMoneyStorageXML::writePrice(QDomElement& price, const MyMoneyPrice& p)
 {
   price.setAttribute("date", p.date().toString(Qt::ISODate));
-  price.setAttribute("price", p.rate(QCString()).toString());
+  price.setAttribute("price", p.rate(QString()).toString());
   price.setAttribute("source", p.source());
 }
 

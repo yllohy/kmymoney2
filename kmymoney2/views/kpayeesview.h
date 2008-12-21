@@ -110,20 +110,19 @@ public:
     * get information about the split referencing the current account
     * during the sort phase.
     */
-  void setAccountId(const QCString& id);
+  void setAccountId(const QString& id);
 
   /**
     * This method is used to set the payee id to have a chance to
     * get information about the split referencing the current payee
     * during the sort phase.
     */
-  void setPayeeId(const QCString& id);
+  void setPayeeId(const QString& id);
 
 protected:
   int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
 
 private:
-  int compareItems(const QCString& s1, const QCString& s2) const;
   int compareItems(const QString& s1, const QString& s2) const;
 
 private:
@@ -132,7 +131,7 @@ private:
     PayeeMode
   };
   short             m_idMode;
-  QCString          m_id;
+  QString           m_id;
   TransactionSortE  m_sortType;
 };
 
@@ -175,12 +174,12 @@ private:
 class KTransactionListItem : public KListViewItem
 {
 public:
-  KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transaction);
+  KTransactionListItem(KListView* view, KTransactionListItem* parent, const QString& accountId, const QString& transaction);
   ~KTransactionListItem();
 
-  const QCString& transactionId(void) const { return m_transactionId; };
+  const QString& transactionId(void) const { return m_transactionId; };
 
-  const QCString& accountId(void) const { return m_accountId; };
+  const QString& accountId(void) const { return m_accountId; };
 
   /**
     * use my own paint method
@@ -193,8 +192,8 @@ public:
   const QColor backgroundColor();
 
 private:
-  QCString m_transactionId;
-  QCString m_accountId;
+  QString m_transactionId;
+  QString m_accountId;
 };
 
 class KPayeesView : public KPayeesViewDecl
@@ -207,7 +206,7 @@ public:
   void show(void);
 
 public slots:
-  void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId = QCString(), const QCString& transactionId = QCString());
+  void slotSelectPayeeAndTransaction(const QString& payeeId, const QString& accountId = QString(), const QString& transactionId = QString());
   void slotLoadPayees(void);
   void slotStartRename(void);
   void slotHelp(void);
@@ -216,7 +215,7 @@ protected:
   void resizeEvent(QResizeEvent*);
   void loadPayees(void);
   void selectedPayees(QValueList<MyMoneyPayee>& payeesList) const;
-  void ensurePayeeVisible(const QCString& id);
+  void ensurePayeeVisible(const QString& id);
   void clearItemData(void);
 
 protected slots:
@@ -275,7 +274,7 @@ private:
   void readConfig(void);
 
 signals:
-  void transactionSelected(const QCString& accountId, const QCString& transactionId);
+  void transactionSelected(const QString& accountId, const QString& transactionId);
   void openContextMenu(const MyMoneyObject& obj);
   void selectObjects(const QValueList<MyMoneyPayee>& payees);
 

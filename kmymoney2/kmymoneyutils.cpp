@@ -436,7 +436,7 @@ KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMoneyTran
     // FIXME check for loan transaction here
     return SplitTransaction;
   }
-  QCString ida, idb;
+  QString ida, idb;
   ida = t.splits()[0].accountId();
   idb = t.splits()[1].accountId();
   if(ida.isEmpty() || idb.isEmpty())
@@ -453,7 +453,7 @@ KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMoneyTran
   return Normal;
 }
 
-void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances)
+void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QString, MyMoneyMoney>& balances)
 {
   try {
     if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
@@ -617,7 +617,7 @@ MyMoneyTransaction KMyMoneyUtils::scheduledTransaction(const MyMoneySchedule& sc
 
   try {
     if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
-      calculateAutoLoan(schedule, t, QMap<QCString, MyMoneyMoney>());
+      calculateAutoLoan(schedule, t, QMap<QString, MyMoneyMoney>());
     }
   } catch (MyMoneyException* e) {
     qDebug("Unable to load schedule details for '%s' during transaction match: %s", schedule.name().data(), e->what().data());
@@ -629,9 +629,9 @@ MyMoneyTransaction KMyMoneyUtils::scheduledTransaction(const MyMoneySchedule& sc
   return t;
 }
 
-void KMyMoneyUtils::previouslyUsedCategories(const QCString& investmentAccount, QCString& feesId, QCString& interestId)
+void KMyMoneyUtils::previouslyUsedCategories(const QString& investmentAccount, QString& feesId, QString& interestId)
 {
-  feesId = interestId = QCString();
+  feesId = interestId = QString();
   MyMoneyFile* file = MyMoneyFile::instance();
   try {
     MyMoneyAccount acc = file->account(investmentAccount);

@@ -88,7 +88,7 @@ public:
   /**
     * This method returns the ids of the currently selected items
     */
-  void selectedItems(QCStringList& list) const;
+  void selectedItems(QStringList& list) const;
 
   /**
     * This method returns the id of the first selected item.
@@ -97,10 +97,10 @@ public:
     *
     * @sa KMyMoneySelector::setSelectionMode()
     *
-    * @param id reference to QCString containing the id. If no item
+    * @param id reference to QString containing the id. If no item
     *           is selected id will be empty.
     */
-  void selectedItem(QCString& id) const KDE_DEPRECATED;
+  void selectedItem(QString& id) const KDE_DEPRECATED;
 
   /**
     * This method returns the id of the first selected item.
@@ -109,17 +109,17 @@ public:
     *
     * @sa KMyMoneySelector::setSelectionMode()
     *
-    * @return reference to QCString containing the id. If no item
-    *         is selected the QCString will be empty.
+    * @return reference to QString containing the id. If no item
+    *         is selected the QString will be empty.
     */
-  const QCString& selectedItem(void) const { return m_id; }
+  const QString& selectedItem(void) const { return m_id; }
 
   /**
     * This method selects the item with the respective @a id.
     *
-    * @param id reference to QCString containing the id
+    * @param id reference to QString containing the id
     */
-  void setSelectedItem(const QCString& id);
+  void setSelectedItem(const QString& id);
 
   /**
     * This method checks if the position @a pos is part of the
@@ -145,7 +145,7 @@ public:
   QSize sizeHint() const;
 
 protected slots:
-  virtual void slotItemSelected(const QCString& id);
+  virtual void slotItemSelected(const QString& id);
 
 protected:
   /**
@@ -171,7 +171,7 @@ protected:
   /**
     * set the widgets text area based on the item with the given @a id.
     */
-  virtual void setCurrentText(const QCString& id);
+  virtual void setCurrentTextById(const QString& id);
 
   /**
     * Overridden for internal reasons, no API change
@@ -197,12 +197,12 @@ protected:
   /**
     * The currently selected item
     */
-  QCString               m_id;
+  QString                m_id;
 
 signals:
-  void itemSelected(const QCString& id);
+  void itemSelected(const QString& id);
   void objectCreation(bool);
-  void createItem(const QString&, QCString&);
+  void createItem(const QString&, QString&);
 
 private:
   QTimer                 m_timer;
@@ -235,7 +235,7 @@ public:
   void removeDontCare(void);
 
 protected slots:
-  void slotSetState(const QCString&);
+  void slotSetState(const QString&);
 };
 
 /**
@@ -256,7 +256,7 @@ public:
   void protectItem(int id, bool protect);
 
 protected slots:
-  void slotSetAction(const QCString&);
+  void slotSetAction(const QString&);
 
 signals:
   void actionSelected(int);
@@ -282,7 +282,7 @@ public:
   void removeDontCare(void);
 
 protected slots:
-  void slotSetDirection(const QCString& id);
+  void slotSetDirection(const QString& id);
 
 signals:
   void directionSelected(KMyMoneyRegister::CashFlowDirection);
@@ -309,7 +309,7 @@ public:
   MyMoneySplit::investTransactionTypeE activity(void) const { return m_activity; }
 
 protected slots:
-  void slotSetActivity(const QCString& id);
+  void slotSetActivity(const QString& id);
 
 signals:
   void activitySelected(MyMoneySplit::investTransactionTypeE);

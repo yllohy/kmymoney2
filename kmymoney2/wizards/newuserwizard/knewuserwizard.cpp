@@ -217,10 +217,10 @@ CurrencyPage::CurrencyPage(Wizard* wizard, const char* name) :
   QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
   QValueList<MyMoneySecurity>::const_iterator it;
 
-  QCString localCurrency(localeconv()->int_curr_symbol);
+  QString localCurrency(localeconv()->int_curr_symbol);
   localCurrency.truncate(3);
 
-  QCString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
+  QString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
 
   // construct a transparent 16x16 pixmap
   QPixmap empty(16, 16);

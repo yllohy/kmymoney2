@@ -139,7 +139,7 @@ protected:
   void loadListView(void);
   void loadIconView(void);
 
-  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QStringList& accountList);
 
   /**
     * This method returns a pointer to the currently selected
@@ -192,8 +192,8 @@ signals:
 
 private:
   MyMoneyAccount                      m_reconciliationAccount;
-  QMap<QCString, MyMoneySecurity>     m_securityMap;
-  QMap<QCString, unsigned long>       m_transactionCountMap;
+  QMap<QString, MyMoneySecurity>      m_securityMap;
+  QMap<QString, unsigned long>        m_transactionCountMap;
 
   KMyMoneyAccountTreeItem*            m_assetItem;
   KMyMoneyAccountTreeItem*            m_liabilityItem;

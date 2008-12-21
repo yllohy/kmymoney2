@@ -108,7 +108,7 @@ protected:
 
   virtual void writeCurrencies(QDomElement& currencies);
 
-  virtual QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
+  virtual QDomElement writeKeyValuePairs(const QMap<QString, QString> pairs);
 
   virtual void readFile(QIODevice* s, IMyMoneySerialize* storage);
   virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage);
@@ -116,7 +116,7 @@ protected:
   bool readUserInformation(const QDomElement& userElement);
 
   void readPricePair(const QDomElement& pricePair);
-  const MyMoneyPrice readPrice(const QCString& from, const QCString& to, const QDomElement& price);
+  const MyMoneyPrice readPrice(const QString& from, const QString& to, const QDomElement& price);
 
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 
@@ -146,7 +146,7 @@ private:
     * temporarily to convert the price history from the old to the
     * new format. This should go at some time beyond 0.8 (ipwizard)
     */
-  QCString m_baseCurrencyId;
+  QString m_baseCurrencyId;
 
 };
 

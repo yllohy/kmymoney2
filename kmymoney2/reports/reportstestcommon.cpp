@@ -58,34 +58,35 @@ const MyMoneyMoney moChild(14.00);
 const MyMoneyMoney moThomas(5.11);
 const MyMoneyMoney moNoPayee(8944.70);
 
-QCString acAsset;
-QCString acLiability;
-QCString acExpense;
-QCString acIncome;
-QCString acChecking;
-QCString acCredit;
-QCString acSolo;
-QCString acParent;
-QCString acChild;
-QCString acSecondChild;
-QCString acGrandChild1;
-QCString acGrandChild2;
-QCString acForeign;
-QCString acCanChecking;
-QCString acJpyChecking;
-QCString acCanCash;
-QCString acJpyCash;
-QCString inBank;
-QCString eqStock1;
-QCString eqStock2;
-QCString acInvestment;
-QCString acStock1;
-QCString acStock2;
-QCString acDividends;
-QCString acInterest;
-QCString acTax;
+QString acAsset;
+QString acLiability;
+QString acExpense;
+QString acIncome;
+QString acChecking;
+QString acCredit;
+QString acSolo;
+QString acParent;
+QString acChild;
+QString acSecondChild;
+QString acGrandChild1;
+QString acGrandChild2;
+QString acForeign;
+QString acCanChecking;
+QString acJpyChecking;
+QString acCanCash;
+QString acJpyCash;
+QString inBank;
+QString eqStock1;
+QString eqStock2;
+QString acInvestment;
+QString acStock1;
+QString acStock2;
+QString acDividends;
+QString acInterest;
+QString acTax;
+QString acCash;
 
-TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid, const QString& _payee )
+TransactionHelper::TransactionHelper( const QDate& _date, const QString& _action, MyMoneyMoney _value, const QString& _accountid, const QString& _categoryid, const QString& _currencyid, const QString& _payee )
 {
   // _currencyid is the currency of the transaction, and of the _value
   // both the account and category can have their own currency (athough the category having
@@ -99,7 +100,7 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
     MyMoneyFileTransaction ft;
     setPostDate(_date);
 
-    QCString currencyid = _currencyid;
+    QString currencyid = _currencyid;
     if ( currencyid.isEmpty() )
       currencyid=MyMoneyFile::instance()->baseCurrency().id();
     setCommodity(currencyid);
@@ -143,12 +144,12 @@ void TransactionHelper::update(void)
   ft.commit();
 }
 
-InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid )
+InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QString& _stockaccountid, const QString& _transferid, const QString& _categoryid )
 {
   init(_date, _action, _shares, _price, _stockaccountid, _transferid, _categoryid);
 }
 
-void InvTransactionHelper::init( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid )
+void InvTransactionHelper::init( const QDate& _date, const QString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QString& _stockaccountid, const QString& _transferid, const QString& _categoryid )
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount stockaccount = file->account(_stockaccountid);
@@ -215,8 +216,8 @@ void InvTransactionHelper::init( const QDate& _date, const QCString& _action, My
   //kdDebug(2) << "updating price..." << endl;
 
   // update the price, while we're here
-  QCString stockid = stockaccount.currencyId();
-  QCString basecurrencyid = file->baseCurrency().id();
+  QString stockid = stockaccount.currencyId();
+  QString basecurrencyid = file->baseCurrency().id();
   MyMoneyPrice price = file->price( stockid, basecurrencyid, _date, true );
   if ( !price.isValid() )
   {
@@ -227,7 +228,7 @@ void InvTransactionHelper::init( const QDate& _date, const QCString& _action, My
   //kdDebug(2) << "successfully added " << id() << endl;
 }
 
-QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency, bool _taxReport )
+QString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QString& _parent, QString _currency, bool _taxReport )
 {
   MyMoneyAccount info;
   MyMoneyFileTransaction ft;
@@ -256,7 +257,7 @@ QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, 
   return info.id();
 }
 
-void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMoney& _price )
+void makePrice(const QString& _currencyid, const QDate& _date, const MyMoneyMoney& _price )
 {
   MyMoneyFileTransaction ft;
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -266,7 +267,7 @@ void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMon
   ft.commit();
 }
 
-QCString makeEquity(const QString& _name, const QString& _symbol )
+QString makeEquity(const QString& _name, const QString& _symbol )
 {
   MyMoneySecurity equity;
   MyMoneyFileTransaction ft;
@@ -281,11 +282,11 @@ QCString makeEquity(const QString& _name, const QString& _symbol )
   return equity.id();
 }
 
-void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price )
+void makeEquityPrice(const QString& _id, const QDate& _date, const MyMoneyMoney& _price )
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyFileTransaction ft;
-  QCString basecurrencyid = file->baseCurrency().id();
+  QString basecurrencyid = file->baseCurrency().id();
   MyMoneyPrice price = file->price( _id, basecurrencyid, _date, true );
   if ( !price.isValid() )
   {
@@ -402,7 +403,7 @@ void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename )
   stream << doc->toString();
 #else
   //stream.setEncoding(QTextStream::Locale);
-  QCString temp = doc->toCString();
+  QString temp = doc->toString();
   stream << temp.data();
 #endif
   g.close();

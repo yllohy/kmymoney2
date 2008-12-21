@@ -32,7 +32,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qvaluelist.h>
 #include <qdatetime.h>
 
@@ -120,7 +119,7 @@ public:
    * MyMoneyAccount object for this key. The account id of that account should be returned
    * here. If no id is available, leave it empty.
    */
-  QCString m_accountId;
+  QString m_accountId;
 
   QString m_strCurrency;
   QDate m_dateBegin;

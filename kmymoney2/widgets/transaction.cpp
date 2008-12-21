@@ -175,7 +175,7 @@ Transaction::Transaction(Register *parent, const MyMoneyTransaction& transaction
 
   if(!m_uniqueId.isEmpty()) {
     m_uniqueId += "-";
-    QCString id;
+    QString id;
     id.setNum(uniqueId);
     m_uniqueId += id.rightJustify(3, '0');
   }
@@ -883,7 +883,7 @@ StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& trans
   emit parent->itemAdded(this);
 }
 
-void StdTransaction::setupFormHeader(const QCString& id)
+void StdTransaction::setupFormHeader(const QString& id)
 {
   m_category = MyMoneyFile::instance()->accountToCategory(id);
   switch(MyMoneyFile::instance()->account(id).accountGroup()) {

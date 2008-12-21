@@ -130,7 +130,7 @@ public:
   class KReportListItem: public KListViewItem
   {
   private:
-    QCString m_id;
+    QString m_id;
     MyMoneyReport m_report;
 
   public:
@@ -144,7 +144,7 @@ public:
       m_id( report.id() ),
       m_report( report )
     {}
-    //const QCString& id(void) const { return m_id; }
+    //const QString& id(void) const { return m_id; }
     const MyMoneyReport& report(void) const { return m_report; }
   };
 
@@ -233,7 +233,7 @@ public slots:
   void slotDuplicate(void);
   void slotToggleChart(void);
   void slotOpenReport(QListViewItem*);
-  void slotOpenReport(const QCString&);
+  void slotOpenReport(const QString&);
   void slotOpenReport(const MyMoneyReport&);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);

@@ -529,7 +529,7 @@ void KReportsView::loadView(void)
 void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
   QString view = url.fileName(false);
-  QCString command = url.queryItem("command").data();
+  QString command = url.queryItem("command").data();
 
   if(view == VIEW_REPORTS) {
 
@@ -703,7 +703,7 @@ void KReportsView::slotDelete(void)
   }
 }
 
-void KReportsView::slotOpenReport(const QCString& id)
+void KReportsView::slotOpenReport(const QString& id)
 {
   if ( ! id.isEmpty() )
   {

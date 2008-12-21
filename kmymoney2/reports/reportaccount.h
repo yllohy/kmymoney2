@@ -76,7 +76,7 @@ public:
     *
     * @param accountid Account which this account descriptor should be based off of
     */
-  ReportAccount( const QCString& accountid );
+  ReportAccount( const QString& accountid );
 
   /**
     * Regular constructor

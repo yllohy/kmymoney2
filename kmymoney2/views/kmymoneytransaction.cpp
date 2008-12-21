@@ -45,7 +45,7 @@ KMyMoneyTransaction::~KMyMoneyTransaction()
 {
 }
 
-void KMyMoneyTransaction::setSplitId(const QCString& id)
+void KMyMoneyTransaction::setSplitId(const QString& id)
 {
   m_splitId = id;
 }

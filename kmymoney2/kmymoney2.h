@@ -236,10 +236,10 @@ protected slots:
     * @param id reference to storage which will receive the id after successful creation
     *
     * @note Typically, this slot can be connected to the
-    *       StdTransactionEditor::createCategory(const QString&, QCString&) or
-    *       KMyMoneyCombo::createItem(const QString&, QCString&) signal.
+    *       StdTransactionEditor::createCategory(const QString&, QString&) or
+    *       KMyMoneyCombo::createItem(const QString&, QString&) signal.
     */
-  void slotCategoryNew(const QString& name, QCString& id);
+  void slotCategoryNew(const QString& name, QString& id);
 
   /**
     * Calls the print logic for the current view
@@ -284,7 +284,7 @@ protected slots:
 
   /**
     */
-  void slotPayeeNew(const QString& newnameBase, QCString& id);
+  void slotPayeeNew(const QString& newnameBase, QString& id);
   void slotPayeeNew(void);
 
   /**
@@ -418,7 +418,7 @@ protected slots:
     */
   void slotDataChanged(void);
 
-  void slotMoveToAccount(const QCString& id);
+  void slotMoveToAccount(const QString& id);
 
   void slotUpdateMoveToAccountMenu(void);
 
@@ -499,9 +499,9 @@ public:
     * This method returns a list of all 'other' dcop registered kmymoney processes.
     * It's a subset of the return of DCOPclient()->registeredApplications().
     *
-    * @retval QCStringList of process ids
+    * @retval QStringList of process ids
     */
-  const QCStringList instanceList(void) const;
+  const QValueList<QCString> instanceList(void) const;
 
   /**
     * Dump a list of the names of all defined KActions to stdout.
@@ -634,7 +634,7 @@ protected:
     * @retval true object has been found
     * @retval false object is not in list
     */
-  bool payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const;
+  bool payeeInList(const QValueList<MyMoneyPayee>& list, const QString& id) const;
 
   /**
     * Mark the selected transactions as provided by @a flag. If
@@ -1058,7 +1058,7 @@ private:
     * into references to account @a toId. Returns @a true if at least
     * one split has been changed, @a false otherwise.
     */
-  bool exchangeAccountInTransaction(MyMoneyTransaction& _t, const QCString& fromId, const QCString& toId);
+  bool exchangeAccountInTransaction(MyMoneyTransaction& _t, const QString& fromId, const QString& toId);
 
 signals:
   /**
@@ -1132,10 +1132,10 @@ signals:
   void currencySelected(const MyMoneySecurity& currency);
 
   void payeeRename(void);
-  void payeeCreated(const QCString& id);
+  void payeeCreated(const QString& id);
 
   void currencyRename(void);
-  void currencyCreated(const QCString& id);
+  void currencyCreated(const QString& id);
 
   void startMatchTransaction(const MyMoneyTransaction& t);
   void cancelMatchTransaction(void);
@@ -1270,7 +1270,7 @@ private:
   KEndingBalanceDlg*    m_endingBalanceDlg;
 
   // id's that need to be remembered
-  QCString              m_accountGoto, m_payeeGoto;
+  QString               m_accountGoto, m_payeeGoto;
 
   QStringList           m_additionalGpgKeys;
   QLabel*               m_additionalKeyLabel;

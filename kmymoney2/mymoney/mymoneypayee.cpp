@@ -37,7 +37,7 @@ MyMoneyPayee::MyMoneyPayee() :
 {
 }
 
-MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee) :
+MyMoneyPayee::MyMoneyPayee(const QString& id, const MyMoneyPayee& payee) :
   m_matchingEnabled(false),
   m_usingMatchKey(false),
   m_matchKeyIgnoreCase(true)
@@ -157,7 +157,7 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   parent.appendChild(el);
 }
 
-bool MyMoneyPayee::hasReferenceTo(const QCString& id) const
+bool MyMoneyPayee::hasReferenceTo(const QString& id) const
 {
   Q_UNUSED(id);
 

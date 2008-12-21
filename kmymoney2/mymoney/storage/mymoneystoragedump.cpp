@@ -186,8 +186,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     dumpKVP("  KVP: ", s, *it_a);
     dumpKVP("  OnlineBankingSettings: ", s, (*it_a).onlineBankingSettings());
 
-    QCStringList list_s = (*it_a).accountList();
-    QCStringList::ConstIterator it_s;
+    QStringList list_s = (*it_a).accountList();
+    QStringList::ConstIterator it_s;
     if(list_s.count() > 0) {
       s << "  Children =" << "\n";
     }
@@ -244,8 +244,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "    smallest account fraction = " << (*it_e).smallestAccountFraction() << "\n";
 
     s << "    KVP: " << "\n";
-    QMap<QCString, QString>kvp = (*it_e).pairs();
-    QMap<QCString, QString>::Iterator it;
+    QMap<QString, QString>kvp = (*it_e).pairs();
+    QMap<QString, QString>::Iterator it;
     for(it = kvp.begin(); it != kvp.end(); ++it) {
       s << "      '" << it.key() << "' = '" << it.data() << "'\n";
     }
@@ -264,7 +264,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     MyMoneyPriceEntries::ConstIterator it_pre;
     for(it_pre = (*it_pr).begin(); it_pre != (*it_pr).end(); ++it_pre) {
       s << "      Date = " << (*it_pre).date().toString() << "\n";
-      s << "        Price = " << (*it_pre).rate(QCString()).formatMoney("", 8) << "\n";
+      s << "        Price = " << (*it_pre).rate(QString()).formatMoney("", 8) << "\n";
       s << "        Source = " << (*it_pre).source() << "\n";
       s << "        From = " << (*it_pre).from() << "\n";
       s << "        To   = " << (*it_pre).to() << "\n";
@@ -345,7 +345,7 @@ void MyMoneyStorageDump::dumpKVP(const QString& headline, QTextStream& s, const 
   QString ind;
   ind.fill(' ', indent);
   s << ind << headline << "\n";
-  QMap<QCString, QString>::const_iterator it;
+  QMap<QString, QString>::const_iterator it;
   for(it = kvp.pairs().begin(); it != kvp.pairs().end(); ++it) {
     s << ind << "  '" << it.key() << "' = '" << it.data() << "'\n";
   }

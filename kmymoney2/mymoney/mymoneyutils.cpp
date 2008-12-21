@@ -318,14 +318,6 @@ QDate stringToDate(const QString& str)
   return QDate();
 }
 
-QCString QCStringEmpty(const QString& val)
-{
-  if(!val.isEmpty())
-    return QCString(val);
-
-  return QCString();
-}
-
 QString QStringEmpty(const QString& val)
 {
   if(!val.isEmpty())
@@ -334,7 +326,7 @@ QString QStringEmpty(const QString& val)
   return QString();
 }
 
-unsigned long extractId(const QCString& txt)
+unsigned long extractId(const QString& txt)
 {
   int pos;
   unsigned long rc = 0;

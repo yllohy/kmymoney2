@@ -90,12 +90,12 @@ void KInstitutionsView::slotLoadAccounts(void)
 
 void KInstitutionsView::loadAccounts(void)
 {
-  QMap<QCString, bool> isOpen;
+  QMap<QString, bool> isOpen;
 
   ::timetrace("start load institutions view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeBaseItem *item = m_accountTree->selectedItem();
-  QCString selectedItemId = (item) ? item->id() : QCString();
+  QString selectedItemId = (item) ? item->id() : QString();
 
   // keep a map of all 'expanded' accounts
   QListViewItemIterator it_lvi(m_accountTree);
@@ -130,7 +130,7 @@ void KInstitutionsView::loadAccounts(void)
 
   // we need to make sure we show stock accounts
   // under the right institution (the one of the parent account)
-  QMap<QCString, MyMoneyAccount>::iterator it_am;
+  QMap<QString, MyMoneyAccount>::iterator it_am;
   for(it_am = m_accountMap.begin(); it_am != m_accountMap.end(); ++it_am) {
     if((*it_am).isInvest()) {
       (*it_am).setInstitutionId(m_accountMap[(*it_am).parentAccountId()].institutionId());
@@ -157,7 +157,7 @@ void KInstitutionsView::loadAccounts(void)
     none.setName(i18n("Accounts with no institution assigned"));
     KMyMoneyAccountTreeItem* noInstitutionItem = new KMyMoneyAccountTreeItem(m_accountTree, none);
     noInstitutionItem->setPixmap(0,none.pixmap());
-    loadSubAccounts(noInstitutionItem, QCString());
+    loadSubAccounts(noInstitutionItem, QString());
 
     // hide it, if unused
     noInstitutionItem->setVisible(noInstitutionItem->childCount() != 0);
@@ -203,7 +203,7 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent)
 {
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
   const MyMoneyAccount& account = dynamic_cast<const MyMoneyAccount&>(parent->itemObject());
-  QValueList<QCString>::const_iterator it_a;
+  QValueList<QString>::const_iterator it_a;
   MyMoneyFile* file = MyMoneyFile::instance();
   for(it_a = account.accountList().begin(); it_a != account.accountList().end(); ++it_a) {
     MyMoneyAccount acc = m_accountMap[(*it_a)];
@@ -224,11 +224,11 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent)
   }
 }
 
-void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId)
+void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QString& institutionId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QMap<QCString, MyMoneyAccount>::const_iterator it_a;
+  QMap<QString, MyMoneyAccount>::const_iterator it_a;
   MyMoneyMoney  value;
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
 

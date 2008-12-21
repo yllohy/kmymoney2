@@ -59,19 +59,19 @@ public:
     * a QValueList of account ids.
     *
     * @param baseName QString which should be used as group text
-    * @param accountIdList QValueList of QCString account ids
+    * @param accountIdList QValueList of QString account ids
     *                 which should be loaded into the widget
     * @param clear if true (default) clears the widget before populating
     * @return This method returns the number of accounts loaded into the list
     */
-  int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
+  int loadList(const QString& baseName, const QValueList<QString>& accountIdList, const bool clear = true);
 
-  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
+  QStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask);
   int loadList(const QValueList<int>& list);
 
-  void setSelected(const QCString& id);
+  void setSelected(const QString& id);
   void setSelected(const MyMoneyAccount& acc);
 
   /**
@@ -80,18 +80,18 @@ public:
     *
     * @return list of selected accounts
     */
-  const QCStringList selectedAccounts(void) const;
+  QStringList selectedAccounts(void) const;
 
   virtual void keyPressEvent(QKeyEvent* e);
 
 public slots:
   void slotButtonPressed(void);
-  void slotSelected(const QCString&);
+  void slotSelected(const QString&);
 
 protected slots:
 
 signals:
-  void accountSelected(const QCString&);
+  void accountSelected(const QString&);
 
   void pressed();
   void released();

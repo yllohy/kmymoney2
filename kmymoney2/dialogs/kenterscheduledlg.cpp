@@ -147,7 +147,7 @@ MyMoneyTransaction KEnterScheduleDlg::transaction(void)
 
   try {
     if (d->m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
-      KMyMoneyUtils::calculateAutoLoan(d->m_schedule, t, QMap<QCString, MyMoneyMoney>());
+      KMyMoneyUtils::calculateAutoLoan(d->m_schedule, t, QMap<QString, MyMoneyMoney>());
     }
   } catch (MyMoneyException* e) {
     KMessageBox::detailedError(this, i18n("Unable to load schedule details"), e->what());
@@ -228,7 +228,7 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
 
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
     // connect(editor, SIGNAL(finishEdit(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions&)));
-    connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
+    connect(editor, SIGNAL(createPayee(const QString&, QString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QString&)));
     connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
     connect(editor, SIGNAL(createSecurity(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotInvestmentNew(MyMoneyAccount&, const MyMoneyAccount&)));
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));

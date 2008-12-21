@@ -70,7 +70,7 @@ public:
     *
     * @param id id of account to be selected
     */
-  void setSelected(const QCString& id);
+  void setSelected(const QString& id);
 
   virtual KMyMoneySelector* selector(void) const { return m_selector; }
 
@@ -105,12 +105,12 @@ protected:
   void show(bool presetSelected);
 
 signals:
-  void itemSelected(const QCString& id);
+  void itemSelected(const QString& id);
 
 protected:
   QWidget*                    m_parent;
   QWidget*                    m_widget;
-  QCString                    m_id;
+  QString                     m_id;
   KListView*                  m_lv;
   KMyMoneySelector*           m_selector;
   QRegExp                     m_lastCompletion;

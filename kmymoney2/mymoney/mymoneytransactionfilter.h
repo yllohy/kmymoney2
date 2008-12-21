@@ -31,7 +31,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qdatetime.h>
 #include <qmap.h>
 #include <qasciidict.h>
@@ -161,7 +160,7 @@ public:
     *
     * @param id reference to account id
     */
-  MyMoneyTransactionFilter(const QCString& id);
+  MyMoneyTransactionFilter(const QString& id);
 
   ~MyMoneyTransactionFilter();
 
@@ -195,13 +194,13 @@ public:
     *
     * @param id internal ID of the account
     */
-  void addAccount(const QCString& id);
+  void addAccount(const QString& id);
 
   /**
     * This is a convenience method and behaves exactly like the above
     * method but for a list of id's.
     */
-  void addAccount(const QCStringList& ids);
+  void addAccount(const QStringList& ids);
 
   /**
     * This method will add the category with id @p id to the list of matching categories.
@@ -209,13 +208,13 @@ public:
     *
     * @param id internal ID of the account
     */
-  void addCategory(const QCString& id);
+  void addCategory(const QString& id);
 
   /**
     * This is a convenience method and behaves exactly like the above
     * method but for a list of id's.
     */
-  void addCategory(const QCStringList& ids);
+  void addCategory(const QStringList& ids);
 
   /**
     * This method sets the date filter to match only transactions with posting dates in
@@ -248,7 +247,7 @@ public:
     *
     * @param id internal id of the payee
     */
-  void addPayee(const QCString& id);
+  void addPayee(const QString& id);
 
   /**
     */
@@ -333,7 +332,7 @@ public:
     *
     * @note The constructors set m_reportAllSplits differently. Please
     *       see the documentation of the constructors MyMoneyTransactionFilter()
-    *       and MyMoneyTransactionFilter(const QCString&) for details.
+    *       and MyMoneyTransactionFilter(const QString&) for details.
     */
   const QValueList<MyMoneySplit>& matchingSplits(void) const;
 
@@ -364,7 +363,7 @@ public:
     * @param cat id of category in question
     * @return true if category is in filter set, false otherwise
     */
-  bool includesCategory( const QCString& cat ) const;
+  bool includesCategory( const QString& cat ) const;
 
   /**
     * This method is used to return information about the
@@ -375,7 +374,7 @@ public:
     * @param acc id of account in question
     * @return true if account is in filter set, false otherwise
     */
-  bool includesAccount( const QCString& acc ) const;
+  bool includesAccount( const QString& acc ) const;
 
   /**
     * This method is used to return information about the
@@ -386,7 +385,7 @@ public:
     * @param pye id of payee in question
     * @return true if payee is in filter set, false otherwise
     */
-  bool includesPayee( const QCString& pye ) const;
+  bool includesPayee( const QString& pye ) const;
 
   /**
     * This method is used to return information about the
@@ -425,7 +424,7 @@ public:
     * @param list list to append payees into
     * @return return true if a payee filter has been set
     */
-  bool payees(QCStringList& list) const;
+  bool payees(QStringList& list) const;
 
   /**
     * This method returns whether an account filter has been set,
@@ -434,7 +433,7 @@ public:
     * @param list list to append accounts into
     * @return return true if an account filter has been set
     */
-  bool accounts(QCStringList& list) const;
+  bool accounts(QStringList& list) const;
 
   /**
     * This method returns whether a category filter has been set,
@@ -443,7 +442,7 @@ public:
     * @param list list to append categories into
     * @return return true if a category filter has been set
     */
-  bool categories(QCStringList& list) const;
+  bool categories(QStringList& list) const;
 
   /**
     * This method returns whether a type filter has been set,
@@ -494,7 +493,7 @@ public:
     * This member removes all references to object identified by @p id. Used
     * to remove objects which are about to be removed from the engine.
     */
-  void removeReference(const QCString& id);
+  void removeReference(const QString& id);
 
 private:
   /**

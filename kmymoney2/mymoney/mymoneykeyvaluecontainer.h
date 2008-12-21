@@ -31,7 +31,6 @@
 // QT Includes
 
 #include <qstring.h>
-#include <qcstring.h>
 #include <qmap.h>
 #include <qdom.h>
 #include <kmymoney/export.h>
@@ -62,28 +61,28 @@ public:
     * This method can be used to retrieve the value for a specific @p key.
     * If the key is unknown in this container, an empty string will be returned.
     *
-    * @param key const reference to QCString with the key to search for
+    * @param key const reference to QString with the key to search for
     * @return reference to value of this key. If the key does not exist,
     *         an emtpy string is returned.
     */
-  const QString& value(const QCString& key) const;
+  const QString& value(const QString& key) const;
 
   /**
     * This method is used to add a key/value pair to the container or
     * modify an existing pair.
     *
-    * @param key const reference to QCString with the key to search for
+    * @param key const reference to QString with the key to search for
     * @param value const reference to QString with the value for this key
     */
-  void setValue(const QCString& key, const QString& value);
+  void setValue(const QString& key, const QString& value);
 
   /**
     * This method is used to remove an existing key/value pair from the
     * container. If the key does not exist, the container is not changed.
     *
-    * @param key const reference to QCString with the key to remove
+    * @param key const reference to QString with the key to remove
     */
-  void deletePair(const QCString& key);
+  void deletePair(const QString& key);
 
   /**
     * This method clears all pairs currently in the container.
@@ -95,31 +94,31 @@ public:
     * from the container. It is meant to be used for permanent storage
     * functionality.
     *
-    * @return QMap<QCString, QString> containing all key/value pairs of
+    * @return QMap<QString, QString> containing all key/value pairs of
     *         this container.
     */
-  const QMap<QCString, QString>& pairs(void) const { return m_kvp; };
+  const QMap<QString, QString>& pairs(void) const { return m_kvp; };
 
   /**
     * This method is used to initially store a set of key/value pairs
     * in the container. It is meant to be used for loading functionality
     * from permanent storage.
     *
-    * @param list const QMap<QCString, QString> containing the set of
+    * @param list const QMap<QString, QString> containing the set of
     *             key/value pairs to be loaded into the container.
     *
     * @note All existing key/value pairs in the container will be deleted.
     */
-  void setPairs(const QMap<QCString, QString>& list);
+  void setPairs(const QMap<QString, QString>& list);
 
   /**
     * This operator tests for equality of two MyMoneyKeyValueContainer objects
     */
   bool operator == (const MyMoneyKeyValueContainer &) const;
 
-  const QString& operator[] ( const QCString& k ) const { return value(k); }
+  const QString& operator[] ( const QString& k ) const { return value(k); }
 
-  QString& operator[] ( const QCString& k) { return m_kvp[k]; }
+  QString& operator[] ( const QString& k) { return m_kvp[k]; }
 
   /**
     * This method creates a QDomElement for the @p document
@@ -134,7 +133,7 @@ private:
   /**
     * This member variable represents the container of key/value pairs.
     */
-  QMap<QCString, QString>  m_kvp;
+  QMap<QString, QString>  m_kvp;
 };
 
 #endif

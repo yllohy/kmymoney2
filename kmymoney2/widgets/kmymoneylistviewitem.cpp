@@ -35,7 +35,7 @@
 #include "kmymoneychecklistitem.h"
 #include "../kmymoneyglobalsettings.h"
 
-KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt, const QString& key, const QCString& id) :
+KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt, const QString& key, const QString& id) :
   KListViewItem(parent, txt),
   m_key(key),
   m_id(id),
@@ -46,7 +46,7 @@ KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt
     m_key = txt;
 }
 
-KMyMoneyListViewItem::KMyMoneyListViewItem(QListViewItem* parent, const QString& txt, const QString& key, const QCString& id) :
+KMyMoneyListViewItem::KMyMoneyListViewItem(QListViewItem* parent, const QString& txt, const QString& key, const QString& id) :
   KListViewItem(parent, txt),
   m_key(key),
   m_id(id),

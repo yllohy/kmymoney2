@@ -57,8 +57,8 @@ class KMYMONEY_EXPORT MyMoneySecurity : public MyMoneyObject, public MyMoneyKeyV
 {
 public:
   MyMoneySecurity();
-  MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity);
-  MyMoneySecurity(const QCString& id, const QString& name, const QString& symbol = QString(), const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
+  MyMoneySecurity(const QString& id, const MyMoneySecurity& equity);
+  MyMoneySecurity(const QString& id, const QString& name, const QString& symbol = QString(), const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
   MyMoneySecurity(const QDomElement& node);
   virtual ~MyMoneySecurity();
 
@@ -99,8 +99,8 @@ public:
   const QString& tradingMarket() const  { return m_tradingMarket; }
   void           setTradingMarket(const QString& str) { m_tradingMarket = str; }
 
-  const QCString& tradingCurrency(void) const { return m_tradingCurrency; };
-  void            setTradingCurrency(const QCString& str) { m_tradingCurrency = str; };
+  const QString& tradingCurrency(void) const { return m_tradingCurrency; };
+  void           setTradingCurrency(const QString& str) { m_tradingCurrency = str; };
 
   int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
   void setSmallestAccountFraction(const int sf) { m_smallestAccountFraction = sf; };
@@ -122,7 +122,7 @@ public:
    * @retval true This object references object with id @p id.
    * @retval false This object does not reference the object with id @p id.
    */
-  bool hasReferenceTo(const QCString& id) const;
+  bool hasReferenceTo(const QString& id) const;
 
   /**
    * This method is used to convert the internal representation of
@@ -140,7 +140,7 @@ protected:
   QString               m_name;
   QString               m_tradingSymbol;
   QString               m_tradingMarket;
-  QCString              m_tradingCurrency;
+  QString               m_tradingCurrency;
   eSECURITYTYPE         m_securityType;
   int                   m_smallestAccountFraction;
   int                   m_smallestCashFraction;

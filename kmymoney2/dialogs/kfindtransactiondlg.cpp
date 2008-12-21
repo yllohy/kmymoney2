@@ -321,7 +321,7 @@ void KFindTransactionDlg::selectAllItems(QListView* view, const bool state)
   slotUpdateSelections();
 }
 
-void KFindTransactionDlg::selectItems(QListView* view, const QCStringList& list, const bool state)
+void KFindTransactionDlg::selectItems(QListView* view, const QStringList& list, const bool state)
 {
   QListViewItem* it_v;
 
@@ -356,7 +356,7 @@ void KFindTransactionDlg::selectAllSubItems(QListViewItem* item, const bool stat
   }
 }
 
-void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList& list, const bool state)
+void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QStringList& list, const bool state)
 {
   QListViewItem* it_v;
 
@@ -515,7 +515,7 @@ void KFindTransactionDlg::slotNrRangeSelected(void)
   slotUpdateSelections();
 }
 
-void KFindTransactionDlg::addItemToFilter(const opTypeE op, const QCString& id)
+void KFindTransactionDlg::addItemToFilter(const opTypeE op, const QString& id)
 {
   switch(op) {
     case addAccountToFilter:
@@ -575,15 +575,15 @@ void KFindTransactionDlg::setupFilter(void)
   // Account tab
   if(!m_accountsView->allItemsSelected()) {
     // retrieve a list of selected accounts
-    QCStringList list;
+    QStringList list;
     m_accountsView->selectedItems(list);
 
     // if we're not in expert mode, we need to make sure
     // that all stock accounts for the selected investment
     // account are also selected
     if(!KMyMoneyGlobalSettings::expertMode()) {
-      QCStringList missing;
-      QCStringList::const_iterator it_a, it_b;
+      QStringList missing;
+      QStringList::const_iterator it_a, it_b;
       for(it_a = list.begin(); it_a != list.end(); ++it_a) {
         MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
         if(acc.accountType() == MyMoneyAccount::Investment) {
@@ -628,7 +628,7 @@ void KFindTransactionDlg::setupFilter(void)
 
   // Payees tab
   if(m_emptyPayeesButton->isChecked()) {
-    m_filter.addPayee(QCString());
+    m_filter.addPayee(QString());
 
   } else if(!allItemsSelected(m_payeesView)) {
     scanCheckListItems(m_payeesView, addPayeeToFilter);
@@ -695,7 +695,7 @@ void KFindTransactionDlg::loadView(void)
 
     // create the elements for the register
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
-  QMap<QCString, int>uniqueMap;
+  QMap<QString, int>uniqueMap;
   MyMoneyMoney deposit, payment;
 
   int splitCount = 0;

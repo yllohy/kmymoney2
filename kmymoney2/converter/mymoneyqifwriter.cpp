@@ -46,7 +46,7 @@ MyMoneyQifWriter::~MyMoneyQifWriter()
 }
 
 void MyMoneyQifWriter::write(const QString& filename, const QString& profile,
-             const QCString& accountId, const bool accountData,
+             const QString& accountId, const bool accountData,
              const bool categoryData,
              const QDate& startDate, const QDate& endDate)
 {
@@ -81,7 +81,7 @@ void MyMoneyQifWriter::write(const QString& filename, const QString& profile,
   }
 }
 
-void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& accountId, const QDate& startDate, const QDate& endDate)
+void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QString& accountId, const QDate& startDate, const QDate& endDate)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount account;
@@ -90,7 +90,7 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   MyMoneyTransactionFilter filter(accountId);
   filter.setDateFilter(startDate, endDate);
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
-  QCString openingBalanceTransactionId;
+  QString openingBalanceTransactionId;
 
   s << "!Type:" << m_qifProfile.profileType() << endl;
   if(!startDate.isValid() || startDate <= account.openingDate()) {
@@ -138,9 +138,9 @@ void MyMoneyQifWriter::writeCategoryEntries(QTextStream &s)
   expense = file->expense();
 
   s << "!Type:Cat" << endl;
-  QCStringList list = income.accountList() + expense.accountList();
+  QStringList list = income.accountList() + expense.accountList();
   emit signalProgress(0, list.count());
-  QCStringList::Iterator it;
+  QStringList::Iterator it;
   int count = 0;
   for(it = list.begin(); it != list.end(); ++it) {
     writeCategoryEntry(s, *it, "");
@@ -148,7 +148,7 @@ void MyMoneyQifWriter::writeCategoryEntries(QTextStream &s)
   }
 }
 
-void MyMoneyQifWriter::writeCategoryEntry(QTextStream &s, const QCString& accountId, const QString& leadIn)
+void MyMoneyQifWriter::writeCategoryEntry(QTextStream &s, const QString& accountId, const QString& leadIn)
 {
   MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
   QString name = acc.name();
@@ -157,15 +157,15 @@ void MyMoneyQifWriter::writeCategoryEntry(QTextStream &s, const QCString& accoun
   s << (MyMoneyAccount::accountGroup(acc.accountType()) == MyMoneyAccount::Expense ? "E" : "I") << endl;
   s << "^" << endl;
 
-  QCStringList list = acc.accountList();
-  QCStringList::Iterator it;
+  QStringList list = acc.accountList();
+  QStringList::Iterator it;
   name += ":";
   for(it = list.begin(); it != list.end(); ++it) {
     writeCategoryEntry(s, *it, name);
   }
 }
 
-void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransaction& t, const QCString& accountId)
+void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransaction& t, const QString& accountId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySplit split = t.splitByAccount(accountId);

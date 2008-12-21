@@ -70,7 +70,7 @@ protected:
   void loadAccounts(void);
 
   // load accounts that are kept at a specific institution
-  void loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId);
+  void loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QString& institutionId);
 
   // load stock accounts under the investment account (parent)
   void loadSubAccounts(KMyMoneyAccountTreeItem* parent);
@@ -117,9 +117,9 @@ signals:
 
 private:
   MyMoneyAccount                      m_reconciliationAccount;
-  QMap<QCString, MyMoneyAccount>      m_accountMap;
-  QMap<QCString, MyMoneySecurity>     m_securityMap;
-  QMap<QCString, unsigned long>       m_transactionCountMap;
+  QMap<QString, MyMoneyAccount>       m_accountMap;
+  QMap<QString, MyMoneySecurity>      m_securityMap;
+  QMap<QString, unsigned long>        m_transactionCountMap;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;

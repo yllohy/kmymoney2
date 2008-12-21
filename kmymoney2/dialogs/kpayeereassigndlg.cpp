@@ -50,16 +50,16 @@ KPayeeReassignDlg::~KPayeeReassignDlg()
 {
 }
 
-QCString KPayeeReassignDlg::show(const QValueList<MyMoneyPayee>& payeeslist)
+QString KPayeeReassignDlg::show(const QValueList<MyMoneyPayee>& payeeslist)
 {
   if (payeeslist.isEmpty())
-   return QCString(); // no payee available? nothing can be selected...
+   return QString(); // no payee available? nothing can be selected...
 
   payeeCombo->loadPayees(payeeslist);
 
   // execute dialog and if aborted, return empty string
   if (this->exec() == QDialog::Rejected)
-    return QCString();
+    return QString();
 
   // otherwise return index of selected payee
   return payeeCombo->selectedItem();

@@ -42,7 +42,7 @@ KMyMoneySecuritySelector::KMyMoneySecuritySelector(QWidget *parent, const char *
   m_displayOnly(false),
   m_displayType(TypeAll)
 {
-  // update(QCString());
+  // update(QString());
 }
 
 KMyMoneySecuritySelector::KMyMoneySecuritySelector(displayTypeE type, QWidget *parent, const char *name ) :
@@ -51,7 +51,7 @@ KMyMoneySecuritySelector::KMyMoneySecuritySelector(displayTypeE type, QWidget *p
   m_displayOnly(false),
   m_displayType(type)
 {
-  // update(QCString());
+  // update(QString());
 }
 
 KMyMoneySecuritySelector::~KMyMoneySecuritySelector()
@@ -61,13 +61,13 @@ KMyMoneySecuritySelector::~KMyMoneySecuritySelector()
 void KMyMoneySecuritySelector::selectDisplayItem(KMyMoneySecuritySelector::displayItemE item)
 {
   m_displayItem = item;
-  update(QCString());
+  update(QString());
 }
 
-void KMyMoneySecuritySelector::update(const QCString& id)
+void KMyMoneySecuritySelector::update(const QString& id)
 {
   MyMoneySecurity curr = MyMoneyFile::instance()->baseCurrency();
-  QCString baseCurrency = curr.id();
+  QString baseCurrency = curr.id();
 
   if(!id.isEmpty())
     curr = m_currency;
@@ -155,7 +155,7 @@ const MyMoneySecurity& KMyMoneySecuritySelector::security(void) const
 void KMyMoneySecuritySelector::setSecurity(const MyMoneySecurity& currency)
 {
   m_currency = currency;
-  update(QCString("x"));
+  update(QString("x"));
 }
 
 KMyMoneyCurrencySelector::KMyMoneyCurrencySelector(QWidget *parent, const char *name ) :

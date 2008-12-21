@@ -68,22 +68,22 @@ public:
 protected:
   bool createTransaction(MyMoneyTransaction& t, const int sign, kMyMoneyEdit *amountEdit, KMyMoneyCategory *categoryEdit, kMyMoneyDateInput* dateEdit);
   const MyMoneyMoney adjustedReturnValue(const MyMoneyMoney& v) const;
-  void createCategory(const QString& txt, QCString& id, const MyMoneyAccount& parent);
+  void createCategory(const QString& txt, QString& id, const MyMoneyAccount& parent);
 
 protected slots:
   void slotCheckPageFinished(void);
   void slotReloadEditWidgets(void);
   void help(void);
-  void slotCreateInterestCategory(const QString& txt, QCString& id);
-  void slotCreateChargesCategory(const QString& txt, QCString& id);
+  void slotCreateInterestCategory(const QString& txt, QString& id);
+  void slotCreateChargesCategory(const QString& txt, QString& id);
   void accept(void);
   void slotUpdateBalances(void);
 
 signals:
   /**
-    * proxy signal for KMyMoneyPayeeCombo::createItem(const QString&, QCString&)
+    * proxy signal for KMyMoneyPayeeCombo::createItem(const QString&, QString&)
     */
-  void createPayee(const QString&, QCString&);
+  void createPayee(const QString&, QString&);
 
   /**
     * emit when a category is about to be created

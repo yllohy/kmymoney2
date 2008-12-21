@@ -132,9 +132,9 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
 
   // connect the signals with the slots
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
-  connect(m_payeeEdit, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
-  connect(m_interestCategoryEdit, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateInterestCategory(const QString&, QCString&)));
-  connect(m_chargesCategoryEdit, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateChargesCategory(const QString&, QCString&)));
+  connect(m_payeeEdit, SIGNAL(createItem(const QString&, QString&)), this, SIGNAL(createPayee(const QString&, QString&)));
+  connect(m_interestCategoryEdit, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateInterestCategory(const QString&, QString&)));
+  connect(m_chargesCategoryEdit, SIGNAL(createItem(const QString&, QString&)), this, SLOT(slotCreateChargesCategory(const QString&, QString&)));
 
   connect(m_interestEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
   connect(m_interestCategoryEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
@@ -236,17 +236,17 @@ void KEndingBalanceDlg::accept(void)
     KEndingBalanceDlgDecl::accept();
 }
 
-void KEndingBalanceDlg::slotCreateInterestCategory(const QString& txt, QCString& id)
+void KEndingBalanceDlg::slotCreateInterestCategory(const QString& txt, QString& id)
 {
   createCategory(txt, id, MyMoneyFile::instance()->income());
 }
 
-void KEndingBalanceDlg::slotCreateChargesCategory(const QString& txt, QCString& id)
+void KEndingBalanceDlg::slotCreateChargesCategory(const QString& txt, QString& id)
 {
   createCategory(txt, id, MyMoneyFile::instance()->expense());
 }
 
-void KEndingBalanceDlg::createCategory(const QString& txt, QCString& id, const MyMoneyAccount& parent)
+void KEndingBalanceDlg::createCategory(const QString& txt, QString& id, const MyMoneyAccount& parent)
 {
   MyMoneyAccount acc;
   acc.setName(txt);
@@ -273,7 +273,7 @@ const MyMoneyMoney KEndingBalanceDlg::adjustedReturnValue(const MyMoneyMoney& v)
 
 void KEndingBalanceDlg::slotReloadEditWidgets(void)
 {
-  QCString payeeId, interestId, chargesId;
+  QString payeeId, interestId, chargesId;
 
   // keep current selected items
   payeeId = m_payeeEdit->selectedItem();
@@ -351,7 +351,7 @@ bool KEndingBalanceDlg::createTransaction(MyMoneyTransaction &t, const int sign,
     t.addSplit(s1);
     t.addSplit(s2);
 
-    QMap<QCString, MyMoneyMoney> priceInfo; // just empty
+    QMap<QString, MyMoneyMoney> priceInfo; // just empty
     MyMoneyMoney shares;
     if(!KCurrencyCalculator::setupSplitPrice(shares, t, s2, priceInfo, this)) {
       t = MyMoneyTransaction();

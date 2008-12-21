@@ -596,8 +596,8 @@ void QueryTable::constructTransactionTable(void)
       if(fraction == -1)
         fraction = file->baseCurrency().smallestAccountFraction();
 
-      QCString institution = splitAcc.institutionId();
-      QCString payee = (*it_split).payeeId();
+      QString institution = splitAcc.institutionId();
+      QString payee = (*it_split).payeeId();
 
       if ( m_config.isConvertCurrency() ) {
         xr = (splitAcc.deepCurrencyPrice((*it_transaction).postDate()) * splitAcc.baseCurrencyPrice((*it_transaction).postDate())).reduce();
@@ -879,7 +879,7 @@ void QueryTable::constructTransactionTable(void)
     //use base currency fraction if not initialized
     if(fraction == -1)
       fraction = file->baseCurrency().smallestAccountFraction();
-    QCString institution = account.institutionId();
+    QString institution = account.institutionId();
 
     // use the institution of the parent for stock accounts
     if (account.isInvest())
@@ -1039,7 +1039,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
     MyMoneyMoney value = s.value() * price;
 
-    const QCString& action = s.action();
+    const QString& action = s.action();
     if ( action == MyMoneySplit::ActionBuyShares )
     {
       if ( s.value().isPositive() ) {
@@ -1192,7 +1192,7 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["price"] = ( netprice.reduce() ).convert(fraction).toString();
       qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).convert(fraction).toString();
 
-      QCString iid = (*it_account).institutionId();
+      QString iid = (*it_account).institutionId();
 
       // If an account does not have an institution, get it from the top-parent.
       if ( iid.isEmpty() && ! account.isTopLevel() )

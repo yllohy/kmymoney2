@@ -33,7 +33,7 @@ MyMoneyTransaction::MyMoneyTransaction() :
   m_postDate = QDate();
 }
 
-MyMoneyTransaction::MyMoneyTransaction(const QCString id, const MyMoneyTransaction& transaction) :
+MyMoneyTransaction::MyMoneyTransaction(const QString id, const MyMoneyTransaction& transaction) :
   MyMoneyObject(id)
 {
   *this = transaction;
@@ -60,7 +60,7 @@ MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool force
   m_entryDate = stringToDate(node.attribute("entrydate"));
   m_bankID = QStringEmpty(node.attribute("bankid"));
   m_memo = QStringEmpty(node.attribute("memo"));
-  m_commodity = QCStringEmpty(node.attribute("commodity"));
+  m_commodity = QStringEmpty(node.attribute("commodity"));
 
   //  Process any split information found inside the transaction entry.
   QDomNodeList nodeList = node.elementsByTagName("SPLITS");
@@ -95,7 +95,7 @@ bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
       (m_postDate == right.m_postDate) );
 }
 
-bool MyMoneyTransaction::accountReferenced(const QCString& id) const
+bool MyMoneyTransaction::accountReferenced(const QString& id) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -204,7 +204,7 @@ void MyMoneyTransaction::removeSplits(void)
   m_nextSplitID = 1;
 }
 
-const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) const
+const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QString& payeeId) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -215,7 +215,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) co
   throw new MYMONEYEXCEPTION(QString("Split not found for payee '%1'").arg(QString(payeeId)));
 }
 
-const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId, const bool match) const
+const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QString& accountId, const bool match) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -228,7 +228,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId
   throw new MYMONEYEXCEPTION(QString("Split not found for account %1%2").arg(match?"":"!").arg(QString(accountId)));
 }
 
-const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCStringList& accountIds, const bool match) const
+const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QStringList& accountIds, const bool match) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -241,7 +241,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCStringList& accou
   throw new MYMONEYEXCEPTION(QString("Split not found for account  %1%1...%2").arg(match?"":"!").arg(accountIds.front(),accountIds.back()));
 }
 
-const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
+const MyMoneySplit& MyMoneyTransaction::splitById(const QString& splitId) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -252,16 +252,16 @@ const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
   throw new MYMONEYEXCEPTION(QString("Split not found for id '%1'").arg(QString(splitId)));
 }
 
-const QCString MyMoneyTransaction::nextSplitID()
+const QString MyMoneyTransaction::nextSplitID()
 {
-  QCString id;
+  QString id;
   id = "S" + id.setNum(m_nextSplitID++).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
 }
 
-const QCString MyMoneyTransaction::firstSplitID()
+const QString MyMoneyTransaction::firstSplitID()
 {
-  QCString id;
+  QString id;
   id = "S" + id.setNum(1).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
 }
@@ -411,7 +411,7 @@ void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) c
   parent.appendChild(el);
 }
 
-bool MyMoneyTransaction::hasReferenceTo(const QCString& id) const
+bool MyMoneyTransaction::hasReferenceTo(const QString& id) const
 {
   QValueList<MyMoneySplit>::const_iterator it;
   bool rc = (id == m_commodity);
@@ -452,9 +452,9 @@ QString MyMoneyTransaction::accountSignature(bool includeSplitCount) const
   return rc;
 }
 
-QCString MyMoneyTransaction::uniqueSortKey(void) const
+QString MyMoneyTransaction::uniqueSortKey(void) const
 {
-  QCString year, month, day, key;
+  QString year, month, day, key;
   const QDate& postdate = postDate();
   year = year.setNum(postdate.year()).rightJustify(YEAR_SIZE, '0');
   month = month.setNum(postdate.month()).rightJustify(MONTH_SIZE, '0');

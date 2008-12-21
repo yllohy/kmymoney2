@@ -51,7 +51,7 @@
 
 #include "../kmymoneyutils.h"
 
-bool KCurrencyCalculator::setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTransaction& t, const MyMoneySplit& s, const QMap<QCString, MyMoneyMoney>& priceInfo, QWidget* parentWidget)
+bool KCurrencyCalculator::setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTransaction& t, const MyMoneySplit& s, const QMap<QString, MyMoneyMoney>& priceInfo, QWidget* parentWidget)
 {
   bool rc = true;
   MyMoneyFile* file = MyMoneyFile::instance();

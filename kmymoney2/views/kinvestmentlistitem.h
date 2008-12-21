@@ -62,7 +62,7 @@ public:
   KInvestmentListItem(KListView* parent, const MyMoneyAccount& security);
   ~KInvestmentListItem();
 
-  QCString securityId() const { return m_account.currencyId(); };
+  QString securityId() const { return m_account.currencyId(); };
   const MyMoneyAccount& account(void) const { return m_account; };
   const MyMoneySecurity tradingCurrency(void) const { return m_tradingCurrency; };
 

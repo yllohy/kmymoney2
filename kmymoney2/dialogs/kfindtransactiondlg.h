@@ -117,7 +117,7 @@ protected slots:
 
   /**
     * This slot selects the current selected transaction/split and emits
-    * the signal @a transactionSelected(const QCString& accountId, const QCString& transactionId)
+    * the signal @a transactionSelected(const QString& accountId, const QString& transactionId)
     */
   void slotSelectTransaction(void);
 
@@ -126,7 +126,7 @@ protected slots:
   void slotSortOptions(void);
 
 signals:
-  void transactionSelected(const QCString& accountId, const QCString& transactionId);
+  void transactionSelected(const QString& accountId, const QString& transactionId);
 
   /**
     * This signal is sent out when no selection has been made. It is
@@ -152,8 +152,8 @@ protected:
 
   void selectAllItems(QListView* view, const bool state);
   void selectAllSubItems(QListViewItem* item, const bool state);
-  void selectItems(QListView* view, const QCStringList& list, const bool state);
-  void selectSubItems(QListViewItem* item, const QCStringList& list, const bool state);
+  void selectItems(QListView* view, const QStringList& list, const bool state);
+  void selectSubItems(QListViewItem* item, const QStringList& list, const bool state);
 
   /**
     * This method loads the m_payeesView with the payees name
@@ -182,7 +182,7 @@ protected:
 
   void scanCheckListItems(const QListView* view, const opTypeE op);
   void scanCheckListItems(const QListViewItem* item, const opTypeE op);
-  void addItemToFilter(const opTypeE op, const QCString& id);
+  void addItemToFilter(const opTypeE op, const QString& id);
 
 protected:
   QDate                m_startDates[MyMoneyTransactionFilter::dateOptionCount];

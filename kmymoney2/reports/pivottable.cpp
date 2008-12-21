@@ -259,14 +259,14 @@ void PivotTable::init(void)
     // check if we need to call the autocalculation routine
     if(tx.isLoanPayment() && tx.hasAutoCalcSplit() && (tx.value("kmm-schedule-id").length() > 0)) {
       // make sure to consider any autocalculation for loan payments
-      MyMoneySchedule sched = file->schedule(QCString(tx.value("kmm-schedule-id")));
+      MyMoneySchedule sched = file->schedule(tx.value("kmm-schedule-id"));
       const MyMoneySplit& split = tx.amortizationSplit();
       if(!split.id().isEmpty()) {
         ReportAccount splitAccount = file->account(split.accountId());
         MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
         QString outergroup = KMyMoneyUtils::accountTypeToString(type);
 
-        QMap<QCString, MyMoneyMoney> balances;
+        QMap<QString, MyMoneyMoney> balances;
         balances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
 
         KMyMoneyUtils::calculateAutoLoan(sched, tx, balances);
@@ -723,7 +723,7 @@ MyMoneyMoney PivotTable::cellBalance(const QString& outergroup, const ReportAcco
   ReportAccount row = _row;
   if ( !budget && m_config_f.hasBudget() )
   {
-    QCString newrow = m_budgetMap[row.id()];
+    QString newrow = m_budgetMap[row.id()];
 
     // if there was no mapping found, then the budget report is not interested
     // in this account.
@@ -812,8 +812,8 @@ void PivotTable::calculateBudgetMapping( void )
     {
       //include only the accounts selected for the report
       if ( m_config_f.includes ( *it_account ) ) {
-        QCString id = ( *it_account ).id();
-        QCString acid = id;
+        QString id = ( *it_account ).id();
+        QString acid = id;
 
         // If the budget contains this account outright
         if ( budget.contains ( id ) )
@@ -1192,7 +1192,7 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _ro
   ReportAccount row = _row;
   if ( !budget && m_config_f.hasBudget() )
   {
-    QCString newrow = m_budgetMap[row.id()];
+    QString newrow = m_budgetMap[row.id()];
 
     // if there was no mapping found, then the budget report is not interested
     // in this account.

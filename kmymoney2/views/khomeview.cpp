@@ -849,7 +849,7 @@ MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
   MyMoneyMoney value;
 
   value = file->balance(acc.id());
-  QValueList<QCString>::const_iterator it_a;
+  QValueList<QString>::const_iterator it_a;
   for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
     MyMoneyAccount stock = file->account(*it_a);
     try {
@@ -1094,8 +1094,8 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
   QString protocol = url.protocol();
   QString view = url.fileName(false);
-  QCString id = url.queryItem("id").data();
-  QCString mode = url.queryItem("mode").data();
+  QString id = url.queryItem("id").data();
+  QString mode = url.queryItem("mode").data();
 
   if ( protocol == "http" )
   {
@@ -1108,7 +1108,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   else
   {
     if(view == VIEW_LEDGER) {
-      emit ledgerSelected(id, QCString());
+      emit ledgerSelected(id, QString());
 
     } else if(view == VIEW_SCHEDULE) {
       if(mode == "enter") {
@@ -1657,7 +1657,7 @@ void KHomeView::showCashFlowSummary()
 
         //make sure we have all 'starting balances' so that the autocalc works
         QValueList<MyMoneySplit>::const_iterator it_s;
-        QMap<QCString, MyMoneyMoney> balanceMap;
+        QMap<QString, MyMoneyMoney> balanceMap;
 
         for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s ) {
           MyMoneyAccount acc = file->account((*it_s).accountId());

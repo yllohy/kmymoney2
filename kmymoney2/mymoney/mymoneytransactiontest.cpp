@@ -234,7 +234,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 	// this one should fail, as the account is not referenced by
 	// any split in the transaction
 	try {
-		split = m->splitByAccount("A000003");
+		split = m->splitByAccount(QString("A000003"));
 		CPPUNIT_FAIL("Exception expected");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -242,7 +242,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 
 	// this one should be found
 	try {
-		split = m->splitByAccount("A000002");
+		split = m->splitByAccount(QString("A000002"));
 		CPPUNIT_ASSERT(split.id() == "S0002");
 
 	} catch(MyMoneyException *e) {
@@ -252,7 +252,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 
 	// this one should be found also
 	try {
-		split = m->splitByAccount("A000002", false);
+		split = m->splitByAccount(QString("A000002"), false);
 		CPPUNIT_ASSERT(split.id() == "S0001");
 	} catch(MyMoneyException *e) {
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -348,14 +348,14 @@ void MyMoneyTransactionTest::testModifyDuplicateAccount() {
 	testAddSplits();
 	MyMoneySplit split;
 
-	split = m->splitByAccount("A000002");
+	split = m->splitByAccount(QString("A000002"));
 	split.setAccountId("A000001");
 	try {
 		m->modifySplit(split);
 		CPPUNIT_ASSERT(m->splitCount() == 1);
 		CPPUNIT_ASSERT(m->accountReferenced("A000001") == true);
 		CPPUNIT_ASSERT(m->splits()[0].value() == MyMoneyMoney(300));
-	
+
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
 	}
@@ -398,7 +398,7 @@ void MyMoneyTransactionTest::testWriteXML() {
                 "</TRANSACTION-CONTAINER>\n"
 
 	);
-	
+
 	CPPUNIT_ASSERT(doc.toString() == ref);
 }
 
@@ -534,7 +534,7 @@ void MyMoneyTransactionTest::testModifyMissingAccountId()
 {
 	testAddSplits();
 	MyMoneySplit s = m->splits()[0];
-	s.setAccountId(QCString());
+	s.setAccountId(QString());
 
 	try {
 		m->modifySplit(s);

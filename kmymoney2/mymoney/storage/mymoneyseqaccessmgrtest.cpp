@@ -193,7 +193,7 @@ void MyMoneySeqAccessMgrTest::testAccount() {
 		CPPUNIT_FAIL("Exception expected");
 	} catch (MyMoneyException *e) {
 		delete e;
-	} 
+	}
 	m->commitTransaction();
 	m->startTransaction();
 	CPPUNIT_ASSERT(m->dirty() == false);
@@ -411,7 +411,7 @@ void MyMoneySeqAccessMgrTest::testModifyInstitution() {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
-	
+
 	// try to modify an institution that does not exist
 	MyMoneyInstitution f("Unknown ID", i);
 	try {
@@ -503,7 +503,7 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		CPPUNIT_ASSERT(s.id().isEmpty());
 		t1.addSplit(s);
 
-		s.setId(QCString());	// enable re-usage of split variable
+		s.setId(QString());	// enable re-usage of split variable
 		s.setAccountId("A000005");	// Salary
 		s.setShares(-100000);
 		s.setValue(-100000);
@@ -530,28 +530,28 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 
 	try {
 		// I spent some money, not so great
-		s.setId(QCString());	// enable re-usage of split variable
+		s.setId(QString());	// enable re-usage of split variable
 		s.setAccountId("A000004");	// Grosseries
 		s.setShares(10000);
 		s.setValue(10000);
 		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId(QCString());	// enable re-usage of split variable
+		s.setId(QString());	// enable re-usage of split variable
 		s.setAccountId("A000002");	// 16% sales tax
 		s.setShares(1200);
 		s.setValue(1200);
 		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId(QCString());	// enable re-usage of split variable
+		s.setId(QString());	// enable re-usage of split variable
 		s.setAccountId("A000003");	// 7% sales tax
 		s.setShares(400);
 		s.setValue(400);
 		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId(QCString());	// enable re-usage of split variable
+		s.setId(QString());	// enable re-usage of split variable
 		s.setAccountId("A000006");	// Checkings account
 		s.setShares(-11600);
 		s.setValue(-11600);
@@ -572,8 +572,8 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		CPPUNIT_ASSERT(t2.splitCount() == 4);
 		CPPUNIT_ASSERT(m->transactionCount() == 2);
 
-		QMap<QCString, QCString>::ConstIterator it_k;
-		QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+		QMap<QString, QString>::ConstIterator it_k;
+		QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
 		it_k = m->m_transactionKeys.begin();
 		it_t = m->m_transactionList.begin();
 
@@ -619,7 +619,7 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		++it_l;
 		CPPUNIT_ASSERT(it_l == ch.transactionList().end());
 */
-			
+
 	} catch (MyMoneyException *e) {
 		unexpectedException(e);
 	}
@@ -689,8 +689,8 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 		CPPUNIT_ASSERT(m->balance("A000006") == MyMoneyMoney(100000-12600));
 		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
 
-		QMap<QCString, QCString>::ConstIterator it_k;
-		QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+		QMap<QString, QString>::ConstIterator it_k;
+		QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
 		it_k = m->m_transactionKeys.begin();
 		it_t = m->m_transactionList.begin();
 		CPPUNIT_ASSERT((*it_k) == "2002-05-10-T000000000000000001");
@@ -792,7 +792,7 @@ void MyMoneySeqAccessMgrTest::testRemoveUnusedAccount() {
 		CPPUNIT_ASSERT(i.accountCount() == 0);
 		CPPUNIT_ASSERT(m->accountCount() == 7);
 
-		a.setInstitutionId(QCString());
+		a.setInstitutionId(QString());
 		m->modifyAccount(a);
 		m->removeAccount(a);
 		m->commitTransaction();
@@ -843,7 +843,7 @@ void MyMoneySeqAccessMgrTest::testRemoveInstitution() {
 	// now remove the institution and see if the account survived ;-)
 	try {
 		m->removeInstitution(i);
-		a.setInstitutionId(QCString());
+		a.setInstitutionId(QString());
 		m->modifyAccount(a);
 		m->commitTransaction();
 		m->startTransaction();
@@ -889,7 +889,7 @@ void MyMoneySeqAccessMgrTest::testTransactionList() {
 	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
 
 	filter.clear();
-	filter.addAccount("A000003");
+	filter.addAccount(QString("A000003"));
 	list = m->transactionList(filter);
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
@@ -928,7 +928,7 @@ void MyMoneySeqAccessMgrTest::testSetAccountName() {
 		CPPUNIT_FAIL("Unexpected exception");
 	}
 	try {
-		m->setAccountName(STD_ACC_ASSET, "Vermögen");
+		m->setAccountName(STD_ACC_ASSET, "Vermï¿½gen");
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -947,7 +947,7 @@ void MyMoneySeqAccessMgrTest::testSetAccountName() {
 	}
 
 	CPPUNIT_ASSERT(m->liability().name() == "Verbindlichkeiten");
-	CPPUNIT_ASSERT(m->asset().name() == "Vermögen");
+	CPPUNIT_ASSERT(m->asset().name() == "Vermï¿½gen");
 	CPPUNIT_ASSERT(m->expense().name() == "Ausgaben");
 	CPPUNIT_ASSERT(m->income().name() == "Einnahmen");
 
@@ -1014,7 +1014,7 @@ void MyMoneySeqAccessMgrTest::testRemovePayee() {
 		CPPUNIT_FAIL("Expected exception");
 	} catch (MyMoneyException *e) {
 		delete e;
-	} 
+	}
 
 	m->m_nextPayeeID = 0;		// reset here, so that the
 					// testAddPayee will not fail
@@ -1036,7 +1036,7 @@ void MyMoneySeqAccessMgrTest::testRemovePayee() {
 		CPPUNIT_FAIL("Expected exception");
 	} catch (MyMoneyException *e) {
 		delete e;
-	} 
+	}
 	CPPUNIT_ASSERT(m->m_payeeList.count() == 1);
 }
 
@@ -1147,16 +1147,16 @@ void MyMoneySeqAccessMgrTest::testEquality(const MyMoneySeqAccessMgr *t)
 	 */
 	CPPUNIT_ASSERT(m->m_payeeList.keys() == t->m_payeeList.keys());
 	CPPUNIT_ASSERT(m->m_payeeList.values() == t->m_payeeList.values());
-	CPPUNIT_ASSERT(m->m_transactionKeys.keys() == t->m_transactionKeys.keys()); 
-	CPPUNIT_ASSERT(m->m_transactionKeys.values() == t->m_transactionKeys.values()); 
-	CPPUNIT_ASSERT(m->m_institutionList.keys() == t->m_institutionList.keys()); 
-	CPPUNIT_ASSERT(m->m_institutionList.values() == t->m_institutionList.values()); 
-	CPPUNIT_ASSERT(m->m_accountList.keys() == t->m_accountList.keys()); 
-	CPPUNIT_ASSERT(m->m_accountList.values() == t->m_accountList.values()); 
-	CPPUNIT_ASSERT(m->m_transactionList.keys() == t->m_transactionList.keys()); 
-	CPPUNIT_ASSERT(m->m_transactionList.values() == t->m_transactionList.values()); 
-	CPPUNIT_ASSERT(m->m_balanceCache.keys() == t->m_balanceCache.keys()); 
-	CPPUNIT_ASSERT(m->m_balanceCache.values() == t->m_balanceCache.values()); 
+	CPPUNIT_ASSERT(m->m_transactionKeys.keys() == t->m_transactionKeys.keys());
+	CPPUNIT_ASSERT(m->m_transactionKeys.values() == t->m_transactionKeys.values());
+	CPPUNIT_ASSERT(m->m_institutionList.keys() == t->m_institutionList.keys());
+	CPPUNIT_ASSERT(m->m_institutionList.values() == t->m_institutionList.values());
+	CPPUNIT_ASSERT(m->m_accountList.keys() == t->m_accountList.keys());
+	CPPUNIT_ASSERT(m->m_accountList.values() == t->m_accountList.values());
+	CPPUNIT_ASSERT(m->m_transactionList.keys() == t->m_transactionList.keys());
+	CPPUNIT_ASSERT(m->m_transactionList.values() == t->m_transactionList.values());
+	CPPUNIT_ASSERT(m->m_balanceCache.keys() == t->m_balanceCache.keys());
+	CPPUNIT_ASSERT(m->m_balanceCache.values() == t->m_balanceCache.values());
 
 //	CPPUNIT_ASSERT(m->m_scheduleList.keys() == t->m_scheduleList.keys());
 //	CPPUNIT_ASSERT(m->m_scheduleList.values() == t->m_scheduleList.values());
@@ -1261,12 +1261,12 @@ void MyMoneySeqAccessMgrTest::testModifySchedule() {
 		m->modifySchedule(sched);
 		CPPUNIT_ASSERT(m->m_scheduleList.count() == 1);
 		CPPUNIT_ASSERT(m->m_scheduleList["SCH000001"].name() == "New Sched-Name");
-		
+
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
-	
+
 }
 
 void MyMoneySeqAccessMgrTest::testRemoveSchedule() {
@@ -1292,7 +1292,7 @@ void MyMoneySeqAccessMgrTest::testRemoveSchedule() {
 		m->removeSchedule(sched);
 		m->commitTransaction();
 		CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
-		
+
 	} catch(MyMoneyException *e) {
 		m->rollbackTransaction();
 		delete e;

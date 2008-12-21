@@ -125,20 +125,20 @@ public:
     * the set of transaction referenced by a specific account depending
     * on the argument given.
     *
-    * @param account QCString reference to account id. If account is empty
+    * @param account QString reference to account id. If account is empty
     +                all transactions (the journal) is returned. If account
     *                is not empty it returns the set of transactions
     *                that have splits in this account.
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  // virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
+  // virtual const QValueList<MyMoneyTransaction> transactionList(const QString& account = "") const = 0;
 
   /**
    * This method returns whether a given transaction is already in memory, to avoid
    * reloading it from the database
    */
-  virtual bool isDuplicateTransaction(const QCString&) const = 0;
+  virtual bool isDuplicateTransaction(const QString&) const = 0;
   /**
     * This method returns a list of the payees
     * inside a MyMoneyStorage object
@@ -153,7 +153,7 @@ public:
     * list of the transactions, all arguments should be used with their
     * default arguments.
     */
-  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
+  virtual const QValueList<MyMoneySchedule> scheduleList(const QString& = QString(),
                                      const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
                                      const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
                                      const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
@@ -276,15 +276,15 @@ public:
     */
   virtual void addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate = false) = 0;
 
-  virtual void loadAccounts(const QMap<QCString, MyMoneyAccount>& map) = 0;
-  virtual void loadTransactions(const QMap<QCString, MyMoneyTransaction>& map) = 0;
-  virtual void loadInstitutions(const QMap<QCString, MyMoneyInstitution>& map) = 0;
-  virtual void loadPayees(const QMap<QCString, MyMoneyPayee>& map) = 0;
-  virtual void loadSchedules(const QMap<QCString, MyMoneySchedule>& map) = 0;
-  virtual void loadSecurities(const QMap<QCString, MyMoneySecurity>& map) = 0;
-  virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map) = 0;
-  virtual void loadReports( const QMap<QCString, MyMoneyReport>& reports ) = 0;
-  virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets ) = 0;
+  virtual void loadAccounts(const QMap<QString, MyMoneyAccount>& map) = 0;
+  virtual void loadTransactions(const QMap<QString, MyMoneyTransaction>& map) = 0;
+  virtual void loadInstitutions(const QMap<QString, MyMoneyInstitution>& map) = 0;
+  virtual void loadPayees(const QMap<QString, MyMoneyPayee>& map) = 0;
+  virtual void loadSchedules(const QMap<QString, MyMoneySchedule>& map) = 0;
+  virtual void loadSecurities(const QMap<QString, MyMoneySecurity>& map) = 0;
+  virtual void loadCurrencies(const QMap<QString, MyMoneySecurity>& map) = 0;
+  virtual void loadReports( const QMap<QString, MyMoneyReport>& reports ) = 0;
+  virtual void loadBudgets( const QMap<QString, MyMoneyBudget>& budgets ) = 0;
   virtual void loadPrices(const MyMoneyPriceList& list) = 0;
 
   virtual unsigned long accountId(void) const = 0;
@@ -310,10 +310,10 @@ public:
     * from the container. It is meant to be used for permanent storage
     * functionality. See MyMoneyKeyValueContainer::pairs() for details.
     *
-    * @return QMap<QCString, QString> containing all key/value pairs of
+    * @return QMap<QString, QString> containing all key/value pairs of
     *         this container.
     */
-  virtual const QMap<QCString, QString> pairs(void) const = 0;
+  virtual const QMap<QString, QString> pairs(void) const = 0;
 
   /**
     * This method is used to initially store a set of key/value pairs
@@ -321,18 +321,18 @@ public:
     * from permanent storage. See MyMoneyKeyValueContainer::setPairs()
     * for details
     *
-    * @param list const QMap<QCString, QString> containing the set of
+    * @param list const QMap<QString, QString> containing the set of
     *             key/value pairs to be loaded into the container.
     *
     * @note All existing key/value pairs in the container will be deleted.
     */
-  virtual void setPairs(const QMap<QCString, QString>& list) = 0;
+  virtual void setPairs(const QMap<QString, QString>& list) = 0;
 
   virtual const QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
                                               int scheduleOcurrences,
                                               int schedulePaymentTypes,
                                               QDate startDate,
-                                              const QCStringList& accounts=QCStringList()) const = 0;
+                                              const QStringList& accounts=QStringList()) const = 0;
 
   /**
     * This method is used to retrieve the list of all currencies
