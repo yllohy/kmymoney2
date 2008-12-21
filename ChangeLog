@@ -1,4 +1,7 @@
 
+2008-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed an uninitialized variable bug in the QIF importer
+
 2008-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Assign base currency to account if none is present during creation
 

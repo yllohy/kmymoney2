@@ -54,7 +54,7 @@ Represents the electronic analog of the paper bank statement just like we used t
 class MyMoneyStatement
 {
 public:
-  MyMoneyStatement() : m_closingBalance(MyMoneyMoney::autoCalc) {}
+  MyMoneyStatement() : m_closingBalance(MyMoneyMoney::autoCalc), m_eType(etNone) {}
 
   enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
 
@@ -71,7 +71,7 @@ public:
 
   class Transaction {
   public:
-    Transaction() : m_reconcile(MyMoneySplit::NotReconciled) {}
+    Transaction() : m_reconcile(MyMoneySplit::NotReconciled), m_eAction(eaNone) {}
     QDate m_datePosted;
     QString m_strPayee;
     QString m_strMemo;
