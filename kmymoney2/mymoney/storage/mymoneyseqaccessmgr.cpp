@@ -1009,9 +1009,9 @@ void MyMoneySeqAccessMgr::loadAccounts(const QMap<QString, MyMoneyAccount>& map)
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneyAccount>::const_iterator it_a;
-  QString lastId;
+  QString lastId("");
   for(it_a = map.begin(); it_a != map.end(); ++it_a) {
-    if(!isStandardAccount((*it_a).id()) && (*it_a).id() > lastId)
+    if(!isStandardAccount((*it_a).id()) && ((*it_a).id() > lastId))
       lastId = (*it_a).id();
   }
 
@@ -1027,7 +1027,7 @@ void MyMoneySeqAccessMgr::loadTransactions(const QMap<QString, MyMoneyTransactio
 
   // now fill the key map and
   // identify the last used id
-  QString lastId;
+  QString lastId("");
   QMap<QString, QString> keys;
   QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
   for(it_t = map.begin(); it_t != map.end(); ++it_t) {
@@ -1050,7 +1050,7 @@ void MyMoneySeqAccessMgr::loadInstitutions(const QMap<QString, MyMoneyInstitutio
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneyInstitution>::const_iterator it_i;
-  QString lastId;
+  QString lastId("");
   for(it_i = map.begin(); it_i != map.end(); ++it_i) {
     if((*it_i).id() > lastId)
       lastId = (*it_i).id();
@@ -1068,7 +1068,7 @@ void MyMoneySeqAccessMgr::loadPayees(const QMap<QString, MyMoneyPayee>& map)
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneyPayee>::const_iterator it_p;
-  QString lastId;
+  QString lastId("");
   for(it_p = map.begin(); it_p != map.end(); ++it_p) {
     if((*it_p).id().length() <= PAYEE_ID_SIZE+1) {
       if((*it_p).id() > lastId)
@@ -1089,7 +1089,7 @@ void MyMoneySeqAccessMgr::loadSecurities(const QMap<QString, MyMoneySecurity>& m
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneySecurity>::const_iterator it_s;
-  QString lastId;
+  QString lastId("");
   for(it_s = map.begin(); it_s != map.end(); ++it_s) {
     if((*it_s).id() > lastId)
       lastId = (*it_s).id();
@@ -1313,7 +1313,7 @@ void MyMoneySeqAccessMgr::loadSchedules(const QMap<QString, MyMoneySchedule>& ma
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneySchedule>::const_iterator it_s;
-  QString lastId;
+  QString lastId("");
   for(it_s = map.begin(); it_s != map.end(); ++it_s) {
     if((*it_s).id() > lastId)
       lastId = (*it_s).id();
@@ -1515,7 +1515,7 @@ void MyMoneySeqAccessMgr::loadReports(const QMap<QString, MyMoneyReport>& map)
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneyReport>::const_iterator it_r;
-  QString lastId;
+  QString lastId("");
   for(it_r = map.begin(); it_r != map.end(); ++it_r) {
     if((*it_r).id() > lastId)
       lastId = (*it_r).id();
@@ -1589,7 +1589,7 @@ void MyMoneySeqAccessMgr::loadBudgets(const QMap<QString, MyMoneyBudget>& map)
 
   // scan the map to identify the last used id
   QMap<QString, MyMoneyBudget>::const_iterator it_b;
-  QString lastId;
+  QString lastId("");
   for(it_b = map.begin(); it_b != map.end(); ++it_b) {
     if((*it_b).id() > lastId)
       lastId = (*it_b).id();

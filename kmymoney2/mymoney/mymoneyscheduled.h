@@ -406,10 +406,10 @@ public:
     */
   void setName(const QString& nm);
 
-  bool operator ==(const MyMoneySchedule& right);
-  bool operator !=(const MyMoneySchedule& right) { return ! operator==(right); }
+  bool operator ==(const MyMoneySchedule& right) const;
+  bool operator !=(const MyMoneySchedule& right) const { return ! operator==(right); }
 
-  bool operator <(const MyMoneySchedule& right);
+  bool operator <(const MyMoneySchedule& right) const;
 
   MyMoneyAccount account(int cnt = 1) const;
   MyMoneyAccount transferAccount(void) const { return account(2); };

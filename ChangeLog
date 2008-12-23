@@ -1,4 +1,8 @@
 
+2008-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added testcases for the loader functions in MyMoneySeqAccessMgr
+  * Fixed last id detection in loader functions
+
 2008-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed an uninitialized variable bug in the QIF importer
   * Improved const-ness passing of parameters in Gnc importer

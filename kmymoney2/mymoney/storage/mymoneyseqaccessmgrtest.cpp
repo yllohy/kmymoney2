@@ -1622,3 +1622,84 @@ void MyMoneySeqAccessMgrTest::testAccountList()
 	CPPUNIT_ASSERT(accounts.count() == 2);
 }
 
+void MyMoneySeqAccessMgrTest::testLoaderFunctions()
+{
+	// we don't need the transaction started by setup() here
+	m->rollbackTransaction();
+
+	// account loader
+	QMap<QString, MyMoneyAccount> amap;
+	MyMoneyAccount acc("A0000176", MyMoneyAccount());
+	amap[acc.id()] = acc;
+	m->loadAccounts(amap);
+	CPPUNIT_ASSERT(m->m_accountList.values() == amap.values());
+	CPPUNIT_ASSERT(m->m_accountList.keys() == amap.keys());
+	CPPUNIT_ASSERT(m->m_nextAccountID == 176);
+
+	// transaction loader
+	QMap<QString, MyMoneyTransaction> tmap;
+	MyMoneyTransaction t("T000000108", MyMoneyTransaction());
+	tmap[t.id()] = t;
+	m->loadTransactions(tmap);
+	CPPUNIT_ASSERT(m->m_transactionList.values() == tmap.values());
+	CPPUNIT_ASSERT(m->m_transactionList.keys() == tmap.keys());
+	CPPUNIT_ASSERT(m->m_nextTransactionID == 108);
+
+	// institution loader
+	QMap<QString, MyMoneyInstitution> imap;
+	MyMoneyInstitution inst("I000028", MyMoneyInstitution());
+	imap[inst.id()] = inst;
+	m->loadInstitutions(imap);
+	CPPUNIT_ASSERT(m->m_institutionList.values() == imap.values());
+	CPPUNIT_ASSERT(m->m_institutionList.keys() == imap.keys());
+	CPPUNIT_ASSERT(m->m_nextInstitutionID == 28);
+
+	// payee loader
+	QMap<QString, MyMoneyPayee> pmap;
+	MyMoneyPayee p("P1234", MyMoneyPayee());
+	pmap[p.id()] = p;
+	m->loadPayees(pmap);
+	CPPUNIT_ASSERT(m->m_payeeList.values() == pmap.values());
+	CPPUNIT_ASSERT(m->m_payeeList.keys() == pmap.keys());
+	CPPUNIT_ASSERT(m->m_nextPayeeID == 1234);
+
+	// security loader
+	QMap<QString, MyMoneySecurity> smap;
+	MyMoneySecurity s("S54321", MyMoneySecurity());
+	smap[s.id()] = s;
+	m->loadSecurities(smap);
+	CPPUNIT_ASSERT(m->m_securitiesList.values() == smap.values());
+	CPPUNIT_ASSERT(m->m_securitiesList.keys() == smap.keys());
+	CPPUNIT_ASSERT(m->m_nextSecurityID == 54321);
+
+	// schedule loader
+	QMap<QString, MyMoneySchedule> schmap;
+	MyMoneySchedule sch("SCH6789", MyMoneySchedule());
+	schmap[sch.id()] = sch;
+	m->loadSchedules(schmap);
+	CPPUNIT_ASSERT(m->m_scheduleList.values() == schmap.values());
+	CPPUNIT_ASSERT(m->m_scheduleList.keys() == schmap.keys());
+	CPPUNIT_ASSERT(m->m_nextScheduleID == 6789);
+
+	// report loader
+	QMap<QString, MyMoneyReport> rmap;
+	MyMoneyReport r("R1298", MyMoneyReport());
+	rmap[r.id()] = r;
+	m->loadReports(rmap);
+	CPPUNIT_ASSERT(m->m_reportList.values() == rmap.values());
+	CPPUNIT_ASSERT(m->m_reportList.keys() == rmap.keys());
+	CPPUNIT_ASSERT(m->m_nextReportID == 1298);
+
+	// budget loader
+	QMap<QString, MyMoneyBudget> bmap;
+	MyMoneyBudget b("B89765", MyMoneyBudget());
+	bmap[b.id()] = b;
+	m->loadBudgets(bmap);
+	CPPUNIT_ASSERT(m->m_budgetList.values() == bmap.values());
+	CPPUNIT_ASSERT(m->m_budgetList.keys() == bmap.keys());
+	CPPUNIT_ASSERT(m->m_nextBudgetID == 89765);
+
+	// restart a transaction so that teardown() is happy
+	m->startTransaction();
+}
+

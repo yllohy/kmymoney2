@@ -733,12 +733,12 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
 }
 
 
-bool MyMoneySchedule::operator <(const MyMoneySchedule& right)
+bool MyMoneySchedule::operator <(const MyMoneySchedule& right) const
 {
   return nextDueDate() < right.nextDueDate();
 }
 
-bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
+bool MyMoneySchedule::operator ==(const MyMoneySchedule& right) const
 {
   if (  MyMoneyObject::operator==(right) &&
         m_occurence == right.m_occurence &&
