@@ -2,6 +2,8 @@
 2008-12-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Added moving average to report charts
   * Cleanup of the charts code
+  * Added configuration of moving average days
+  * Added Moving Average vs Actual report
 
 2008-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added testcases for the loader functions in MyMoneySeqAccessMgr

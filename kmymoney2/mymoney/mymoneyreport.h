@@ -147,6 +147,7 @@ public:
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
   void setIncludingUnusedAccounts( bool _f ) { m_includeUnusedAccounts = _f; }
   void setShowingRowTotals( bool _f ) { m_showRowTotals = _f; }
+  void setIncludingBudgetActuals( bool _f ) { m_includeBudgetActuals = _f; }
   void setIncludingForecast( bool _f ) { m_includeForecast = _f; }
   void setIncludingMovingAverage( bool _f ) { m_includeMovingAverage = _f; }
   void setMovingAverageDays( int _days ) { m_movingAverageDays = _days; }

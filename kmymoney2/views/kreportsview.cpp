@@ -1219,9 +1219,27 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartType(MyMoneyReport::eChartLine);
     list.back().setColumnsAreDays( true );
     list.back().setInvestmentsOnly(true);
+    list.back().setIncludingBudgetActuals(false);
     list.back().setIncludingMovingAverage(true);
     list.back().setMovingAverageDays(10);
 
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::last30Days,
+      false,
+      i18n("Investment Moving Average vs Actual"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailAll);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+    list.back().setColumnsAreDays( true );
+    list.back().setInvestmentsOnly(true);
+    list.back().setIncludingBudgetActuals(true);
+    list.back().setIncludingMovingAverage(true);
+    list.back().setMovingAverageDays(10);
 #endif
     groups.push_back(list);
   }

@@ -195,6 +195,25 @@
                                 <string>Show totals column</string>
                             </property>
                         </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel10</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Average days</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox" row="4" column="1">
+                            <property name="name">
+                                <cstring>m_movingAverageDays</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>366</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
                     </grid>
                 </widget>
                 <spacer>
@@ -221,7 +240,7 @@
                 <cstring>m_checkScheduled</cstring>
             </property>
             <property name="text">
-                <string>Include Scheduled Transactions</string>
+                <string>Include scheduled transactions</string>
             </property>
         </widget>
         <widget class="QCheckBox">
@@ -229,7 +248,7 @@
                 <cstring>m_checkTransfers</cstring>
             </property>
             <property name="text">
-                <string>Include Transfers</string>
+                <string>Include transfers</string>
             </property>
         </widget>
         <widget class="QCheckBox">

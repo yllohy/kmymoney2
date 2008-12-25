@@ -2347,7 +2347,9 @@ void PivotTable::loadRowTypeList()
   }
 
   if( (m_config_f.isIncludingBudgetActuals()) ||
-       ( !m_config_f.hasBudget() && !m_config_f.isIncludingForecast()) ) {
+       ( !m_config_f.hasBudget()
+       && !m_config_f.isIncludingForecast()
+       && !m_config_f.isIncludingMovingAverage()) ) {
     m_rowTypeList.append(eActual);
     m_columnTypeHeaderList.append(i18n("Actual"));
   }

@@ -37,6 +37,7 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qlayout.h>
+#include <qspinbox.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qtabwidget.h>
@@ -201,6 +202,11 @@ void KReportConfigurationFilterDlg::slotSearch(void)
       m_currentState.setBudget(m_budgets[m_tab2->m_comboBudget->currentItem()].id(), m_initialState.rowType() == MyMoneyReport::eBudgetActual);
     } else {
       m_currentState.setBudget(QString(), false);
+    }
+    
+    //set moving average days
+    if(m_tab2->m_movingAverageDays->isEnabled()) {
+      m_currentState.setMovingAverageDays( m_tab2->m_movingAverageDays->value() );
     }
   }
   else if ( m_tab3 )
@@ -375,6 +381,12 @@ void KReportConfigurationFilterDlg::slotReset(void)
           m_tab2->m_comboBudget->setCurrentItem(i);
         i++;
       }
+    }
+
+    //set moving average days spinbox
+    m_tab2->m_movingAverageDays->setEnabled( m_initialState.isIncludingMovingAverage() );
+    if(m_initialState.isIncludingMovingAverage() ) {
+      m_tab2->m_movingAverageDays->setValue( m_initialState.movingAverageDays() );
     }
 
     m_tab2->m_checkScheduled->setChecked( m_initialState.isIncludingSchedules() );
