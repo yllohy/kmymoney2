@@ -2003,45 +2003,30 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           //
           // Rows
           //
-
           QString innergroupdata;
           PivotInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
-            //show actual data
-            if( showActual ) {
-              rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eActual);
-              _view.params().setLegendText( rowNum-1, it_row.key().name() );
-            }
+            //iterate row types
+            for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+              //skip the budget difference rowset
+              if(m_rowTypeList[i] != eBudgetDiff ) {
+                rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), m_rowTypeList[i]);
 
-            //show budget data
-            if ( showBudget )
-            {
-              rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eBudget);
-              _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_row.key().name() ) );
+                //only show the column type in the header if there is more than one type
+                if(m_rowTypeList.size() > 1) {
+                  _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_row.key().name() );
+                } else {
+                  _view.params().setLegendText( rowNum-1, it_row.key().name() );
+                }
+              }
             }
-
-            //show forecast data
-            if ( showForecast )
-            {
-              rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), eForecast);
-              _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_row.key().name() ) );
-            }
-
             ++it_row;
           }
           ++it_innergroup;
         }
         ++it_outergroup;
       }
-
-      /*
-      if ( accountSeries )
-        data.expand( rowNum-1, m_numColumns-1 );
-      else
-        data.expand( m_numColumns-1, rowNum-1 );
-      */
-
     }
     break;
 
@@ -2058,32 +2043,24 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         PivotOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
-          if( showActual ) {
-            rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eActual);
-            _view.params().setLegendText( rowNum-1, it_innergroup.key() );
-          }
-          //show budget data
-          if ( showBudget )
-          {
-            rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eBudget);
-            _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_innergroup.key() ) );
-          }
+          //iterate row types
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+            //skip the budget difference rowset
+            if(m_rowTypeList[i] != eBudgetDiff ) {
+              rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, m_rowTypeList[i]);
 
-          //show forecast data
-          if ( showForecast )
-          {
-            rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_innergroup).m_total, eForecast);
-            _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_innergroup.key() ) );
+              //only show the column type in the header if there is more than one type
+              if(m_rowTypeList.size() > 1) {
+                _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_innergroup.key() );
+              } else {
+                _view.params().setLegendText( rowNum-1, it_innergroup.key() );
+              }
+            }
           }
           ++it_innergroup;
         }
         ++it_outergroup;
       }
-      /*if ( accountSeries )
-        data.expand( rowNum-1, m_numColumns-1 );
-      else
-        data.expand( m_numColumns-1, rowNum-1 );
-      */
     }
     break;
 
@@ -2095,81 +2072,61 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       PivotGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
-        //show actual data
-        if( showActual ) {
-          rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eActual);
-          _view.params().setLegendText( rowNum-1, it_outergroup.key() );
-        }
+        //iterate row types
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+          //skip the budget difference rowset
+          if(m_rowTypeList[i] != eBudgetDiff ) {
+            rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, m_rowTypeList[i]);
 
-        //show budget data
-        if ( showBudget )
-        {
-          rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eBudget);
-          _view.params().setLegendText( rowNum-1, QString(i18n("Budget ") + it_outergroup.key()) );
-        }
-
-        //show forecast data
-        if ( showForecast )
-        {
-          rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, (*it_outergroup).m_total, eForecast);
-          _view.params().setLegendText( rowNum-1, QString(i18n("Forecast ") + it_outergroup.key()) );
+            //only show the column type in the header if there is more than one type
+            if(m_rowTypeList.size() > 1) {
+              _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_outergroup.key() );
+            } else {
+              _view.params().setLegendText( rowNum-1, it_outergroup.key() );
+            }
+          }
         }
         ++it_outergroup;
       }
 
+      //if selected, show totals too
       if (m_config_f.isShowingRowTotals())
       {
-        //show actual data
-        if( showActual ) {
-          rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eActual);
-          _view.params().setLegendText( rowNum-1, i18n("Total") );
-        }
+        //iterate row types
+        for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+          //skip the budget difference rowset
+          if(m_rowTypeList[i] != eBudgetDiff ) {
+            rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, m_grid.m_total, m_rowTypeList[i]);
 
-        //show budget data
-        if ( showBudget )
-        {
-          rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eBudget);
-          _view.params().setLegendText( rowNum-1, i18n("Budget Total") );
-        }
-
-        //show forecast data
-        if ( showForecast )
-        {
-          rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eForecast);
-          _view.params().setLegendText( rowNum-1, i18n("Forecast Total") );
+            //only show the column type in the header if there is more than one type
+            if(m_rowTypeList.size() > 1) {
+              _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
+            } else {
+              _view.params().setLegendText( rowNum-1, i18n("Total") );
+            }
+          }
         }
       }
-      /*else
-      {
-        if ( accountSeries )
-          data.expand( rowNum-1, m_numColumns-1 );
-        else
-          data.expand( m_numColumns-1, rowNum-1 );
-      }*/
     }
     break;
 
     case MyMoneyReport::eDetailTotal:
     {
       unsigned rowNum = 0;
-      //show actual data
-      if( showActual ) {
-        rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eActual);
-        _view.params().setLegendText( rowNum-1, i18n("Total") );
-      }
 
-      //show budget data
-      if ( showBudget )
-      {
-        rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eBudget);
-        _view.params().setLegendText( rowNum-1, i18n("Budget Total") );
-      }
+      //iterate row types
+      for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+        //skip the budget difference rowset
+        if(m_rowTypeList[i] != eBudgetDiff ) {
+          rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, m_grid.m_total, m_rowTypeList[i]);
 
-      //show forecast data
-      if ( showForecast )
-      {
-        rowNum = drawChartTotal(rowNum, seriesTotals, accountSeries, data, eForecast);
-        _view.params().setLegendText( rowNum-1, i18n("Forecast Total") );
+          //only show the column type in the header if there is more than one type
+          if(m_rowTypeList.size() > 1) {
+            _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
+          } else {
+            _view.params().setLegendText( rowNum-1, i18n("Total") );
+          }
+        }
       }
     }
     break;
@@ -2246,38 +2203,6 @@ unsigned PivotTable::drawChartRowSet(unsigned rowNum, const bool seriesTotals, c
     }
   }
 
-  return ++rowNum;
-}
-
-unsigned PivotTable::drawChartTotal(unsigned rowNum, const bool seriesTotals, const bool accountSeries, KDChartTableData& data, const ERowType rowType ) const
-{
-  if(rowNum > 0) {
-    if ( accountSeries )
-      data.expand( rowNum+1, m_numColumns-1 );
-    else
-      data.expand( m_numColumns-1, rowNum+1 );
-  }
-
-  if ( seriesTotals )
-  {
-    if ( accountSeries )
-      data.setCell( rowNum, 0, m_grid.m_total[rowType].m_total.toDouble() );
-    else
-      data.setCell( 0, rowNum, m_grid.m_total[rowType].m_total.toDouble() );
-  }
-  else
-  {
-        // For now, just the totals
-    unsigned totalColumn = 1;
-    while ( totalColumn < m_numColumns )
-    {
-      if ( accountSeries )
-        data.setCell(rowNum, totalColumn-1, m_grid.m_total[rowType][totalColumn].toDouble() );
-      else
-        data.setCell( totalColumn-1, rowNum, m_grid.m_total[rowType][totalColumn].toDouble() );
-      ++totalColumn;
-    }
-  }
   return ++rowNum;
 }
 
