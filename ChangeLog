@@ -1,4 +1,7 @@
 
+2008-12-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't include invalid account types in split editor account selection
+
 2008-12-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Added moving average to report charts
   * Cleanup of the charts code

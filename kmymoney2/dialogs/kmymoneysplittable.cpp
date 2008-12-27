@@ -879,6 +879,13 @@ void kMyMoneySplitTable::slotLoadEditWidgets(void)
   aSet.addAccountGroup(MyMoneyAccount::Expense);
   if(KMyMoneyGlobalSettings::expertMode())
     aSet.addAccountGroup(MyMoneyAccount::Equity);
+
+  // remove the accounts with invalid types at this point
+  aSet.removeAccountType(MyMoneyAccount::CertificateDep);
+  aSet.removeAccountType(MyMoneyAccount::Investment);
+  aSet.removeAccountType(MyMoneyAccount::Stock);
+  aSet.removeAccountType(MyMoneyAccount::MoneyMarket);
+
   aSet.load(m_editCategory->selector());
 
   // if an account is specified then remove it from the widget so that the user
