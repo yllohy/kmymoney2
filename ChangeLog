@@ -1,3 +1,5 @@
+2008-12-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Import GnuCash notes as transaction memo
 
 2008-12-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't include invalid account types in split editor account selection
