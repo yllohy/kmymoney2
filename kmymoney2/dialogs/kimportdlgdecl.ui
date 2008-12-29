@@ -1,8 +1,16 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KImportDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
         <cstring>KImportDlgDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>619</width>
+            <height>378</height>
+        </rect>
     </property>
     <property name="caption">
         <string>QIF Import</string>
@@ -20,72 +28,37 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>Layout8</cstring>
+                <cstring>kActiveLabel1</cstring>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>3</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>From this dialog you are able to import transactions from a Quicken&lt;b&gt;&amp;trade;&lt;/b&gt; compatible file, (known as a QIF file, because of the extension).&lt;p&gt;
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
+            <property name="resizePolicy">
+                <enum>Manual</enum>
+            </property>
+            <property name="text">
+                <string>From this dialog you are able to import transactions from a Quicken&lt;b&gt;&amp;trade;&lt;/b&gt; compatible file, (known as a QIF file, because of the extension).&lt;p&gt;
 
 Please enter the path to the QIF file or select it by clicking on the Browse button. Once you have the file's path press the Import button and KMyMoney will import all the transactions, categories and payees it finds.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1</cstring>
             </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
             </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <property name="autoFormatting">
+                <set>AutoAll</set>
             </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout86</cstring>
+                <cstring>layout15</cstring>
             </property>
-            <hbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLabel">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
                         <cstring>lblImportFile</cstring>
                     </property>
@@ -101,117 +74,44 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                         <string>QIF File to Import:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit">
+                <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="3">
                     <property name="name">
-                        <cstring>m_qlineeditFile</cstring>
+                        <cstring>m_optionGroupBox</cstring>
                     </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>m_qbuttonBrowse</cstring>
+                    <property name="title">
+                        <string>Import options</string>
                     </property>
-                    <property name="text">
-                        <string>Browse...</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout89</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout25</cstring>
-                    </property>
-                    <vbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
+                        <widget class="KComboBox" row="1" column="1">
+                            <item>
+                                <property name="text">
+                                    <string>Bank statement</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Other application</string>
+                                </property>
+                            </item>
                             <property name="name">
-                                <cstring>m_textLabel</cstring>
+                                <cstring>m_typeComboBox</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select &lt;b&gt;Bank statement&lt;/b&gt; turns on automatic category matching which is turned off in case of &lt;b&gt;Historic data&lt;/b&gt;. Use the latter if you import files from other Personal Finance Management software.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Account to import to</string>
+                                <string>Source of QIF</string>
                             </property>
                         </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>Layout23</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="KComboBox">
-                                    <property name="name">
-                                        <cstring>m_accountComboBox</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>200</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                </widget>
-                                <widget class="KPushButton">
-                                    <property name="name">
-                                        <cstring>m_scanButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Scan</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout88</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>TextLabel3_2</cstring>
                             </property>
@@ -219,109 +119,66 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                                 <string>QIF Profile</string>
                             </property>
                         </widget>
-                        <widget class="QLayoutWidget">
+                        <widget class="KComboBox" row="0" column="1">
                             <property name="name">
-                                <cstring>Layout87</cstring>
+                                <cstring>m_profileComboBox</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="KComboBox">
-                                    <property name="name">
-                                        <cstring>m_profileComboBox</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>200</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="duplicatesEnabled">
-                                        <bool>false</bool>
-                                    </property>
-                                </widget>
-                                <widget class="KPushButton">
-                                    <property name="name">
-                                        <cstring>m_profileEditorButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>New...</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>m_optionGroupBox</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>0</width>
-                    <height>60</height>
-                </size>
-            </property>
-            <property name="title">
-                <string>Import options</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout9</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>m_payeeCreation</cstring>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property name="text">
-                                <string>Automatically create missing payees</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
+                            <property name="minimumSize">
                                 <size>
-                                    <width>21</width>
-                                    <height>21</height>
+                                    <width>200</width>
+                                    <height>0</height>
                                 </size>
                             </property>
-                        </spacer>
-                    </hbox>
+                            <property name="duplicatesEnabled">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton" row="0" column="2">
+                            <property name="name">
+                                <cstring>m_profileEditorButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>New...</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-            </vbox>
+                <widget class="KPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>m_qbuttonBrowse</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Browse...</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_qlineeditFile</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -383,7 +240,5 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

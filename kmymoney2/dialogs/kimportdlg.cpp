@@ -58,7 +58,6 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
   readConfig();
 
   loadProfiles(true);
-  loadAccounts();
 
   // load button icons
   m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
@@ -91,11 +90,6 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
   // connect the change signals to the check slot and perform initial check
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
     SLOT(slotFileTextChanged(const QString&)));
-
-  // Don't show them for now.
-  m_scanButton->hide();
-  m_accountComboBox->hide();
-  m_textLabel->hide();
 
   // setup button enable status
   slotFileTextChanged(m_qlineeditFile->text());
@@ -139,7 +133,6 @@ void KImportDlg::readConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
-  m_payeeCreation->setChecked(kconfig->readBoolEntry("KImportDlg_CreatePayees",false));
 }
 
 void KImportDlg::writeConfig(void)
@@ -148,7 +141,6 @@ void KImportDlg::writeConfig(void)
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KImportDlg_LastFile", m_qlineeditFile->text());
   kconfig->writeEntry("KImportDlg_LastProfile", m_profileComboBox->currentText());
-  kconfig->writeEntry("KImportDlg_CreatePayees",m_payeeCreation->isChecked());
   kconfig->sync();
 }
 
@@ -158,12 +150,10 @@ void KImportDlg::slotFileTextChanged(const QString& text)
   if (!text.isEmpty() && KIO::NetAccess::exists(text, true, qApp->mainWidget())) {
     // m_qcomboboxDateFormat->setEnabled(true);
     m_qbuttonOk->setEnabled(true);
-    m_scanButton->setEnabled(true);
     m_qlineeditFile->setText(text);
   } else {
     // m_qcomboboxDateFormat->setEnabled(false);
     m_qbuttonOk->setEnabled(false);
-    m_scanButton->setEnabled(false);
   }
 }
 
@@ -214,35 +204,6 @@ void KImportDlg::loadProfiles(const bool selectLast)
   if(list.contains(current) > 0) {
     m_profileComboBox->setCurrentText(current);
   }
-}
-
-void KImportDlg::loadAccounts(void)
-{
-  QStringList strList;
-
-  try {
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    // read all account items from the MyMoneyFile objects and add them to the listbox
-    addCategories(strList, file->liability().id(), "");
-    addCategories(strList, file->asset().id(), "");
-
-  } catch (MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KExportDlg::loadAccounts:%d",
-      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
-    delete e;
-  }
-
-  strList.sort();
-  m_accountComboBox->insertStringList(strList);
-
-  KConfig* config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  QString current = config->readEntry("KExportDlg_LastAccount");
-
-  m_accountComboBox->setCurrentItem(0);
-  if(strList.contains(current) > 0)
-    m_accountComboBox->setCurrentText(current);
 }
 
 void KImportDlg::addCategories(QStringList& strList, const QString& id, const QString& leadIn) const

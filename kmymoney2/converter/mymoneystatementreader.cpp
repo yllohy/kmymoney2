@@ -79,6 +79,7 @@ class MyMoneyStatementReaderPrivate
     QMap<QString, bool>            uniqIds;
     QMap<QString, MyMoneySecurity> securitiesBySymbol;
     QMap<QString, MyMoneySecurity> securitiesByName;
+    bool                           m_skipCategoryMatching;
   private:
     void scanCategories(QString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName);
     QString nameToId(const QString&name, MyMoneyAccount& parent);
@@ -211,6 +212,7 @@ bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& mess
   m_account = MyMoneyAccount();
 
   m_ft = new MyMoneyFileTransaction();
+  d->m_skipCategoryMatching = s.m_skipCategoryMatching;
 
   // if the statement source left some information about
   // the account, we use it to get the current data of it
@@ -920,7 +922,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // handle it.
       //
 
-      if(t_in.m_listSplits.isEmpty()) {
+      if(t_in.m_listSplits.isEmpty() && !d->m_skipCategoryMatching) {
         MyMoneyTransactionFilter filter(thisaccount.id());
         filter.addPayee(payeeid);
         QValueList<MyMoneyTransaction> list = file->transactionList(filter);

@@ -53,7 +53,7 @@ Represents the electronic analog of the paper bank statement just like we used t
 class MyMoneyStatement
 {
 public:
-  MyMoneyStatement() : m_closingBalance(MyMoneyMoney::autoCalc), m_eType(etNone) {}
+  MyMoneyStatement() : m_closingBalance(MyMoneyMoney::autoCalc), m_eType(etNone), m_skipCategoryMatching(false) {}
 
   enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
 
@@ -130,6 +130,8 @@ public:
   QValueList<Transaction> m_listTransactions;
   QValueList<Price> m_listPrices;
   QValueList<Security> m_listSecurities;
+
+  bool m_skipCategoryMatching;
 
   void write(QDomElement&,QDomDocument*) const;
   bool read(const QDomElement&);

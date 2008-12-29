@@ -68,7 +68,8 @@
 class MyMoneyQifReaderPrivate {
   public:
     MyMoneyQifReaderPrivate() :
-      accountType(MyMoneyAccount::Checkings)
+      accountType(MyMoneyAccount::Checkings),
+      mapCategories(true)
     {}
 
     QString accountTypeToQif(MyMoneyAccount::accountTypeE type) const;
@@ -110,6 +111,7 @@ class MyMoneyQifReaderPrivate {
     QString st_AccountId;
     MyMoneyAccount::accountTypeE accountType;
     bool     firstTransaction;
+    bool     mapCategories;
     MyMoneyQifReader::QifEntryTypeE  transactionType;
 };
 
@@ -123,6 +125,7 @@ void MyMoneyQifReaderPrivate::finishStatement(void)
   }
   // start with a fresh statement
   st = MyMoneyStatement();
+  st.m_skipCategoryMatching = !mapCategories;
   st.m_eType = (transactionType == MyMoneyQifReader::EntryTransaction) ? MyMoneyStatement::etCheckings : MyMoneyStatement::etInvestment;
 }
 
@@ -234,7 +237,6 @@ MyMoneyQifReader::MyMoneyQifReader() :
   m_entryType = EntryUnknown;
   m_processingData = false;
   m_userAbort = false;
-  m_autoCreatePayee = false;
   m_warnedInvestment = false;
   m_warnedSecurity = false;
   m_warnedPrice = false;
@@ -252,9 +254,9 @@ MyMoneyQifReader::~MyMoneyQifReader()
   delete d;
 }
 
-void MyMoneyQifReader::setAutoCreatePayee(const bool create)
+void MyMoneyQifReader::setCategoryMapping(bool map)
 {
-  m_autoCreatePayee = create;
+  d->mapCategories = map;
 }
 
 void MyMoneyQifReader::setURL(const KURL& url)
@@ -382,6 +384,7 @@ bool MyMoneyQifReader::startImport(void)
 {
   bool rc = false;
   d->st = MyMoneyStatement();
+  d->st.m_skipCategoryMatching = !d->mapCategories;
   m_dontAskAgain.clear();
   m_accountTranslation.clear();
   m_userAbort = false;

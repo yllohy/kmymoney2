@@ -1,3 +1,8 @@
+
+2008-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Make menu item 'File information' available if build w/o debug support
+  * Added differentiation between QIF bank statement and QIF application import
+
 2008-12-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Import GnuCash notes as transaction memo
 

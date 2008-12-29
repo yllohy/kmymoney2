@@ -135,19 +135,7 @@ public:
     */
   bool finishImport(void);
 
-  /**
-    * This method is used to modify the auto payee creation flag.
-    * If this flag is set, records for payees that are not currently
-    * found in the engine will be automatically created with no
-    * further user interaction required. If this flag is no set,
-    * the user will be asked if the payee should be created or not.
-    * If the MyMoneyQifReader object is created auto payee creation
-    * is turned off.
-    *
-    * @param create flag if this feature should be turned on (@p true)
-    *               or turned off (@p false)
-    */
-  void setAutoCreatePayee(const bool create);
+  void setCategoryMapping(bool map);
 
   const MyMoneyAccount& account() const { return m_account; };
 

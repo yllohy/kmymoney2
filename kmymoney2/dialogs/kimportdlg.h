@@ -72,10 +72,6 @@ public:
     */
   const QString profile(void) const { return m_profileComboBox->currentText(); };
 
-  /**
-    */
-  bool autoCreatePayee(void) const { return m_payeeCreation->isChecked(); };
-
 protected slots:
   /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();
@@ -105,12 +101,6 @@ private:
     *                   default is false.
     */
   void loadProfiles(const bool selectLast = false);
-
-  /**
-    * This method is used to load the available accounts into the
-    * combo box for selection.
-    */
-  void loadAccounts(void);
 
   /**
     * This method is used to load an account hierarchy into a string list

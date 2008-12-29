@@ -314,8 +314,8 @@ void KMyMoney2App::initActions(void)
 
 #if KMM_DEBUG
   new KAction(i18n("Dump Memory"), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_dump");
-  new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "view_file_info");
 #endif
+  new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "view_file_info");
 
   // *************
   // The Edit menu
@@ -1500,7 +1500,8 @@ void KMyMoney2App::slotQifImport(void)
       m_qifReader->setURL(dlg->filename());
 
       m_qifReader->setProfile(dlg->profile());
-      m_qifReader->setAutoCreatePayee(dlg->autoCreatePayee());
+      int c = dlg->m_typeComboBox->currentItem();
+      m_qifReader->setCategoryMapping(dlg->m_typeComboBox->currentItem() == 0);
       m_qifReader->setProgressCallback(&progressCallback);
 
       // disable all standard widgets during the import

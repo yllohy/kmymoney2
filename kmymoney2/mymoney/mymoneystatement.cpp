@@ -53,6 +53,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
   e.setAttribute("closingbalance", m_closingBalance.toString());
   e.setAttribute("type", kAccountTypeTxt[m_eType]);
   e.setAttribute("accountid", m_accountId);
+  e.setAttribute("skipCategoryMatching", m_skipCategoryMatching);
 
   // iterate over transactions, and add each one
   QValueList<Transaction>::const_iterator it_t = m_listTransactions.begin();
@@ -139,7 +140,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
     m_dateEnd = QDate::fromString(_e.attribute("enddate"),Qt::ISODate);
     m_closingBalance = MyMoneyMoney(_e.attribute("closingbalance"));
     m_accountId = _e.attribute("accountid");
-
+    m_skipCategoryMatching = _e.attribute("skipCategoryMatching");
 
     int i = kAccountTypeTxt.findIndex(_e.attribute("type",kAccountTypeTxt[1]));
     if ( i != -1 )
