@@ -471,10 +471,12 @@ protected:
   QDate datePosted() const { return (m_vpDatePosted->date());};
   bool isTemplate() const { return (m_template);};
   unsigned int splitCount() const { return (m_splitList.count());};
+  unsigned int kvpCount() const { return (m_kvpList.count());};
   const GncObject *getSplit (unsigned int i) const { return (m_splitList.at(i));};
+  const GncKvp *getKvp(unsigned int i) const { return (static_cast<GncKvp *>(m_kvpList.at(i)));};
 private:
   // subsidiary objects/elements
-  enum TransactionSubEls {CURRCY, POSTED, ENTERED, SPLIT, END_Transaction_SELS };
+  enum TransactionSubEls {CURRCY, POSTED, ENTERED, SPLIT, KVP, END_Transaction_SELS };
   virtual GncObject *startSubEl();
   virtual void endSubEl(GncObject *);
   virtual void terminate();
@@ -484,7 +486,9 @@ private:
   GncDate *m_vpDateEntered, *m_vpDatePosted;
   mutable QPtrList<GncObject> m_splitList;
   bool m_template; // true if this is a template for scheduled transaction
+  mutable QPtrList<GncObject> m_kvpList;
 };
+
 // ************* GncTemplateSplit********************************************
 class GncTemplateSplit : public GncObject {
 public:

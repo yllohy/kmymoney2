@@ -530,7 +530,8 @@ void GncAccount::terminate() {
 //************* GncTransaction********************************************
 GncTransaction::GncTransaction (bool processingTemplates) {
   m_subElementListCount = END_Transaction_SELS;
-  static const QString subEls[] = {"trn:currency", "trn:date-posted", "trn:date-entered", "trn:split"};
+  static const QString subEls[] = {"trn:currency", "trn:date-posted", "trn:date-entered",
+    "trn:split", "slot"};
   m_subElementList = subEls;
   m_dataElementListCount = END_Transaction_DELS;
   static const QString dataEls[] = {"trn:id", "trn:num", "trn:description"};
@@ -565,6 +566,7 @@ GncObject *GncTransaction::startSubEl() {
       next = new GncSplit;
     }
     break;
+  case KVP: next = new GncKvp; break;
   default: throw new MYMONEYEXCEPTION ("GncTransaction rcvd invalid m_state");
   }
   return (next);
@@ -578,6 +580,7 @@ void GncTransaction::endSubEl(GncObject *subObj) {
   case POSTED: m_vpDatePosted = static_cast<GncDate *>(subObj); break;
   case ENTERED: m_vpDateEntered = static_cast<GncDate *>(subObj); break;
   case SPLIT: m_splitList.append (subObj); break;
+  case KVP: m_kvpList.append (subObj);
   }
   return ;
 }
@@ -1349,22 +1352,27 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   // action type, and fill in some fields which gnc holds at transaction level
   // first off, is it a transfer (can only have 2 splits?)
   if (m_splitList.count() != 2) m_potentialTransfer = false;
-  // at this point, if m_potentialTransfer is still true, it is actually one!
-  QString txMemo = "";
+  //QString txMemo = ""; no longer required
+  for (i = 0; i < gtx->kvpCount(); i++ ) {
+    const GncKvp *slot = gtx->getKvp(i);
+    if (slot->key() == "notes") tx.setMemo(slot->value());
+  }
   QValueList<MyMoneySplit>::iterator it = m_splitList.begin();
   while (!m_splitList.isEmpty()) {
     split = *it;
+    // at this point, if m_potentialTransfer is still true, it is actually one!
     if (m_potentialTransfer) split.setAction(MyMoneySplit::ActionTransfer);
     //split.setNumber(gtx->no());
     // Arbitrarily, save the first non-null split memo as the memo for the whole tx
     // I think this is necessary because txs with just 2 splits (the majority)
     // are not viewable as split transactions in kmm so the split memo is not seen
-    if ((txMemo.isEmpty()) && (!split.memo().isEmpty())) txMemo = split.memo();
+    // as of 0.9, this is no longer true.
+    //if ((txMemo.isEmpty()) && (!split.memo().isEmpty())) txMemo = split.memo();
     tx.addSplit(split);
     it = m_splitList.remove(it);
   }
-  // memo - set from split
-  tx.setMemo(txMemo);
+  // memo - set from split - not any more
+  //tx.setMemo(txMemo);
   m_storage->addTransaction(tx, true); // all done, add the transaction to storage
   signalProgress (++m_transactionCount, 0);
   return ;
