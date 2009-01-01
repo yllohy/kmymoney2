@@ -1515,7 +1515,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("SCR", i18n("Seychelles Rupee")), create);
   loadDefaultCurrency(MyMoneySecurity("SLL", i18n("Sierra Leone Leone")), create);
   loadDefaultCurrency(MyMoneySecurity("SGD", i18n("Singapore Dollar"),       "$"), create);
-  loadDefaultCurrency(MyMoneySecurity("SKK", i18n("Slovak Koruna")), create);
+  // loadDefaultCurrency(MyMoneySecurity("SKK", i18n("Slovak Koruna")), create);
   // loadDefaultCurrency(MyMoneySecurity("SIT", i18n("Slovenian Tolar")), create);
   loadDefaultCurrency(MyMoneySecurity("SBD", i18n("Solomon Islands Dollar"), "$"), create);
   loadDefaultCurrency(MyMoneySecurity("SOS", i18n("Somali Shilling")), create);
@@ -1612,6 +1612,9 @@ void KMyMoneyView::loadAncientCurrencies(void)
   // Source: http://www.focus.de/finanzen/news/malta-und-zypern_aid_66058.html
   loadAncientCurrency("MTL", i18n("Maltese Lira"), "MTL", QDate(2008,1,1), MyMoneyMoney(429300,1000000), "EUR");
   loadAncientCurrency("CYP", i18n("Cyprus Pound"), QString("C%1").arg(QChar(0x00A3)), QDate(2008,1,1), MyMoneyMoney(585274,1000000), "EUR");
+
+  // Source: http://www.focus.de/finanzen/news/waehrungszone-slowakei-ist-neuer-euro-staat_aid_359025.html
+  loadAncientCurrency("SKK", i18n("Slovak Koruna"), "SKK", QDate(2008,12,31), MyMoneyMoney(1000,30126), "EUR");
 }
 
 void KMyMoneyView::viewUp(void)

@@ -1,4 +1,8 @@
 
+2009-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * We welcome Slovakia as a new member of the Eurozone
+    (http://en.wikipedia.org/wiki/Eurozone)
+
 2008-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make menu item 'File information' available if build w/o debug support
   * Added differentiation between QIF bank statement and QIF application import
