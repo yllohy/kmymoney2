@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>521</width>
-            <height>515</height>
+            <height>471</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,7 +25,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="11" column="0" rowspan="1" colspan="2">
+        <widget class="Line" row="12" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>line1</cstring>
             </property>
@@ -39,7 +39,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="2">
+        <widget class="QLayoutWidget" row="13" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>Layout1</cstring>
             </property>
@@ -192,69 +192,12 @@
                 <string>Institutions</string>
             </property>
         </widget>
-        <spacer row="10" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>spacer4</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>60</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLabel" row="8" column="1">
-            <property name="name">
-                <cstring>m_scheduleCount</cstring>
-            </property>
-            <property name="text">
-                <string>x</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="7" column="1">
-            <property name="name">
-                <cstring>m_transactionCount</cstring>
-            </property>
-            <property name="text">
-                <string>x</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="8" column="0">
-            <property name="name">
-                <cstring>textLabel9</cstring>
-            </property>
-            <property name="text">
-                <string>Schedules</string>
-            </property>
-        </widget>
         <widget class="QLabel" row="7" column="0">
             <property name="name">
                 <cstring>textLabel8</cstring>
             </property>
             <property name="text">
                 <string>Transactions</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="9" column="0">
-            <property name="name">
-                <cstring>textLabel19</cstring>
-            </property>
-            <property name="text">
-                <string>Prices</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="9" column="1">
-            <property name="name">
-                <cstring>m_priceCount</cstring>
-            </property>
-            <property name="text">
-                <string>x</string>
             </property>
         </widget>
         <widget class="QLabel" row="5" column="0">
@@ -328,8 +271,83 @@
                 <string>x</string>
             </property>
         </widget>
+        <spacer row="11" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="10" column="0">
+            <property name="name">
+                <cstring>textLabel19</cstring>
+            </property>
+            <property name="text">
+                <string>Prices</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="9" column="0">
+            <property name="name">
+                <cstring>textLabel9</cstring>
+            </property>
+            <property name="text">
+                <string>Schedules</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="7" column="1">
+            <property name="name">
+                <cstring>m_transactionCount</cstring>
+            </property>
+            <property name="text">
+                <string>x</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="1">
+            <property name="name">
+                <cstring>m_splitCount</cstring>
+            </property>
+            <property name="text">
+                <string>x</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="9" column="1">
+            <property name="name">
+                <cstring>m_scheduleCount</cstring>
+            </property>
+            <property name="text">
+                <string>x</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="10" column="1">
+            <property name="name">
+                <cstring>m_priceCount</cstring>
+            </property>
+            <property name="text">
+                <string>x</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="0">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Splits</string>
+            </property>
+        </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>
