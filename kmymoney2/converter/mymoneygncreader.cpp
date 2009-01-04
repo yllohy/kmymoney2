@@ -40,7 +40,7 @@ email                : mte@users.sourceforge.net
 // ----------------------------------------------------------------------------
 // Third party Includes
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------Box21----------------
 // Project Includes
 #include "mymoneygncreader.h"
 #ifndef _GNCFILEANON
@@ -81,6 +81,7 @@ void MyMoneyGncReader::setOptions () {
     m_dropSuspectSchedules = dlg.scheduleOption();
     m_investmentOption = dlg.investmentOption();
     m_useFinanceQuote = dlg.quoteOption();
+    m_useTxNotes = dlg.txNotesOption();
     m_decoder = dlg.decodeOption();
     gncdebug = dlg.generalDebugOption();
     xmldebug = dlg.xmlDebugOption();
@@ -91,6 +92,9 @@ void MyMoneyGncReader::setOptions () {
     // investment option - 0, create investment a/c per stock a/c, 1 = single new investment account, 2 = prompt for each stock
     // option 2 doesn't really work too well at present
     m_investmentOption = 0;
+    m_useFinanceQuote = false;
+    m_useTxNotes = false;
+    m_decoder = 0;
     gncdebug = false; // general debug messages
     xmldebug = false; // xml trace
     bAnonymize = false; // anonymize input
@@ -1351,8 +1355,12 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   // the splits are in order in splitList. Link them to the tx. also, determine the
   // action type, and fill in some fields which gnc holds at transaction level
   // first off, is it a transfer (can only have 2 splits?)
-  if (m_splitList.count() != 2) m_potentialTransfer = false;
-  //QString txMemo = ""; no longer required
+  // also, a tx with just 2 splits is shown by GnuCash as non-split
+  bool nonSplitTx = true;
+  if (m_splitList.count() != 2) {
+    m_potentialTransfer = false;
+    nonSplitTx = false;
+  }
   for (i = 0; i < gtx->kvpCount(); i++ ) {
     const GncKvp *slot = gtx->getKvp(i);
     if (slot->key() == "notes") tx.setMemo(slot->value());
@@ -1362,12 +1370,10 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
     split = *it;
     // at this point, if m_potentialTransfer is still true, it is actually one!
     if (m_potentialTransfer) split.setAction(MyMoneySplit::ActionTransfer);
-    //split.setNumber(gtx->no());
-    // Arbitrarily, save the first non-null split memo as the memo for the whole tx
-    // I think this is necessary because txs with just 2 splits (the majority)
-    // are not viewable as split transactions in kmm so the split memo is not seen
-    // as of 0.9, this is no longer true.
-    //if ((txMemo.isEmpty()) && (!split.memo().isEmpty())) txMemo = split.memo();
+    if ((m_useTxNotes) // if use txnotes option is set
+         && (nonSplitTx) // and it's a (GnuCash) non-split transaction
+         && (!tx.memo().isEmpty())) // and tx notes are present
+      split.setMemo(tx.memo());  // use the tx notes as memo
     tx.addSplit(split);
     it = m_splitList.remove(it);
   }

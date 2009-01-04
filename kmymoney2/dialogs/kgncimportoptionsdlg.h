@@ -50,6 +50,7 @@ public:
   bool quoteOption() const {return (checkFinanceQuote->isChecked());};
   bool scheduleOption () const {return (checkSchedules->isChecked());};
   QTextCodec* decodeOption ();
+  bool txNotesOption () const {return (checkTxNotes->isChecked());};
   bool generalDebugOption () const {return (checkDebugGeneral->isChecked());};
   bool xmlDebugOption () const {return (checkDebugXML->isChecked());};
   bool anonymizeOption () const {return (checkAnonymize->isChecked());};

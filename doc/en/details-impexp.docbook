@@ -396,6 +396,11 @@ Since the import process does not overwrite your GnuCash file,
 you are free to experiment with any of these selections.
 </para>
 </sect3>
+<sect3><title>Transaction Notes option</title>
+<para>
+Under some usage conditions, non-split GnuCash transactions may contain residual, often incorrect, memo data which is not normally visible to the user. When imported into &kappname; however, due to display differences, this data can become visible. Often, these transactions will have a Notes field describing the real purpose of the transaction. If this option is selected, these notes, if present, will be used to override the extraneous memo data.
+</para>
+</sect3>
 <sect3><title>Debug Options</title>
 <para>
 These need only be used in the event of import problems, which in

@@ -1,3 +1,5 @@
+2009-01-04 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Add option to import GnuCash notes as memos
 
 2009-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added display of number of splits in file info dialog

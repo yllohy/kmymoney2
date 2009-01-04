@@ -779,6 +779,13 @@ protected:
     retrieve online share price quotes
   */
   bool m_useFinanceQuote;
+  /**           Tx Notes handling
+    Under some usage conditions, non-split GnuCash transactions may contain residual, usually incorrect, memo
+    data which is not normally visible to the user. When imported into KMyMoney however, due to display
+    differences, this data can become visible. Often, these transactions will have a Notes field describing
+    the real purpose of the transaction. If this option is selected, these notes, if present, will be used to
+    override the extraneous memo data."  */
+  bool m_useTxNotes;
     // set gnucash counts (not always accurate!)
   void setGncCommodityCount(int i) { m_gncCommodityCount = i;};
   void setGncAccountCount (int i) { m_gncAccountCount = i;};

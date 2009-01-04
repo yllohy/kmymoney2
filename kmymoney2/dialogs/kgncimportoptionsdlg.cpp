@@ -45,7 +45,7 @@ KGncImportOptionsDlg::KGncImportOptionsDlg(QWidget *parent, const char *name)
   buildCodecList (); // build list of codecs and insert into combo box
   checkDecode->setChecked (false);
   comboDecode->setEnabled (false);
-
+  checkTxNotes->setChecked (false);
   checkDebugGeneral->setChecked (false);
   checkDebugXML->setChecked (false);
   checkAnonymize->setChecked (false);
