@@ -22,6 +22,7 @@
 #include <qlabel.h>
 #include <qbuttongroup.h>
 #include <qtextedit.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -42,7 +43,8 @@
 #include "../mymoney/mymoneyforecast.h"
 #include "../widgets/kmymoneyforecastlistviewitem.h"
 #include "../widgets/kmymoneyaccounttreeforecast.h"
-
+#include "../reports/pivottable.h"
+#include "../reports/pivotgrid.h"
 
 KForecastView::KForecastView(QWidget *parent, const char *name) :
   KForecastViewDecl(parent,name)
@@ -64,6 +66,9 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
   m_summaryList->setAllColumnsShowFocus(true);
   //m_adviceList->setAllColumnsShowFocus(true);
   m_advancedList->setAllColumnsShowFocus(true);
+
+  m_forecastChart = new KReportChartView(m_tabChart, "forecastChart" );
+  m_forecastChart->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   loadForecastSettings();
 
@@ -102,6 +107,9 @@ void KForecastView::loadForecast(ForecastViewTab tab)
       case BudgetView:
         loadBudgetView();
         break;
+      case ChartView:
+        loadChartView();
+        break;
       default:
         break;
     }
@@ -122,6 +130,7 @@ void KForecastView::slotLoadForecast(void)
   m_needReload[ListView] = true;
   m_needReload[AdvancedView] = true;
   m_needReload[BudgetView] = true;
+  m_needReload[ChartView] = true;
 
   //refresh settings
   loadForecastSettings();
@@ -136,6 +145,7 @@ void KForecastView::slotManualForecast(void)
   m_needReload[ListView] = true;
   m_needReload[AdvancedView] = true;
   m_needReload[BudgetView] = true;
+  m_needReload[ChartView] = true;
 
   if(isVisible())
     slotTabChanged(m_tab->currentPage());
@@ -625,6 +635,40 @@ void KForecastView::loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount
 
     loadAccounts(forecast, subAccount, forecastItem, forecastType);
   }
+}
+
+void KForecastView::loadChartView(void)
+{
+  MyMoneyReport reportCfg = MyMoneyReport(
+    MyMoneyReport::eAssetLiability,
+    MyMoneyReport::eMonths,
+    MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
+    false,
+    i18n("Networth Forecast"),
+    i18n("Generated Report"));
+
+  reportCfg.setChartByDefault(true);
+  reportCfg.setChartGridLines(false);
+  reportCfg.setDetailLevel(MyMoneyReport::eDetailGroup);
+  reportCfg.setChartType(MyMoneyReport::eChartLine);
+  reportCfg.setIncludingSchedules( false );
+  reportCfg.addAccountGroup(MyMoneyAccount::Asset);
+  reportCfg.addAccountGroup(MyMoneyAccount::Liability);
+  reportCfg.setColumnsAreDays( true );
+  reportCfg.setConvertCurrency( true );
+  reportCfg.setIncludingForecast( true );
+  reportCfg.setDateFilter(QDate::currentDate(),QDate::currentDate().addDays(m_forecastDays->value()));
+
+  reports::PivotTable table(reportCfg);
+
+  table.drawChart(*m_forecastChart);
+
+  // Adjust the size
+  int nh;
+  nh = 1.5*(width()*m_forecastChart->height() ) / m_forecastChart->width();
+  m_forecastChart->resize(width()-60, nh);
+
+  m_forecastChart->update();
 }
 
 #include "kforecastview.moc"

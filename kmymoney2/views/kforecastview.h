@@ -23,6 +23,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -31,6 +32,9 @@
 
 #include "../views/kforecastviewdecl.h"
 #include "../widgets/kmymoneyaccounttreeforecast.h"
+#include "../reports/kreportchartview.h"
+
+using namespace reports;
 
 /**
   * @author Alvaro Soliverez
@@ -60,6 +64,7 @@ protected:
     ListView,
     AdvancedView,
     BudgetView,
+    ChartView,
     // insert new values above this line
     MaxViewTabs
   } ForecastViewTab;
@@ -69,37 +74,36 @@ protected:
 
   /**
     * This method loads the forecast view.
-    *
     */
   void loadForecast(ForecastViewTab tab);
 
   /**
     * This method loads the detailed view
-    *
     */
   void loadListView(void);
 
   /**
    * This method loads the summary view
-   *
    */
   void loadSummaryView(void);
 
   /**
    * This method loads the advanced view
-   *
    */
   void loadAdvancedView(void);
 
   /**
    * This method loads the budget view
-   *
    */
   void loadBudgetView(void);
 
   /**
+   * This method loads the budget view
+   */
+  void loadChartView(void);
+
+  /**
    * This method loads the settings from user configuration
-   *
    */
   void loadForecastSettings(void);
 
@@ -127,6 +131,7 @@ private:
   KMyMoneyAccountTreeForecastItem*    m_incomeItem;
   KMyMoneyAccountTreeForecastItem*    m_expenseItem;
 
+  KReportChartView* m_forecastChart;
 
 };
 

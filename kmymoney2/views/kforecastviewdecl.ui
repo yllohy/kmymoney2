@@ -535,6 +535,22 @@
                     </widget>
                 </vbox>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>m_tabChart</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Chart</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>m_layoutChart</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                </vbox>
+            </widget>
         </widget>
     </vbox>
 </widget>
