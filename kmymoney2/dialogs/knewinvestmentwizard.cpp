@@ -50,6 +50,9 @@ KNewInvestmentWizard::KNewInvestmentWizard( QWidget *parent, const char *name ) 
 {
   init1();
   slotCheckPage(QString());
+
+  m_investmentSymbol->setFocus();
+  connect(m_investmentSymbol, SIGNAL(lineChanged(const QString&)), this, SLOT(slotCheckForExistingSymbol(const QString&)));
 }
 
 KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *parent, const char *name ) :
@@ -125,6 +128,11 @@ void KNewInvestmentWizard::init1(void)
   if(!m_account.id().isEmpty()) {
     m_introLabel->setText(i18n("This wizard allows you to modify the selected investment."));
   }
+  if(!m_security.id().isEmpty()) {
+    m_introLabel->setText(i18n("This wizard allows you to modify the selected security."));
+  }
+
+
 }
 
 void KNewInvestmentWizard::init2(void)
@@ -162,6 +170,28 @@ void KNewInvestmentWizard::next(void)
 {
   KNewInvestmentWizardDecl::next();
   slotCheckPage();
+}
+
+void KNewInvestmentWizard::slotCheckForExistingSymbol(const QString& symbol)
+{
+  if(m_investmentName->text().isEmpty()) {
+    QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->securityList();
+    QValueList<MyMoneySecurity>::const_iterator it_s;
+    MyMoneySecurity::eSECURITYTYPE type = KMyMoneyUtils::stringToSecurity(m_securityType->currentText());
+
+    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+      if((*it_s).securityType() == type
+      && (*it_s).tradingSymbol() == m_investmentSymbol->text()) {
+        m_security = MyMoneySecurity();
+        if(KMessageBox::questionYesNo(this, i18n("The selected symbol is already on file. Do you want to reuse the existing security?"), i18n("Security found")) == KMessageBox::Yes) {
+          m_security = *it_s;
+          init2();
+          m_investmentName->loadText(m_security.name());
+        }
+        break;
+      }
+    }
+  }
 }
 
 void KNewInvestmentWizard::slotSourceChanged(bool useFQ)
@@ -209,17 +239,7 @@ void KNewInvestmentWizard::createObjects(const QString& parentId)
   QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->securityList();
   QValueList<MyMoneySecurity>::ConstIterator it;
 
-  // check if we already have the security
   MyMoneySecurity::eSECURITYTYPE type = KMyMoneyUtils::stringToSecurity(m_securityType->currentText());
-  if(m_security.id().isEmpty()) {
-    for(it = list.begin(); m_security.id().isEmpty() && it != list.end(); ++it) {
-      if((*it).securityType() == type
-      && (*it).tradingSymbol() == m_investmentSymbol->text()) {
-        m_security = *it;
-      }
-    }
-  }
-
   MyMoneyFileTransaction ft;
   try {
     // update all relevant attributes only, if we create a stock

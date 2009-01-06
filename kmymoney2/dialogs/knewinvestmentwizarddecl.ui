@@ -191,24 +191,63 @@
                 <property name="sizeHint">
                     <size>
                         <width>20</width>
-                        <height>30</height>
+                        <height>16</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout38</cstring>
+                    <cstring>layout9</cstring>
                 </property>
                 <grid>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="1" column="0">
+                    <widget class="kMyMoneyLineEdit" row="1" column="1">
                         <property name="name">
-                            <cstring>textLabel2_2</cstring>
+                            <cstring>m_investmentName</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="2" column="1">
+                        <property name="name">
+                            <cstring>layout4</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1_5</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>1 /</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignVCenter|AlignRight</set>
+                                </property>
+                            </widget>
+                            <widget class="kMyMoneyEdit">
+                                <property name="name">
+                                    <cstring>m_fraction</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLabel" row="6" column="0">
+                        <property name="name">
+                            <cstring>textLabel2_5</cstring>
                         </property>
                         <property name="text">
-                            <string>Trading symbol</string>
+                            <string>Price entry</string>
                         </property>
                     </widget>
                     <widget class="QLabel" row="2" column="0">
@@ -219,20 +258,25 @@
                             <string>Fraction</string>
                         </property>
                     </widget>
-                    <widget class="kMyMoneyLineEdit" row="1" column="1">
+                    <widget class="QLabel" row="5" column="0">
                         <property name="name">
-                            <cstring>m_investmentSymbol</cstring>
+                            <cstring>textLabel1_4</cstring>
                         </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Enter the ticker symbol (e.g. RHAT).</string>
+                        <property name="text">
+                            <string>Trading Currency</string>
                         </property>
                     </widget>
-                    <widget class="kMyMoneyLineEdit" row="4" column="1">
+                    <widget class="QLabel" row="1" column="0">
                         <property name="name">
-                            <cstring>m_investmentIdentification</cstring>
+                            <cstring>textLabel3</cstring>
                         </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Enter the CUSIP/ISIN/WKN identification number here</string>
+                        <property name="text">
+                            <string>Full name</string>
+                        </property>
+                    </widget>
+                    <widget class="KMyMoneyGeneralCombo" row="6" column="1">
+                        <property name="name">
+                            <cstring>m_priceMode</cstring>
                         </property>
                     </widget>
                     <widget class="KComboBox" row="3" column="1">
@@ -273,77 +317,12 @@
                             <bool>true</bool>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="3" column="0">
+                    <widget class="QLabel" row="0" column="0">
                         <property name="name">
-                            <cstring>textLabel1_3</cstring>
+                            <cstring>textLabel2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Trading market</string>
-                        </property>
-                    </widget>
-                    <widget class="kMyMoneyLineEdit" row="0" column="1">
-                        <property name="name">
-                            <cstring>m_investmentName</cstring>
-                        </property>
-                    </widget>
-                    <widget class="KMyMoneyGeneralCombo" row="6" column="1">
-                        <property name="name">
-                            <cstring>m_priceMode</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="6" column="0">
-                        <property name="name">
-                            <cstring>textLabel2_5</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Price entry</string>
-                        </property>
-                    </widget>
-                    <widget class="KMyMoneySecuritySelector" row="5" column="1">
-                        <property name="name">
-                            <cstring>m_tradingCurrencyEdit</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget" row="2" column="1">
-                        <property name="name">
-                            <cstring>layout4</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>textLabel1_5</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>1</hsizetype>
-                                        <vsizetype>5</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>1 /</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>AlignVCenter|AlignRight</set>
-                                </property>
-                            </widget>
-                            <widget class="kMyMoneyEdit">
-                                <property name="name">
-                                    <cstring>m_fraction</cstring>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <widget class="QLabel" row="5" column="0">
-                        <property name="name">
-                            <cstring>textLabel1_4</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Trading Currency</string>
+                            <string>Trading symbol</string>
                         </property>
                     </widget>
                     <widget class="QLabel" row="4" column="0">
@@ -354,12 +333,33 @@
                             <string>Identification</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="0" column="0">
+                    <widget class="KMyMoneySecuritySelector" row="5" column="1">
                         <property name="name">
-                            <cstring>textLabel3</cstring>
+                            <cstring>m_tradingCurrencyEdit</cstring>
+                        </property>
+                    </widget>
+                    <widget class="kMyMoneyLineEdit" row="0" column="1">
+                        <property name="name">
+                            <cstring>m_investmentSymbol</cstring>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Enter the ticker symbol (e.g. RHAT).</string>
+                        </property>
+                    </widget>
+                    <widget class="kMyMoneyLineEdit" row="4" column="1">
+                        <property name="name">
+                            <cstring>m_investmentIdentification</cstring>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Enter the CUSIP/ISIN/WKN identification number here</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="0">
+                        <property name="name">
+                            <cstring>textLabel1_3</cstring>
                         </property>
                         <property name="text">
-                            <string>Full name</string>
+                            <string>Trading market</string>
                         </property>
                     </widget>
                 </grid>
@@ -377,7 +377,7 @@
                 <property name="sizeHint">
                     <size>
                         <width>20</width>
-                        <height>30</height>
+                        <height>16</height>
                     </size>
                 </property>
             </spacer>
@@ -576,13 +576,16 @@
 </images>
 <tabstops>
     <tabstop>m_securityType</tabstop>
-    <tabstop>m_investmentName</tabstop>
     <tabstop>m_investmentSymbol</tabstop>
+    <tabstop>m_investmentName</tabstop>
     <tabstop>m_fraction</tabstop>
     <tabstop>m_tradingMarket</tabstop>
     <tabstop>m_investmentIdentification</tabstop>
     <tabstop>m_tradingCurrencyEdit</tabstop>
+    <tabstop>m_priceMode</tabstop>
+    <tabstop>m_useFinanceQuote</tabstop>
     <tabstop>m_onlineSourceCombo</tabstop>
+    <tabstop>m_onlineFactor</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

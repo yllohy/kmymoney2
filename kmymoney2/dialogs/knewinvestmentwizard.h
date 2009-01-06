@@ -77,8 +77,10 @@ protected slots:
   void next(void);
   void slotCheckPage(void);
   void slotCheckPage(const QString&);
+  void slotCheckForExistingSymbol(const QString&);
   void slotSourceChanged(bool);
   void slotHelp(void);
+
 private:
   void init1(void);
   void init2(void);
