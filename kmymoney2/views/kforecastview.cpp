@@ -639,6 +639,8 @@ void KForecastView::loadAccounts(MyMoneyForecast& forecast, const MyMoneyAccount
 
 void KForecastView::loadChartView(void)
 {
+  MyMoneyReport::EDetailLevel detailLevel[4] = { MyMoneyReport::eDetailAll, MyMoneyReport::eDetailTop, MyMoneyReport::eDetailGroup, MyMoneyReport::eDetailTotal };
+
   MyMoneyReport reportCfg = MyMoneyReport(
     MyMoneyReport::eAssetLiability,
     MyMoneyReport::eMonths,
@@ -649,7 +651,6 @@ void KForecastView::loadChartView(void)
 
   reportCfg.setChartByDefault(true);
   reportCfg.setChartGridLines(false);
-  reportCfg.setDetailLevel(MyMoneyReport::eDetailGroup);
   reportCfg.setChartType(MyMoneyReport::eChartLine);
   reportCfg.setIncludingSchedules( false );
   reportCfg.addAccountGroup(MyMoneyAccount::Asset);
@@ -659,13 +660,15 @@ void KForecastView::loadChartView(void)
   reportCfg.setIncludingForecast( true );
   reportCfg.setDateFilter(QDate::currentDate(),QDate::currentDate().addDays(m_forecastDays->value()));
 
+  reportCfg.setDetailLevel(detailLevel[m_comboDetail->currentItem()]);
+
   reports::PivotTable table(reportCfg);
 
   table.drawChart(*m_forecastChart);
 
   // Adjust the size
   int nh;
-  nh = 1.5*(width()*m_forecastChart->height() ) / m_forecastChart->width();
+  nh = (width()*0.5);
   m_forecastChart->resize(width()-60, nh);
 
   m_forecastChart->update();
