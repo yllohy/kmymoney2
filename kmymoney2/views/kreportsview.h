@@ -62,7 +62,6 @@ class QListViewItem;
 #include "../views/kmymoneyview.h"
 
 class MyMoneyReport;
-class KReportsViewPrivate;
 
 namespace KReportView {
 };
@@ -181,7 +180,10 @@ public:
   };
 
 private:
-  KReportsViewPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
   KTabWidget* m_reportTabWidget;
   KListView* m_reportListView;
   QWidget* m_listTab;

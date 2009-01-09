@@ -52,10 +52,10 @@
 #include "../dialogs/kenterscheduledlg.h"
 #include "../kmymoney2.h"
 
-class MyMoneyStatementReaderPrivate
+class MyMoneyStatementReader::Private
 {
   public:
-    MyMoneyStatementReaderPrivate() :
+    Private() :
       transactionsCount(0),
       transactionsAdded(0),
       transactionsMatched(0),
@@ -90,19 +90,19 @@ class MyMoneyStatementReaderPrivate
 };
 
 
-const QString& MyMoneyStatementReaderPrivate::feeId(const MyMoneyAccount& invAcc)
+const QString& MyMoneyStatementReader::Private::feeId(const MyMoneyAccount& invAcc)
 {
   scanCategories(m_feeId, invAcc, MyMoneyFile::instance()->expense(), i18n("_Fees"));
   return m_feeId;
 }
 
-const QString& MyMoneyStatementReaderPrivate::interestId(const MyMoneyAccount& invAcc)
+const QString& MyMoneyStatementReader::Private::interestId(const MyMoneyAccount& invAcc)
 {
   scanCategories(m_interestId, invAcc, MyMoneyFile::instance()->income(), i18n("_Dividend"));
   return m_interestId;
 }
 
-QString MyMoneyStatementReaderPrivate::nameToId(const QString&name, MyMoneyAccount& parent)
+QString MyMoneyStatementReader::Private::nameToId(const QString&name, MyMoneyAccount& parent)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount acc = file->accountByName(name);
@@ -116,20 +116,20 @@ QString MyMoneyStatementReaderPrivate::nameToId(const QString&name, MyMoneyAccou
   return acc.id();
 }
 
-QString MyMoneyStatementReaderPrivate::interestId(const QString& name)
+QString MyMoneyStatementReader::Private::interestId(const QString& name)
 {
   MyMoneyAccount parent = MyMoneyFile::instance()->income();
   return nameToId(name, parent);
 }
 
-QString MyMoneyStatementReaderPrivate::feeId(const QString& name)
+QString MyMoneyStatementReader::Private::feeId(const QString& name)
 {
   MyMoneyAccount parent = MyMoneyFile::instance()->expense();
   return nameToId(name, parent);
 }
 
 
-void MyMoneyStatementReaderPrivate::scanCategories(QString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName)
+void MyMoneyStatementReader::Private::scanCategories(QString& id, const MyMoneyAccount& invAcc, const MyMoneyAccount& parentAccount, const QString& defaultName)
 {
   if(!scannedCategories) {
     KMyMoneyUtils::previouslyUsedCategories(invAcc.id(), m_feeId, m_interestId);
@@ -151,7 +151,7 @@ void MyMoneyStatementReaderPrivate::scanCategories(QString& id, const MyMoneyAcc
   }
 }
 
-void MyMoneyStatementReaderPrivate::assignUniqueBankID(MyMoneySplit& s, const MyMoneyStatement::Transaction& t_in)
+void MyMoneyStatementReader::Private::assignUniqueBankID(MyMoneySplit& s, const MyMoneyStatement::Transaction& t_in)
 {
   if( ! t_in.m_strBankID.isEmpty() ) {
     QString base(t_in.m_strBankID);
@@ -179,7 +179,7 @@ void MyMoneyStatementReaderPrivate::assignUniqueBankID(MyMoneySplit& s, const My
 
 
 MyMoneyStatementReader::MyMoneyStatementReader() :
-  d(new MyMoneyStatementReaderPrivate),
+  d(new Private),
   m_userAbort(false),
   m_autoCreatePayee(false),
   m_ft(0),

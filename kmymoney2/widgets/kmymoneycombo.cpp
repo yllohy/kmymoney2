@@ -568,7 +568,7 @@ void KMyMoneyPayeeCombo::loadPayees(const QValueList<MyMoneyPayee>& list)
 }
 
 
-class KMyMoneyGeneralComboPrivate {
+class KMyMoneyGeneralCombo::Private {
 public:
   QMap<QString, int> m_strings;
   void insertItem(const QString& s, int id) { m_strings[s] = id; }
@@ -594,7 +594,7 @@ public:
 
 KMyMoneyGeneralCombo::KMyMoneyGeneralCombo(QWidget* w, const char* name) :
   KComboBox(w, name),
-  d(new KMyMoneyGeneralComboPrivate)
+  d(new Private)
 {
   connect(this, SIGNAL(highlighted(int)), this, SLOT(slotChangeItem(int)));
 }

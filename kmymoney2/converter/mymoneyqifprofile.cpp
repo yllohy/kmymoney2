@@ -49,9 +49,9 @@
  */
 #define CENTURY_BREAK 70
 
-class MyMoneyQifProfilePrivate {
+class MyMoneyQifProfile::Private {
   public:
-    MyMoneyQifProfilePrivate() {
+    Private() {
       m_changeCount.resize(3, 0);
       m_lastValue.resize(3, 0);
       m_largestValue.resize(3, 0);
@@ -66,7 +66,7 @@ class MyMoneyQifProfilePrivate {
     QMap<QChar, int>     m_partPos;
 };
 
-void MyMoneyQifProfilePrivate::dissectDate(QValueVector<QString>& parts, const QString& txt) const
+void MyMoneyQifProfile::Private::dissectDate(QValueVector<QString>& parts, const QString& txt) const
 {
   QRegExp nonDelimChars("[ 0-9a-zA-Z]");
   int part = 0;                 // the current part we scan
@@ -112,7 +112,7 @@ void MyMoneyQifProfilePrivate::dissectDate(QValueVector<QString>& parts, const Q
 }
 
 
-void MyMoneyQifProfilePrivate::getThirdPosition(void)
+void MyMoneyQifProfile::Private::getThirdPosition(void)
 {
   // if we have detected two parts we can calculate the third and its position
   if(m_partPos.count() == 2) {
@@ -134,14 +134,14 @@ void MyMoneyQifProfilePrivate::getThirdPosition(void)
 
 
 MyMoneyQifProfile::MyMoneyQifProfile() :
-  d(new MyMoneyQifProfilePrivate),
+  d(new Private),
   m_isDirty(false)
 {
   clear();
 }
 
 MyMoneyQifProfile::MyMoneyQifProfile(const QString& name) :
-  d(new MyMoneyQifProfilePrivate),
+  d(new Private),
   m_isDirty(false)
 {
   loadProfile(name);

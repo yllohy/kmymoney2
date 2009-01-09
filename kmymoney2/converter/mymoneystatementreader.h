@@ -45,7 +45,6 @@
 #include "../mymoney/mymoneystatement.h"
 
 class MyMoneyFileTransaction;
-class MyMoneyStatementReaderPrivate;
 class QStringList;
 
 /**
@@ -126,7 +125,10 @@ signals:
   void importFinished(void);
 
 private:
-  MyMoneyStatementReaderPrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
   MyMoneyAccount          m_account;
   QStringList             m_dontAskAgain;
   bool                    m_skipAccount;

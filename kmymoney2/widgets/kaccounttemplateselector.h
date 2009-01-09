@@ -28,7 +28,6 @@
 // Project Includes
 
 #include <kmymoney2/widgets/kaccounttemplateselectordecl.h>
-class KAccountTemplateSelectorPrivate;
 class MyMoneyTemplate;
 
 /**
@@ -48,7 +47,10 @@ class KAccountTemplateSelector : public KAccountTemplateSelectorDecl
     void slotLoadHierarchy(void);
 
   private:
-    KAccountTemplateSelectorPrivate* d;
+    /// \internal d-pointer class.
+    class Private;
+    /// \internal d-pointer instance.
+    Private* const d;
 };
 
 #endif

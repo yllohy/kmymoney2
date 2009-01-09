@@ -46,11 +46,11 @@ unsigned int MyMoneyStorageXML::fileVersionRead = 0;
 unsigned int MyMoneyStorageXML::fileVersionWrite = 0;
 
 
-class MyMoneyStorageXMLPrivate
+class MyMoneyStorageXML::Private
 {
   friend class MyMoneyStorageXML;
 public:
-  MyMoneyStorageXMLPrivate() {}
+  Private() {}
 
   QMap<QString, MyMoneyInstitution> iList;
   QMap<QString, MyMoneyAccount> aList;
@@ -363,7 +363,7 @@ QString MyMoneyXmlContentHandler::errorString(void)
 MyMoneyStorageXML::MyMoneyStorageXML() :
   m_storage(0),
   m_doc(0),
-  d(new MyMoneyStorageXMLPrivate())
+  d(new Private())
 {
 }
 

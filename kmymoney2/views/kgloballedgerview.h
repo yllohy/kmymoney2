@@ -58,8 +58,6 @@ class KToolBarButton;
 class MyMoneyReport;
 class TransactionEditor;
 
-class KGlobalLedgerViewPrivate;
-
 /**
   * helper class implementing an event filter to detect mouse button press
   * events on widgets outside a given set of widgets. This is used internally
@@ -322,7 +320,10 @@ protected:
   static QDate         m_lastPostDate;
 
 private:
-  KGlobalLedgerViewPrivate* const d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 
   // frames
   QFrame*                       m_toolbarFrame;

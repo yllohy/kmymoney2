@@ -60,18 +60,18 @@ using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
 using namespace Invest;
 
-class InvestTransactionEditorPrivate {
+class InvestTransactionEditor::Private {
   friend class Invest::Activity;
 
 public:
-  InvestTransactionEditorPrivate(InvestTransactionEditor* parent) :
+  Private(InvestTransactionEditor* parent) :
     m_parent(parent),
     m_activity(0)
   {
     m_phonyAccount = MyMoneyAccount("Phony-ID", MyMoneyAccount());
   }
 
-  ~InvestTransactionEditorPrivate() {
+  ~Private() {
     delete m_activity;
   }
 
@@ -85,7 +85,7 @@ public:
 
 
 InvestTransactionEditor::InvestTransactionEditor() :
-  d(new InvestTransactionEditorPrivate(this))
+  d(new Private(this))
 {
 }
 
@@ -96,7 +96,7 @@ InvestTransactionEditor::~InvestTransactionEditor()
 
 InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate) :
   TransactionEditor(regForm, item, list, lastPostDate),
-  d(new InvestTransactionEditorPrivate(this))
+  d(new Private(this))
 {
   // dissect the transaction into its type, splits, currency, security etc.
   dissectTransaction(m_transaction, m_split,

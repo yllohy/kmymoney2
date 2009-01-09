@@ -2243,7 +2243,7 @@ KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QString& ico
 
 #include "../widgets/kmymoneytitlelabel.h"
 
-class KMyMoneyViewBasePrivate {
+class KMyMoneyViewBase::Private {
   public:
     QFrame* m_titleLine;
     KMyMoneyTitleLabel* m_titleLabel;
@@ -2252,7 +2252,7 @@ class KMyMoneyViewBasePrivate {
 
 KMyMoneyViewBase::KMyMoneyViewBase(QWidget* parent, const char* name, const QString& title) :
   QWidget(parent, name),
-  d(new KMyMoneyViewBasePrivate)
+  d(new Private)
 {
   d->m_viewLayout = new QVBoxLayout(this);
   d->m_viewLayout->setSpacing( 6 );

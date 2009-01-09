@@ -45,7 +45,6 @@
 #include "../mymoney/mymoneytransaction.h"
 
 class MyMoneyFileTransaction;
-class MyMoneyQifReaderPrivate;
 
 /**
   * @author Thomas Baumgart
@@ -53,7 +52,7 @@ class MyMoneyQifReaderPrivate;
 class MyMoneyQifReader : public QObject
 {
   Q_OBJECT
-  friend class MyMoneyQifReaderPrivate;
+  friend class Private;
 
 private:
   typedef enum {
@@ -351,7 +350,10 @@ private slots:
 
 
 private:
-  MyMoneyQifReaderPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 
   KProcess                m_filter;
   QString                 m_filename;

@@ -40,10 +40,10 @@
 #include <kmymoney/mymoneyfile.h>
 #include "kmymoneyaccountcompletion.h"
 
-class KMyMoneyCategoryPrivate
+class KMyMoneyCategory::Private
 {
 public:
-  KMyMoneyCategoryPrivate() :
+  Private() :
     splitButton(0),
     frame(0),
     recursive(false) {}
@@ -55,7 +55,7 @@ public:
 
 KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool splitButton) :
   KMyMoneyCombo(true, parent, name),
-  d(new KMyMoneyCategoryPrivate)
+  d(new Private)
 {
   if(splitButton) {
     d->frame = new QFrame(0);

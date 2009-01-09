@@ -32,7 +32,6 @@ class QIODevice;
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
-class MyMoneyStorageXMLPrivate;
 class MyMoneyXmlContentHandler;
 
 /**
@@ -128,7 +127,10 @@ protected:
   QDomDocument *m_doc;
 
 private:
-  MyMoneyStorageXMLPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 
   /**
     * This member is used to store the file version information

@@ -63,7 +63,6 @@ class IMyMoneyStorage;
 class KFindTransactionDlg;
 class TransactionEditor;
 class KEndingBalanceDlg;
-class KMyMoneyPrivate;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }
 
@@ -1167,7 +1166,7 @@ public:
   KAction* action(const QString& actionName) const;
 
   /**
-    * This method is implemented for convience. It returns a dynamic_cast-ed
+    * This method is implemented for convenience. It returns a dynamic_cast-ed
     * pointer to an action found in actionCollection().
     * If the action with the name @p actionName is not found or the object
     * is not of type KToggleAction, a pointer to a static non-configured
@@ -1177,9 +1176,17 @@ public:
 
 
 private:
-  KMyMoneyPrivate*  d;
-  /** the configuration object of the application */
+  /// \internal d-pointer class.
+  class Private;
+  /*
+   * Actually, one should write "Private * const d" but that confuses the KIDL
+   * compiler in this context. It complains about the const keyword. So we leave
+   * it out here
+   */
+  /// \internal d-pointer instance.
+  Private* d;
 
+  /** the configuration object of the application */
   KConfig *config;
 
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;

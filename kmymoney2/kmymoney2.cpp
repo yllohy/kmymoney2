@@ -147,10 +147,10 @@
 #define RECOVER_KEY_ID        "59B0F826D2B08440"
 #define ID_STATUS_MSG 1
 
-class KMyMoneyPrivate
+class KMyMoney2App::Private
 {
 public:
-  KMyMoneyPrivate() :
+  Private() :
     m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0)
   {}
   void unlinkStatementXML(void);
@@ -164,7 +164,7 @@ public:
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   KMainWindow(0, name),
   DCOPObject("kmymoney2app"),
-  d(new KMyMoneyPrivate),
+  d(new Private),
   myMoneyView(0),
   m_searchDlg(0),
   m_autoSaveTimer(0),
@@ -5953,7 +5953,7 @@ KMStatus::~KMStatus()
   kmymoney2->slotStatusMsg(m_prevText);
 }
 
-void KMyMoneyPrivate::unlinkStatementXML(void)
+void KMyMoney2App::Private::unlinkStatementXML(void)
 {
   QDir d("/home/thb", "kmm-statement*");
   for(int i=0; i < d.count(); ++i) {

@@ -51,10 +51,10 @@ const QString MyMoneyFile::AccountSeperator = ":";
 // #include <iostream>
 MyMoneyFile* MyMoneyFile::_instance = 0;
 
-class MyMoneyFilePrivate
+class MyMoneyFile::Private
 {
 public:
-  MyMoneyFilePrivate() :
+  Private() :
     m_inTransaction(false)
   {}
 
@@ -78,7 +78,7 @@ public:
 MyMoneyFile MyMoneyFile::file;
 
 MyMoneyFile::MyMoneyFile() :
-  d(new MyMoneyFilePrivate)
+  d(new Private)
 {
   m_storage = 0;
 }
@@ -91,7 +91,7 @@ MyMoneyFile::~MyMoneyFile()
 }
 
 MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage) :
-  d(new MyMoneyFilePrivate)
+  d(new Private)
 {
   m_storage = 0;
   attachStorage(storage);

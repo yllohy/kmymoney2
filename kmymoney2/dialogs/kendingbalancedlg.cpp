@@ -40,7 +40,7 @@
 
 #include "../dialogs/kcurrencycalculator.h"
 
-class KEndingBalanceDlgPrivate
+class KEndingBalanceDlg::Private
 {
 public:
   MyMoneyTransaction        m_tInterest;
@@ -49,7 +49,7 @@ public:
   QMap<QWidget*, QString>   m_helpAnchor;
 };
 
-class KEndingBalanceLoanDlgPrivate
+class KEndingBalanceLoanDlg::Private
 {
 public:
   MyMoneyTransaction        m_tInterest;
@@ -60,7 +60,7 @@ public:
 
 KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *parent, const char *name) :
   KEndingBalanceDlgDecl(parent, name, true),
-  d(new KEndingBalanceDlgPrivate)
+  d(new Private)
 {
   QString value;
   MyMoneyMoney endBalance, startBalance;
@@ -382,7 +382,7 @@ void KEndingBalanceDlg::help(void)
 
 KEndingBalanceLoanDlg::KEndingBalanceLoanDlg(const MyMoneyAccount& account, QWidget *parent, const char *name) :
   KEndingBalanceDlgDecl(parent, name, true),
-  d(new KEndingBalanceLoanDlgPrivate)
+  d(new Private)
 {
   d->m_account = account;
   QDate value = account.lastReconciliationDate();

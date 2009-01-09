@@ -38,7 +38,6 @@ class KPushButton;
 #include <kmymoney/kmymoneycombo.h>
 
 class kMyMoneyAccountSelector;
-class KMyMoneyCategoryPrivate;
 
 /**
   * This class implements a text based account/category selector.
@@ -168,7 +167,10 @@ signals:
   void focusIn(void);
 
 private:
-  KMyMoneyCategoryPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 

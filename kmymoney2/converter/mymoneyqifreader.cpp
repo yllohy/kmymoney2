@@ -65,9 +65,9 @@
 #warning "DEBUG_IMPORT defined --> external filter not available!!!!!!!"
 #endif
 
-class MyMoneyQifReaderPrivate {
+class MyMoneyQifReader::Private {
   public:
-    MyMoneyQifReaderPrivate() :
+    Private() :
       accountType(MyMoneyAccount::Checkings),
       mapCategories(true)
     {}
@@ -115,7 +115,7 @@ class MyMoneyQifReaderPrivate {
     MyMoneyQifReader::QifEntryTypeE  transactionType;
 };
 
-void MyMoneyQifReaderPrivate::finishStatement(void)
+void MyMoneyQifReader::Private::finishStatement(void)
 {
   // in case we have collected any data in the statement, we keep it
   if((st.m_listTransactions.count() + st.m_listPrices.count() + st.m_listSecurities.count()) > 0) {
@@ -129,7 +129,7 @@ void MyMoneyQifReaderPrivate::finishStatement(void)
   st.m_eType = (transactionType == MyMoneyQifReader::EntryTransaction) ? MyMoneyStatement::etCheckings : MyMoneyStatement::etInvestment;
 }
 
-QString MyMoneyQifReaderPrivate::accountTypeToQif(MyMoneyAccount::accountTypeE type) const
+QString MyMoneyQifReader::Private::accountTypeToQif(MyMoneyAccount::accountTypeE type) const
 {
   QString rc = "Bank";
 
@@ -155,7 +155,7 @@ QString MyMoneyQifReaderPrivate::accountTypeToQif(MyMoneyAccount::accountTypeE t
   return rc;
 }
 
-QString MyMoneyQifReaderPrivate::typeToAccountName(const QString& type) const
+QString MyMoneyQifReader::Private::typeToAccountName(const QString& type) const
 {
   if(type == "reinvdiv")
     return i18n("Category name", "Reinvested dividend");
@@ -196,7 +196,7 @@ QString MyMoneyQifReaderPrivate::typeToAccountName(const QString& type) const
   return i18n("Unknown QIF type %1").arg(type);
 }
 
-bool MyMoneyQifReaderPrivate::isTransfer(QString& tmp, const QString& leftDelim, const QString& rightDelim)
+bool MyMoneyQifReader::Private::isTransfer(QString& tmp, const QString& leftDelim, const QString& rightDelim)
 {
   // it's a transfer, extract the account name
   // I've seen entries like this
@@ -214,7 +214,7 @@ bool MyMoneyQifReaderPrivate::isTransfer(QString& tmp, const QString& leftDelim,
   return rc;
 }
 
-MyMoneySplit::reconcileFlagE MyMoneyQifReaderPrivate::reconcileState(const QString& state) const
+MyMoneySplit::reconcileFlagE MyMoneyQifReader::Private::reconcileState(const QString& state) const
 {
   if(state == "X" || state == "R")        // Reconciled
     return MyMoneySplit::Reconciled;
@@ -227,7 +227,7 @@ MyMoneySplit::reconcileFlagE MyMoneyQifReaderPrivate::reconcileState(const QStri
 
 
 MyMoneyQifReader::MyMoneyQifReader() :
-  d(new MyMoneyQifReaderPrivate)
+  d(new Private)
 {
   m_skipAccount = false;
   m_transactionsProcessed =

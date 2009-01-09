@@ -33,8 +33,6 @@ class TransactionEditor;
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/kmymoneyutils.h>
 
-class KEnterScheduleDlgPrivate;
-
 /**
   * @author Thomas Baumgart
   */
@@ -84,7 +82,10 @@ private slots:
   void slotSkip(void);
 
 private:
-  KEnterScheduleDlgPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif

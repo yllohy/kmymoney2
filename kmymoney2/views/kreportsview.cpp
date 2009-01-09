@@ -301,10 +301,10 @@ void KReportsView::KReportTab::toggleChart(void)
   * KReportsView Implementation
   */
 
-class KReportsViewPrivate
+class KReportsView::Private
 {
 public:
-  KReportsViewPrivate() :
+  Private() :
     includeCSS(0) {}
 
   QCheckBox* includeCSS;
@@ -312,7 +312,7 @@ public:
 
 KReportsView::KReportsView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Reports")),
-  d(new KReportsViewPrivate),
+  d(new Private),
   m_needReload(false)
 {
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );

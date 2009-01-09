@@ -58,10 +58,10 @@
 
 #include "../widgets/scheduledtransaction.h"
 
-class KGlobalLedgerViewPrivate
+class KGlobalLedgerView::Private
 {
 public:
-  KGlobalLedgerViewPrivate();
+  Private();
 
   MousePressFilter*    m_mousePressFilter;
   KMyMoneyRegister::RegisterSearchLineWidget* m_registerSearchLine;
@@ -134,7 +134,7 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
 }
 
 
-KGlobalLedgerViewPrivate::KGlobalLedgerViewPrivate() :
+KGlobalLedgerView::Private::Private() :
   m_mousePressFilter(0),
   m_registerSearchLine(0),
   m_inLoading(false),
@@ -147,7 +147,7 @@ QDate KGlobalLedgerView::m_lastPostDate;
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : KMyMoneyViewBase(parent, name, i18n("Ledgers")),
-  d(new KGlobalLedgerViewPrivate),
+  d(new Private),
   m_needReload(false),
   m_newAccountLoaded(true),
   m_inEditMode(false)

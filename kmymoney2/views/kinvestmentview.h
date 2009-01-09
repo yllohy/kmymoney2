@@ -39,7 +39,6 @@
 
 class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
-class KInvestmentViewPrivate;
 
 /**
   * @author Kevin Tambascio
@@ -128,7 +127,10 @@ signals:
   void investmentRightMouseClick(void);
 
 private:
-  KInvestmentViewPrivate*    d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif

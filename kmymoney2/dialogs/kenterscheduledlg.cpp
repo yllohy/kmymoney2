@@ -49,11 +49,11 @@
 
 #include "../kmymoney2.h"
 
-class KEnterScheduleDlgPrivate
+class KEnterScheduleDlg::Private
 {
 public:
-  KEnterScheduleDlgPrivate() : m_item(0), m_showWarningOnce(true) {}
-  ~KEnterScheduleDlgPrivate() {}
+  Private() : m_item(0), m_showWarningOnce(true) {}
+  ~Private() {}
 
   MyMoneySchedule                m_schedule;
   KMyMoneyRegister::Transaction* m_item;
@@ -64,7 +64,7 @@ public:
 
 KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& schedule) :
   KEnterScheduleDlgDecl(parent, "kenterscheduledlg"),
-  d(new KEnterScheduleDlgPrivate)
+  d(new Private)
 {
   d->m_schedule = schedule;
   d->m_extendedReturnCode = KMyMoneyUtils::Enter;

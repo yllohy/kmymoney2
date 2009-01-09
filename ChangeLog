@@ -1,4 +1,7 @@
 
+2009-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Refactored the usage of the 'Private * d' construct
+
 2009-01-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Added chart detail setting to forecast view
   * Fixed sign of expected liabilities on cash flow summary

@@ -601,8 +601,6 @@ signals:
 
 };
 
-class KMyMoneyViewBasePrivate;
-
 /**
   * This class is an abstract base class that all specific views
   * should be based on.
@@ -628,6 +626,10 @@ public:
     */
   bool editTransactions(const QValueList<MyMoneyTransaction>& transactions) const { Q_UNUSED(transactions)  return false; }
 private:
-  KMyMoneyViewBasePrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
+
 };
 #endif

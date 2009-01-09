@@ -31,7 +31,6 @@
 #include <kmymoney/mymoneyscheduled.h>
 #include "../dialogs/keditscheduledlgdecl.h"
 
-class KEditScheduleDlgPrivate;
 class TransactionEditor;
 
 /**
@@ -87,7 +86,10 @@ private slots:
   void accept(void);
 
 private:
-  KEditScheduleDlgPrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif

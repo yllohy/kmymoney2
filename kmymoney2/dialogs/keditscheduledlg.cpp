@@ -50,7 +50,7 @@
 #include "keditscheduledlg.h"
 #include "../kmymoney2.h"
 
-class KEditScheduleDlgPrivate {
+class KEditScheduleDlg::Private {
 public:
   MyMoneySchedule                m_schedule;
   KMyMoneyRegister::Transaction* m_item;
@@ -61,7 +61,7 @@ public:
 
 KEditScheduleDlg::KEditScheduleDlg(const MyMoneySchedule& schedule, QWidget *parent, const char *name) :
   KEditScheduleDlgDecl(parent, name, true),
-  d(new KEditScheduleDlgPrivate)
+  d(new Private)
 {
   d->m_schedule = schedule;
   d->m_editor = 0;

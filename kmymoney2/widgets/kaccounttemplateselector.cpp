@@ -57,10 +57,10 @@ void KTemplateListItem::setAvailable(void)
   m_isAvailable = true;
 }
 
-class KAccountTemplateSelectorPrivate
+class KAccountTemplateSelector::Private
 {
   public:
-    KAccountTemplateSelectorPrivate(KAccountTemplateSelector* p) { m_parent = p; }
+    Private(KAccountTemplateSelector* p) { m_parent = p; }
 #ifndef KMM_DESIGNER
     QValueList<MyMoneyTemplate> selectedTemplates(void) const;
     QListViewItem* hierarchyItem(const QString& parent, const QString& name);
@@ -77,7 +77,7 @@ class KAccountTemplateSelectorPrivate
 
 
 #ifndef KMM_DESIGNER
-QListViewItem* KAccountTemplateSelectorPrivate::hierarchyItem(const QString& parent, const QString& name)
+QListViewItem* KAccountTemplateSelector::Private::hierarchyItem(const QString& parent, const QString& name)
 {
   if(!m_templateHierarchy.contains(parent)
   || m_templateHierarchy[parent] == 0) {
@@ -88,7 +88,7 @@ QListViewItem* KAccountTemplateSelectorPrivate::hierarchyItem(const QString& par
   return new KTemplateListItem(m_templateHierarchy[parent], name);
 }
 
-void KAccountTemplateSelectorPrivate::loadHierarchy(void)
+void KAccountTemplateSelector::Private::loadHierarchy(void)
 {
   m_templateHierarchy.clear();
   QListViewItemIterator it(m_parent->m_groupList, QListViewItemIterator::Selected);
@@ -140,7 +140,7 @@ void KAccountTemplateSelectorPrivate::loadHierarchy(void)
   }
 }
 
-QValueList<MyMoneyTemplate> KAccountTemplateSelectorPrivate::selectedTemplates(void) const
+QValueList<MyMoneyTemplate> KAccountTemplateSelector::Private::selectedTemplates(void) const
 {
   QValueList<MyMoneyTemplate> list;
   QListViewItemIterator it(m_parent->m_groupList, QListViewItemIterator::Selected);
@@ -156,7 +156,7 @@ QValueList<MyMoneyTemplate> KAccountTemplateSelectorPrivate::selectedTemplates(v
 
 KAccountTemplateSelector::KAccountTemplateSelector(QWidget* parent, const char* name) :
   KAccountTemplateSelectorDecl(parent, name),
-  d(new KAccountTemplateSelectorPrivate(this))
+  d(new Private(this))
 {
   m_accountList->header()->hide();
   loadTemplateList();

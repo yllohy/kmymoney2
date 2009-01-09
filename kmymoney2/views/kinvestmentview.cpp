@@ -45,10 +45,10 @@
 #include "kinvestmentlistitem.h"
 // #include "kledgerviewinvestments.h"
 
-class KInvestmentViewPrivate
+class KInvestmentView::Private
 {
 public:
-  KInvestmentViewPrivate() :
+  Private() :
     m_needReload(false),
     m_newAccountLoaded(false),
     m_recursion(false),
@@ -65,7 +65,7 @@ public:
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name) :
   KInvestmentViewDecl(parent,name),
-  d(new KInvestmentViewPrivate)
+  d(new Private)
 {
   m_table->setRootIsDecorated(false);
   // m_table->setColumnText(0, i18n("Symbol"));

@@ -32,7 +32,6 @@ class QDate;
 // Project Includes
 
 class MyMoneyMoney;
-class MyMoneyQifProfilePrivate;
 
 /**
   * @author Thomas Baumgart
@@ -120,7 +119,10 @@ private:
   void scanDate(const QString& txt) const;
 
 private:
-  MyMoneyQifProfilePrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
   bool      m_isDirty;
   QString   m_profileName;
   QString   m_profileDescription;

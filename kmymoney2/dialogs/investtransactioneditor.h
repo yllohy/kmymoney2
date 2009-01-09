@@ -30,8 +30,6 @@
 
 #include <kmymoney/transactioneditor.h>
 
-class InvestTransactionEditorPrivate;
-
 class InvestTransactionEditor : public TransactionEditor
 {
   friend class InvestTransactionEditorPrivate;
@@ -162,7 +160,10 @@ private:
   MyMoneySecurity                           m_security;
   MyMoneySecurity                           m_currency;
   MyMoneySplit::investTransactionTypeE      m_transactionType;
-  InvestTransactionEditorPrivate* const     d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif

@@ -53,7 +53,6 @@
 
 class IMyMoneyStorage;
 class MyMoneyTransactionFilter;
-class MyMoneyFilePrivate;
 
 /**
   * This class represents the interface to the MyMoney engine.
@@ -1424,10 +1423,10 @@ private:
     */
   IMyMoneyStorage *m_storage;
 
-  /**
-    * This member points to the private data
-    */
-  MyMoneyFilePrivate* const d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 
   static MyMoneyFile* _instance;
 };

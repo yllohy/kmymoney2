@@ -344,7 +344,6 @@ public:
   void loadPayees(const QValueList<MyMoneyPayee>& list);
 };
 
-class KMyMoneyGeneralComboPrivate;
 class KMyMoneyGeneralCombo : public KComboBox
 {
   Q_OBJECT
@@ -376,7 +375,10 @@ protected slots:
   void slotChangeItem(int idx);
 
 private:
-  KMyMoneyGeneralComboPrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 

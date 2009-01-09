@@ -40,9 +40,6 @@ class kMyMoneyEdit;
 #include <kmymoney/mymoneyaccount.h>
 #include "../dialogs/kendingbalancedlgdecl.h"
 
-class KEndingBalanceDlgPrivate;
-class KEndingBalanceLoanDlgPrivate;
-
 /**
   * This dialog is wizard based and used to enter additional
   * information required to start the reconciliation process.
@@ -91,7 +88,10 @@ signals:
   void createCategory(MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
-  KEndingBalanceDlgPrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 /**
@@ -138,7 +138,10 @@ protected slots:
   void help(void);
 
 private:
-  KEndingBalanceLoanDlgPrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif
