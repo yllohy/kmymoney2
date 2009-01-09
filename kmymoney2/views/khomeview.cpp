@@ -1871,7 +1871,7 @@ void KHomeView::showCashFlowSummary()
   //final conclusion
   MyMoneyMoney profitValue = incomeValue + expenseValue + scheduledIncome + scheduledExpense;
   MyMoneyMoney expectedAsset = liquidAssets + scheduledIncome + scheduledExpense + scheduledLiquidTransfer + scheduledOtherTransfer;
-  MyMoneyMoney expectedLiabilities = liquidLiabilities - scheduledLiquidTransfer;
+  MyMoneyMoney expectedLiabilities = liquidLiabilities + scheduledLiquidTransfer;
 
   QString amountExpectedAsset = expectedAsset.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   QString amountExpectedLiabilities = expectedLiabilities.formatMoney(file->baseCurrency().tradingSymbol(), prec);

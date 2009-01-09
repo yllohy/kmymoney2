@@ -1,6 +1,8 @@
 
 2009-01-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Added chart detail setting to forecast view
+  * Fixed sign of expected liabilities on cash flow summary
+  * Cleaned old code in querytable.cpp
 
 2009-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated German translation
