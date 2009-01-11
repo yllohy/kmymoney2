@@ -59,8 +59,6 @@ class KMyMoneyAccountTreeItem;
 
 namespace NewAccountWizard {
 
-class InstitutionPagePrivate;
-
 class InstitutionPage : public KInstitutionPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
@@ -84,7 +82,10 @@ private slots:
   void slotSelectInstitution(int id);
 
 private:
-  InstitutionPagePrivate*  d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 class AccountTypePage : public KAccountTypePageDecl, public WizardPage<Wizard>
@@ -206,7 +207,6 @@ private slots:
   void slotCalculate(void);
 };
 
-class LoanPaymentPagePrivate;
 class LoanPaymentPage : public KLoanPaymentPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
@@ -242,7 +242,10 @@ protected:
   void updateAmounts(void);
 
 private:
-  LoanPaymentPagePrivate* d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 class LoanSchedulePage : public KLoanSchedulePageDecl, public WizardPage<Wizard>

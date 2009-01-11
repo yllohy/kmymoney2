@@ -360,17 +360,16 @@ bool NewAccountWizard::Wizard::moneyBorrowed(void) const
   return m_generalLoanInfoPage->m_loanDirection->currentItem() == 0;
 }
 
-class NewAccountWizard::InstitutionPagePrivate
+class NewAccountWizard::InstitutionPage::Private
 {
 public:
-  InstitutionPagePrivate() {}
   QValueList<MyMoneyInstitution>  m_list;
 };
 
 InstitutionPage::InstitutionPage(Wizard* wizard, const char* name) :
   KInstitutionPageDecl(wizard),
   WizardPage<Wizard>(StepInstitution, this, wizard, name),
-  d(new InstitutionPagePrivate())
+  d(new Private())
 {
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
   connect(m_newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
@@ -517,7 +516,7 @@ void AccountTypePage::slotUpdateCurrency(void)
   MyMoneyAccount acc;
   acc.setAccountType(accountType());
 
-  m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction()));
+  m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction(currency())));
 
   bool show =  m_currencyComboBox->security().id() != MyMoneyFile::instance()->baseCurrency().id();
   m_conversionLabel->setShown(show);
@@ -847,6 +846,8 @@ LoanDetailsPage::LoanDetailsPage(Wizard* wizard, const char* name) :
 {
   // force the balloon payment to zero (default)
   m_balloonAmount->setValue(MyMoneyMoney());
+  // allow any precision for the interest rate
+  m_interestRate->setPrecision(-1);
 
   connect(m_paymentDue, SIGNAL(activated(int)), this, SLOT(slotValuesChanged()));
 
@@ -1205,7 +1206,7 @@ KMyMoneyWizardPage* LoanDetailsPage::nextPage(void) const
 }
 
 
-class NewAccountWizard::LoanPaymentPagePrivate
+class NewAccountWizard::LoanPaymentPage::Private
 {
 public:
   MyMoneyAccount      phonyAccount;
@@ -1217,7 +1218,7 @@ public:
 LoanPaymentPage::LoanPaymentPage(Wizard* wizard, const char* name) :
   KLoanPaymentPageDecl(wizard),
   WizardPage<Wizard>(StepFees, this, wizard, name),
-  d(new LoanPaymentPagePrivate)
+  d(new Private)
 {
   d->phonyAccount = MyMoneyAccount(QString("Phony-ID"), MyMoneyAccount());
 
@@ -1459,7 +1460,11 @@ HierarchyPage::HierarchyPage(Wizard* wizard, const char* name) :
   KHierarchyPageDecl(wizard),
   WizardPage<Wizard>(StepParentAccount, this, wizard, name)
 {
-  m_mandatoryGroup->add(m_qlistviewParentAccounts);
+  // the next line causes a warning to be shown in the console output
+  // since at least one of the major groups is selected, and the user
+  // cannot deselect an account, at least one is selected all the time
+  // and we don't need this check
+  // m_mandatoryGroup->add(m_qlistviewParentAccounts);
   m_qlistviewParentAccounts->setEnabled(true);
   m_qlistviewParentAccounts->setRootIsDecorated(true);
   m_qlistviewParentAccounts->setAllColumnsShowFocus(true);
@@ -1575,6 +1580,8 @@ void AccountSummaryPage::enterPage(void)
 {
   MyMoneyAccount acc = m_wizard->account();
   MyMoneySecurity sec = m_wizard->currency();
+  acc.fraction(sec);
+
   // assign an id to the account inside the wizard which is required for a schedule
   // get the schedule and clear the id again in the wizards object.
   MyMoneyAccount tmp(QString("Phony-ID"), acc);
@@ -1636,7 +1643,7 @@ void AccountSummaryPage::enterPage(void)
     } else {
       p = new KListViewItem(group, p, i18n("Amount lent"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
     }
-    p = new KListViewItem(group, p, i18n("Interest rate"), QString("%1 %").arg(m_wizard->m_loanDetailsPage->m_interestRate->value().formatMoney("", 3)));
+    p = new KListViewItem(group, p, i18n("Interest rate"), QString("%1 %").arg(m_wizard->m_loanDetailsPage->m_interestRate->value().formatMoney("", -1)));
     p = new KListViewItem(group, p, i18n("Interest rate is"), m_wizard->m_generalLoanInfoPage->m_interestType->currentText());
     p = new KListViewItem(group, p, i18n("Principal and interest"), m_wizard->m_loanDetailsPage->m_paymentAmount->value().formatMoney(acc, sec));
     p = new KListViewItem(group, p, i18n("Additional fees"), m_wizard->m_loanPaymentPage->additionalFees().formatMoney(acc, sec));

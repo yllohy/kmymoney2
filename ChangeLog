@@ -5,6 +5,8 @@
     http://www.kde-apps.org/content/show.php/qt-sqlite3?content=23011
     to the build system
   * Building OFX support is now automatic if required libs are installed
+  * Allow arbitrary precision interest rates for loan accounts
+  * Fixed a bunch of warnings
 
 2009-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Refactored the usage of the 'Private * d' construct
