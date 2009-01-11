@@ -4,6 +4,7 @@
   * Added QT SQLITE3 support from
     http://www.kde-apps.org/content/show.php/qt-sqlite3?content=23011
     to the build system
+  * Building OFX support is now automatic if required libs are installed
 
 2009-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Refactored the usage of the 'Private * d' construct
