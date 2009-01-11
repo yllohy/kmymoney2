@@ -1,19 +1,18 @@
 # translation of ro.po to Română
 #
-# Cristian Onet <onet.cristian@gmail.com>, 2008.
+# Cristian Onet <onet.cristian@gmail.com>, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "POT-Creation-Date: 2009-01-07 23:33+0100\n"
-"PO-Revision-Date: 2008-10-29 18:59+0200\n"
+"PO-Revision-Date: 2009-01-10 13:06+0200\n"
 "Last-Translator: Cristian Onet <onet.cristian@gmail.com>\n"
-"Language-Team: Română <kmymoney2-i18n@lists.sourceforge.net>\n"
+"Language-Team: Română <KMyMoney2-i18n-request@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
+"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
 
 #: wizards/wizardpages/rc.cpp:1
 msgid ""
@@ -285,20 +284,19 @@ msgid ""
 "Please make sure to enter the correct conversion for the selected opening "
 "date. If you requested an online quote it might be provided for a different "
 "date."
-msgstr ""
+msgstr "Introduceţi rata de conversie corectă pentru data de deschidere aleasă. Dacă realizaţi o actualizare online a cotaţiei s-ar putea să primiţi o cotaţie pentru o altă dată."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:555
-#, fuzzy
 msgid "Check date"
-msgstr "Creează"
+msgstr "Data"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:562
 msgid "1 %1 equals %2"
-msgstr ""
+msgstr "1 %1 este egal cu %2"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:577
 msgid "Conversion rate is not positive"
-msgstr ""
+msgstr "Rata de schimb nu este pozitivă"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:583
 msgid "No account name supplied"
@@ -531,8 +529,7 @@ msgid "Create a new asset account"
 msgstr "Creează un nou cont de active"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1382
-msgid ""
-"If the asset account does not yet exist, press this button to create it."
+msgid "If the asset account does not yet exist, press this button to create it."
 msgstr "Dacă contul de active nu există apăsaţi acest buton pentru a-l crea"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1588
@@ -570,9 +567,8 @@ msgstr "Data deschiderii"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1602
 #: wizards/newaccountwizard/rc.cpp:9
-#, fuzzy
 msgid "Conversion rate"
-msgstr "Rata dobânzii"
+msgstr "Rata de schimb"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1605
 #: wizards/newaccountwizard/rc.cpp:15 wizards/newuserwizard/rc.cpp:13
@@ -751,7 +747,7 @@ msgid ""
 "this may well differ. Please consult the account statements to figure out "
 "this value. The opening balance is to be provided in the currency of the "
 "account as selected with the currency button."
-msgstr ""
+msgstr "Soldul de deschidere este soldul contului în momentul în care începeţi gestionarea acestuia cu ajutorul KMyMoney. Pentru conturi noi de obicei această valoare este 0 dar pentru conturi existente ea poate fi diferită. Consultaţi extrasele de cont pentru a afla această valoare. Soldul de deschidere se va da în valuta contului care a fost aleasă cu butonul pentru valute."
 
 #: wizards/newaccountwizard/rc.cpp:10
 msgid ""
@@ -793,7 +789,7 @@ msgid ""
 "For foreign currencies an initial conversion rate needs to be provided. This "
 "should be the price of the foreign currency in the base currency on the "
 "opening date of the account."
-msgstr ""
+msgstr "Pentru valute străine o rată iniţială de conversie trebuie dată. Această rată ar trebui să fie preţul valutei străine în valuta de bază în data deschiderii contului. "
 
 #: wizards/newaccountwizard/rc.cpp:14
 msgid "Account name"
@@ -877,10 +873,8 @@ msgid "Preferred account"
 msgstr "Cont preferat"
 
 #: wizards/newaccountwizard/rc.cpp:18
-msgid ""
-"Mark this checkbox if the account should be maintained as preferred account"
-msgstr ""
-"Bifaţi acestă căsuţă dacă doriţi ca acest cont să fie un cont preferat."
+msgid "Mark this checkbox if the account should be maintained as preferred account"
+msgstr "Bifaţi acestă căsuţă dacă doriţi ca acest cont să fie un cont preferat."
 
 #: wizards/newaccountwizard/rc.cpp:19
 msgid ""
@@ -897,9 +891,8 @@ msgstr ""
 "aplicaţiei KMyMoney."
 
 #: wizards/newaccountwizard/rc.cpp:21
-#, fuzzy
 msgid "Online quote"
-msgstr "Cotaţii online"
+msgstr "Cotaţie online"
 
 #: wizards/newaccountwizard/rc.cpp:22
 msgid ""
@@ -1090,8 +1083,7 @@ msgstr "Variabilă"
 
 #: wizards/newaccountwizard/rc.cpp:52
 msgid "Time between interest changes"
-msgstr ""
-"Intervalul de timp dintre momentele în care se recalculează rata dobânzii"
+msgstr "Intervalul de timp dintre momentele în care se recalculează rata dobânzii"
 
 #: dialogs/knewloanwizard.cpp:611 wizards/newaccountwizard/rc.cpp:53
 msgid "Days"
@@ -1127,9 +1119,8 @@ msgid "Select the institution which manages this account or leave empty"
 msgstr "Alegeţi instituţia care gestionează contul sau lăsaţi necompletat"
 
 #: wizards/newaccountwizard/rc.cpp:63
-#, fuzzy
 msgid "New Institution"
-msgstr "Instituţie &nouă"
+msgstr "Instituţie nouă"
 
 #: wizards/newaccountwizard/rc.cpp:65
 msgid ""
@@ -1335,8 +1326,7 @@ msgid "Refinance existing loan"
 msgstr "Refinanţează un împrumut existent"
 
 #: wizards/newaccountwizard/rc.cpp:97
-msgid ""
-"Check this if you are refinancing a loan that already exists in KMyMoney"
+msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
 msgstr ""
 "Bifaţi această opţiune dacă refinanţaţi un împrumut care există deja în "
 "KMyMoney."
@@ -1493,8 +1483,7 @@ msgstr ""
 
 #: wizards/newuserwizard/rc.cpp:2
 msgid "I have a checking account that I want to manage with KMyMoney"
-msgstr ""
-"Am un cont curent şi vreau să-l gestionez cu ajutorul aplicaţiei KMyMoney"
+msgstr "Am un cont curent şi vreau să-l gestionez cu ajutorul aplicaţiei KMyMoney"
 
 #: wizards/newuserwizard/rc.cpp:3
 msgid "The name of the instititution that issued the account."
@@ -1601,6 +1590,12 @@ msgid ""
 "<li>the filename is not currently used in this directory.</li>\n"
 "</ul>"
 msgstr ""
+"Fie că fişierul dat există sau directorul dat nu există. Asiguraţi-vă că\n"
+"\n"
+"<ul>\n"
+"<li>directorul ales există şi</li>\n"
+"<li>fişierul ales nu este folosit în acest moment în acest director</li>\n"
+"</ul>"
 
 #: wizards/newuserwizard/rc.cpp:20
 msgid ""
@@ -1674,7 +1669,6 @@ msgid "Configure preferences now"
 msgstr "Configurează preferinţele acum"
 
 #: wizards/newuserwizard/rc.cpp:35
-#, fuzzy
 msgid ""
 "You can change the configuration options at any time using the configuration "
 "dialog. Just select the <b>Configure KMyMoney...</b> option in the "
@@ -1904,8 +1898,7 @@ msgstr "  * Beneficiarul %1 a fost recreat cu identificator fix"
 
 #: mymoney/mymoneyfile.cpp:1583
 msgid "  * Payee id updated in split of transaction '%1'."
-msgstr ""
-"  * Identificatorul beneficiarului a fost actualizat în tranzacţia '%1'."
+msgstr "  * Identificatorul beneficiarului a fost actualizat în tranzacţia '%1'."
 
 #: mymoney/mymoneyfile.cpp:1596
 msgid "  * shares set to value in split of transaction '%1'."
@@ -1934,8 +1927,7 @@ msgstr ""
 "1'."
 
 #: mymoney/mymoneyfile.cpp:1649
-msgid ""
-"  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
+msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
 msgstr ""
 "  * O parte din tranzacţia '%1' conţine o valoare nenulă iar acţiunile au "
 "valoare nulă."
@@ -2087,12 +2079,10 @@ msgid "No plugins loaded"
 msgstr "Nu au fost încărcate funcţii suplimentare"
 
 #: kmymoney2.cpp:303
-#, fuzzy
 msgid "Open database..."
 msgstr "Deschide baza de date..."
 
 #: kmymoney2.cpp:304
-#, fuzzy
 msgid "Save as database..."
 msgstr "Salvează ca bază de date..."
 
@@ -2101,22 +2091,18 @@ msgid "Backup..."
 msgstr "Copie de siguranţă..."
 
 #: kmymoney2.cpp:306 kmymoney2.cpp:312
-#, fuzzy
 msgid "QIF..."
 msgstr "QIF..."
 
 #: kmymoney2.cpp:307
-#, fuzzy
 msgid "Gnucash..."
 msgstr "Gnucash..."
 
 #: kmymoney2.cpp:308
-#, fuzzy
 msgid "Statement file..."
 msgstr "Fişier extras de cont..."
 
 #: kmymoney2.cpp:310 kmymoney2.cpp:311
-#, fuzzy
 msgid "Account Template..."
 msgstr "Cont şablon..."
 
@@ -2230,9 +2216,8 @@ msgid "Update account..."
 msgstr "Actualizează cont..."
 
 #: kmymoney2.cpp:364
-#, fuzzy
 msgid "Update all accounts..."
-msgstr "Actualizează cont..."
+msgstr "Actualizează toate conturile..."
 
 #: kmymoney2.cpp:369
 msgid "New category..."
@@ -2251,17 +2236,14 @@ msgid "QIF Profile Editor..."
 msgstr "Editor de profil QIF"
 
 #: kmymoney2.cpp:378
-#, fuzzy
 msgid "Securities..."
 msgstr "Titluri de valoare..."
 
 #: kmymoney2.cpp:379
-#, fuzzy
 msgid "Currencies..."
 msgstr "Monede..."
 
 #: kmymoney2.cpp:380
-#, fuzzy
 msgid "Prices..."
 msgstr "Preţuri..."
 
@@ -2871,9 +2853,9 @@ msgid "Unable to delete institution: %1"
 msgstr "Nu s-a putut şterge instituţia: %1"
 
 #: kmymoney2.cpp:2238
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to find account: %1"
-msgstr "Nu s-a putut adăuga contul: %1"
+msgstr "Nu s-a putut găsi contul: %1"
 
 #: kmymoney2.cpp:2279
 msgid ""
@@ -2931,9 +2913,8 @@ msgstr ""
 "Doriţi sa îl creaţi acum?"
 
 #: kmymoney2.cpp:2487
-#, fuzzy
 msgid "Create security"
-msgstr "Şterge titlul de valoare"
+msgstr "Creează titlul de valoare"
 
 #: kmymoney2.cpp:2521
 msgid "Do you really want to delete the investment <b>%1</b>?"
@@ -2953,25 +2934,20 @@ msgid "Unable to add schedule: "
 msgstr "Nu s-a putut adăuga transferul programat: "
 
 #: kmymoney2.cpp:2692
-#, fuzzy
 msgid "Adjusting transactions..."
 msgstr "Se ajustează tranzacţii..."
 
 #: kmymoney2.cpp:2717
-#, fuzzy
 msgid "Adjusting schedules..."
 msgstr "Se ajustează programările... "
 
 #: kmymoney2.cpp:2735
-#, fuzzy
 msgid "Adjusting budgets..."
 msgstr "Se ajustează bugete..."
 
 #: kmymoney2.cpp:2753
-msgid ""
-"Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
-msgstr ""
-"Nu s-a putut schimba categoria <b>%1</b> cu categoria <b>%2</b>. Motivul: %3"
+msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
+msgstr "Nu s-a putut schimba categoria <b>%1</b> cu categoria <b>%2</b>. Motivul: %3"
 
 #: kmymoney2.cpp:2774
 msgid "Do you really want to delete category <b>%1</b>?"
@@ -3010,8 +2986,7 @@ msgstr ""
 
 #: kmymoney2.cpp:2848
 msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
-msgstr ""
-"Nu s-a putut şterge o sub-categorie a categoriei <b>%1</b>. Motivul: %2"
+msgstr "Nu s-a putut şterge o sub-categorie a categoriei <b>%1</b>. Motivul: %2"
 
 #: kmymoney2.cpp:2859
 msgid "Do you really want to delete account <b>%1</b>?"
@@ -3132,8 +3107,7 @@ msgstr "Sunteţi siguri că doriţi să ştergeţi plata programată <b>%1</b>?"
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "schedule."
-msgstr ""
-"În cazul plăţilor pentru împrumuturi nu este posibilă recreerea programului."
+msgstr "În cazul plăţilor pentru împrumuturi nu este posibilă recreerea programului."
 
 #: kmymoney2.cpp:3523
 msgid "Unable to remove schedule '%1'"
@@ -3448,10 +3422,8 @@ msgid "Checking for overdue schedules..."
 msgstr "Se verifică existenţa unor plăţi programate restante..."
 
 #: kmymoney2.cpp:5642
-msgid ""
-"You must first select a KMyMoney file before you can import a statement."
-msgstr ""
-"Înainte să puteţi importa un bilanţ trebuie să alegeţi un fişier KMyMoney."
+msgid "You must first select a KMyMoney file before you can import a statement."
+msgstr "Înainte să puteţi importa un bilanţ trebuie să alegeţi un fişier KMyMoney."
 
 #: kmymoney2.cpp:5648
 msgid "Importing a statement via Web Connect"
@@ -3499,7 +3471,6 @@ msgid "not loaded: %1"
 msgstr "neîncărcată: %1"
 
 #: kmymoney2.cpp:5759
-#, fuzzy
 msgid "Auto saving..."
 msgstr "Se salvează automat..."
 
@@ -3555,8 +3526,7 @@ msgstr "Eroare de tip de fişier"
 
 #: converter/mymoneytemplate.cpp:93
 msgid "Error while reading template file <b>%1</b> in line %2, column %3"
-msgstr ""
-"Eroare la citirea fişierului şablon <b>%1</b> în linia %2, la coloana %3s"
+msgstr "Eroare la citirea fişierului şablon <b>%1</b> în linia %2, la coloana %3s"
 
 #: converter/mymoneytemplate.cpp:94
 msgid "Template Error"
@@ -3577,12 +3547,10 @@ msgstr "Se încarcă şablonul %1s"
 
 #: converter/mymoneytemplate.cpp:241
 msgid "Invalid top-level account type <b>%1</b> in template file <b>%2</b>!"
-msgstr ""
-"Tipul de cont rădăcină <b>%1</b> este invalid în fişierul şablon <b>%2</b>!"
+msgstr "Tipul de cont rădăcină <b>%1</b> este invalid în fişierul şablon <b>%2</b>!"
 
 #: converter/mymoneytemplate.cpp:309
-msgid ""
-"Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
+msgid "Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
 msgstr ""
 "Tipul de stare <b>%1</b> pentru contul <b>%3</b> este invalid în fişierul "
 "şablon <b>%2</b>!"
@@ -3628,7 +3596,6 @@ msgid "Unable to update price for %1"
 msgstr "Nu s-a putut deschide preţul pentru %1"
 
 #: converter/mymoneyqifreader.cpp:161
-#, fuzzy
 msgid ""
 "_: Category name\n"
 "Reinvested dividend"
@@ -3638,91 +3605,88 @@ msgstr "Dividend reinvestit"
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (long term)"
-msgstr ""
+msgstr "Dividend reinvestit (termen lung)"
 
 #: converter/mymoneyqifreader.cpp:167
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (short term)"
-msgstr ""
+msgstr "Dividend reinvestit (termen scurt)"
 
 #: converter/mymoneyqifreader.cpp:170
 msgid ""
 "_: Category name\n"
 "Dividend"
-msgstr ""
+msgstr "Dividend"
 
 #: converter/mymoneyqifreader.cpp:173
 msgid ""
 "_: Category name\n"
 "Interest"
-msgstr ""
+msgstr "Dobândă"
 
 #: converter/mymoneyqifreader.cpp:176
 msgid ""
 "_: Category name\n"
 "Capital Gain (short term)"
-msgstr ""
+msgstr "Câştig din capital (termen scurt)"
 
 #: converter/mymoneyqifreader.cpp:179
 msgid ""
 "_: Category name\n"
 "Capital Gain (mid term)"
-msgstr ""
+msgstr "Câştig din capital (termen mediu)"
 
 #: converter/mymoneyqifreader.cpp:182
 msgid ""
 "_: Category name\n"
 "Capital Gain (long term)"
-msgstr ""
+msgstr "Câştig din capital (termen lung)"
 
 #: converter/mymoneyqifreader.cpp:185
 msgid ""
 "_: Category name\n"
 "Returned capital"
-msgstr ""
+msgstr "Capital revenit"
 
 #: converter/mymoneyqifreader.cpp:188
 msgid ""
 "_: Category name\n"
 "Miscellaneous income"
-msgstr ""
+msgstr "Alte venituri"
 
 #: converter/mymoneyqifreader.cpp:191
 msgid ""
 "_: Category name\n"
 "Miscellaneous expense"
-msgstr ""
+msgstr "Alte cheltuieli"
 
 #: converter/mymoneyqifreader.cpp:194
 msgid ""
 "_: Category name\n"
 "Investment fees"
-msgstr ""
+msgstr "Comisioane pe investiţie"
 
 #: converter/mymoneyqifreader.cpp:196
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown QIF type %1"
-msgstr "Beneficiar necunoscut"
+msgstr "Tipul QIF %1 este necunoscut"
 
 #: converter/mymoneyqifreader.cpp:346
-#, fuzzy
 msgid "Date format selection"
-msgstr "Selectare categorie"
+msgstr "Selectarea formatului de dată"
 
 #: converter/mymoneyqifreader.cpp:346
 msgid "Pick the date format that suits your input file"
-msgstr ""
+msgstr "Alegeţi formatul de dată care corespunde fişierului dumneavoastră"
 
 #: converter/mymoneyqifreader.cpp:357
-#, fuzzy
 msgid "Importing QIF ..."
-msgstr "Se importă fişierul..."
+msgstr "Se importă QIF..."
 
 #: converter/mymoneyqifreader.cpp:433
-#, fuzzy
 msgid "Reading QIF ..."
-msgstr "QIF..."
+msgstr "Se citeşte QIF..."
 
 #: converter/mymoneyqifreader.cpp:498
 msgid "Adding transactions"
@@ -3740,39 +3704,37 @@ msgstr "Nu s-au putut adăuga tranzacţii"
 msgid ""
 "_: QIF tag for liability account\n"
 "Oth L"
-msgstr ""
+msgstr "Oth L"
 
 #: converter/mymoneyqifreader.cpp:563
-#, fuzzy
 msgid ""
 "_: QIF tag for category\n"
 "Cat"
-msgstr "TVA"
+msgstr "Cat"
 
 #: converter/mymoneyqifreader.cpp:566
 msgid ""
 "_: QIF tag for security\n"
 "Security"
-msgstr ""
+msgstr "Security"
 
 #: converter/mymoneyqifreader.cpp:569
-#, fuzzy
 msgid ""
 "_: QIF tag for investment account\n"
 "Invst"
-msgstr "Include doar conturi de investiţii"
+msgstr "Invst"
 
 #: converter/mymoneyqifreader.cpp:572
 msgid ""
 "_: QIF tag for prices\n"
 "Prices"
-msgstr ""
+msgstr "Prices"
 
 #: converter/mymoneyqifreader.cpp:590
 msgid ""
 "_: QIF tag for a class\n"
 "Class"
-msgstr ""
+msgstr "Class"
 
 #: converter/mymoneyqifreader.cpp:743 converter/mymoneyqifreader.cpp:2191
 msgid ""
@@ -3791,29 +3753,26 @@ msgstr "Suprascrie soldul de deschidere"
 #: converter/mymoneyqifreader.cpp:869 converter/mymoneyqifreader.cpp:880
 #: converter/mymoneyqifreader.cpp:904
 msgid "Autogenerated by QIF importer"
-msgstr ""
+msgstr "Autogenerat de procesul de import QIF"
 
 #: converter/mymoneyqifreader.cpp:897
-#, fuzzy
 msgid "QIF imported, no account name supplied"
-msgstr "Nu a fost dat un nume de cont"
+msgstr "QIF importat, nu a fost dat un nume de cont"
 
 #: converter/mymoneyqifreader.cpp:930
 msgid ""
 "KMyMoney has imported a second opening balance transaction into account <b>%"
 "1</b> which differs from the one found already on file. Please correct this "
 "manually once the import is done."
-msgstr ""
+msgstr "KMyMoney a importat un o al doilea tranzacţie de sold de deschidere în contul <b>%1</b> care diferă de cel găsit deja în fişier. Corectaţi această problemă manual odată ce importul se încheie."
 
 #: converter/mymoneyqifreader.cpp:930
-#, fuzzy
 msgid "Opening balance problem"
-msgstr "Soldul iniţial"
+msgstr "Problemă cu soldul iniţial"
 
 #: converter/mymoneyqifreader.cpp:953
-#, fuzzy
 msgid "Error while creating opening balance transaction"
-msgstr "Modifică tranzacţiile marcate"
+msgstr "Erroare la creerea tranzacţiei de sold iniţial"
 
 #: converter/mymoneyqifreader.cpp:1019 converter/mymoneyqifreader.cpp:1265
 msgid ""
@@ -3856,13 +3815,12 @@ msgid "Security not found"
 msgstr "Nu s-a găsit titlul de valoare"
 
 #: converter/mymoneyqifreader.cpp:2009
-#, fuzzy
 msgid "%1 (Investment)"
-msgstr "Investiţie"
+msgstr "%1 (Investiţie)"
 
 #: converter/mymoneyqifreader.cpp:2010
 msgid "Autogenerated by QIF importer from type Mutual account entry"
-msgstr ""
+msgstr "Autogenerat de procesul de import QIF din tipul de intrare Cont mutual"
 
 #: converter/mymoneyqifreader.cpp:2073 converter/mymoneyqifreader.cpp:2216
 msgid "account"
@@ -3901,8 +3859,7 @@ msgstr "Alege %1"
 msgid ""
 "The %1 <b>%2</b> currently exists. Do you want to import transactions to "
 "this account?"
-msgstr ""
-"%1 <b>%2</b> deja există. Doriţi să importaţi tranzacţii în acest cont?"
+msgstr "%1 <b>%2</b> deja există. Doriţi să importaţi tranzacţii în acest cont?"
 
 #: converter/mymoneyqifreader.cpp:2135
 msgid ""
@@ -3937,12 +3894,10 @@ msgid "You must select or create a category."
 msgstr "Trebuie să selectaţi sau să creaţi o categorie."
 
 #: converter/mymoneystatementreader.cpp:95
-#, fuzzy
 msgid "_Fees"
 msgstr "Taxe"
 
 #: converter/mymoneystatementreader.cpp:101
-#, fuzzy
 msgid "_Dividend"
 msgstr "Dividend"
 
@@ -3952,14 +3907,12 @@ msgid "Importing statement for account %1"
 msgstr "importă extrasul pentru contul %1"
 
 #: converter/mymoneystatementreader.cpp:283
-#, fuzzy
 msgid "Importing statement without transactions"
-msgstr "importă extrasul pentru contul %1"
+msgstr "Se importă extrasul fără tranzacţii"
 
 #: converter/mymoneystatementreader.cpp:377
-#, fuzzy
 msgid "  Statement balance is not contained in statement."
-msgstr "Soldul iniţial al acestui extras:"
+msgstr "  Soldul extrasului nu se găseşte în extras:"
 
 #: converter/mymoneystatementreader.cpp:379
 msgid "  Statement balance on %1 is reported to be %2"
@@ -4056,28 +4009,26 @@ msgstr "A fost găsit un program"
 
 #: converter/mymoneystatementreader.cpp:1117
 msgid "Problem adding or matching imported transaction with id '%1': %2"
-msgstr ""
-"Problemă la adăugarea sau asocierea tranzacţiilor importate cu id '%1': %2"
+msgstr "Problemă la adăugarea sau asocierea tranzacţiilor importate cu id '%1': %2"
 
 #: converter/mymoneystatementreader.cpp:1166
-msgid ""
-"<b>You have downloaded a statement for the following account:</b><br><br>"
+msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr "<b>Aţi descărcat un extras pentru următorul cont:</b><br><br>"
 
 #: converter/mymoneystatementreader.cpp:1167
-#, fuzzy, c-format
+#, c-format
 msgid " - Account Name: %1"
-msgstr " - Numele contului: %1 <br>"
+msgstr " - Numele contului: %1"
 
 #: converter/mymoneystatementreader.cpp:1168
-#, fuzzy, c-format
+#, c-format
 msgid " - Account Type: %1"
-msgstr " - Tipul contului: %1 <br>"
+msgstr " - Tipul contului: %1"
 
 #: converter/mymoneystatementreader.cpp:1169
-#, fuzzy, c-format
+#, c-format
 msgid " - Account Number: %1"
-msgstr " - Numărul contului: %1 <br>"
+msgstr " - Numărul contului: %1"
 
 #: converter/mymoneystatementreader.cpp:1177
 msgid "Do you want to import transactions to this account?"
@@ -4390,8 +4341,7 @@ msgstr ""
 
 #: converter/mymoneygncreader.cpp:2416
 msgid "Schedule %1 has interval of %2 which is not currently available"
-msgstr ""
-"Programul %1 are un interval de %2 care nu este disponibil în acest moment"
+msgstr "Programul %1 are un interval de %2 care nu este disponibil în acest moment"
 
 #: converter/mymoneygncreader.cpp:2417
 msgid "Schedule %1 dropped at user request"
@@ -4490,7 +4440,6 @@ msgid "Forecast (history)"
 msgstr "Estimare (istoric)"
 
 #: kmymoneyutils.cpp:241
-#, fuzzy
 msgid "Assets and Liabilities"
 msgstr "Active şi pasive"
 
@@ -4500,9 +4449,8 @@ msgid "Budget"
 msgstr "Buget"
 
 #: kmymoneyutils.cpp:243
-#, fuzzy
 msgid "CashFlow"
-msgstr "Numerar"
+msgstr "Fluxul de numerar"
 
 #: dialogs/kenterscheduledlg.cpp:153 kmymoneyutils.cpp:554
 msgid "Unable to load schedule details"
@@ -4565,7 +4513,6 @@ msgstr ""
 "faceţi clic dreapta în antetul vizualizării registrului?\n"
 
 #: _tips.cpp:9
-#, fuzzy
 msgid ""
 "<p>...that you can easily move to the other side of a transfer transaction\n"
 "by opening the context menu with the right mouse button and selecting one of "
@@ -4629,8 +4576,7 @@ msgstr ""
 
 #: _tips.cpp:49
 msgid "<p>...that the KMyMoney development team wishes you a nice day?\n"
-msgstr ""
-"<p>...echipa de dezvoltare a programului KMyMoney vă urează o zi minunată?\n"
+msgstr "<p>...echipa de dezvoltare a programului KMyMoney vă urează o zi minunată?\n"
 
 #: _tips.cpp:54
 msgid ""
@@ -4695,7 +4641,6 @@ msgstr ""
 "unui cont? Puteţi, de asemenea, face vizibil formularul tranzacţiei.\n"
 
 #: _tips.cpp:99
-#, fuzzy
 msgid ""
 "<p>...that you can actively support the KMyMoney development team in\n"
 "cases that heavily depend on your data? You can save your data in an\n"
@@ -5017,9 +4962,8 @@ msgid "Difference"
 msgstr "Diferenţa"
 
 #: reports/pivottable.cpp:2369
-#, fuzzy
 msgid "Moving Average"
-msgstr "Mutarea mediei simplă"
+msgstr "Media glisantă"
 
 #: reports/objectinfotable.cpp:214 reports/querytable.cpp:758
 #: reports/querytable.cpp:797 views/kpayeesview.cpp:670
@@ -5410,7 +5354,7 @@ msgstr ""
 
 #: rc.cpp:51
 msgid "Show title bar on each view"
-msgstr ""
+msgstr "Arată bara de titlu în fiecare ecran"
 
 #: rc.cpp:52
 msgid "Order of items on homepage"
@@ -5418,8 +5362,7 @@ msgstr "Ordinea elementelor pe prima pagină"
 
 #: rc.cpp:53
 msgid "Percentage of default font size used for home view HTML page"
-msgstr ""
-"Procentul din mărimea standard de fonturi folosit pentru pagina de start"
+msgstr "Procentul din mărimea standard de fonturi folosit pentru pagina de start"
 
 #: rc.cpp:54
 msgid "Remember (manually adjusted) font size in home view on program end."
@@ -5429,7 +5372,7 @@ msgstr ""
 
 #: rc.cpp:55
 msgid "Show account limit information on the Homepage"
-msgstr ""
+msgstr "Arată informaţii despre limitele contului în pagina de start"
 
 #: rc.cpp:57
 msgid "Hide closed accounts"
@@ -5532,16 +5475,14 @@ msgid "Sort order of register in search dialog"
 msgstr "Ordinea de sortare a registrului în modul de căutare"
 
 #: rc.cpp:84
-msgid ""
-"Default reconciliation state for transactions entered during reconciliation"
+msgid "Default reconciliation state for transactions entered during reconciliation"
 msgstr ""
 "Starea implicită a reconcilierii pentru tranzacţiile introduse în timpul "
 "reconcilierii"
 
 #: rc.cpp:85
 msgid "Number of days (plus/minus) to search for matching transactions"
-msgstr ""
-"Numărul de zile (plus/minus) pentru căutarea tranzacţiilor care se asociază"
+msgstr "Numărul de zile (plus/minus) pentru căutarea tranzacţiilor care se asociază"
 
 #: rc.cpp:86
 msgid "Method to calculate forecast"
@@ -5573,37 +5514,35 @@ msgstr "Ignoră data deschiderii la preluarea tranzacţiilor"
 
 #: rc.cpp:93
 msgid "Include future transaction when using Schedule Forecast"
-msgstr ""
+msgstr "Include tranzacţii viitoare când se foloseşte estimarea programării"
 
 #: rc.cpp:94
-#, fuzzy
 msgid "Include scheduled transactions when using Schedule Forecast"
-msgstr "Include tranzacţiile programate"
+msgstr "Include tranzacţiile programate când se foloseşte estimarea programării"
 
 #: rc.cpp:95
 msgid "additional names for cash account"
-msgstr ""
+msgstr "nume adiţionale pentru contul de numerar"
 
 #: rc.cpp:96
 msgid "additional names for checking account"
-msgstr ""
+msgstr "nume adiţionale pentru contul curent"
 
 #: rc.cpp:97
 msgid "additional names for credit card account"
-msgstr ""
+msgstr "nume adiţionale pentru contul de card de credit"
 
 #: rc.cpp:98
-#, fuzzy
 msgid "additional names for asset account"
-msgstr "Creează un nou cont de active"
+msgstr "nume adiţionale pentru contul de active"
 
 #: rc.cpp:99
 msgid "additional names for opening balance payee"
-msgstr ""
+msgstr "nume adiţionale pentru beneficiarul/plătitorul soldului de deschidere"
 
 #: rc.cpp:100
 msgid "additional names for invoice accounts"
-msgstr ""
+msgstr "nume adiţionale pentru contul de facturi"
 
 #: rc.cpp:101 widgets/rc.cpp:159 widgets/rc.cpp:161
 msgid "..."
@@ -5679,7 +5618,7 @@ msgstr "Plata împrumutului de la %1"
 msgid ""
 "_: Split transaction (category replacement)\n"
 "Split transaction"
-msgstr "Împarte tranzacţia"
+msgstr "Tranzacţie compusă"
 
 #: views/kreportsview.cpp:262
 msgid ""
@@ -5830,9 +5769,8 @@ msgid "Income and Expenses This Year"
 msgstr "Venituri şi cheltuieli în acest an"
 
 #: views/kreportsview.cpp:957
-#, fuzzy
 msgid "Income and Expenses By Year"
-msgstr "Venituri şi cheltuieli în acest an"
+msgstr "Venituri şi cheltuieli în funcţie de an"
 
 #: views/kreportsview.cpp:967
 msgid "Income and Expenses Graph"
@@ -5928,14 +5866,12 @@ msgid "Investment Worth Graph"
 msgstr "Graficul valorii de investiţii"
 
 #: views/kreportsview.cpp:1214
-#, fuzzy
 msgid "Investment Moving Average"
-msgstr "Mutarea mediei extinsă"
+msgstr "Media glisantă a investiţiei"
 
 #: views/kreportsview.cpp:1231
-#, fuzzy
 msgid "Investment Moving Average vs Actual"
-msgstr "Mutarea mediei extinsă"
+msgstr "Media glisantă a investiţiei faţă de Actual"
 
 #: views/kreportsview.cpp:1247
 msgid "Taxes"
@@ -5955,8 +5891,7 @@ msgstr "Tranzacţii de impozite ordonate după categorie în ultimul an fiscal"
 
 #: views/kreportsview.cpp:1281
 msgid "Tax Transactions by Payee Last Fiscal Year"
-msgstr ""
-"Tranzacţii de impozite ordonate după beneficiar/plătitor în ultimul an fiscal"
+msgstr "Tranzacţii de impozite ordonate după beneficiar/plătitor în ultimul an fiscal"
 
 #: views/kreportsview.cpp:1288
 msgid "Budgeting"
@@ -6239,7 +6174,7 @@ msgstr ""
 
 #: views/kmymoneyview.cpp:1393
 msgid "Afghanistan Afghani"
-msgstr "Afganiul Afgan"
+msgstr "Afgan Afgan"
 
 #: views/kmymoneyview.cpp:1394
 msgid "Albanian Lek"
@@ -6255,11 +6190,11 @@ msgstr "Dinar algerian"
 
 #: views/kmymoneyview.cpp:1397
 msgid "Andorran Franc"
-msgstr "Andorran Franc"
+msgstr "Franc andorez"
 
 #: views/kmymoneyview.cpp:1398
 msgid "Andorran Peseta"
-msgstr "Andorran Peseta"
+msgstr "Peseta Andoreză"
 
 #: views/kmymoneyview.cpp:1399
 msgid "Angolan New Kwanza"
@@ -6267,11 +6202,11 @@ msgstr "Kwanza nouă angoleză"
 
 #: views/kmymoneyview.cpp:1400
 msgid "Argentine Peso"
-msgstr "Argentine Peso"
+msgstr "Peso argentinian"
 
 #: views/kmymoneyview.cpp:1401
 msgid "Aruban Florin"
-msgstr "Aruban Florin"
+msgstr "Florin Aruba"
 
 #: views/kmymoneyview.cpp:1402
 msgid "Australian Dollar"
@@ -6279,23 +6214,23 @@ msgstr "Dolar australian"
 
 #: views/kmymoneyview.cpp:1403
 msgid "Azerbaijani Manat"
-msgstr "Azerbaijani Manat"
+msgstr "Manat azer"
 
 #: views/kmymoneyview.cpp:1404
 msgid "Bahamian Dollar"
-msgstr "Bahamian Dollar"
+msgstr "Dolar Bahamas"
 
 #: views/kmymoneyview.cpp:1405
 msgid "Bahraini Dinar"
-msgstr "Bahraini Dinar"
+msgstr "Dinar Bahrein"
 
 #: views/kmymoneyview.cpp:1406
 msgid "Bangladeshi Taka"
-msgstr "Bangladeshi Taka"
+msgstr "Taka Bangladesh"
 
 #: views/kmymoneyview.cpp:1407
 msgid "Barbados Dollar"
-msgstr "Barbados Dollar"
+msgstr "Dolar Barbados"
 
 #: views/kmymoneyview.cpp:1408
 msgid "Belarussian Ruble"
@@ -6303,47 +6238,47 @@ msgstr "Belarussian Ruble"
 
 #: views/kmymoneyview.cpp:1409
 msgid "Belize Dollar"
-msgstr "Belize Dollar"
+msgstr "Rublă bielorusă"
 
 #: views/kmymoneyview.cpp:1410
 msgid "Bermudian Dollar"
-msgstr "Bermudian Dollar"
+msgstr "Dolar Bermude"
 
 #: views/kmymoneyview.cpp:1411
 msgid "Bhutan Ngultrum"
-msgstr "Bhutan Ngultrum"
+msgstr "Ngultrum Bhutan"
 
 #: views/kmymoneyview.cpp:1412
 msgid "Bolivian Boliviano"
-msgstr "Bolivian Boliviano"
+msgstr "Boliviano Bolivian"
 
 #: views/kmymoneyview.cpp:1413
 msgid "Bosnian Convertible Mark"
-msgstr "Bosnian Convertible Mark"
+msgstr "Marcă bosniacă"
 
 #: views/kmymoneyview.cpp:1414
 msgid "Botswana Pula"
-msgstr "Botswana Pula"
+msgstr "Pula Botswana"
 
 #: views/kmymoneyview.cpp:1415
 msgid "Brazilian Real"
-msgstr "Brazilian Real"
+msgstr "Real brazilian"
 
 #: views/kmymoneyview.cpp:1416
 msgid "British Pound"
-msgstr "British Pound"
+msgstr "Liră sterlină"
 
 #: views/kmymoneyview.cpp:1417
 msgid "Brunei Dollar"
-msgstr "Brunei Dollar"
+msgstr "Dolar Brunei"
 
 #: views/kmymoneyview.cpp:1418
 msgid "Bulgarian Lev"
-msgstr "Bulgarian Lev"
+msgstr "Levă bulgară"
 
 #: views/kmymoneyview.cpp:1419
 msgid "Burundi Franc"
-msgstr "Burundi Franc"
+msgstr "Franc Burundi"
 
 #: views/kmymoneyview.cpp:1420
 msgid "CFA Franc BEAC"
@@ -6355,91 +6290,91 @@ msgstr "CFA Franc BCEAO"
 
 #: views/kmymoneyview.cpp:1422
 msgid "CFP Franc Pacifique"
-msgstr "CFP Franc Pacifique"
+msgstr "CFP Franc Pacific"
 
 #: views/kmymoneyview.cpp:1423
 msgid "Cambodia Riel"
-msgstr "Cambodia Riel"
+msgstr "Riel cambodgian"
 
 #: views/kmymoneyview.cpp:1424
 msgid "Canadian Dollar"
-msgstr "Canadian Dollar"
+msgstr "Dolar canadian"
 
 #: views/kmymoneyview.cpp:1425
 msgid "Cape Verde Escudo"
-msgstr "Cape Verde Escudo"
+msgstr "Escudo Capul Verde"
 
 #: views/kmymoneyview.cpp:1426
 msgid "Cayman Islands Dollar"
-msgstr "Cayman Islands Dollar"
+msgstr "Dolar Insulele Cayman"
 
 #: views/kmymoneyview.cpp:1427
 msgid "Chilean Peso"
-msgstr "Chilean Peso"
+msgstr "Peso Chile"
 
 #: views/kmymoneyview.cpp:1428
 msgid "Chinese Yuan Renminbi"
-msgstr "Chinese Yuan Renminbi"
+msgstr "Yuan China Renminbi"
 
 #: views/kmymoneyview.cpp:1429
 msgid "Colombian Peso"
-msgstr "Colombian Peso"
+msgstr "Peso columbian"
 
 #: views/kmymoneyview.cpp:1430
 msgid "Comoros Franc"
-msgstr "Comoros Franc"
+msgstr "Franc comorian"
 
 #: views/kmymoneyview.cpp:1431
 msgid "Costa Rican Colon"
-msgstr "Costa Rican Colon"
+msgstr "Colón costarican"
 
 #: views/kmymoneyview.cpp:1432
 msgid "Croatian Kuna"
-msgstr "Croatian Kuna"
+msgstr "Kună croată"
 
 #: views/kmymoneyview.cpp:1433
 msgid "Cuban Peso"
-msgstr "Cuban Peso"
+msgstr "Peso cubanez"
 
 #: views/kmymoneyview.cpp:1434
 msgid "Czech Koruna"
-msgstr "Czech Koruna"
+msgstr "Coroană cehă"
 
 #: views/kmymoneyview.cpp:1435
 msgid "Danish Krone"
-msgstr "Danish Krone"
+msgstr "Coroană daneză"
 
 #: views/kmymoneyview.cpp:1436
 msgid "Djibouti Franc"
-msgstr "Djibouti Franc"
+msgstr "Franc Djibouti"
 
 #: views/kmymoneyview.cpp:1437
 msgid "Dominican Peso"
-msgstr "Dominican Peso"
+msgstr "Peso dominican"
 
 #: views/kmymoneyview.cpp:1438
 msgid "East Caribbean Dollar"
-msgstr "East Caribbean Dollar"
+msgstr "Dolar Caraibele de est"
 
 #: views/kmymoneyview.cpp:1439
 msgid "Egyptian Pound"
-msgstr "Egyptian Pound"
+msgstr "Liră egiptieană"
 
 #: views/kmymoneyview.cpp:1440
 msgid "El Salvador Colon"
-msgstr "El Salvador Colon"
+msgstr "Colón salvadorian"
 
 #: views/kmymoneyview.cpp:1441
 msgid "Eritrean Nakfa"
-msgstr "Eritrean Nakfa"
+msgstr "Nakfa Eritreea"
 
 #: views/kmymoneyview.cpp:1442
 msgid "Estonian Kroon"
-msgstr "Estonian Kroon"
+msgstr "Coroană estoniană"
 
 #: views/kmymoneyview.cpp:1443
 msgid "Ethiopian Birr"
-msgstr "Ethiopian Birr"
+msgstr "Birr Etiopia"
 
 #: views/kmymoneyview.cpp:1444
 msgid "Euro"
@@ -6447,75 +6382,75 @@ msgstr "Euro"
 
 #: views/kmymoneyview.cpp:1445
 msgid "Falkland Islands Pound"
-msgstr "Falkland Islands Pound"
+msgstr "Liră Insulele Falkland"
 
 #: views/kmymoneyview.cpp:1446
 msgid "Fiji Dollar"
-msgstr "Fiji Dollar"
+msgstr "Dolar Fiji"
 
 #: views/kmymoneyview.cpp:1447
 msgid "Gambian Dalasi"
-msgstr "Gambian Dalasi"
+msgstr "Dalasi Gambia"
 
 #: views/kmymoneyview.cpp:1448
 msgid "Georgian Lari"
-msgstr "Georgian Lari"
+msgstr "Lari georgian"
 
 #: views/kmymoneyview.cpp:1449
 msgid "Ghanaian Cedi"
-msgstr "Ghanaian Cedi"
+msgstr "Cedi Ghana"
 
 #: views/kmymoneyview.cpp:1450
 msgid "Gibraltar Pound"
-msgstr "Gibraltar Pound"
+msgstr "Liră Gibraltar"
 
 #: views/kmymoneyview.cpp:1451
 msgid "Guatemalan Quetzal"
-msgstr "Guatemalan Quetzal"
+msgstr "Quetzal Guatemala "
 
 #: views/kmymoneyview.cpp:1452
 msgid "Guinea-Bissau Peso"
-msgstr "Guinea-Bissau Peso"
+msgstr "Peso Guinea-Bissau"
 
 #: views/kmymoneyview.cpp:1453
 msgid "Guyanan Dollar"
-msgstr "Guyanan Dollar"
+msgstr "Dolar guyanez"
 
 #: views/kmymoneyview.cpp:1454
 msgid "Haitian Gourde"
-msgstr "Haitian Gourde"
+msgstr "Gourde Haiti"
 
 #: views/kmymoneyview.cpp:1455
 msgid "Honduran Lempira"
-msgstr "Honduran Lempira"
+msgstr "Lempira Honduras"
 
 #: views/kmymoneyview.cpp:1456
 msgid "Hong Kong Dollar"
-msgstr "Hong Kong Dollar"
+msgstr "Dolar Hong Kong"
 
 #: views/kmymoneyview.cpp:1457
 msgid "Hungarian Forint"
-msgstr "Hungarian Forint"
+msgstr "Forint"
 
 #: views/kmymoneyview.cpp:1458
 msgid "Iceland Krona"
-msgstr "Iceland Krona"
+msgstr "Coroană islandeză"
 
 #: views/kmymoneyview.cpp:1459
 msgid "Indian Rupee"
-msgstr "Indian Rupee"
+msgstr "Rupia indiană"
 
 #: views/kmymoneyview.cpp:1460
 msgid "Indonesian Rupiah"
-msgstr "Indonesian Rupiah"
+msgstr "Rupia indoneziană"
 
 #: views/kmymoneyview.cpp:1461
 msgid "Iranian Rial"
-msgstr "Iranian Rial"
+msgstr "Rial iranian"
 
 #: views/kmymoneyview.cpp:1462
 msgid "Iraqi Dinar"
-msgstr "Iraqi Dinar"
+msgstr "Dinar irakian"
 
 #: views/kmymoneyview.cpp:1463
 msgid "Israeli New Shekel"
@@ -6523,127 +6458,127 @@ msgstr "Shekel nou israelian"
 
 #: views/kmymoneyview.cpp:1464
 msgid "Jamaican Dollar"
-msgstr "Jamaican Dollar"
+msgstr "Dolar jamaican"
 
 #: views/kmymoneyview.cpp:1465
 msgid "Japanese Yen"
-msgstr "Japanese Yen"
+msgstr "Yen japonez"
 
 #: views/kmymoneyview.cpp:1466
 msgid "Jordanian Dinar"
-msgstr "Jordanian Dinar"
+msgstr "Dinar iordanian"
 
 #: views/kmymoneyview.cpp:1467
 msgid "Kazakhstan Tenge"
-msgstr "Kazakhstan Tenge"
+msgstr "Tenge Kazah"
 
 #: views/kmymoneyview.cpp:1468
 msgid "Kenyan Shilling"
-msgstr "Kenyan Shilling"
+msgstr "Shilling kenyan"
 
 #: views/kmymoneyview.cpp:1469
 msgid "Kuwaiti Dinar"
-msgstr "Kuwaiti Dinar"
+msgstr "Dinar kuweitian"
 
 #: views/kmymoneyview.cpp:1470
 msgid "Kyrgyzstan Som"
-msgstr "Kyrgyzstan Som"
+msgstr "Som Kârgâzstan"
 
 #: views/kmymoneyview.cpp:1471
 msgid "Laos Kip"
-msgstr "Laos Kip"
+msgstr "Kip Laos"
 
 #: views/kmymoneyview.cpp:1472
 msgid "Latvian Lats"
-msgstr "Latvian Lats"
+msgstr "Lat leton"
 
 #: views/kmymoneyview.cpp:1473
 msgid "Lebanese Pound"
-msgstr "Lebanese Pound"
+msgstr "Lira libaneză"
 
 #: views/kmymoneyview.cpp:1474
 msgid "Lesotho Loti"
-msgstr "Lesotho Loti"
+msgstr "Lesotho loti"
 
 #: views/kmymoneyview.cpp:1475
 msgid "Liberian Dollar"
-msgstr "Liberian Dollar"
+msgstr "Dolar liberian"
 
 #: views/kmymoneyview.cpp:1476
 msgid "Libyan Dinar"
-msgstr "Libyan Dinar"
+msgstr "Dinar libian"
 
 #: views/kmymoneyview.cpp:1477
 msgid "Lithuanian Litas"
-msgstr "Lithuanian Litas"
+msgstr "Litas lituan"
 
 #: views/kmymoneyview.cpp:1478
 msgid "Macau Pataca"
-msgstr "Macau Pataca"
+msgstr "Pataca Macau"
 
 #: views/kmymoneyview.cpp:1479
 msgid "Macedonian Denar"
-msgstr "Macedonian Denar"
+msgstr "Denar macedonean"
 
 #: views/kmymoneyview.cpp:1480
 msgid "Malagasy Franc"
-msgstr "Malagasy Franc"
+msgstr "Franc Malagasy"
 
 #: views/kmymoneyview.cpp:1481
 msgid "Malawi Kwacha"
-msgstr "Malawi Kwacha"
+msgstr "Kwacha Malawi"
 
 #: views/kmymoneyview.cpp:1482
 msgid "Malaysian Ringgit"
-msgstr "Malaysian Ringgit"
+msgstr "Ringgit Malaysian"
 
 #: views/kmymoneyview.cpp:1483
 msgid "Maldive Rufiyaa"
-msgstr "Maldive Rufiyaa"
+msgstr "Rufiyaa Maldive"
 
 #: views/kmymoneyview.cpp:1484
 msgid "Mali Republic Franc"
-msgstr "Mali Republic Franc"
+msgstr "Franc Republica Mali"
 
 #: views/kmymoneyview.cpp:1485
 msgid "Mauritanian Ouguiya"
-msgstr "Mauritanian Ouguiya"
+msgstr "Ouguiya Mauritania"
 
 #: views/kmymoneyview.cpp:1486
 msgid "Mauritius Rupee"
-msgstr "Mauritius Rupee"
+msgstr "Rupee Mauritius"
 
 #: views/kmymoneyview.cpp:1487
 msgid "Mexican Peso"
-msgstr "Mexican Peso"
+msgstr "Peso mexican"
 
 #: views/kmymoneyview.cpp:1488
 msgid "Moldavian Leu"
-msgstr "Moldavian Leu"
+msgstr "Leu Moldovenesc"
 
 #: views/kmymoneyview.cpp:1489
 msgid "Mongolian Tugrik"
-msgstr "Mongolian Tugrik"
+msgstr "Tugrik Mongol"
 
 #: views/kmymoneyview.cpp:1490
 msgid "Moroccan Dirham"
-msgstr "Moroccan Dirham"
+msgstr "Dirham marocan"
 
 #: views/kmymoneyview.cpp:1491
 msgid "Mozambique Metical"
-msgstr "Mozambique Metical"
+msgstr "Metical Mozambique"
 
 #: views/kmymoneyview.cpp:1492
 msgid "Myanmar Kyat"
-msgstr "Myanmar Kyat"
+msgstr "Kyat Myanmar"
 
 #: views/kmymoneyview.cpp:1493
 msgid "Namibian Dollar"
-msgstr "Namibian Dollar"
+msgstr "Dolar namibian"
 
 #: views/kmymoneyview.cpp:1494
 msgid "Nepalese Rupee"
-msgstr "Nepalese Rupee"
+msgstr "Rupie nepaleză"
 
 #: views/kmymoneyview.cpp:1495
 msgid "New Zealand Dollar"
@@ -6651,47 +6586,47 @@ msgstr "Dolar neo-zeelandez"
 
 #: views/kmymoneyview.cpp:1496
 msgid "Nicaraguan Cordoba Oro"
-msgstr "Nicaraguan Cordoba Oro"
+msgstr "Córdoba nicaraguană"
 
 #: views/kmymoneyview.cpp:1497
 msgid "Nigerian Naira"
-msgstr "Nigerian Naira"
+msgstr "Naira Nigeria"
 
 #: views/kmymoneyview.cpp:1498
 msgid "North Korean Won"
-msgstr "North Korean Won"
+msgstr "Won Corea de Nord"
 
 #: views/kmymoneyview.cpp:1499
 msgid "Norwegian Kroner"
-msgstr "Norwegian Kroner"
+msgstr "Coroană norvegiană"
 
 #: views/kmymoneyview.cpp:1500
 msgid "Omani Rial"
-msgstr "Omani Rial"
+msgstr "Rial Oman"
 
 #: views/kmymoneyview.cpp:1501
 msgid "Pakistan Rupee"
-msgstr "Pakistan Rupee"
+msgstr "Rupie pakistaneză"
 
 #: views/kmymoneyview.cpp:1502
 msgid "Panamanian Balboa"
-msgstr "Panamanian Balboa"
+msgstr "Balboa Panamanian"
 
 #: views/kmymoneyview.cpp:1503
 msgid "Papua New Guinea Kina"
-msgstr "Kina din Papua Noua Guinee"
+msgstr "Kina Papua Noua Guinee"
 
 #: views/kmymoneyview.cpp:1504
 msgid "Paraguay Guarani"
-msgstr "Paraguay Guarani"
+msgstr "Guarani Paraguay"
 
 #: views/kmymoneyview.cpp:1505
 msgid "Peruvian Nuevo Sol"
-msgstr "Peruvian Nuevo Sol"
+msgstr "Nuevo sol peruvian"
 
 #: views/kmymoneyview.cpp:1506
 msgid "Philippine Peso"
-msgstr "Philippine Peso"
+msgstr "Peso filippinez"
 
 #: views/kmymoneyview.cpp:1507
 msgid "Polish Zloty"
@@ -6699,7 +6634,7 @@ msgstr "Zlot polonez"
 
 #: views/kmymoneyview.cpp:1508
 msgid "Qatari Rial"
-msgstr "Qatari Rial"
+msgstr "Rial Qatar"
 
 #: views/kmymoneyview.cpp:1509
 msgid "Romanian Leu (new)"
@@ -6715,159 +6650,159 @@ msgstr "Franc ruandez"
 
 #: views/kmymoneyview.cpp:1512
 msgid "Samoan Tala"
-msgstr "Samoan Tala"
+msgstr "Tala Samoa"
 
 #: views/kmymoneyview.cpp:1513
 msgid "Sao Tome and Principe Dobra"
-msgstr "Sao Tome and Principe Dobra"
+msgstr "Dobra Sao Tome and Principe"
 
 #: views/kmymoneyview.cpp:1514
 msgid "Saudi Riyal"
-msgstr "Saudi Riyal"
+msgstr "Riyal saudit"
 
 #: views/kmymoneyview.cpp:1515
 msgid "Seychelles Rupee"
-msgstr "Seychelles Rupee"
+msgstr "Rupia Seychelles"
 
 #: views/kmymoneyview.cpp:1516
 msgid "Sierra Leone Leone"
-msgstr "Sierra Leone Leone"
+msgstr "Leone Sierra Leone"
 
 #: views/kmymoneyview.cpp:1517
 msgid "Singapore Dollar"
-msgstr "Singapore Dollar"
+msgstr "Dolar Singapore"
 
 #: views/kmymoneyview.cpp:1520
 msgid "Solomon Islands Dollar"
-msgstr "Solomon Islands Dollar"
+msgstr "Dolar Insulele Solomon"
 
 #: views/kmymoneyview.cpp:1521
 msgid "Somali Shilling"
-msgstr "Somali Shilling"
+msgstr "Şiling somalez"
 
 #: views/kmymoneyview.cpp:1522
 msgid "South African Rand"
-msgstr "South African Rand"
+msgstr "Rand Africa de Sud"
 
 #: views/kmymoneyview.cpp:1523
 msgid "South Korean Won"
-msgstr "South Korean Won"
+msgstr "Won Coreea de Sud"
 
 #: views/kmymoneyview.cpp:1524
 msgid "Sri Lanka Rupee"
-msgstr "Sri Lanka Rupee"
+msgstr "Rupia Sri Lanka"
 
 #: views/kmymoneyview.cpp:1525
 msgid "St. Helena Pound"
-msgstr "St. Helena Pound"
+msgstr "Liră Sfânta Elena"
 
 #: views/kmymoneyview.cpp:1526
 msgid "Sudanese Dinar"
-msgstr "Sudanese Dinar"
+msgstr "Dinar sudanez"
 
 #: views/kmymoneyview.cpp:1527
 msgid "Suriname Guilder"
-msgstr "Suriname Guilder"
+msgstr "Guilder Suriname"
 
 #: views/kmymoneyview.cpp:1528
 msgid "Swaziland Lilangeni"
-msgstr "Swaziland Lilangeni"
+msgstr "Lilangeni Swaziland"
 
 #: views/kmymoneyview.cpp:1529
 msgid "Swedish Krona"
-msgstr "Swedish Krona"
+msgstr "Coroană suedeză"
 
 #: views/kmymoneyview.cpp:1530
 msgid "Swiss Franc"
-msgstr "Swiss Franc"
+msgstr "Franc elveţian"
 
 #: views/kmymoneyview.cpp:1531
 msgid "Syrian Pound"
-msgstr "Syrian Pound"
+msgstr "Lira siriană"
 
 #: views/kmymoneyview.cpp:1532
 msgid "Taiwan Dollar"
-msgstr "Taiwan Dollar"
+msgstr "Dolar taiwanez"
 
 #: views/kmymoneyview.cpp:1533
 msgid "Tajikistan Somani"
-msgstr "Tajikistan Somani"
+msgstr "Somani Tajikistan"
 
 #: views/kmymoneyview.cpp:1534
 msgid "Tanzanian Shilling"
-msgstr "Tanzanian Shilling"
+msgstr "Şiling tanzanian"
 
 #: views/kmymoneyview.cpp:1535
 msgid "Thai Baht"
-msgstr "Thai Baht"
+msgstr "Baht Thailanda"
 
 #: views/kmymoneyview.cpp:1536
 msgid "Tongan Pa'anga"
-msgstr "Tongan Pa'anga"
+msgstr "Pa'anga Tonga"
 
 #: views/kmymoneyview.cpp:1537
 msgid "Trinidad and Tobago Dollar"
-msgstr "Trinidad and Tobago Dollar"
+msgstr "Dolar Trinidad şi Tobago"
 
 #: views/kmymoneyview.cpp:1538
 msgid "Tunisian Dinar"
-msgstr "Tunisian Dinar"
+msgstr "Dinar tunisian"
 
 #: views/kmymoneyview.cpp:1539
 msgid "Turkish Lira (new)"
-msgstr "Turkish Lira (new)"
+msgstr "Liră turcească (nouă)"
 
 #: views/kmymoneyview.cpp:1540
 msgid "Turkmenistan Manat"
-msgstr "Turkmenistan Manat"
+msgstr "Manat Turkmenistan"
 
 #: views/kmymoneyview.cpp:1541
 msgid "US Dollar"
-msgstr "US Dollar"
+msgstr "Dolar american"
 
 #: views/kmymoneyview.cpp:1542
 msgid "Uganda Shilling"
-msgstr "Uganda Shilling"
+msgstr "Şiling ugandez"
 
 #: views/kmymoneyview.cpp:1543
 msgid "Ukraine Hryvnia"
-msgstr "Ukraine Hryvnia"
+msgstr "Hryvnia Ukraine"
 
 #: views/kmymoneyview.cpp:1544
 msgid "United Arab Emirates Dirham"
-msgstr "United Arab Emirates Dirham"
+msgstr "Dirham United Arab Emirates"
 
 #: views/kmymoneyview.cpp:1545
 msgid "Uruguayan Peso"
-msgstr "Uruguayan Peso"
+msgstr "Peso Uruguay"
 
 #: views/kmymoneyview.cpp:1546
 msgid "Uzbekistani Sum"
-msgstr "Uzbekistani Sum"
+msgstr "Sum Uzbekistan"
 
 #: views/kmymoneyview.cpp:1547
 msgid "Vanuatu Vatu"
-msgstr "Vanuatu Vatu"
+msgstr "Vatu Vanuatu"
 
 #: views/kmymoneyview.cpp:1548
 msgid "Venezuelan Bolivar"
-msgstr "Venezuelan Bolivar"
+msgstr "Bolivar Venezuela"
 
 #: views/kmymoneyview.cpp:1549
 msgid "Vietnamese Dong"
-msgstr "Vietnamese Dong"
+msgstr "Dong vietnamez"
 
 #: views/kmymoneyview.cpp:1550
 msgid "Yugoslav Dinar"
-msgstr "Yugoslav Dinar"
+msgstr "Dinar iugoslav"
 
 #: views/kmymoneyview.cpp:1551
 msgid "Zambian Kwacha"
-msgstr "Zambian Kwacha"
+msgstr "Kwacha Zambia"
 
 #: views/kmymoneyview.cpp:1552
 msgid "Zimbabwe Dollar"
-msgstr "Zimbabwe Dollar"
+msgstr "Dolar Zimbabwe"
 
 #: views/kmymoneyview.cpp:1554
 msgid "Gold"
@@ -6887,7 +6822,7 @@ msgstr "Argint"
 
 #: views/kmymoneyview.cpp:1590
 msgid "Austrian Schilling"
-msgstr "Austrian Schilling"
+msgstr "Şiling austriac"
 
 #: views/kmymoneyview.cpp:1591
 msgid "German Mark"
@@ -6903,63 +6838,63 @@ msgstr "Liră italiană"
 
 #: views/kmymoneyview.cpp:1594
 msgid "Spanish Peseta"
-msgstr "Spanish Peseta"
+msgstr "Peseta spaniolă"
 
 #: views/kmymoneyview.cpp:1595
 msgid "Dutch Guilder"
-msgstr "Dutch Guilder"
+msgstr "Gulden olandez"
 
 #: views/kmymoneyview.cpp:1596
 msgid "Belgian Franc"
-msgstr "Belgian Franc"
+msgstr "Franc belgian"
 
 #: views/kmymoneyview.cpp:1597
 msgid "Luxembourg Franc"
-msgstr "Luxembourg Franc"
+msgstr "Franc Luxembourg "
 
 #: views/kmymoneyview.cpp:1598
 msgid "Portuguese Escudo"
-msgstr "Portuguese Escudo"
+msgstr "Escudo portughez"
 
 #: views/kmymoneyview.cpp:1599
 msgid "Irish Pound"
-msgstr "Irish Pound"
+msgstr "Liră irlandeză"
 
 #: views/kmymoneyview.cpp:1600
 msgid "Finnish Markka"
-msgstr "Finnish Markka"
+msgstr "Marcă finlandeză"
 
 #: views/kmymoneyview.cpp:1601
 msgid "Greek Drachma"
-msgstr "Greek Drachma"
+msgstr "Drachma grecească"
 
 #: views/kmymoneyview.cpp:1603
 msgid "Romanian Leu"
-msgstr "Romanian Leu"
+msgstr "Leu românesc"
 
 #: views/kmymoneyview.cpp:1605
 msgid "Russian Ruble (old)"
-msgstr "Russian Rubla (veche)"
+msgstr "Rubla rusească (veche)"
 
 #: views/kmymoneyview.cpp:1607
 msgid "Slovenian Tolar"
-msgstr "Slovenian Tolar"
+msgstr "Taler sloven"
 
 #: views/kmymoneyview.cpp:1610
 msgid "Turkish Lira"
-msgstr "Turkish Lira"
+msgstr "Liră turcească"
 
 #: views/kmymoneyview.cpp:1613
 msgid "Maltese Lira"
-msgstr "Maltese Lira"
+msgstr "Liră malteză"
 
 #: views/kmymoneyview.cpp:1614
 msgid "Cyprus Pound"
-msgstr "Cyprus Pound"
+msgstr "Liră cipriotă"
 
 #: views/kmymoneyview.cpp:1617
 msgid "Slovak Koruna"
-msgstr "Slovak Koruna"
+msgstr "Coroană slovacă"
 
 #: views/kmymoneyview.cpp:1927
 msgid ""
@@ -7090,9 +7025,8 @@ msgid "New"
 msgstr "Nou"
 
 #: views/rc.cpp:9
-#, fuzzy
 msgid "Ren"
-msgstr "&Ren"
+msgstr "Ren"
 
 #: views/rc.cpp:10
 msgid "Del"
@@ -7119,9 +7053,8 @@ msgid "Assignments"
 msgstr "Atribuiri"
 
 #: views/rc.cpp:19
-#, fuzzy
 msgid "Include subaccounts"
-msgstr "Incl&ude subconturi"
+msgstr "Include subconturi"
 
 #: dialogs/settings/rc.cpp:23 views/rc.cpp:24
 msgid "Forecast Settings"
@@ -7165,7 +7098,7 @@ msgstr "Mutarea mediei extinsă"
 
 #: dialogs/settings/rc.cpp:35 views/rc.cpp:34
 msgid "Linear Regression"
-msgstr ""
+msgstr "Regresie liniară"
 
 #: dialogs/keditloanwizard.cpp:313 dialogs/rc.cpp:626 dialogs/rc.cpp:645
 #: views/rc.cpp:37
@@ -7197,9 +7130,8 @@ msgid "Detail"
 msgstr "Detalii"
 
 #: views/rc.cpp:45
-#, fuzzy
 msgid "Advanced"
-msgstr "Ava&nsate"
+msgstr "Avansate"
 
 #: views/rc.cpp:46
 msgid "Budget Forecast"
@@ -7453,8 +7385,7 @@ msgstr "Nu pot fi create tranzacţii într-un cont închis."
 
 #: views/kgloballedgerview.cpp:1351
 msgid "Cannot process transaction with focus if it is not selected."
-msgstr ""
-"Nu poate fi procesată tranzacţia care deţine focusul, dacă nu e selectată."
+msgstr "Nu poate fi procesată tranzacţia care deţine focusul, dacă nu e selectată."
 
 #: views/kgloballedgerview.cpp:1381
 msgid "Cannot edit transactions with frozen splits."
@@ -7465,10 +7396,8 @@ msgid "Cannot edit transactions in the context of a category."
 msgstr "Nu pot fi modificate tranzacţii în contextul unei categorii."
 
 #: views/kgloballedgerview.cpp:1411
-msgid ""
-"Cannot edit investment transactions and non-investment transactions together."
-msgstr ""
-"Nu pot fi modificate împreună tranzacţii de investiţii şi fără investiţi."
+msgid "Cannot edit investment transactions and non-investment transactions together."
+msgstr "Nu pot fi modificate împreună tranzacţii de investiţii şi fără investiţi."
 
 #: views/kgloballedgerview.cpp:1419
 msgid "Cannot edit multiple split transactions at once."
@@ -7575,27 +7504,22 @@ msgid "Future payments"
 msgstr "Plăţi viitoare"
 
 #: views/khomeview.cpp:575
-#, fuzzy
 msgid "Less..."
 msgstr "Mai puţin..."
 
 #: views/khomeview.cpp:577
-#, fuzzy
 msgid "More..."
 msgstr "Mai mult..."
 
 #: views/khomeview.cpp:612
-#, fuzzy
 msgid "Enter schedule"
 msgstr "Introduce plata programată"
 
 #: views/khomeview.cpp:614
-#, fuzzy
 msgid "Skip schedule"
-msgstr "Omite programarea..."
+msgstr "Omite programarea"
 
 #: views/khomeview.cpp:617
-#, fuzzy
 msgid "Edit schedule"
 msgstr "Modifică plata programată"
 
@@ -7624,22 +7548,19 @@ msgid ""
 "Before KMyMoney can give you detailed information about your financial "
 "status, you need to create at least one account. Until then, KMyMoney shows "
 "the welcome page instead."
-msgstr ""
+msgstr "Înainte ca KMyMoney să vă poată da informaţii detaliate despre starea dumneavoastră financiară, trebuie să creaţi cel puţin un cont. Până atunci, KMyMoney vă arată pagina de bun venit."
 
 #: views/khomeview.cpp:1248
-#, fuzzy
 msgid "Assets and Liabilities Summary"
-msgstr "Active şi pasive"
+msgstr "Sumarul activelor şi pasivelor"
 
 #: views/khomeview.cpp:1252
-#, fuzzy
 msgid "Asset Accounts"
-msgstr "Cont de activ"
+msgstr "Conturi de active"
 
 #: views/khomeview.cpp:1260
-#, fuzzy
 msgid "Liability Accounts"
-msgstr "Conturi de pasiv"
+msgstr "Conturi de pasive"
 
 #: views/khomeview.cpp:1336
 msgid "Total Assets"
@@ -7650,9 +7571,8 @@ msgid "Total Liabilities"
 msgstr "Total pasive"
 
 #: views/khomeview.cpp:1387
-#, fuzzy
 msgid "Current Month Summary"
-msgstr "Luna curentă"
+msgstr "Sumarul lunii curente"
 
 #: views/khomeview.cpp:1391 views/khomeview.cpp:1428
 msgid "Budgeted"
@@ -7668,74 +7588,61 @@ msgstr "Nicio categorie de buget nu a avut depăşiri"
 
 #: views/khomeview.cpp:1784
 msgid "Cash Flow Summary"
-msgstr ""
+msgstr "Sumarul fluxului financiar"
 
 #: views/khomeview.cpp:1791
-#, fuzzy
 msgid "Income and Expenses of Current Month"
 msgstr "Venituri şi cheltuieli în această lună"
 
 #: views/khomeview.cpp:1799
-#, fuzzy
 msgid "Scheduled Income"
-msgstr "Numele plăţii programate:"
+msgstr "Venit programat"
 
 #: views/khomeview.cpp:1802
-#, fuzzy
 msgid "Expenses"
 msgstr "Cheltuieli"
 
 #: views/khomeview.cpp:1805
-#, fuzzy
 msgid "Scheduled Expenses"
-msgstr "Cheltuieli programate pentru această lună"
+msgstr "Cheltuieli programate"
 
 #: views/khomeview.cpp:1833
-#, fuzzy
 msgid "Liquid Assets and Liabilities"
-msgstr "Active şi pasive"
+msgstr "Active şi pasive lichide"
 
 #: views/khomeview.cpp:1838
-#, fuzzy
 msgid "Liquid Assets"
-msgstr "Active"
+msgstr "Active lichide"
 
 #: views/khomeview.cpp:1841
-#, fuzzy
 msgid "Transfers to Liquid Liabilities"
-msgstr "Active şi pasive"
+msgstr "Transferuri în pasive lichide"
 
 #: views/khomeview.cpp:1844
-#, fuzzy
 msgid "Liquid Liabilities"
-msgstr "Pasive"
+msgstr "Pasive lichide"
 
 #: views/khomeview.cpp:1847
-#, fuzzy
 msgid "Other Transfers"
-msgstr "Transferuri"
+msgstr "Alte transferuri"
 
 #: views/khomeview.cpp:1891
-#, fuzzy
 msgid "Cash Flow Status"
-msgstr "Estimare de flux financiar pe 7 zile"
+msgstr "Starea fluxului financiar"
 
 #: views/khomeview.cpp:1897
 msgid "Expected Liquid Assets"
-msgstr ""
+msgstr "Active lichide estimate"
 
 #: views/khomeview.cpp:1900
-#, fuzzy
 msgid "Expected Liquid Liabilities"
-msgstr "Active şi pasive"
+msgstr "Pasive lichide estimate"
 
 #: views/khomeview.cpp:1903
-#, fuzzy
 msgid "Expected Profit/Loss"
-msgstr "Total profit/pierdere"
+msgstr "Profit estimat/Pierdere estimată"
 
 #: plugins/ofximport/ofximporterplugin.cpp:64
-#, fuzzy
 msgid "OFX..."
 msgstr "OFX..."
 
@@ -7842,7 +7749,7 @@ msgstr "Vă rog, alegeţi o bancă."
 
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:188
 msgid "Please fill all fields with values."
-msgstr ""
+msgstr "Introduceţi valori în toate câmpurile"
 
 #: dialogs/konlinebankingsetupwizard.cpp:241
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:309
@@ -7913,25 +7820,23 @@ msgstr ""
 
 #: plugins/ofximport/dialogs/rc.cpp:7
 msgid "Automatic"
-msgstr ""
+msgstr "Automat"
 
 #: dialogs/rc.cpp:683 plugins/ofximport/dialogs/rc.cpp:8
 msgid "Financial Institution"
 msgstr "Instituţie financiară"
 
 #: plugins/ofximport/dialogs/rc.cpp:9
-#, fuzzy
 msgid "Manual"
-msgstr "ianuarie"
+msgstr "Manual"
 
 #: plugins/ofximport/dialogs/rc.cpp:10
 msgid "Org"
-msgstr ""
+msgstr "Org"
 
 #: plugins/ofximport/dialogs/rc.cpp:11
-#, fuzzy
 msgid "FID"
-msgstr "ID"
+msgstr "FID"
 
 #: dialogs/settings/rc.cpp:120 plugins/ofximport/dialogs/rc.cpp:12
 #: widgets/rc.cpp:46
@@ -8031,46 +7936,40 @@ msgid "OFX Details"
 msgstr "Detalii OFX"
 
 #: plugins/ofximport/dialogs/rc.cpp:36
-#, fuzzy
 msgid "Start date of import"
-msgstr "De la data"
+msgstr "Importă de la data"
 
 #: plugins/ofximport/dialogs/rc.cpp:37
-#, fuzzy
 msgid "To&day minus"
-msgstr "Plăţile de astăzi"
+msgstr "Minus de &azi"
 
 #: plugins/ofximport/dialogs/rc.cpp:38
-#, fuzzy
 msgid "days"
-msgstr "0 zile"
+msgstr "zile"
 
 #: plugins/ofximport/dialogs/rc.cpp:39
-#, fuzzy
 msgid "Last &update"
-msgstr "Ultimul trimestru"
+msgstr "Ultima &actualizare"
 
 #: plugins/ofximport/dialogs/rc.cpp:40
-#, fuzzy
 msgid "Pi&ck date"
-msgstr "Data efectuării"
+msgstr "Data a&legerii"
 
 #: plugins/ofximport/dialogs/rc.cpp:41
 msgid "Name is derived from"
-msgstr ""
+msgstr "Numele este derivat din"
 
 #: plugins/ofximport/dialogs/rc.cpp:42
 msgid "P&AYEEID"
-msgstr ""
+msgstr "INDETIFICATOR&BENEFICIAR"
 
 #: plugins/ofximport/dialogs/rc.cpp:43
-#, fuzzy
 msgid "&NAME"
-msgstr "AMEX"
+msgstr "&NUME"
 
 #: plugins/ofximport/dialogs/rc.cpp:44
 msgid "field if both are present in download"
-msgstr ""
+msgstr "dacă ambele sunt prezente la descărcare"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:57
 msgid "Quicken Windows 2005"
@@ -8264,8 +8163,7 @@ msgstr "Modifică intrarea selectată"
 
 #: dialogs/ksecuritylisteditor.cpp:82
 msgid "Change the security information of the selected entry."
-msgstr ""
-"Schimbă informaţiile titlului de valoare pentru înregistrarea selectată."
+msgstr "Schimbă informaţiile titlului de valoare pentru înregistrarea selectată."
 
 #: dialogs/kmymoneypricedlg.cpp:80 dialogs/ksecuritylisteditor.cpp:87
 msgid "Close the dialog"
@@ -8273,8 +8171,7 @@ msgstr "Închide dialogul"
 
 #: dialogs/kmymoneypricedlg.cpp:81 dialogs/ksecuritylisteditor.cpp:88
 msgid "Use this to close the dialog and return to the application."
-msgstr ""
-"Folosiţi aceasta pentru a închide dialogul şi a vă reîntoarce la aplicaţie."
+msgstr "Folosiţi aceasta pentru a închide dialogul şi a vă reîntoarce la aplicaţie."
 
 #: dialogs/ksecuritylisteditor.cpp:184
 msgid ""
@@ -8430,8 +8327,7 @@ msgstr "Preţ pentru %1 actualizat (id %2)"
 
 #: dialogs/kequitypriceupdatedlg.cpp:534
 msgid "Received an invalid price for %1, unable to update."
-msgstr ""
-"S-a primit un preţ invalid pentru %1 şi nu s-a putut face actualizarea."
+msgstr "S-a primit un preţ invalid pentru %1 şi nu s-a putut face actualizarea."
 
 #: dialogs/kequitypriceupdatedlg.cpp:554
 msgid ""
@@ -8549,13 +8445,11 @@ msgid ""
 msgstr "Introducere sau programare?"
 
 #: dialogs/transactioneditor.cpp:656
-msgid ""
-"The balance of account <b>%1</b> dropped below the warning balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr "Soldul contului <b>%1</b> a căzut sub soldul de avertisment al %2."
 
 #: dialogs/transactioneditor.cpp:662
-msgid ""
-"The balance of account <b>%1</b> dropped below the minimum balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the minimum balance of %2."
 msgstr "Soldul contului <b>%1</b> a căzut sub soldul minim al %2."
 
 #: dialogs/transactioneditor.cpp:668
@@ -8656,8 +8550,7 @@ msgstr ""
 "1</b> Noul cont: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid ""
-"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
 "Categoria a fost schimbată.<br>&nbsp;&nbsp;&nbsp;Vechia categorie: <b>%1</b> "
 "Noua categorie: <b>%2</b><p>"
@@ -8815,8 +8708,7 @@ msgstr "Selectează numele de fişier"
 
 #: dialogs/kexportdlg.cpp:74 dialogs/kimportdlg.cpp:75
 msgid "Use this to select a filename to export to"
-msgstr ""
-"Folosiţi aceasta pentru a selecta numele fişierului în care trebuie exportat"
+msgstr "Folosiţi aceasta pentru a selecta numele fişierului în care trebuie exportat"
 
 #: dialogs/kexportdlg.cpp:77 dialogs/kimportdlg.cpp:78
 #: dialogs/settings/ksettingsonlinequotes.cpp:64
@@ -8912,12 +8804,11 @@ msgid ""
 "<b>File/Save as...</b> feature and store the file under a different name. "
 "Once confident with the result, feel free to delete the old file and rename "
 "the encrypted one to the old name."
-msgstr ""
+msgstr "Aţi activat criptarea GPG. Acesta înseamnă că fişierele noi vor fi salvare criptate. Fişierele existente nu vor fi criptate în mod automat. Pentru a obţine criptarea fişierelor existente folosiţi meniul <b>Fişier/Salvează ca...</b> şi salvaţi fişierul sub alt nume. Odată ce aţi salvat fişierul sub alt nume şi sunteţi mulţumţi de rezultat puteţi şterge fişierul vechi şi puteţi redenumi fişierul criptat astfel încât acesta să aibă numele vechiului fişier."
 
 #: dialogs/settings/ksettingsgpg.cpp:180
-#, fuzzy
 msgid "GPG encryption activated"
-msgstr "Criptarea GPG"
+msgstr "Criptarea GPG activată"
 
 #: dialogs/settings/ksettingshome.cpp:51
 msgid "&Up"
@@ -9036,14 +8927,12 @@ msgid "Forecast Method"
 msgstr "Metoda de estimare"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled and Future Transactions"
-msgstr "Tranzacţii viitoare şi &programate"
+msgstr "Tranzacţii viitoare şi programate"
 
 #: dialogs/settings/rc.cpp:29
-#, fuzzy
 msgid "History-based"
-msgstr "_Bazate pe istorie"
+msgstr "Bazate pe istoric"
 
 #: dialogs/settings/rc.cpp:30
 msgid "History-based settings"
@@ -9159,8 +9048,7 @@ msgstr "Vizualizări"
 
 #: dialogs/settings/rc.cpp:62
 msgid "Synchronize account selection of ledger and investment view"
-msgstr ""
-"Sincronizează selecţia de cont a registrului cu vizualizarea investiţiei"
+msgstr "Sincronizează selecţia de cont a registrului cu vizualizarea investiţiei"
 
 #: dialogs/settings/rc.cpp:63
 msgid ""
@@ -9193,7 +9081,7 @@ msgstr "Mare (64px)"
 
 #: dialogs/settings/rc.cpp:69
 msgid "Show title bar on each page"
-msgstr ""
+msgstr "Arată bara de titlu în fiecare ecran"
 
 #: dialogs/rc.cpp:836 dialogs/settings/rc.cpp:70
 msgid "Filter"
@@ -9411,14 +9299,12 @@ msgstr ""
 "modificată manual cu ajutorul rotiţei de la mouse"
 
 #: dialogs/settings/rc.cpp:104
-#, fuzzy
 msgid "Information display"
-msgstr "Informaţii despre împrumut"
+msgstr "Afişează informaţii"
 
 #: dialogs/settings/rc.cpp:105
-#, fuzzy
 msgid "Show Account Limit Information"
-msgstr "Informaţii despre cont"
+msgstr "Afişează informaţii despre limitele conturilor"
 
 #: dialogs/settings/rc.cpp:109 widgets/rc.cpp:47
 msgid ""
@@ -9476,9 +9362,8 @@ msgid "Register settings"
 msgstr "Opţiuni de registru"
 
 #: dialogs/settings/rc.cpp:125
-#, fuzzy
 msgid "Display"
-msgstr "&Afişează"
+msgstr "Afişează"
 
 #: dialogs/settings/rc.cpp:128
 msgid ""
@@ -9493,14 +9378,12 @@ msgstr ""
 "detaliile tranzacţiei sunt afişate în formularul tranzacţiei."
 
 #: dialogs/settings/rc.cpp:130
-#, fuzzy
 msgid "Always show a No. field"
-msgstr "&Întotdeauna afişează un câmp pentru nr."
+msgstr "Întotdeauna afişează un câmp pentru nr."
 
 #: dialogs/settings/rc.cpp:131
-#, fuzzy
 msgid "Show group header between transactions"
-msgstr "Afişează antetul de &grup între tranzacţii"
+msgstr "Afişează antetul de grup între tranzacţii"
 
 #: dialogs/settings/rc.cpp:132
 msgid ""
@@ -9544,9 +9427,8 @@ msgstr ""
 "<i>descrescătoare</i>."
 
 #: dialogs/settings/rc.cpp:139
-#, fuzzy
 msgid "Data entry"
-msgstr "Introducere &date"
+msgstr "Introducere date"
 
 #: dialogs/settings/rc.cpp:143
 msgid "Use Enter to move between fields"
@@ -9576,21 +9458,19 @@ msgstr ""
 
 #: dialogs/settings/rc.cpp:149
 msgid "Autofill"
-msgstr ""
+msgstr "Introducere automată"
 
 #: dialogs/settings/rc.cpp:150
 msgid "No Autofill"
-msgstr ""
+msgstr "Introducere automată oprită"
 
 #: dialogs/settings/rc.cpp:151
-#, fuzzy
 msgid "Don't do autofill of transaction data at all."
-msgstr "Umple automat cu datele tranzacţiei precedente"
+msgstr "Nu umple automat cu datele tranzacţiei precedente"
 
 #: dialogs/settings/rc.cpp:152
-#, fuzzy
 msgid "Same transaction if amount differs less than"
-msgstr "procent."
+msgstr "Consideră tranzacţia ca acceaşi da suma diferă cu mai puţin de"
 
 #: dialogs/settings/rc.cpp:153
 msgid ""
@@ -9601,6 +9481,9 @@ msgid ""
 "\n"
 "Selecting 0% will list all transactions."
 msgstr ""
+"Pentru toate tranzacţiile unui beneficiar/plătitor tratează toate tranzacţiile care se referă la aceeaşi categorie şi au suma cu +- X % ca identice. Dacă mai mult de o tranzacţie este găsită conform acestor criterii o listă a acestor tranzacţii este prezentată utilizatorului.\n"
+"\n"
+"Alegând 0% se vor afişa toate tranzacţiile."
 
 #: dialogs/settings/rc.cpp:154
 msgid ""
@@ -9620,13 +9503,13 @@ msgstr "procent."
 
 #: dialogs/settings/rc.cpp:156
 msgid "with previously most often used transaction for the payee"
-msgstr ""
+msgstr "cu tranzacţia cea ma des utilizată anterior pentru beneficiar/plătitor"
 
 #: dialogs/settings/rc.cpp:157
 msgid ""
 "The data of the last transaction assigned to the category used most often "
 "for this payee is autofilled into the transaction editor."
-msgstr ""
+msgstr "Datele ultime tranzacţii asignate categoriei folosite cel mai des pentru acest beneficiar/plătitor sunt introduse automat în editorul de tranzacţii."
 
 #: dialogs/settings/rc.cpp:159
 msgid "Match transactions within days"
@@ -9662,8 +9545,7 @@ msgstr "Creează o nouă sursă online de cotaţii"
 #: dialogs/settings/ksettingsonlinequotes.cpp:67
 #: widgets/kmymoneyonlinequoteconfig.cpp:67
 msgid "Use this to create a new entry for online quotes"
-msgstr ""
-"Folosiţi această funcţie pentru a creea o nouă de sursă de cotaţii online"
+msgstr "Folosiţi această funcţie pentru a creea o nouă de sursă de cotaţii online"
 
 #: dialogs/settings/ksettingsonlinequotes.cpp:107
 #: dialogs/settings/ksettingsonlinequotes.cpp:186
@@ -9685,8 +9567,7 @@ msgid "Accept splits and return to transaction form"
 msgstr "Acceptă părţile de tranzacţii şi reveniţi la formularul de tranzacţie"
 
 #: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
+msgid "Use this to accept all changes to the splits and return to the transaction"
 msgstr ""
 "Foloseşte această funcţie pentru a accepta toate modificările aduse părţilor "
 "de tranzacţie şi reveniţi la formularul tranzacţie"
@@ -9739,8 +9620,7 @@ msgstr ""
 
 #: dialogs/mymoneyqifprofileeditor.cpp:98
 msgid "Use this to create a new QIF import/export profile"
-msgstr ""
-"Folosiţi această funcţie pentru a creea un nou profil de import/export QIF"
+msgstr "Folosiţi această funcţie pentru a creea un nou profil de import/export QIF"
 
 #: dialogs/mymoneyqifprofileeditor.cpp:147
 #: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:798
@@ -9814,7 +9694,6 @@ msgstr "Opţiuni împărţire"
 
 #: dialogs/kmymoneysplittable.cpp:99 dialogs/rc.cpp:746
 #: widgets/kmymoneypriceview.cpp:149
-#, fuzzy
 msgid "Edit..."
 msgstr "Modifică..."
 
@@ -9837,8 +9716,7 @@ msgid "will be calculated"
 msgstr "va fi calculat"
 
 #: dialogs/kmymoneysplittable.cpp:627
-msgid ""
-"You are about to delete the selected split. Do you really want to continue?"
+msgid "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
 "Urmează să stegeţi partea de tranzacţie marcată. Doriţi într-adevăr să "
 "continuaţi?"
@@ -9852,14 +9730,12 @@ msgid "Account to import to"
 msgstr "Contul în care se importă"
 
 #: dialogs/rc.cpp:4
-#, fuzzy
 msgid "Abort"
-msgstr "&Renunţă"
+msgstr "Renunţă"
 
 #: dialogs/rc.cpp:6 dialogs/rc.cpp:169
-#, fuzzy
 msgid "Skip"
-msgstr "&Omite"
+msgstr "Omite"
 
 #: dialogs/rc.cpp:8
 msgid ""
@@ -9896,9 +9772,8 @@ msgid ""
 msgstr "Punct de montare:"
 
 #: dialogs/rc.cpp:11
-#, fuzzy
 msgid "Choose..."
-msgstr "&Alege..."
+msgstr "Alege..."
 
 #: dialogs/rc.cpp:12
 msgid "Mount this directory before backing up."
@@ -9963,14 +9838,12 @@ msgid "Please choose what you wish to do with the above changes"
 msgstr "Vă rog să alegeţi ce doriţi să faceţi cu schimbările de mai sus."
 
 #: dialogs/rc.cpp:31
-msgid ""
-"Discard the changes and enter the original transaction into the register."
+msgid "Discard the changes and enter the original transaction into the register."
 msgstr "Renunţă la modificări şi introdu tranzacţia originală în registru."
 
 #: dialogs/rc.cpp:32
 msgid "Enter these new values this one time, for this occurence only."
-msgstr ""
-"Introduce aceste valori noi de această dată, doar pentru această apariţie."
+msgstr "Introduce aceste valori noi de această dată, doar pentru această apariţie."
 
 #: dialogs/rc.cpp:33
 msgid "Set all further occurences in this schedule to be these values."
@@ -10000,9 +9873,8 @@ msgid "Choose the csv file:"
 msgstr "Alege fişierul csv:"
 
 #: dialogs/rc.cpp:39
-#, fuzzy
 msgid "Browse"
-msgstr "&Răsfoieşte"
+msgstr "Răsfoieşte"
 
 #: dialogs/rc.cpp:40
 msgid "Between These Dates"
@@ -10017,9 +9889,8 @@ msgid "End on:"
 msgstr "Sfârşeşte în"
 
 #: dialogs/rc.cpp:43
-#, fuzzy
 msgid "Run"
-msgstr "&Rulează"
+msgstr "Rulează"
 
 #: dialogs/rc.cpp:44
 msgid "Progress Info"
@@ -10050,9 +9921,8 @@ msgid "Convert to"
 msgstr "Converteşte în"
 
 #: dialogs/rc.cpp:61
-#, fuzzy
 msgid "To amount"
-msgstr "La &suma"
+msgstr "La suma"
 
 #: dialogs/rc.cpp:62
 msgid "Exchange rate / Price"
@@ -10161,8 +10031,7 @@ msgstr "Dacă plata programată ar trebui să aibă loc la sfârşit de săptăm
 
 #: dialogs/rc.cpp:116
 msgid "The amount is an estimate because it varies for each payment"
-msgstr ""
-"Această sumă este una aproximativă deoarece ea variază la fiecare plată"
+msgstr "Această sumă este una aproximativă deoarece ea variază la fiecare plată"
 
 #: dialogs/rc.cpp:117
 msgid "Enter this schedule into the register automatically when it is due"
@@ -10366,36 +10235,34 @@ msgid "Type:"
 msgstr "Tip:"
 
 #: dialogs/rc.cpp:167
-#, fuzzy
 msgid "Enter"
-msgstr "&Intră"
+msgstr "Intră"
 
 #: dialogs/rc.cpp:168
 msgid ""
 "Enter the transaction and advance the next due date of this schedule to the "
 "next payment date."
-msgstr ""
+msgstr "Introdu tranzacţia şi mută următoarea scadenţă a programării la următoare dată programată."
 
 #: dialogs/rc.cpp:170
 msgid ""
 "Do not enter the transaction but advance the next due date of this schedule "
 "to the next payment date."
-msgstr ""
+msgstr "Nu introdu tranzacţia ci mută următoarea scadenţă a programării la următoare dată programată."
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Ignore"
-msgstr "Ignoră diferenţa dintre majuscule şi minuscule"
+msgstr "Ignoră"
 
 #: dialogs/rc.cpp:172
 msgid ""
 "Do not enter or skip payments for this schedule but continue with the next "
 "schedule."
-msgstr ""
+msgstr "Nu introdu sau omite plăţi pentru această programare ci continuă cu programarea următoare."
 
 #: dialogs/rc.cpp:174
 msgid "Cancel processing of schedule entry."
-msgstr ""
+msgstr "Renunţă la procesarea programării."
 
 #: dialogs/rc.cpp:175
 msgid "Update Stock and Currency Prices"
@@ -10403,18 +10270,15 @@ msgstr "Actualizează cotaţiile acţiunilor şi a monedelor"
 
 #: dialogs/rc.cpp:176
 msgid "List of known Equities, and the date they were last updated on."
-msgstr ""
-"Lista capitalurilor cunoscute şi data ultimei actualizări ale acestora."
+msgstr "Lista capitalurilor cunoscute şi data ultimei actualizări ale acestora."
 
 #: dialogs/rc.cpp:178
-#, fuzzy
 msgid "Update All"
-msgstr "Actualizează &tot"
+msgstr "Actualizează tot"
 
 #: dialogs/rc.cpp:179
-#, fuzzy
 msgid "Update Selected"
-msgstr "&Actualizează selecţia"
+msgstr "Actualizează selecţia"
 
 #: dialogs/rc.cpp:180
 msgid "Status:"
@@ -10673,14 +10537,12 @@ msgid "Decode using"
 msgstr "Decodifică folosind"
 
 #: dialogs/rc.cpp:269
-#, fuzzy
 msgid "Transaction Notes option"
-msgstr "Opţiuni tranzacţie"
+msgstr "Opţiuni note de tranzacţie"
 
 #: dialogs/rc.cpp:270
-#, fuzzy
 msgid "Use transaction notes on non-split transactions"
-msgstr "Inserează tipul tranzacţiei în câmpul Nr. pentru tranzacţii noi."
+msgstr "Foloseşte note de tranzacţie pentru tranzacţii care nu sunt compuse"
 
 #: dialogs/rc.cpp:271
 msgid "Debug Options"
@@ -10703,36 +10565,30 @@ msgid "Online Quotes - Select price source"
 msgstr "Cotaţii online - Alegeţi sursa preţului"
 
 #: dialogs/rc.cpp:282
-msgid ""
-"This price source is not known to KMyMoney. Please select an option below."
+msgid "This price source is not known to KMyMoney. Please select an option below."
 msgstr ""
 "Această sursă nu este cunoscută de către KMyMoney. Vă rog să alegeţi o "
 "opţiune din lista de mai jos."
 
 #: dialogs/rc.cpp:283
-#, fuzzy
 msgid "Do not perform online quotes for this investment"
-msgstr "&Nu efectua actualizarea online a cotaţiilor pentru această investiţie"
+msgstr "Nu efectua actualizarea online a cotaţiilor pentru această investiţie"
 
 #: dialogs/rc.cpp:284
-#, fuzzy
 msgid "Select a known KMyMoney source from the list below"
-msgstr "Alegeţi o sursă cunoscută de către KMyMoney din lista de mai &jos"
+msgstr "Alegeţi o sursă cunoscută de către KMyMoney din lista de mai jos"
 
 #: dialogs/rc.cpp:285
-#, fuzzy
 msgid ""
 "Use the following name for the price source.\n"
 "(Click Help for further information.)"
 msgstr ""
-"&Foloseşte următorul nume pentru sursa de preţ.\n"
+"Foloseşte următorul nume pentru sursa de preţ.\n"
 "(Folosiţi 'Ajutor' pentru mai multe informaţii)"
 
 #: dialogs/rc.cpp:286
-#, fuzzy
 msgid "Always use this selection for this price source."
-msgstr ""
-"&Foloseşte întotdeauna această selecţie pentru această sursă de preţuri."
+msgstr "Foloseşte întotdeauna această selecţie pentru această sursă de preţuri."
 
 #: dialogs/rc.cpp:287
 msgid "QIF Import"
@@ -10765,35 +10621,31 @@ msgid "Import options"
 msgstr "Opţiuni de import"
 
 #: dialogs/rc.cpp:291
-#, fuzzy
 msgid "Bank statement"
-msgstr "Bilanţ invalid."
+msgstr "Extras bancar"
 
 #: dialogs/rc.cpp:292
-#, fuzzy
 msgid "Other application"
-msgstr "Calculul dobânzii"
+msgstr "Altă aplicaţie"
 
 #: dialogs/rc.cpp:293
 msgid ""
 "Select <b>Bank statement</b> turns on automatic category matching which is "
 "turned off in case of <b>Historic data</b>. Use the latter if you import "
 "files from other Personal Finance Management software."
-msgstr ""
+msgstr "opţiunii Alegerea <b>Extras bancar</b> activează asocierea automată a categoriilor care este oprită în cazul folosirii opţiunii <b>Date istorice</b>. Folosiţi-o pe cea din urmă dacă importaţi fişiere din ale aplicaţii de gestionare a finanţelor personale."
 
 #: dialogs/rc.cpp:294
-#, fuzzy
 msgid "Source of QIF"
-msgstr "Sursa"
+msgstr "Sursa QIF"
 
 #: dialogs/rc.cpp:300
 msgid "Verify Import"
 msgstr "Verifică importul"
 
 #: dialogs/rc.cpp:302
-#, fuzzy
 msgid "Ok"
-msgstr "&Ok"
+msgstr "Ok"
 
 #: dialogs/rc.cpp:304
 msgid "MyDialog"
@@ -10828,9 +10680,8 @@ msgid "Prices"
 msgstr "Preţuri"
 
 #: dialogs/rc.cpp:335
-#, fuzzy
 msgid "Splits"
-msgstr "Parte de tranzacţie"
+msgstr "Părţi de tranzacţie"
 
 #: dialogs/rc.cpp:336
 msgid "Price Editor"
@@ -10841,9 +10692,8 @@ msgid "Show all stored prices"
 msgstr "Arată toate preţurile stocate"
 
 #: dialogs/rc.cpp:341
-#, fuzzy
 msgid "Delete Range..."
-msgstr "Ş&terge intervalul..."
+msgstr "Şterge intervalul..."
 
 #: dialogs/rc.cpp:344
 msgid "New Account Dialog"
@@ -11019,18 +10869,14 @@ msgid "Investment Type"
 msgstr "Tip de investiţie"
 
 #: dialogs/rc.cpp:430
-#, fuzzy
 msgid "This wizard allows you to create a new investment."
-msgstr "Această pagină vă permite să alegeţi contul părinte."
+msgstr "Acest expert vă permite crearea unei investiţii noi."
 
 #: dialogs/rc.cpp:431
-#, fuzzy
 msgid ""
 "The first step in this process requires to select the type of investment. "
 "The following steps collect more details about the investment from you."
 msgstr ""
-"Acest expert vă permite crearea unei investiţii noi.\n"
-"\n"
 "Primul pas al acestui proces constă în alegerea tipului de investiţie. Paşii "
 "următori vor colecta detalii suplimentare despre investiţie de la "
 "dumneavoastră."
@@ -11824,9 +11670,8 @@ msgid "Difference:"
 msgstr "Diferenţă:"
 
 #: dialogs/rc.cpp:733
-#, fuzzy
 msgid "Edit Transactions..."
-msgstr "&Modifică tranzacţii..."
+msgstr "Modifică tranzacţiile..."
 
 #: dialogs/rc.cpp:736
 msgid "Security List Editor"
@@ -11841,12 +11686,10 @@ msgid "Cash Fraction"
 msgstr "Precizia"
 
 #: dialogs/rc.cpp:745
-#, fuzzy
 msgid "Add..."
-msgstr "&Adaugă..."
+msgstr "Adaugă..."
 
 #: dialogs/rc.cpp:747 widgets/kmymoneypriceview.cpp:157
-#, fuzzy
 msgid "Delete..."
 msgstr "Şterge..."
 
@@ -11914,24 +11757,21 @@ msgid "How do you want to proceed?"
 msgstr "În ce mod doriţi să continuaţi?"
 
 #: dialogs/rc.cpp:776
-#, fuzzy
 msgid "Continue to edit splits"
-msgstr "Continuă să modifici &părţi de tranzacţie"
+msgstr "Continuă să modifici părţlei de tranzacţie"
 
 #: dialogs/rc.cpp:777
-#, fuzzy, c-format
+#, c-format
 msgid "Change total amount of transaction to %1."
-msgstr "Schimbă suma &totală a tranzacţiei în %1."
+msgstr "Schimbă suma totală a tranzacţiei în %1."
 
 #: dialogs/rc.cpp:778
-#, fuzzy
 msgid "Distribute difference of %1 among all splits."
-msgstr "&Distribuie diferenţa de %1 între celelalte părţi de tranzacţie."
+msgstr "Distribuie diferenţa de %1 între celelalte părţi de tranzacţie."
 
 #: dialogs/rc.cpp:779
-#, fuzzy
 msgid "Leave %1 unassigned."
-msgstr "&Păstrează suma %1 neasignată."
+msgstr "Păstrează suma %1 neasignată."
 
 #: dialogs/rc.cpp:782
 msgid "Split transaction"
@@ -12089,17 +11929,15 @@ msgid "Input filter location"
 msgstr "Locaţia filtrului de intrare"
 
 #: dialogs/rc.cpp:844
-#, fuzzy
 msgid "Rename"
-msgstr "Rede&numeşte"
+msgstr "Redenumeşte"
 
 #: dialogs/kselecttransactionsdlg.cpp:44
 msgid "Select Transaction"
 msgstr "Alege o tranzacţie"
 
 #: dialogs/kselecttransactionsdlg.cpp:45
-msgid ""
-"Select a transaction and press the OK button or use Cancel to select none."
+msgid "Select a transaction and press the OK button or use Cancel to select none."
 msgstr ""
 "Alegeţi o tranzacţie şi apăsaţi butonul OK sau folosiţi butonul Renunţă "
 "pentru a nu alege nicio tranzacţie."
@@ -12127,25 +11965,22 @@ msgid "Total for all shares"
 msgstr "Totalul tuturor acţiunilor"
 
 #: dialogs/knewinvestmentwizard.cpp:129
-#, fuzzy
 msgid "This wizard allows you to modify the selected investment."
-msgstr "Această pagină vă permite să alegeţi contul părinte."
+msgstr "Acest expert vă permite modificare investiţiei alese."
 
 #: dialogs/knewinvestmentwizard.cpp:132
-#, fuzzy
 msgid "This wizard allows you to modify the selected security."
-msgstr "Această pagină vă permite să alegeţi contul părinte."
+msgstr "Acest expert vă permite modificarea titlului de valoare ales."
 
 #: dialogs/knewinvestmentwizard.cpp:186
 msgid ""
 "The selected symbol is already on file. Do you want to reuse the existing "
 "security?"
-msgstr ""
+msgstr "Simbolul dat este deja utilizat. Doriţi să reutilizaţi titlul de valoare existent?"
 
 #: dialogs/knewinvestmentwizard.cpp:186
-#, fuzzy
 msgid "Security found"
-msgstr "Nu s-a găsit titlul de valoare"
+msgstr "S-a găsit titlul de valoare"
 
 #: dialogs/knewinvestmentwizard.cpp:309
 msgid "Unable to create all objects for the investment"
@@ -12164,8 +11999,7 @@ msgid "Skip this transaction"
 msgstr "Omite această tranzacţie"
 
 #: dialogs/kaccountselectdlg.cpp:67
-msgid ""
-"Use this to skip importing this transaction and proceed with the next one."
+msgid "Use this to skip importing this transaction and proceed with the next one."
 msgstr ""
 "Folosiţi funcţia aceasta pentru a omite importarea acestei tranzacţii şi să "
 "continuaţi cu tranzacţia următoare."
@@ -12176,8 +12010,7 @@ msgstr "Creează o categorie nouă / cont nou"
 
 #: dialogs/kaccountselectdlg.cpp:73
 msgid "Use this to add a new account/category to the file"
-msgstr ""
-"Folosiţi această funcţie pentru a adăuga un cont/o categorie nouă la fişier"
+msgstr "Folosiţi această funcţie pentru a adăuga un cont/o categorie nouă la fişier"
 
 #: dialogs/kaccountselectdlg.cpp:77
 msgid "&Abort"
@@ -12294,8 +12127,7 @@ msgstr "Creează o categorie nouă"
 
 #: dialogs/knewloanwizard.cpp:125
 msgid "Use this to open the new account editor"
-msgstr ""
-"Foloseşte această funcţie pentru a deschide editorul pentru un cont nou"
+msgstr "Foloseşte această funcţie pentru a deschide editorul pentru un cont nou"
 
 #: dialogs/knewloanwizard.cpp:129
 msgid "&Additional fees..."
@@ -12314,8 +12146,7 @@ msgstr ""
 "împrumutul şi dobânda conţinute în plăţile dumneavoastră periodice."
 
 #: dialogs/knewloanwizard.cpp:139
-msgid ""
-"Use this to create a new account to which the initial payment should be made"
+msgid "Use this to create a new account to which the initial payment should be made"
 msgstr ""
 "Folosiţi această funcţie pentru a crea un cont nou în care se va efectua "
 "plata iniţială"
@@ -12361,8 +12192,7 @@ msgstr ""
 "sau lăsaţi câmpul gol pentru a fi calculat."
 
 #: dialogs/knewloanwizard.cpp:248
-msgid ""
-"Please enter the date, the first payment for this loan was/is due this year."
+msgid "Please enter the date, the first payment for this loan was/is due this year."
 msgstr ""
 "Vă rog să introduceţi data în care prima plată pentru acest împrumut a fost/"
 "este scadentă în din acest an."
@@ -12448,8 +12278,7 @@ msgstr "împrumutul şi dobânda"
 msgid ""
 "The number of payments has been decremented and the final payment has been "
 "modified to %1."
-msgstr ""
-"Numărul de plăţi a fost decrementat iar plata finală a fost modificată la %1."
+msgstr "Numărul de plăţi a fost decrementat iar plata finală a fost modificată la %1."
 
 #: dialogs/knewloanwizard.cpp:851 dialogs/knewloanwizard.cpp:871
 #, c-format
@@ -12499,8 +12328,7 @@ msgstr ""
 "care au avut-o în momentul pornirii acestui dialog."
 
 #: dialogs/kfindtransactiondlg.cpp:250
-msgid ""
-"Warning: Filtering by Category will exclude all transfers from the results."
+msgid "Warning: Filtering by Category will exclude all transfers from the results."
 msgstr ""
 "Atenţie: Filtrarea după categorie va exclude toate transferurile din "
 "rezultatul căutării."
@@ -12550,7 +12378,6 @@ msgid "Price Options"
 msgstr "Opţiuni de preţ"
 
 #: widgets/kmymoneypriceview.cpp:153
-#, fuzzy
 msgid "Online Price Update..."
 msgstr "Actualizarea preţului online..."
 
@@ -12721,8 +12548,7 @@ msgstr "Înregistrează această tranzacţie în registru"
 
 #: widgets/kmymoneybriefschedule.cpp:67
 msgid "Use this button to record this transaction"
-msgstr ""
-"Foloseşte acest buton pentru a înregistra această tranzacţie în registru"
+msgstr "Foloseşte acest buton pentru a înregistra această tranzacţie în registru"
 
 #: widgets/kmymoneybriefschedule.cpp:95
 msgid "%1 of %2"
@@ -12825,9 +12651,9 @@ msgid "Last reconciliation"
 msgstr "Ultima reconciliere"
 
 #: widgets/register.cpp:2267
-#, fuzzy, c-format
+#, c-format
 msgid "Online Statement Balance: %1"
-msgstr "Extras: %1"
+msgstr "Soldul extrasului online: %1"
 
 #: widgets/register.cpp:2271
 msgid "This year"
@@ -13106,9 +12932,8 @@ msgid "Period"
 msgstr "Perioadă"
 
 #: widgets/rc.cpp:21
-#, fuzzy
 msgid "Individual"
-msgstr "I&ndividual"
+msgstr "Individual"
 
 #: widgets/rc.cpp:23
 msgid ""
@@ -13187,8 +13012,7 @@ msgstr "Fila raporturilor"
 
 #: widgets/rc.cpp:53
 msgid "<p>On this tab, you set the basic properties of this report.</p>"
-msgstr ""
-"<p>În aceasta filă puteţi alege parametrii de bază a acestui raport.</p>"
+msgstr "<p>În aceasta filă puteţi alege parametrii de bază a acestui raport.</p>"
 
 #: widgets/rc.cpp:54
 msgid "Report Name"
@@ -13260,8 +13084,7 @@ msgid "Totals"
 msgstr "Totaluri"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
-msgid ""
-"<p>Choose what kind of accounts to display as the rows of this report.</p>"
+msgid "<p>Choose what kind of accounts to display as the rows of this report.</p>"
 msgstr ""
 "<p>Alegeţi ce fel de conturi să fie afişate ca rânduri ale acestui raport.</"
 "p>"
@@ -13276,8 +13099,7 @@ msgstr "Bilunar"
 
 #: widgets/rc.cpp:78
 msgid "<p>Choose how large of a time period each column should encompass</p>"
-msgstr ""
-"<p>Alegeţi perioada de timp care ar trebui să fie cuprinsă într-o coloană</p>"
+msgstr "<p>Alegeţi perioada de timp care ar trebui să fie cuprinsă într-o coloană</p>"
 
 #: widgets/rc.cpp:79
 msgid "Income & Expenses"
@@ -13296,17 +13118,14 @@ msgid "Show totals column"
 msgstr "Afişează coloana totalurilor"
 
 #: widgets/rc.cpp:84
-#, fuzzy
 msgid "Average days"
-msgstr "Medie"
+msgstr "Număr mediu de zile"
 
 #: widgets/rc.cpp:85
-#, fuzzy
 msgid "Include scheduled transactions"
 msgstr "Include tranzacţiile programate"
 
 #: widgets/rc.cpp:86
-#, fuzzy
 msgid "Include transfers"
 msgstr "Include transferuri"
 
@@ -13370,8 +13189,7 @@ msgstr "<p>Alege această opţiune pentru a afişa coloana Număr</p>"
 
 #: widgets/rc.cpp:114
 msgid "<p>Select this option to show the Payee column</p>"
-msgstr ""
-"<p>Alege această opţiune pentru a afişa coloana Beneficiar/Plătitor</p>"
+msgstr "<p>Alege această opţiune pentru a afişa coloana Beneficiar/Plătitor</p>"
 
 #: widgets/rc.cpp:116
 msgid "<p>Select this option to show the Category column</p>"
@@ -13406,10 +13224,8 @@ msgid "Hide Split Transaction Details"
 msgstr "Ascunde detaliile tranzacţiei împărţite"
 
 #: widgets/rc.cpp:125
-msgid ""
-"Do not display the individual transactions that make up a split transaction"
-msgstr ""
-"Nu afişa tranzacţiile individuale care foarmează o tranzacţie împărţită"
+msgid "Do not display the individual transactions that make up a split transaction"
+msgstr "Nu afişa tranzacţiile individuale care foarmează o tranzacţie împărţită"
 
 #: widgets/rc.cpp:126
 msgid "Include only Tax categories"
@@ -13680,207 +13496,3 @@ msgstr "Ultimele 3 luni şi următoarele 3 luni"
 msgid "User defined"
 msgstr "Definit de către utilizator"
 
-#~ msgid ""
-#~ "This QIF file contains investment transactions.  You are trying to import "
-#~ "this file into an account which is not an investment account.  These "
-#~ "transactions will be ignored."
-#~ msgstr ""
-#~ "Acest fişier QIF conţine tranzacţii de investiţii. Încercaţi să importaţi "
-#~ "acest fişier într-un cont care nu este de investiţii. Aceste tranzacţii "
-#~ "vor fi omise la import."
-
-#~ msgid "Invalid account for investments"
-#~ msgstr "Cont invalid pentru investiţii"
-
-#~ msgid "Problem adding imported transaction: "
-#~ msgstr "Problemă la adăugarea unei tranzacţii importate: "
-
-#~ msgid ""
-#~ "This file contains security entries.  These are not currently supported "
-#~ "by the QIF importer."
-#~ msgstr ""
-#~ "Fişierul conţine înregistrări cu titluri de valoare. Acestea nu sunt "
-#~ "suportate de importatorul QIF."
-
-#~ msgid "Unable to import"
-#~ msgstr "Nu s-a putut importa"
-
-#~ msgid "Budget "
-#~ msgstr "Buget "
-
-#~ msgid "Forecast "
-#~ msgstr "Estimare "
-
-#~ msgid "Budget Total"
-#~ msgstr "Buget total"
-
-#~ msgid "Forecast Total"
-#~ msgstr "Total estimat"
-
-#~ msgid "pics/titlelabel_background.png"
-#~ msgstr "pics/titlelabel_background.png"
-
-#~ msgid "S&ummary"
-#~ msgstr "S&umar"
-
-#~ msgid "Det&ail"
-#~ msgstr "Det&alii"
-
-#~ msgid "Total Incomes This Month"
-#~ msgstr "Total venituri în această lună"
-
-#~ msgid "Total Expenses This Month"
-#~ msgstr "Total cheltuieli pentru această lună"
-
-#~ msgid "Scheduled Incomes This Month"
-#~ msgstr "Venituri programate pentru această lună"
-
-#~ msgid "Scheduled Transfers This Month"
-#~ msgstr "Transferuri programate pentru această lună"
-
-#~ msgid "Accepts the value and stores them"
-#~ msgstr "Acceptă valorile şi le memorează"
-
-#~ msgid "Use this to accept all values and close the dialog."
-#~ msgstr ""
-#~ "Folosiţi aceasta pentru a accepta toate valorile şi a închide dialogul."
-
-#~ msgid "Cancel the operation"
-#~ msgstr "Renunţă la operaţie"
-
-#~ msgid "Use this to dismiss all the changes made in this dialog."
-#~ msgstr ""
-#~ "Folosiţi aceasta pentru a renunţa la toate modificările făcute în acest "
-#~ "dialog."
-
-#~ msgid "Abort operation"
-#~ msgstr "Anulează operaţia"
-
-#~ msgid "Use this to abort the export operation"
-#~ msgstr "Folosiţi aceasta pentru a anula operaţiunea de exportare"
-
-#~ msgid "Start the backup operation"
-#~ msgstr "Porneşte operaţiunea copierilor de siguranţă"
-
-#~ msgid "Pressing this button starts the backup operation."
-#~ msgstr ""
-#~ "Apăsaţi acest buton pentru a porni operaţiunea de creare a copiei de "
-#~ "siguranţă."
-
-#~ msgid "Cancel the backup operation"
-#~ msgstr "Anulează operaţiunea de creare a copiei de siguranţă"
-
-#~ msgid "Use this to abort the backup and to return to KMyMoney."
-#~ msgstr ""
-#~ "Folosiţi aceasta pentru a renunţa la copia de siguranţă şi a vă "
-#~ "reîntoarce în KMyMoney."
-
-#~ msgid "&Use the ledger lens"
-#~ msgstr "&Foloseşte lupa de registru"
-
-#~ msgid ""
-#~ "_: Same transaction if amount differs less than percent.\n"
-#~ "Same transaction if amount differs less than"
-#~ msgstr "Aceeaşi tranzacţie dacă suma diferă cu mai puţin de"
-
-#~ msgid "Reject all changes to the splits and return to transaction form"
-#~ msgstr ""
-#~ "Renunţă la toate modificările aduse părţilor de tranzacţie şi reveniţi la "
-#~ "formularul de tranzacţie"
-
-#~ msgid ""
-#~ "Use this to reject all changes to the splits and return to the transaction"
-#~ msgstr ""
-#~ "Folosiţi această funcţie pentru a renunţa la toate modificările aduse "
-#~ "părţilor de tranzacţie şi reveniţi la formularul de tranzacţie"
-
-#~ msgid "Close dialog"
-#~ msgstr "Închide dialog"
-
-#~ msgid "Use this to close the dialog and abort the operation"
-#~ msgstr ""
-#~ "Folosiţi această funcţie pentru a  închide dialogul şi renunţa la "
-#~ "operaţia efectuată"
-
-#~ msgid "Use this to accept and store data"
-#~ msgstr "Folosiţi această funcţie pentru a accepta şi a memora datele"
-
-#~ msgid "Delete the selected profile"
-#~ msgstr "Şterge profilul selectat"
-
-#~ msgid "Use this to delete the selected profile"
-#~ msgstr "Folosiţi această funcţie pentru a şterge profilul ales"
-
-#~ msgid "Use this to accept the data."
-#~ msgstr "Folosiţi această funcţie pentru a accepta datele."
-
-#~ msgid "Reject all changes to the data and closes the dialog"
-#~ msgstr "Renunţaţi la toate modificările datelor şi închideţi dialogul"
-
-#~ msgid "Use this to reject all changes."
-#~ msgstr "Foloseşte această funcţie pentru a renunţa la toate modificările"
-
-#~ msgid "&Create"
-#~ msgstr "&Creează"
-
-#~ msgid "Ca&ncel"
-#~ msgstr "Re&nunţă"
-
-#~ msgid "Co&nfigure"
-#~ msgstr "Co&nfigurează"
-
-#~ msgid "Te&xt"
-#~ msgstr "Te&xt"
-
-#~ msgid "&Scan"
-#~ msgstr "&Scanează"
-
-#~ msgid "Automatically create missing payees"
-#~ msgstr "Creează automat beneficiarii lipsă"
-
-#~ msgid "Online &Quotes"
-#~ msgstr "&Cotaţii online"
-
-#~ msgid "O&K"
-#~ msgstr "O&K"
-
-#~ msgid "&Edit ..."
-#~ msgstr "&Modifică..."
-
-#~ msgid "&Delete ..."
-#~ msgstr "&Şterge..."
-
-#~ msgid "Remove this price information from the price history"
-#~ msgstr "Sterge această informaţie de preţ din istoricul preţului"
-
-#~ msgid "Create a new price information entry."
-#~ msgstr "Creează o înregistrare de informaţie de preţ nouă."
-
-#~ msgid "Accepts the selected action and continues"
-#~ msgstr "Acceptă acţiunile alese şi continuă"
-
-#~ msgid ""
-#~ "Use this to accept the selection and continue processing the transaction"
-#~ msgstr ""
-#~ "Foloseşte această funcţie pentru a accepta alegerea şi pentru a continua "
-#~ "procesarea tranzacţiei"
-
-#~ msgid "Reject any changes"
-#~ msgstr "Respinge orice modificare"
-
-#~ msgid "Use this to abort the account/category dialog"
-#~ msgstr "Folosiţi funcţia aceasta pentru a anula dialogul de cont/categorie"
-
-#~ msgid "Accept modifications"
-#~ msgstr "Acceptă modificările"
-
-#~ msgid "Use this to accept the data and possibly create the account/category"
-#~ msgstr ""
-#~ "Folosiţi această funcţie pentru a accepta datele şi posibilitatea de a "
-#~ "crea contul/categoria"
-
-#~ msgid "New ..."
-#~ msgstr "Nou..."
-
-#~ msgid "&Yearly"
-#~ msgstr "&Anual"
