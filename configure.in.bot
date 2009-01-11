@@ -12,6 +12,10 @@ echo ""
 
 echo "Chart support:                         yes"
 
+echo ""
+
+echo "SQLITE3 support:                       $enable_sqlite3"
+
 echo "------------------------------------------"
 echo ""
 echo ""

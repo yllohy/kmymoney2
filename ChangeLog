@@ -1,6 +1,9 @@
 
 2009-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation by Cristian Onet
+  * Added QT SQLITE3 support from
+    http://www.kde-apps.org/content/show.php/qt-sqlite3?content=23011
+    to the build system
 
 2009-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Refactored the usage of the 'Private * d' construct

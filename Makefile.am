@@ -1,8 +1,8 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = libkgpgfile libkdchart kmymoney2 po doc developer-doc
+SUBDIRS = @SQLITE3@ libkgpgfile libkdchart kmymoney2 po doc developer-doc
 
-EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs inst-apps
+EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs inst-apps 23011-qt-sqlite3-0.2.tar.gz
 
 noinst_HEADERS = kdecompat.h
 
@@ -25,6 +25,18 @@ $(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/ad
 	@for i in $(ADDITIONAL_CHECKS); do \
 		cat $$i >> acinclude.m4; \
 	done
+
+install-data-local:
+	if test ! x@SQLITE3@ = x; then \
+		TMPDIR=`dirname @LIBSQLITE3@`; \
+		$(mkinstalldirs) $(DESTDIR)$(TMPDIR); \
+		$(INSTALL_PROGRAM) @SQLITE3@/sqldrivers/libqsqlite3.so $(DESTDIR)@LIBSQLITE3@; \
+	fi
+
+uninstall-local:
+	if test ! x@SQLITE3@ = x; then \
+		rm -rf $(DESTDIR)@LIBSQLITE3@; \
+	fi
 
 DISTCLEANFILES=kmymoney2.kdevses kmymoney2-*.tar.gz
 MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files

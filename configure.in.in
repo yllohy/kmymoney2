@@ -69,6 +69,11 @@ dnl check for library build for Qt-Designer
 dnl
 AC_QTDESIGNER_SUPPORT()
 
+dnl
+dnl check for sqlite3 support
+dnl
+AC_SQLITE3()
+
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 dnl KDE_NEED_FLEX dnl __kdevelop__
