@@ -67,6 +67,7 @@ class QueryTable : public ListTable
     void constructAccountTable(void);
     void constructTransactionTable(void);
     void constructPerformanceRow( const ReportAccount& account, TableRow& result ) const;
+    void constructSplitsTable(void);
 
 };
 

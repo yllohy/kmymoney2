@@ -1,4 +1,7 @@
 
+2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added CashFlow Report
+
 2009-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation by Cristian Onet
   * Added QT SQLITE3 support from

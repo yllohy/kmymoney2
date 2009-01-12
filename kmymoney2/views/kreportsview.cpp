@@ -1125,6 +1125,18 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
+    ReportGroup list("CashFlow", i18n("Cash Flow"));
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eCashFlow,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCaccount,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Cash Flow Transactions This Month"),
+      i18n("Default Report")
+    ));
+    groups.push_back(list);
+  }
+  {
     ReportGroup list("Investments", i18n("Investments"));
 
     list.push_back(MyMoneyReport(

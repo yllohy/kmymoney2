@@ -34,14 +34,14 @@
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
 
-const QStringList MyMoneyReport::kRowTypeText = QStringList::split ( ",", "none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution,budget,budgetactual,schedule,accountinfo,accountloaninfo,accountreconcile", true );
+const QStringList MyMoneyReport::kRowTypeText = QStringList::split ( ",", "none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution,budget,budgetactual,schedule,accountinfo,accountloaninfo,accountreconcile,cashflow", true );
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split ( ",", "none,months,bimonths,quarters,4,5,6,weeks,8,9,10,11,years", true );
 
 // if you add names here, don't forget to update the bitmap for EQueryColumns
 // and shift the bit for eQCend one position to the left
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split ( ",", "none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance,loan,balance", true );
 
-const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, ePivotTable, ePivotTable, eInfoTable, eInfoTable, eInfoTable, eQueryTable, eNoReport };
+const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, ePivotTable, ePivotTable, eInfoTable, eInfoTable, eInfoTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split ( ",", "none,all,top,group,total,invalid", true );
 const QStringList MyMoneyReport::kChartTypeText = QStringList::split ( ",", "none,line,bar,pie,ring,stackedbar,invalid", true );
 
@@ -143,6 +143,14 @@ MyMoneyReport::MyMoneyReport ( ERowType _rt, unsigned _ct, dateOptionE _dl, bool
   }
   if ( _rt == MyMoneyReport::eAccountInfo )
   {
+    addAccountGroup ( MyMoneyAccount::Asset );
+    addAccountGroup ( MyMoneyAccount::Liability );
+  }
+  //cash flow reports show splits for all account groups
+  if ( _rt == MyMoneyReport::eCashFlow )
+  {
+    addAccountGroup ( MyMoneyAccount::Expense );
+    addAccountGroup ( MyMoneyAccount::Income );
     addAccountGroup ( MyMoneyAccount::Asset );
     addAccountGroup ( MyMoneyAccount::Liability );
   }

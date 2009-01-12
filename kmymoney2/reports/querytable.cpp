@@ -276,7 +276,10 @@ void QueryTable::init(void)
       constructTransactionTable();
       m_columns="postdate,account";
       break;
-
+    case MyMoneyReport::eCashFlow:
+      constructSplitsTable();
+      m_columns="postdate";
+      break;
     default:
       constructTransactionTable();
       m_columns="postdate";
@@ -287,6 +290,9 @@ void QueryTable::init(void)
 
   switch ( m_config.rowType() )
   {
+  case MyMoneyReport::eCashFlow:
+    m_group = "categorytype,topcategory,category";
+    break;
   case MyMoneyReport::eCategory:
     m_group = "categorytype,topcategory,category";
     break;
@@ -1153,6 +1159,341 @@ void QueryTable::constructAccountTable(void)
     ++it_account;
   }
 }
+
+void QueryTable::constructSplitsTable(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  MyMoneyReport report(m_config);
+  report.setReportAllSplits(false);
+  report.setConsiderCategory(true);
+
+  // support for opening and closing balances
+  QMap<QString, MyMoneyAccount> accts;
+
+  //get all transactions for this report
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(report);
+  for (QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin(); it_transaction != transactions.end(); ++it_transaction) {
+
+    TableRow qA, qS;
+    QDate pd;
+
+    qA["id"] = qS["id"] = (* it_transaction).id();
+    qA["entrydate"] = qS["entrydate"] = (* it_transaction).entryDate().toString(Qt::ISODate);
+    qA["postdate"] = qS["postdate"] = (* it_transaction).postDate().toString(Qt::ISODate);
+    qA["commodity"] = qS["commodity"] = (* it_transaction).commodity();
+
+    pd = (* it_transaction).postDate();
+    qA["month"] = qS["month"] = i18n("Month of %1").arg(QDate(pd.year(),pd.month(),1).toString(Qt::ISODate));
+    qA["week"] = qS["week"] = i18n("Week of %1").arg(pd.addDays(1-pd.dayOfWeek()).toString(Qt::ISODate));
+
+    qA["currency"] = qS["currency"] = "";
+
+    if((* it_transaction).commodity() != file->baseCurrency().id()) {
+      if (!report.isConvertCurrency()) {
+        qA["currency"] = qS["currency"] = (*it_transaction).commodity();
+      }
+    }
+
+    // to handle splits, we decide on which account to base the split
+    // (a reference point or point of view so to speak). here we take the
+    // first account that is a stock account or loan account (or the first account
+    // that is not an income or expense account if there is no stock or loan account)
+    // to be the account (qA) that will have the sub-item "split" entries. we add
+    // one transaction entry (qS) for each subsequent entry in the split.
+    const QValueList<MyMoneySplit>& splits = (*it_transaction).splits();
+    QValueList<MyMoneySplit>::const_iterator myBegin, it_split;
+    //S_end = splits.end();
+
+    for (it_split = splits.begin(), myBegin = splits.end(); it_split != splits.end(); ++it_split) {
+      ReportAccount splitAcc = (* it_split).accountId();
+      // always put split with a "stock" account if it exists
+      if (splitAcc.isInvest())
+        break;
+
+      // prefer to put splits with a "loan" account if it exists
+      if(splitAcc.isLoan())
+        myBegin = it_split;
+
+      if((myBegin == splits.end()) && ! splitAcc.isIncomeExpense()) {
+        myBegin = it_split;
+      }
+    }
+
+    // select our "reference" split
+    if (it_split == splits.end()) {
+      it_split = myBegin;
+    } else {
+      myBegin = it_split;
+    }
+
+    // if the split is still unknown, use the first one. I have seen this
+    // happen with a transaction that has only a single split referencing an income or expense
+    // account and has an amount and value of 0. Such a transaction will fall through
+    // the above logic and leave 'it_split' pointing to splits.end() which causes the remainder
+    // of this to end in an infinite loop.
+    if(it_split == splits.end()) {
+      it_split = splits.begin();
+    }
+
+    // for "loan" reports, the loan transaction gets special treatment.
+    // the splits of a loan transaction are placed on one line in the
+    // reference (loan) account (qA). however, we process the matching
+    // split entries (qS) normally.
+    bool loan_special_case = false;
+    if(m_config.queryColumns() & MyMoneyReport::eQCloan) {
+      ReportAccount splitAcc = (*it_split).accountId();
+      loan_special_case = splitAcc.isLoan();
+    }
+
+    //the account of the beginning splits
+    ReportAccount myBeginAcc = (*myBegin).accountId();
+
+    bool include_me = true;
+    bool transaction_text = false; //indicates whether a text should be considered as a match for the transaction or for a split only
+    QString a_fullname = "";
+    QString a_memo = "";
+    unsigned int pass = 1;
+
+    do {
+      MyMoneyMoney xr;
+      ReportAccount splitAcc = (* it_split).accountId();
+
+      //get fraction for account
+      int fraction = splitAcc.fraction();
+
+      //use base currency fraction if not initialized
+      if(fraction == -1)
+        fraction = file->baseCurrency().smallestAccountFraction();
+
+      QString institution = splitAcc.institutionId();
+      QString payee = (*it_split).payeeId();
+
+      if ( m_config.isConvertCurrency() ) {
+        xr = (splitAcc.deepCurrencyPrice((*it_transaction).postDate()) * splitAcc.baseCurrencyPrice((*it_transaction).postDate())).reduce();
+      } else {
+        xr = splitAcc.deepCurrencyPrice((*it_transaction).postDate()).reduce();
+      }
+
+      //there is a bug where the price sometimes returns 1
+      //get the price from the split in that case
+      /*if(m_config.isConvertCurrency() && xr == MyMoneyMoney(1,1)) {
+      xr = (*it_split).price();
+    }*/
+
+      if (splitAcc.isInvest()) {
+
+        // use the institution of the parent for stock accounts
+        institution = splitAcc.parent().institutionId();
+        MyMoneyMoney shares = (*it_split).shares();
+
+        qA["action"] = (*it_split).action();
+        qA["shares"] = shares.isZero() ? "" : (*it_split).shares().toString();
+        qA["price"] = shares.isZero() ? "" : xr.toString();
+
+        if (((*it_split).action() == MyMoneySplit::ActionBuyShares) && (*it_split).shares().isNegative())
+          qA["action"] = "Sell";
+
+        qA["investaccount"] = splitAcc.parent().name();
+      }
+
+      include_me = m_config.includes(splitAcc);
+      a_fullname = splitAcc.fullName();
+      a_memo = (*it_split).memo();
+
+      transaction_text = m_config.match(&(*it_split));
+
+      qA["price"] = xr.toString();
+      qA["account"] = splitAcc.name();
+      qA["accountid"] = splitAcc.id();
+      qA["topaccount"] = splitAcc.topParentName();
+
+      qA["institution"] = institution.isEmpty()
+          ? i18n("No Institution")
+        : file->institution(institution).name();
+
+      qA["payee"] = payee.isEmpty()
+          ? i18n("[Empty Payee]")
+        : file->payee(payee).name().simplifyWhiteSpace();
+
+      qA["reconciledate"] = (*it_split).reconcileDate().toString(Qt::ISODate);
+      qA["reconcileflag"] = KMyMoneyUtils::reconcileStateToString((*it_split).reconcileFlag(), true );
+      qA["number"] = (*it_split).number();
+
+      qA["memo"] = a_memo;
+
+      qS["reconciledate"] = qA["reconciledate"];
+      qS["reconcileflag"] = qA["reconcileflag"];
+      qS["number"] = qA["number"];
+
+      qS["topcategory"] = splitAcc.topParentName();
+
+      // only include the configured accounts
+      if (include_me) {
+        // add the "summarized" split transaction
+        // this is the sub-total of the split detail
+        // convert to lowest fraction
+        qA["value"] = ((*it_split).shares() * xr).convert(fraction).toString();
+        qA["rank"] = "0";
+
+        //fill in account information
+        if (! splitAcc.isIncomeExpense() && it_split != myBegin) {
+          qA["account"] = ((*it_split).shares().isNegative()) ?
+              i18n("Transfer to %1").arg(myBeginAcc.fullName())
+            : i18n("Transfer from %1").arg(myBeginAcc.fullName());
+        } else if (it_split == myBegin ) {
+          //handle the main split
+          if((splits.count() > 2)) {
+            //if it is the main split and has multiple splits, note that
+            qA["account"] = i18n("[Split Transaction]");
+          } else {
+            //fill the account name of the second split
+            QValueList<MyMoneySplit>::const_iterator tempSplit = splits.begin();
+
+            //there are supposed to be only 2 splits if we ever get here
+            if(tempSplit == myBegin && splits.count() > 1)
+              ++tempSplit;
+
+            //show the name of the category, or "transfer to/from" if it as an account
+            ReportAccount tempSplitAcc = (*tempSplit).accountId();
+            if (! tempSplitAcc.isIncomeExpense()) {
+              qA["account"] = ((*it_split).shares().isNegative()) ?
+                  i18n("Transfer to %1").arg(tempSplitAcc.fullName())
+                : i18n("Transfer from %1").arg(tempSplitAcc.fullName());
+            } else {
+              qA["account"] = tempSplitAcc.fullName();
+            }
+          }
+        } else {
+          //in any other case, fill in the account name of the main split
+          qA["account"] = myBeginAcc.fullName();
+        }
+
+        //category data is always the one of the split
+        qA ["category"] = splitAcc.fullName();
+        qA ["topcategory"] = splitAcc.topParentName();
+        qA ["categorytype"] = KMyMoneyUtils::accountTypeToString(splitAcc.accountGroup());
+
+        m_rows += qA;
+
+        // track accts that will need opening and closing balances
+        accts.insert (splitAcc.id(), splitAcc);
+      }
+      ++it_split;
+
+      // look for wrap-around
+      if (it_split == splits.end())
+        it_split = splits.begin();
+
+      //check if there have been more passes than there are splits
+      //this is to prevent infinite loops in cases of data inconsistency -- asoliverez
+      ++pass;
+      if( pass > splits.count() )
+        break;
+
+    } while (it_split != myBegin);
+
+    if (loan_special_case) {
+      m_rows += qA;
+    }
+  }
+
+  // now run through our accts list and add opening and closing balances
+
+  switch (m_config.rowType()) {
+    case MyMoneyReport::eAccount:
+    case MyMoneyReport::eTopAccount:
+      break;
+
+    // case MyMoneyReport::eCategory:
+    // case MyMoneyReport::eTopCategory:
+    // case MyMoneyReport::ePayee:
+    // case MyMoneyReport::eMonth:
+    // case MyMoneyReport::eWeek:
+    default:
+      return;
+  }
+
+  QDate startDate, endDate;
+
+  report.validDateRange(startDate, endDate);
+  QString strStartDate = startDate.toString(Qt::ISODate);
+  QString strEndDate = endDate.toString(Qt::ISODate);
+  startDate = startDate.addDays(-1);
+
+  QMap<QString, MyMoneyAccount>::const_iterator it_account, accts_end;
+  for (it_account = accts.begin(); it_account != accts.end(); ++it_account) {
+
+    TableRow qA;
+
+    ReportAccount account = (* it_account);
+
+    //get fraction for account
+    int fraction = account.fraction();
+
+    //use base currency fraction if not initialized
+    if(fraction == -1)
+      fraction = file->baseCurrency().smallestAccountFraction();
+    QString institution = account.institutionId();
+
+    // use the institution of the parent for stock accounts
+    if (account.isInvest())
+      institution = account.parent().institutionId();
+
+    MyMoneyMoney startBalance, endBalance, startPrice, endPrice;
+    MyMoneyMoney startShares, endShares;
+
+    //get price and convert currency if necessary
+    if ( m_config.isConvertCurrency() ) {
+      startPrice = (account.deepCurrencyPrice(startDate) * account.baseCurrencyPrice(startDate)).reduce();
+      endPrice = (account.deepCurrencyPrice(endDate) * account.baseCurrencyPrice(endDate)).reduce();
+    } else {
+      startPrice = account.deepCurrencyPrice(startDate).reduce();
+      endPrice = account.deepCurrencyPrice(endDate).reduce();
+    }
+    startShares = file->balance(account.id(),startDate);
+    endShares = file->balance(account.id(),endDate);
+
+    //get starting and ending balances
+    startBalance = startShares * startPrice;
+    endBalance = endShares * endPrice;
+
+    //starting balance
+    // don't show currency if we're converting or if it's not foreign
+    qA["currency"] = (m_config.isConvertCurrency() || ! account.isForeignCurrency()) ? "" : account.currency().id();
+
+    qA["accountid"] = account.id();
+    qA["account"] = account.name();
+    qA["topaccount"] = account.topParentName();
+    qA["institution"] = institution.isEmpty() ? i18n("No Institution") : file->institution(institution).name();
+    qA["rank"] = "-2";
+
+    qA["price"] = startPrice.toString();
+    if (account.isInvest()) {
+      qA["shares"] = startShares.toString();
+    }
+
+    qA["postdate"] = strStartDate;
+    qA["balance"] = startBalance.convert(fraction).toString();
+    qA["value"] = QString();
+    qA["id"] = "A";
+    m_rows += qA;
+
+    //ending balance
+    qA["price"] = endPrice.toString();
+
+    if (account.isInvest()) {
+      qA["shares"] = endShares.toString();
+    }
+
+    qA["postdate"] = strEndDate;
+    qA["balance"] = endBalance.toString();
+    qA["id"] = "Z";
+    m_rows += qA;
+  }
+}
+
+
 
 }
 // vim:cin:si:ai:et:ts=2:sw=2:
