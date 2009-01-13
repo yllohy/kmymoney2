@@ -1,4 +1,8 @@
 
+2009-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixes to the build system (make distcheck did not work due
+    to the changes for SQLITE3 support)
+
 2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Added CashFlow Report
 

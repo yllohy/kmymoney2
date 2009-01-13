@@ -1,6 +1,8 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = @SQLITE3@ libkgpgfile libkdchart kmymoney2 po doc developer-doc
+# just make sure, we don't ship the sqlite subdirectory with the tarball
+DIST_SUBDIRS = libkgpgfile libkdchart kmymoney2 po doc developer-doc
+SUBDIRS = @SQLITE3@ $(DIST_SUBDIRS)
 
 EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs inst-apps 23011-qt-sqlite3-0.2.tar.gz
 
@@ -26,16 +28,9 @@ $(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/ad
 		cat $$i >> acinclude.m4; \
 	done
 
-install-data-local:
-	if test ! x@SQLITE3@ = x; then \
-		TMPDIR=`dirname @LIBSQLITE3@`; \
-		$(mkinstalldirs) $(DESTDIR)$(TMPDIR); \
-		$(INSTALL_PROGRAM) @SQLITE3@/sqldrivers/libqsqlite3.so $(DESTDIR)@LIBSQLITE3@; \
-	fi
-
-uninstall-local:
-	if test ! x@SQLITE3@ = x; then \
-		rm -rf $(DESTDIR)@LIBSQLITE3@; \
+distclean-local:
+	if test "x@SQLITE3@" != "x"; then \
+		rm -rf @SQLITE3@; \
 	fi
 
 DISTCLEANFILES=kmymoney2.kdevses kmymoney2-*.tar.gz

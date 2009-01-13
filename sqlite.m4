@@ -78,10 +78,50 @@ AC_DEFUN([AC_SQLITE3], [
     gunzip -c `dirname -- ${0}`/23011-qt-sqlite3-0.2.tar.gz | tar -xf -
     cd qt-sqlite3-0.2
     ${QTDIR}/bin/qmake QMAKE=${QTDIR}/bin/qmake
-    sed -ie s/^install:.*$/install:/ Makefile
-    sed -ie s/^uninstall:.*$/uninstall:/ Makefile
-    cd ..
     SQLITE3=qt-sqlite3-0.2
+    sed -i s/^install:.*$// Makefile
+    sed -i s/^uninstall:.*$// Makefile
+    # create the targets required for 'make distcheck' and 'make [un]install'
+    cat >> Makefile <<EOF
+dvi:
+
+check:
+
+installcheck:
+
+distuninstallcheck:
+
+dist:
+
+distcleancheck:
+
+# for installation and de-installation we need to take care
+# of the _inst case which is caused by running 'make distcheck'
+install:
+	if test ! x$SQLITE3 = x; then \
+	  if test "x\$(DESTDIR)" = "x" -a "${prefix:0-5}" = "_inst"; then \
+	    /bin/sh $ac_abs_confdir/admin/mkinstalldirs \`dirname ${prefix}${LIBSQLITE3}\`; \
+	    cp sqldrivers/libqsqlite3.so ${prefix}${LIBSQLITE3}; \
+	    chmod 755 ${prefix}${LIBSQLITE3}; \
+	  else \
+	    /bin/sh $ac_abs_confdir/admin/mkinstalldirs \`dirname \$(DESTDIR)${LIBSQLITE3}\`; \
+	    cp sqldrivers/libqsqlite3.so \$(DESTDIR)${LIBSQLITE3}; \
+	    chmod 755 \$(DESTDIR)${LIBSQLITE3}; \
+	  fi \
+	fi
+
+uninstall:
+	if test ! x$SQLITE3 = x; then \
+	  if test "x\$(DESTDIR)" = "x" -a "${prefix:0-5}" = "_inst"; then \
+	    rm -rf ${prefix}${LIBSQLITE3}; \
+	  else \
+	    rm -rf \$(DESTDIR)${LIBSQLITE3}; \
+	  fi \
+	fi
+
+EOF
+
+    cd ..
     AC_SUBST(SQLITE3)
     AC_SUBST(LIBSQLITE3) 
   fi
