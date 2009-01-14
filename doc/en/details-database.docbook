@@ -4,10 +4,10 @@
   <author>
   <firstname>Tony</firstname>
   <surname>Bloomfield</surname>
-  <affiliation><address><email>tonybloom@users.sourceforge.net</email></address></affiliation>
+  <affiliation><address><email></email></address></affiliation>
   </author>
   </authorgroup>
-  <date>2005-12-16</date>
+  <date>2009-01-07</date>
   <releaseinfo>0.9</releaseinfo>
   </chapterinfo>
   <title>Database Usage</title>
@@ -21,9 +21,7 @@ At the time of writing, the software described in this chapter is still in an ex
 </caution>
 </para>
 <sect2><title>Introduction</title>
-<para>As of release 1.0, &kappname; allows you to hold your data in a relational database. One of the advantages of using this industry-standard format is that it may allow you to view your data using one of the graphic front ends such as  OpenOffice.org<trademark class="copyright"/>, perhaps in some format that &kappname; currently doesn't provide. Also, a little knowledge of SQL (Structured Query Language, the language used world-wide to access relational databases) should enable you more easily to extract data to feed into some external program, as for example a budgeting application.</para>
-  <para/>
-  <para>It should be noted that the current release of the program merely treats the database in the same fashion as an ordinary file, in that it reads all the data into memory when opened, and writes updated data back when closed. A more conventional method of database access, i.e. reading and updating data only as required, is planned for a future release.</para>
+  <para>As of release 1.0, &kappname; allows you to hold your data in a relational database. One of the advantages of using this industry-standard format is that it may allow you to view your data using one of the graphic front ends such as OpenOffice.org<trademark class="copyright"/>, perhaps in some format that &kappname; currently doesn't provide. Also, a little knowledge of SQL (Structured Query Language, the language used world-wide to access relational databases) should enable you more easily to extract data to feed into some external program, as for example a budgeting application.</para>
   <para/>
 </sect2>
 
@@ -33,9 +31,13 @@ At the time of writing, the software described in this chapter is still in an ex
   <para/>
   <para>With the exception of SQLite, these systems use a client/server model, where the 'client' software sits on 'your' machine, whilst the server lives on the same machine as the database itself, which may be elsewhere on a network. Of course, in the normal scenario for a personal finance application such as &kappname;, 'your' machine acts as both client and server. Your first task therefore, having decided which database system you wish to use, is to install the client, and most probably server, software.</para>
   <para/>
-  <para>(SQLite does not operate on a client/server model; each database is held in a regular file, local or remote, accessed using the normal methods supplied by the underlying operating system. In this case, therefore, there is only one software package to install.)</para>
+  <para>(SQLite does not operate on a client/server model; each database is held in a regular file, local or remote, accessed using the normal methods supplied by the underlying operating system. In this case, therefore, there is only one software package to install. Also, some of the following information, particularly that related to administration, may not apply to SQLite.)</para>
   <para/>
   <para>In addition to the database software itself, you must also install the corresponding Qt<trademark class="registered"/> driver module. Most distributions will include driver modules for the more popular databases. Otherwise, check with the <ulink url="http://www.trolltech.com">Trolltech web site </ulink> and search for 'SQL drivers'</para>
+  <para/>
+  <para>
+  NOTE: Due to the limitations in prior releases, only version 3 of SQLite is supported. Unfortunately, the release of the Qt<trademark class="registered"/> toolkit used by &kappname; does not provide a driver for this version. However, an unofficial, extensively tested, driver is available; if you wish to use SQLite, ask on &devlist; for further information.
+  </para>
   <para/>
 </sect2>
 
@@ -46,11 +48,11 @@ At the time of writing, the software described in this chapter is still in an ex
 
 <sect3><title>Creating the database</title>
   <para/>
-  <para>Code has been included to create an initial database to hold your data if one doesn't exist (currently only for MySQL and SQLite). However it is strongly recommended that you pre-create a database, because most of the products provide a number of options which may be relevant. One that may be of particular importance to some would be the designation of the character set (e.g. UTF-8) to be used for text fields.</para>
+  <para>Code has been included to create an initial database to hold your data if one doesn't exist. However it is strongly recommended that you pre-create a database, because most of the products provide a number of options which may be relevant. One that may be of particular importance to some would be the designation of the character set (e.g. UTF-8) to be used for text fields.</para>
   <para/>
   <para>You will also need at this time to specify permissions for various users to perform different operations on the database. In most systems, the user who creates the database will be automatically assigned all permissions, but this is an area in which the documentation should be consulted.</para>
   <para/>
-  <para>For your first usage of the database, and occasionally at other times when the database layout changes, you will need permission to create and alter tables (see next paragraph). For normal running, you will need to be able to read and write records; these are normally defined in SQL as SELECT, INSERT, UPDATE and DELETE permissions.</para>
+  <para>For your first usage of the database, and occasionally at other times when the database layout changes, you will need permission (also called privileges) to create and alter tables and views (see next paragraph). There may be different names for the permission/privilege in different systems, but something like CREATE and ALTER should be commonplace. For normal running, you will need to be able to read and write records; these are normally defined in SQL as SELECT, INSERT, UPDATE and DELETE permissions.</para>
 </sect3>
 <sect3><title>Creating Tables</title>
   <para/>
@@ -59,7 +61,7 @@ At the time of writing, the software described in this chapter is still in an ex
 </sect3>
 </sect2>
 
-<sect2><title>Initial usage</title>
+<sect2 id="details.database.selectdatabase"><title>Initial usage</title>
   <para/>
   <para>Using &kappname;, open or import an existing data file, or create a new one. Then select 'Save as Database' from the File menu. This will present the following dialog:</para>
   <para/>
@@ -70,7 +72,7 @@ This box lists all Qt SQL drivers installed on your system. Select the driver fo
 </para>
 </sect3>
 <sect3><title>Database name</title>
-<para>The default database name is KMyMoney, but you may choose some other name if you like. SQLite has one database per file; selecting this driver opens the file dialog. For database types other than MySQL, the database name must be pre-created, though &kappname; will create all table structures where necessary.</para>
+<para>The default database name is KMyMoney, but you may choose some other name if you like. SQLite has one database per file; selecting this driver will open the standard 'Open File' dialog from which a file may be selected or created. For some database types, &kappname; may not be able to create the database, so it must be pre-created using the appropriate administration procedure. However, &kappname; will create all table structures where necessary.</para>
         <screenshot>
         <mediaobject>
         <imageobject>
@@ -82,6 +84,9 @@ This box lists all Qt SQL drivers installed on your system. Select the driver fo
 </sect3>
 <sect3><title>Host name</title>
   <para>For the average user, the default name of localhost, being the machine you are currently using, is correct. For networked databases, enter the connected host name.</para>
+  <para>
+  NOTE: For SQLite databases, the Host name, User name and Password fields are not relevant. The SQLite file must have the appropriate read/write permissions set by the underlying file system to enable the appropriate access for the currently logged-in user.
+  </para>
   <para/>
 </sect3>
 <sect3><title>User name and password</title>
@@ -264,25 +269,6 @@ This box lists all Qt SQL drivers installed on your system. Select the driver fo
 </sect3>
 </sect2>
 
-<sect2><title>Optimization</title>
-<sect3><title>MySQL</title>
-<para/>
-<para>If your table is of medium or large size, you can see considerable improvements in loading and storing times by creating an index on the Splits table. This is done from the command line as follows:
-<programlisting>
-tonyb:~> mysql KMyMoney # or whatever your database is called
-...
-mysql> CREATE INDEX tx on kmmSplits (transactionId, splitId);
-...
-mysql> quit
-Bye
-tonyb@CROW:~>
-</programlisting></para>
-
-</sect3>
-<sect3><title>SQLite</title>
-<para> To be supplied</para>
-</sect3>
-</sect2>
 <sect2><title>Encryption</title>
   <para/>
   <para>Encryption of data on your database is not currently supported.</para>

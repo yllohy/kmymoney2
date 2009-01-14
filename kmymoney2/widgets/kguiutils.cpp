@@ -75,6 +75,11 @@ void kMandatoryFieldGroup::add(QWidget *widget)
                SIGNAL(valueChanged(const QString&)),
                       this, SLOT(changed()));
 
+    else if (widget->inherits("QListBox"))
+      connect((QListBox*)widget->qt_cast("QListBox"),
+               SIGNAL(selectionChanged()),
+                      this, SLOT(changed()));
+
     else {
       qWarning("MandatoryFieldGroup: unsupported class %s",
                widget->className());
@@ -131,6 +136,13 @@ void kMandatoryFieldGroup::changed(void)
     }
     if (widget->inherits("QLineEdit")) {
       if (((QLineEdit*)widget->qt_cast("QLineEdit"))->text().isEmpty()) {
+        enable = false;
+        break;
+      } else
+        continue;
+    }
+    if (widget->inherits("QListBox")) {
+      if (((QListBox*)widget->qt_cast("QListBox"))->selectedItem() == 0) {
         enable = false;
         break;
       } else

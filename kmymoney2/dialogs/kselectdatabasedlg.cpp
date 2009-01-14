@@ -29,6 +29,7 @@
 #include <qfiledialog.h>
 #include <qstatusbar.h>
 #include <qcheckbox.h>
+#include <qcolor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -57,34 +58,84 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
             " and search for SQL drivers."),
         "");
         reject();
-  } else {
-    QStringList::Iterator it = list.begin();
-    while(it != list.end()) {
-      QString dname = *it;
-      if (map.keys().contains(dname)) { // only display if driver is supported
-        dname = dname + " - " + map[dname];
-        listDrivers->insertItem (dname);
-      }
-      it++;
-    }
-    textDbName->setText ("KMyMoney");
-    textHostName->setText ("localhost");
-    textUserName->setText("");
-    struct passwd * pwd = getpwuid(geteuid());
-    if (pwd != 0)
-      textUserName->setText (QString(pwd->pw_name));
-    textPassword->setText ("");
-    buttonOK->setEnabled(false);
-    connect (listDrivers, SIGNAL(clicked(QListBoxItem *)),
-             this, SLOT(slotDriverSelected(QListBoxItem *)));
   }
+  QStringList::Iterator it = list.begin();
+  while(it != list.end()) {
+    QString dname = *it;
+    if (map.keys().contains(dname)) { // only display if driver is supported
+      dname = dname + " - " + map[dname];
+      listDrivers->insertItem (dname);
+    }
+    it++;
+  }
+  textDbName->setText ("KMyMoney");
+  textHostName->setText ("localhost");
+  textUserName->setText("");
+  struct passwd * pwd = getpwuid(geteuid());
+  if (pwd != 0)
+    textUserName->setText (QString(pwd->pw_name));
+  textPassword->setText ("");
+  m_requiredFields = new kMandatoryFieldGroup(this);
+  m_requiredFields->add(listDrivers);
+  m_requiredFields->add(textDbName);
+  m_requiredFields->setOkButton(buttonOK);
+  connect (listDrivers, SIGNAL(clicked(QListBoxItem *)),
+           this, SLOT(slotDriverSelected(QListBoxItem *)));
   connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(clicked()), this, SLOT(slotGenerateSQL()));
   connect (buttonOK, SIGNAL(clicked()), this, SLOT(slotOKPressed()));
   checkPreLoad->setChecked(false);
 }
 
-KSelectDatabaseDlg::~KSelectDatabaseDlg() {}
+KSelectDatabaseDlg::KSelectDatabaseDlg(KURL openURL, QWidget *parent, const char *name)
+ : KSelectDatabaseDlgDecl(parent, name) {
+  // here we are re-opening a database from a URL
+  // probably taken from the last-used or recent file list
+  listDrivers->clear();
+  // check that the SQL driver is still available
+  QString driverName = openURL.queryItem("driver");
+  // list drivers installed on system
+  QStringList list = QSqlDatabase::drivers();
+  if (!list.contains(driverName)) {
+    KMessageBox::error (0, i18n("Qt SQL driver %1 is no longer installed on your system").arg(driverName),
+        "");
+        reject();
+  }
+  // check drivers supported by KMM
+  QMap<QString, QString> map = m_map.driverMap();
+  if (!map.contains(driverName)) {
+    KMessageBox::error (0, i18n("Qt SQL driver %1 is not suported").arg(driverName),
+        "");
+        reject();
+  }
+  // fill in the fixed data from the URL
+  listDrivers->insertItem (QString(driverName + " - " + map[driverName]));
+  listDrivers->setSelected(0,true);
+  QString dbName = openURL.path().right(openURL.path().length() - 1); // remove separator slash
+  textDbName->setText (dbName);
+  textHostName->setText (openURL.host());
+  textUserName->setText(openURL.user());
+  // disable all but the password field, coz that's why we're here
+  textDbName->setEnabled(false);
+  listDrivers->setEnabled(false);
+  textHostName->setEnabled(false);
+  textUserName->setEnabled(false);
+  textPassword->setEnabled(true);
+  textPassword->setFocus();
+  buttonSQL->setEnabled(false);
+  // set password as required
+  m_requiredFields = new kMandatoryFieldGroup(this);
+  m_requiredFields->add(textPassword);
+  m_requiredFields->setOkButton(buttonOK);
+
+  connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
+  connect (buttonOK, SIGNAL(clicked()), this, SLOT(slotOKPressed()));
+  checkPreLoad->setChecked(false);
+}
+
+KSelectDatabaseDlg::~KSelectDatabaseDlg() {
+  delete m_requiredFields;
+}
 
 void KSelectDatabaseDlg::setMode (int openMode) {
   m_mode = openMode;
@@ -98,58 +149,46 @@ const KURL KSelectDatabaseDlg::selectedURL() {
   url.setPass(textPassword->text());
   url.setHost(textHostName->text());
   url.setPath("/" + textDbName->text());
-  QString qs = QString("driver=%1&mode=single")
+  QString qs = QString("driver=%1")
       .arg(listDrivers->currentText().section (' ', 0, 0));
   if (checkPreLoad->isChecked()) qs.append("&options=loadAll");
+  if (!textPassword->text().isEmpty()) qs.append("&secure=yes");
   url.setQuery(qs);
   return (url);
 }
 
 void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
   if (m_map.driverToType(driver->text().section(' ', 0, 0)) == Sqlite3){
-    textDbName->clear();
-    textHostName->setEnabled (false);  // but not host (how about user/password?)
-    if (m_mode == IO_WriteOnly) getFileName(); // saveAs dialog - try to get file name now
-  } else {
-    textHostName->setEnabled (true);
-  }
-  buttonOK->setEnabled(true);
-}
-
-void KSelectDatabaseDlg::slotOKPressed () {
-  if (m_map.driverToType(listDrivers->currentText().section(' ', 0, 0)) == Sqlite3){
-    getFileName();   // SQLITE needs a file name
-    if (textDbName->text().isEmpty()) reject();
-    else accept();
-  }
-  else accept();
-}
-
-void KSelectDatabaseDlg::getFileName () { // relevant for SQLite only
-  while (textDbName->text().isEmpty()) {
-    textDbName->setText (QFileDialog::getOpenFileName(
-    "",
-    "SQLite files (*.sql);; All files (*.*)",
-    this,
-    "",
-    "Select SQLite file"));
-    if (textDbName->text().isEmpty()) {
-      int rc = KMessageBox::warningYesNo
-        (0, i18n("SQLite requires a file name; try again?"), "");
-      if (rc == KMessageBox::No)
-        return;
+    QString dbName = QFileDialog::getOpenFileName(
+      "",
+      i18n("SQLite files (*.sql);; All files (*.*)"),
+      this,
+      "",
+      i18n("Select SQLite file"));
+    if (dbName.isNull()) {
+      listDrivers->setSelected(driver, false);
+      return;
+    } else {
+      textDbName->setText(dbName);
     }
+    // sql databases do not react to host/user/password; file system permissions must be used
+    textHostName->setEnabled (false);
+    textUserName->setEnabled (false);
+    textPassword->setEnabled(false);
+  } else {
+    textUserName->setEnabled (true);  // but not host
+    textHostName->setEnabled (true);
+    textPassword->setEnabled(true);
   }
-  return;
 }
 
 void KSelectDatabaseDlg::slotGenerateSQL () {
   QString fileName = QFileDialog::getSaveFileName(
       "",
-      "All files (*.*)",
+      i18n("All files (*.*)"),
       this,
       "",
-      "Select output file");
+      i18n("Select output file"));
   if (fileName == "") return;
   QFile out(fileName);
   if (!out.open(IO_WriteOnly)) return;
@@ -160,57 +199,7 @@ void KSelectDatabaseDlg::slotGenerateSQL () {
 }
 
 void KSelectDatabaseDlg::slotHelp(void) {
-
-  QString helpstring = i18n(
-      "<h3>Database Type</h3>"
-      "<p>"
-      "This box lists all Qt SQL drivers installed on your system."
-      " Select the driver for your database type."
-      " If the one you want is not in the list, you need to install the appropriate driver."
-      " See your distro documentation, or visit the Qt web Site (http://www.trolltech.com)"
-      " and search for 'SQL drivers'."
-      "</p>"
-      "<h3>Database Name</h3>"
-      "<p>"
-      "The default database name is KMyMoney, but you may choose some other name if you like."
-      " SQLite has one database per file; selecting this driver opens the file dialog."
-      " For database types other than SQLite and MySql, the database itself must be pre-created,"
-      " though KMyMoney will create all table structures where necessary."
-      "</p>"
-      "<h3>Host Name</h3>"
-      "<p>"
-      "For the average user, the default name of localhost, being the machine you are currently using,"
-      " is correct. For networked databases, enter the host name of the system where the database is stored."
-      " You may need to contact your database administrator for this information."
-      "</p>"
-      "<h3>User Name and Password</h3>"
-      "<p>"
-      "Check the permissions set up on your database, or contact the database administrator, for the"
-      " correct values to use here. The user name must be capable of deleting, inserting and updating"
-      " records. If the user name is the same as your login name, a password is not normally required."
-      "</p>"
-      "<h3>Generate SQL</h3>"
-      "<p>Click this button to create a text file and write the commands needed to create the database tables and other objects."
-      " With care, this may be edited if the in-built commands do not work for your database system."
-      "</p>"
-      "<p>"
-      "Please read the appropriate chapter of the KMyMoney handbook for further information on database usage."
-      "</p>"
-  );
-
-  QDialog dlg;
-  QVBoxLayout layout( &dlg, 11, 6, "Layout17");
-  KTextBrowser te(&dlg,"Help");
-  layout.addWidget(&te);
-  te.setReadOnly(true);
-  te.setTextFormat(Qt::RichText);
-  te.setText(helpstring);
-  dlg.setCaption(i18n("Selecting a SQL database"));
-  unsigned width = QApplication::desktop()->width();
-  unsigned height = QApplication::desktop()->height();
-  te.setMinimumSize(width/2,height/2);
-  layout.setResizeMode(QLayout::Minimum);
-  dlg.exec();
+  kapp->invokeHelp("details.database.selectdatabase");
 }
 
 #include "kselectdatabasedlg.moc"

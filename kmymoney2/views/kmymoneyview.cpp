@@ -423,7 +423,6 @@ void KMyMoneyView::newStorage(storageTypeE t)
   MyMoneyFile* file = MyMoneyFile::instance();
   if (t == Memory) file->attachStorage(new MyMoneySeqAccessMgr);
   else file->attachStorage(new MyMoneyDatabaseMgr);
-    //qFatal ("Mode not implemented");
 }
 
 void KMyMoneyView::removeStorage(void)
@@ -531,7 +530,7 @@ void KMyMoneyView::closeFile(void)
     m_reportsView->slotCloseAll();
 
   emit kmmFilePlugin (preClose);
-  if (isSyncDatabase())
+  if (isDatabase())
     MyMoneyFile::instance()->storage()->close(); // to log off a database user
   newStorage();
   slotShowHomePage();
@@ -570,21 +569,13 @@ bool KMyMoneyView::readFile(const KURL& url)
   if (url.protocol() == "sql") { // handle reading of database
     //newStorage(Database);
     MyMoneyFile::instance()->detachStorage();
-    if (url.queryItem("mode") == "single") {
-      m_fileType = KmmDbSingleUser;
-      return (openDatabase(url)); // open database in single user mode
-    } else if (url.queryItem("mode") == "multi") {
-        m_fileType = KmmDbMultiUser;
-        return (openDatabase(url)); // open database in multi-user mode (not implemented)
-    } else {
-      // m_fileType = KmmDbFile; No longer relevant
-      // this situation may exist if the user has upgraded from the older version
-      // and used 'open recent files', so we'll just add a mode to it
-      KURL newUrl(url);
-      newUrl.removeQueryItem("mode"); // there probably isn't one but be safe
-      newUrl.addQueryItem("mode", "single");
-      return (openDatabase(newUrl)); // on error, any message will have been displayed
+    m_fileType = KmmDb;
+    // get rid of the mode parameter which is now redundant
+    KURL newUrl(url);
+    if (!url.queryItem("mode").isNull()) {
+      newUrl.removeQueryItem("mode");
     }
+    return (openDatabase(newUrl)); // on error, any message will have been displayed
   }
 
   newStorage();
@@ -801,12 +792,7 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
   ::timetrace("start opening database");
   m_fileOpen = false;
 
-  if (url.queryItem("mode") == "multi") {
-    //newStorage(Database);
-    KMessageBox::detailedError (this, PACKAGE, i18n("Multi-user mode not yet implemented\n"));
-    return false;
-  }
-  // open the database in single-user mode
+  // open the database
   IMyMoneySerialize* pStorage = dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage());
   MyMoneyDatabaseMgr* pDBMgr = 0;
   if (! pStorage) {
@@ -837,6 +823,7 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
         return false;
       } else {
         QString options = dbURL.queryItem("options") + ",override";
+        dbURL.removeQueryItem("mode"); // now redundant
         dbURL.removeQueryItem("options");
         dbURL.addQueryItem("options", options);
       }
@@ -847,6 +834,9 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
     MyMoneyFile::instance()->attachStorage(pDBMgr);
   }
   // single user mode; read some of the data into memory
+  // FIXME - readFile no longer relevant?
+  // tried removing it but then then got no indication that loading was complete
+  // also, didn't show home page
   reader->setProgressCallback(&KMyMoneyView::progressCallback);
   if (!reader->readFile()) {
     KMessageBox::detailedError (0,
@@ -1226,39 +1216,7 @@ bool KMyMoneyView::saveAsDatabase(const KURL& url)
   delete writer;
   return (rc);
 }
-/* Now updates are done synchronously, there's no need for this
-const bool KMyMoneyView::saveDatabase(const KURL& url)
-{
-  bool rc = false;
-  if (!fileOpen()) {
-    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return (rc);
-  }
-  ::timetrace("start writing database");
-  MyMoneyStorageSql *writer = new MyMoneyStorageSql(
-      dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()), url);
-  if (writer->open(url, IO_ReadWrite) == 0) {
-    writer->setProgressCallback(&KMyMoneyView::progressCallback);
-    if (!writer->writeFile()) {
-      KMessageBox::detailedError (0,
-                                  i18n("An unrecoverable error occurred while writing to the database.\n"
-                                      "It may well be corrupt."),
-                                  writer->lastError().latin1(),
-                                  i18n("Database malfunction"));
-      rc = false;
-    }
-    writer->setProgressCallback(0);
-    rc = true;
-  } else {
-    KMessageBox::detailedError (this,
-                                i18n("Can't open database %1 for save\n").arg(url.prettyURL()),
-                                writer->lastError());
-  }
-  delete writer;
-  ::timetrace("done writing database");
-  return (rc);
-}
-*/
+
 bool KMyMoneyView::dirty(void)
 {
   if (!fileOpen())

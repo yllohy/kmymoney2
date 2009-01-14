@@ -32,12 +32,14 @@
 // Project Includes
 #include "kselectdatabasedlgdecl.h"
 #include "../mymoney/storage/mymoneystoragesql.h"
+#include "kmymoney/kguiutils.h"
 
 class KSelectDatabaseDlg : public KSelectDatabaseDlgDecl
 {
 Q_OBJECT
 public:
   KSelectDatabaseDlg(QWidget *parent = 0, const char *name = 0);
+  KSelectDatabaseDlg(KURL openURL, QWidget *parent = 0, const char *name = 0);
   ~KSelectDatabaseDlg();
   /** Set the mode of this dialog
     * @param - openMode (IO_ReadWrite = open database; IO_WriteOnly = saveas database)
@@ -48,22 +50,14 @@ public:
   **/
   const KURL selectedURL();
 
-/* leave these in for now, useful for testing...
-  const QString driverName() const {return (listDrivers->currentText().section (' ', 0, 0));}
-  const QString dbName() const {return (textDbName->text());}
-  const QString hostName() const {return (textHostName->text());}
-  const QString userName() const {return (textUserName->text());}
-  const QString password() const {return (textPassword->text());} */
-    
 public slots:
   void slotDriverSelected(QListBoxItem *driver);
   void slotHelp();
   void slotGenerateSQL();
-  void slotOKPressed();
 private:
   int m_mode;
-  void getFileName();
   MyMoneyDbDrivers m_map;
+  kMandatoryFieldGroup* m_requiredFields;
 };
 
 #endif

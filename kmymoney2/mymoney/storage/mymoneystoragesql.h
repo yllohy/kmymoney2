@@ -692,12 +692,8 @@ private:
   IMyMoneySerialize *m_storage;
   IMyMoneyStorage *m_storagePtr;
   // input options
-  unsigned int m_mode; // 0 = old method (file mode) 1 = single-user, 2 = multi-user (NYI)
-
   bool m_loadAll; // preload all data
   bool m_override; // override open if already in use
-
-  bool m_isDbaseMode;
   // error message
   QString m_error;
   // record counts

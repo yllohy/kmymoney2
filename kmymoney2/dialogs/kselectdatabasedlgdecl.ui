@@ -172,7 +172,7 @@
                     </widget>
                     <widget class="QGroupBox">
                         <property name="name">
-                            <cstring>groupBox5</cstring>
+                            <cstring>groupBoxPassword</cstring>
                         </property>
                         <property name="title">
                             <string>Password</string>
@@ -242,7 +242,7 @@
                             <cstring>buttonSQL</cstring>
                         </property>
                         <property name="text">
-                            <string>Generate SQL</string>
+                            <string>&amp;Generate SQL</string>
                         </property>
                     </widget>
                     <spacer>
@@ -278,7 +278,7 @@
                             <cstring>buttonCancel</cstring>
                         </property>
                         <property name="text">
-                            <string>Cancel</string>
+                            <string>Ca&amp;ncel</string>
                         </property>
                     </widget>
                 </hbox>

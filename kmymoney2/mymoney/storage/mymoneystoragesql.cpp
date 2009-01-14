@@ -133,12 +133,8 @@ try {
   QString driverName = url.queryItem("driver");
   m_dbType = m_drivers.driverToType(driverName);
   //get the input options
-  QString mode = url.queryItem("mode");
-  m_mode = 0;
-  if (mode == "single") m_mode = 1;
-  if (mode == "multi") m_mode = 2;
   QStringList options = QStringList::split(',', url.queryItem("options"));
-  m_loadAll = options.contains("loadAll") || m_mode == 0;
+  m_loadAll = options.contains("loadAll")/*|| m_mode == 0*/;
   m_override = options.contains("override");
 
   // create the database connection
@@ -648,12 +644,12 @@ bool MyMoneyStorageSql::readFile(void) {
   //TRACE("done reports");
     readBudgets();
   //TRACE("done budgets");
-    if (m_mode == 0)
-      m_storage->rebuildAccountBalances();
+   //FIXME - ?? if (m_mode == 0)
+      //m_storage->rebuildAccountBalances();
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
     m_storage->setLastModificationDate(m_storage->lastModificationDate());
-    if (m_mode == 0) m_storage = NULL;
+    // FIXME?? if (m_mode == 0) m_storage = NULL;
   // make sure the progress bar is not shown any longer
     signalProgress(-1, -1);
     m_displayStatus = false;
@@ -689,7 +685,7 @@ bool MyMoneyStorageSql::writeFile(void) {
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
   //m_storage->setLastModificationDate(m_storage->lastModificationDate());
-  if (m_mode == 0) m_storage = NULL;
+  // FIXME?? if (m_mode == 0) m_storage = NULL;
   endCommitUnit(__func__);
   // make sure the progress bar is not shown any longer
   signalProgress(-1, -1);
@@ -2297,14 +2293,14 @@ const QMap<QString, MyMoneyAccount> MyMoneyStorageSql::fetchAccounts (const QStr
 
     // in database mode, load the balance from the account record
     // else we would need to read all the transactions
-    if (m_mode > 0) {
+    //if (m_mode > 0) {
       accList.insert(QString(aid), MyMoneyAccount(QString(aid), acc));
       if (acc.value("PreferredAccount") == "Yes") {
         const_cast <MyMoneyStorageSql*> (this)->m_preferred.addAccount(aid);
       }
-    } else  {
-      accList.insert(QString(aid), MyMoneyAccount(QString(aid), acc));
-    }
+    //} else  {
+     // accList.insert(QString(aid), MyMoneyAccount(QString(aid), acc));
+    //}
     signalProgress(++progress, 0);
   }
 

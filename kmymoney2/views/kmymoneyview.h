@@ -150,11 +150,9 @@ private:
 
   // Keep a note of the file type
   typedef enum _fileTypeE {
-    KmmBinary = 0, // native, binary
+    KmmBinary = 0,  // native, binary
     KmmXML,        // native, XML
-    KmmDbFile,     // database used as file, pretty much redundant now
-    KmmDbSingleUser,    // database with some data maintained in memory
-    KmmDbMultiUser,   // 'proper' database support not implemented
+    KmmDb,         //  SQL database
     /* insert new native file types above this line */
     MaxNativeFileType,
     /* and non-native types below */
@@ -310,17 +308,7 @@ public:
    * @retval false file is serial
    */
   bool isDatabase()
-    { return (m_fileOpen && ((m_fileType == KmmDbFile) || (m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
-
-  /**
-   * Call this to find out if the currently open file is a SQL database
-    * opened in sync mode (i.e. updates writen to database as they happen)
-   *
-   * @retval true file is synchronous
-   * @retval false file is asynchronous
-   */
-  bool isSyncDatabase()
-  { return (m_fileOpen && ((m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
+    { return (m_fileOpen && ((m_fileType == KmmDb))); }
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.

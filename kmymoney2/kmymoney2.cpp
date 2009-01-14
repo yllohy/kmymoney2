@@ -606,7 +606,7 @@ bool KMyMoney2App::queryClose(void)
     else if (ans==KMessageBox::Yes)
       return slotFileSave();
   }
-  if (myMoneyView->isSyncDatabase())
+  if (myMoneyView->isDatabase())
     slotFileClose(); // close off the database
   return true;
 }
@@ -942,15 +942,23 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #else
     if((url.protocol() == "sql") || (url.isValid() && KIO::NetAccess::exists(url))) {
 #endif
+      KURL dburl = url;
+      // check if a password is needed. it may be if the URL came from the last/recent file list
+      if ((dburl.queryItem("secure") == "yes") && dburl.pass().isEmpty()) {
+        KSelectDatabaseDlg dialog(dburl);
+        dialog.setMode(IO_ReadWrite);
+
+        if(dialog.exec() == QDialog::Accepted) dburl = dialog.selectedURL();
+      }
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
-        if(myMoneyView->readFile(url)) {
+        if(myMoneyView->readFile(dburl)) {
           if((myMoneyView->isNativeFile())) {
-            m_fileName = url;
+            m_fileName = dburl;
             KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
             if(p)
-              p->addURL( url );
-            writeLastUsedFile(url.url());
+              p->addURL(dburl.prettyURL(0, KURL::StripFileProtocol));
+            writeLastUsedFile(dburl.prettyURL(0, KURL::StripFileProtocol));
           } else {
             m_fileName = KURL(); // imported files have no filename
           }
@@ -1035,7 +1043,7 @@ bool KMyMoney2App::slotFileSaveAs(void)
 {
   bool rc = false;
   // in event of it being a database, ensure that all data is read into storage for saveas
-  if (myMoneyView->isSyncDatabase())
+  if (myMoneyView->isDatabase())
         dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
   KMSTATUS(i18n("Saving file with a new filename..."));
   QString prevDir= ""; // don't prompt file name if not a native file
@@ -1172,7 +1180,7 @@ bool KMyMoney2App::slotSaveAsDatabase(void)
 
   bool rc = false;
   // in event of it being a database, ensure that all data is read into storage for saveas
-  if (myMoneyView->isSyncDatabase())
+  if (myMoneyView->isDatabase())
     dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
   KMSTATUS(i18n("Saving file to database..."));
   KSelectDatabaseDlg dialog;
@@ -1185,15 +1193,20 @@ bool KMyMoney2App::slotSaveAsDatabase(void)
     // If the protocol is SQL for the old and new, and the hostname and database names match
     // Let the user know that the current database cannot be saved on top of itself.
     if (url.protocol() == "sql" && oldUrl.protocol() == "sql"
-    && oldUrl.host() == url.host()
-    && oldUrl.queryItem("driver") == url.queryItem("driver")
-    && oldUrl.path().right(oldUrl.path().length() - 1) == url.path().right(url.path().length() - 1)) {
+      && oldUrl.host() == url.host()
+      && oldUrl.queryItem("driver") == url.queryItem("driver")
+      && oldUrl.path().right(oldUrl.path().length() - 1) == url.path().right(url.path().length() - 1)) {
       KMessageBox::sorry(this, i18n("Cannot save to current database."));
     } else {
       rc = myMoneyView->saveAsDatabase(url);
     }
   }
-  if (rc) writeLastUsedFile(url.prettyURL(0, KURL::StripFileProtocol));
+  if (rc) {
+    KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
+    if(p)
+      p->addURL(url.prettyURL(0, KURL::StripFileProtocol));
+    writeLastUsedFile(url.prettyURL(0, KURL::StripFileProtocol));
+  }
   m_autoSaveTimer->stop();
   updateCaption();
   return rc;
@@ -4955,7 +4968,7 @@ void KMyMoney2App::slotUpdateActions(void)
 
   action("open_database")->setEnabled(true);
   action("saveas_database")->setEnabled(fileOpen);
-  action("file_save")->setEnabled(modified && !myMoneyView->isSyncDatabase());
+  action("file_save")->setEnabled(modified && !myMoneyView->isDatabase());
   action("file_save_as")->setEnabled(fileOpen);
   action("file_close")->setEnabled(fileOpen);
   action("view_personal_data")->setEnabled(fileOpen);
