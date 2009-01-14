@@ -183,22 +183,22 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     m_num = -m_num;
 }
 
-const QString MyMoneyMoney::formatMoney(int denom, bool showThousandSeparator) const
+QString MyMoneyMoney::formatMoney(int denom, bool showThousandSeparator) const
 {
   return formatMoney("", denomToPrec(denom), showThousandSeparator);
 }
 
-const QString MyMoneyMoney::formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator) const
+QString MyMoneyMoney::formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator) const
 {
   return formatMoney(sec.tradingSymbol(), denomToPrec(acc.fraction()), showThousandSeparator);
 }
 
-const QString MyMoneyMoney::formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator) const
+QString MyMoneyMoney::formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator) const
 {
   return formatMoney(sec.tradingSymbol(), denomToPrec(sec.smallestAccountFraction()), showThousandSeparator);
 }
 
-const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
+QString MyMoneyMoney::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
 {
   QString res;
   QString tmpCurrency = currency;
@@ -268,6 +268,7 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
     if(prec != -1)
       rs = rs.rightJustify(prec, '0', true);
     else {
+      rs = rs.rightJustify(8, '0', true);
       // no trailing zeroes or decimal separators
       while(rs.endsWith("0"))
         rs.truncate(rs.length()-1);

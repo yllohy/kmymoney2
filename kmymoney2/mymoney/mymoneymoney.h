@@ -123,20 +123,20 @@ public:
     * @param showThousandSeparator should the thousandSeparator symbol be inserted
     *                              (@a true) or not (@a false) (default true)
     */
-  const QString formatMoney(const QString& currency, const int prec, bool showThousandSeparator = true) const;
+  QString formatMoney(const QString& currency, const int prec, bool showThousandSeparator = true) const;
 
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
    * about currency symbol and precision out of the MyMoneySecurity and MyMoneyAccount objects
    * @a acc and @a sec.
    */
-  const QString formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
+  QString formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
 
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
    * about currency symbol and precision out of the MyMoneySecurity object @a sec.
    */
-  const QString formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
+  QString formatMoney(const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
 
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
@@ -146,7 +146,7 @@ public:
    *
    * @note denom is often set to account.fraction(security).
    */
-  const QString formatMoney(int denom, bool showThousandSeparator = true) const;
+  QString formatMoney(int denom, bool showThousandSeparator = true) const;
 
   /**
     * This method is used to convert the smallest fraction information into

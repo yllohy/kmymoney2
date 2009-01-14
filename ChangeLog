@@ -9,6 +9,10 @@
   * Fixed layout for select database dialog
   * Fixed slot for OK button in select database dialog
   * Fixed translation issue
+  * Fixed MyMoneyMoney formatting problem with precision -1 that caused
+    14.04 to be shown as 14.4
+  * Added testcase for this problem
+  * Removed const qualifier from formatMoney() returnvalue
 
 2009-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixes to the build system (make distcheck did not work due

@@ -388,6 +388,9 @@ void MyMoneyMoneyTest::testFormatMoney()
 
   m1 = MyMoneyMoney(13333,5000);
   CPPUNIT_ASSERT(m1.formatMoney("", 10) == QString("2.6666000000"));
+
+  m1 = MyMoneyMoney(-1404,100);
+  CPPUNIT_ASSERT(m1.formatMoney("",-1) == QString("-14.04"));
 }
 
 void MyMoneyMoneyTest::testRelation()
