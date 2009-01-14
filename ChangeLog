@@ -1,3 +1,4 @@
+
 2009-01-14 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix #2248020 - Allow passworded databases
   * Remove redundant code
@@ -5,6 +6,8 @@
 
 2009-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved OFX logging during setup
+  * Fixed layout for select database dialog
+  * Fixed slot for OK button in select database dialog
 
 2009-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixes to the build system (make distcheck did not work due

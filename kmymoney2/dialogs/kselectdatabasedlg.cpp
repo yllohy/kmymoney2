@@ -76,14 +76,14 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     textUserName->setText (QString(pwd->pw_name));
   textPassword->setText ("");
   m_requiredFields = new kMandatoryFieldGroup(this);
+  m_requiredFields->setOkButton(buttonOK);
   m_requiredFields->add(listDrivers);
   m_requiredFields->add(textDbName);
-  m_requiredFields->setOkButton(buttonOK);
   connect (listDrivers, SIGNAL(clicked(QListBoxItem *)),
            this, SLOT(slotDriverSelected(QListBoxItem *)));
   connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(clicked()), this, SLOT(slotGenerateSQL()));
-  connect (buttonOK, SIGNAL(clicked()), this, SLOT(slotOKPressed()));
+  connect (buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
   checkPreLoad->setChecked(false);
 }
 
