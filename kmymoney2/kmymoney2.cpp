@@ -5052,7 +5052,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_cancel")->setEnabled(false);
   action("transaction_delete")->setEnabled(false);
   action("transaction_match")->setEnabled(false);
-  action("transaction_match")->setText("Match");
+  action("transaction_match")->setText(i18n("Button text for match transaction", "Match"));
   action("transaction_match")->setIcon("connect_creating");
 
   action("transaction_accept")->setEnabled(false);
@@ -5143,7 +5143,7 @@ void KMyMoney2App::slotUpdateActions(void)
         action("transaction_accept")->setEnabled(true);
       if(matchedCount != 0) {
         action("transaction_match")->setEnabled(true);
-        action("transaction_match")->setText("Unmatch");
+        action("transaction_match")->setText(i18n("Button text for unmatch transaction", "Unmatch"));
         action("transaction_match")->setIcon("stop");
       }
 
