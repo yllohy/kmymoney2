@@ -82,11 +82,17 @@ protected:
   bool finishAccountPage(void);
   bool finishLoginPage(void);
   bool finishFiPage(void);
+  bool post(const char* request, const char* url,const char* filename);
 
   static int ofxAccountCallback(struct OfxAccountData data, void * pv);
   static int ofxStatusCallback(struct OfxStatusData data, void * pv);
 
 private:
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
+
   QValueList<OfxFiServiceInfo> m_bankInfo;
   QValueList<OfxFiServiceInfo>::const_iterator m_it_info;
   bool m_fDone;

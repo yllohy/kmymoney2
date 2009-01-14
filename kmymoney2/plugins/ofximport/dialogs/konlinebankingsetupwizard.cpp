@@ -63,8 +63,16 @@
 using std::string;
 using std::vector;
 
+class KOnlineBankingSetupWizard::Private
+{
+public:
+  QFile       m_fpTrace;
+  QTextStream m_trace;
+};
+
 KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char *name):
   KOnlineBankingSetupDecl(parent,name),
+  d(new Private),
   m_fDone(false),
   m_fInit(false),
   m_appId(0)
@@ -102,6 +110,7 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
 KOnlineBankingSetupWizard::~KOnlineBankingSetupWizard()
 {
   delete m_appId;
+  delete d;
 }
 
 void KOnlineBankingSetupWizard::next(void)
@@ -216,7 +225,7 @@ bool KOnlineBankingSetupWizard::finishFiPage(void)
   return result;
 }
 
-bool post(const char* request, const char* url,const char* filename)
+bool KOnlineBankingSetupWizard::post(const char* request, const char* url,const char* filename)
 {
   CURL *curl = curl_easy_init();
   if(! curl)
@@ -228,6 +237,23 @@ bool post(const char* request, const char* url,const char* filename)
   {
     curl_easy_cleanup(curl);
     return false;
+  }
+
+  QDir homeDir(QDir::home());
+  if(homeDir.exists("ofxlog.txt")) {
+    d->m_fpTrace.setName(QString("%1/ofxlog.txt").arg(QDir::homeDirPath()));
+    if(d->m_fpTrace.open(IO_WriteOnly | IO_Append)) {
+      d->m_trace.setDevice(&d->m_fpTrace);
+    }
+
+  }
+
+  if(d->m_fpTrace.isOpen()) {
+    d->m_trace << "url: " << url << "\n";
+    d->m_trace << "request:\n" << request << "\n";
+    d->m_trace << "Content-type: application/x-ofx\n";
+    d->m_trace << "Accept: */*, application/x-ofx\n";
+    d->m_trace << "response:\n";
   }
 
   curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -248,6 +274,17 @@ bool post(const char* request, const char* url,const char* filename)
 
   fclose(file);
 
+  if(d->m_fpTrace.isOpen()) {
+    QFile fp(filename);
+    if ( fp.open( IO_ReadOnly ) ) {
+      QTextStream is(&fp);
+      while ( !is.atEnd() )
+        d->m_trace << is.readLine() << "\n";
+      fp.close();
+    }
+    d->m_trace.unsetDevice();
+    d->m_fpTrace.close();
+  }
   return true;
 }
 

@@ -79,7 +79,10 @@ protected:
   KIO::TransferJob* m_job;
 
 private:
-  KOfxDirectConnectDlgPrivate*	d;
+  /// \internal d-pointer class.
+  class Private;
+  /// \internal d-pointer instance.
+  Private* const d;
 };
 
 #endif // USE_OFX_DIRECTCONNECT

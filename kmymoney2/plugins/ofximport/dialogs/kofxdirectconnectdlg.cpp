@@ -49,7 +49,7 @@
 #include "kofxdirectconnectdlg.h"
 
 
-class KOfxDirectConnectDlgPrivate
+class KOfxDirectConnectDlg::Private
 {
 public:
   QFile    m_fpTrace;
@@ -57,7 +57,7 @@ public:
 
 KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidget *parent, const char *name) :
   KOfxDirectConnectDlgDecl(parent, name),
-  d(new KOfxDirectConnectDlgPrivate),
+  d(new Private),
   m_tmpfile(NULL),
   m_connector(account),
   m_job(NULL)
