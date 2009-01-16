@@ -1049,17 +1049,10 @@ void PivotTable::convertToDeepCurrency( void )
 
 void PivotTable::calculateTotals( void )
 {
+  //insert the row type that is going to be used
   for(unsigned i = 0; i < m_rowTypeList.size(); ++i)
     m_grid.m_total[ m_rowTypeList[i] ].insert( m_grid.m_total[ m_rowTypeList[i] ].end(), m_numColumns, PivotCell() );
 
-  //insert only if they are going to be used
-  /*if(m_config_f.hasBudget())
-    m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
-  if(m_config_f.isIncludingBudgetActuals())
-    m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
-  if(m_config_f.isIncludingForecast())
-    m_grid.m_total[eBudget].insert( m_grid.m_total[eBudget].end(), m_numColumns, PivotCell() );
-*/
   //
   // Outer groups
   //
@@ -1517,6 +1510,16 @@ QString PivotTable::renderHTML( void ) const
   //
 
   QString result = QString("<h2 class=\"report\">%1</h2>\n").arg(m_config_f.name());
+
+  //actual dates of the report
+  result += QString("<div class=\"subtitle\">");
+  result += m_config_f.fromDate().toString(Qt::ISODate);
+  result += QString(" " + i18n("through") + " ");
+  result += m_config_f.toDate().toString(Qt::ISODate);
+  result += QString("</div>\n");
+  result += QString("<div class=\"gap\">&nbsp;</div>\n");
+
+  //currency conversion message
   result += QString("<div class=\"subtitle\">");
   if ( m_config_f.isConvertCurrency() )
     result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
