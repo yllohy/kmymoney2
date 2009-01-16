@@ -399,6 +399,7 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
   {
     s.m_strAccountNumber = data.account_id;
   }
+
   if(data.date_start_valid==true)
   {
     QDateTime dt;
@@ -468,6 +469,9 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
       break;
     }
   }
+
+  // ask KMyMoney for an account id
+  s.m_accountId = pofx->account("kmmofx-acc-ref", QString("%1-%2").arg(s.m_strRoutingNumber, s.m_strAccountNumber)).id();
 
   // copy over the securities
   s.m_listSecurities = pofx->m_securitylist;
@@ -551,12 +555,7 @@ bool OfxImporterPlugin::importStatement(const MyMoneyStatement& s)
 
 const MyMoneyAccount& OfxImporterPlugin::account(const QString& key, const QString& value) const
 {
-  Q_UNUSED(key);
-  Q_UNUSED(value);
-
-  static MyMoneyAccount null;
-
-  return null;
+  return statementInterface()->account(key, value);
 }
 
 void OfxImporterPlugin::protocols(QStringList& protocolList) const
@@ -631,7 +630,7 @@ bool OfxImporterPlugin::updateAccount(const MyMoneyAccount& acc)
 
 void OfxImporterPlugin::slotImportFile(const QString& url)
 {
-  
+
   if(!import(url)) {
     KMessageBox::error( 0, QString("<qt>%1</qt>").arg(i18n("Unable to import %1 using the OFX importer plugin.  The plugin returned the following error:<p>%2").arg(url, lastError())), i18n("Importing error"));
   }

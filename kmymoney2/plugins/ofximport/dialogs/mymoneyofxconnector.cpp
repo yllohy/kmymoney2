@@ -231,28 +231,36 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
 }
 #endif
 
-#if LIBOFX_IS_VERSION(0,9,0)
-const QByteArray MyMoneyOfxConnector::statementRequest(void) const
+void MyMoneyOfxConnector::initRequest(OfxFiLogin* fi) const
 {
-  OfxFiLogin fi;
-  memset(&fi,0,sizeof(OfxFiLogin));
-  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
-  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
-  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
-  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
+  memset(fi,0,sizeof(OfxFiLogin));
+  strncpy(fi->fid, fiid().latin1(), OFX_FID_LENGTH-1);
+  strncpy(fi->org, fiorg().latin1(), OFX_ORG_LENGTH-1);
+  strncpy(fi->userid, username().latin1(), OFX_USERID_LENGTH-1);
+  strncpy(fi->userpass, password().latin1(), OFX_USERPASS_LENGTH-1);
+
+#if LIBOFX_IS_VERSION(0,9,0)
   // If we don't know better, we pretend to be Quicken 2008
   // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-intuit-products/
   // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
   QString appId = m_account.onlineBankingSettings().value("appId");
   QRegExp exp("(.*):(.*)");
   if(exp.search(appId) != -1) {
-    strncpy(fi.appid, exp.cap(1).latin1(), OFX_APPID_LENGTH-1);
-    strncpy(fi.appver, exp.cap(2).latin1(), OFX_APPVER_LENGTH-1);
+    strncpy(fi->appid, exp.cap(1).latin1(), OFX_APPID_LENGTH-1);
+    strncpy(fi->appver, exp.cap(2).latin1(), OFX_APPVER_LENGTH-1);
   } else {
-    strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
-    strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
+    strncpy(fi->appid, "QWIN", OFX_APPID_LENGTH-1);
+    strncpy(fi->appver, "1700", OFX_APPVER_LENGTH-1);
   }
+#endif
+}
 
+const QByteArray MyMoneyOfxConnector::statementRequest(void) const
+{
+  OfxFiLogin fi;
+  initRequest(&fi);
+
+#if LIBOFX_IS_VERSION(0,9,0)
   OfxAccountData account;
   memset(&account,0,sizeof(OfxAccountData));
 
@@ -262,27 +270,7 @@ const QByteArray MyMoneyOfxConnector::statementRequest(void) const
   }
   strncpy(account.account_number,accountnum().latin1(),OFX_ACCTID_LENGTH-1);
   account.account_type = accounttype();
-
-  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(statementStartDate()).toTime_t() );
-  QString request = szrequest;
-  // remove the trailing zero
-  QByteArray result = request.utf8();
-  result.truncate(result.size()-1);
-  free(szrequest);
-
-  QString msg(result);
-  return result;
-}
 #else
-const QByteArray MyMoneyOfxConnector::statementRequest(void) const
-{
-  OfxFiLogin fi;
-  memset(&fi,0,sizeof(OfxFiLogin));
-  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
-  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
-  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
-  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
-
   OfxAccountInfo account;
   memset(&account,0,sizeof(OfxAccountInfo));
 
@@ -292,6 +280,7 @@ const QByteArray MyMoneyOfxConnector::statementRequest(void) const
   }
   strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
   account.type = accounttype();
+#endif
 
   char* szrequest = libofx_request_statement( &fi, &account, QDateTime(statementStartDate()).toTime_t() );
   QString request = szrequest;
@@ -303,16 +292,14 @@ const QByteArray MyMoneyOfxConnector::statementRequest(void) const
   QString msg(result);
   return result;
 }
-#endif
 
+#if 0
+// this code is not used anymore. The logic is now
+// contained in KOnlineBankingSetupWizard::finishLoginPage(void)
 const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const
 {
   OfxFiLogin fi;
-  memset(&fi,0,sizeof(OfxFiLogin));
-  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
-  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
-  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
-  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
+  initRequest(&fi);
 
   char* szrequest = libofx_request_accountinfo( &fi );
   QString request = szrequest;
@@ -323,6 +310,8 @@ const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const
 
   return result;
 }
+#endif
+
 #if 0
 
 MyMoneyOfxConnector::Tag MyMoneyOfxConnector::message(const QString& _msgType, const QString& _trnType, const Tag& _request)

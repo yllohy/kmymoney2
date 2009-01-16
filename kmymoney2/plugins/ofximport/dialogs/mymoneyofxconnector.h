@@ -92,11 +92,10 @@ public:
    * by statementStartDate()
    */
   const QByteArray statementRequest(void) const;
-  const QByteArray accountInfoRequest(void) const;
-
   const QByteArray statementResponse(const QDate& _dtstart) const;
 
 private:
+  void initRequest(OfxFiLogin* fi) const;
   QDate statementStartDate(void) const;
   QString iban(void) const;
   QString fiorg(void) const;

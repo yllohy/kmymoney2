@@ -413,6 +413,9 @@ int KOnlineBankingSetupWizard::ofxAccountCallback(struct OfxAccountData data, vo
   if ( data.account_number_valid )
     kvps.setValue("accountid",data.account_number);
 
+  if ( data.account_id_valid )
+    kvps.setValue("uniqueId",data.account_id);
+
   kvps.setValue("username",pthis->m_editUsername->text());
   kvps.setValue("password",pthis->m_editPassword->text());
 
@@ -425,9 +428,9 @@ int KOnlineBankingSetupWizard::ofxAccountCallback(struct OfxAccountData data, vo
     kvps.setValue("bankname",item->text(0));
 
   if(!kvps.value("bankid").isEmpty()
-  && !kvps.value("accountid")) {
+  && !kvps.value("uniqueId").isEmpty()) {
 
-  kvps.setValue("kmmofx-acc-ref", QString("%1-%2").arg(kvps.value("bankid"), kvps.value("accountid")));
+    kvps.setValue("kmmofx-acc-ref", QString("%1-%2").arg(kvps.value("bankid"), kvps.value("uniqueId")));
   } else {
     qDebug("Cannot setup kmmofx-acc-ref for '%s'", kvps.value("bankname").data());
   }
