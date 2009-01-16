@@ -5881,6 +5881,13 @@ void KMyMoney2App::slotAccountMapOnline(void)
   if(!m_selectedAccount.onlineBankingSettings().value("provider").isEmpty())
     return;
 
+  // check if user tries to map a brokerageAccount
+  if(m_selectedAccount.name().contains(i18n(" (Brokerage)"))) {
+    if(KMessageBox::warningContinueCancel(this, i18n("You try to map a brokerage account to an online account. This is usually not advisable. In general, the investment account should be mapped to the online account. Please cancel if you intended to map the investment account, continue otherwise"), i18n("Mapping brokerage account")) == KMessageBox::Cancel) {
+      return;
+    }
+  }
+
   // if we have more than one provider display a dialog to select the current providers
   KPluginDlg dlg(this);
   dlg.setCaption(i18n("Select online banking plugin"));

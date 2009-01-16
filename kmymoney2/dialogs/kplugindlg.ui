@@ -94,7 +94,7 @@
                 <cstring>buttonOk</cstring>
             </property>
             <property name="text">
-                <string>OK</string>
+                <string>&amp;OK</string>
             </property>
             <property name="autoDefault">
                 <bool>true</bool>
@@ -102,13 +102,19 @@
             <property name="default">
                 <bool>true</bool>
             </property>
+            <property name="stdItem" stdset="0">
+                <number>1</number>
+            </property>
         </widget>
         <widget class="KPushButton" row="1" column="2">
             <property name="name">
                 <cstring>buttonCancel</cstring>
             </property>
             <property name="text">
-                <string>Cancel</string>
+                <string>&amp;Cancel</string>
+            </property>
+            <property name="stdItem" stdset="0">
+                <number>2</number>
             </property>
         </widget>
         <widget class="KPushButton" row="1" column="3">
@@ -116,7 +122,10 @@
                 <cstring>closeButton</cstring>
             </property>
             <property name="text">
-                <string>Close</string>
+                <string>&amp;Close</string>
+            </property>
+            <property name="stdItem" stdset="0">
+                <number>13</number>
             </property>
         </widget>
     </grid>

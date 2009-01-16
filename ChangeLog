@@ -5,6 +5,8 @@
   * Automatically detect mapped acount during OFX statement download
   * Show the transaction selection dialog for autofill even if there
     is only a single matching transaction
+  * Show warning if user wants to map a brokerage account to an online account
+  * Added icons to buttons on plugin selection dialog
 
 2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing include in kguiutils.cpp
