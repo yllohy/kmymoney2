@@ -1221,9 +1221,16 @@ void StdTransactionEditor::autoFill(const QString& payeeId)
 
     MyMoneyTransaction t;
     if (KMyMoneyGlobalSettings::autoFillTransaction() != 2) {
+#if 0
+      // I removed this code to allow cancellation of an autofill if
+      // it does not match even if there is only a single matching
+      // transaction for the payee in question. In case, we want to revert
+      // to the old behavior, don't forget to uncomment the closing
+      // brace further down in the code as well. (ipwizard 2009-01-16)
       if(uniqList.count() == 1) {
         t = list.last().first;
       } else {
+#endif
         KSelectTransactionsDlg dlg(m_account, m_regForm);
         dlg.setCaption(i18n("Select autofill transaction"));
 
@@ -1244,7 +1251,9 @@ void StdTransactionEditor::autoFill(const QString& payeeId)
         if(dlg.exec() == QDialog::Accepted) {
           t = dlg.transaction();
         }
+#if 0
       }
+#endif
     } else {
       int maxCnt = 0;
       QMap<QString, struct uniqTransaction>::const_iterator it_u;

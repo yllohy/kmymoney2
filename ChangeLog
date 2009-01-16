@@ -3,6 +3,8 @@
   * Use KDE locale setting for date format in report subtitles
   * Collect all statement reports and show them together in a single window
   * Automatically detect mapped acount during OFX statement download
+  * Show the transaction selection dialog for autofill even if there
+    is only a single matching transaction
 
 2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing include in kguiutils.cpp

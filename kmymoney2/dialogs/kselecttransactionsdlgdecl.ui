@@ -26,11 +26,59 @@
             <property name="name">
                 <cstring>m_description</cstring>
             </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
             <property name="text">
                 <string>xxx</string>
             </property>
         </widget>
         <widget class="KMyMoneyRegister::Register">
+            <column>
+                <property name="text">
+                    <string>Security</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Details</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>C</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Payment</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Deposit</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Quantity</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Price</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Value</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Balance</string>
+                </property>
+            </column>
             <property name="name">
                 <cstring>m_register</cstring>
             </property>
