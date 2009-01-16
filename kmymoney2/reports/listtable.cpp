@@ -153,6 +153,22 @@ namespace reports {
     csv = "";
     result += QString ( "<h2 class=\"report\">%1</h2>\n" ).arg ( m_config.name() );
     csv += "\"Report: " + m_config.name() + "\"\n";
+      //actual dates of the report
+    result += QString("<div class=\"subtitle\">");
+    if(!m_config.fromDate().isNull()) {
+      result += m_config.fromDate().toString(Qt::ISODate);
+      result += QString(" " + i18n("through") + " ");
+      result += m_config.toDate().toString(Qt::ISODate);
+      result += QString("</div>\n");
+      result += QString("<div class=\"gap\">&nbsp;</div>\n");
+
+      csv += m_config.fromDate().toString(Qt::ISODate);
+      csv += QString(" " + i18n("through") + " ");
+      csv += m_config.toDate().toString(Qt::ISODate);
+      csv += QString("\n");
+    }
+
+
     result += QString ( "<div class=\"subtitle\">" );
     if ( m_config.isConvertCurrency() )
     {

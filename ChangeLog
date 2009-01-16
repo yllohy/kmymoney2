@@ -1,7 +1,8 @@
 
 2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing include in kguiutils.cpp
-  * Added date to pivot reports
+  * Added date to pivot reports subtitle
+  * Added date to transaction reports subtitle
 
 2009-01-14 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix #2248020 - Allow passworded databases
