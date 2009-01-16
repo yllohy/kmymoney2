@@ -151,7 +151,7 @@ class KMyMoney2App::Private
 {
 public:
   Private() :
-    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0)
+    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0), m_collectingStatements(false)
   {}
   void unlinkStatementXML(void);
 
@@ -159,6 +159,9 @@ public:
   kMyMoneyAccountSelector* m_moveToAccountSelector;
   KPluginDlg*              m_pluginDlg;
   int                      statementXMLindex;
+
+  bool                     m_collectingStatements;
+  QStringList              m_statementResults;
 };
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
@@ -1521,7 +1524,8 @@ void KMyMoney2App::slotQifImport(void)
       setEnabled(false);
 
       d->m_ft = new MyMoneyFileTransaction();
-
+      d->m_collectingStatements = true;
+      d->m_statementResults.clear();
       m_qifReader->startImport();
     }
     delete dlg;
@@ -1535,6 +1539,10 @@ void KMyMoney2App::slotQifImportFinished(void)
   if(m_qifReader != 0) {
     m_qifReader->finishImport();
     d->m_ft->commit();
+    d->m_collectingStatements = false;
+
+    KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
+
 #if 0
     // fixme: re-enable the QIF import menu options
     if(m_qifReader->finishImport()) {
@@ -1734,7 +1742,11 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   // re-enable all standard widgets
   setEnabled(true);
 
-  KMessageBox::informationList(this, i18n("The statement has been processed with the following results:"), messages, i18n("Statement stats"));
+  if(!d->m_collectingStatements)
+    KMessageBox::informationList(this, i18n("The statement has been processed with the following results:"), messages, i18n("Statement stats"));
+  else
+    d->m_statementResults += messages;
+
   return result;
 }
 
@@ -5925,6 +5937,8 @@ void KMyMoney2App::slotAccountUpdateOnlineAll(void)
   MyMoneyFile::instance()->accountList(accList);
   QValueList<MyMoneyAccount>::const_iterator it_a;
   QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p = m_onlinePlugins.end();
+  d->m_statementResults.clear();
+  d->m_collectingStatements = true;
   for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
     if ( !(*it_a).onlineBankingSettings().value("provider").isEmpty() ) {
       // check if provider is available
@@ -5935,6 +5949,8 @@ void KMyMoney2App::slotAccountUpdateOnlineAll(void)
       }
     }
   }
+  d->m_collectingStatements = false;
+  KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
 }
 
 void KMyMoney2App::slotAccountUpdateOnline(void)
@@ -5952,7 +5968,11 @@ void KMyMoney2App::slotAccountUpdateOnline(void)
   it_p = m_onlinePlugins.find(m_selectedAccount.onlineBankingSettings().value("provider"));
   if(it_p != m_onlinePlugins.end()) {
     // plugin found, call it
+    d->m_collectingStatements = true;
+    d->m_statementResults.clear();
     (*it_p)->updateAccount(m_selectedAccount);
+    d->m_collectingStatements = false;
+    KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
   }
 }
 
