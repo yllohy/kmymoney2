@@ -1513,9 +1513,7 @@ QString PivotTable::renderHTML( void ) const
 
   //actual dates of the report
   result += QString("<div class=\"subtitle\">");
-  result += m_config_f.fromDate().toString(Qt::ISODate);
-  result += QString(" " + i18n("through") + " ");
-  result += m_config_f.toDate().toString(Qt::ISODate);
+  result += i18n("Report date range", "%1 through %2").arg(KGlobal::locale()->formatDate(m_config_f.fromDate(), true)).arg(KGlobal::locale()->formatDate(m_config_f.toDate(), true));
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
 

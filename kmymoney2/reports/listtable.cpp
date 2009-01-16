@@ -156,15 +156,11 @@ namespace reports {
       //actual dates of the report
     result += QString("<div class=\"subtitle\">");
     if(!m_config.fromDate().isNull()) {
-      result += m_config.fromDate().toString(Qt::ISODate);
-      result += QString(" " + i18n("through") + " ");
-      result += m_config.toDate().toString(Qt::ISODate);
+      result += i18n("Report date range", "%1 through %2").arg(KGlobal::locale()->formatDate(m_config.fromDate(), true)).arg(KGlobal::locale()->formatDate(m_config.toDate(), true));
       result += QString("</div>\n");
       result += QString("<div class=\"gap\">&nbsp;</div>\n");
 
-      csv += m_config.fromDate().toString(Qt::ISODate);
-      csv += QString(" " + i18n("through") + " ");
-      csv += m_config.toDate().toString(Qt::ISODate);
+      csv += i18n("Report date range", "%1 through %2").arg(KGlobal::locale()->formatDate(m_config.fromDate(), true)).arg(KGlobal::locale()->formatDate(m_config.toDate(), true));
       csv += QString("\n");
     }
 
@@ -549,7 +545,7 @@ namespace reports {
           grandtotal += ( *it_group ).subtotal();
           grandtotal = grandtotal.convert(fraction);
         }
-        
+
 
         QString subtotal_html = ( *it_group ).subtotal().formatMoney ( fraction );
         QString subtotal_csv = ( *it_group ).subtotal().formatMoney ( fraction, false );
