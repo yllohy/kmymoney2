@@ -1,4 +1,7 @@
 
+2009-01-12 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added missing include in kguiutils.cpp
+
 2009-01-14 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix #2248020 - Allow passworded databases
   * Remove redundant code

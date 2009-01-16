@@ -20,6 +20,7 @@
  // No need for QDateEdit, QSpinBox, etc., since these always return values
 
 #include <qcheckbox.h>
+#include <qlistbox.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
