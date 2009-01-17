@@ -54,6 +54,8 @@ OfxAppVersion::OfxAppVersion(KComboBox* combo, const QString& appId) :
 // http://ofxblog.wordpress.com/2007/06/06/ofx-appid-and-appver-for-microsoft-money/
 
   // Quicken
+  m_appMap[i18n("Quicken Windows 2003")] = "QWIN:1200";
+  m_appMap[i18n("Quicken Windows 2004")] = "QWIN:1300";
   m_appMap[i18n("Quicken Windows 2005")] = "QWIN:1400";
   m_appMap[i18n("Quicken Windows 2006")] = "QWIN:1500";
   m_appMap[i18n("Quicken Windows 2007")] = "QWIN:1600";

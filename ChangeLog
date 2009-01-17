@@ -1,4 +1,7 @@
 
+2009-01-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added Quicken 2004 and Quicken 2003 to the OFX plugin
+
 2009-01-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use KDE locale setting for date format in report subtitles
   * Collect all statement reports and show them together in a single window
