@@ -60,7 +60,7 @@ class kMyMoneyMoneyValidator : public QDoubleValidator
 public:
   /**
     * Constuct a locale-aware KDoubleValidator with default range
-    * (whatever @ref QDoubleValidator uses for that) and parent @p
+    * (whatever QDoubleValidator uses for that) and parent @p
     * parent
     */
   kMyMoneyMoneyValidator( QObject * parent, const char * name=0 );

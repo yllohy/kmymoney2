@@ -404,6 +404,7 @@ public:
     * ledger view into reconciliation mode and updates the view.
     *
     * @param account account which should be reconciled
+    * @param reconciliationDate the statement date
     * @param endingBalance the ending balance entered for this account
     *
     * @retval true Reconciliation started
@@ -582,6 +583,7 @@ signals:
     *
     * @param account account for which reconciliation starts or MyMoneyAccount()
     *                if reconciliation ends.
+    * @param reconciliationDate the statement date
     * @param endingBalance collected ending balance when reconciliation starts
     *                0 otherwise
     */

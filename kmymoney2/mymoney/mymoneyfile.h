@@ -461,7 +461,7 @@ public:
   bool isStandardAccount(const QString& id) const;
 
   /**
-    * Returns @a true, if transaction @t is a transfer transaction.
+    * Returns @a true, if transaction @p t is a transfer transaction.
     * A transfer transaction has two splits, both referencing either
     * an asset, a liability or an equity account.
     */
@@ -750,6 +750,7 @@ public:
     * MyMoneyAccount::AccountSeperator.
     *
     * @param category const reference to QString containing the category
+    * @param type account type if a specific type is required (defaults to UnknownAccountType)
     *
     * @return QString of the corresponding account. If account was not found
     *         the return value will be an empty string.

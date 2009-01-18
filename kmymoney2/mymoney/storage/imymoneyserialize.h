@@ -119,20 +119,6 @@ public:
     */
   virtual void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const = 0;
 
-  /**
-    * This method is used to pull a list of transactions from the file
-    * global transaction pool. It returns either the whole journal or
-    * the set of transaction referenced by a specific account depending
-    * on the argument given.
-    *
-    * @param account QString reference to account id. If account is empty
-    +                all transactions (the journal) is returned. If account
-    *                is not empty it returns the set of transactions
-    *                that have splits in this account.
-    *
-    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
-    */
-  // virtual const QValueList<MyMoneyTransaction> transactionList(const QString& account = "") const = 0;
 
   /**
    * This method returns whether a given transaction is already in memory, to avoid

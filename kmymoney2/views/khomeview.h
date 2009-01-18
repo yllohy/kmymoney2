@@ -122,7 +122,8 @@ private:
   MyMoneyMoney investmentBalance(const MyMoneyAccount& acc);
 
   /**
-   * Print text in the color set for negative numbers, if @param isNegative is true
+   * Print text in the color set for negative numbers, if @p amount is negative
+   * abd @p isNegative is true
    */
   QString showColoredAmount(const QString& amount, bool isNegative);
 

@@ -64,7 +64,7 @@ public:
   const MyMoneyAccount& account(const QString& key, const QString& value) const;
 
   /**
-   * This method stores the online parameters in @kvps used by the plugin
+   * This method stores the online parameters in @a kvps used by the plugin
    * with the account @a acc.
    */
   void setAccountOnlineParameters(const MyMoneyAccount&acc, const MyMoneyKeyValueContainer& kvps) const;

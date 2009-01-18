@@ -88,7 +88,7 @@ public:
     * the file is send through this filter and the result
     * is stored in the m_tempFile file.
     *
-    * @param name URL of the file to be imported
+    * @param url URL of the file to be imported
     */
   void setURL(const KURL& url);
 

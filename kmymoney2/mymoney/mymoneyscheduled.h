@@ -438,7 +438,7 @@ public:
    * This method is used to convert the occurence type from it's
    * internal representation into a human readable format.
    *
-   * @param occurence numerical representation of the MyMoneySchedule
+   * @param type numerical representation of the MyMoneySchedule
    *                  occurence type
    *
    * @return QString representing the human readable format

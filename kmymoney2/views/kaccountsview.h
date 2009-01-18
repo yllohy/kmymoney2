@@ -61,9 +61,6 @@ public:
     * This method is loads new information into the item and updates the fields
     *
     * @param account the account data for the object to be updated
-    * @param forceTotalUpdate set to true to force update of total values
-    *                         (used in constructor, should not be necessary to
-    *                          be set by application code)
     *
     * @note if account.id() is not equal to the current account id
     *       then this method returns immediately

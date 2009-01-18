@@ -224,6 +224,7 @@ public slots:
    *
    * @param account account for which reconciliation mode is activated.
    *                Default  is MyMoneyAccount().
+   * @param reconciliationDate date of statment
    * @param endingBalance The calculated ending balance for the statement
    *                Default ist 0.
    */

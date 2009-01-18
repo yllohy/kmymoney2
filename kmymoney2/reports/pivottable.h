@@ -100,6 +100,7 @@ public:
     * Dump the report's HTML to a file
     *
     * @param file The filename to dump into
+    * @param context unused, but provided for interface compatibility
     */
     void dump( const QString& file, const QString& context=QString()) const;
 
@@ -151,8 +152,8 @@ private:
       * negtive numbers.
       *
       * Example: 1.23 is returned as '1.23' whereas -1.23 is returned as
-      *          '<font color="rgb($red,$green,$blue)">-1.23</font>' with
-      *          $red, $green and $blue being the actual value for the
+      *          @verbatim <font color="rgb($red,$green,$blue)">-1.23</font>@endverbatim
+      *          with $red, $green and $blue being the actual value for the
       *          chosen color.
       */
     QString coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol = QString(), int prec = 2 ) const;
