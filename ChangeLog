@@ -1,4 +1,7 @@
 
+2009-01-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed sqlite detection problems with older autoconf versions
+
 2009-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problems reported by Doxygen
 
