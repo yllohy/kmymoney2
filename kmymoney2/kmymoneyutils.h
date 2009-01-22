@@ -281,15 +281,6 @@ public:
   static QPixmap scheduleIcon(int size);
 
   /**
-    * This method is used to convert a MyMoneySchedule occurence period into
-    * the frequency used in the MyMoneyFinancialCalculator.
-    *
-    * @param occurence MyMoneySchedule::occurenceE type occurence of a payment
-    * @return int reflecting the payment frequency in days
-    */
-  static int occurenceToFrequency(const MyMoneySchedule::occurenceE occurence);
-
-  /**
     * Check that internal MyMoney engine constants use the same
     * values as the KDE constants.
     */

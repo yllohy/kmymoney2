@@ -481,6 +481,30 @@ public:
   int variation(void) const;
   void setVariation(int var);
 
+ /**
+  *
+  * Convert an occurence to the maximum number of events possible during a single
+  * calendar year.
+  * A fortnight is treated as 15 days.
+  *
+  * @param occurence  The occurence
+  *
+  * @return int  Number of days between events
+  */
+  static int eventsPerYear(MyMoneySchedule::occurenceE occurence); 
+
+ /**
+  *
+  * Convert an occurence to the number of days between events
+  * Treats a month as 30 days.
+  * Treats a fortnight as 15 days.
+  *
+  * @param occurence  The occurence
+  *
+  * @return int  Number of days between events
+  */
+  static int daysBetweenEvents(MyMoneySchedule::occurenceE occurence);
+
 private:
   /**
     * This method forces the day of the passed @p date to
@@ -503,7 +527,6 @@ private:
     * @return none
     */
   void setTransaction(const MyMoneyTransaction& transaction, bool noDateCheck);
-
 
 private:
   /// Its occurence
@@ -545,5 +568,4 @@ private:
   /// The weekday option
   weekendOptionE m_weekendOption;
 };
-
 #endif

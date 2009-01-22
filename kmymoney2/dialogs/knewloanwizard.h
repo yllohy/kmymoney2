@@ -131,7 +131,6 @@ protected:
   void updatePeriodicPayment(void);
   void updateSummary(void);
   int calculateLoan(void);
-  int occurenceToPeriod(const MyMoneySchedule::occurenceE occurence) const;
   int term(void) const;
 
 signals:

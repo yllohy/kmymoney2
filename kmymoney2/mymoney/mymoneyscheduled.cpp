@@ -1188,3 +1188,110 @@ void MyMoneySchedule::setVariation(int var)
     setValue("kmm-variation", QString("%1").arg(var));
 }
 #endif
+
+int MyMoneySchedule::eventsPerYear(MyMoneySchedule::occurenceE occurence)
+{
+  int rc = 0;
+
+  switch(occurence) {
+    case MyMoneySchedule::OCCUR_DAILY:
+      rc = 365;
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      rc = 52;
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      rc = 26;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      rc = 26;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
+      rc = 17;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      rc = 13;
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
+      rc = 12;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
+      rc = 6;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      rc = 6;
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      rc = 4;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      rc = 3;
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      rc = 2;
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      rc = 1;
+      break;
+    default:
+      qWarning("Occurence not supported by financial calculator");
+  }
+
+  return rc;
+}
+
+int MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::occurenceE occurence)
+{
+  int rc = 0;
+
+  switch(occurence) {
+    case MyMoneySchedule::OCCUR_DAILY:
+      rc = 1;
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      rc = 7;
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      rc = 14;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      rc = 14;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
+      rc = 21;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      rc = 28;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
+      rc = 30;
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      rc = 30;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
+      rc = 56;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      rc = 60;
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      rc = 90;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      rc = 120;
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      rc = 180;
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      rc = 360;
+      break;
+    default:
+      qWarning("Occurence not supported by financial calculator");
+  }
+
+ return rc;
+}
+

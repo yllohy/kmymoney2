@@ -293,58 +293,6 @@ bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUs
   return rc;
 }
 
-int KMyMoneyUtils::occurenceToFrequency(const MyMoneySchedule::occurenceE occurence)
-{
-  int rc = 0;
-
-  switch(occurence) {
-    case MyMoneySchedule::OCCUR_DAILY:
-      rc = 365;
-      break;
-    case MyMoneySchedule::OCCUR_WEEKLY:
-      rc = 52;
-      break;
-    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-      rc = 24;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
-      rc = 26;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
-      rc = 17;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-      rc = 13;
-      break;
-    case MyMoneySchedule::OCCUR_MONTHLY:
-    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
-      rc = 12;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
-      rc = 6;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      rc = 6;
-      break;
-    case MyMoneySchedule::OCCUR_QUARTERLY:
-      rc = 4;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-      rc = 3;
-      break;
-    case MyMoneySchedule::OCCUR_TWICEYEARLY:
-      rc = 2;
-      break;
-    case MyMoneySchedule::OCCUR_YEARLY:
-      rc = 1;
-      break;
-    default:
-      qWarning("Occurence not supported by financial calculator");
-  }
-
-  return rc;
-}
-
 void KMyMoneyUtils::checkConstants(void)
 {
   Q_ASSERT(static_cast<int>(KLocale::ParensAround) == static_cast<int>(MyMoneyMoney::ParensAround));
@@ -518,12 +466,12 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
         // FIXME: for now, we only support periodic compounding
         calc.setDisc();
 
-        calc.setPF(occurenceToFrequency(schedule.occurence()));
+        calc.setPF(MyMoneySchedule::eventsPerYear(schedule.occurence()));
         MyMoneySchedule::occurenceE compoundingOccurence = static_cast<MyMoneySchedule::occurenceE>(acc.interestCompounding());
         if(compoundingOccurence == MyMoneySchedule::OCCUR_ANY)
           compoundingOccurence = schedule.occurence();
 
-        calc.setCF(occurenceToFrequency(compoundingOccurence));
+        calc.setCF(MyMoneySchedule::eventsPerYear(compoundingOccurence));
 
         calc.setPv(balance.toDouble());
         calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));

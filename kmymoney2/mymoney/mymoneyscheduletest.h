@@ -50,6 +50,8 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testHasReferenceTo);
 	CPPUNIT_TEST(testAdjustedNextDueDate);
 	CPPUNIT_TEST(testModifyNextDueDate);
+        CPPUNIT_TEST(testDaysBetweenEvents);
+        CPPUNIT_TEST(testEventsPerYear);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -83,6 +85,8 @@ public:
 	void testHasReferenceTo();
 	void testAdjustedNextDueDate();
 	void testModifyNextDueDate();
+        void testDaysBetweenEvents();
+        void testEventsPerYear();
 };
 
 #endif

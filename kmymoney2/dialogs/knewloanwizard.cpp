@@ -646,109 +646,6 @@ void KNewLoanWizard::slotInterestOnReception(void)
   m_interestOnReceptionButton->setChecked(true);
 }
 
-int KNewLoanWizard::occurenceToPeriod(const MyMoneySchedule::occurenceE occurence) const
-{
-  int rc = 0;
-
-  switch(occurence) {
-    case MyMoneySchedule::OCCUR_DAILY:
-      rc = 1;
-      break;
-    case MyMoneySchedule::OCCUR_WEEKLY:
-      rc = 7;
-      break;
-    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-      rc = 14;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
-      rc = 15;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
-      rc = 21;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-      rc = 28;
-      break;
-    case MyMoneySchedule::OCCUR_MONTHLY:
-    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
-      rc = 30;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
-      rc = 56;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      rc = 60;
-      break;
-    case MyMoneySchedule::OCCUR_QUARTERLY:
-      rc = 90;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-      rc = 120;
-      break;
-    case MyMoneySchedule::OCCUR_TWICEYEARLY:
-      rc = 180;
-      break;
-    case MyMoneySchedule::OCCUR_YEARLY:
-      rc = 360;
-      break;
-    default:
-      qWarning("Occurence not supported by financial calculator");
-  }
-
-  return rc;
-}
-/*
-int KNewLoanWizard::occurenceToFrequency(const MyMoneySchedule::occurenceE occurence) const
-{
-  int rc = 0;
-
-  switch(occurence) {
-    case MyMoneySchedule::OCCUR_DAILY:
-      rc = 365;
-      break;
-    case MyMoneySchedule::OCCUR_WEEKLY:
-      rc = 52;
-      break;
-    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-      rc = 24;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
-      rc = 26;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
-      rc = 17;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-      rc = 13;
-      break;
-    case MyMoneySchedule::OCCUR_MONTHLY:
-      rc = 12;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
-      rc = 6;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      rc = 6;
-      break;
-    case MyMoneySchedule::OCCUR_QUARTERLY:
-      rc = 4;
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-      rc = 3;
-      break;
-    case MyMoneySchedule::OCCUR_TWICEYEARLY:
-      rc = 2;
-      break;
-    case MyMoneySchedule::OCCUR_YEARLY:
-      rc = 1;
-      break;
-    default:
-      qWarning("Occurence not supported by financial calculator");
-  }
-
-  return rc;
-}
-*/
 int KNewLoanWizard::calculateLoan(void)
 {
   MyMoneyFinancialCalculator calc;
@@ -761,7 +658,7 @@ int KNewLoanWizard::calculateLoan(void)
   // FIXME: for now, we only support periodic compounding
   calc.setDisc();
 
-  PF = KMyMoneyUtils::occurenceToFrequency(KMyMoneyUtils::stringToOccurence(
+  PF = MyMoneySchedule::eventsPerYear(KMyMoneyUtils::stringToOccurence(
                             m_paymentFrequencyUnitEdit->currentText()));
   if(PF == 0)
     return 0;
@@ -1157,7 +1054,7 @@ int KNewLoanWizard::term(void) const
         factor *= m_durationValueEdit->value();
         // factor now is the duration in days. we divide this by the
         // payment frequency and get the number of payments
-        factor /= occurenceToPeriod(KMyMoneyUtils::stringToOccurence(
+        factor /= MyMoneySchedule::daysBetweenEvents(KMyMoneyUtils::stringToOccurence(
                             m_paymentFrequencyUnitEdit->currentText()));;
         break;
 
