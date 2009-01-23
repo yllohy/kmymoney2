@@ -1,6 +1,7 @@
 
 2009-01-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Force SSLv3' switch to OFX banking setup wizard
+  * Removed some unused files
 
 2009-01-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch provided by Colin Wright to clean up schedule frequencies
