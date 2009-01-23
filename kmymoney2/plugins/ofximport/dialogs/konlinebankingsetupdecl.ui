@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>653</width>
-            <height>477</height>
+            <height>502</height>
         </rect>
     </property>
     <property name="caption">
@@ -189,11 +189,11 @@
         <attribute name="title">
             <string>Enter Login Details</string>
         </attribute>
-        <grid>
+        <hbox>
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QLabel" row="0" column="0">
+            <widget class="QLabel">
                 <property name="name">
                     <cstring>textLabel1_3</cstring>
                 </property>
@@ -210,19 +210,14 @@
                     <pixmap>image0</pixmap>
                 </property>
             </widget>
-            <widget class="QLayoutWidget" row="0" column="1">
+            <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout6</cstring>
+                    <cstring>layout7</cstring>
                 </property>
                 <grid>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QTextBrowser" row="5" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>m_textDetails</cstring>
-                        </property>
-                    </widget>
                     <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>m_editPassword</cstring>
@@ -231,12 +226,33 @@
                             <enum>Password</enum>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="4" column="0" rowspan="1" colspan="3">
+                    <widget class="QCheckBox" row="4" column="0" rowspan="1" colspan="3">
                         <property name="name">
-                            <cstring>textLabel3</cstring>
+                            <cstring>m_forceSSL3</cstring>
                         </property>
                         <property name="text">
-                            <string>Connection Details</string>
+                            <string>Force SSLv3</string>
+                        </property>
+                    </widget>
+                    <widget class="KActiveLabel" row="0" column="0" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>kActiveLabel1</cstring>
+                        </property>
+                        <property name="focusPolicy">
+                            <enum>NoFocus</enum>
+                        </property>
+                        <property name="text">
+                            <string>Please enter the username and password you use to log into this bank for online banking.  Please note that many banks require a separate signup, and assign a separate PIN or password just for online banking from home.</string>
+                        </property>
+                    </widget>
+                    <widget class="QTextBrowser" row="6" column="0" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>m_textDetails</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KComboBox" row="3" column="1">
+                        <property name="name">
+                            <cstring>m_applicationCombo</cstring>
                         </property>
                     </widget>
                     <widget class="QLabel" row="1" column="0">
@@ -245,38 +261,6 @@
                         </property>
                         <property name="text">
                             <string>Username</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>m_editUsername</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>textLabel2_2_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Please enter the username and password you use to log into this bank for online banking.  Please note that many banks require a separate signup, and assign a separate PIN or password just for online banking from home.</string>
-                        </property>
-                        <property name="alignment">
-                            <set>WordBreak|AlignVCenter</set>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="0">
-                        <property name="name">
-                            <cstring>textLabel1_2_3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Identify as</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel2_3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Password</string>
                         </property>
                     </widget>
                     <spacer row="3" column="2">
@@ -291,19 +275,43 @@
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>160</width>
+                                <width>233</width>
                                 <height>21</height>
                             </size>
                         </property>
                     </spacer>
-                    <widget class="KComboBox" row="3" column="1">
+                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="3">
                         <property name="name">
-                            <cstring>m_applicationCombo</cstring>
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Connection Details</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel2_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Password</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="0">
+                        <property name="name">
+                            <cstring>textLabel1_2_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Identify as</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>m_editUsername</cstring>
                         </property>
                     </widget>
                 </grid>
             </widget>
-        </grid>
+        </hbox>
     </widget>
     <widget class="QWidget">
         <property name="name">
@@ -452,23 +460,6 @@
                             <set>WordBreak|AlignVCenter</set>
                         </property>
                     </widget>
-                    <spacer>
-                        <property name="name">
-                            <cstring>spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>111</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
                 </vbox>
             </widget>
         </hbox>

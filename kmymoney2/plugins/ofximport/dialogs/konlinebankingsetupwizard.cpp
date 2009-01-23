@@ -37,6 +37,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -258,6 +259,8 @@ bool KOnlineBankingSetupWizard::post(const char* request, const char* url,const 
 
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request);
+  if(m_forceSSL3->isChecked())
+    curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_SSLv3);
 
   struct curl_slist *headerlist=NULL;
   headerlist=curl_slist_append(headerlist, "Content-type: application/x-ofx");
