@@ -1,3 +1,8 @@
+2009-01-18 Fernando Vilas <fvilas@iname.com>
+  * Reworked balance calculations
+  * Standardized date and MyMoneyMoney formatted storage
+  * Fixed date calculations to work with SQLite
+  * Added (commented) code to support future MMSchedule KVP.
 
 2009-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #2530475 (Calculator (Value entry widget) bug!)

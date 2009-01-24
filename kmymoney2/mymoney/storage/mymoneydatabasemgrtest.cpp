@@ -88,10 +88,15 @@ void MyMoneyDatabaseMgrTest::testCreateDb() {
     if (pwd != 0) {
       userName = QString(pwd->pw_name);
     }
+    //"QMYSQL3"
+    //"QPSQL7"
+    //"QSQLITE3"
     m_url = "sql://" + userName + "@localhost/kmm_test_driver?driver="
+                     //+ "QMYSQL3" + "&mode=single";
                      + *it + "&mode=single";
     MyMoneyStorageSql *sql = m->connectToDatabase(m_url);
     CPPUNIT_ASSERT(0 != sql);
+    //qDebug("Database driver is %s", sql->driverName().ascii());
     // Clear the database, so there is a fresh start on each run.
     if (0 == sql->open(m_url, IO_WriteOnly, true)) {
       MyMoneyFile::instance()->attachStorage(m);

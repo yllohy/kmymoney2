@@ -328,7 +328,7 @@ int MyMoneyStorageSql::upgradeToV1() {
   QMap<QString, QDateTime>::ConstIterator it;
   for (it = tids.begin(); it != tids.end(); ++it) {
     q.prepare ("UPDATE kmmSplits SET postDate=:postDate WHERE transactionId = :id;");
-    q.bindValue(":postDate", it.data());
+    q.bindValue(":postDate", it.data().toString(Qt::ISODate));
     q.bindValue(":id", it.key());
     if (!q.exec()) {
       buildError (q, __func__, "priming kmmSplits.postDate");
@@ -1072,9 +1072,17 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery&
   q.bindValue(":id", acc.id());
   q.bindValue(":institutionId", acc.institutionId());
   q.bindValue(":parentId", acc.parentAccountId());
-  q.bindValue(":lastReconciled", acc.lastReconciliationDate());
+  if (acc.lastReconciliationDate() == QDate())
+    q.bindValue(":lastReconciled", acc.lastReconciliationDate());
+  else
+    q.bindValue(":lastReconciled", acc.lastReconciliationDate().toString(Qt::ISODate));
+
   q.bindValue(":lastModified", acc.lastModified());
-  q.bindValue(":openingDate", acc.openingDate());
+  if (acc.openingDate() == QDate())
+    q.bindValue(":openingDate", acc.openingDate());
+  else
+    q.bindValue(":openingDate", acc.openingDate().toString(Qt::ISODate));
+
   q.bindValue(":accountNumber", acc.number());
   q.bindValue(":accountType", acc.accountType());
   q.bindValue(":accountTypeString", MyMoneyAccount::accountTypeToString(acc.accountType()));
@@ -1240,9 +1248,9 @@ void MyMoneyStorageSql::writeTransaction(const QString& txId, const MyMoneyTrans
   DBG("*** Entering MyMoneyStorageSql::writeTransaction");
   q.bindValue(":id", txId);
   q.bindValue(":txType", type);
-  q.bindValue(":postDate", tx.postDate());
+  q.bindValue(":postDate", tx.postDate().toString(Qt::ISODate));
   q.bindValue(":memo", tx.memo());
-  q.bindValue(":entryDate", tx.entryDate());
+  q.bindValue(":entryDate", tx.entryDate().toString(Qt::ISODate));
   q.bindValue(":currencyId", tx.commodity());
   q.bindValue(":bankId", tx.bankID());
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Transaction")));
@@ -1301,17 +1309,20 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":txType", type);
   q.bindValue(":splitId", splitId);
   q.bindValue(":payeeId", split.payeeId());
-  q.bindValue(":reconcileDate", split.reconcileDate());
+  if (split.reconcileDate() == QDate())
+    q.bindValue(":reconcileDate", split.reconcileDate());
+  else
+    q.bindValue(":reconcileDate", split.reconcileDate().toString(Qt::ISODate));
   q.bindValue(":action", split.action());
   q.bindValue(":reconcileFlag", split.reconcileFlag());
   q.bindValue(":value", split.value().toString());
-  q.bindValue(":valueFormatted", split.value().formatMoney("", 2));
+  q.bindValue(":valueFormatted", split.value().formatMoney("", -1, false).replace(QChar(','), QChar('.')));
   q.bindValue(":shares", split.shares().toString());
-  q.bindValue(":sharesFormatted", split.shares().formatMoney("", 2));
+  q.bindValue(":sharesFormatted", split.shares().formatMoney("", -1, false).replace(QChar(','), QChar('.')));
   MyMoneyMoney price = split.actualPrice();
   if (!price.isZero()) {
     q.bindValue(":price", price.toString());
-    q.bindValue(":priceFormatted", price.formatMoney("", 2));
+    q.bindValue(":priceFormatted", price.formatMoney("", -1, false).replace(QChar(','), QChar('.')));
   } else {
     q.bindValue(":price", QString());
     q.bindValue(":priceFormatted", QString());
@@ -1319,7 +1330,7 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":memo", split.memo());
   q.bindValue(":accountId", split.accountId());
   q.bindValue(":checkNumber", split.number());
-  q.bindValue(":postDate", m_txPostDate); // FIXME: when Tom puts date into split object
+  q.bindValue(":postDate", m_txPostDate.toString(Qt::ISODate)); // FIXME: when Tom puts date into split object
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Split")));
   deleteKeyValuePairs("SPLIT", txId + QString::number(splitId));
   writeKeyValuePairs("SPLIT", txId + QString::number(splitId), split.pairs());
@@ -1404,6 +1415,8 @@ void MyMoneyStorageSql::deleteSchedule (const QString& id) {
   q.prepare(m_db.m_tables["kmmSchedules"].deleteString());
   q.bindValue(":id", id);
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, "deleting Schedule"));
+  //FIXME: enable when schedules have KVPs.
+  //deleteKeyValuePairs("SCHEDULE", id);
 }
 
 void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuery& q, bool insert) {
@@ -1417,8 +1430,8 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":occurenceString", MyMoneySchedule::occurenceToString(sch.occurence()));
   q.bindValue(":paymentType", sch.paymentType());
   q.bindValue(":paymentTypeString", MyMoneySchedule::paymentMethodToString(sch.paymentType()));
-  q.bindValue(":startDate", sch.startDate());
-  q.bindValue(":endDate", sch.endDate());
+  q.bindValue(":startDate", sch.startDate().toString(Qt::ISODate));
+  q.bindValue(":endDate", sch.endDate().toString(Qt::ISODate));
   if (sch.isFixed()) {
     q.bindValue(":fixed", "Y");
   } else {
@@ -1430,7 +1443,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
     q.bindValue(":autoEnter", "N");
   }
   q.bindValue(":lastPayment", sch.lastPayment());
-  q.bindValue(":nextPaymentDue", sch.nextDueDate());
+  q.bindValue(":nextPaymentDue", sch.nextDueDate().toString(Qt::ISODate));
   q.bindValue(":weekendOption", sch.weekendOption());
   q.bindValue(":weekendOptionString", MyMoneySchedule::weekendOptionToString(sch.weekendOption()));
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Schedules")));
@@ -1446,7 +1459,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   QValueList<QDate>::ConstIterator it;
   for (it=payments.begin(); it!=payments.end(); ++it) {
     q.bindValue(":schedId", sch.id());
-    q.bindValue(":payDate", (*it));
+    q.bindValue(":payDate", (*it).toString(Qt::ISODate));
     if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Schedule Payment History")));
   }
 
@@ -1458,6 +1471,11 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   }
   writeTransaction(sch.id(), sch.transaction(), q, "S");
 
+  //FIXME: enable when schedules have KVPs.
+
+  //Add in Key-Value Pairs for transactions.
+  //deleteKeyValuePairs("SCHEDULE", sch.id());
+  //writeKeyValuePairs("SCHEDULE", sch.id(), sch.pairs());
   m_hiIdSchedules = calcHighId(m_hiIdSchedules, sch.id());
 }
 
@@ -1593,7 +1611,7 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
   q.prepare (s);
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
-  q.bindValue(":priceDate", p.date());
+  q.bindValue(":priceDate", p.date().toString(Qt::ISODate));
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("finding Price")));
   if (q.next()) {
     q.prepare(m_db.m_tables["kmmPrices"].updateString());
@@ -1604,7 +1622,7 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
   }
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
-  q.bindValue(":priceDate", p.date());
+  q.bindValue(":priceDate", p.date().toString(Qt::ISODate));
   q.bindValue(":price", p.rate(QString()).toString());
   q.bindValue(":priceFormatted", p.rate(QString()).formatMoney("", 2));
   q.bindValue(":priceSource", p.source());
@@ -1621,7 +1639,7 @@ void MyMoneyStorageSql::removePrice(const MyMoneyPrice& p) {
   q.prepare (m_db.m_tables["kmmPrices"].deleteString());
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
-  q.bindValue(":priceDate", p.date());
+  q.bindValue(":priceDate", p.date().toString(Qt::ISODate));
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("deleting  Price")));
   --m_prices;
   writeFileInfo();
@@ -1634,7 +1652,7 @@ void MyMoneyStorageSql::writePrice(const MyMoneyPrice& p) {
   q.prepare (m_db.m_tables["kmmPrices"].insertString());
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
-  q.bindValue(":priceDate", p.date());
+  q.bindValue(":priceDate", p.date().toString(Qt::ISODate));
   q.bindValue(":price", p.rate(QString()).toString());
   q.bindValue(":priceFormatted", p.rate(QString()).formatMoney("", 2));
   q.bindValue(":priceSource", p.source());
@@ -1910,9 +1928,9 @@ void MyMoneyStorageSql::writeFileInfo() {
   q.bindValue(":version", QString("%1.%2")
       .arg(m_majorVersion)
           .arg((m_storage->fileFixVersion() + 1)));
-  q.bindValue(":created", m_storage->creationDate());
-  //q.bindValue(":lastModified", m_storage->lastModificationDate());
-  q.bindValue(":lastModified", QDate::currentDate());
+  q.bindValue(":created", m_storage->creationDate().toString(Qt::ISODate));
+  //q.bindValue(":lastModified", m_storage->lastModificationDate().toString(Qt::ISODate));
+  q.bindValue(":lastModified", QDate::currentDate().toString(Qt::ISODate));
   q.bindValue(":baseCurrency", m_storage->pairs()["kmm-baseCurrency"]);
   q.bindValue(":institutions", m_institutions);
   q.bindValue(":accounts", m_accounts);
@@ -2342,14 +2360,19 @@ const QMap<QString, MyMoneyMoney> MyMoneyStorageSql::fetchBalance(const QStringL
 
   QMap<QString, MyMoneyMoney> returnValue;
   MyMoneySqlQuery q(const_cast <MyMoneyStorageSql*> (this));
-  QString queryString = "SELECT * FROM kmmBalances WHERE id in (";
+  QString queryString = "SELECT action, sharesFormatted, accountId, postDate "
+                        "FROM kmmSplits WHERE txType = 'N' AND accountId in (";
 
   for (unsigned i = 0; i < idList.count(); ++i) {
     queryString += " :id" + QString::number(i) + ", ";
   }
-  queryString = queryString.left(queryString.length() - 2) + ")";
+  queryString = queryString.left(queryString.length() - 2) + " )";
+
+  // SQLite stores dates as YYYY-MM-DDTHH:mm:ss with 0s for the time part. This makes
+  // the <= operator misbehave when the date matches. To avoid this, add a day to the
+  // requested date and use the < operator.
   if (date.isValid() && !date.isNull())
-    queryString += QString(" AND balDate <= '%1'").arg(date.toString(Qt::ISODate));
+    queryString += QString(" AND postDate < '%1'").arg(date.addDays(1).toString(Qt::ISODate));
   DBG (queryString);
   q.prepare(queryString);
 
@@ -2360,17 +2383,15 @@ const QMap<QString, MyMoneyMoney> MyMoneyStorageSql::fetchBalance(const QStringL
   }
   if (!q.exec())
     throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("fetching balance")));
-  QString id, acctCurrencyId;
-  QString value, shares;
-  QString txCurrencyId;
+  QString id;
+  QString shares;
+  QString action;
   while (q.next()) {
-    id = q.value(0).toCString();
-    acctCurrencyId = q.value(1).toCString();
-    value = q.value(3).toString();
-    shares = q.value(4).toString();
-    txCurrencyId = q.value(6).toCString();
-    if (acctCurrencyId == txCurrencyId)
-      returnValue[id] += MyMoneyMoney(value);
+    id = q.value(2).toString();
+    shares = q.value(1).toString();
+    action = q.value(0).toString();
+    if (MyMoneySplit::ActionSplitShares == action)
+      returnValue[id] = returnValue[id] * MyMoneyMoney(shares);
     else
       returnValue[id] += MyMoneyMoney(shares);
   }
@@ -2593,7 +2614,7 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
     QString payeesClause = "(";
     QStringList::const_iterator it;
     for (it = payees.begin(); it != payees.end(); ++it) {
-      payeesClause.append(QString("%1payeeId = '%2'").arg(itemConnector).arg(*it));
+      payeesClause.append(QString("%1 payeeId = '%2'").arg(itemConnector).arg(*it));
       itemConnector = " or ";
     }
     if (payeesClause != "(")
@@ -2651,7 +2672,7 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
   // if we have neither a split filter, nor a tx (date) filter
   // it's effectively a read all
   if ((!splitFilterActive) && (!txFilterActive)) {
-    qDebug("reading all transactions");
+    //qDebug("reading all transactions");
     return fetchTransactions();
   }
   // build a date clause for the transaction table
@@ -2857,6 +2878,9 @@ const QMap<QString, MyMoneySchedule> MyMoneyStorageSql::fetchSchedules (const QS
 
     sList[s.id()] = s;
 
+  //FIXME: enable when schedules have KVPs.
+  //  s.setPairs(readKeyValuePairs("SCHEDULE", s.id()).pairs());
+
     //unsigned long id = extractId(s.id().data());
     //if(id > lastId)
     //  lastId = id;
@@ -2941,8 +2965,12 @@ const  MyMoneyPrice MyMoneyStorageSql::fetchSinglePrice (const QString& fromIdLi
 
   // Use bind variables, instead of just inserting the values in the queryString,
   // so that values containing a ':' will work.
-  queryString += " WHERE fromId = :fromId  AND toId = :toId AND priceDate "
-    + QString(exactDate ? "=" : "<=") + " :priceDate ORDER BY priceDate DESC;";
+  // See balance query for why the date logic seems odd.
+  queryString += " WHERE fromId = :fromId  AND toId = :toId AND priceDate < :priceDate ";
+  if (exactDate)
+    queryString += "AND priceDate > :exactDate ";
+
+  queryString += "ORDER BY priceDate DESC;";
 
   q.prepare(queryString);
 
@@ -2953,7 +2981,10 @@ const  MyMoneyPrice MyMoneyStorageSql::fetchSinglePrice (const QString& fromIdLi
 
   q.bindValue(":fromId", fromIdList);
   q.bindValue(":toId", toIdList);
-  q.bindValue(":priceDate", date);
+  q.bindValue(":priceDate", date.addDays(1).toString(Qt::ISODate));
+
+  if (exactDate)
+    q.bindValue(":exactDate", date.toString(Qt::ISODate));
 
   if (! q.exec()) {}
 
@@ -3640,8 +3671,7 @@ void MyMoneyDbDef::Splits(void){
   QValueList<KSharedPtr <MyMoneyDbColumn> > fields;
   fields.append(new MyMoneyDbColumn("transactionId", "varchar(32)",  PRIMARYKEY, NOTNULL));
   fields.append(new MyMoneyDbColumn("txType", "char(1)"));
-  fields.append(new MyMoneyDbIntColumn("splitId", MyMoneyDbIntColumn::SMALL, UNSIGNED,  PRIMARYKEY,
-        NOTNULL));
+  fields.append(new MyMoneyDbIntColumn("splitId", MyMoneyDbIntColumn::SMALL, UNSIGNED,  PRIMARYKEY, NOTNULL));
   fields.append(new MyMoneyDbColumn("payeeId", "varchar(32)"));
   fields.append(new MyMoneyDbDatetimeColumn("reconcileDate"));
   fields.append(new MyMoneyDbColumn("action", "varchar(16)"));
