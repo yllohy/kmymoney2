@@ -1,4 +1,7 @@
 
+2009-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #2530475 (Calculator (Value entry widget) bug!)
+
 2009-01-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Force SSLv3' switch to OFX banking setup wizard
   * Removed some unused files

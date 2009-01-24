@@ -299,7 +299,17 @@ void kMyMoneyCalculator::percentClicked(void)
 {
   if(op != 0) {
     double op2 = operand.toDouble();
-    op2 = op1 * op2 / 100;
+    switch(op) {
+      case PLUS:
+      case MINUS:
+        op2 = (op1 * op2) / 100;
+        break;
+
+      case STAR:
+      case SLASH:
+        op2 /= 100;
+        break;
+    }
     operand = normalizeString(op2);
     changeDisplay(operand);
   }
