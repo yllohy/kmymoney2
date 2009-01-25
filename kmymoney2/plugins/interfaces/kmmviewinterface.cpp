@@ -26,7 +26,7 @@
 
 #include "../../kmymoney2.h"
 #include "../../views/kmymoneyview.h"
-#include "selectedtransaction.h"
+#include "../../widgets/selectedtransaction.h"
 #include "kmmviewinterface.h"
 
 KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyView* view, QObject* parent, const char* name) :

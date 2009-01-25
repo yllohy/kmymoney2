@@ -44,31 +44,9 @@ if test "$enable_ofxplugin" != "no"; then
 fi
 
 if test "$enable_ofxbanking" != "no"; then
-  PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0 >= 1.0.1,
-    [
-      AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])
-      AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, 1, [whether to use OFX directconnect])
-    ],
-    [PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 1.0.1,
-	[
-          AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])
-          AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, 1, [whether to use OFX directconnect])
-        ],
-        [
-          if test "$enable_ofxbanking" != "auto"; then
-            AC_MSG_ERROR([libxml++-1.0 or libxml++-2.6 is required for OFX Direct Connect.])
-          fi
-          enable_ofxbanking=no
-          enable_ofxplugin=no
-        ])
-    ])
-
-  if test "$enable_ofxbanking" != "no"; then
-    LIBCURL_CHECK_CONFIG([yes],[7.9.7])
-    OFX_LIBS="$OFX_LIBS $LIBXMLPP_LIBS $LIBCURL"
-    enable_ofxbanking=yes
-  fi
+  enable_ofxbanking=yes
 fi
+
 AM_CONDITIONAL(OFXBANKING, test "$enable_ofxbanking" != "no" )
 AC_SUBST(OFX_LIBS)
 AC_SUBST(OFX_IMPORTERPLUGIN)

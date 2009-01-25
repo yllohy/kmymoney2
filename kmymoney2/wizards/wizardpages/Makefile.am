@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libwizardpages.a
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)  -I$(top_srcdir) -I. @LIBCURL_CPPFLAGS@ 
+INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 
 libwizardpages_a_METASOURCES = AUTO
 

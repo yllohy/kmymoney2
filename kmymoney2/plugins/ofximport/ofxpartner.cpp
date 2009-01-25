@@ -1,42 +1,63 @@
+/***************************************************************************
+                             ofxpartner.cpp
+                             ----------
+    begin                : Fri Jan 23 2009
+    copyright            : (C) 2009 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <libofx/libofx.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
-//#ifdef HAVE_LIBCURL
-#include <curl/curl.h>
-//#endif
+#include <qdatetime.h>
+#include <qeventloop.h>
+#include <qfileinfo.h>
+#include <qvaluelist.h>
+#include <qapplication.h>
+#include <qdom.h>
+#include <qregexp.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+
+#include <kio/job.h>
+#include <klocale.h>
+#include <kmessagebox.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "ofxpartner.h"
-#include "nodeparser.h"
-
-#include <sys/stat.h>
-
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-
-using std::string;
-using std::vector;
-using std::cout;
-using std::endl;
 
 namespace OfxPartner
 {
-bool post(const string& request, const string& url, const string& filename);
+bool post(const QString& request, const QMap<QString, QString>& attr, const KURL& url, const KURL& filename);
+bool get(const QString& request, const QMap<QString, QString>& attr, const KURL& url, const KURL& filename);
 
-const string kBankFilename = "ofx-bank-index.xml";
-const string kCcFilename = "ofx-cc-index.xml";
-const string kInvFilename = "ofx-inv-index.xml";
+const QString kBankFilename = "ofx-bank-index.xml";
+const QString kCcFilename = "ofx-cc-index.xml";
+const QString kInvFilename = "ofx-inv-index.xml";
 
 #define VER "9"
 
-static string directory;
+static QString directory;
 
-void setDirectory(const std::string& dir)
+void setDirectory(const QString& dir)
 {
   directory = dir;
 }
@@ -46,100 +67,144 @@ void ValidateIndexCache(void)
   // TODO (Ace) Check whether these files exist and are recent enough before getting them again
 
   struct stat filestats;
-  string fname;
+  KURL fname;
+
+  QMap<QString, QString> attr;
+  attr["content-type"] = "application/x-www-form-urlencoded";
+  attr["accept"] = "*/*";
 
   fname = directory + kBankFilename;
-  if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=1&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
+  QFileInfo i(fname.path());
+  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+    post("T=1&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER), fname);
 
   fname = directory + kCcFilename;
-  if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=2&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
+  i = QFileInfo(fname.path());
+  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+    post("T=2&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER) ,fname);
 
   fname = directory + kInvFilename;
-  if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=3&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
+  i = QFileInfo(fname.path());
+  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+    post("T=3&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER), fname);
 }
 
-vector<string> BankNames(void)
+static void ParseFile(QMap<QString, QString>& result, const QString& fileName, const QString& bankName)
 {
-  vector<string> result;
+  QFile f(fileName);
+  if(f.open(IO_ReadOnly)) {
+    QTextStream stream(&f);
+    stream.setEncoding(QTextStream::Unicode);
+    QString msg;
+    int errl, errc;
+    QDomDocument doc;
+    if(doc.setContent(stream.read(), &msg, &errl, &errc)) {
+      QDomNodeList olist = doc.elementsByTagName("prov");
+      for(int i = 0; i < olist.count(); ++i) {
+        QDomNode onode = olist.item(i);
+        if(onode.isElement()) {
+          bool collectGuid = false;
+          QDomElement elo = onode.toElement();
+          QDomNodeList ilist = onode.childNodes();
+          for(int j = 0; j < ilist.count(); ++j) {
+            QDomNode inode = ilist.item(j);
+            QDomElement el = inode.toElement();
+            if(el.tagName() == "name") {
+              if(bankName.isEmpty())
+                result[el.text()] = QString();
+              else if(el.text() == bankName) {
+                collectGuid = true;
+              }
+            }
+            if(el.tagName() == "guid" && collectGuid) {
+              result[el.text()] = QString();
+            }
+          }
+        }
+      }
+    }
+    f.close();
+  }
+}
+
+QValueList<QString> BankNames(void)
+{
+  QMap<QString, QString> result;
 
   // Make sure the index files are up to date
   ValidateIndexCache();
 
-  xmlpp::DomParser parser;
-  parser.set_substitute_entities();
-  parser.parse_file(directory + kBankFilename);
-  if ( parser )
-  {
-    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-    result.insert(result.end(),names.begin(),names.end());
-  }
-  parser.parse_file(directory + kCcFilename);
-  if ( parser )
-  {
-    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-    result.insert(result.end(),names.begin(),names.end());
-  }
-  parser.parse_file(directory + kInvFilename);
-  if ( parser )
-  {
-    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-    result.insert(result.end(),names.begin(),names.end());
-  }
+  ParseFile(result, directory + kBankFilename, QString());
+  ParseFile(result, directory + kCcFilename, QString());
+  ParseFile(result, directory + kInvFilename, QString());
 
   // Add Innovision
-  result.push_back("Innovision");
+  result["Innovision"] = QString();
 
-  // sort the list and remove duplicates, to return one unified list of all supported banks
-  sort(result.begin(),result.end());
-  result.erase(unique(result.begin(),result.end()),result.end());
-  return result;
+  return result.keys();
 }
 
-vector<string> FipidForBank(const string& bank)
+QValueList<QString> FipidForBank(const QString& bank)
 {
-  vector<string> result;
+  QMap<QString, QString> result;
 
-  xmlpp::DomParser parser;
-  parser.set_substitute_entities();
-  parser.parse_file(directory + kBankFilename);
-  if ( parser )
-  {
-    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-    if ( ! fipids.back().empty() )
-      result.insert(result.end(),fipids.begin(),fipids.end());
-  }
-  parser.parse_file(directory + kCcFilename);
-  if ( parser )
-  {
-    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-    if ( ! fipids.back().empty() )
-      result.insert(result.end(),fipids.begin(),fipids.end());
-  }
-  parser.parse_file(directory + kInvFilename);
-  if ( parser )
-  {
-    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-    if ( ! fipids.back().empty() )
-      result.insert(result.end(),fipids.begin(),fipids.end());
-  }
+  ParseFile(result, directory + kBankFilename, bank);
+  ParseFile(result, directory + kCcFilename, bank);
+  ParseFile(result, directory + kInvFilename, bank);
 
   // the fipid for Innovision is 1.
   if ( bank == "Innovision" )
-    result.push_back("1");
+    result["1"] = QString();
 
-  sort(result.begin(),result.end());
-  result.erase(unique(result.begin(),result.end()),result.end());
-
-  return result;
+  return result.keys();
 }
 
-OfxFiServiceInfo ServiceInfo(const std::string& fipid)
+QString extractNodeText(QDomElement& node, const QString& name)
+{
+  QString res;
+  QRegExp exp("([^/]+)/?([^/].*)?");
+  if(exp.search(name) != -1) {
+    QDomNodeList olist = node.elementsByTagName(exp.cap(1));
+    if(olist.count()) {
+      QDomNode onode = olist.item(0);
+      if(onode.isElement()) {
+        QDomElement elo = onode.toElement();
+        if(exp.cap(2).isEmpty()) {
+          res = elo.text();
+        } else {
+          res = extractNodeText(elo, exp.cap(2));
+        }
+      }
+    }
+  }
+  return res;
+}
+
+QString extractNodeText(QDomDocument& doc, const QString& name)
+{
+  QString res;
+  QRegExp exp("([^/]+)/?([^/].*)?");
+  if(exp.search(name) != -1) {
+    QDomNodeList olist = doc.elementsByTagName(exp.cap(1));
+    if(olist.count()) {
+      QDomNode onode = olist.item(0);
+      if(onode.isElement()) {
+        QDomElement elo = onode.toElement();
+        if(exp.cap(2).isEmpty()) {
+          res = elo.text();
+        } else {
+          res = extractNodeText(elo, exp.cap(2));
+        }
+      }
+    }
+  }
+  return res;
+}
+
+OfxFiServiceInfo ServiceInfo(const QString& fipid)
 {
   OfxFiServiceInfo result;
-  memset(&result,0,sizeof(OfxFiServiceInfo));
+  memset(&result, 0, sizeof(OfxFiServiceInfo));
 
   // Hard-coded values for Innovision test server
   if ( fipid == "1" )
@@ -155,76 +220,167 @@ OfxFiServiceInfo ServiceInfo(const std::string& fipid)
     return result;
   }
 
+  QMap<QString, QString> attr;
+  attr["content-type"] = "application/x-www-form-urlencoded";
+  attr["accept"] = "*/*";
+
+  KURL guidFile(QString("%1fipid-%2.xml").arg(directory).arg(fipid));
+
   // Apparently at some point in time, for VER=6 msn returned an online URL
   // to a static error page (http://moneycentral.msn.com/cust404.htm).
   // Increasing to VER=9 solved the problem. This may happen again in the
   // future.
-  string url = "http://moneycentral.msn.com/money/2005/mnynet/service/olsvcupd/OnlSvcBrandInfo.aspx?MSNGUID=&GUID=%1&SKU=3&VER=" VER;
-  url.replace(url.find("%1"),2,fipid);
+  QFileInfo i(guidFile.path());
+  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+    get("", attr, KURL(QString("http://moneycentral.msn.com/money/2005/mnynet/service/olsvcupd/OnlSvcBrandInfo.aspx?MSNGUID=&GUID=%1&SKU=3&VER=" VER).arg(fipid)), guidFile);
 
-  // TODO: Check whether this file exists and is recent enough before getting it again
-  string guidfile = directory + "fipid-%1.xml";
-  guidfile.replace(guidfile.find("%1"),2,fipid);
+  QFile f(guidFile.path());
+  if(f.open(IO_ReadOnly)) {
+    QTextStream stream(&f);
+    stream.setEncoding(QTextStream::Unicode);
+    QString msg;
+    int errl, errc;
+    QDomDocument doc;
+    if(doc.setContent(stream.read(), &msg, &errl, &errc)) {
+      QString fid = extractNodeText(doc, "ProviderSettings/FID");
+      QString org = extractNodeText(doc, "ProviderSettings/Org");
+      QString url = extractNodeText(doc, "ProviderSettings/ProviderURL");
+      strncpy(result.fid, fid.latin1(), OFX_FID_LENGTH-1);
+      strncpy(result.org, org.latin1(), OFX_ORG_LENGTH-1);
+      strncpy(result.url, url.latin1(), OFX_URL_LENGTH-1);
+      result.accountlist = (extractNodeText(doc, "ProviderSettings/AcctListAvail") == "1");
+      result.statements = (extractNodeText(doc, "BankingCapabilities/Bank") == "1");
+      result.billpay= (extractNodeText(doc, "BillPayCapabilities/Pay") == "1");
+      result.investments= (extractNodeText(doc, "InvestmentCapabilities/BrkStmt") == "1");
+    }
+  }
 
-  struct stat filestats;
-  if ( stat( guidfile.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("",url.c_str(),guidfile.c_str());
-
-          // Print the FI details
-    xmlpp::DomParser parser;
-          parser.set_substitute_entities();
-          parser.parse_file(guidfile);
-          if ( parser )
-          {
-            NodeParser nodes(parser);
-
-            strncpy(result.fid,nodes.Path("ProviderSettings/FID").Text().back().c_str(),OFX_FID_LENGTH-1);
-            strncpy(result.org,nodes.Path("ProviderSettings/Org").Text().back().c_str(),OFX_ORG_LENGTH-1);
-            strncpy(result.url,nodes.Path("ProviderSettings/ProviderURL").Text().back().c_str(),OFX_URL_LENGTH-1);
-            result.accountlist = (nodes.Path("ProviderSettings/AcctListAvail").Text().back() == "1");
-            result.statements = (nodes.Path("BankingCapabilities/Bank").Text().back() == "1");
-            result.billpay = (nodes.Path("BillPayCapabilities/Pay").Text().back() == "1");
-            result.investments = (nodes.Path("InvestmentCapabilities/BrkStmt").Text().back() == "1");
-          }
   return result;
 }
 
-bool post(const string& request, const string& url, const string& filename)
+bool get(const QString& request, const QMap<QString, QString>& attr, const KURL& url, const KURL& filename)
 {
-#if 1 //#ifdef HAVE_LIBCURL
-  CURL *curl = curl_easy_init();
-  if(! curl)
-    return false;
+  QByteArray req(0);
+  OfxHttpRequest job("GET", url, req, attr, filename, true);
 
-  unlink(filename.c_str());
-  FILE* file = fopen(filename.c_str(),"wb");
-  if (! file )
-  {
-    curl_easy_cleanup(curl);
-    return false;
-  }
+  return job.error() == QHttp::NoError;
+}
 
-  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-  if ( request.length() )
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request.c_str());
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fwrite);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)file);
+bool post(const QString& request, const QMap<QString, QString>& attr, const KURL& url, const KURL& filename)
+{
+  QByteArray req;
+  req.fill(0, request.length()+1);
+  req.duplicate(request.ascii(), request.length());
 
-  /*CURLcode res =*/ curl_easy_perform(curl);
-
-  curl_easy_cleanup(curl);
-
-  fclose(file);
-
-  return true;
-#else
-  request; url; filename;
-  cerr << "ERROR: libox must be configured with libcurl to post this request" << endl;
-  return false;
-#endif
+  OfxHttpRequest job("POST", url, req, attr, filename, true);
+  return job.error() == QHttp::NoError;
 }
 
 } // namespace OfxPartner
 
+
+OfxHttpsRequest::OfxHttpsRequest(const QString& type, const KURL &url, const QByteArray &postData, const QMap<QString, QString>& metaData, const KURL& dst, bool showProgressInfo) :
+    m_dst(dst)
+{
+  m_job = KIO::http_post(url, postData, showProgressInfo);
+  m_job->addMetaData("content-type", "Content-type: application/x-ofx" );
+  connect(m_job,SIGNAL(result(KIO::Job*)),this,SLOT(slotOfxFinished(KIO::Job*)));
+  connect(m_job,SIGNAL(data(KIO::Job*, const QByteArray&)),this,SLOT(slotOfxData(KIO::Job*,const QByteArray&)));
+  connect(m_job,SIGNAL(connected(KIO::Job*)),this,SLOT(slotOfxConnected(KIO::Job*)));
+
+  qApp->enter_loop();
+}
+
+
+void OfxHttpsRequest::slotOfxConnected(KIO::Job*)
+{
+  m_file.setName(m_dst.path());
+  m_file.open(IO_WriteOnly);
+}
+
+void OfxHttpsRequest::slotOfxData(KIO::Job*,const QByteArray& _ba)
+{
+  if(m_file.isOpen()) {
+    QTextStream ts(&m_file);
+    ts << QString(_ba);
+  }
+}
+
+void OfxHttpsRequest::slotOfxFinished(KIO::Job* /* e */)
+{
+  if(m_file.isOpen()) {
+    m_file.close();
+  }
+
+  int error = m_job->error();
+  if ( error ) {
+    m_job->showErrorDialog();
+    unlink(m_dst.path());
+
+  } else if ( m_job->isErrorPage() ) {
+    QString details;
+    QFile f( m_dst.path() );
+    if ( f.open( IO_ReadOnly ) ) {
+      QTextStream stream( &f );
+      QString line;
+      while ( !stream.atEnd() ) {
+        details += stream.readLine(); // line of text excluding '\n'
+      }
+      f.close();
+    }
+    KMessageBox::detailedSorry( 0, i18n("The HTTP request failed."), details, i18n("Failed") );
+    unlink(m_dst.path());
+  }
+
+  qApp->exit_loop();
+}
+
+
+
+OfxHttpRequest::OfxHttpRequest(const QString& type, const KURL &url, const QByteArray &postData, const QMap<QString, QString>& metaData, const KURL& dst, bool showProgressInfo)
+{
+  QFile f(dst.path());
+  m_error = QHttp::NoError;
+  QString errorMsg;
+  if(f.open(IO_WriteOnly)) {
+    m_job = new QHttp(url.host());
+    QHttpRequestHeader header(type, url.encodedPathAndQuery());
+    header.setValue("Host", url.host());
+    QMap<QString, QString>::const_iterator it;
+    for(it = metaData.begin(); it != metaData.end(); ++it) {
+      header.setValue(it.key(), *it);
+    }
+
+    m_job->request(header, postData, &f);
+
+    connect(m_job, SIGNAL(requestFinished(int, bool)),
+            this, SLOT(slotOfxFinished(int, bool)));
+
+    qApp->enter_loop();
+
+    if(m_error != QHttp::NoError)
+      errorMsg = m_job->errorString();
+
+    delete m_job;
+  } else {
+    m_error = QHttp::Aborted;
+    errorMsg = i18n("Cannot open file %1 for writing").arg(dst.path());
+  }
+
+  if(m_error != QHttp::NoError) {
+    KMessageBox::error(0, errorMsg, i18n("OFX setup error"));
+    unlink(dst.path());
+  }
+}
+
+void OfxHttpRequest::slotOfxFinished(int, bool rc)
+{
+  if(rc) {
+    m_error = m_job->error();
+  }
+  qApp->exit_loop();
+}
+
+#include "ofxpartner.moc"
 
 // vim:cin:si:ai:et:ts=2:sw=2:

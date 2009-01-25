@@ -18,7 +18,6 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#ifdef USE_OFX_DIRECTCONNECT
 
 // ----------------------------------------------------------------------------
 // System Includes
@@ -694,4 +693,3 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::investmentTransaction(const MyMone
   return Tag("ERROR").element("DETAILS","This transaction contains an unsupported action type");
 }
 #endif
-#endif // USE_OFX_DIRECTCONNECT

@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes) -I$(top_srcdir) -I. -I$(top_srcdir)/kmymoney2 -I$(top_builddir)/kmymoney2 @LIBXMLPP_CFLAGS@ @LIBCURL_CPPFLAGS@
+INCLUDES = $(all_includes) -I$(top_srcdir) -I. -I$(top_srcdir)/kmymoney2 -I$(top_builddir)/kmymoney2
 
 instdir=$(includedir)/kmymoney
 

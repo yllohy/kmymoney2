@@ -22,8 +22,6 @@
 #include "config.h"
 #endif
 
-#ifdef USE_OFX_DIRECTCONNECT
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -54,8 +52,8 @@ Q_OBJECT
 public:
   KOfxDirectConnectDlg(const MyMoneyAccount&, QWidget *parent = 0, const char *name = 0);
   ~KOfxDirectConnectDlg();
-    
-  void init(void);  
+
+  void init(void);
 
 signals:
   /**
@@ -70,10 +68,10 @@ protected slots:
   void slotOfxConnected(KIO::Job*);
   virtual void reject(void);
 
-protected:  
+protected:
   void setStatus(const QString& _status);
-  void setDetails(const QString& _details);  
-  
+  void setDetails(const QString& _details);
+
   KTempFile* m_tmpfile;
   MyMoneyOfxConnector m_connector;
   KIO::TransferJob* m_job;
@@ -85,5 +83,4 @@ private:
   Private* const d;
 };
 
-#endif // USE_OFX_DIRECTCONNECT
 #endif // KOFXDIRECTCONNECTDLG_H

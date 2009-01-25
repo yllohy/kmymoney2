@@ -1,7 +1,7 @@
 noinst_LTLIBRARIES = libdialogs.la
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)  -I$(top_srcdir) -I. @LIBCURL_CPPFLAGS@ @LIBXMLPP_CFLAGS@
+INCLUDES = $(all_includes)  -I$(top_srcdir)
 
 libdialogs_la_METASOURCES = AUTO
 

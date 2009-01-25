@@ -19,16 +19,6 @@
 #include <config.h>
 #endif
 
-#ifdef USE_OFX_DIRECTCONNECT
-
-// ----------------------------------------------------------------------------
-// System Includes
-
-#include <string>
-#include <vector>
-#include <curl/curl.h>
-#include <qtabwidget.h>
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -38,6 +28,7 @@
 #include <qlayout.h>
 #include <qregexp.h>
 #include <qcheckbox.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -58,11 +49,7 @@
 
 #include "konlinebankingsetupwizard.h"
 #include <../ofxpartner.h>
-#include <libxml++/exceptions/exception.h>
 #include <mymoneyofxconnector.h>
-
-using std::string;
-using std::vector;
 
 class KOnlineBankingSetupWizard::Private
 {
@@ -91,20 +78,14 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
   tabLayout->insertWidget(0, new KListViewSearchLineWidget(m_listFi, tab, 0));
 
   OfxPartner::setDirectory(locateLocal("appdata", ""));
-  try {
-    vector<string> banks = OfxPartner::BankNames();
-    vector<string>::const_iterator it_bank = banks.begin();
-    while (it_bank != banks.end())
-    {
-      new KListViewItem( m_listFi, QString((*it_bank).c_str()));
-      ++it_bank;
-    }
-    m_fInit = true;
-  } catch(xmlpp::exception e) {
-    delete dlg;
-    dlg = 0;
-    KMessageBox::error(this, i18n("Reading the bank list failed with the following error: '%1'. The console output may have more information.").arg(e.what()), i18n("XMLPP error"));
+  QStringList banks = OfxPartner::BankNames();
+  QStringList::const_iterator it_bank = banks.begin();
+  while (it_bank != banks.end())
+  {
+    new KListViewItem( m_listFi, (*it_bank));
+    ++it_bank;
   }
+  m_fInit = true;
   delete dlg;
 }
 
@@ -153,9 +134,8 @@ bool KOnlineBankingSetupWizard::finishFiPage(void)
       QString bank = item->text(0);
       m_textDetails->clear();
       m_textDetails->append(QString("<p>Details for %1:</p>").arg(bank));
-      vector<string> fipids = OfxPartner::FipidForBank(bank);
-
-      vector<string>::const_iterator it_fipid = fipids.begin();
+      QStringList fipids = OfxPartner::FipidForBank(bank);
+      QStringList::const_iterator it_fipid = fipids.begin();
       while ( it_fipid != fipids.end() )
       {
         // For each fipid, get the connection details
@@ -226,71 +206,6 @@ bool KOnlineBankingSetupWizard::finishFiPage(void)
   return result;
 }
 
-bool KOnlineBankingSetupWizard::post(const char* request, const char* url,const char* filename)
-{
-  CURL *curl = curl_easy_init();
-  if(! curl)
-    return false;
-
-  unlink(filename);
-  FILE* file = fopen(filename,"wb");
-  if (! file )
-  {
-    curl_easy_cleanup(curl);
-    return false;
-  }
-
-  QDir homeDir(QDir::home());
-  if(homeDir.exists("ofxlog.txt")) {
-    d->m_fpTrace.setName(QString("%1/ofxlog.txt").arg(QDir::homeDirPath()));
-    if(d->m_fpTrace.open(IO_WriteOnly | IO_Append)) {
-      d->m_trace.setDevice(&d->m_fpTrace);
-    }
-
-  }
-
-  if(d->m_fpTrace.isOpen()) {
-    d->m_trace << "url: " << url << "\n";
-    d->m_trace << "request:\n" << request << "\n";
-    d->m_trace << "Content-type: application/x-ofx\n";
-    d->m_trace << "Accept: */*, application/x-ofx\n";
-    d->m_trace << "response:\n";
-  }
-
-  curl_easy_setopt(curl, CURLOPT_URL, url);
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request);
-  if(m_forceSSL3->isChecked())
-    curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_SSLv3);
-
-  struct curl_slist *headerlist=NULL;
-  headerlist=curl_slist_append(headerlist, "Content-type: application/x-ofx");
-  headerlist=curl_slist_append(headerlist, "Accept: */*, application/x-ofx");
-
-  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fwrite);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)file);
-
-  /*CURLcode res = */ curl_easy_perform(curl);
-
-  curl_easy_cleanup(curl);
-  curl_slist_free_all (headerlist);
-
-  fclose(file);
-
-  if(d->m_fpTrace.isOpen()) {
-    QFile fp(filename);
-    if ( fp.open( IO_ReadOnly ) ) {
-      QTextStream is(&fp);
-      while ( !is.atEnd() )
-        d->m_trace << is.readLine() << "\n";
-      fp.close();
-    }
-    d->m_trace.unsetDevice();
-    d->m_fpTrace.close();
-  }
-  return true;
-}
-
 bool KOnlineBankingSetupWizard::finishLoginPage(void)
 {
   bool result = true;
@@ -329,8 +244,11 @@ bool KOnlineBankingSetupWizard::finishLoginPage(void)
     // who owns this memory?!?!
     char* request = libofx_request_accountinfo( &fi );
 
-    const char* filename = "response.ofx";
-    post(request,(*m_it_info).url,filename);
+    KURL filename(QString("%1response.ofx").arg(locateLocal("appdata", "")));
+    QByteArray req;
+    req.setRawData(request, strlen(request));
+    OfxHttpsRequest("POST", (*m_it_info).url, req, QMap<QString, QString>(), filename, true);
+    req.resetRawData(request, strlen(request));
 
     LibofxContextPtr ctx = libofx_get_new_context();
     Q_CHECK_PTR(ctx);
@@ -338,7 +256,7 @@ bool KOnlineBankingSetupWizard::finishLoginPage(void)
     ofx_set_account_cb(ctx, ofxAccountCallback, this);
     ofx_set_status_cb(ctx, ofxStatusCallback, this);
     // Add resulting accounts to the account list
-    libofx_proc_file(ctx, filename, AUTODETECT);
+    libofx_proc_file(ctx, filename.path(), AUTODETECT);
     libofx_free_context(ctx);
 
     ++m_it_info;
@@ -511,5 +429,4 @@ void KOnlineBankingSetupWizard::ListViewItem::x(void) {}
 
 #include "konlinebankingsetupwizard.moc"
 
-#endif // USE_OFX_DIRECTCONNECT
 // vim:cin:si:ai:et:ts=2:sw=2:

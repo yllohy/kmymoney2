@@ -23,8 +23,6 @@
 #endif
 
 
-#ifdef USE_OFX_DIRECTCONNECT
-
 // ----------------------------------------------------------------------------
 // Library Includes
 
@@ -69,7 +67,7 @@ public:
    * as a colon separated value consisting of the application
    * and version (eg. "QWIN:1700").  If current value is the
    * default, an empty string is returned.
-   */ 
+   */
   const QString& appId(void) const;
 
 private:
@@ -110,10 +108,8 @@ private:
 #endif
 
 private:
-//   QString m_body;
   const MyMoneyAccount& m_account;
   MyMoneyKeyValueContainer m_fiSettings;
 };
 
-#endif // USE_OFX_DIRECTCONNECT
 #endif // OFXCONNECTOR_H

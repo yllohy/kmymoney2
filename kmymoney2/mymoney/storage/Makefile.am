@@ -17,3 +17,4 @@ check_LIBRARIES = libstoragetest.a
 
 libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneymaptest.cpp mymoneydatabasemgrtest.cpp
 endif
+

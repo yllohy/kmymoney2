@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libdialogs.a
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)  -I$(top_srcdir) -I. @LIBCURL_CPPFLAGS@ @LIBXMLPP_CFLAGS@ -I$(top_srcdir)/libkdchart
+INCLUDES = $(all_includes)  -I$(top_srcdir) -I. -I$(top_srcdir)/libkdchart
 
 libdialogs_a_METASOURCES = AUTO
 

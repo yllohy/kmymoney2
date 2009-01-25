@@ -45,6 +45,7 @@
 #include "konlinebankingstatus.h"
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <libofx/libofx.h>
 #include "mymoneyofxconnector.h"
 
 KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent, const char *name) :
@@ -52,7 +53,6 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_appId(0)
 {
   m_ledOnlineStatus->off();
-#ifdef USE_OFX_DIRECTCONNECT
 
   // Set up online banking settings if applicable
   MyMoneyKeyValueContainer settings = acc.onlineBankingSettings();
@@ -86,9 +86,6 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_specificDate->setMaxValue(QDate::currentDate());
   m_payeeidRB->setChecked(settings.value("kmmofx-preferPayeeid").isEmpty() || settings.value("kmmofx-preferPayeeid").toInt() != 0);
   m_nameRB->setChecked(!settings.value("kmmofx-preferName").isEmpty() && settings.value("kmmofx-preferName").toInt() != 0);
-#else
-  m_textOnlineStatus->setText(i18n("Disabled. No online banking services are available"));
-#endif
 }
 
 KOnlineBankingStatus::~KOnlineBankingStatus()
@@ -102,8 +99,6 @@ const QString& KOnlineBankingStatus::appId(void) const
     return m_appId->appId();
   return QString::null;
 }
-#ifdef USE_OFX_DIRECTCONNECT
-#endif
 
 #include "konlinebankingstatus.moc"
 

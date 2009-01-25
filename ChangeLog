@@ -1,5 +1,8 @@
 
-2009-01-18 Fernando Vilas <fvilas@iname.com>
+2009-01-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed dependency to libcurl and libxml++ from OFX plugin
+
+2009-01-24 Fernando Vilas <fvilas@iname.com>
   * Reworked balance calculations
   * Standardized date and MyMoneyMoney formatted storage
   * Fixed date calculations to work with SQLite
