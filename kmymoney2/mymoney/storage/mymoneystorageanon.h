@@ -82,6 +82,8 @@ protected:
 
   void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
+  void writeBudget(QDomElement& budgets, const MyMoneyBudget& b);
+
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
 
   void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
@@ -102,6 +104,7 @@ private:
   QString hideString(const QString&) const;
   MyMoneyMoney hideNumber(const MyMoneyMoney&) const;
   void fakeTransaction(MyMoneyTransaction& tn);
+  void fakeBudget(MyMoneyBudget& bn);
   void fakeKeyValuePair(MyMoneyKeyValueContainer& _kvp);
 
   MyMoneyMoney m_factor;

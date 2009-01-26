@@ -240,4 +240,46 @@ MyMoneyMoney MyMoneyStorageANON::hideNumber(const MyMoneyMoney& _in) const
   return result.convert();
 }
 
+void MyMoneyStorageANON::fakeBudget(MyMoneyBudget& bx)
+{
+  MyMoneyBudget bn;
+
+  bn.setName(bx.name());
+  bn.setBudgetStart(bx.budgetStart());
+  bn = MyMoneyBudget(bx.id(), bn);
+
+  QValueList<MyMoneyBudget::AccountGroup> list = bx.getaccounts();
+  QValueList<MyMoneyBudget::AccountGroup>::iterator it;
+  for(it = list.begin(); it != list.end(); ++it) {
+    // only add the account if there is a budget entered
+    if(!(*it).balance().isZero()) {
+      MyMoneyBudget::AccountGroup account;
+      account.setId((*it).id());
+      account.setBudgetLevel((*it).budgetLevel());
+      account.setBudgetSubaccounts((*it).budgetSubaccounts());
+      QMap<QDate, MyMoneyBudget::PeriodGroup> plist = (*it).getPeriods();
+      QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_p;
+      for(it_p = plist.begin(); it_p != plist.end(); ++it_p) {
+        MyMoneyBudget::PeriodGroup pGroup;
+        pGroup.setAmount((*it_p).amount() * m_factor );
+        pGroup.setStartDate( (*it_p).startDate());
+        account.addPeriod(pGroup.startDate(), pGroup);
+      }
+      bn.setAccount(account, account.id());
+    }
+  }
+
+  bx = bn;
+}
+
+void MyMoneyStorageANON::writeBudget(QDomElement& budgets, const MyMoneyBudget& b)
+{
+  MyMoneyBudget bn = b;
+
+  fakeBudget(bn);
+
+  MyMoneyStorageXML::writeBudget(budgets, bn);
+}
+
+
 // vim:cin:si:ai:et:ts=2:sw=2:

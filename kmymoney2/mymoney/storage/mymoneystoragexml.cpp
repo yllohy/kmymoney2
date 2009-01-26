@@ -763,10 +763,16 @@ void MyMoneyStorageXML::writeBudgets(QDomElement& parent)
   unsigned i = 0;
   for(it = list.begin(); it != list.end(); ++it)
   {
-    (*it).writeXML(*m_doc, parent);
+    writeBudget(parent, (*it));
     signalProgress(++i, 0);
   }
 }
+
+void MyMoneyStorageXML::writeBudget(QDomElement& budget, const MyMoneyBudget& b)
+{
+  b.writeXML(*m_doc, budget);
+}
+
 
 QDomElement MyMoneyStorageXML::findChildElement(const QString& name, const QDomElement& root)
 {

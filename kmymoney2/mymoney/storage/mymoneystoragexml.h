@@ -101,6 +101,7 @@ protected:
 
   virtual void writeReports(QDomElement& e);
   virtual void writeBudgets(QDomElement& e);
+  virtual void writeBudget(QDomElement& budget, const MyMoneyBudget& b);
 
   virtual void writeSecurities(QDomElement& securities);
   virtual void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
