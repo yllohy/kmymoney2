@@ -305,9 +305,10 @@ void KEditScheduleDlg::accept(void)
 const MyMoneySchedule& KEditScheduleDlg::schedule(void) const
 {
   if(d->m_editor) {
-    if(d->m_schedule.nextDueDate() != transaction().postDate())
-      d->m_schedule.setNextDueDate(transaction().postDate());
-    d->m_schedule.setTransaction(transaction());
+    MyMoneyTransaction t = transaction();
+    if(d->m_schedule.nextDueDate() != t.postDate())
+        d->m_schedule.setNextDueDate(t.postDate());
+    d->m_schedule.setTransaction(t);
     d->m_schedule.setName(m_nameEdit->text());
     d->m_schedule.setFixed(!m_estimateEdit->isChecked());
     d->m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_frequencyEdit->currentItem()));
@@ -359,7 +360,7 @@ MyMoneyTransaction KEditScheduleDlg::transaction(void) const
   MyMoneyTransaction t = d->m_schedule.transaction();
 
   if(d->m_editor) {
-    d->m_editor->createTransaction(t, d->m_schedule.transaction(), d->m_schedule.transaction().splits()[0], true);
+    d->m_editor->createTransaction(t, d->m_schedule.transaction(), d->m_schedule.transaction().splits()[0], false);
   }
 
   t.clearId();

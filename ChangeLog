@@ -1,4 +1,9 @@
 
+2009-01-27 Alvaro Soliverez <asoliverez@gmail.com>
+  * Patch provided by Thomas Baumgart to show currency conversion
+    dialog when entering schedules involving foreign currencies
+  * Fixed schedule forecast calculation - bug #2507699
+
 2009-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Anonymize budget values while saving as anonymized file
 

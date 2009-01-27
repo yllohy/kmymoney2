@@ -723,9 +723,9 @@ void MyMoneyForecast::addScheduledTransactions (void)
                     forecastDate = QDate::currentDate().addDays(1);
 
                   if(acc.accountType() == MyMoneyAccount::Income) {
-                    balance[forecastDate] += ((*it_s).value() * MyMoneyMoney(-1, 1));
+                    balance[forecastDate] += ((*it_s).shares() * MyMoneyMoney(-1, 1));
                   } else {
-                    balance[forecastDate] += (*it_s).value();
+                    balance[forecastDate] += (*it_s).shares();
                   }
                   m_accountList[acc.id()] = balance;
                 }
