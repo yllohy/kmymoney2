@@ -1,6 +1,7 @@
 
 2009-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added merge button to split transaction dialog (#2538561)
+  * Improved path detection for QT in sqlite.m4
 
 2009-01-27 Alvaro Soliverez <asoliverez@gmail.com>
   * Patch provided by Thomas Baumgart to show currency conversion

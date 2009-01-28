@@ -74,6 +74,16 @@ AC_DEFUN([AC_SQLITE3], [
   fi
 
   if test $enable_sqlite3 = yes; then
+    if test x$QTDIR = x; then
+      QTDIR=`dirname $MOC`
+      QTDIR=${QTDIR%/bin}
+    fi
+    if test x$QTDIR = x; then
+      AC_MSG_ERROR(QTDIR not set)
+    fi
+  fi
+
+  if test $enable_sqlite3 = yes; then
     rm -rf qt-sqlite3-0.2
     gunzip -c `dirname -- ${0}`/23011-qt-sqlite3-0.2.tar.gz | tar -xf -
     cd qt-sqlite3-0.2
