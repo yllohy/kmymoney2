@@ -302,7 +302,8 @@ void KSplitTransactionDlg::slotMergeSplits(void)
     for(it = list.begin(); it != list.end(); ++it) {
       QValueList<MyMoneySplit>::iterator it_s;
       for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
-        if((*it_s).accountId() == (*it).accountId())
+        if((*it_s).accountId() == (*it).accountId()
+        && (*it_s).memo().isEmpty() && (*it).memo().isEmpty())
           break;
       }
       if(it_s != splits.end()) {
