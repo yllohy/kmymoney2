@@ -63,9 +63,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const bool deposit,
                                            const MyMoneyMoney& calculatedValue,
                                            const QMap<QString, MyMoneyMoney>& priceInfo,
-                                           QWidget* parent, const char* name)
-  : KSplitTransactionDlgDecl(parent, name, true),
-  m_transaction(t),
+                                           QWidget* parent, const char* name) :
+  KSplitTransactionDlgDecl(parent, name, true),
   m_account(acc),
   m_split(s),
   m_precision(2),
@@ -90,6 +89,11 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   clearAllBtn->setGuiItem(clearButtenItem);
 
 
+  KGuiItem mergeButtenItem( i18n( "&Merge" ),
+                             QIconSet(il->loadIcon("sum", KIcon::Small, KIcon::SizeSmall)),
+                                      "", "");
+  mergeBtn->setGuiItem(mergeButtenItem);
+
   // make finish the default
   finishBtn->setDefault(true);
 
@@ -110,6 +114,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
   connect(finishBtn, SIGNAL(clicked()), this, SLOT(accept()));
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllSplits()));
+  connect(mergeBtn, SIGNAL(clicked()), this, SLOT(slotMergeSplits()));
 
   // setup the precision
   try {
@@ -117,6 +122,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   } catch(MyMoneyException *e) {
     delete e;
   }
+
+  slotSetTransaction(t);
 
   // pass on those vars
   transactionsTable->setup(priceInfo);
@@ -259,7 +266,7 @@ void KSplitTransactionDlg::reject()
   KSplitTransactionDlgDecl::reject();
 }
 
-void KSplitTransactionDlg::slotClearAllSplits()
+void KSplitTransactionDlg::slotClearAllSplits(void)
 {
   int answer;
   answer = KMessageBox::warningContinueCancel (this,
@@ -284,9 +291,61 @@ void KSplitTransactionDlg::slotClearAllSplits()
   }
 }
 
+void KSplitTransactionDlg::slotMergeSplits(void)
+{
+  QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  try {
+    // collect all splits, merge them if needed and remove from transaction
+    QValueList<MyMoneySplit> splits;
+    for(it = list.begin(); it != list.end(); ++it) {
+      QValueList<MyMoneySplit>::iterator it_s;
+      for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+        if((*it_s).accountId() == (*it).accountId())
+          break;
+      }
+      if(it_s != splits.end()) {
+        (*it_s).setShares((*it).shares() + (*it_s).shares());
+        (*it_s).setValue((*it).value() + (*it_s).value());
+      } else {
+        splits << *it;
+      }
+      m_transaction.removeSplit(*it);
+    }
+
+    // now add them back to the transaction
+    QValueList<MyMoneySplit>::iterator it_s;
+    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      (*it_s).clearId();
+      m_transaction.addSplit(*it_s);
+    }
+
+    transactionsTable->setTransaction(m_transaction, m_split, m_account);
+    slotSetTransaction(m_transaction);
+  } catch(MyMoneyException* e) {
+    delete e;
+  }
+}
+
 void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
 {
   m_transaction = t;
+  QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  // check if we can merge splits or not
+  QMap<QString, int> splits;
+  for(it = list.begin(); it != list.end(); ++it) {
+    splits[(*it).accountId()]++;
+  }
+  QMap<QString, int>::const_iterator it_s;
+  for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+    if((*it_s) > 1)
+      break;
+  }
+  mergeBtn->setDisabled(it_s == splits.end());
+
   updateSums();
 }
 

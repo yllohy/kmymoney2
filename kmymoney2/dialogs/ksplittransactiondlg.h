@@ -103,9 +103,10 @@ public slots:
 protected slots:
   void accept();
   void reject();
-  void slotClearAllSplits();
+  void slotClearAllSplits(void);
   void slotSetTransaction(const MyMoneyTransaction& t);
   void slotCreateCategory(const QString& txt, QString& id);
+  void slotMergeSplits(void);
 
   /// used internally to setup the initial size of all widgets
   void initSize(void);
