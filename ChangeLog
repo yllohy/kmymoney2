@@ -1,4 +1,7 @@
 
+2009-01-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added icon to close button of balance chart dialog
+
 2009-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added merge button to split transaction dialog (#2538561)
   * Improved path detection for QT in sqlite.m4

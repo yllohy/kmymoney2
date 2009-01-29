@@ -208,7 +208,7 @@ KBalanceChartDlg::KBalanceChartDlg(const MyMoneyAccount& account, QWidget* paren
   KPushButton* buttonClose = new KPushButton( this, "buttonClose" );
   buttonClose->setEnabled( TRUE );
   buttonClose->setAutoDefault( TRUE );
-  buttonClose->setText(i18n("&Close"));
+  buttonClose->setGuiItem(KStdGuiItem::Close);
   Layout1->addWidget( buttonClose );
 
   // connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
