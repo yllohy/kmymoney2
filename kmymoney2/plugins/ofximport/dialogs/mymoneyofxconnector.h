@@ -82,7 +82,7 @@ class OfxHeaderVersion
 {
 public:
   OfxHeaderVersion(KComboBox* combo, const QString& headerVersion);
-  const QString& headerVersion(void) const;
+  QString headerVersion(void) const;
 
 private:
   KComboBox*             m_combo;

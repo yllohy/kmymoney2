@@ -414,7 +414,9 @@ bool KOnlineBankingSetupWizard::chosenSettings( MyMoneyKeyValueContainer& settin
       QString appId = m_appId->appId();
       if(!appId.isEmpty())
         settings.setValue("appId", appId);
-      settings.setValue("kmmofx-headerVersion", m_headerVersion->headerVersion());
+      QString hVer = m_headerVersion->headerVersion();
+      if(!hVer.isEmpty())
+        settings.setValue("kmmofx-headerVersion", hVer);
       result = true;
     }
   }

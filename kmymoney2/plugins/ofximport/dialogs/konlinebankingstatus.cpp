@@ -101,7 +101,7 @@ const QString& KOnlineBankingStatus::appId(void) const
   return QString::null;
 }
 
-const QString& KOnlineBankingStatus::headerVersion(void) const
+QString KOnlineBankingStatus::headerVersion(void) const
 {
   if(m_headerVersion)
     return m_headerVersion->headerVersion();

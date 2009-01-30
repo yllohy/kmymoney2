@@ -66,7 +66,7 @@ OfxHeaderVersion::OfxHeaderVersion(KComboBox* combo, const QString& headerVersio
 #endif
 }
 
-const QString& OfxHeaderVersion::headerVersion(void) const
+QString OfxHeaderVersion::headerVersion(void) const
 {
   return m_combo->currentText();
 }

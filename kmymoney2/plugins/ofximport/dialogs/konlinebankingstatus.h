@@ -48,8 +48,8 @@ public:
   KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent=0, const char *name=0);
   ~KOnlineBankingStatus();
   const QString& appId(void) const;
-  const QString& headerVersion(void) const;
-  private:
+  QString headerVersion(void) const;
+private:
   OfxAppVersion*  m_appId;
   OfxHeaderVersion* m_headerVersion;
 };
