@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>568</width>
-            <height>491</height>
+            <height>529</height>
         </rect>
     </property>
     <vbox>
@@ -159,26 +159,26 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout15</cstring>
+                        <cstring>layout8</cstring>
                     </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>textLabel1_2</cstring>
+                                <cstring>textLabel1_3</cstring>
                             </property>
                             <property name="text">
-                                <string>Identify as</string>
+                                <string>Header Version</string>
                             </property>
                         </widget>
-                        <widget class="KComboBox">
+                        <widget class="KComboBox" row="0" column="1">
                             <property name="name">
                                 <cstring>m_applicationCombo</cstring>
                             </property>
                         </widget>
-                        <spacer>
+                        <spacer row="0" column="2">
                             <property name="name">
                                 <cstring>spacer4_2</cstring>
                             </property>
@@ -190,12 +190,25 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>207</width>
+                                    <width>150</width>
                                     <height>21</height>
                                 </size>
                             </property>
                         </spacer>
-                    </hbox>
+                        <widget class="KComboBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_headerVersionCombo</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Identify as</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
                 <widget class="QButtonGroup">
                     <property name="name">
@@ -446,7 +459,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>50</height>
                 </size>
             </property>
         </spacer>

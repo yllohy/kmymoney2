@@ -39,6 +39,7 @@
 #include "konlinebankingsetupdecl.h"
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 class OfxAppVersion;
+class OfxHeaderVersion;
 
 /**
   * @author Ace Jones
@@ -98,6 +99,7 @@ private:
   bool m_fDone;
   bool m_fInit;
   OfxAppVersion* m_appId;
+  OfxHeaderVersion* m_headerVersion;
 };
 
 #endif

@@ -46,6 +46,31 @@
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include "mymoneyofxconnector.h"
 
+OfxHeaderVersion::OfxHeaderVersion(KComboBox* combo, const QString& headerVersion) :
+  m_combo(combo)
+{
+  combo->clear();
+  combo->insertItem("102");
+  combo->insertItem("103");
+
+  if(!headerVersion.isEmpty()) {
+    combo->setCurrentItem(headerVersion);
+  } else {
+    combo->setCurrentItem("102");
+  }
+
+#if ! LIBOFX_IS_VERSION(0,9,0)
+  // This feature does not work with libOFX < 0.9 so
+  // we just make disable the button in this case
+  combo->setDisabled(true);
+#endif
+}
+
+const QString& OfxHeaderVersion::headerVersion(void) const
+{
+  return m_combo->currentText();
+}
+
 OfxAppVersion::OfxAppVersion(KComboBox* combo, const QString& appId) :
   m_combo(combo)
 {
@@ -252,6 +277,11 @@ void MyMoneyOfxConnector::initRequest(OfxFiLogin* fi) const
   } else {
     strncpy(fi->appid, "QWIN", OFX_APPID_LENGTH-1);
     strncpy(fi->appver, "1700", OFX_APPVER_LENGTH-1);
+  }
+
+  QString headerVersion = m_account.onlineBankingSettings().value("kmmofx-headerVersion");
+  if(!headerVersion.isEmpty()) {
+    strncpy(fi->header_version, headerVersion.latin1(), OFX_HEADERVERSION_LENGTH-1);
   }
 #endif
 }

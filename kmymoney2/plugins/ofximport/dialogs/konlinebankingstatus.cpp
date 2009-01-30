@@ -68,6 +68,7 @@ KOnlineBankingStatus::KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *p
   m_textOnlineAccount->setText(account);
 
   m_appId = new OfxAppVersion(m_applicationCombo, settings.value("appId"));
+  m_headerVersion = new OfxHeaderVersion(m_headerVersionCombo, settings.value("kmmofx-headerVersion"));
 
   int numDays = 60;
   QString snumDays = settings.value("kmmofx-numRequestDays");
@@ -97,6 +98,13 @@ const QString& KOnlineBankingStatus::appId(void) const
 {
   if(m_appId)
     return m_appId->appId();
+  return QString::null;
+}
+
+const QString& KOnlineBankingStatus::headerVersion(void) const
+{
+  if(m_headerVersion)
+    return m_headerVersion->headerVersion();
   return QString::null;
 }
 

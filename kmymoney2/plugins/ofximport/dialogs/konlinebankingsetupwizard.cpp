@@ -66,6 +66,7 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
   m_appId(0)
 {
   m_appId = new OfxAppVersion(m_applicationCombo, "");
+  m_headerVersion = new OfxHeaderVersion(m_headerVersionCombo, "");
 
   // fill the list view with banks
   KProgressDialog* dlg = new KProgressDialog(this, 0, i18n("Loading banklist"), i18n("Getting list of banks from http://moneycentral.msn.com/\nThis may take some time depending on the available bandwidth."), true);
@@ -239,6 +240,9 @@ bool KOnlineBankingSetupWizard::finishLoginPage(void)
       strncpy(fi.appid, "QWIN", OFX_APPID_LENGTH-1);
       strncpy(fi.appver, "1700", OFX_APPVER_LENGTH-1);
     }
+
+    QString hver = m_headerVersion->headerVersion();
+    strncpy(fi.header_version, hver.latin1(), OFX_HEADERVERSION_LENGTH-1);
 #endif
 
     // who owns this memory?!?!
@@ -406,9 +410,11 @@ bool KOnlineBankingSetupWizard::chosenSettings( MyMoneyKeyValueContainer& settin
     {
       settings = *item;
       settings.deletePair("appId");
+      settings.deletePair("kmmofx-headerVersion");
       QString appId = m_appId->appId();
       if(!appId.isEmpty())
         settings.setValue("appId", appId);
+      settings.setValue("kmmofx-headerVersion", m_headerVersion->headerVersion());
       result = true;
     }
   }

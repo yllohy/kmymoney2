@@ -76,6 +76,19 @@ private:
 };
 
 /**
+ * @author Thomas Baumgart
+ */
+class OfxHeaderVersion
+{
+public:
+  OfxHeaderVersion(KComboBox* combo, const QString& headerVersion);
+  const QString& headerVersion(void) const;
+
+private:
+  KComboBox*             m_combo;
+};
+
+/**
 @author ace jones
 */
 class MyMoneyOfxConnector

@@ -578,8 +578,10 @@ MyMoneyKeyValueContainer OfxImporterPlugin::onlineBankingSettings(const MyMoneyK
   kvp["provider"] = "KMyMoney OFX";
   if(m_statusDlg) {
     kvp.deletePair("appId");
+    kvp.deletePair("kmmofx-headerVersion");
     if(!m_statusDlg->appId().isEmpty())
       kvp.setValue("appId", m_statusDlg->appId());
+    kvp.setValue("kmmofx-headerVersion", m_statusDlg->headerVersion());
     kvp.setValue("kmmofx-numRequestDays", QString::number(m_statusDlg->m_numdaysSpin->value()));
     kvp.setValue("kmmofx-todayMinus", QString::number(m_statusDlg->m_todayRB->isChecked()));
     kvp.setValue("kmmofx-lastUpdate", QString::number(m_statusDlg->m_lastUpdateRB->isChecked()));
