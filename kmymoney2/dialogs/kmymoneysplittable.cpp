@@ -255,7 +255,11 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 
       case Qt::Key_Return:
       case Qt::Key_Enter:
-        emit returnPressed();
+        if(row < static_cast<int> (m_transaction.splits().count()-1)
+        && KMyMoneyGlobalSettings::enterMovesBetweenFields()) {
+          slotStartEdit();
+        } else
+          emit returnPressed();
         break;
 
       case Qt::Key_Escape:
@@ -314,6 +318,20 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
             le->completionBox(false)->hide();
           }
         }
+
+        // in case we have the 'enter moves focus between fields', we need to simulate
+        // a TAB key when the object 'o' points to the category or memo field.
+        if(KMyMoneyGlobalSettings::enterMovesBetweenFields()) {
+          if(o == m_editCategory->lineEdit() || o == m_editMemo) {
+            terminate = false;
+            QKeyEvent evt(e->type(),
+                          Key_Tab, 0, k->state(), QString::null,
+                          k->isAutoRepeat(), k->count());
+
+            QApplication::sendEvent( o, &evt );
+          }
+        }
+
         if(terminate) {
           QTimer::singleShot(0, this, SLOT(slotEndEdit()));
         }
@@ -379,9 +397,7 @@ void kMyMoneySplitTable::slotSetFocus(int realrow, int /* col */, int button, co
 
   if(button == Qt::LeftButton) {          // left mouse button
     if(isEditMode()) {                    // in edit mode?
-      KConfig* kconfig = KGlobal::config();
-      kconfig->setGroup("General Options");
-      if(kconfig->readBoolEntry("FocusChangeIsEnter", false) == true)
+      if(KMyMoneyGlobalSettings::focusChangeIsEnter())
         slotEndEdit();
       else
         slotCancelEdit();
@@ -744,6 +760,13 @@ void kMyMoneySplitTable::slotEndEdit(void)
   this->setFocus();
   destroyEditWidgets();
   slotSetFocus(currentRow()+1);
+
+  // if we still have more splits, we start editing right away
+  // in case we have selected 'enter moves betweeen fields'
+  if(currentRow() < static_cast<int> (m_transaction.splits().count()-1)
+  && KMyMoneyGlobalSettings::enterMovesBetweenFields()) {
+    slotStartEdit();
+  }
 }
 
 void kMyMoneySplitTable::slotCancelEdit(void)

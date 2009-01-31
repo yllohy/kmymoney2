@@ -2,6 +2,7 @@
 2009-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added #2551345 (Maintain geometry of split transaction editor
   * Added #2551417 (Deletion of the zero-value split records)
+  * Added #2551242 (ENTER focus to next split if is is already defined)
 
 2009-01-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed loan calculation when the loan account itself is not
