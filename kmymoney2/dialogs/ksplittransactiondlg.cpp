@@ -38,12 +38,11 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
-//#include <kiconloader.h>
-//#include <kguiitem.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kactivelabel.h>
 #include <kstdguiitem.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -74,13 +73,6 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 {
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
-  KGuiItem finishButtenItem( i18n( "&Finish" ),
-                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Accept splits and return to transaction form"),
-                    i18n("Use this to accept all changes to the splits and return to the transaction"));
-  finishBtn->setGuiItem(finishButtenItem);
-
-  cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
   KGuiItem clearButtenItem( i18n( "Clear &All" ),
                     QIconSet(il->loadIcon("edittrash", KIcon::Small, KIcon::SizeSmall)),
@@ -90,7 +82,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 
 
   KGuiItem mergeButtenItem( i18n( "&Merge" ),
-                             QIconSet(il->loadIcon("sum", KIcon::Small, KIcon::SizeSmall)),
+                             QIconSet(il->loadIcon("math_sum", KIcon::Small, KIcon::SizeSmall)),
                                       "", "");
   mergeBtn->setGuiItem(mergeButtenItem);
 
@@ -115,6 +107,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   connect(finishBtn, SIGNAL(clicked()), this, SLOT(accept()));
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllSplits()));
   connect(mergeBtn, SIGNAL(clicked()), this, SLOT(slotMergeSplits()));
+  connect(clearZeroBtn, SIGNAL(clicked()), this, SLOT(slotClearUnusedSplits()));
 
   // setup the precision
   try {
@@ -128,6 +121,12 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   // pass on those vars
   transactionsTable->setup(priceInfo);
 
+  QSize size(width(), height());
+  kapp->config()->setGroup("SplitTransactionEditor");
+  size = kapp->config()->readSizeEntry("Geometry", &size);
+  size.setHeight(size.height()-1);
+  QDialog::resize( size.expandedTo(minimumSizeHint()) );
+
   // Trick: it seems, that the initial sizing of the dialog does
   // not work correctly. At least, the columns do not get displayed
   // correct. Reason: the return value of transactionsTable->visibleWidth()
@@ -139,6 +138,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 
 KSplitTransactionDlg::~KSplitTransactionDlg()
 {
+  kapp->config()->setGroup("SplitTransactionEditor");
+  kapp->config()->writeEntry("Geometry", size());
 }
 
 int KSplitTransactionDlg::exec(void)
@@ -291,6 +292,26 @@ void KSplitTransactionDlg::slotClearAllSplits(void)
   }
 }
 
+void KSplitTransactionDlg::slotClearUnusedSplits(void)
+{
+  QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  try {
+    // remove all splits that don't have a value assigned
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).shares().isZero()) {
+        m_transaction.removeSplit(*it);
+      }
+    }
+
+    transactionsTable->setTransaction(m_transaction, m_split, m_account);
+    slotSetTransaction(m_transaction);
+  } catch(MyMoneyException* e) {
+    delete e;
+  }
+}
+
 void KSplitTransactionDlg::slotMergeSplits(void)
 {
   QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
@@ -335,10 +356,13 @@ void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
   QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
   QValueList<MyMoneySplit>::ConstIterator it;
 
-  // check if we can merge splits or not
+  // check if we can merge splits or not, have zero splits or not
   QMap<QString, int> splits;
+  bool haveZeroSplit = false;
   for(it = list.begin(); it != list.end(); ++it) {
     splits[(*it).accountId()]++;
+    if((*it).shares().isZero())
+      haveZeroSplit = true;
   }
   QMap<QString, int>::const_iterator it_s;
   for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
@@ -346,6 +370,7 @@ void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
       break;
   }
   mergeBtn->setDisabled(it_s == splits.end());
+  clearZeroBtn->setEnabled(haveZeroSplit);
 
   updateSums();
 }

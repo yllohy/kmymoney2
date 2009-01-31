@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>627</width>
+            <width>656</width>
             <height>408</height>
         </rect>
     </property>
@@ -309,14 +309,6 @@
                 </property>
                 <widget class="KPushButton">
                     <property name="name">
-                        <cstring>finishBtn</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Finish</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
                         <cstring>mergeBtn</cstring>
                     </property>
                     <property name="enabled">
@@ -334,10 +326,16 @@
                 </widget>
                 <widget class="KPushButton">
                     <property name="name">
-                        <cstring>cancelBtn</cstring>
+                        <cstring>clearZeroBtn</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>Clear &amp;Zero</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Removes all splits that have a value of zero.</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -345,7 +343,7 @@
                         <cstring>clearAllBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>Clear All</string>
+                        <string>Clear &amp;All</string>
                     </property>
                 </widget>
                 <spacer>
@@ -361,10 +359,32 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>140</height>
+                            <height>120</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>cancelBtn</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>2</number>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>finishBtn</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>1</number>
+                    </property>
+                </widget>
             </vbox>
         </widget>
     </hbox>

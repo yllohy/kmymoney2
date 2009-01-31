@@ -104,6 +104,7 @@ protected slots:
   void accept();
   void reject();
   void slotClearAllSplits(void);
+  void slotClearUnusedSplits(void);
   void slotSetTransaction(const MyMoneyTransaction& t);
   void slotCreateCategory(const QString& txt, QString& id);
   void slotMergeSplits(void);
