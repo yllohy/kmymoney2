@@ -134,6 +134,8 @@ MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text
     occurence = MyMoneySchedule::OCCUR_FORTNIGHTLY;
   else if(tmp == i18n("Every other week").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYOTHERWEEK;
+  else if(tmp == i18n("Every half month").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYHALFMONTH;
   else if(tmp == i18n("Every three weeks").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYTHREEWEEKS;
   else if(tmp == i18n("Every four weeks").lower())

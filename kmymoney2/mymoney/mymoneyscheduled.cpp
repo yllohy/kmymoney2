@@ -436,6 +436,14 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
         while (paymentDate <= refDate);
         break;
 
+      case OCCUR_EVERYHALFMONTH:
+        do
+        {
+           paymentDate = addHalfMonth(paymentDate);
+        }
+        while (paymentDate <= refDate);
+       break;
+
       case OCCUR_EVERYTHREEWEEKS:
         do {
           paymentDate = paymentDate.addDays(21);
@@ -443,7 +451,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
         while (paymentDate <= refDate);
         break;
 
-        case OCCUR_EVERYTHIRTYDAYS:
+      case OCCUR_EVERYTHIRTYDAYS:
         do
         {
           paymentDate = paymentDate.addDays(30);
@@ -590,6 +598,18 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
       {
         theDates.append(paymentDate);
         paymentDate = paymentDate.addDays(14);
+      }
+      break;
+
+    case OCCUR_EVERYHALFMONTH:
+      while (paymentDate < _startDate)
+      {
+        paymentDate = addHalfMonth(paymentDate);
+      }
+      while (paymentDate <= endDate)
+      {
+        theDates.append(paymentDate);
+        paymentDate = addHalfMonth(paymentDate);
       }
       break;
 
@@ -822,6 +842,11 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
     case OCCUR_EVERYOTHERWEEK:
       while (counter++ < transactions)
         paymentDate = paymentDate.addDays(14);
+      break;
+
+    case OCCUR_EVERYHALFMONTH:
+      while (counter++ < transactions)
+        paymentDate = addHalfMonth(paymentDate);
       break;
 
     case OCCUR_EVERYTHREEWEEKS:
@@ -1064,6 +1089,8 @@ QString MyMoneySchedule::occurenceToString(occurenceE occurence)
     occurenceString = I18N_NOOP("Fortnightly");
   else if(occurence == MyMoneySchedule::OCCUR_EVERYOTHERWEEK)
     occurenceString = I18N_NOOP("Every other week");
+  else if(occurence == MyMoneySchedule::OCCUR_EVERYHALFMONTH)
+    occurenceString = I18N_NOOP("Every half month");
   else if(occurence == MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)
     occurenceString = I18N_NOOP("Every three weeks");
   else if(occurence == MyMoneySchedule::OCCUR_EVERYFOURWEEKS)
@@ -1206,6 +1233,9 @@ int MyMoneySchedule::eventsPerYear(MyMoneySchedule::occurenceE occurence)
     case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
       rc = 26;
       break;
+    case MyMoneySchedule::OCCUR_EVERYHALFMONTH:
+      rc = 24;
+      break;
     case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
       rc = 17;
       break;
@@ -1258,6 +1288,9 @@ int MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::occurenceE occurence)
     case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
       rc = 14;
       break;
+    case MyMoneySchedule::OCCUR_EVERYHALFMONTH:
+      rc = 15;
+      break;
     case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
       rc = 21;
       break;
@@ -1295,3 +1328,23 @@ int MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::occurenceE occurence)
  return rc;
 }
 
+QDate MyMoneySchedule::addHalfMonth( QDate date ) const
+{
+  QDate newdate;
+  int d = date.day();
+  if ( d <= 13 )
+    newdate = date.addDays(15);
+  else
+  {
+    int dm = date.daysInMonth();
+    if ( d == 14 )
+      newdate = date.addDays(( dm < 30 ) ? dm - d : 15);
+    else if ( d == 15 ) 
+      newdate = date.addDays(dm - d);
+    else if ( d == dm )
+      newdate = date.addDays(15 - d).addMonths(1);
+    else
+      newdate = date.addDays(-15).addMonths(1);
+  }
+  return newdate;
+} 

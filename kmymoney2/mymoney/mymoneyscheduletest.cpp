@@ -487,6 +487,94 @@ void MyMoneyScheduleTest::testNextPayment()
 */
 }
 
+void MyMoneyScheduleTest::testAddHalfMonth()
+{
+  // addHalfMonth is private
+  // Test a Schedule with occurence OCCUR_EVERYHALFMONTH using nextPayment
+  MyMoneySchedule s;
+  s.setStartDate(QDate(2007, 1, 1));
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYHALFMONTH);
+  s.setNextDueDate(s.startDate());
+  s.setLastPayment(s.startDate());
+  
+  QString format("yyyy-MM-dd");
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-16" );
+  s.setNextDueDate(QDate(2007, 1, 2));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-17" );
+  s.setNextDueDate(QDate(2007, 1, 3));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-18" );
+  s.setNextDueDate(QDate(2007, 1, 4));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-19" );
+  s.setNextDueDate(QDate(2007, 1, 5));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-20" );
+  s.setNextDueDate(QDate(2007, 1, 6));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-21" );
+  s.setNextDueDate(QDate(2007, 1, 7));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-22" );
+  s.setNextDueDate(QDate(2007, 1, 8));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-23" );
+  s.setNextDueDate(QDate(2007, 1, 9));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-24" );
+  s.setNextDueDate(QDate(2007, 1, 10));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-25" );
+  s.setNextDueDate(QDate(2007, 1, 11));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-26" );
+  s.setNextDueDate(QDate(2007, 1, 12));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-27" );
+  s.setNextDueDate(QDate(2007, 1, 13));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-28" );
+  s.setNextDueDate(QDate(2007, 1, 14));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-29" );
+  // 15 -> Last Day
+  s.setNextDueDate(QDate(2007, 1, 15));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-01-31" );
+  s.setNextDueDate(QDate(2007, 1, 16));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-01" );
+  s.setNextDueDate(QDate(2007, 1, 17));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-02" );
+  s.setNextDueDate(QDate(2007, 1, 18));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-03" );
+  s.setNextDueDate(QDate(2007, 1, 19));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-04" );
+  s.setNextDueDate(QDate(2007, 1, 20));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-05" );
+  s.setNextDueDate(QDate(2007, 1, 21));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-06" );
+  s.setNextDueDate(QDate(2007, 1, 22));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-07" );
+  s.setNextDueDate(QDate(2007, 1, 23));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-08" );
+  s.setNextDueDate(QDate(2007, 1, 24));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-09" );
+  s.setNextDueDate(QDate(2007, 1, 25));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-10" );
+  s.setNextDueDate(QDate(2007, 1, 26));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-11" );
+  s.setNextDueDate(QDate(2007, 1, 27));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-12" );
+  s.setNextDueDate(QDate(2007, 1, 28));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-13" );
+  s.setNextDueDate(QDate(2007, 1, 29));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-14" );
+  // 30th,31st -> 15th
+  s.setNextDueDate(QDate(2007, 1, 30));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-15" );
+  s.setNextDueDate(QDate(2007, 1, 31));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-02-15" );
+  // 30th (last day)
+  s.setNextDueDate(QDate(2007, 4, 30));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2007-05-15" );
+  // 28th of February (Last day): to 15th
+  s.setNextDueDate(QDate(1900, 2, 28));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "1900-03-15" );
+  // 28th of February (Leap year): to 13th
+  s.setNextDueDate(QDate(2000, 2, 28));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2000-03-13" );
+  // 29th of February (Leap year)
+  s.setNextDueDate(QDate(2000, 2, 29));
+  CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2000-03-15" );
+}
+
 void MyMoneyScheduleTest::testPaymentDates()
 {
 	MyMoneySchedule sch;
@@ -525,6 +613,226 @@ void MyMoneyScheduleTest::testPaymentDates()
 		CPPUNIT_ASSERT(list[1] == QDate(2006,3,31));
 		CPPUNIT_ASSERT(list[2] == QDate(2006,4,30));
 
+		// Add tests for each possible occurence.
+		// Check how paymentDates is meant to work
+		// Build a list of expected dates and compare
+		// MyMoneySchedule::OCCUR_ONCE
+		sch.setOccurence(MyMoneySchedule::OCCUR_ONCE);
+		startDate.setYMD(2009,1,1);
+                endDate.setYMD(2009,12,31);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 1);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009,1,1));
+		// MyMoneySchedule::OCCUR_DAILY
+		sch.setOccurence(MyMoneySchedule::OCCUR_DAILY);
+		startDate.setYMD(2009,1,1);
+                endDate.setYMD(2009,1,5);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 1));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 1, 2));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 1, 3));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 1, 4));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 1, 5));
+		// MyMoneySchedule::OCCUR_WEEKLY
+		sch.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
+		startDate.setYMD(2009,1,6);
+                endDate.setYMD(2009,2,4);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 6));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 1,13));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 1,20));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 1,27));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 2, 3));
+		// MyMoneySchedule::OCCUR_EVERYOTHERWEEK
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+		startDate.setYMD(2009,2,5);
+                endDate.setYMD(2009,4,3);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 2, 5));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 2,19));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 3, 5));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 3,19));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 4, 2));
+		// MyMoneySchedule::OCCUR_FORTNIGHTLY
+		sch.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
+		startDate.setYMD(2009,4,4);
+                endDate.setYMD(2009,5,31);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 4, 4));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 4,18));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 5, 2));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 5,16));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 5,30));
+		// MyMoneySchedule::OCCUR_EVERYHALFMONTH
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYHALFMONTH);
+		startDate.setYMD(2009,6,1);
+                endDate.setYMD(2009,8,11);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 6, 1));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 6,16));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 7, 1));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 7,16));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 8, 1));
+		// MyMoneySchedule::OCCUR_EVERYTHREEWEEKS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
+		startDate.setYMD(2009,8,12);
+                endDate.setYMD(2009,11,12);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 8,12));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 9, 2));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 9,23));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009,10,14));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009,11, 4));
+		// MyMoneySchedule::OCCUR_EVERYFOURWEEKS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+		startDate.setYMD(2009,11,13);
+                endDate.setYMD(2010,3,13);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009,11,13));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009,12,11));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2010, 1, 8));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2010, 2, 5));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2010, 3, 5));
+		// MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS);
+		startDate.setYMD(2010,3,19);
+                endDate.setYMD(2010,7,19);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2010, 3,19));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2010, 4,18));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2010, 5,18));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2010, 6,17));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2010, 7,17));
+		// MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
+		startDate.setYMD(2010,7,26);
+                endDate.setYMD(2011,3,26);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2010, 7,26));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2010, 9,20));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2010,11,15));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2011, 1,10));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2011, 3, 7));
+		// MyMoneySchedule::OCCUR_EVERYOTHERMONTH
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+		startDate.setYMD(2011,3,14);
+                endDate.setYMD(2011,11,20);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2011, 3,14));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2011, 5,14));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2011, 7,14));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2011, 9,14));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2011,11,14));
+		// MyMoneySchedule::OCCUR_EVERYTHREEMONTHS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+		startDate.setYMD(2011,11,15);
+                endDate.setYMD(2012,11,19);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2011,11,15));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2012, 2,15));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2012, 5,15));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2012, 8,15));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2012,11,15));
+		// MyMoneySchedule::OCCUR_QUARTERLY
+		sch.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
+		startDate.setYMD(2012,11,20);
+                endDate.setYMD(2013,11,23);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2012,11,20));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2013, 2,20));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2013, 5,20));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2013, 8,20));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2013,11,20));
+		// MyMoneySchedule::OCCUR_EVERYFOURMONTHS
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+		startDate.setYMD(2013,11,21);
+                endDate.setYMD(2015, 3,23);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2013,11,21));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2014, 3,21));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2014, 7,21));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2014,11,21));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2015, 3,21));
+		// MyMoneySchedule::OCCUR_TWICEYEARLY
+		sch.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
+		startDate.setYMD(2015, 3,22);
+                endDate.setYMD(2017, 3,29);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2015, 3,22));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2015, 9,22));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2016, 3,22));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2016, 9,22));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2017, 3,22));
+		// MyMoneySchedule::OCCUR_YEARLY
+		sch.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
+		startDate.setYMD(2017, 3,23);
+                endDate.setYMD(2021, 3,29);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2017, 3,23));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2018, 3,23));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2019, 3,23));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2020, 3,23));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2021, 3,23));
+		// MyMoneySchedule::OCCUR_EVERYOTHERYEAR
+		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+		startDate.setYMD(2021, 3,24);
+                endDate.setYMD(2029, 3,30);
+		sch.setStartDate(startDate);
+                sch.setNextDueDate(startDate);
+                list = sch.paymentDates(startDate,endDate);
+                CPPUNIT_ASSERT(list.count() == 5);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2021, 3,24));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2023, 3,24));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2025, 3,24));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2027, 3,24));
+ 		CPPUNIT_ASSERT(list[4] == QDate(2029, 3,24));
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -932,6 +1240,7 @@ void MyMoneyScheduleTest::testDaysBetweenEvents()
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_WEEKLY) == 7);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYOTHERWEEK) == 14);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_FORTNIGHTLY) == 14);
+  CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYHALFMONTH) == 15);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS) == 21);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYFOURWEEKS) == 28);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS) == 30);
@@ -953,6 +1262,7 @@ void MyMoneyScheduleTest::testEventsPerYear()
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_WEEKLY) == 52);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYOTHERWEEK) == 26);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_FORTNIGHTLY) == 26);
+  CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYHALFMONTH) == 24);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS) == 17);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYFOURWEEKS) == 13);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS) == 12);
@@ -966,3 +1276,4 @@ void MyMoneyScheduleTest::testEventsPerYear()
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_YEARLY) == 1);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYOTHERYEAR) == 0);
 }
+

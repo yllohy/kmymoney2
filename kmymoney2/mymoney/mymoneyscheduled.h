@@ -59,6 +59,7 @@ public:
     */
   enum occurenceE { OCCUR_ANY=0, OCCUR_ONCE=1, OCCUR_DAILY=2, OCCUR_WEEKLY=4, OCCUR_FORTNIGHTLY=8,
                     OCCUR_EVERYOTHERWEEK=16,
+                    OCCUR_EVERYHALFMONTH=18,
                     OCCUR_EVERYTHREEWEEKS=20,
                     OCCUR_EVERYTHIRTYDAYS=30,
                     OCCUR_MONTHLY=32, OCCUR_EVERYFOURWEEKS=64,
@@ -527,6 +528,27 @@ private:
     * @return none
     */
   void setTransaction(const MyMoneyTransaction& transaction, bool noDateCheck);
+
+  /**
+    * This method adds a Half Month to the given Date.
+    * This is used for OCCUR_EVERYHALFMONTH occurences.
+    * The addition uses the following rules:
+    * Day 1-13: add 15 days
+    * Day 14: add 15 days (except February: the last day of the month)
+    * Day 15: last day of the month
+    * Day 16-29 (not last day in February): subtract 15 days and add 1 month
+    * 30 and last day: 15th of next month
+    *
+    * This calculation pairs days 1 to 12 with 16 to 27.
+    * Day 15 is paired with the last day of every month.
+    * Repeated addition has issues in the following cases:
+    * - Days 13 to 14 are paired with 28 to 29 until addition hits the last day of February
+    *   after which the (15,last) pair will be used.
+    * - Addition from Day 30 leads immediately to the (15th,last) day pair.
+    *
+    * @param date The date
+    */
+  QDate addHalfMonth( QDate date ) const;
 
 private:
   /// Its occurence

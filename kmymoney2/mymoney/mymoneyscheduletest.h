@@ -42,6 +42,7 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testGetScheduled);
 	CPPUNIT_TEST(testGetOverdue);
 	CPPUNIT_TEST(testNextPayment);
+        CPPUNIT_TEST(testAddHalfMonth);
 	CPPUNIT_TEST(testPaymentDates);
 	CPPUNIT_TEST(testReplaceSchedule);
 	CPPUNIT_TEST(testRemoveSchedule);
@@ -77,6 +78,7 @@ public:
 	void testGetScheduled();
 	void testGetOverdue();
 	void testNextPayment();
+        void testAddHalfMonth();
 	void testPaymentDates();
 	void testReplaceSchedule();
 	void testRemoveSchedule();
