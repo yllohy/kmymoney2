@@ -267,7 +267,9 @@ void PivotTable::init(void)
         QString outergroup = KMyMoneyUtils::accountTypeToString(type);
 
         QMap<QString, MyMoneyMoney> balances;
-        balances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
+        if(m_config_f.includes( splitAccount )) {
+          balances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
+        }
 
         KMyMoneyUtils::calculateAutoLoan(sched, tx, balances);
       }

@@ -1,4 +1,8 @@
 
+2009-01-31 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed loan calculation when the loan account itself is not
+    part of the report. More work needed on that area.
+
 2009-01-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow overriding header version for OFX requests
 
