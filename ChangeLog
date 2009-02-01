@@ -2,6 +2,7 @@
 2009-02-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (occurenceToString.diff)
   * Regenerated POT file and merged all PO files
+  * Updated German translation
 
 2009-01-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed loan interest calculation in pivot reports when the loan
