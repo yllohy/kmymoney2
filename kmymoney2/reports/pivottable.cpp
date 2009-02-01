@@ -247,6 +247,9 @@ void PivotTable::init(void)
   // transfers
   bool al_transfers = ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome ) && ( m_config_f.isIncludingTransfers() );
 
+  //this is to store balance for loan accounts when not included in the report
+  QMap<QString, MyMoneyMoney> loanBalances;
+
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
@@ -266,12 +269,33 @@ void PivotTable::init(void)
         MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
         QString outergroup = KMyMoneyUtils::accountTypeToString(type);
 
-        QMap<QString, MyMoneyMoney> balances;
+        //if the account is included in the report, calculate the balance from the cells
         if(m_config_f.includes( splitAccount )) {
-          balances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
+          loanBalances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
+        } else {
+          //if it is not in the report and also not in loanBalances, get the balance from the file
+          if(!loanBalances.contains(splitAccount.id())) {
+            QDate dueDate = sched.nextDueDate();
+
+            //if the payment is overdue, use current date
+            if(dueDate < QDate::currentDate())
+              dueDate = QDate::currentDate();
+
+            //get the balance from the file for the date
+            loanBalances[splitAccount.id()] = file->balance(splitAccount.id(), dueDate.addDays(-1));
+          }
         }
 
-        KMyMoneyUtils::calculateAutoLoan(sched, tx, balances);
+        KMyMoneyUtils::calculateAutoLoan(sched, tx, loanBalances);
+
+        //if the loan split is not included in the report, update the balance for the next occurrence
+        if(!m_config_f.includes( splitAccount )) {
+          QValueList<MyMoneySplit>::ConstIterator it_loanSplits;
+          for(it_loanSplits = tx.splits().begin(); it_loanSplits != tx.splits().end(); ++it_loanSplits) {
+            if((*it_loanSplits).isAmortizationSplit() )
+              loanBalances[splitAccount.id()] = loanBalances[splitAccount.id()] + (*it_loanSplits).shares();
+          }
+        }
       }
     }
 
