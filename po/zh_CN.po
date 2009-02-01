@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kmymoney2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-07 23:33+0100\n"
+"POT-Creation-Date: 2009-02-01 17:05+0100\n"
 "PO-Revision-Date: 2008-11-12 09:14+0800\n"
 "Last-Translator: Roy Qu <royqh1979@gmail.com>\n"
 "Language-Team: Chinese Simplified <kde-i18n-doc@lists.kde.org>\n"
@@ -41,12 +41,12 @@ msgstr ""
 "被用作新账户和报表的缺省单位。请从下面的列表中选择基本货币。"
 
 #: dialogs/kequitypriceupdatedlg.cpp:71 dialogs/rc.cpp:397 dialogs/rc.cpp:483
-#: dialogs/rc.cpp:739 dialogs/settings/rc.cpp:107 reports/listtable.cpp:214
+#: dialogs/rc.cpp:722 dialogs/settings/rc.cpp:107 reports/listtable.cpp:226
 #: views/kinvestmentview.cpp:72 views/kpayeesview.cpp:334 views/rc.cpp:13
 #: widgets/rc.cpp:5 widgets/rc.cpp:34
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1591
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1621
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1665
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1598
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1628
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1672
 #: wizards/wizardpages/rc.cpp:3
 msgid "Name"
 msgstr "名称"
@@ -56,7 +56,7 @@ msgid "ISO Code"
 msgstr "ISO编号"
 
 #: dialogs/kequitypriceupdatedlg.cpp:69 dialogs/kequitypriceupdatedlg.cpp:70
-#: dialogs/rc.cpp:71 dialogs/rc.cpp:740 dialogs/settings/rc.cpp:111
+#: dialogs/rc.cpp:71 dialogs/rc.cpp:723 dialogs/settings/rc.cpp:111
 #: views/kinvestmentview.cpp:73 widgets/rc.cpp:37 wizards/wizardpages/rc.cpp:5
 msgid "Symbol"
 msgstr "代号"
@@ -107,7 +107,7 @@ msgstr "您的姓名："
 msgid "Load from Addressbook"
 msgstr "从地址簿中载入"
 
-#: dialogs/rc.cpp:390 dialogs/rc.cpp:424 views/rc.cpp:62
+#: dialogs/rc.cpp:390 dialogs/rc.cpp:424 views/rc.cpp:68
 #: wizards/wizardpages/rc.cpp:14
 msgid "Postal Code:"
 msgstr "邮政编码："
@@ -116,9 +116,9 @@ msgstr "邮政编码："
 msgid "KMyMoney New Account Setup"
 msgstr "KMYMoney新账户设置"
 
-#: dialogs/rc.cpp:358 dialogs/rc.cpp:359 reports/listtable.cpp:218
+#: dialogs/rc.cpp:358 dialogs/rc.cpp:359 reports/listtable.cpp:230
 #: wizards/newaccountwizard/knewaccountwizard.cpp:83
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1608
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1615
 #: wizards/newaccountwizard/rc.cpp:61
 msgid "Institution"
 msgstr "金融机构"
@@ -126,12 +126,12 @@ msgstr "金融机构"
 #: dialogs/investactivities.cpp:198 dialogs/investactivities.cpp:286
 #: dialogs/investactivities.cpp:367 dialogs/kfindtransactiondlg.cpp:201
 #: dialogs/rc.cpp:138 dialogs/rc.cpp:191 dialogs/rc.cpp:205
-#: dialogs/transactioneditor.cpp:719 reports/listtable.cpp:189
-#: reports/pivottable.cpp:1295 reports/pivottable.cpp:1537
+#: dialogs/transactioneditor.cpp:719 reports/listtable.cpp:201
+#: reports/pivottable.cpp:1314 reports/pivottable.cpp:1564
 #: views/kforecastview.cpp:393 views/kgloballedgerview.cpp:175
 #: views/khomeview.cpp:417 views/khomeview.cpp:481 views/khomeview.cpp:515
 #: views/khomeview.cpp:754 views/khomeview.cpp:957 views/khomeview.cpp:1425
-#: views/kscheduledview.cpp:71 views/rc.cpp:17 views/rc.cpp:38
+#: views/kscheduledview.cpp:71 views/rc.cpp:17 views/rc.cpp:44
 #: widgets/kmymoneyaccounttreebase.cpp:58
 #: widgets/kmymoneyaccounttreeforecast.cpp:41 widgets/rc.cpp:109
 #: widgets/register.cpp:544 widgets/transaction.cpp:968
@@ -145,22 +145,22 @@ msgid "Broker"
 msgstr "经纪人"
 
 #: dialogs/kfindtransactiondlg.cpp:245 dialogs/rc.cpp:70 dialogs/rc.cpp:103
-#: dialogs/rc.cpp:158 dialogs/rc.cpp:221 dialogs/rc.cpp:244
+#: dialogs/rc.cpp:158 dialogs/rc.cpp:221 dialogs/rc.cpp:244 dialogs/rc.cpp:749
 #: dialogs/settings/rc.cpp:108 widgets/rc.cpp:35 widgets/register.cpp:546
 #: wizards/newaccountwizard/knewaccountwizard.cpp:86
 msgid "Details"
 msgstr "详细信息"
 
-#: dialogs/knewloanwizard.cpp:633 dialogs/rc.cpp:229 dialogs/rc.cpp:606
-#: kmymoneyutils.cpp:234 views/khomeview.cpp:398
+#: dialogs/knewloanwizard.cpp:634 dialogs/rc.cpp:229 dialogs/rc.cpp:606
+#: kmymoneyutils.cpp:236 views/khomeview.cpp:398
 #: wizards/newaccountwizard/knewaccountwizard.cpp:87
-#: wizards/newaccountwizard/knewaccountwizard.cpp:878
+#: wizards/newaccountwizard/knewaccountwizard.cpp:879
 msgid "Payments"
 msgstr "支付"
 
 #: dialogs/investactivities.cpp:195 dialogs/investactivities.cpp:283
 #: dialogs/investactivities.cpp:422 dialogs/investtransactioneditor.cpp:217
-#: reports/listtable.cpp:209 widgets/transaction.cpp:1555
+#: reports/listtable.cpp:221 widgets/transaction.cpp:1555
 #: wizards/newaccountwizard/knewaccountwizard.cpp:88
 msgid "Fees"
 msgstr "费用"
@@ -180,8 +180,7 @@ msgstr "支出"
 msgid "Parent Account"
 msgstr "父账户"
 
-#: dialogs/rc.cpp:734 dialogs/rc.cpp:789
-#: wizards/newaccountwizard/knewaccountwizard.cpp:92
+#: dialogs/rc.cpp:717 wizards/newaccountwizard/knewaccountwizard.cpp:92
 #: wizards/newuserwizard/knewuserwizard.cpp:86
 msgid "Finish"
 msgstr "完成"
@@ -195,7 +194,7 @@ msgstr "信用卡偿还"
 msgid "Loan payment for %1"
 msgstr "来自%1的贷款支付"
 
-#: mymoney/mymoneyscheduled.cpp:1109
+#: mymoney/mymoneyscheduled.cpp:1141
 #: wizards/newaccountwizard/knewaccountwizard.cpp:278
 msgid "Loan payment"
 msgstr "还贷"
@@ -207,7 +206,7 @@ msgstr "分期付款额"
 #: dialogs/investactivities.cpp:196 dialogs/investactivities.cpp:284
 #: dialogs/investactivities.cpp:366 dialogs/investactivities.cpp:423
 #: dialogs/investtransactioneditor.cpp:227 dialogs/rc.cpp:134
-#: dialogs/rc.cpp:151 dialogs/rc.cpp:542 reports/listtable.cpp:210
+#: dialogs/rc.cpp:151 dialogs/rc.cpp:542 reports/listtable.cpp:222
 #: widgets/transaction.cpp:1587
 #: wizards/newaccountwizard/knewaccountwizard.cpp:301
 msgid "Interest"
@@ -221,226 +220,226 @@ msgstr "用户"
 
 #: kmymoneyutils.cpp:64 mymoney/mymoneyaccount.cpp:708
 #: reports/querytabletest.cpp:422
-#: wizards/newaccountwizard/knewaccountwizard.cpp:451
+#: wizards/newaccountwizard/knewaccountwizard.cpp:450
 msgid "Checking"
 msgstr "活期账户"
 
 #: kmymoneyutils.cpp:66 mymoney/mymoneyaccount.cpp:711
-#: wizards/newaccountwizard/knewaccountwizard.cpp:452
+#: wizards/newaccountwizard/knewaccountwizard.cpp:451
 msgid "Savings"
 msgstr "储蓄账户"
 
 #: kmymoneyutils.cpp:68 mymoney/mymoneyaccount.cpp:714
 #: reports/querytabletest.cpp:423
-#: wizards/newaccountwizard/knewaccountwizard.cpp:453
+#: wizards/newaccountwizard/knewaccountwizard.cpp:452
 msgid "Credit Card"
 msgstr "信用卡账户"
 
 #: kmymoneyutils.cpp:70 mymoney/mymoneyaccount.cpp:717
-#: wizards/newaccountwizard/knewaccountwizard.cpp:454
+#: wizards/newaccountwizard/knewaccountwizard.cpp:453
 msgid "Cash"
 msgstr "现金账户"
 
 #: kmymoneyutils.cpp:72 mymoney/mymoneyaccount.cpp:720
-#: wizards/newaccountwizard/knewaccountwizard.cpp:455
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1596
+#: wizards/newaccountwizard/knewaccountwizard.cpp:454
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1603
 msgid "Loan"
 msgstr "贷款账户"
 
 #: kmymoneyutils.cpp:76 mymoney/mymoneyaccount.cpp:726
-#: wizards/newaccountwizard/knewaccountwizard.cpp:456
+#: wizards/newaccountwizard/knewaccountwizard.cpp:455
 msgid "Investment"
 msgstr "投资账户"
 
 #: converter/mymoneytemplate.cpp:178 converter/mymoneytemplate.cpp:179
 #: dialogs/knewaccountdlg.cpp:1014 kmymoneyutils.cpp:80
 #: mymoney/mymoneyaccount.cpp:732 views/kaccountsview.cpp:352
-#: views/kmymoneyview.cpp:773 widgets/kmymoneyaccountselector.cpp:177
+#: views/kmymoneyview.cpp:764 widgets/kmymoneyaccountselector.cpp:177
 #: widgets/kmymoneyaccountselector.cpp:356
-#: wizards/newaccountwizard/knewaccountwizard.cpp:457
+#: wizards/newaccountwizard/knewaccountwizard.cpp:456
 msgid "Asset"
 msgstr "资产"
 
 #: converter/mymoneytemplate.cpp:182 converter/mymoneytemplate.cpp:183
 #: dialogs/knewaccountdlg.cpp:1016 kmymoneyutils.cpp:82
 #: mymoney/mymoneyaccount.cpp:735 views/kaccountsview.cpp:356
-#: views/kmymoneyview.cpp:774 widgets/kmymoneyaccountselector.cpp:178
+#: views/kmymoneyview.cpp:765 widgets/kmymoneyaccountselector.cpp:178
 #: widgets/kmymoneyaccountselector.cpp:363
-#: wizards/newaccountwizard/knewaccountwizard.cpp:458
+#: wizards/newaccountwizard/knewaccountwizard.cpp:457
 msgid "Liability"
 msgstr "负债"
 
 #: converter/mymoneytemplate.cpp:194 converter/mymoneytemplate.cpp:195
 #: kmymoneyutils.cpp:94 mymoney/mymoneyaccount.cpp:753
-#: views/kaccountsview.cpp:369 views/kmymoneyview.cpp:777
+#: views/kaccountsview.cpp:369 views/kmymoneyview.cpp:768
 #: widgets/kmymoneyaccountselector.cpp:181
 #: widgets/kmymoneyaccountselector.cpp:390
-#: wizards/newaccountwizard/knewaccountwizard.cpp:460
+#: wizards/newaccountwizard/knewaccountwizard.cpp:459
 msgid "Equity"
 msgstr "权益"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:555
+#: wizards/newaccountwizard/knewaccountwizard.cpp:554
 msgid ""
 "Please make sure to enter the correct conversion for the selected opening "
 "date. If you requested an online quote it might be provided for a different "
 "date."
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:555
+#: wizards/newaccountwizard/knewaccountwizard.cpp:554
 #, fuzzy
 msgid "Check date"
 msgstr "活期账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:562
+#: wizards/newaccountwizard/knewaccountwizard.cpp:561
 msgid "1 %1 equals %2"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:577
+#: wizards/newaccountwizard/knewaccountwizard.cpp:576
 msgid "Conversion rate is not positive"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:583
+#: wizards/newaccountwizard/knewaccountwizard.cpp:582
 msgid "No account name supplied"
 msgstr "未提供账户名"
 
-#: dialogs/keditscheduledlg.cpp:112 mymoney/mymoneyscheduled.cpp:1137
-#: wizards/newaccountwizard/knewaccountwizard.cpp:680
+#: dialogs/keditscheduledlg.cpp:112 mymoney/mymoneyscheduled.cpp:1169
+#: wizards/newaccountwizard/knewaccountwizard.cpp:679
 msgid "Write check"
 msgstr "手写支票"
 
-#: dialogs/keditscheduledlg.cpp:109 mymoney/mymoneyscheduled.cpp:1125
-#: wizards/newaccountwizard/knewaccountwizard.cpp:682
+#: dialogs/keditscheduledlg.cpp:109 mymoney/mymoneyscheduled.cpp:1157
+#: wizards/newaccountwizard/knewaccountwizard.cpp:681
 msgid "Direct debit"
 msgstr "直接提款"
 
-#: dialogs/keditscheduledlg.cpp:111 mymoney/mymoneyscheduled.cpp:1143
-#: wizards/newaccountwizard/knewaccountwizard.cpp:683
+#: dialogs/keditscheduledlg.cpp:111 mymoney/mymoneyscheduled.cpp:1175
+#: wizards/newaccountwizard/knewaccountwizard.cpp:682
 msgid "Bank transfer"
 msgstr "银行转账"
 
-#: dialogs/keditscheduledlg.cpp:110 mymoney/mymoneyscheduled.cpp:1140
-#: wizards/newaccountwizard/knewaccountwizard.cpp:685
+#: dialogs/keditscheduledlg.cpp:110 mymoney/mymoneyscheduled.cpp:1172
+#: wizards/newaccountwizard/knewaccountwizard.cpp:684
 msgid "Standing order"
 msgstr "定期支付指示"
 
-#: dialogs/keditscheduledlg.cpp:108 mymoney/mymoneyscheduled.cpp:1131
-#: wizards/newaccountwizard/knewaccountwizard.cpp:686
+#: dialogs/keditscheduledlg.cpp:108 mymoney/mymoneyscheduled.cpp:1163
+#: wizards/newaccountwizard/knewaccountwizard.cpp:685
 msgid "Manual deposit"
 msgstr "手工存款"
 
-#: dialogs/keditscheduledlg.cpp:107 mymoney/mymoneyscheduled.cpp:1128
-#: wizards/newaccountwizard/knewaccountwizard.cpp:687
+#: dialogs/keditscheduledlg.cpp:107 mymoney/mymoneyscheduled.cpp:1160
+#: wizards/newaccountwizard/knewaccountwizard.cpp:686
 msgid "Direct deposit"
 msgstr "直接存款"
 
-#: dialogs/keditscheduledlg.cpp:113 mymoney/mymoneyscheduled.cpp:1134
-#: wizards/newaccountwizard/knewaccountwizard.cpp:688
+#: dialogs/keditscheduledlg.cpp:113 mymoney/mymoneyscheduled.cpp:1166
+#: wizards/newaccountwizard/knewaccountwizard.cpp:687
 msgid "Other"
 msgstr "其它"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:697
+#: wizards/newaccountwizard/knewaccountwizard.cpp:696
 msgid "CreditCard %1 monthly payment"
 msgstr "信用卡%1的月度偿还"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:703
+#: wizards/newaccountwizard/knewaccountwizard.cpp:702
 msgid "Finish entry and create account"
 msgstr "完成条目并创建账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:705
+#: wizards/newaccountwizard/knewaccountwizard.cpp:704
 msgid "Finish entry and create account and schedule"
 msgstr "完成条目并创建账户和交易计划"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:708
+#: wizards/newaccountwizard/knewaccountwizard.cpp:707
 msgid "Next due date is prior to opening date"
 msgstr "下次到期日早于开户日"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:712
+#: wizards/newaccountwizard/knewaccountwizard.cpp:711
 msgid "No account selected"
 msgstr "未选择账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:716
+#: wizards/newaccountwizard/knewaccountwizard.cpp:715
 msgid "No amount for payment selected"
 msgstr "未选择支付账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:720
+#: wizards/newaccountwizard/knewaccountwizard.cpp:719
 msgid "No payee for payment selected"
 msgstr "未选择收/付款人"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:724
+#: wizards/newaccountwizard/knewaccountwizard.cpp:723
 msgid "No name assigned for schedule"
 msgstr "未提供交易计划名"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:805
+#: wizards/newaccountwizard/knewaccountwizard.cpp:804
 msgid "No payee supplied"
 msgstr "未提供收/付款人"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:819
+#: wizards/newaccountwizard/knewaccountwizard.cpp:818
 msgid "No opening balance supplied"
 msgstr "未提供开户余额"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:826
+#: wizards/newaccountwizard/knewaccountwizard.cpp:825
 msgid "An interest change can only happen after the first payment"
 msgstr "只能在首次偿还后修改利息"
 
-#: dialogs/knewloanwizard.cpp:613 dialogs/knewloanwizard.cpp:631
-#: wizards/newaccountwizard/knewaccountwizard.cpp:882
+#: dialogs/knewloanwizard.cpp:613 dialogs/knewloanwizard.cpp:632
+#: wizards/newaccountwizard/knewaccountwizard.cpp:883
 #: wizards/newaccountwizard/rc.cpp:55
 msgid "Months"
 msgstr "年"
 
-#: dialogs/knewloanwizard.cpp:614 dialogs/knewloanwizard.cpp:632
-#: wizards/newaccountwizard/knewaccountwizard.cpp:883
-#: wizards/newaccountwizard/knewaccountwizard.cpp:887
+#: dialogs/knewloanwizard.cpp:614 dialogs/knewloanwizard.cpp:633
+#: wizards/newaccountwizard/knewaccountwizard.cpp:884
+#: wizards/newaccountwizard/knewaccountwizard.cpp:888
 #: wizards/newaccountwizard/rc.cpp:56
 msgid "Years"
 msgstr "年"
 
-#: dialogs/knewloanwizard.cpp:811
-#: wizards/newaccountwizard/knewaccountwizard.cpp:959
+#: dialogs/knewloanwizard.cpp:709
+#: wizards/newaccountwizard/knewaccountwizard.cpp:960
 #, c-format
 msgid "KMyMoney has calculated the amount of the loan as %1."
 msgstr "KMyMoney计算出此贷款的金额为%1。"
 
-#: dialogs/knewloanwizard.cpp:818
-#: wizards/newaccountwizard/knewaccountwizard.cpp:966
+#: dialogs/knewloanwizard.cpp:716
+#: wizards/newaccountwizard/knewaccountwizard.cpp:967
 msgid "KMyMoney has calculated the interest rate to %1%."
 msgstr "KMyMoney计算出利率为%1%。"
 
-#: dialogs/knewloanwizard.cpp:831
-#: wizards/newaccountwizard/knewaccountwizard.cpp:979
+#: dialogs/knewloanwizard.cpp:729
+#: wizards/newaccountwizard/knewaccountwizard.cpp:980
 msgid ""
 "KMyMoney has calculated a periodic payment of %1 to cover principal and "
 "interest."
 msgstr "KMyMoney计算出每期本金和利息合计需要偿还%1。"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:991
+#: wizards/newaccountwizard/knewaccountwizard.cpp:992
 #, c-format
 msgid ""
 "The number of payments has been decremented and the balloon payment has been "
 "modified to %1."
 msgstr "偿还次数已经减少，因此尾款（最后一期偿还）金额相应修改为%1。"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:999
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1019
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1000
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1020
 #, c-format
 msgid "The balloon payment has been modified to %1."
 msgstr "尾款（最后一期偿还）金额已修改为%1。"
 
-#: dialogs/knewloanwizard.cpp:863
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1011
+#: dialogs/knewloanwizard.cpp:761
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1012
 msgid "KMyMoney has calculated the term of your loan as %1. "
 msgstr "KMyMoney计算出您贷款的帐期为%1。"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1050
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1051
 msgid "KMyMoney has calculated a balloon payment of %1 for this loan."
 msgstr "KMyMoney算出此贷款尾款（最后一期偿还）额为%1。"
 
-#: dialogs/knewloanwizard.cpp:909
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1057
+#: dialogs/knewloanwizard.cpp:807
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1058
 msgid "KMyMoney has successfully verified your loan information."
 msgstr "您的贷款信息已通过KMyMoney验证。"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1065
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1066
 msgid ""
 "You have entered mis-matching information. Please modify your figures or "
 "leave one value empty to let KMyMoney calculate it for you"
@@ -450,13 +449,13 @@ msgstr ""
 
 #: dialogs/knewloanwizard.cpp:504 dialogs/knewloanwizard.cpp:513
 #: dialogs/knewloanwizard.cpp:522 dialogs/knewloanwizard.cpp:532
-#: dialogs/knewloanwizard.cpp:920
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1068
+#: dialogs/knewloanwizard.cpp:818
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1069
 msgid "Calculation error"
 msgstr "计算错误"
 
-#: dialogs/knewloanwizard.cpp:924
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1072
+#: dialogs/knewloanwizard.cpp:822
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1073
 msgid ""
 "\n"
 "\n"
@@ -466,13 +465,13 @@ msgstr ""
 "\n"
 "接受此输入或者修改贷款信息，并重新计算。"
 
-#: dialogs/knewloanwizard.cpp:926
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1074
+#: dialogs/knewloanwizard.cpp:824
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1075
 msgid "Calculation successful"
 msgstr "计算成功"
 
-#: dialogs/knewloanwizard.cpp:946
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1127
+#: dialogs/knewloanwizard.cpp:844
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1128
 #, c-format
 msgid ""
 "_n: one month\n"
@@ -481,8 +480,8 @@ msgstr ""
 "_n: 一个月\n"
 "%n 个月"
 
-#: dialogs/knewloanwizard.cpp:950
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1131
+#: dialogs/knewloanwizard.cpp:848
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1132
 #, c-format
 msgid ""
 "_n: one year\n"
@@ -491,8 +490,8 @@ msgstr ""
 "_n: 一年\n"
 "%n 年"
 
-#: dialogs/knewloanwizard.cpp:954
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1135
+#: dialogs/knewloanwizard.cpp:852
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1136
 #, c-format
 msgid ""
 "_n: one payment\n"
@@ -501,198 +500,197 @@ msgstr ""
 "_n: 一次支付\n"
 "%n 次支付"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1188
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1189
 msgid "Press Calculate to verify the values"
 msgstr "按“计算”来验证这些值"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1192
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1193
 msgid "Not all details supplied"
 msgstr "未提供全部详细信息"
 
 #: dialogs/kaccountselectdlg.cpp:70 dialogs/knewloanwizard.cpp:122
 #: dialogs/knewloanwizard.cpp:136
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1379
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1380
 msgid "&Create..."
 msgstr "新建(&C)..."
 
 #: dialogs/knewloanwizard.cpp:138
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1381
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1382
 msgid "Create a new asset account"
 msgstr "创建一个新资产账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1382
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1383
 msgid ""
 "If the asset account does not yet exist, press this button to create it."
 msgstr "如果固定资产账户尚未存在，按此按钮可以创建它。"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1588
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1595
 msgid "Account information"
 msgstr "账户信息"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1593
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1600
 #: wizards/newaccountwizard/rc.cpp:59
 msgid "Subaccount of"
 msgstr "...的子账户"
 
-#: dialogs/rc.cpp:223 dialogs/rc.cpp:324 dialogs/rc.cpp:369 dialogs/rc.cpp:692
-#: dialogs/rc.cpp:738 plugins/ofximport/dialogs/rc.cpp:22
-#: reports/listtable.cpp:213 widgets/kmymoneyaccounttreebase.cpp:113
-#: widgets/register.cpp:61 wizards/newaccountwizard/knewaccountwizard.cpp:1596
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1598
+#: dialogs/rc.cpp:223 dialogs/rc.cpp:324 dialogs/rc.cpp:369 dialogs/rc.cpp:721
+#: plugins/ofximport/dialogs/rc.cpp:23 reports/listtable.cpp:225
+#: widgets/kmymoneyaccounttreebase.cpp:113 widgets/register.cpp:61
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1603
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1605
 msgid "Type"
 msgstr "类型"
 
 #: dialogs/kcurrencyeditdlg.cpp:62 dialogs/rc.cpp:56 dialogs/rc.cpp:59
-#: dialogs/rc.cpp:75 dialogs/rc.cpp:742 dialogs/rc.cpp:793
+#: dialogs/rc.cpp:75 dialogs/rc.cpp:725 dialogs/rc.cpp:790
 #: kmymoneyutils.cpp:84 kmymoneyutils.cpp:111 mymoney/mymoneyaccount.cpp:738
-#: mymoney/mymoneysecurity.cpp:169 reports/listtable.cpp:221
+#: mymoney/mymoneysecurity.cpp:169 reports/listtable.cpp:233
 #: widgets/kmymoneypriceview.cpp:127
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1599
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1622
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1606
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1629
 #: wizards/newaccountwizard/rc.cpp:6 wizards/newaccountwizard/rc.cpp:24
 msgid "Currency"
 msgstr "货币"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1600
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1607
 #: wizards/newaccountwizard/rc.cpp:7 wizards/newuserwizard/rc.cpp:9
 msgid "Opening date"
 msgstr "开户日期"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1602
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1609
 #: wizards/newaccountwizard/rc.cpp:9
 #, fuzzy
 msgid "Conversion rate"
 msgstr "利率"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1605
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1612
 #: wizards/newaccountwizard/rc.cpp:15 wizards/newuserwizard/rc.cpp:13
 msgid "Opening balance"
 msgstr "开户余额"
 
-#: dialogs/keditscheduledlg.cpp:477 dialogs/rc.cpp:691
-#: dialogs/transactioneditor.cpp:769 dialogs/transactioneditor.cpp:833
-#: plugins/ofximport/dialogs/rc.cpp:21 widgets/rc.cpp:111
-#: widgets/register.cpp:59 widgets/transaction.cpp:988
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1610
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1624
+#: dialogs/keditscheduledlg.cpp:478 dialogs/transactioneditor.cpp:769
+#: dialogs/transactioneditor.cpp:833 plugins/ofximport/dialogs/rc.cpp:22
+#: widgets/rc.cpp:111 widgets/register.cpp:59 widgets/transaction.cpp:988
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1617
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1631
 msgid "Number"
 msgstr "编号"
 
-#: dialogs/rc.cpp:363 wizards/newaccountwizard/knewaccountwizard.cpp:1613
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1626
+#: dialogs/rc.cpp:363 wizards/newaccountwizard/knewaccountwizard.cpp:1620
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1633
 #: wizards/newaccountwizard/rc.cpp:26 wizards/newaccountwizard/rc.cpp:66
 msgid "IBAN"
 msgstr "IBAN"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1619
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1626
 msgid "Brokerage Account"
 msgstr "托管账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1632
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1639
 msgid "Loan information"
 msgstr "贷款信息"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1635
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1642
 msgid "Amount borrowed"
 msgstr "借入金额"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1637
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1644
 msgid "Amount lent"
 msgstr "借出金额"
 
 #: dialogs/rc.cpp:513 dialogs/rc.cpp:544
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1639
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1646
 #: wizards/newaccountwizard/rc.cpp:75
 msgid "Interest rate"
 msgstr "利率"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1640
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1647
 msgid "Interest rate is"
 msgstr "利率是"
 
 #: dialogs/rc.cpp:507 dialogs/rc.cpp:570
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1641
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1648
 msgid "Principal and interest"
 msgstr "本金和利息"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1642
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1649
 #: wizards/newaccountwizard/rc.cpp:90
 msgid "Additional fees"
 msgstr "附加费用"
 
-#: dialogs/rc.cpp:523 wizards/newaccountwizard/knewaccountwizard.cpp:1643
+#: dialogs/rc.cpp:523 wizards/newaccountwizard/knewaccountwizard.cpp:1650
 #: wizards/newaccountwizard/rc.cpp:44
 msgid "Payment frequency"
 msgstr "支付频率"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1644
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1651
 #: wizards/newaccountwizard/rc.cpp:105
 msgid "Payment account"
 msgstr "偿还账户"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1647
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1654
 msgid "Payout information"
 msgstr "支出信息"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1650
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1657
 msgid "Refinance"
 msgstr "再筹款"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1653
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1660
 msgid "Transfer amount to"
 msgstr "转账到"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1655
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1662
 msgid "Transfer amount from"
 msgstr "转账来源"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1657
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1664
 msgid "Payment date"
 msgstr "支付日期"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1663
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1670
 msgid "Schedule information"
 msgstr "交易计划信息"
 
-#: reports/listtable.cpp:216
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1668
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1676
+#: reports/listtable.cpp:228
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1675
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1683
 msgid "Occurence"
 msgstr "发生"
 
-#: kmymoneyutils.cpp:143 mymoney/mymoneyscheduled.cpp:1074 widgets/rc.cpp:19
-#: widgets/rc.cpp:74 wizards/newaccountwizard/knewaccountwizard.cpp:1668
+#: kmymoneyutils.cpp:145 mymoney/mymoneyscheduled.cpp:1106 widgets/rc.cpp:19
+#: widgets/rc.cpp:74 wizards/newaccountwizard/knewaccountwizard.cpp:1675
 msgid "Monthly"
 msgstr "每月"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1669
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1676
 msgid "Paid from"
 msgstr "支付来源"
 
 #: widgets/kmymoneycombo.cpp:473 widgets/transaction.cpp:164
 #: widgets/transaction.cpp:166
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1670
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1677
 msgid "Pay to"
 msgstr "付给"
 
 #: dialogs/investactivities.cpp:197 dialogs/investactivities.cpp:285
 #: dialogs/investactivities.cpp:365 dialogs/kfindtransactiondlg.cpp:217
 #: dialogs/kmymoneysplittable.cpp:80 dialogs/rc.cpp:51 dialogs/rc.cpp:210
-#: dialogs/rc.cpp:248 reports/listtable.cpp:185 views/khomeview.cpp:420
+#: dialogs/rc.cpp:248 reports/listtable.cpp:197 views/khomeview.cpp:420
 #: views/khomeview.cpp:484 views/khomeview.cpp:518 views/kscheduledview.cpp:73
-#: views/rc.cpp:57 widgets/register.cpp:58 widgets/transaction.cpp:1045
+#: views/rc.cpp:63 widgets/register.cpp:58 widgets/transaction.cpp:1045
 #: widgets/transaction.cpp:1568 widgets/transaction.cpp:1600
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1671
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1677
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1678
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1684
 msgid "Amount"
 msgstr "金额"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1672
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1678
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1679
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1685
 msgid "First payment due"
 msgstr "第一次支付到期日："
 
-#: dialogs/rc.cpp:101 wizards/newaccountwizard/knewaccountwizard.cpp:1673
+#: dialogs/rc.cpp:101 wizards/newaccountwizard/knewaccountwizard.cpp:1680
 #: wizards/newaccountwizard/rc.cpp:115
 msgid "Payment method"
 msgstr "偿还方式"
@@ -710,8 +708,8 @@ msgstr ""
 msgid "Item"
 msgstr "项目"
 
-#: dialogs/rc.cpp:109 dialogs/rc.cpp:164 dialogs/rc.cpp:250 dialogs/rc.cpp:819
-#: views/kinvestmentview.cpp:75 widgets/register.cpp:552
+#: dialogs/rc.cpp:109 dialogs/rc.cpp:164 dialogs/rc.cpp:250 dialogs/rc.cpp:755
+#: dialogs/rc.cpp:816 views/kinvestmentview.cpp:75 widgets/register.cpp:552
 #: wizards/newaccountwizard/rc.cpp:3
 msgid "Value"
 msgstr "价值"
@@ -758,7 +756,7 @@ msgstr ""
 "对帐前对此金额进行调整。"
 
 #: dialogs/rc.cpp:52 dialogs/rc.cpp:54 dialogs/rc.cpp:57 dialogs/rc.cpp:60
-#: dialogs/rc.cpp:763 dialogs/rc.cpp:764 dialogs/rc.cpp:774 widgets/rc.cpp:6
+#: dialogs/rc.cpp:746 dialogs/rc.cpp:747 dialogs/rc.cpp:766 widgets/rc.cpp:6
 #: widgets/rc.cpp:7 widgets/rc.cpp:8 widgets/rc.cpp:9 widgets/rc.cpp:10
 #: widgets/rc.cpp:11 widgets/rc.cpp:12 widgets/rc.cpp:13 widgets/rc.cpp:14
 #: widgets/rc.cpp:15 widgets/rc.cpp:16 widgets/rc.cpp:17
@@ -1343,7 +1341,7 @@ msgid "Name of schedule"
 msgstr "交易计划名称"
 
 #: dialogs/rc.cpp:150 dialogs/rc.cpp:216 dialogs/rc.cpp:217
-#: reports/listtable.cpp:187 views/kscheduledview.cpp:72 widgets/rc.cpp:113
+#: reports/listtable.cpp:199 views/kscheduledview.cpp:72 widgets/rc.cpp:113
 #: widgets/register.cpp:57 wizards/newaccountwizard/rc.cpp:111
 msgid "Payee"
 msgstr "收款人"
@@ -1594,20 +1592,20 @@ msgstr "共同基金"
 msgid "Bond"
 msgstr "债券"
 
-#: mymoney/mymoneysecurity.cpp:172 reports/querytable.cpp:1205
+#: mymoney/mymoneysecurity.cpp:172 reports/querytable.cpp:1137
 #: widgets/kmymoneyaccountselector.cpp:76
 msgid "None"
 msgstr "无"
 
-#: dialogs/rc.cpp:46 kmymoneyutils.cpp:590 mymoney/mymoneyaccount.cpp:756
-#: mymoney/mymoneyscheduled.cpp:1113 mymoney/mymoneysecurity.cpp:175
+#: dialogs/rc.cpp:46 kmymoneyutils.cpp:540 mymoney/mymoneyaccount.cpp:756
+#: mymoney/mymoneyscheduled.cpp:1145 mymoney/mymoneysecurity.cpp:175
 #: views/kforecastview.cpp:174 widgets/register.cpp:54
 #: widgets/register.cpp:463 widgets/transaction.cpp:698
 #: widgets/transaction.cpp:1449
 msgid "Unknown"
 msgstr "未知"
 
-#: mymoney/storage/mymoneystoragesql.cpp:193
+#: mymoney/storage/mymoneystoragesql.cpp:189
 msgid ""
 "Database apparently in use\n"
 "Opened by %1 on %2 at %3.\n"
@@ -1617,11 +1615,11 @@ msgstr ""
 "被%2上的%1于%3打开。\n"
 "仍要打开吗？"
 
-#: mymoney/storage/mymoneystoragesql.cpp:231
+#: mymoney/storage/mymoneystoragesql.cpp:227
 msgid "Cannot currently create database for driver %1; please create manually"
 msgstr "目前无法用驱动%1创建数据库；请手工创建"
 
-#: mymoney/storage/mymoneystoragesql.cpp:246
+#: mymoney/storage/mymoneystoragesql.cpp:242
 msgid "Error in create database %1; do you have create permissions?"
 msgstr "创建数据库 %1 时出错；你是否有创建权限？"
 
@@ -1720,7 +1718,7 @@ msgstr "金融市场"
 #: dialogs/knewaccountdlg.cpp:1018 kmymoneyutils.cpp:86
 #: mymoney/mymoneyaccount.cpp:741 views/kaccountsview.cpp:360
 #: views/kbudgetview.cpp:372 views/kcategoriesview.cpp:178
-#: views/khomeview.cpp:1796 views/kmymoneyview.cpp:775
+#: views/khomeview.cpp:1796 views/kmymoneyview.cpp:766
 #: widgets/kmymoneyaccountselector.cpp:68
 #: widgets/kmymoneyaccountselector.cpp:179
 #: widgets/kmymoneyaccountselector.cpp:370 widgets/register.cpp:806
@@ -1731,7 +1729,7 @@ msgstr "收入"
 #: dialogs/knewaccountdlg.cpp:1020 kmymoneyutils.cpp:88
 #: mymoney/mymoneyaccount.cpp:744 views/kaccountsview.cpp:364
 #: views/kbudgetview.cpp:378 views/kcategoriesview.cpp:182
-#: views/kmymoneyview.cpp:776 widgets/kmymoneyaccountselector.cpp:72
+#: views/kmymoneyview.cpp:767 widgets/kmymoneyaccountselector.cpp:72
 #: widgets/kmymoneyaccountselector.cpp:180
 #: widgets/kmymoneyaccountselector.cpp:380 widgets/register.cpp:807
 msgid "Expense"
@@ -1866,546 +1864,551 @@ msgstr "完成！数据是一致的。"
 msgid "Finish! %1 problem(s) corrected. %2 problem(s) still present."
 msgstr "完成了！修正了%1个问题。还存在%2个问题。"
 
-#: mymoney/mymoneyscheduled.cpp:1055
+#: mymoney/mymoneyscheduled.cpp:1085
 msgid "Any"
 msgstr "任意"
 
-#: kmymoneyutils.cpp:127 mymoney/mymoneyscheduled.cpp:1058
+#: kmymoneyutils.cpp:127 mymoney/mymoneyscheduled.cpp:1088
 msgid "Once"
 msgstr "一次"
 
-#: kmymoneyutils.cpp:129 mymoney/mymoneyscheduled.cpp:1060 widgets/rc.cpp:72
+#: kmymoneyutils.cpp:129 mymoney/mymoneyscheduled.cpp:1090 widgets/rc.cpp:72
 msgid "Daily"
 msgstr "每天"
 
-#: kmymoneyutils.cpp:131 mymoney/mymoneyscheduled.cpp:1062 widgets/rc.cpp:73
+#: kmymoneyutils.cpp:131 mymoney/mymoneyscheduled.cpp:1092 widgets/rc.cpp:73
 msgid "Weekly"
 msgstr "每周"
 
-#: kmymoneyutils.cpp:133 mymoney/mymoneyscheduled.cpp:1064
+#: kmymoneyutils.cpp:133 mymoney/mymoneyscheduled.cpp:1094
 msgid "Fortnightly"
 msgstr "每双周"
 
-#: kmymoneyutils.cpp:135 mymoney/mymoneyscheduled.cpp:1066
+#: kmymoneyutils.cpp:135 mymoney/mymoneyscheduled.cpp:1096
 msgid "Every other week"
 msgstr "每隔一周"
 
-#: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1068
+#: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1098
+#, fuzzy
+msgid "Every half month"
+msgstr "每四个月"
+
+#: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1100
 msgid "Every three weeks"
 msgstr "每隔三周"
 
-#: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1070
+#: kmymoneyutils.cpp:141 mymoney/mymoneyscheduled.cpp:1102
 msgid "Every four weeks"
 msgstr "每四周"
 
-#: kmymoneyutils.cpp:141 mymoney/mymoneyscheduled.cpp:1072
+#: kmymoneyutils.cpp:143 mymoney/mymoneyscheduled.cpp:1104
 msgid "Every thirty days"
 msgstr "每30天"
 
-#: kmymoneyutils.cpp:145 mymoney/mymoneyscheduled.cpp:1076
+#: kmymoneyutils.cpp:147 mymoney/mymoneyscheduled.cpp:1108
 msgid "Every eight weeks"
 msgstr "每隔八周"
 
-#: kmymoneyutils.cpp:147 mymoney/mymoneyscheduled.cpp:1078
+#: kmymoneyutils.cpp:149 mymoney/mymoneyscheduled.cpp:1110
 msgid "Every two months"
 msgstr "每两个月"
 
-#: kmymoneyutils.cpp:149 mymoney/mymoneyscheduled.cpp:1080
+#: kmymoneyutils.cpp:151 mymoney/mymoneyscheduled.cpp:1112
 msgid "Every three months"
 msgstr "每三个月"
 
-#: kmymoneyutils.cpp:151 mymoney/mymoneyscheduled.cpp:1082 widgets/rc.cpp:76
+#: kmymoneyutils.cpp:153 mymoney/mymoneyscheduled.cpp:1114 widgets/rc.cpp:76
 msgid "Quarterly"
 msgstr "每季度"
 
-#: kmymoneyutils.cpp:153 mymoney/mymoneyscheduled.cpp:1084
+#: kmymoneyutils.cpp:155 mymoney/mymoneyscheduled.cpp:1116
 msgid "Every four months"
 msgstr "每四个月"
 
-#: kmymoneyutils.cpp:155 mymoney/mymoneyscheduled.cpp:1086
+#: kmymoneyutils.cpp:157 mymoney/mymoneyscheduled.cpp:1118
 msgid "Twice yearly"
 msgstr "每半年"
 
-#: kmymoneyutils.cpp:157 mymoney/mymoneyscheduled.cpp:1088 widgets/rc.cpp:20
+#: kmymoneyutils.cpp:159 mymoney/mymoneyscheduled.cpp:1120 widgets/rc.cpp:20
 #: widgets/rc.cpp:77
 msgid "Yearly"
 msgstr "每年"
 
-#: kmymoneyutils.cpp:159 mymoney/mymoneyscheduled.cpp:1090
+#: kmymoneyutils.cpp:161 mymoney/mymoneyscheduled.cpp:1122
 msgid "Every other year"
 msgstr "每隔一年"
 
-#: mymoney/mymoneyscheduled.cpp:1100
+#: mymoney/mymoneyscheduled.cpp:1132
 msgid "Bill"
 msgstr "账单"
 
-#: dialogs/rc.cpp:106 dialogs/rc.cpp:161 dialogs/rc.cpp:247
-#: mymoney/mymoneyscheduled.cpp:1103 widgets/kmymoneycombo.cpp:420
+#: dialogs/rc.cpp:106 dialogs/rc.cpp:161 dialogs/rc.cpp:247 dialogs/rc.cpp:752
+#: mymoney/mymoneyscheduled.cpp:1135 widgets/kmymoneycombo.cpp:420
 #: widgets/register.cpp:549
 msgid "Deposit"
 msgstr "存款"
 
-#: mymoney/mymoneyscheduled.cpp:1106 reports/querytable.cpp:662
-#: reports/querytable.cpp:761 widgets/kmymoneycombo.cpp:419
+#: mymoney/mymoneyscheduled.cpp:1138 reports/querytable.cpp:594
+#: reports/querytable.cpp:693 widgets/kmymoneycombo.cpp:419
 msgid "Transfer"
 msgstr "转账"
 
-#: mymoney/mymoneyscheduled.cpp:1146
+#: mymoney/mymoneyscheduled.cpp:1178
 msgid "Any (Error)"
 msgstr "任意(错误)"
 
-#: dialogs/rc.cpp:113 mymoney/mymoneyscheduled.cpp:1158
+#: dialogs/rc.cpp:113 mymoney/mymoneyscheduled.cpp:1190
 msgid "Change the date to the previous Friday"
 msgstr "将日期改为上一个周五"
 
-#: dialogs/rc.cpp:114 mymoney/mymoneyscheduled.cpp:1161
+#: dialogs/rc.cpp:114 mymoney/mymoneyscheduled.cpp:1193
 msgid "Change the date to the next Monday"
 msgstr "将日期改为下一个周一"
 
-#: mymoney/mymoneyscheduled.cpp:1164
+#: mymoney/mymoneyscheduled.cpp:1196
 msgid "Do Nothing"
 msgstr "不做任何事"
 
-#: kmymoney2.cpp:217
+#: kmymoney2.cpp:220
 msgid "No plugins loaded"
 msgstr "未载入插件"
 
-#: kmymoney2.cpp:303
+#: kmymoney2.cpp:306
 #, fuzzy
 msgid "Open database..."
 msgstr "打开数据库..."
 
-#: kmymoney2.cpp:304
+#: kmymoney2.cpp:307
 #, fuzzy
 msgid "Save as database..."
 msgstr "另存为数据库..."
 
-#: kmymoney2.cpp:305
+#: kmymoney2.cpp:308
 msgid "Backup..."
 msgstr "备份..."
 
-#: kmymoney2.cpp:306 kmymoney2.cpp:312
+#: kmymoney2.cpp:309 kmymoney2.cpp:315
 #, fuzzy
 msgid "QIF..."
 msgstr "QIF..."
 
-#: kmymoney2.cpp:307
+#: kmymoney2.cpp:310
 #, fuzzy
 msgid "Gnucash..."
 msgstr "Gnucash..."
 
-#: kmymoney2.cpp:308
+#: kmymoney2.cpp:311
 #, fuzzy
 msgid "Statement file..."
 msgstr "对帐单文件..."
 
-#: kmymoney2.cpp:310 kmymoney2.cpp:311
+#: kmymoney2.cpp:313 kmymoney2.cpp:314
 #, fuzzy
 msgid "Account Template..."
 msgstr "账户/交易类别模板..."
 
-#: kmymoney2.cpp:313
+#: kmymoney2.cpp:316
 msgid "Personal Data..."
 msgstr "个人信息..."
 
-#: kmymoney2.cpp:316
+#: kmymoney2.cpp:319
 msgid "Dump Memory"
 msgstr "转储内存"
 
-#: kmymoney2.cpp:318
+#: kmymoney2.cpp:321
 msgid "File-Information..."
 msgstr "文件信息..."
 
-#: kmymoney2.cpp:323
+#: kmymoney2.cpp:326
 msgid "Find transaction..."
 msgstr "查找交易..."
 
-#: kmymoney2.cpp:328
+#: kmymoney2.cpp:331
 msgid "Show Transaction Detail"
 msgstr "显示交易详细信息"
 
-#: kmymoney2.cpp:329 rc.cpp:59
+#: kmymoney2.cpp:332 rc.cpp:59
 msgid "Hide reconciled transactions"
 msgstr "隐藏已对帐交易"
 
-#: kmymoney2.cpp:330 rc.cpp:56
+#: kmymoney2.cpp:333 rc.cpp:56
 msgid "Hide unused categories"
 msgstr "隐藏未使用的交易类别"
 
-#: kmymoney2.cpp:331
+#: kmymoney2.cpp:334
 msgid "Show all accounts"
 msgstr "显示全部账户"
 
-#: kmymoney2.cpp:336
+#: kmymoney2.cpp:339
 msgid "New institution..."
 msgstr "新建金融机构..."
 
-#: kmymoney2.cpp:337
+#: kmymoney2.cpp:340
 msgid "Edit institution..."
 msgstr "编辑金融机构..."
 
-#: kmymoney2.cpp:338
+#: kmymoney2.cpp:341
 msgid "Delete institution..."
 msgstr "删除金融机构..."
 
-#: kmymoney2.cpp:343
+#: kmymoney2.cpp:346
 msgid "New account..."
 msgstr "新建账户..."
 
-#: kmymoney2.cpp:345
+#: kmymoney2.cpp:348
 msgid "Open ledger"
 msgstr "打开账簿"
 
-#: kmymoney2.cpp:346
+#: kmymoney2.cpp:349
 msgid "Reconcile..."
 msgstr "对帐..."
 
-#: kmymoney2.cpp:347
+#: kmymoney2.cpp:350
 msgid ""
 "_: Finish reconciliation\n"
 "Finish"
 msgstr "完成"
 
-#: kmymoney2.cpp:348
+#: kmymoney2.cpp:351
 msgid ""
 "_: Postpone reconciliation\n"
 "Postpone"
 msgstr "推迟"
 
-#: kmymoney2.cpp:349
+#: kmymoney2.cpp:352
 msgid "Edit account..."
 msgstr "编辑账户..."
 
-#: kmymoney2.cpp:350
+#: kmymoney2.cpp:353
 msgid "Delete account..."
 msgstr "删除账户..."
 
-#: kmymoney2.cpp:351
+#: kmymoney2.cpp:354
 msgid "Close account"
 msgstr "关闭账户"
 
-#: kmymoney2.cpp:352
+#: kmymoney2.cpp:355
 msgid "Reopen account"
 msgstr "重新打开账户"
 
-#: kmymoney2.cpp:353
+#: kmymoney2.cpp:356
 msgid "Transaction report"
 msgstr "交易报表"
 
-#: kmymoney2.cpp:355
+#: kmymoney2.cpp:358
 msgid "Show balance chart..."
 msgstr "显示平衡表..."
 
-#: kmymoney2.cpp:357
+#: kmymoney2.cpp:360
 msgid "Map to online account"
 msgstr "映射到网上账户"
 
-#: kmymoney2.cpp:358
+#: kmymoney2.cpp:361
 msgid "Unmap account"
 msgstr "取消账户映射"
 
-#: dialogs/settings/rc.cpp:123 kmymoney2.cpp:359 views/kpayeesview.cpp:342
+#: dialogs/settings/rc.cpp:123 kmymoney2.cpp:362 views/kpayeesview.cpp:342
 #: widgets/rc.cpp:50
 msgid "Update"
 msgstr "更新"
 
-#: kmymoney2.cpp:363
+#: kmymoney2.cpp:366
 msgid "Update account..."
 msgstr "更新账户..."
 
-#: kmymoney2.cpp:364
+#: kmymoney2.cpp:367
 #, fuzzy
 msgid "Update all accounts..."
 msgstr "更新账户..."
 
-#: kmymoney2.cpp:369
+#: kmymoney2.cpp:372
 msgid "New category..."
 msgstr "新建交易类型..."
 
-#: kmymoney2.cpp:370
+#: kmymoney2.cpp:373
 msgid "Edit category..."
 msgstr "编辑交易类别..."
 
-#: kmymoney2.cpp:371
+#: kmymoney2.cpp:374
 msgid "Delete category..."
 msgstr "删除交易类型..."
 
-#: kmymoney2.cpp:377
+#: kmymoney2.cpp:380
 msgid "QIF Profile Editor..."
 msgstr "QIF配置文件编辑器..."
 
-#: kmymoney2.cpp:378
+#: kmymoney2.cpp:381
 #, fuzzy
 msgid "Securities..."
 msgstr "证券..."
 
-#: kmymoney2.cpp:379
+#: kmymoney2.cpp:382
 #, fuzzy
 msgid "Currencies..."
 msgstr "货币..."
 
-#: kmymoney2.cpp:380
+#: kmymoney2.cpp:383
 #, fuzzy
 msgid "Prices..."
 msgstr "价格..."
 
-#: kmymoney2.cpp:381
+#: kmymoney2.cpp:384
 msgid "Update Stock and Currency Prices..."
 msgstr "更新股票和货币价格..."
 
-#: kmymoney2.cpp:382
+#: kmymoney2.cpp:385
 msgid "Consistency Check"
 msgstr "一致性检查"
 
-#: kmymoney2.cpp:383
+#: kmymoney2.cpp:386
 msgid "Performance-Test"
 msgstr "性能测试"
 
-#: kmymoney2.cpp:384
+#: kmymoney2.cpp:387
 msgid "KCalc..."
 msgstr "KCalc..."
 
-#: kmymoney2.cpp:385
+#: kmymoney2.cpp:388
 msgid "Plugins"
 msgstr "插件"
 
-#: kmymoney2.cpp:391
+#: kmymoney2.cpp:394
 msgid "Enable all messages"
 msgstr "打开所有信息显示"
 
-#: kmymoney2.cpp:392
+#: kmymoney2.cpp:395
 msgid "KDE language settings..."
 msgstr "KDE语言设置..."
 
-#: kmymoney2.cpp:397
+#: kmymoney2.cpp:400
 msgid "&Show tip of the day"
 msgstr "显示每日一帖(&S)"
 
-#: kmymoney2.cpp:402
+#: kmymoney2.cpp:405
 msgid ""
 "_: New transaction button\n"
 "New"
 msgstr "新建"
 
-#: kmymoney2.cpp:407
+#: kmymoney2.cpp:410
 msgid ""
 "_: Edit transaction button\n"
 "Edit"
 msgstr "编辑"
 
-#: kmymoney2.cpp:409
+#: kmymoney2.cpp:412
 msgid ""
 "_: Enter transaction\n"
 "Enter"
 msgstr "输入"
 
-#: kmymoney2.cpp:412
+#: kmymoney2.cpp:415
 msgid ""
 "_: Edit split button\n"
 "Edit splits"
 msgstr "编辑切分"
 
-#: kmymoney2.cpp:413
+#: kmymoney2.cpp:416
 msgid ""
 "_: Cancel transaction edit\n"
 "Cancel"
 msgstr "取消"
 
-#: kmymoney2.cpp:414
+#: kmymoney2.cpp:417
 msgid ""
 "_: Delete transaction\n"
 "Delete"
 msgstr "删除"
 
-#: kmymoney2.cpp:415
+#: kmymoney2.cpp:418
 msgid ""
 "_: Duplicate transaction\n"
 "Duplicate"
 msgstr "复制"
 
-#: kmymoney2.cpp:417 kmymoney2.cpp:4761
+#: kmymoney2.cpp:420 kmymoney2.cpp:4786 kmymoney2.cpp:5067
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
 msgstr "匹配"
 
-#: kmymoney2.cpp:418
+#: kmymoney2.cpp:421
 msgid ""
 "_: Accept 'imported' and 'matched' transaction\n"
 "Accept"
 msgstr "接受"
 
-#: kmymoney2.cpp:420
+#: kmymoney2.cpp:423
 msgid ""
 "_: Toggle reconciliation flag\n"
 "Toggle"
 msgstr "切换"
 
-#: kmymoney2.cpp:421
+#: kmymoney2.cpp:424
 msgid ""
 "_: Mark transaction cleared\n"
 "Cleared"
 msgstr "已清算"
 
-#: kmymoney2.cpp:422
+#: kmymoney2.cpp:425
 msgid ""
 "_: Mark transaction reconciled\n"
 "Reconciled"
 msgstr "已对帐"
 
-#: kmymoney2.cpp:423
+#: kmymoney2.cpp:426
 msgid ""
 "_: Mark transaction not reconciled\n"
 "Not reconciled"
 msgstr "未对账"
 
-#: kmymoney2.cpp:424
+#: kmymoney2.cpp:427
 msgid ""
 "_: Select all transactions\n"
 "Select all"
 msgstr "选择全部"
 
-#: kmymoney2.cpp:426 kmymoney2.cpp:5399
+#: kmymoney2.cpp:429 kmymoney2.cpp:5424
 msgid "Goto account"
 msgstr "转到账户"
 
-#: kmymoney2.cpp:427 kmymoney2.cpp:5397
+#: kmymoney2.cpp:430 kmymoney2.cpp:5422
 msgid "Goto payee"
 msgstr "转到收款人"
 
-#: kmymoney2.cpp:428
+#: kmymoney2.cpp:431
 msgid "Create schedule..."
 msgstr "创建计划..."
 
-#: kmymoney2.cpp:429
+#: kmymoney2.cpp:432
 msgid "Assign next number"
 msgstr "分配下一个编号"
 
-#: kmymoney2.cpp:430
+#: kmymoney2.cpp:433
 msgid ""
 "_: Combine transactions\n"
 "Combine"
 msgstr "合并"
 
-#: kmymoney2.cpp:432
+#: kmymoney2.cpp:435
 msgid "New investment"
 msgstr "新建投资"
 
-#: kmymoney2.cpp:433
+#: kmymoney2.cpp:436
 msgid "Edit investment..."
 msgstr "编辑投资..."
 
-#: kmymoney2.cpp:434
+#: kmymoney2.cpp:437
 msgid "Delete investment..."
 msgstr "删除投资..."
 
-#: kmymoney2.cpp:435
+#: kmymoney2.cpp:438
 msgid "Online price update..."
 msgstr "在线更新价格..."
 
-#: kmymoney2.cpp:436
+#: kmymoney2.cpp:439
 msgid "Manual price update..."
 msgstr "手动更新价格..."
 
-#: kmymoney2.cpp:438
+#: kmymoney2.cpp:441
 msgid "New schedule..."
 msgstr "新建交易计划..."
 
-#: kmymoney2.cpp:439
+#: kmymoney2.cpp:442
 msgid "Edit schedule..."
 msgstr "编辑交易计划..."
 
-#: kmymoney2.cpp:440
+#: kmymoney2.cpp:443
 msgid "Delete schedule..."
 msgstr "删除交易计划..."
 
-#: kmymoney2.cpp:441
+#: kmymoney2.cpp:444
 msgid "Duplicate schedule"
 msgstr "复制交易计划"
 
-#: kmymoney2.cpp:442
+#: kmymoney2.cpp:445
 msgid "Enter schedule..."
 msgstr "输入交易计划..."
 
-#: kmymoney2.cpp:443
+#: kmymoney2.cpp:446
 msgid "Skip schedule..."
 msgstr "跳过交易计划..."
 
-#: kmymoney2.cpp:445
+#: kmymoney2.cpp:448
 msgid "New payee"
 msgstr "新建收款人"
 
-#: kmymoney2.cpp:446
+#: kmymoney2.cpp:449
 msgid "Rename payee"
 msgstr "重命名收款人"
 
-#: kmymoney2.cpp:447
+#: kmymoney2.cpp:450
 msgid "Delete payee"
 msgstr "删除收款人"
 
-#: kmymoney2.cpp:449
+#: kmymoney2.cpp:452
 msgid "New budget"
 msgstr "新建预算"
 
-#: kmymoney2.cpp:450
+#: kmymoney2.cpp:453
 msgid "Rename budget"
 msgstr "重命名预算"
 
-#: kmymoney2.cpp:451
+#: kmymoney2.cpp:454
 msgid "Delete budget"
 msgstr "删除预算"
 
-#: kmymoney2.cpp:452
+#: kmymoney2.cpp:455
 msgid "Copy budget"
 msgstr "拷贝预算"
 
-#: kmymoney2.cpp:453
+#: kmymoney2.cpp:456
 msgid "Change budget year"
 msgstr "更改预算年份"
 
-#: kmymoney2.cpp:454
+#: kmymoney2.cpp:457
 msgid ""
 "_: Budget based on forecast\n"
 "Forecast"
 msgstr "预测"
 
-#: kmymoney2.cpp:459 kmymoney2.cpp:3957 kmymoney2.cpp:3960 kmymoney2.cpp:3966
+#: kmymoney2.cpp:462 kmymoney2.cpp:3982 kmymoney2.cpp:3985 kmymoney2.cpp:3991
 msgid "New currency"
 msgstr "新建货币"
 
-#: kmymoney2.cpp:460 kmymoney2.cpp:3988 kmymoney2.cpp:3993
+#: kmymoney2.cpp:463 kmymoney2.cpp:4013 kmymoney2.cpp:4018
 msgid "Rename currency"
 msgstr "重命名货币"
 
-#: kmymoney2.cpp:461 kmymoney2.cpp:4006
+#: kmymoney2.cpp:464 kmymoney2.cpp:4031
 msgid "Delete currency"
 msgstr "删除货币"
 
-#: dialogs/rc.cpp:69 kmymoney2.cpp:462
+#: dialogs/rc.cpp:69 kmymoney2.cpp:465
 msgid "Select as base currency"
 msgstr "选择为基准货币"
 
-#: kmymoney2.cpp:473
+#: kmymoney2.cpp:476
 msgid "View back"
 msgstr "前一个视图"
 
-#: kmymoney2.cpp:474
+#: kmymoney2.cpp:477
 msgid "View forward"
 msgstr "后一个视图"
 
-#: kmymoney2.cpp:603
+#: kmymoney2.cpp:606
 msgid "KMyMoney file needs saving.  Save ?"
 msgstr "需要保存KMyMoney数据文件。是否保存？"
 
-#: kmymoney2.cpp:749
+#: kmymoney2.cpp:752
 msgid "Creating new document..."
 msgstr "创建新文档..."
 
-#: kmymoney2.cpp:861 kmymoney2.cpp:876
+#: kmymoney2.cpp:864 kmymoney2.cpp:879
 msgid "Open a file."
 msgstr "打开文件。"
 
-#: kmymoney2.cpp:864
+#: kmymoney2.cpp:867
 msgid ""
 "%1|KMyMoney files\n"
 "%2|All files (*.*)"
@@ -2413,15 +2416,15 @@ msgstr ""
 "%1|KMyMoney文件\n"
 "%2|所有文件(*.*)"
 
-#: kmymoney2.cpp:865
+#: kmymoney2.cpp:868
 msgid "Open File..."
 msgstr "打开文件..."
 
-#: kmymoney2.cpp:917
+#: kmymoney2.cpp:920
 msgid "Loading file..."
 msgstr "载入文件..."
 
-#: kmymoney2.cpp:970
+#: kmymoney2.cpp:981
 msgid ""
 "<b>%1</b> is either an invalid filename or the file does not exist. You can "
 "open another file or create a new one."
@@ -2429,115 +2432,115 @@ msgstr ""
 "文件名<b>%1</b>非法，或者该文件不存在。请您选择打开其它文件或者创建一个新文"
 "件。"
 
-#: kmymoney2.cpp:970
+#: kmymoney2.cpp:981
 msgid "File not found"
 msgstr "找不到文件"
 
-#: kmymoney2.cpp:973
+#: kmymoney2.cpp:984
 msgid "File <b>%1</b> is already opened in another instance of KMyMoney"
 msgstr "文件<b>%1</b>已经被另一个KMyMoney进程打开。"
 
-#: kmymoney2.cpp:973
+#: kmymoney2.cpp:984
 msgid "Duplicate open"
 msgstr "重复打开文件"
 
-#: kmymoney2.cpp:985
+#: kmymoney2.cpp:996
 msgid "Saving file..."
 msgstr "保存文件..."
 
-#: kmymoney2.cpp:1019 kmymoney2.cpp:1031 kmymoney2.cpp:1055
+#: kmymoney2.cpp:1030 kmymoney2.cpp:1042 kmymoney2.cpp:1066
 #, c-format
 msgid "Additional encryption key(s) to be used: %1"
 msgstr "额外要用的加密密钥：%1"
 
-#: kmymoney2.cpp:1040
+#: kmymoney2.cpp:1051
 msgid "Saving file with a new filename..."
 msgstr "文件另存为..."
 
-#: kmymoney2.cpp:1051
+#: kmymoney2.cpp:1062
 msgid "Encryption key to be used"
 msgstr "要使用的加密密钥"
 
-#: kmymoney2.cpp:1056
+#: kmymoney2.cpp:1067
 msgid "Manage additional keys"
 msgstr "管理额外密钥"
 
-#: kmymoney2.cpp:1063
+#: kmymoney2.cpp:1074
 msgid "No encryption"
 msgstr "未加密"
 
-#: kmymoney2.cpp:1086
+#: kmymoney2.cpp:1097
 msgid ""
 "_: KMyMoney (Filefilter)\n"
 "KMyMoney files"
 msgstr "KMyMoney文件"
 
-#: kmymoney2.cpp:1087
+#: kmymoney2.cpp:1098
 msgid ""
 "_: XML (Filefilter)\n"
 "XML files"
 msgstr "XML文件"
 
-#: kmymoney2.cpp:1088
+#: kmymoney2.cpp:1099
 msgid ""
 "_: Anonymous (Filefilter)\n"
 "Anonymous files"
 msgstr "匿名文件"
 
-#: kmymoney2.cpp:1089
+#: kmymoney2.cpp:1100
 msgid "All files"
 msgstr "所有文件"
 
-#: kmymoney2.cpp:1177
+#: kmymoney2.cpp:1188
 msgid "Saving file to database..."
 msgstr "保存文件到数据库..."
 
-#: kmymoney2.cpp:1191
+#: kmymoney2.cpp:1202
 msgid "Cannot save to current database."
 msgstr "无法保存到当前数据库。"
 
-#: kmymoney2.cpp:1204
+#: kmymoney2.cpp:1220
 msgid "Closing window..."
 msgstr "关闭窗口..."
 
-#: kmymoney2.cpp:1207 kmymoney2.cpp:1228
+#: kmymoney2.cpp:1223 kmymoney2.cpp:1244
 msgid "The file has been changed, save it ?"
 msgstr "此文件已经被修改过，是否需要保存？"
 
-#: kmymoney2.cpp:1314 kmymoney2.cpp:1327
+#: kmymoney2.cpp:1330 kmymoney2.cpp:1343
 msgid "Ready."
 msgstr "就绪。"
 
-#: kmymoney2.cpp:1372 kmymoney2.cpp:1408
+#: kmymoney2.cpp:1388 kmymoney2.cpp:1424
 msgid "No KMyMoneyFile open"
 msgstr "未打开任何KMyMoney文件"
 
-#: kmymoney2.cpp:1376
+#: kmymoney2.cpp:1392
 msgid "Viewing personal data..."
 msgstr "查看个人信息..."
 
-#: kmymoney2.cpp:1383
+#: kmymoney2.cpp:1399
 msgid "Edit Personal Data"
 msgstr "编辑个人信息"
 
-#: kmymoney2.cpp:1399
+#: kmymoney2.cpp:1415
 #, c-format
 msgid "Unable to store user information: %1"
 msgstr "无法保存账户信息：%1"
 
-#: kmymoney2.cpp:1422
+#: kmymoney2.cpp:1438
 msgid "Importing account templates."
 msgstr "导入账户模板。"
 
-#: kmymoney2.cpp:1437
+#: kmymoney2.cpp:1453
 msgid "Unable to import template(s): %1, thrown in %2:%3"
 msgstr "无法导入模板：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:1446
+#: kmymoney2.cpp:1462
 msgid "Exporting account templates."
 msgstr "导出账户模板"
 
-#: kmymoney2.cpp:1449
+#: kmymoney2.cpp:1465
 msgid ""
 "*.kmt|KMyMoney template files\n"
 "*.*|All files"
@@ -2545,25 +2548,34 @@ msgstr ""
 "*.kmt|KMyMoney模板文件\n"
 "*.*|所有文件"
 
-#: kmymoney2.cpp:1450
+#: kmymoney2.cpp:1466
 msgid "Save as..."
 msgstr "另存为..."
 
-#: kmymoney2.cpp:1492
+#: kmymoney2.cpp:1508
 msgid "Importing file..."
 msgstr "导入文件..."
 
-#: kmymoney2.cpp:1573
+#: kmymoney2.cpp:1544 kmymoney2.cpp:5960 kmymoney2.cpp:5982
+#, fuzzy
+msgid "The statements have been processed with the following results:"
+msgstr "该对帐单已经被处理，结果如下："
+
+#: kmymoney2.cpp:1544 kmymoney2.cpp:1746 kmymoney2.cpp:5960 kmymoney2.cpp:5982
+msgid "Statement stats"
+msgstr "对帐单状态"
+
+#: kmymoney2.cpp:1594
 msgid ""
 "You cannot import GnuCash data into an existing file. Do you wish to save "
 "this file?"
 msgstr "您不能将GnuCash程序数据导入已存在的文件中。您要保存此文件吗？"
 
-#: kmymoney2.cpp:1586
+#: kmymoney2.cpp:1607
 msgid "Importing a Gnucash file."
 msgstr "导入GnuCash文件。"
 
-#: kmymoney2.cpp:1589
+#: kmymoney2.cpp:1610
 msgid ""
 "%1|Gnucash files\n"
 "%2|All files (*.*)"
@@ -2571,15 +2583,15 @@ msgstr ""
 "%1|Gnucash文件\n"
 "%2|所有文件(*.*)"
 
-#: kmymoney2.cpp:1590
+#: kmymoney2.cpp:1611
 msgid "Import Gnucash file..."
 msgstr "导入GnuCash文件"
 
-#: kmymoney2.cpp:1629
+#: kmymoney2.cpp:1650
 msgid "Importing an XML Statement."
 msgstr "导入XML格式对帐单。"
 
-#: kmymoney2.cpp:1632
+#: kmymoney2.cpp:1653
 msgid ""
 "%1|XML files\n"
 "%2|All files (*.*)"
@@ -2587,167 +2599,163 @@ msgstr ""
 "%1|XML文件\n"
 "%2|所有文件(*.*)"
 
-#: kmymoney2.cpp:1633
+#: kmymoney2.cpp:1654
 msgid "Import XML Statement..."
 msgstr "导入XML对帐单..."
 
-#: kmymoney2.cpp:1689
+#: kmymoney2.cpp:1710
 msgid "Error importing %1: This file is not a valid KMM statement file."
 msgstr "文件%1导入失败：此文件不是一个合法的KMM对帐单文件"
 
-#: kmymoney2.cpp:1689
+#: kmymoney2.cpp:1710
 msgid "Invalid Statement"
 msgstr "错误的对帐单"
 
-#: kmymoney2.cpp:1724
+#: kmymoney2.cpp:1746
 msgid "The statement has been processed with the following results:"
 msgstr "该对帐单已经被处理，结果如下："
 
-#: kmymoney2.cpp:1724
-msgid "Statement stats"
-msgstr "对帐单状态"
-
-#: kmymoney2.cpp:1730
+#: kmymoney2.cpp:1755
 msgid "Exporting file..."
 msgstr "导出文件"
 
-#: kmymoney2.cpp:1753
+#: kmymoney2.cpp:1778
 msgid "The file <b>%1</b> already exists. Do you really want to override it?"
 msgstr "文件<b>%1</b>已存在。要覆盖它吗？"
 
-#: kmymoney2.cpp:1753
+#: kmymoney2.cpp:1778
 msgid "File already exists"
 msgstr "文件已存在"
 
-#: dialogs/rc.cpp:345 dialogs/rc.cpp:647 dialogs/rc.cpp:799 kmymoney2.cpp:1781
+#: dialogs/rc.cpp:345 dialogs/rc.cpp:647 dialogs/rc.cpp:796 kmymoney2.cpp:1806
 msgid "General"
 msgstr "总体信息"
 
-#: kmymoney2.cpp:1782
+#: kmymoney2.cpp:1807
 msgid "Register"
 msgstr "账簿"
 
-#: kmymoney2.cpp:1783 views/khomeview.cpp:88 views/kmymoneyview.cpp:136
+#: kmymoney2.cpp:1808 views/khomeview.cpp:88 views/kmymoneyview.cpp:136
 msgid "Home"
 msgstr "主界面"
 
-#: dialogs/rc.cpp:330 dialogs/settings/rc.cpp:76 kmymoney2.cpp:1784
+#: dialogs/rc.cpp:330 dialogs/settings/rc.cpp:76 kmymoney2.cpp:1809
 #: widgets/rc.cpp:158
 msgid "Schedules"
 msgstr "计划表"
 
-#: kmymoney2.cpp:1785
+#: kmymoney2.cpp:1810
 msgid "Encryption"
 msgstr "加密"
 
-#: kmymoney2.cpp:1786
+#: kmymoney2.cpp:1811
 msgid "Colors"
 msgstr "配色"
 
-#: dialogs/rc.cpp:342 dialogs/settings/rc.cpp:106 kmymoney2.cpp:1788
+#: dialogs/rc.cpp:342 dialogs/settings/rc.cpp:106 kmymoney2.cpp:1813
 #: widgets/rc.cpp:33
 msgid "Online Quotes"
 msgstr "在线报价"
 
-#: kmymoney2.cpp:1789 reports/pivottable.cpp:2364 views/kmymoneyview.cpp:250
-#: views/kmymoneyview.cpp:252 views/kreportsview.cpp:1361 views/rc.cpp:35
+#: kmymoney2.cpp:1814 reports/pivottable.cpp:2391 views/kmymoneyview.cpp:250
+#: views/kmymoneyview.cpp:252 views/kreportsview.cpp:1373 views/rc.cpp:41
 msgid "Forecast"
 msgstr "预测"
 
-#: kmymoney2.cpp:1856
+#: kmymoney2.cpp:1881
 msgid ""
 "The file must be saved first before it can be backed up.  Do you want to "
 "continue?"
 msgstr "此文件在备份前必须先进行保存。您要继续吗？"
 
-#: kmymoney2.cpp:1873
+#: kmymoney2.cpp:1898
 msgid ""
 "The current implementation of the backup functionality only supports local "
 "files as source files! Your current source file is '%1'."
 msgstr "目前备份功能仅支持使用本地文件作为源文件进行备份。当前的源文件为“%1”。"
 
-#: kmymoney2.cpp:1876
+#: kmymoney2.cpp:1901
 msgid "Local files only"
 msgstr "仅支持本地文件"
 
-#: kmymoney2.cpp:1891
+#: kmymoney2.cpp:1916
 #, c-format
 msgid "Mounting %1"
 msgstr "正在加载%1"
 
-#: kmymoney2.cpp:1930
+#: kmymoney2.cpp:1955
 msgid "Backup file for today exists on that device.  Replace ?"
 msgstr "在移动设备上已存在今天的备份文件。是否替换？"
 
-#: dialogs/rc.cpp:7 kmymoney2.cpp:1930 kmymoney2.cpp:1957 kmymoney2.cpp:1987
-#: kmymoney2.cpp:1995 kmymoney2.cpp:2020 kmymoney2.cpp:2022
+#: dialogs/rc.cpp:7 kmymoney2.cpp:1955 kmymoney2.cpp:1982 kmymoney2.cpp:2012
+#: kmymoney2.cpp:2020 kmymoney2.cpp:2045 kmymoney2.cpp:2047
 msgid "Backup"
 msgstr "备份"
 
-#: kmymoney2.cpp:1930
+#: kmymoney2.cpp:1955
 msgid "&Replace"
 msgstr "替换(&R)"
 
-#: kmymoney2.cpp:1935 kmymoney2.cpp:1960 kmymoney2.cpp:1979 kmymoney2.cpp:1998
+#: kmymoney2.cpp:1960 kmymoney2.cpp:1985 kmymoney2.cpp:2004 kmymoney2.cpp:2023
 #, c-format
 msgid "Unmounting %1"
 msgstr "正在卸载%1"
 
-#: kmymoney2.cpp:1950
+#: kmymoney2.cpp:1975
 #, c-format
 msgid "Writing %1"
 msgstr "正在写入%1"
 
-#: kmymoney2.cpp:1957
+#: kmymoney2.cpp:1982
 msgid "Error mounting device"
 msgstr "加载设备失败"
 
-#: converter/mymoneygncreader.cpp:1995 kmymoney2.cpp:1986 kmymoney2.cpp:2018
+#: converter/mymoneygncreader.cpp:1995 kmymoney2.cpp:2011 kmymoney2.cpp:2043
 msgid "Done"
 msgstr "已完成"
 
-#: kmymoney2.cpp:1987 kmymoney2.cpp:2020
+#: kmymoney2.cpp:2012 kmymoney2.cpp:2045
 msgid "File successfully backed up"
 msgstr "文件已经被成功备份"
 
-#: kmymoney2.cpp:1995
+#: kmymoney2.cpp:2020
 msgid "Error copying file to device"
 msgstr "拷贝文件到设备时出错"
 
-#: kmymoney2.cpp:2022
+#: kmymoney2.cpp:2047
 msgid "Error unmounting device"
 msgstr "卸载设备出错"
 
-#: kmymoney2.cpp:2113
+#: kmymoney2.cpp:2138
 #, c-format
 msgid "Cannot add institution: %1"
 msgstr "无法添加金融机构：%1"
 
-#: kmymoney2.cpp:2155
+#: kmymoney2.cpp:2180
 #, c-format
 msgid "Unable to store institution: %1"
 msgstr "无法保存金融机构：%1"
 
-#: kmymoney2.cpp:2162
+#: kmymoney2.cpp:2187
 #, c-format
 msgid "Unable to edit institution: %1"
 msgstr "无法编辑金融机构：%1"
 
-#: kmymoney2.cpp:2173
+#: kmymoney2.cpp:2198
 msgid "Do you really want to delete institution <b>%1</b> ?"
 msgstr "您真的想删除金融机构<b>%1</b>吗？"
 
-#: kmymoney2.cpp:2181 kmymoney2.cpp:2185
+#: kmymoney2.cpp:2206 kmymoney2.cpp:2210
 #, c-format
 msgid "Unable to delete institution: %1"
 msgstr "无法删除金融机构：%1"
 
-#: kmymoney2.cpp:2238
+#: kmymoney2.cpp:2263
 #, fuzzy, c-format
 msgid "Unable to find account: %1"
 msgstr "无法加入账户：%1"
 
-#: kmymoney2.cpp:2279
+#: kmymoney2.cpp:2304
 msgid ""
 "This account is a liability and if the opening balance represents money "
 "owed, then it should be negative.  Negate the amount?\n"
@@ -2763,16 +2771,16 @@ msgstr ""
 " 如果想让金额保持%2不变，按“否”;\n"
 "如果想终止创建当前账户，请按“取消”键"
 
-#: kmymoney2.cpp:2315 kmymoney2.cpp:2316
+#: kmymoney2.cpp:2340 kmymoney2.cpp:2341
 msgid "Loan payout"
 msgstr "贷款支出"
 
-#: dialogs/knewloanwizard.cpp:992 kmymoney2.cpp:2344
+#: dialogs/knewloanwizard.cpp:890 kmymoney2.cpp:2369
 #, c-format
 msgid "Unable to add account: %1"
 msgstr "无法加入账户：%1"
 
-#: kmymoney2.cpp:2362
+#: kmymoney2.cpp:2387
 msgid ""
 "The category <b>%1</b> currently does not exist. Do you want to create it?"
 "<p><i>The parent account will default to <b>%2</b> but can be changed in the "
@@ -2781,76 +2789,76 @@ msgstr ""
 "交易类别<b>%1</b>目前不存在。你要创建它吗？ <p><i>父账户缺省将被设为<b>%2</"
 "b>，但在之后的对话框中可以修改</i>。"
 
-#: kmymoney2.cpp:2362
+#: kmymoney2.cpp:2387
 msgid "Create category"
 msgstr "创建交易类别"
 
-#: kmymoney2.cpp:2399
+#: kmymoney2.cpp:2424
 msgid "Create a new Category"
 msgstr "创建一个新的交易类型"
 
-#: kmymoney2.cpp:2475
+#: kmymoney2.cpp:2500
 #, c-format
 msgid "Unable to create account: %1"
 msgstr "无法创建账户：%1"
 
-#: kmymoney2.cpp:2486
+#: kmymoney2.cpp:2511
 msgid ""
 "The security <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
 "Do you want to create it?"
 msgstr "当前证券<b>%1</b>不作为<b>%2</b>的子账户而存在。你要创建它吗？"
 
-#: kmymoney2.cpp:2487
+#: kmymoney2.cpp:2512
 #, fuzzy
 msgid "Create security"
 msgstr "删除证券"
 
-#: kmymoney2.cpp:2521
+#: kmymoney2.cpp:2546
 msgid "Do you really want to delete the investment <b>%1</b>?"
 msgstr "您真的要删除投资<b>%1</b>吗？"
 
-#: kmymoney2.cpp:2521
+#: kmymoney2.cpp:2546
 msgid "Delete investment"
 msgstr "删除投资"
 
-#: kmymoney2.cpp:2528
+#: kmymoney2.cpp:2553
 #, c-format
 msgid "Unable to delete investment: %1"
 msgstr "无法删除投资：%1"
 
-#: kmymoney2.cpp:2610 kmymoney2.cpp:2616 views/kmymoneyview.cpp:1980
+#: kmymoney2.cpp:2635 kmymoney2.cpp:2641 views/kmymoneyview.cpp:1938
 msgid "Unable to add schedule: "
 msgstr "无法添加计划："
 
-#: kmymoney2.cpp:2692
+#: kmymoney2.cpp:2717
 #, fuzzy
 msgid "Adjusting transactions..."
 msgstr "正在调整交易..."
 
-#: kmymoney2.cpp:2717
+#: kmymoney2.cpp:2742
 #, fuzzy
 msgid "Adjusting schedules..."
 msgstr "正在调整交易计划..."
 
-#: kmymoney2.cpp:2735
+#: kmymoney2.cpp:2760
 #, fuzzy
 msgid "Adjusting budgets..."
 msgstr "正在调整预算..."
 
-#: kmymoney2.cpp:2753
+#: kmymoney2.cpp:2778
 msgid ""
 "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
 msgstr "无法交换类别<b>%1</b>和<b>%2</b>。原因是：%3"
 
-#: kmymoney2.cpp:2774
+#: kmymoney2.cpp:2799
 msgid "Do you really want to delete category <b>%1</b>?"
 msgstr "您真的要删除交易类别<b>%1</b>吗？"
 
-#: kmymoney2.cpp:2781
+#: kmymoney2.cpp:2806
 msgid "Unable to delete category <b>%1</b>. Cause: %2"
 msgstr "无法删除交易类别<b>%1</b>。原因：%2"
 
-#: kmymoney2.cpp:2793
+#: kmymoney2.cpp:2818
 msgid ""
 "Do you want to delete category <b>%1</b> with all its sub-categories or only "
 "the category itself? If you only delete the category itself, all its sub-"
@@ -2859,15 +2867,15 @@ msgstr ""
 "你希望只删除交易类别<b>%1</b>本身，还是连同它的子类别一起删除？如果你只删除它"
 "本身， 那么它的全部子类别都会成为<b>%2</b>的子类别。"
 
-#: kmymoney2.cpp:2797
+#: kmymoney2.cpp:2822
 msgid "Delete all"
 msgstr "全部删除"
 
-#: kmymoney2.cpp:2798
+#: kmymoney2.cpp:2823
 msgid "Just the category"
 msgstr "只是该类别"
 
-#: kmymoney2.cpp:2828
+#: kmymoney2.cpp:2853
 msgid ""
 "Some sub-categories of category <b>%1</b> cannot be deleted, because they "
 "are still used. They will be made sub-categories of <b>%2</b>. Proceed?"
@@ -2875,41 +2883,41 @@ msgstr ""
 "交易类别<b>%1</b>的部分子类别无法被删除，因为它们还在被使用。它们将会 成为<b>"
 "%2</b>的子类别。是否继续？"
 
-#: kmymoney2.cpp:2848
+#: kmymoney2.cpp:2873
 msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
 msgstr "无法删除交易类别<b>%1</b>的一个子类别。原因：%2"
 
-#: kmymoney2.cpp:2859
+#: kmymoney2.cpp:2884
 msgid "Do you really want to delete account <b>%1</b>?"
 msgstr "您真的要删除账户<b>%1</b>吗？"
 
-#: kmymoney2.cpp:2871
+#: kmymoney2.cpp:2896
 msgid "Unable to delete account '%1'. Cause: %2"
 msgstr "无法删除账户“%1”。原因：%2"
 
-#: kmymoney2.cpp:2887
+#: kmymoney2.cpp:2912
 msgid "Edit account '%1'"
 msgstr "编辑账户“%1”"
 
-#: kmymoney2.cpp:2892
+#: kmymoney2.cpp:2917
 msgid "Edit category '%1'"
 msgstr "编辑交易类别“%1”"
 
-#: kmymoney2.cpp:2978
+#: kmymoney2.cpp:3003
 msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "无法修改账户“%1”。原因：%2"
 
-#: kmymoney2.cpp:3034
+#: kmymoney2.cpp:3059
 msgid ""
 "KMyMoney has detected some overdue schedules for this account. Do you want "
 "to enter those scheduled transactions now?"
 msgstr "KMyMoney检测到此账户存在过期计划。现在是否应该输入这些计划的交易？"
 
-#: kmymoney2.cpp:3034
+#: kmymoney2.cpp:3059
 msgid "Scheduled transactions found"
 msgstr "发现计划交易"
 
-#: kmymoney2.cpp:3131
+#: kmymoney2.cpp:3156
 msgid ""
 "You are about to finish the reconciliation of this account with a difference "
 "between your bank statement and the transactions marked as cleared.\n"
@@ -2918,11 +2926,11 @@ msgstr ""
 "你将要完成此账户的对账，而在银行的对账单和已清算的账户交易之间还存在差额。\n"
 "您确认要完成此次对账吗？"
 
-#: kmymoney2.cpp:3133
+#: kmymoney2.cpp:3158
 msgid "Confirm end of reconciliation"
 msgstr "确认对账结束"
 
-#: kmymoney2.cpp:3307
+#: kmymoney2.cpp:3332
 msgid ""
 "You have closed this account. It remains in the system because you have "
 "transactions which still refer to it, but is not shown in the views. You can "
@@ -2933,39 +2941,39 @@ msgstr ""
 "视图里。你可以通过选择“视图”菜单里的“显示所有账户”项，或者在设置中取消“不显"
 "示 关闭的账户”选项，来让它重新可见。"
 
-#: kmymoney2.cpp:3347
+#: kmymoney2.cpp:3372
 msgid "<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3"
 msgstr "<b>%1</b>无法被移动到金融机构<b>%2</b>。原因： %3"
 
-#: kmymoney2.cpp:3361
+#: kmymoney2.cpp:3386
 msgid "<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3"
 msgstr "<b>%1</b>无法被移动到<b>%2</b>. 原因: %3"
 
-#: kmymoney2.cpp:3376
+#: kmymoney2.cpp:3401
 msgid "%1 YTD Account Transactions"
 msgstr "%1 YTD账户交易"
 
-#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3377
-#: views/kforecastview.cpp:648 views/khomeview.cpp:274
+#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3402
+#: views/kforecastview.cpp:650 views/khomeview.cpp:274
 #: views/khomeview.cpp:1372 views/kreportsview.cpp:619
 msgid "Generated Report"
 msgstr "生成报表？"
 
-#: dialogs/rc.cpp:322 dialogs/settings/rc.cpp:79 kmymoney2.cpp:3379
-#: views/kreportsview.cpp:1065 views/rc.cpp:52 views/rc.cpp:53
+#: dialogs/rc.cpp:322 dialogs/settings/rc.cpp:79 kmymoney2.cpp:3404
+#: views/kreportsview.cpp:1065 views/rc.cpp:58 views/rc.cpp:59
 msgid "Transactions"
 msgstr "交易数目"
 
-#: kmymoney2.cpp:3417
+#: kmymoney2.cpp:3442
 #, c-format
 msgid "Unable to add schedule: %1"
 msgstr "无法添加交易计划：%1"
 
-#: kmymoney2.cpp:3417
+#: kmymoney2.cpp:3442
 msgid "Add schedule"
 msgstr "新建计划"
 
-#: kmymoney2.cpp:3457
+#: kmymoney2.cpp:3482
 msgid ""
 "You have entered a Schedule date of <b>%1</b>.  Because the schedule was "
 "last paid on <b>%2</b>, KMyMoney will automatically adjust the schedule date "
@@ -2976,54 +2984,54 @@ msgstr ""
 "KMyMoney会自动按下期支付日期来调整计划日期，除非对上期支付的日期进行重置。是"
 "否要重置上期支付日期？"
 
-#: kmymoney2.cpp:3457
+#: kmymoney2.cpp:3482
 msgid "Reset Last Payment Date"
 msgstr "重置上次支付日期"
 
-#: kmymoney2.cpp:3467 kmymoney2.cpp:3487 kmymoney2.cpp:3499
+#: kmymoney2.cpp:3492 kmymoney2.cpp:3512 kmymoney2.cpp:3524
 msgid "Unable to modify schedule '%1'"
 msgstr "无法修改交易计划“%1”"
 
-#: kmymoney2.cpp:3511
+#: kmymoney2.cpp:3536
 msgid "Are you sure you want to delete the schedule <b>%1</b>?"
 msgstr "您确定要删除选中的计划<b>%1</b>？"
 
-#: kmymoney2.cpp:3514
+#: kmymoney2.cpp:3539
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "schedule."
 msgstr "目前尚无法重新创建贷款分期偿还的计划"
 
-#: kmymoney2.cpp:3523
+#: kmymoney2.cpp:3548
 msgid "Unable to remove schedule '%1'"
 msgstr "无法删除交易计划“%1”"
 
-#: kmymoney2.cpp:3537
+#: kmymoney2.cpp:3562
 #, c-format
 msgid ""
 "_: Copy of schedulename\n"
 "Copy of %1"
 msgstr "%1的副本"
 
-#: kmymoney2.cpp:3549 kmymoney2.cpp:4311
+#: kmymoney2.cpp:3574 kmymoney2.cpp:4336
 msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
 msgstr "无法复制交易：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:3563
+#: kmymoney2.cpp:3588
 msgid ""
 "Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</"
 "b>?"
 msgstr "您真的要跳过计划<b>%1</b>在<b>%2</b>的交易吗？"
 
-#: kmymoney2.cpp:3573
+#: kmymoney2.cpp:3598
 msgid "Unable to skip schedule <b>%1</b>."
 msgstr "无法跳过交易计划<b>%1</b>。"
 
-#: kmymoney2.cpp:3586
+#: kmymoney2.cpp:3611
 msgid "Unknown schedule '%1'"
 msgstr "未知交易计划“%1”"
 
-#: kmymoney2.cpp:3641
+#: kmymoney2.cpp:3666
 msgid ""
 "Are you sure you wish to stop this schedule from being entered into the "
 "register?\n"
@@ -3034,39 +3042,39 @@ msgstr ""
 "您确定要停止将此计划录入账簿吗？除非您执行了手工录入，否则下次KMyMoney启动时"
 "还会再次提醒您。"
 
-#: kmymoney2.cpp:3692 kmymoney2.cpp:3699
+#: kmymoney2.cpp:3717 kmymoney2.cpp:3724
 msgid "Unable to enter transaction for schedule '%1'"
 msgstr "无法为计划“%1”输入交易。"
 
-#: kmymoney2.cpp:3710 kmymoney2.cpp:3750
+#: kmymoney2.cpp:3735 kmymoney2.cpp:3775
 msgid "New Payee"
 msgstr "新建收款人"
 
-#: kmymoney2.cpp:3712
+#: kmymoney2.cpp:3737
 msgid "Do you want to add <b>%1</b> as payer/receiver ?"
 msgstr "你要将“<b>%1</b>”加为付/收款人吗?"
 
-#: converter/mymoneystatementreader.cpp:869 kmymoney2.cpp:3714
+#: converter/mymoneystatementreader.cpp:869 kmymoney2.cpp:3739
 msgid "New payee/receiver"
 msgstr "新建收款人"
 
-#: kmymoney2.cpp:3740
+#: kmymoney2.cpp:3765
 msgid "Unable to add payee"
 msgstr "无法创建收款人"
 
-#: kmymoney2.cpp:3793
+#: kmymoney2.cpp:3818
 msgid "Do you really want to remove the payee <b>%1</b>?"
 msgstr "您真的要删除收款人<b>%1</b>吗？"
 
-#: kmymoney2.cpp:3795
+#: kmymoney2.cpp:3820
 msgid "Do you really want to remove all selected payees?"
 msgstr "您真的要删除所有选中的付款人吗？"
 
-#: kmymoney2.cpp:3797
+#: kmymoney2.cpp:3822
 msgid "Remove Payee"
 msgstr "删除收款人"
 
-#: kmymoney2.cpp:3837
+#: kmymoney2.cpp:3862
 msgid ""
 "At least one transaction/schedule is still referenced by a payee. Currently "
 "you have all payees selected. However, at least one payee must remain so "
@@ -3075,100 +3083,100 @@ msgstr ""
 "至少一项交易/交易计划还在被一个付款人所引用。目前你选中了全部付款人，但必须还"
 "剩下至少一个收款人，以使这些交易/交易计划能够被重新指定。"
 
-#: kmymoney2.cpp:3892
+#: kmymoney2.cpp:3917
 msgid "Unable to reassign payee of transaction/split"
 msgstr "无法重新指定交易/划分的收/付款人"
 
 #: converter/mymoneyqifreader.cpp:525 converter/mymoneystatementreader.cpp:895
-#: kmymoney2.cpp:3893 kmymoney2.cpp:3950 views/kbudgetview.cpp:636
+#: kmymoney2.cpp:3918 kmymoney2.cpp:3975 views/kbudgetview.cpp:636
 #: views/kbudgetview.cpp:737 views/kbudgetview.cpp:751
 #: views/kpayeesview.cpp:451 views/kpayeesview.cpp:769
 msgid "thrown in"
 msgstr "thrown in"
 
-#: kmymoney2.cpp:3949
+#: kmymoney2.cpp:3974
 msgid "Unable to remove payee(s)"
 msgstr "无法删除收/付款人"
 
-#: kmymoney2.cpp:3957
+#: kmymoney2.cpp:3982
 msgid "Enter ISO 4217 code for the new currency"
 msgstr "输入新货币的ISO4217代码"
 
-#: kmymoney2.cpp:3966
+#: kmymoney2.cpp:3991
 #, c-format
 msgid "Cannot create new currency. %1"
 msgstr "无法创建新货币。%1"
 
-#: kmymoney2.cpp:3988 kmymoney2.cpp:3993
+#: kmymoney2.cpp:4013 kmymoney2.cpp:4018
 #, c-format
 msgid "Cannot rename currency. %1"
 msgstr "无法重命名货币。%1"
 
-#: kmymoney2.cpp:4006
+#: kmymoney2.cpp:4031
 msgid "Cannot delete currency %1. %2"
 msgstr "无法删除货币%1。%2"
 
-#: kmymoney2.cpp:4021 views/kmymoneyview.cpp:1314
+#: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
 msgid "Cannot set %1 as base currency: %2"
 msgstr "无法将%1选择为基准货币：%2。"
 
-#: kmymoney2.cpp:4021 views/kmymoneyview.cpp:1314
+#: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
 msgid "Set base currency"
 msgstr "选择基准货币"
 
-#: kmymoney2.cpp:4032
+#: kmymoney2.cpp:4057
 #, c-format
 msgid "Budget %1"
 msgstr "预算%1"
 
-#: kmymoney2.cpp:4042
+#: kmymoney2.cpp:4067
 msgid "Budget %1 (%2)"
 msgstr "预算%1(%2)"
 
-#: kmymoney2.cpp:4057 kmymoney2.cpp:4106
+#: kmymoney2.cpp:4082 kmymoney2.cpp:4131
 msgid "Unable to add budget: %1, thrown in %2:%3"
 msgstr "无法新建预算：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4072
+#: kmymoney2.cpp:4097
 msgid "Do you really want to remove the budget <b>%1</b>?"
 msgstr "您真的要删除预算<b>%1</b>？"
 
-#: kmymoney2.cpp:4074
+#: kmymoney2.cpp:4099
 msgid "Do you really want to remove all selected budgets?"
 msgstr "您真的要删除所有选中的预算吗？"
 
-#: kmymoney2.cpp:4076
+#: kmymoney2.cpp:4101
 msgid "Remove Budget"
 msgstr "删除预算"
 
-#: kmymoney2.cpp:4089
+#: kmymoney2.cpp:4114
 msgid "Unable to remove budget: %1, thrown in %2:%3"
 msgstr "无法删除预算：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4101 views/kreportsview.cpp:659
+#: kmymoney2.cpp:4126 views/kreportsview.cpp:659
 #, c-format
 msgid "Copy of %1"
 msgstr "%1的副本"
 
-#: kmymoney2.cpp:4131
+#: kmymoney2.cpp:4156
 msgid "Select year"
 msgstr "选择年份"
 
-#: kmymoney2.cpp:4131
+#: kmymoney2.cpp:4156
 msgid "Budget year"
 msgstr "预算年份"
 
-#: kmymoney2.cpp:4143 kmymoney2.cpp:4181 kmymoney2.cpp:4233
+#: kmymoney2.cpp:4168 kmymoney2.cpp:4206 kmymoney2.cpp:4258
 msgid "Unable to modify budget: %1, thrown in %2:%3"
 msgstr "无法编辑预算：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4159 kmymoney2.cpp:4209
+#: kmymoney2.cpp:4184 kmymoney2.cpp:4234
 msgid ""
 "The current budget already contains data. Continuing will replace all "
 "current values of this budget."
 msgstr "当前预算中已经包含数据。继续的话，将会替换该预算的所有现有值。"
 
-#: kmymoney2.cpp:4189
+#: kmymoney2.cpp:4214
 msgid ""
 "Please be aware that changes made in the following dialog affect all KDE "
 "applications not only KMyMoney."
@@ -3176,45 +3184,45 @@ msgstr ""
 "请注意，在随后的对话框中做出的修改，将会影响包括KMyMoney在内的所有KDE应用程"
 "序。"
 
-#: kmymoney2.cpp:4251
+#: kmymoney2.cpp:4276
 msgid ""
 "At least one split of the selected transactions has been reconciled. Do you "
 "wish to delete the transactions anyway?"
 msgstr "选中交易里的至少一项拆分已经完成了对帐。您确定还是要删除这些交易吗？"
 
-#: kmymoney2.cpp:4254 views/kgloballedgerview.cpp:1024
+#: kmymoney2.cpp:4279 views/kgloballedgerview.cpp:1024
 msgid "Transaction already reconciled"
 msgstr "已对帐交易"
 
-#: kmymoney2.cpp:4260
+#: kmymoney2.cpp:4285
 msgid "Do you really want to delete the selected transaction?"
 msgstr "您真的要删除选中的交易吗？"
 
-#: kmymoney2.cpp:4262
+#: kmymoney2.cpp:4287
 msgid "Do you really want to delete all %1 selected transactions?"
 msgstr "您真的要删除所有%1选中的交易吗？"
 
-#: kmymoney2.cpp:4264
+#: kmymoney2.cpp:4289
 msgid "Delete transaction"
 msgstr "删除交易"
 
-#: kmymoney2.cpp:4265
+#: kmymoney2.cpp:4290
 msgid "Deleting transactions"
 msgstr "正在删除交易"
 
-#: kmymoney2.cpp:4280
+#: kmymoney2.cpp:4305
 msgid "Duplicating transactions"
 msgstr "正在复制交易"
 
-#: kmymoney2.cpp:4334
+#: kmymoney2.cpp:4359
 msgid "Unable to delete transaction(s): %1, thrown in %2:%3"
 msgstr "无法删除交易：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4393 kmymoney2.cpp:4557
+#: kmymoney2.cpp:4418 kmymoney2.cpp:4582
 msgid "Unable to modify transaction: %1, thrown in %2:%3"
 msgstr "无法修改交易：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4449
+#: kmymoney2.cpp:4474
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3226,11 +3234,11 @@ msgstr ""
 "<br>- <b>否</b>在保存对交易的修改并退出<br>- <b>Cancel</b>返回交易编辑器<p>您"
 "可以通过选项的设置来在诸如选择其他交易等情况时，自动保存交易修改。"
 
-#: kmymoney2.cpp:4449 kmymoney2.cpp:4452
+#: kmymoney2.cpp:4474 kmymoney2.cpp:4477
 msgid "Cancel transaction edit"
 msgstr "取消交易编辑"
 
-#: kmymoney2.cpp:4452
+#: kmymoney2.cpp:4477
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3241,113 +3249,120 @@ msgstr ""
 "<br>- <b>否</b>在保存对交易的修改并退出。<p>您可以通过选项的设置来在诸如选择"
 "其他交易等情况时，自动保存交易修改。"
 
-#: kmymoney2.cpp:4602
+#: kmymoney2.cpp:4627
 msgid "Unable to accept transaction: %1, thrown in %2:%3"
 msgstr "无法接受交易：%1，发生于%2：%3"
 
-#: kmymoney2.cpp:4781
+#: kmymoney2.cpp:4806
 msgid "Unable to unmatch the selected transactions"
 msgstr "无法取消选中交易的匹配"
 
-#: kmymoney2.cpp:4820
+#: kmymoney2.cpp:4845
 msgid "No manually entered transaction selected for matching"
 msgstr "未选择要进行匹配的手工输入交易"
 
-#: kmymoney2.cpp:4822
+#: kmymoney2.cpp:4847
 msgid "No imported transaction selected for matching"
 msgstr "未选中要匹配的导入交易"
 
-#: kmymoney2.cpp:4830
+#: kmymoney2.cpp:4855
 msgid "Unable to match the selected transactions"
 msgstr "无法匹配选中的交易"
 
-#: kmymoney2.cpp:5032
+#: kmymoney2.cpp:5057
 msgid "Create a new transaction"
 msgstr "新建交易"
 
-#: kmymoney2.cpp:5083
+#: kmymoney2.cpp:5108
 msgid "Duplicate the current selected transactions"
 msgstr "复制当前选中的交易"
 
-#: kmymoney2.cpp:5353 kmymoney2.cpp:5375
+#: kmymoney2.cpp:5158
+#, fuzzy
+msgid ""
+"_: Button text for unmatch transaction\n"
+"Unmatch"
+msgstr "匹配"
+
+#: kmymoney2.cpp:5378 kmymoney2.cpp:5400
 msgid "Goto '%1'"
 msgstr "跳转到“%1”"
 
-#: kmymoney2.cpp:5484
+#: kmymoney2.cpp:5509
 msgid "Running consistency check..."
 msgstr "正在执行一致性检查..."
 
-#: kmymoney2.cpp:5492
+#: kmymoney2.cpp:5517
 #, c-format
 msgid "Consistency check failed: %1"
 msgstr "一致性检查失败：%1"
 
-#: kmymoney2.cpp:5496
+#: kmymoney2.cpp:5521
 msgid "Consistency check result"
 msgstr "一致性检查结果"
 
-#: kmymoney2.cpp:5505
+#: kmymoney2.cpp:5530
 msgid "Checking for overdue schedules..."
 msgstr "正在检查过期计划..."
 
-#: kmymoney2.cpp:5642
+#: kmymoney2.cpp:5667
 msgid ""
 "You must first select a KMyMoney file before you can import a statement."
 msgstr "在导入对帐单前，您首先必须选择一个KMyMoney文件。"
 
-#: kmymoney2.cpp:5648
+#: kmymoney2.cpp:5673
 msgid "Importing a statement via Web Connect"
 msgstr "通过互联网导入对帐单"
 
-#: kmymoney2.cpp:5661
+#: kmymoney2.cpp:5686
 msgid ""
 "Unable to import %1 using %2 plugin.  The plugin returned the following "
 "error: %3"
 msgstr "使用%2插件导入%1出错：%3。导入失败。"
 
-#: kmymoney2.cpp:5661 plugins/ofximport/ofximporterplugin.cpp:636
+#: kmymoney2.cpp:5686 plugins/ofximport/ofximporterplugin.cpp:637
 msgid "Importing error"
 msgstr "导入出错"
 
-#: kmymoney2.cpp:5682
+#: kmymoney2.cpp:5707
 msgid "All messages have been enabled."
 msgstr "已打开全部信息提示。"
 
-#: kmymoney2.cpp:5682
+#: kmymoney2.cpp:5707
 msgid "All messages"
 msgstr "全部信息"
 
-#: kmymoney2.cpp:5724
+#: kmymoney2.cpp:5749
 msgid "Loaded"
 msgstr "已载入"
 
-#: kmymoney2.cpp:5732
+#: kmymoney2.cpp:5757
 msgid ""
 "_: Plugin interface description\n"
 "Online access"
 msgstr "在线访问"
 
-#: kmymoney2.cpp:5741
+#: kmymoney2.cpp:5766
 msgid ""
 "_: Plugin interface description\n"
 "File import"
 msgstr "文件导入"
 
-#: kmymoney2.cpp:5745
+#: kmymoney2.cpp:5770
 #, c-format
 msgid "not loaded: %1"
 msgstr "未载入：%1"
 
-#: kmymoney2.cpp:5759
+#: kmymoney2.cpp:5784
 #, fuzzy
 msgid "Auto saving..."
 msgstr "正在自动保存..."
 
-#: kmymoney2.cpp:5817
+#: kmymoney2.cpp:5842
 msgid "Unable to setup online parameters for account ''%1'"
 msgstr "无法为账户“%1”设立网银参数"
 
-#: kmymoney2.cpp:5832
+#: kmymoney2.cpp:5857
 msgid ""
 "Do you really want to remove the mapping of account <b>%1</b> to an online "
 "account? Depending on the details of the online banking method used, this "
@@ -3356,31 +3371,49 @@ msgstr ""
 "你真的要删除账户<b>%1</b>到网上银行的映射吗？因为某些网上银行的限制，这项操作"
 "是不可撤销的。"
 
-#: kmymoney2.cpp:5832
+#: kmymoney2.cpp:5857
 msgid "Remove mapping to online account"
 msgstr "删除到网上账户的映射"
 
-#: kmymoney2.cpp:5843
+#: kmymoney2.cpp:5868
 #, c-format
 msgid "Unable to unmap account from online account: %1"
 msgstr "无法将取消到到网银账户的映射：%1"
 
-#: kmymoney2.cpp:5861
+#: kmymoney2.cpp:5885
+#, fuzzy
+msgid " (Brokerage)"
+msgstr "%1（托管）"
+
+#: kmymoney2.cpp:5886
+msgid ""
+"You try to map a brokerage account to an online account. This is usually not "
+"advisable. In general, the investment account should be mapped to the online "
+"account. Please cancel if you intended to map the investment account, "
+"continue otherwise"
+msgstr ""
+
+#: kmymoney2.cpp:5886
+#, fuzzy
+msgid "Mapping brokerage account"
+msgstr "创建托管账户"
+
+#: kmymoney2.cpp:5893
 msgid "Select online banking plugin"
 msgstr "选择网银插件"
 
-#: kmymoney2.cpp:5902
+#: kmymoney2.cpp:5934
 #, c-format
 msgid "Unable to map account to online account: %1"
 msgstr "无法将账户映射到网银账户：%1"
 
 #: converter/mymoneyqifreader.cpp:398 converter/mymoneytemplate.cpp:73
-#: views/kmymoneyview.cpp:598
+#: views/kmymoneyview.cpp:589
 msgid "Error while loading file '%1'!"
 msgstr "载入文件“%1”时出错！"
 
 #: converter/mymoneyqifreader.cpp:400 converter/mymoneyqifreader.cpp:955
-#: converter/mymoneytemplate.cpp:75 views/kmymoneyview.cpp:600
+#: converter/mymoneytemplate.cpp:75 views/kmymoneyview.cpp:591
 msgid "File access error"
 msgstr "文件访问出错"
 
@@ -3388,7 +3421,7 @@ msgstr "文件访问出错"
 msgid "<b>%1</b> is not a template file."
 msgstr "<b>%1</b>不是一个模板文件。"
 
-#: converter/mymoneytemplate.cpp:85 views/kmymoneyview.cpp:611
+#: converter/mymoneytemplate.cpp:85 views/kmymoneyview.cpp:602
 msgid "Filetype Error"
 msgstr "文件类型错误"
 
@@ -3423,11 +3456,11 @@ msgid ""
 msgstr "在模板文件 <b>%2</b>的账户<b>%3</b>出现非法标志类型<b>%1</b>!"
 
 #: converter/mymoneytemplate.cpp:398 converter/mymoneytemplate.cpp:401
-#: views/kmymoneyview.cpp:1158 views/kmymoneyview.cpp:1161
+#: views/kmymoneyview.cpp:1148 views/kmymoneyview.cpp:1151
 msgid "Unable to write changes to '%1'"
 msgstr "无法将修改写入“%1”"
 
-#: converter/mymoneytemplate.cpp:407 views/kmymoneyview.cpp:1169
+#: converter/mymoneytemplate.cpp:407 views/kmymoneyview.cpp:1159
 msgid "Unable to upload to '%1'"
 msgstr "无法上传到“%1”"
 
@@ -4231,115 +4264,115 @@ msgid ""
 "please check"
 msgstr "账户或交易类型%1，交易日期%2;拆分包含非法数值;请检查"
 
-#: kmymoneyutils.cpp:189
+#: kmymoneyutils.cpp:191
 msgid "&New Schedule..."
 msgstr "新计划(&N)..."
 
-#: kmymoneyutils.cpp:191
+#: kmymoneyutils.cpp:193
 msgid "Create a new schedule."
 msgstr "创建新的计划。"
 
-#: kmymoneyutils.cpp:192
+#: kmymoneyutils.cpp:194
 msgid "Use this to create a new schedule."
 msgstr "用它来创建新的定期计划。"
 
-#: kmymoneyutils.cpp:201
+#: kmymoneyutils.cpp:203
 msgid "&Filter"
 msgstr "过滤器(&F)"
 
-#: kmymoneyutils.cpp:203
+#: kmymoneyutils.cpp:205
 msgid "Filter out accounts"
 msgstr "滤出账户"
 
-#: kmymoneyutils.cpp:204
+#: kmymoneyutils.cpp:206
 msgid "Use this to filter out accounts"
 msgstr "用它来滤出账户"
 
-#: kmymoneyutils.cpp:235
+#: kmymoneyutils.cpp:237
 msgid "Preferred accounts"
 msgstr "偏好账户"
 
-#: kmymoneyutils.cpp:236
+#: kmymoneyutils.cpp:238
 msgid "Payment accounts"
 msgstr "支付账户"
 
-#: kmymoneyutils.cpp:237
+#: kmymoneyutils.cpp:239
 msgid "Favorite reports"
 msgstr "常用报表"
 
-#: kmymoneyutils.cpp:238
+#: kmymoneyutils.cpp:240
 msgid "Forecast (schedule)"
 msgstr "预报（交易计划）"
 
-#: kmymoneyutils.cpp:239
+#: kmymoneyutils.cpp:241
 msgid "Networth forecast"
 msgstr "资产净值预报"
 
-#: kmymoneyutils.cpp:240
+#: kmymoneyutils.cpp:242
 msgid "Forecast (history)"
 msgstr "预报（历史）"
 
-#: kmymoneyutils.cpp:241
+#: kmymoneyutils.cpp:243
 msgid "Assets and Liabilities"
 msgstr "资产与负债"
 
-#: kmymoneyutils.cpp:242 reports/pivottable.cpp:2346 views/khomeview.cpp:1381
+#: kmymoneyutils.cpp:244 reports/pivottable.cpp:2373 views/khomeview.cpp:1381
 #: widgets/rc.cpp:70
 msgid "Budget"
 msgstr "预算"
 
-#: kmymoneyutils.cpp:243
+#: kmymoneyutils.cpp:245
 #, fuzzy
 msgid "CashFlow"
 msgstr "现金账户"
 
-#: dialogs/kenterscheduledlg.cpp:153 kmymoneyutils.cpp:554
+#: dialogs/kenterscheduledlg.cpp:153 kmymoneyutils.cpp:504
 msgid "Unable to load schedule details"
 msgstr "无法载入时间表数据。"
 
-#: kmymoneyutils.cpp:578 widgets/register.cpp:451
+#: kmymoneyutils.cpp:528 widgets/register.cpp:451
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
 msgstr "未对账"
 
-#: kmymoneyutils.cpp:581 widgets/register.cpp:454
+#: kmymoneyutils.cpp:531 widgets/register.cpp:454
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
 msgstr "已清算"
 
-#: kmymoneyutils.cpp:584 widgets/register.cpp:457
+#: kmymoneyutils.cpp:534 widgets/register.cpp:457
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
 msgstr "已对账"
 
-#: kmymoneyutils.cpp:587 widgets/register.cpp:460
+#: kmymoneyutils.cpp:537 widgets/register.cpp:460
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
 msgstr "已冻结"
 
-#: kmymoneyutils.cpp:598
+#: kmymoneyutils.cpp:548
 msgid ""
 "_: Reconcile flag C\n"
 "C"
 msgstr "C"
 
-#: kmymoneyutils.cpp:601
+#: kmymoneyutils.cpp:551
 msgid ""
 "_: Reconcile flag R\n"
 "R"
 msgstr "R"
 
-#: kmymoneyutils.cpp:604
+#: kmymoneyutils.cpp:554
 msgid ""
 "_: Reconcile flag F\n"
 "F"
 msgstr "F"
 
-#: kmymoneyutils.cpp:607
+#: kmymoneyutils.cpp:557
 msgid ""
 "_: Flag for unknown reconciliation state\n"
 "?"
@@ -4495,86 +4528,93 @@ msgstr ""
 "入文件（OFX或QIF格式）。</p>\n"
 "<p>由Jose Jorge提供</p>\n"
 
-#: reports/listtable.cpp:159 reports/pivottable.cpp:1522
+#: reports/listtable.cpp:159 reports/listtable.cpp:163
+#: reports/pivottable.cpp:1542
+msgid ""
+"_: Report date range\n"
+"%1 through %2"
+msgstr ""
+
+#: reports/listtable.cpp:171 reports/pivottable.cpp:1549
 #, c-format
 msgid "All currencies converted to %1"
 msgstr "全部货币都已转换成%1"
 
-#: reports/listtable.cpp:160 reports/pivottable.cpp:1287
+#: reports/listtable.cpp:172 reports/pivottable.cpp:1306
 msgid "All currencies converted to %1\n"
 msgstr "全部货币都已转换成%1\n"
 
-#: reports/listtable.cpp:164 reports/pivottable.cpp:1524
+#: reports/listtable.cpp:176 reports/pivottable.cpp:1551
 msgid "All values shown in %1 unless otherwise noted"
 msgstr "除非特别说明，所有的数值都在%1中显示"
 
-#: reports/listtable.cpp:165 reports/pivottable.cpp:1289
+#: reports/listtable.cpp:177 reports/pivottable.cpp:1308
 msgid "All values shown in %1 unless otherwise noted\n"
 msgstr "除非特别说明，所有的数值都在%1中显示\n"
 
 #: dialogs/kequitypriceupdatedlg.cpp:73 dialogs/kfindtransactiondlg.cpp:208
-#: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:206 dialogs/rc.cpp:806
+#: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:206 dialogs/rc.cpp:803
 #: dialogs/settings/rc.cpp:110 dialogs/transactioneditor.cpp:829
-#: reports/listtable.cpp:184 views/khomeview.cpp:411 views/khomeview.cpp:475
-#: views/khomeview.cpp:509 views/rc.cpp:55 widgets/kmymoneypriceview.cpp:128
+#: reports/listtable.cpp:196 views/khomeview.cpp:411 views/khomeview.cpp:475
+#: views/khomeview.cpp:509 views/rc.cpp:61 widgets/kmymoneypriceview.cpp:128
 #: widgets/rc.cpp:36 widgets/register.cpp:543 widgets/transaction.cpp:1017
 #: widgets/transaction.cpp:1474
 msgid "Date"
 msgstr "日期"
 
-#: reports/listtable.cpp:186
+#: reports/listtable.cpp:198
 msgid "Num"
 msgstr "编号"
 
 #: dialogs/kfindtransactiondlg.cpp:224 dialogs/kmymoneysplittable.cpp:78
-#: dialogs/kmymoneysplittable.cpp:791 dialogs/rc.cpp:215
-#: dialogs/transactioneditor.cpp:816 dialogs/transactioneditor.cpp:1341
-#: dialogs/transactioneditor.cpp:1349 dialogs/transactioneditor.cpp:1363
-#: dialogs/transactioneditor.cpp:1416 dialogs/transactioneditor.cpp:1423
-#: dialogs/transactioneditor.cpp:1471 reports/listtable.cpp:188
-#: views/kcategoriesview.cpp:76 views/rc.cpp:56 widgets/rc.cpp:115
+#: dialogs/kmymoneysplittable.cpp:814 dialogs/rc.cpp:215
+#: dialogs/transactioneditor.cpp:816 dialogs/transactioneditor.cpp:1350
+#: dialogs/transactioneditor.cpp:1358 dialogs/transactioneditor.cpp:1372
+#: dialogs/transactioneditor.cpp:1425 dialogs/transactioneditor.cpp:1432
+#: dialogs/transactioneditor.cpp:1480 reports/listtable.cpp:200
+#: views/kcategoriesview.cpp:76 views/rc.cpp:62 widgets/rc.cpp:115
 #: widgets/register.cpp:62 widgets/transaction.cpp:838
 #: widgets/transaction.cpp:896
 msgid "Category"
 msgstr "交易类别"
 
-#: dialogs/kmymoneysplittable.cpp:79 dialogs/kmymoneysplittable.cpp:797
-#: reports/listtable.cpp:190 widgets/rc.cpp:101 widgets/transaction.cpp:1032
+#: dialogs/kmymoneysplittable.cpp:79 dialogs/kmymoneysplittable.cpp:820
+#: reports/listtable.cpp:202 widgets/rc.cpp:101 widgets/transaction.cpp:1032
 #: widgets/transaction.cpp:1618
 msgid "Memo"
 msgstr "备忘"
 
-#: reports/listtable.cpp:191
+#: reports/listtable.cpp:203
 msgid "Top Category"
 msgstr "顶级交易类别"
 
-#: reports/listtable.cpp:192
+#: reports/listtable.cpp:204
 msgid "Category Type"
 msgstr "交易类别类型"
 
-#: reports/listtable.cpp:193 widgets/kmymoneycalendar.cpp:124
+#: reports/listtable.cpp:205 widgets/kmymoneycalendar.cpp:124
 #: widgets/rc.cpp:96
 msgid "Month"
 msgstr "月份"
 
-#: reports/listtable.cpp:194 widgets/kmymoneycalendar.cpp:123
+#: reports/listtable.cpp:206 widgets/kmymoneycalendar.cpp:123
 #: widgets/rc.cpp:97
 msgid "Week"
 msgstr "周"
 
-#: dialogs/rc.cpp:227 dialogs/settings/rc.cpp:147 reports/listtable.cpp:195
+#: dialogs/rc.cpp:227 dialogs/settings/rc.cpp:147 reports/listtable.cpp:207
 #: widgets/kmymoneycombo.cpp:346 widgets/rc.cpp:107
 msgid "Reconciled"
 msgstr "已调整"
 
-#: reports/listtable.cpp:196 widgets/rc.cpp:117
+#: reports/listtable.cpp:208 widgets/rc.cpp:117
 msgid "Action"
 msgstr "动作"
 
 #: dialogs/investactivities.cpp:199 dialogs/investactivities.cpp:287
 #: dialogs/investactivities.cpp:424 dialogs/investactivities.cpp:504
 #: dialogs/investactivities.cpp:544 dialogs/investtransactioneditor.cpp:241
-#: reports/listtable.cpp:197 widgets/rc.cpp:103 widgets/transaction.cpp:1503
+#: reports/listtable.cpp:209 widgets/rc.cpp:103 widgets/transaction.cpp:1503
 msgid "Shares"
 msgstr "股"
 
@@ -4583,134 +4623,136 @@ msgstr "股"
 #: dialogs/investtransactioneditor.cpp:1068
 #: dialogs/investtransactioneditor.cpp:1072
 #: dialogs/kequitypriceupdatedlg.cpp:72 dialogs/rc.cpp:108 dialogs/rc.cpp:163
-#: dialogs/rc.cpp:249 dialogs/rc.cpp:828 dialogs/settings/rc.cpp:117
-#: reports/listtable.cpp:198 reports/listtable.cpp:199
-#: views/kinvestmentview.cpp:81 widgets/kmymoneypriceview.cpp:129
-#: widgets/rc.cpp:43 widgets/rc.cpp:105 widgets/register.cpp:551
+#: dialogs/rc.cpp:249 dialogs/rc.cpp:754 dialogs/rc.cpp:825
+#: dialogs/settings/rc.cpp:117 reports/listtable.cpp:210
+#: reports/listtable.cpp:211 views/kinvestmentview.cpp:81
+#: widgets/kmymoneypriceview.cpp:129 widgets/rc.cpp:43 widgets/rc.cpp:105
+#: widgets/register.cpp:551
 msgid "Price"
 msgstr "价格"
 
-#: reports/listtable.cpp:200
+#: reports/listtable.cpp:212
 msgid "Net Value"
 msgstr "净值"
 
-#: reports/listtable.cpp:201
+#: reports/listtable.cpp:213
 msgid "Buys"
 msgstr "买"
 
-#: reports/listtable.cpp:202
+#: reports/listtable.cpp:214
 msgid "Sells"
 msgstr "卖"
 
-#: reports/listtable.cpp:203
+#: reports/listtable.cpp:215
 msgid "Dividends Reinvested"
 msgstr "重新用于投资的红利"
 
-#: reports/listtable.cpp:204
+#: reports/listtable.cpp:216
 msgid "Dividends Paid Out"
 msgstr "用于支出的红利"
 
-#: reports/listtable.cpp:205
+#: reports/listtable.cpp:217
 msgid "Starting Balance"
 msgstr "期初余额"
 
-#: reports/listtable.cpp:206
+#: reports/listtable.cpp:218
 msgid "Ending Balance"
 msgstr "期末余额"
 
-#: reports/listtable.cpp:207
+#: reports/listtable.cpp:219
 msgid "Annualized Return"
 msgstr "年度分红"
 
-#: reports/listtable.cpp:208
+#: reports/listtable.cpp:220
 msgid "Return On Investment"
 msgstr "投资回报(ROI)"
 
 #: dialogs/rc.cpp:105 dialogs/rc.cpp:160 dialogs/rc.cpp:246 dialogs/rc.cpp:503
-#: dialogs/rc.cpp:568 dialogs/rc.cpp:665 reports/listtable.cpp:211
-#: widgets/register.cpp:548
+#: dialogs/rc.cpp:568 dialogs/rc.cpp:665 dialogs/rc.cpp:751
+#: reports/listtable.cpp:223 widgets/register.cpp:548
 msgid "Payment"
 msgstr "支付"
 
-#: dialogs/rc.cpp:110 dialogs/rc.cpp:165 dialogs/rc.cpp:251 dialogs/rc.cpp:724
-#: reports/listtable.cpp:212 widgets/rc.cpp:119 widgets/register.cpp:553
+#: dialogs/rc.cpp:110 dialogs/rc.cpp:165 dialogs/rc.cpp:251 dialogs/rc.cpp:707
+#: dialogs/rc.cpp:756 reports/listtable.cpp:224 widgets/rc.cpp:119
+#: widgets/register.cpp:553
 msgid "Balance"
 msgstr "余额"
 
-#: reports/listtable.cpp:215 views/kscheduledview.cpp:74
+#: reports/listtable.cpp:227 views/kscheduledview.cpp:74
 msgid "Next Due Date"
 msgstr "下次到期日"
 
-#: reports/listtable.cpp:217 views/kscheduledview.cpp:76
+#: reports/listtable.cpp:229 views/kscheduledview.cpp:76
 msgid "Payment Method"
 msgstr "支付方式"
 
-#: dialogs/rc.cpp:804 reports/listtable.cpp:219 widgets/rc.cpp:2
+#: dialogs/rc.cpp:801 reports/listtable.cpp:231 widgets/rc.cpp:2
 msgid "Description"
 msgstr "描述"
 
-#: reports/listtable.cpp:220
+#: reports/listtable.cpp:232
 msgid "Opening Date"
 msgstr "开户日期"
 
-#: reports/listtable.cpp:222
+#: reports/listtable.cpp:234
 msgid "Balance Early Warning"
 msgstr "余额早期预警"
 
-#: reports/listtable.cpp:223
+#: reports/listtable.cpp:235
 msgid "Balance Max Limit"
 msgstr "余额上限："
 
-#: reports/listtable.cpp:224
+#: reports/listtable.cpp:236
 msgid "Credit Early Warning"
 msgstr "信用额早期预警"
 
-#: reports/listtable.cpp:225
+#: reports/listtable.cpp:237
 msgid "Credit Max Limit"
 msgstr "信用额上线"
 
-#: dialogs/rc.cpp:374 reports/listtable.cpp:226
+#: dialogs/rc.cpp:374 reports/listtable.cpp:238
 msgid "Tax"
 msgstr "税"
 
-#: reports/listtable.cpp:227
+#: reports/listtable.cpp:239
 msgid "Preferred"
 msgstr "偏好的"
 
-#: reports/listtable.cpp:228
+#: reports/listtable.cpp:240
 msgid "Loan Amount"
 msgstr "贷款金额"
 
-#: dialogs/rc.cpp:509 reports/listtable.cpp:229
+#: dialogs/rc.cpp:509 reports/listtable.cpp:241
 msgid "Interest Rate"
 msgstr "利率"
 
-#: reports/listtable.cpp:230
+#: reports/listtable.cpp:242
 msgid "Next Interest Change"
 msgstr "下次利率变化"
 
-#: reports/listtable.cpp:231
+#: reports/listtable.cpp:243
 msgid "Periodic Payment"
 msgstr "周期性支付"
 
-#: reports/listtable.cpp:232
+#: reports/listtable.cpp:244
 msgid "Final Payment"
 msgstr "最后一次支付"
 
-#: reports/listtable.cpp:233 views/khomeview.cpp:756 views/khomeview.cpp:1255
+#: reports/listtable.cpp:245 views/khomeview.cpp:756 views/khomeview.cpp:1255
 #: views/khomeview.cpp:1263
 msgid "Current Balance"
 msgstr "当前余额"
 
 #: dialogs/investactivities.cpp:201 dialogs/investactivities.cpp:289
 #: dialogs/investactivities.cpp:368 dialogs/investactivities.cpp:426
-#: dialogs/rc.cpp:325 reports/listtable.cpp:348 reports/listtable.cpp:352
-#: reports/listtable.cpp:544 reports/listtable.cpp:546
-#: reports/pivottable.cpp:1302 reports/pivottable.cpp:1404
-#: reports/pivottable.cpp:1464 reports/pivottable.cpp:1549
-#: reports/pivottable.cpp:1719 reports/pivottable.cpp:1796
-#: reports/pivottable.cpp:2103 reports/pivottable.cpp:2105
-#: reports/pivottable.cpp:2125 reports/pivottable.cpp:2127
+#: dialogs/rc.cpp:325 reports/listtable.cpp:360 reports/listtable.cpp:364
+#: reports/listtable.cpp:556 reports/listtable.cpp:558
+#: reports/pivottable.cpp:1321 reports/pivottable.cpp:1423
+#: reports/pivottable.cpp:1483 reports/pivottable.cpp:1576
+#: reports/pivottable.cpp:1746 reports/pivottable.cpp:1823
+#: reports/pivottable.cpp:2130 reports/pivottable.cpp:2132
+#: reports/pivottable.cpp:2152 reports/pivottable.cpp:2154
 #: reports/querytabletest.cpp:134 reports/querytabletest.cpp:135
 #: reports/querytabletest.cpp:136 reports/querytabletest.cpp:137
 #: reports/querytabletest.cpp:162 reports/querytabletest.cpp:163
@@ -4725,29 +4767,29 @@ msgstr "当前余额"
 msgid "Total"
 msgstr "总额"
 
-#: reports/listtable.cpp:432
+#: reports/listtable.cpp:444
 msgid "Initial Market Value"
 msgstr "期初市值"
 
-#: reports/listtable.cpp:433
+#: reports/listtable.cpp:445
 msgid "Ending Market Value"
 msgstr "期末市值"
 
-#: reports/listtable.cpp:436 reports/querytabletest.cpp:651
+#: reports/listtable.cpp:448 reports/querytabletest.cpp:651
 msgid "Opening Balance"
 msgstr "开盘余额"
 
-#: reports/listtable.cpp:437 reports/querytabletest.cpp:652
+#: reports/listtable.cpp:449 reports/querytabletest.cpp:652
 #: reports/querytabletest.cpp:653
 msgid "Closing Balance"
 msgstr "收盘余额"
 
-#: reports/listtable.cpp:478 reports/listtable.cpp:479
+#: reports/listtable.cpp:490 reports/listtable.cpp:491
 msgid "Calculated"
 msgstr "已计算"
 
-#: reports/listtable.cpp:560 reports/listtable.cpp:562
-#: reports/pivottable.cpp:1489 reports/pivottable.cpp:1837
+#: reports/listtable.cpp:572 reports/listtable.cpp:574
+#: reports/pivottable.cpp:1508 reports/pivottable.cpp:1864
 #: reports/querytabletest.cpp:138 reports/querytabletest.cpp:165
 #: reports/querytabletest.cpp:199 reports/querytabletest.cpp:225
 #: reports/querytabletest.cpp:253 reports/querytabletest.cpp:278
@@ -4757,44 +4799,46 @@ msgstr "已计算"
 msgid "Grand Total"
 msgstr "总计"
 
-#: dialogs/rc.cpp:231 reports/pivottable.cpp:308 views/kscheduledview.cpp:173
+#: dialogs/rc.cpp:231 reports/pivottable.cpp:334 views/kscheduledview.cpp:173
 #: views/kscheduledview.cpp:430 views/kscheduledview.cpp:446
 #: widgets/kmymoneyscheduledcalendar.cpp:48
 msgid "Transfers"
 msgstr "转账"
 
-#: reports/pivottable.cpp:1902
+#: reports/pivottable.cpp:1929
 msgid "Legend"
 msgstr "账簿"
 
-#: reports/pivottable.cpp:2354 views/khomeview.cpp:1394
+#: reports/pivottable.cpp:2381 views/khomeview.cpp:1394
 #: views/khomeview.cpp:1431
 msgid "Actual"
 msgstr "实际"
 
-#: reports/pivottable.cpp:2359 views/khomeview.cpp:1397
+#: reports/pivottable.cpp:2386 views/khomeview.cpp:1397
 #: views/khomeview.cpp:1434
 msgid "Difference"
 msgstr "差额"
 
-#: reports/pivottable.cpp:2369
+#: reports/pivottable.cpp:2396
 #, fuzzy
 msgid "Moving Average"
 msgstr "简单运动平均"
 
-#: reports/objectinfotable.cpp:214 reports/querytable.cpp:758
-#: reports/querytable.cpp:797 views/kpayeesview.cpp:670
+#: reports/objectinfotable.cpp:214 reports/querytable.cpp:690
+#: reports/querytable.cpp:729 reports/querytable.cpp:1343
+#: reports/querytable.cpp:1362 views/kpayeesview.cpp:670
 #, c-format
 msgid "Transfer from %1"
 msgstr "来自%1的转账"
 
-#: reports/objectinfotable.cpp:215 reports/querytable.cpp:759
-#: reports/querytable.cpp:796 views/kpayeesview.cpp:668
+#: reports/objectinfotable.cpp:215 reports/querytable.cpp:691
+#: reports/querytable.cpp:728 reports/querytable.cpp:1342
+#: reports/querytable.cpp:1361 views/kpayeesview.cpp:668
 #, c-format
 msgid "Transfer to %1"
 msgstr "转账到%1"
 
-#: reports/querytabletest.cpp:471 views/kreportsview.cpp:1135
+#: reports/querytabletest.cpp:471 views/kreportsview.cpp:1147
 msgid "Investment Transactions"
 msgstr "投资交易"
 
@@ -4806,34 +4850,35 @@ msgstr "测试报表"
 msgid "Total Stock 1"
 msgstr "股票总计1"
 
-#: reports/querytabletest.cpp:563 views/kreportsview.cpp:1165
+#: reports/querytabletest.cpp:563 views/kreportsview.cpp:1177
 msgid "Investment Performance by Account"
 msgstr "在此账户内进行的投资"
 
-#: reports/querytable.cpp:499
+#: reports/querytable.cpp:431 reports/querytable.cpp:1187
 #, c-format
 msgid "Month of %1"
 msgstr "%1 月"
 
-#: reports/querytable.cpp:500
+#: reports/querytable.cpp:432 reports/querytable.cpp:1188
 #, c-format
 msgid "Week of %1"
 msgstr "%1周"
 
-#: reports/querytable.cpp:644 reports/querytable.cpp:800
-#: reports/querytable.cpp:913
+#: reports/querytable.cpp:576 reports/querytable.cpp:732
+#: reports/querytable.cpp:845 reports/querytable.cpp:1312
+#: reports/querytable.cpp:1468
 msgid "No Institution"
 msgstr "未指定金融机构"
 
-#: reports/querytable.cpp:648
+#: reports/querytable.cpp:580 reports/querytable.cpp:1316
 msgid "[Empty Payee]"
 msgstr "[空收款人]"
 
-#: reports/querytable.cpp:685
+#: reports/querytable.cpp:617 reports/querytable.cpp:1348
 msgid "[Split Transaction]"
 msgstr "[拆分交易］"
 
-#: reports/querytable.cpp:686 reports/querytable.cpp:687
+#: reports/querytable.cpp:618 reports/querytable.cpp:619
 msgid "Split"
 msgstr "拆分"
 
@@ -4881,7 +4926,7 @@ msgstr "检测内存泄漏"
 msgid "Compiled with the following settings:\n"
 msgstr "使用下列选项编译而成：\n"
 
-#: dialogs/kmymoneysplittable.cpp:629 dialogs/ksplittransactiondlg.cpp:268
+#: dialogs/kmymoneysplittable.cpp:645 dialogs/ksplittransactiondlg.cpp:276
 #: main.cpp:98
 msgid "KMyMoney"
 msgstr "KMyMoney"
@@ -5438,7 +5483,7 @@ msgid "Unable to generate report"
 msgstr "无法生成报表"
 
 #: dialogs/kreportconfigurationfilterdlg.cpp:125 views/kreportsview.cpp:286
-#: views/rc.cpp:47 widgets/rc.cpp:144
+#: views/rc.cpp:53 widgets/rc.cpp:144
 msgid "Chart"
 msgstr "图表"
 
@@ -5506,20 +5551,20 @@ msgstr "导出为..."
 #: views/kreportsview.cpp:1073 views/kreportsview.cpp:1082
 #: views/kreportsview.cpp:1090 views/kreportsview.cpp:1098
 #: views/kreportsview.cpp:1106 views/kreportsview.cpp:1114
-#: views/kreportsview.cpp:1123 views/kreportsview.cpp:1136
-#: views/kreportsview.cpp:1146 views/kreportsview.cpp:1156
-#: views/kreportsview.cpp:1166 views/kreportsview.cpp:1176
-#: views/kreportsview.cpp:1186 views/kreportsview.cpp:1200
-#: views/kreportsview.cpp:1215 views/kreportsview.cpp:1232
-#: views/kreportsview.cpp:1255 views/kreportsview.cpp:1264
-#: views/kreportsview.cpp:1273 views/kreportsview.cpp:1282
-#: views/kreportsview.cpp:1296 views/kreportsview.cpp:1307
-#: views/kreportsview.cpp:1317 views/kreportsview.cpp:1328
-#: views/kreportsview.cpp:1338 views/kreportsview.cpp:1349
-#: views/kreportsview.cpp:1369 views/kreportsview.cpp:1378
-#: views/kreportsview.cpp:1390 views/kreportsview.cpp:1410
-#: views/kreportsview.cpp:1419 views/kreportsview.cpp:1428
-#: views/kreportsview.cpp:1437
+#: views/kreportsview.cpp:1123 views/kreportsview.cpp:1135
+#: views/kreportsview.cpp:1148 views/kreportsview.cpp:1158
+#: views/kreportsview.cpp:1168 views/kreportsview.cpp:1178
+#: views/kreportsview.cpp:1188 views/kreportsview.cpp:1198
+#: views/kreportsview.cpp:1212 views/kreportsview.cpp:1227
+#: views/kreportsview.cpp:1244 views/kreportsview.cpp:1267
+#: views/kreportsview.cpp:1276 views/kreportsview.cpp:1285
+#: views/kreportsview.cpp:1294 views/kreportsview.cpp:1308
+#: views/kreportsview.cpp:1319 views/kreportsview.cpp:1329
+#: views/kreportsview.cpp:1340 views/kreportsview.cpp:1350
+#: views/kreportsview.cpp:1361 views/kreportsview.cpp:1381
+#: views/kreportsview.cpp:1390 views/kreportsview.cpp:1402
+#: views/kreportsview.cpp:1422 views/kreportsview.cpp:1431
+#: views/kreportsview.cpp:1440 views/kreportsview.cpp:1449
 msgid "Default Report"
 msgstr "缺省报表"
 
@@ -5638,119 +5683,129 @@ msgstr "贷款交易"
 msgid "Transactions by Reconciliation Status"
 msgstr "交易（按对帐状态分类）"
 
-#: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
 #: views/kreportsview.cpp:1128
+#, fuzzy
+msgid "Cash Flow"
+msgstr "现金账户"
+
+#: views/kreportsview.cpp:1134
+#, fuzzy
+msgid "Cash Flow Transactions This Month"
+msgstr "交易（按月份分类）"
+
+#: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
+#: views/kreportsview.cpp:1140
 msgid "Investments"
 msgstr "投资"
 
-#: views/kreportsview.cpp:1145
+#: views/kreportsview.cpp:1157
 msgid "Investment Holdings by Account"
 msgstr "所持投资（按账户分类）"
 
-#: views/kreportsview.cpp:1155
+#: views/kreportsview.cpp:1167
 msgid "Investment Holdings by Type"
 msgstr "所持投资（按类型分类）"
 
-#: views/kreportsview.cpp:1175
+#: views/kreportsview.cpp:1187
 msgid "Investment Performance by Type"
 msgstr "投资表现（按类分类）"
 
-#: views/kreportsview.cpp:1185
+#: views/kreportsview.cpp:1197
 msgid "Investment Holdings Pie"
 msgstr "所持投资饼图"
 
-#: views/kreportsview.cpp:1199
+#: views/kreportsview.cpp:1211
 msgid "Investment Worth Graph"
 msgstr "投资价值图"
 
-#: views/kreportsview.cpp:1214
+#: views/kreportsview.cpp:1226
 #, fuzzy
 msgid "Investment Moving Average"
 msgstr "加权运动平均"
 
-#: views/kreportsview.cpp:1231
+#: views/kreportsview.cpp:1243
 #, fuzzy
 msgid "Investment Moving Average vs Actual"
 msgstr "加权运动平均"
 
-#: views/kreportsview.cpp:1247
+#: views/kreportsview.cpp:1259
 msgid "Taxes"
 msgstr "税"
 
-#: views/kreportsview.cpp:1254
+#: views/kreportsview.cpp:1266
 msgid "Tax Transactions by Category"
 msgstr "纳税交易（按交易类别分类）"
 
-#: views/kreportsview.cpp:1263
+#: views/kreportsview.cpp:1275
 msgid "Tax Transactions by Payee"
 msgstr "纳税交易（按收款人分类）"
 
-#: views/kreportsview.cpp:1272
+#: views/kreportsview.cpp:1284
 msgid "Tax Transactions by Category Last Fiscal Year"
 msgstr "上一财年纳税交易（按交易类别分类）"
 
-#: views/kreportsview.cpp:1281
+#: views/kreportsview.cpp:1293
 msgid "Tax Transactions by Payee Last Fiscal Year"
 msgstr "上一财年纳税交易（按收款人分类）"
 
-#: views/kreportsview.cpp:1288
+#: views/kreportsview.cpp:1300
 msgid "Budgeting"
 msgstr "预算"
 
-#: views/kreportsview.cpp:1295
+#: views/kreportsview.cpp:1307
 msgid "Budgeted vs. Actual This Year"
 msgstr "今年预算与实际对比"
 
-#: views/khomeview.cpp:1371 views/kreportsview.cpp:1306
+#: views/khomeview.cpp:1371 views/kreportsview.cpp:1318
 msgid "Monthly Budgeted vs. Actual"
 msgstr "月度预算与实际对比"
 
-#: views/kreportsview.cpp:1316
+#: views/kreportsview.cpp:1328
 msgid "Yearly Budgeted vs. Actual"
 msgstr "年度预算与实际对比"
 
-#: views/kreportsview.cpp:1327
+#: views/kreportsview.cpp:1339
 msgid "Monthly Budget"
 msgstr "月度预算"
 
-#: views/kreportsview.cpp:1337
+#: views/kreportsview.cpp:1349
 msgid "Yearly Budget"
 msgstr "年度预算"
 
-#: views/kreportsview.cpp:1348
+#: views/kreportsview.cpp:1360
 msgid "Yearly Budgeted vs Actual Graph"
 msgstr "年度预算与实际对比图"
 
-#: views/kreportsview.cpp:1368
+#: views/kreportsview.cpp:1380
 msgid "Forecast By Month"
 msgstr "按月预报"
 
-#: views/kreportsview.cpp:1377
+#: views/kreportsview.cpp:1389
 msgid "Forecast Next Quarter"
 msgstr "下季度预报"
 
-#: views/kreportsview.cpp:1389
+#: views/kreportsview.cpp:1401
 msgid "Net Worth Forecast Graph"
 msgstr "净值预报图"
 
 #: dialogs/rc.cpp:125 dialogs/rc.cpp:127 dialogs/rc.cpp:464
-#: views/kreportsview.cpp:1402
+#: views/kreportsview.cpp:1414
 msgid "General Information"
 msgstr "总说明"
 
-#: views/kreportsview.cpp:1409
+#: views/kreportsview.cpp:1421
 msgid "Schedule Information"
 msgstr "交易计划信息"
 
-#: views/kreportsview.cpp:1418
+#: views/kreportsview.cpp:1430
 msgid "Schedule Summary Information"
 msgstr "交易计划概要"
 
-#: views/kreportsview.cpp:1427
+#: views/kreportsview.cpp:1439
 msgid "Account Information"
 msgstr "账户信息"
 
-#: views/kreportsview.cpp:1436
+#: views/kreportsview.cpp:1448
 msgid "Loan Information"
 msgstr "贷款信息"
 
@@ -5797,15 +5852,15 @@ msgstr "只能在账簿视图中复制交易"
 msgid "Edit the current selected transactions"
 msgstr "编辑当前选择的交易"
 
-#: views/kmymoneyview.cpp:610
+#: views/kmymoneyview.cpp:601
 msgid "<b>%1</b> is not a KMyMoney file."
 msgstr "<b>%1</b>不是一个KMyMoney文档。"
 
-#: views/kmymoneyview.cpp:651
+#: views/kmymoneyview.cpp:642
 msgid "GPG is not available for decryption of file <b>%1</b>"
 msgstr "解压文件<b>%1</b>需要GPG，但它尚未被安装。"
 
-#: views/kmymoneyview.cpp:729
+#: views/kmymoneyview.cpp:720
 msgid ""
 "File <b>%1</b> contains the old binary format used by KMyMoney. Please use "
 "an older version of KMyMoney (0.8.x) that still supports this format to "
@@ -5814,43 +5869,39 @@ msgstr ""
 "文件<b>%1</b>中包含KMyMoney过去使用的二进制格式。请使用仍支持这种格式的旧版本"
 "KMyMoney(0.8.X) 来将它转换为新的基于XML文件格式。"
 
-#: views/kmymoneyview.cpp:731
+#: views/kmymoneyview.cpp:722
 msgid "File <b>%1</b> contains an unknown file format!"
 msgstr "文件<b>%1</b>包含未知的文件格式！"
 
-#: views/kmymoneyview.cpp:736
+#: views/kmymoneyview.cpp:727
 msgid "Cannot read from file <b>%1</b>!"
 msgstr "无法读取文件<b>%1</b>！"
 
-#: views/kmymoneyview.cpp:740
+#: views/kmymoneyview.cpp:731
 msgid "Cannot load file <b>%1</b>. Reason: %2"
 msgstr "无法载入文件<b>%1</b>。原因：%2"
 
-#: views/kmymoneyview.cpp:750 views/kmymoneyview.cpp:756
+#: views/kmymoneyview.cpp:741 views/kmymoneyview.cpp:747
 msgid "File <b>%1</b> not found!"
 msgstr "找不到文件<b>%1</b>"
 
-#: views/kmymoneyview.cpp:806
-msgid "Multi-user mode not yet implemented\n"
-msgstr "尚未实现多用户模式\n"
-
-#: views/kmymoneyview.cpp:825
+#: views/kmymoneyview.cpp:811
 msgid "Can't open database %1\n"
 msgstr "无法打开数据库%1\n"
 
-#: views/kmymoneyview.cpp:853
+#: views/kmymoneyview.cpp:843
 msgid "An unrecoverable error occurred while reading the database"
 msgstr "在读取数据库时发生了无法恢复的错误"
 
-#: views/kmymoneyview.cpp:855 views/kmymoneyview.cpp:1215
+#: views/kmymoneyview.cpp:845 views/kmymoneyview.cpp:1205
 msgid "Database malfunction"
 msgstr "数据库工作异常"
 
-#: views/kmymoneyview.cpp:947
+#: views/kmymoneyview.cpp:937
 msgid "Unknown fix level in input file"
 msgstr "在输入文件中存在未知的fix level。"
 
-#: views/kmymoneyview.cpp:993
+#: views/kmymoneyview.cpp:983
 msgid ""
 "GPG does not seem to be installed on your system. Please make sure, that GPG "
 "can be found using the standard search path. This time, encryption is "
@@ -5859,11 +5910,11 @@ msgstr ""
 "您的系统中似乎尚未安装GPG，因此KMyMoney已关闭加密功能。请确认GPG已安装并且可"
 "以通过正常访问路径访问。"
 
-#: views/kmymoneyview.cpp:993
+#: views/kmymoneyview.cpp:983
 msgid "GPG not found"
 msgstr "找不到GPG"
 
-#: views/kmymoneyview.cpp:1000
+#: views/kmymoneyview.cpp:990
 msgid ""
 "You have selected to encrypt your data also with the KMyMoney recover key, "
 "but the key with id</p><p><center><b>%1</b></center></p>has not been found "
@@ -5877,11 +5928,11 @@ msgstr ""
 "环中。您可以在<a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney网站</a>"
 "中找到该密钥。"
 
-#: views/kmymoneyview.cpp:1000 views/kmymoneyview.cpp:1009
+#: views/kmymoneyview.cpp:990 views/kmymoneyview.cpp:999
 msgid "GPG-Key not found"
 msgstr "找不到GPG密钥"
 
-#: views/kmymoneyview.cpp:1009
+#: views/kmymoneyview.cpp:999
 msgid ""
 "You have specified to encrypt your data for the user-id</p><p><center><b>%1</"
 "b>.</center></p>Unfortunately, a valid key for this user-id was not found in "
@@ -5892,7 +5943,7 @@ msgstr ""
 "法密钥，因此现在您无法用它来加密您的数据。请确认您已经为它在密钥环中导入了一"
 "个合法的密钥。"
 
-#: views/kmymoneyview.cpp:1015
+#: views/kmymoneyview.cpp:1005
 msgid ""
 "You have configured to save your data in encrypted form using GPG. Please be "
 "aware, that this is a brand new feature which is yet untested. Make sure, "
@@ -5904,23 +5955,23 @@ msgstr ""
 "功能，还没有被很好的测试过，<b>存在着丢失数据的风险</b>。如果您不确定要使用加"
 "密，请选择“否”。"
 
-#: views/kmymoneyview.cpp:1017
+#: views/kmymoneyview.cpp:1007
 msgid "Store GPG encrypted"
 msgstr "保存GPG加密数据"
 
-#: views/kmymoneyview.cpp:1047 views/kmymoneyview.cpp:1061
+#: views/kmymoneyview.cpp:1037 views/kmymoneyview.cpp:1051
 msgid "Unable to open file '%1' for writing."
 msgstr "无法打开文件“%1”。"
 
-#: views/kmymoneyview.cpp:1074 views/kmymoneyview.cpp:1083
+#: views/kmymoneyview.cpp:1064 views/kmymoneyview.cpp:1073
 msgid "Failure while writing to '%1'"
 msgstr "写入文件“%1”失败"
 
-#: views/kmymoneyview.cpp:1095 views/kmymoneyview.cpp:1188
+#: views/kmymoneyview.cpp:1085 views/kmymoneyview.cpp:1178
 msgid "Tried to access a file when it's not open"
 msgstr "试图访问一个未打开的文件"
 
-#: views/kmymoneyview.cpp:1101
+#: views/kmymoneyview.cpp:1091
 msgid ""
 "Since this version of KMyMoney only writes data files in its new format, "
 "files written with this version cannot be read by KMyMoney version 0.4. If "
@@ -5932,11 +5983,11 @@ msgstr ""
 "版本的KMyMoney正确读取。如果您需要使用旧版本的KMyMoney来处理您的数据文件，请"
 "在保存前先对旧数据文件进行备份。如果您要终止本操作，请按“取消”键。"
 
-#: views/kmymoneyview.cpp:1131
+#: views/kmymoneyview.cpp:1121
 msgid "Malformed URL '%1'"
 msgstr "错误的地址“%1”"
 
-#: views/kmymoneyview.cpp:1199
+#: views/kmymoneyview.cpp:1189
 msgid ""
 "Database contains data which must be removed before using SaveAs.\n"
 "Do you wish to continue?"
@@ -5944,7 +5995,7 @@ msgstr ""
 "数据库中包含在进行“另存为”操作前必须删除的数据。\n"
 "你想要继续吗？"
 
-#: views/kmymoneyview.cpp:1212
+#: views/kmymoneyview.cpp:1202
 msgid ""
 "An unrecoverable error occurred while writing to the database.\n"
 "It may well be corrupt."
@@ -5952,738 +6003,738 @@ msgstr ""
 "在写入数据库时发生了无法恢复的错误。\n"
 "它可能已损坏。"
 
-#: views/kmymoneyview.cpp:1222
+#: views/kmymoneyview.cpp:1212
 msgid ""
 "Can't open or create database %1\n"
 "Retry SaveAsDatabase and click Help for further info"
 msgstr ""
 "无法打开和创建数据库%1]n 重试“另存为数据库”，并点击“帮助”以获取更多信息。"
 
-#: views/kmymoneyview.cpp:1393
+#: views/kmymoneyview.cpp:1351
 msgid "Afghanistan Afghani"
 msgstr "阿富汗尼"
 
-#: views/kmymoneyview.cpp:1394
+#: views/kmymoneyview.cpp:1352
 msgid "Albanian Lek"
 msgstr "阿尔巴尼亚列克"
 
-#: views/kmymoneyview.cpp:1395
+#: views/kmymoneyview.cpp:1353
 msgid "Netherland Antillian Guilder"
 msgstr "荷兰盾"
 
-#: views/kmymoneyview.cpp:1396
+#: views/kmymoneyview.cpp:1354
 msgid "Algerian Dinar"
 msgstr "阿尔及利亚第纳尔"
 
-#: views/kmymoneyview.cpp:1397
+#: views/kmymoneyview.cpp:1355
 msgid "Andorran Franc"
 msgstr "安道尔法郎"
 
-#: views/kmymoneyview.cpp:1398
+#: views/kmymoneyview.cpp:1356
 msgid "Andorran Peseta"
 msgstr "安道尔比塞塔"
 
-#: views/kmymoneyview.cpp:1399
+#: views/kmymoneyview.cpp:1357
 msgid "Angolan New Kwanza"
 msgstr "安哥拉新宽扎"
 
-#: views/kmymoneyview.cpp:1400
+#: views/kmymoneyview.cpp:1358
 msgid "Argentine Peso"
 msgstr "阿根廷比索"
 
-#: views/kmymoneyview.cpp:1401
+#: views/kmymoneyview.cpp:1359
 msgid "Aruban Florin"
 msgstr "阿鲁巴岛弗罗林"
 
-#: views/kmymoneyview.cpp:1402
+#: views/kmymoneyview.cpp:1360
 msgid "Australian Dollar"
 msgstr "澳大利亚元"
 
-#: views/kmymoneyview.cpp:1403
+#: views/kmymoneyview.cpp:1361
 msgid "Azerbaijani Manat"
 msgstr "阿塞拜疆玛纳特"
 
-#: views/kmymoneyview.cpp:1404
+#: views/kmymoneyview.cpp:1362
 msgid "Bahamian Dollar"
 msgstr "巴哈马元"
 
-#: views/kmymoneyview.cpp:1405
+#: views/kmymoneyview.cpp:1363
 msgid "Bahraini Dinar"
 msgstr "巴林岛第纳尔"
 
-#: views/kmymoneyview.cpp:1406
+#: views/kmymoneyview.cpp:1364
 msgid "Bangladeshi Taka"
 msgstr "孟加拉国塔卡"
 
-#: views/kmymoneyview.cpp:1407
+#: views/kmymoneyview.cpp:1365
 msgid "Barbados Dollar"
 msgstr "巴巴多斯岛元"
 
-#: views/kmymoneyview.cpp:1408
+#: views/kmymoneyview.cpp:1366
 msgid "Belarussian Ruble"
 msgstr "白俄罗斯卢布"
 
-#: views/kmymoneyview.cpp:1409
+#: views/kmymoneyview.cpp:1367
 msgid "Belize Dollar"
 msgstr "伯利兹元"
 
-#: views/kmymoneyview.cpp:1410
+#: views/kmymoneyview.cpp:1368
 msgid "Bermudian Dollar"
 msgstr "百慕大元"
 
-#: views/kmymoneyview.cpp:1411
+#: views/kmymoneyview.cpp:1369
 msgid "Bhutan Ngultrum"
 msgstr "不丹Ngultrum"
 
-#: views/kmymoneyview.cpp:1412
+#: views/kmymoneyview.cpp:1370
 msgid "Bolivian Boliviano"
 msgstr "玻利维亚Boliviano"
 
-#: views/kmymoneyview.cpp:1413
+#: views/kmymoneyview.cpp:1371
 msgid "Bosnian Convertible Mark"
 msgstr "波斯尼亚Convertible Mark"
 
-#: views/kmymoneyview.cpp:1414
+#: views/kmymoneyview.cpp:1372
 msgid "Botswana Pula"
 msgstr "博茨瓦纳Pula"
 
-#: views/kmymoneyview.cpp:1415
+#: views/kmymoneyview.cpp:1373
 msgid "Brazilian Real"
 msgstr "巴西雷亚尔"
 
-#: views/kmymoneyview.cpp:1416
+#: views/kmymoneyview.cpp:1374
 msgid "British Pound"
 msgstr "英镑"
 
-#: views/kmymoneyview.cpp:1417
+#: views/kmymoneyview.cpp:1375
 msgid "Brunei Dollar"
 msgstr "文莱元"
 
-#: views/kmymoneyview.cpp:1418
+#: views/kmymoneyview.cpp:1376
 msgid "Bulgarian Lev"
 msgstr "保加利亚列弗"
 
-#: views/kmymoneyview.cpp:1419
+#: views/kmymoneyview.cpp:1377
 msgid "Burundi Franc"
 msgstr "布隆迪法郎"
 
-#: views/kmymoneyview.cpp:1420
+#: views/kmymoneyview.cpp:1378
 msgid "CFA Franc BEAC"
 msgstr "CFA Franc BEAC"
 
-#: views/kmymoneyview.cpp:1421
+#: views/kmymoneyview.cpp:1379
 msgid "CFA Franc BCEAO"
 msgstr "CFA Franc BCEAO"
 
-#: views/kmymoneyview.cpp:1422
+#: views/kmymoneyview.cpp:1380
 msgid "CFP Franc Pacifique"
 msgstr "CFP Franc Pacifique"
 
-#: views/kmymoneyview.cpp:1423
+#: views/kmymoneyview.cpp:1381
 msgid "Cambodia Riel"
 msgstr "柬埔寨瑞尔"
 
-#: views/kmymoneyview.cpp:1424
+#: views/kmymoneyview.cpp:1382
 msgid "Canadian Dollar"
 msgstr "加元"
 
-#: views/kmymoneyview.cpp:1425
+#: views/kmymoneyview.cpp:1383
 msgid "Cape Verde Escudo"
 msgstr "佛得角埃斯库多"
 
-#: views/kmymoneyview.cpp:1426
+#: views/kmymoneyview.cpp:1384
 msgid "Cayman Islands Dollar"
 msgstr "开曼群岛元"
 
-#: views/kmymoneyview.cpp:1427
+#: views/kmymoneyview.cpp:1385
 msgid "Chilean Peso"
 msgstr "智利比索"
 
-#: views/kmymoneyview.cpp:1428
+#: views/kmymoneyview.cpp:1386
 msgid "Chinese Yuan Renminbi"
 msgstr "人民币"
 
-#: views/kmymoneyview.cpp:1429
+#: views/kmymoneyview.cpp:1387
 msgid "Colombian Peso"
 msgstr "哥伦比亚比索"
 
-#: views/kmymoneyview.cpp:1430
+#: views/kmymoneyview.cpp:1388
 msgid "Comoros Franc"
 msgstr "科摩罗法郎"
 
-#: views/kmymoneyview.cpp:1431
+#: views/kmymoneyview.cpp:1389
 msgid "Costa Rican Colon"
 msgstr "哥斯达黎加Colon"
 
-#: views/kmymoneyview.cpp:1432
+#: views/kmymoneyview.cpp:1390
 msgid "Croatian Kuna"
 msgstr "克罗地亚"
 
-#: views/kmymoneyview.cpp:1433
+#: views/kmymoneyview.cpp:1391
 msgid "Cuban Peso"
 msgstr "古巴比索"
 
-#: views/kmymoneyview.cpp:1434
+#: views/kmymoneyview.cpp:1392
 msgid "Czech Koruna"
 msgstr "捷克克朗"
 
-#: views/kmymoneyview.cpp:1435
+#: views/kmymoneyview.cpp:1393
 msgid "Danish Krone"
 msgstr "丹麦克朗"
 
-#: views/kmymoneyview.cpp:1436
+#: views/kmymoneyview.cpp:1394
 msgid "Djibouti Franc"
 msgstr "吉布提法郎"
 
-#: views/kmymoneyview.cpp:1437
+#: views/kmymoneyview.cpp:1395
 msgid "Dominican Peso"
 msgstr "多米尼加比索"
 
-#: views/kmymoneyview.cpp:1438
+#: views/kmymoneyview.cpp:1396
 msgid "East Caribbean Dollar"
 msgstr "East Caribbean Dollar"
 
-#: views/kmymoneyview.cpp:1439
+#: views/kmymoneyview.cpp:1397
 msgid "Egyptian Pound"
 msgstr "埃及镑"
 
-#: views/kmymoneyview.cpp:1440
+#: views/kmymoneyview.cpp:1398
 msgid "El Salvador Colon"
 msgstr "萨尔瓦多Colon"
 
-#: views/kmymoneyview.cpp:1441
+#: views/kmymoneyview.cpp:1399
 msgid "Eritrean Nakfa"
 msgstr "厄立特里亚Nakfa"
 
-#: views/kmymoneyview.cpp:1442
+#: views/kmymoneyview.cpp:1400
 msgid "Estonian Kroon"
 msgstr "爱沙尼亚克鲁恩"
 
-#: views/kmymoneyview.cpp:1443
+#: views/kmymoneyview.cpp:1401
 msgid "Ethiopian Birr"
 msgstr "埃塞俄比亚Birr"
 
-#: views/kmymoneyview.cpp:1444
+#: views/kmymoneyview.cpp:1402
 msgid "Euro"
 msgstr "欧元"
 
-#: views/kmymoneyview.cpp:1445
+#: views/kmymoneyview.cpp:1403
 msgid "Falkland Islands Pound"
 msgstr "马尔维纳斯群岛镑"
 
-#: views/kmymoneyview.cpp:1446
+#: views/kmymoneyview.cpp:1404
 msgid "Fiji Dollar"
 msgstr "斐济元"
 
-#: views/kmymoneyview.cpp:1447
+#: views/kmymoneyview.cpp:1405
 msgid "Gambian Dalasi"
 msgstr "冈比亚达拉西"
 
-#: views/kmymoneyview.cpp:1448
+#: views/kmymoneyview.cpp:1406
 msgid "Georgian Lari"
 msgstr "格鲁吉亚Lari"
 
-#: views/kmymoneyview.cpp:1449
+#: views/kmymoneyview.cpp:1407
 msgid "Ghanaian Cedi"
 msgstr "加纳塞地"
 
-#: views/kmymoneyview.cpp:1450
+#: views/kmymoneyview.cpp:1408
 msgid "Gibraltar Pound"
 msgstr "直布罗陀镑"
 
-#: views/kmymoneyview.cpp:1451
+#: views/kmymoneyview.cpp:1409
 msgid "Guatemalan Quetzal"
 msgstr "危地马拉格查尔"
 
-#: views/kmymoneyview.cpp:1452
+#: views/kmymoneyview.cpp:1410
 msgid "Guinea-Bissau Peso"
 msgstr "几内亚比绍比索"
 
-#: views/kmymoneyview.cpp:1453
+#: views/kmymoneyview.cpp:1411
 msgid "Guyanan Dollar"
 msgstr "圭亚那元"
 
-#: views/kmymoneyview.cpp:1454
+#: views/kmymoneyview.cpp:1412
 msgid "Haitian Gourde"
 msgstr "海地古德"
 
-#: views/kmymoneyview.cpp:1455
+#: views/kmymoneyview.cpp:1413
 msgid "Honduran Lempira"
 msgstr "洪都拉斯伦皮拉"
 
-#: views/kmymoneyview.cpp:1456
+#: views/kmymoneyview.cpp:1414
 msgid "Hong Kong Dollar"
 msgstr "港币"
 
-#: views/kmymoneyview.cpp:1457
+#: views/kmymoneyview.cpp:1415
 msgid "Hungarian Forint"
 msgstr "匈牙利福林"
 
-#: views/kmymoneyview.cpp:1458
+#: views/kmymoneyview.cpp:1416
 msgid "Iceland Krona"
 msgstr "冰岛克朗"
 
-#: views/kmymoneyview.cpp:1459
+#: views/kmymoneyview.cpp:1417
 msgid "Indian Rupee"
 msgstr "印度卢比"
 
-#: views/kmymoneyview.cpp:1460
+#: views/kmymoneyview.cpp:1418
 msgid "Indonesian Rupiah"
 msgstr "印尼卢比"
 
-#: views/kmymoneyview.cpp:1461
+#: views/kmymoneyview.cpp:1419
 msgid "Iranian Rial"
 msgstr "伊朗里亚尔"
 
-#: views/kmymoneyview.cpp:1462
+#: views/kmymoneyview.cpp:1420
 msgid "Iraqi Dinar"
 msgstr "伊拉克第纳尔"
 
-#: views/kmymoneyview.cpp:1463
+#: views/kmymoneyview.cpp:1421
 msgid "Israeli New Shekel"
 msgstr "以色列新谢克尔"
 
-#: views/kmymoneyview.cpp:1464
+#: views/kmymoneyview.cpp:1422
 msgid "Jamaican Dollar"
 msgstr "牙买加元"
 
-#: views/kmymoneyview.cpp:1465
+#: views/kmymoneyview.cpp:1423
 msgid "Japanese Yen"
 msgstr "日元"
 
-#: views/kmymoneyview.cpp:1466
+#: views/kmymoneyview.cpp:1424
 msgid "Jordanian Dinar"
 msgstr "约旦第纳尔"
 
-#: views/kmymoneyview.cpp:1467
+#: views/kmymoneyview.cpp:1425
 msgid "Kazakhstan Tenge"
 msgstr "哈萨克Tenge"
 
-#: views/kmymoneyview.cpp:1468
+#: views/kmymoneyview.cpp:1426
 msgid "Kenyan Shilling"
 msgstr "肯尼亚先令"
 
-#: views/kmymoneyview.cpp:1469
+#: views/kmymoneyview.cpp:1427
 msgid "Kuwaiti Dinar"
 msgstr "科威特第纳尔"
 
-#: views/kmymoneyview.cpp:1470
+#: views/kmymoneyview.cpp:1428
 msgid "Kyrgyzstan Som"
 msgstr "吉尔吉斯斯坦Som"
 
-#: views/kmymoneyview.cpp:1471
+#: views/kmymoneyview.cpp:1429
 msgid "Laos Kip"
 msgstr "老挝Kip"
 
-#: views/kmymoneyview.cpp:1472
+#: views/kmymoneyview.cpp:1430
 msgid "Latvian Lats"
 msgstr "拉脱维亚拉特"
 
-#: views/kmymoneyview.cpp:1473
+#: views/kmymoneyview.cpp:1431
 msgid "Lebanese Pound"
 msgstr "黎巴嫩镑"
 
-#: views/kmymoneyview.cpp:1474
+#: views/kmymoneyview.cpp:1432
 msgid "Lesotho Loti"
 msgstr "莱索托Loti"
 
-#: views/kmymoneyview.cpp:1475
+#: views/kmymoneyview.cpp:1433
 msgid "Liberian Dollar"
 msgstr "利比里亚元"
 
-#: views/kmymoneyview.cpp:1476
+#: views/kmymoneyview.cpp:1434
 msgid "Libyan Dinar"
 msgstr "利比亚第纳尔"
 
-#: views/kmymoneyview.cpp:1477
+#: views/kmymoneyview.cpp:1435
 msgid "Lithuanian Litas"
 msgstr "立陶宛"
 
-#: views/kmymoneyview.cpp:1478
+#: views/kmymoneyview.cpp:1436
 msgid "Macau Pataca"
 msgstr "澳门帕塔卡"
 
-#: views/kmymoneyview.cpp:1479
+#: views/kmymoneyview.cpp:1437
 msgid "Macedonian Denar"
 msgstr "马其顿Denar"
 
-#: views/kmymoneyview.cpp:1480
+#: views/kmymoneyview.cpp:1438
 msgid "Malagasy Franc"
 msgstr "马尔加什法郎"
 
-#: views/kmymoneyview.cpp:1481
+#: views/kmymoneyview.cpp:1439
 msgid "Malawi Kwacha"
 msgstr "马拉维克瓦查"
 
-#: views/kmymoneyview.cpp:1482
+#: views/kmymoneyview.cpp:1440
 msgid "Malaysian Ringgit"
 msgstr "马来西亚林吉特"
 
-#: views/kmymoneyview.cpp:1483
+#: views/kmymoneyview.cpp:1441
 msgid "Maldive Rufiyaa"
 msgstr "马尔代夫Rufiyaa"
 
-#: views/kmymoneyview.cpp:1484
+#: views/kmymoneyview.cpp:1442
 msgid "Mali Republic Franc"
 msgstr "马里共和国法郎"
 
-#: views/kmymoneyview.cpp:1485
+#: views/kmymoneyview.cpp:1443
 msgid "Mauritanian Ouguiya"
 msgstr "毛里塔尼亚乌吉亚"
 
-#: views/kmymoneyview.cpp:1486
+#: views/kmymoneyview.cpp:1444
 msgid "Mauritius Rupee"
 msgstr "毛里求斯卢比"
 
-#: views/kmymoneyview.cpp:1487
+#: views/kmymoneyview.cpp:1445
 msgid "Mexican Peso"
 msgstr "墨西哥比索"
 
-#: views/kmymoneyview.cpp:1488
+#: views/kmymoneyview.cpp:1446
 msgid "Moldavian Leu"
 msgstr "摩尔达维亚Leu"
 
-#: views/kmymoneyview.cpp:1489
+#: views/kmymoneyview.cpp:1447
 msgid "Mongolian Tugrik"
 msgstr "蒙古图格里克"
 
-#: views/kmymoneyview.cpp:1490
+#: views/kmymoneyview.cpp:1448
 msgid "Moroccan Dirham"
 msgstr "摩洛哥迪拉姆"
 
-#: views/kmymoneyview.cpp:1491
+#: views/kmymoneyview.cpp:1449
 msgid "Mozambique Metical"
 msgstr "莫桑比克Metical"
 
-#: views/kmymoneyview.cpp:1492
+#: views/kmymoneyview.cpp:1450
 msgid "Myanmar Kyat"
 msgstr "缅甸元"
 
-#: views/kmymoneyview.cpp:1493
+#: views/kmymoneyview.cpp:1451
 msgid "Namibian Dollar"
 msgstr "纳米比亚元"
 
-#: views/kmymoneyview.cpp:1494
+#: views/kmymoneyview.cpp:1452
 msgid "Nepalese Rupee"
 msgstr "尼泊尔卢比"
 
-#: views/kmymoneyview.cpp:1495
+#: views/kmymoneyview.cpp:1453
 msgid "New Zealand Dollar"
 msgstr "新西兰元"
 
-#: views/kmymoneyview.cpp:1496
+#: views/kmymoneyview.cpp:1454
 msgid "Nicaraguan Cordoba Oro"
 msgstr "尼加拉瓜Cordoba Oro"
 
-#: views/kmymoneyview.cpp:1497
+#: views/kmymoneyview.cpp:1455
 msgid "Nigerian Naira"
 msgstr "尼日利亚奈拉"
 
-#: views/kmymoneyview.cpp:1498
+#: views/kmymoneyview.cpp:1456
 msgid "North Korean Won"
 msgstr "朝鲜圆"
 
-#: views/kmymoneyview.cpp:1499
+#: views/kmymoneyview.cpp:1457
 msgid "Norwegian Kroner"
 msgstr "挪威Kroner"
 
-#: views/kmymoneyview.cpp:1500
+#: views/kmymoneyview.cpp:1458
 msgid "Omani Rial"
 msgstr "阿曼里亚尔"
 
-#: views/kmymoneyview.cpp:1501
+#: views/kmymoneyview.cpp:1459
 msgid "Pakistan Rupee"
 msgstr "巴基斯坦卢比"
 
-#: views/kmymoneyview.cpp:1502
+#: views/kmymoneyview.cpp:1460
 msgid "Panamanian Balboa"
 msgstr "巴拿马Balboa"
 
-#: views/kmymoneyview.cpp:1503
+#: views/kmymoneyview.cpp:1461
 msgid "Papua New Guinea Kina"
 msgstr "巴布亚岛New Guinea Kina"
 
-#: views/kmymoneyview.cpp:1504
+#: views/kmymoneyview.cpp:1462
 msgid "Paraguay Guarani"
 msgstr "巴拉圭瓜拉尼"
 
-#: views/kmymoneyview.cpp:1505
+#: views/kmymoneyview.cpp:1463
 msgid "Peruvian Nuevo Sol"
 msgstr "秘鲁Nuevo Sol"
 
-#: views/kmymoneyview.cpp:1506
+#: views/kmymoneyview.cpp:1464
 msgid "Philippine Peso"
 msgstr "菲律宾比索"
 
-#: views/kmymoneyview.cpp:1507
+#: views/kmymoneyview.cpp:1465
 msgid "Polish Zloty"
 msgstr "波兰兹罗提"
 
-#: views/kmymoneyview.cpp:1508
+#: views/kmymoneyview.cpp:1466
 msgid "Qatari Rial"
 msgstr "卡塔尔里亚尔"
 
-#: views/kmymoneyview.cpp:1509
+#: views/kmymoneyview.cpp:1467
 msgid "Romanian Leu (new)"
 msgstr "罗马尼亚列伊(新）"
 
-#: views/kmymoneyview.cpp:1510
+#: views/kmymoneyview.cpp:1468
 msgid "Russian Ruble"
 msgstr "俄罗斯卢布"
 
-#: views/kmymoneyview.cpp:1511
+#: views/kmymoneyview.cpp:1469
 msgid "Rwanda Franc"
 msgstr "卢旺达法郎"
 
-#: views/kmymoneyview.cpp:1512
+#: views/kmymoneyview.cpp:1470
 msgid "Samoan Tala"
 msgstr "萨摩亚他拉"
 
-#: views/kmymoneyview.cpp:1513
+#: views/kmymoneyview.cpp:1471
 msgid "Sao Tome and Principe Dobra"
 msgstr "圣多美和普林西比岛Dobra"
 
-#: views/kmymoneyview.cpp:1514
+#: views/kmymoneyview.cpp:1472
 msgid "Saudi Riyal"
 msgstr "沙特阿拉伯里亚尔"
 
-#: views/kmymoneyview.cpp:1515
+#: views/kmymoneyview.cpp:1473
 msgid "Seychelles Rupee"
 msgstr "塞舌尔卢比"
 
-#: views/kmymoneyview.cpp:1516
+#: views/kmymoneyview.cpp:1474
 msgid "Sierra Leone Leone"
 msgstr "塞拉利昂里昂"
 
-#: views/kmymoneyview.cpp:1517
+#: views/kmymoneyview.cpp:1475
 msgid "Singapore Dollar"
 msgstr "新加坡元"
 
-#: views/kmymoneyview.cpp:1520
+#: views/kmymoneyview.cpp:1478
 msgid "Solomon Islands Dollar"
 msgstr "所罗门群岛元"
 
-#: views/kmymoneyview.cpp:1521
+#: views/kmymoneyview.cpp:1479
 msgid "Somali Shilling"
 msgstr "索马里先令"
 
-#: views/kmymoneyview.cpp:1522
+#: views/kmymoneyview.cpp:1480
 msgid "South African Rand"
 msgstr "南非兰特"
 
-#: views/kmymoneyview.cpp:1523
+#: views/kmymoneyview.cpp:1481
 msgid "South Korean Won"
 msgstr "韩元"
 
-#: views/kmymoneyview.cpp:1524
+#: views/kmymoneyview.cpp:1482
 msgid "Sri Lanka Rupee"
 msgstr "斯里兰卡卢比"
 
-#: views/kmymoneyview.cpp:1525
+#: views/kmymoneyview.cpp:1483
 msgid "St. Helena Pound"
 msgstr "圣赫勒拿镑"
 
-#: views/kmymoneyview.cpp:1526
+#: views/kmymoneyview.cpp:1484
 msgid "Sudanese Dinar"
 msgstr "苏丹第纳尔"
 
-#: views/kmymoneyview.cpp:1527
+#: views/kmymoneyview.cpp:1485
 msgid "Suriname Guilder"
 msgstr "苏里南共和国盾"
 
-#: views/kmymoneyview.cpp:1528
+#: views/kmymoneyview.cpp:1486
 msgid "Swaziland Lilangeni"
 msgstr "斯威士兰Lilangeni"
 
-#: views/kmymoneyview.cpp:1529
+#: views/kmymoneyview.cpp:1487
 msgid "Swedish Krona"
 msgstr "瑞典克郎"
 
-#: views/kmymoneyview.cpp:1530
+#: views/kmymoneyview.cpp:1488
 msgid "Swiss Franc"
 msgstr "瑞士法郎"
 
-#: views/kmymoneyview.cpp:1531
+#: views/kmymoneyview.cpp:1489
 msgid "Syrian Pound"
 msgstr "叙利亚镑"
 
-#: views/kmymoneyview.cpp:1532
+#: views/kmymoneyview.cpp:1490
 msgid "Taiwan Dollar"
 msgstr "新台币"
 
-#: views/kmymoneyview.cpp:1533
+#: views/kmymoneyview.cpp:1491
 msgid "Tajikistan Somani"
 msgstr "塔吉克斯坦Somani"
 
-#: views/kmymoneyview.cpp:1534
+#: views/kmymoneyview.cpp:1492
 msgid "Tanzanian Shilling"
 msgstr "坦桑尼亚先令"
 
-#: views/kmymoneyview.cpp:1535
+#: views/kmymoneyview.cpp:1493
 msgid "Thai Baht"
 msgstr "泰国铢"
 
-#: views/kmymoneyview.cpp:1536
+#: views/kmymoneyview.cpp:1494
 msgid "Tongan Pa'anga"
 msgstr "汤加Pa'anga"
 
-#: views/kmymoneyview.cpp:1537
+#: views/kmymoneyview.cpp:1495
 msgid "Trinidad and Tobago Dollar"
 msgstr "特立尼达和多巴哥元"
 
-#: views/kmymoneyview.cpp:1538
+#: views/kmymoneyview.cpp:1496
 msgid "Tunisian Dinar"
 msgstr "突尼斯第纳尔"
 
-#: views/kmymoneyview.cpp:1539
+#: views/kmymoneyview.cpp:1497
 msgid "Turkish Lira (new)"
 msgstr "土耳其里拉(新)"
 
-#: views/kmymoneyview.cpp:1540
+#: views/kmymoneyview.cpp:1498
 msgid "Turkmenistan Manat"
 msgstr "土库曼斯坦Manat"
 
-#: views/kmymoneyview.cpp:1541
+#: views/kmymoneyview.cpp:1499
 msgid "US Dollar"
 msgstr "美元"
 
-#: views/kmymoneyview.cpp:1542
+#: views/kmymoneyview.cpp:1500
 msgid "Uganda Shilling"
 msgstr "乌干达先令"
 
-#: views/kmymoneyview.cpp:1543
+#: views/kmymoneyview.cpp:1501
 msgid "Ukraine Hryvnia"
 msgstr "乌克兰Hryvnia"
 
-#: views/kmymoneyview.cpp:1544
+#: views/kmymoneyview.cpp:1502
 msgid "United Arab Emirates Dirham"
 msgstr "阿联酋迪拉姆"
 
-#: views/kmymoneyview.cpp:1545
+#: views/kmymoneyview.cpp:1503
 msgid "Uruguayan Peso"
 msgstr "乌拉圭比索"
 
-#: views/kmymoneyview.cpp:1546
+#: views/kmymoneyview.cpp:1504
 msgid "Uzbekistani Sum"
 msgstr "乌兹别克斯坦Sum"
 
-#: views/kmymoneyview.cpp:1547
+#: views/kmymoneyview.cpp:1505
 msgid "Vanuatu Vatu"
 msgstr "瓦努阿图Vatu"
 
-#: views/kmymoneyview.cpp:1548
+#: views/kmymoneyview.cpp:1506
 msgid "Venezuelan Bolivar"
 msgstr "委内瑞拉玻利瓦尔"
 
-#: views/kmymoneyview.cpp:1549
+#: views/kmymoneyview.cpp:1507
 msgid "Vietnamese Dong"
 msgstr "越南盾"
 
-#: views/kmymoneyview.cpp:1550
+#: views/kmymoneyview.cpp:1508
 msgid "Yugoslav Dinar"
 msgstr "南斯拉夫第纳尔"
 
-#: views/kmymoneyview.cpp:1551
+#: views/kmymoneyview.cpp:1509
 msgid "Zambian Kwacha"
 msgstr "赞比亚克瓦查"
 
-#: views/kmymoneyview.cpp:1552
+#: views/kmymoneyview.cpp:1510
 msgid "Zimbabwe Dollar"
 msgstr "津巴布韦元"
 
-#: views/kmymoneyview.cpp:1554
+#: views/kmymoneyview.cpp:1512
 msgid "Gold"
 msgstr "金"
 
-#: views/kmymoneyview.cpp:1555
+#: views/kmymoneyview.cpp:1513
 msgid "Palladium"
 msgstr "钯金"
 
-#: views/kmymoneyview.cpp:1556
+#: views/kmymoneyview.cpp:1514
 msgid "Platinum"
 msgstr "铂金"
 
-#: views/kmymoneyview.cpp:1557
+#: views/kmymoneyview.cpp:1515
 msgid "Silver"
 msgstr "银"
 
-#: views/kmymoneyview.cpp:1590
+#: views/kmymoneyview.cpp:1548
 msgid "Austrian Schilling"
 msgstr "奥地利先令"
 
-#: views/kmymoneyview.cpp:1591
+#: views/kmymoneyview.cpp:1549
 msgid "German Mark"
 msgstr "德国马克"
 
-#: views/kmymoneyview.cpp:1592
+#: views/kmymoneyview.cpp:1550
 msgid "French Franc"
 msgstr "法国法郎"
 
-#: views/kmymoneyview.cpp:1593
+#: views/kmymoneyview.cpp:1551
 msgid "Italian Lira"
 msgstr "意大利里拉"
 
-#: views/kmymoneyview.cpp:1594
+#: views/kmymoneyview.cpp:1552
 msgid "Spanish Peseta"
 msgstr "西班牙比塞塔"
 
-#: views/kmymoneyview.cpp:1595
+#: views/kmymoneyview.cpp:1553
 msgid "Dutch Guilder"
 msgstr "荷兰盾"
 
-#: views/kmymoneyview.cpp:1596
+#: views/kmymoneyview.cpp:1554
 msgid "Belgian Franc"
 msgstr "比利时法郎"
 
-#: views/kmymoneyview.cpp:1597
+#: views/kmymoneyview.cpp:1555
 msgid "Luxembourg Franc"
 msgstr "卢森堡法郎"
 
-#: views/kmymoneyview.cpp:1598
+#: views/kmymoneyview.cpp:1556
 msgid "Portuguese Escudo"
 msgstr "葡萄牙埃斯库多"
 
-#: views/kmymoneyview.cpp:1599
+#: views/kmymoneyview.cpp:1557
 msgid "Irish Pound"
 msgstr "爱尔兰镑"
 
-#: views/kmymoneyview.cpp:1600
+#: views/kmymoneyview.cpp:1558
 msgid "Finnish Markka"
 msgstr "芬兰马克"
 
-#: views/kmymoneyview.cpp:1601
+#: views/kmymoneyview.cpp:1559
 msgid "Greek Drachma"
 msgstr "希腊德拉马克"
 
-#: views/kmymoneyview.cpp:1603
+#: views/kmymoneyview.cpp:1561
 msgid "Romanian Leu"
 msgstr "罗马尼亚列伊"
 
-#: views/kmymoneyview.cpp:1605
+#: views/kmymoneyview.cpp:1563
 msgid "Russian Ruble (old)"
 msgstr "旧俄国卢布"
 
-#: views/kmymoneyview.cpp:1607
+#: views/kmymoneyview.cpp:1565
 msgid "Slovenian Tolar"
 msgstr "斯洛文尼亚Tolar"
 
-#: views/kmymoneyview.cpp:1610
+#: views/kmymoneyview.cpp:1568
 msgid "Turkish Lira"
 msgstr "土耳其里拉"
 
-#: views/kmymoneyview.cpp:1613
+#: views/kmymoneyview.cpp:1571
 msgid "Maltese Lira"
 msgstr "马耳他里拉"
 
-#: views/kmymoneyview.cpp:1614
+#: views/kmymoneyview.cpp:1572
 msgid "Cyprus Pound"
 msgstr "塞浦路斯镑"
 
-#: views/kmymoneyview.cpp:1617
+#: views/kmymoneyview.cpp:1575
 msgid "Slovak Koruna"
 msgstr "斯洛伐克克朗"
 
-#: views/kmymoneyview.cpp:1927
+#: views/kmymoneyview.cpp:1885
 msgid ""
 "The account \"%1\" was previously created as loan account but some "
 "information is missing. The new loan wizard will be started to collect all "
@@ -6693,11 +6744,11 @@ msgstr ""
 "账户“%1”之前作为贷款账户被创建，但是缺少必要的信息。将会启动新贷款向导以收集"
 "所有相关的信息。 请使用版本号>=0.8.7并且<0.9的KMyMoney来解决该问题。"
 
-#: views/kmymoneyview.cpp:1931
+#: views/kmymoneyview.cpp:1889
 msgid "Account problem"
 msgstr "账户问题"
 
-#: views/kmymoneyview.cpp:2009
+#: views/kmymoneyview.cpp:1967
 msgid "Fix transactions"
 msgstr "修复交易"
 
@@ -6705,7 +6756,7 @@ msgstr "修复交易"
 msgid "Net Worth: "
 msgstr "净值："
 
-#: dialogs/rc.cpp:107 dialogs/rc.cpp:162 dialogs/rc.cpp:831
+#: dialogs/rc.cpp:107 dialogs/rc.cpp:162 dialogs/rc.cpp:753 dialogs/rc.cpp:828
 #: views/kinvestmentview.cpp:78 widgets/register.cpp:550
 msgid "Quantity"
 msgstr "数量"
@@ -6794,7 +6845,7 @@ msgstr "图标"
 msgid "Note: Unused categories are not shown as selected by settings."
 msgstr "注意：在设置中设定了不显示未使用的交易类别"
 
-#: views/rc.cpp:6 views/rc.cpp:23 views/rc.cpp:48
+#: views/rc.cpp:6 views/rc.cpp:23 views/rc.cpp:54
 msgid "Total Profits:"
 msgstr "收益总计："
 
@@ -6802,7 +6853,7 @@ msgstr "收益总计："
 msgid "Your budgets"
 msgstr "您的预算"
 
-#: dialogs/rc.cpp:338 dialogs/rc.cpp:842 dialogs/settings/rc.cpp:121
+#: dialogs/rc.cpp:338 dialogs/rc.cpp:839 dialogs/settings/rc.cpp:121
 #: views/rc.cpp:8 widgets/rc.cpp:48 widgets/rc.cpp:148
 msgid "New"
 msgstr "新建"
@@ -6860,137 +6911,163 @@ msgid "Historic Cycles:"
 msgstr "历史周期循环数："
 
 #: views/rc.cpp:29
+#, fuzzy
+msgid "Chart Detail:"
+msgstr "图形标签页"
+
+#: views/rc.cpp:30 widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
+msgid "All"
+msgstr "全部"
+
+#: views/rc.cpp:31 widgets/rc.cpp:66
+msgid "Top-Level"
+msgstr "顶层"
+
+#: views/rc.cpp:32 widgets/rc.cpp:67
+msgid "Groups"
+msgstr "组"
+
+#: views/rc.cpp:33 widgets/rc.cpp:68
+msgid "Totals"
+msgstr "总计"
+
+#: views/rc.cpp:34
+#, fuzzy
+msgid "<p>Choose what level of detail to show on the chart.</p>"
+msgstr "<p>选择使用哪类账户作为此报表的行</p>"
+
+#: views/rc.cpp:35
 msgid "Current Forecast Method:"
 msgstr "当前预报方法："
 
-#: views/rc.cpp:30
+#: views/rc.cpp:36
 msgid "method"
 msgstr "方法"
 
-#: dialogs/settings/rc.cpp:32 views/rc.cpp:31
+#: dialogs/settings/rc.cpp:32 views/rc.cpp:37
 msgid "History Forecast Method"
 msgstr "历史预报方法"
 
-#: dialogs/settings/rc.cpp:33 views/rc.cpp:32
+#: dialogs/settings/rc.cpp:33 views/rc.cpp:38
 msgid "Simple Moving Average"
 msgstr "简单运动平均"
 
-#: dialogs/settings/rc.cpp:34 views/rc.cpp:33
+#: dialogs/settings/rc.cpp:34 views/rc.cpp:39
 msgid "Weighted Moving Average"
 msgstr "加权运动平均"
 
-#: dialogs/settings/rc.cpp:35 views/rc.cpp:34
+#: dialogs/settings/rc.cpp:35 views/rc.cpp:40
 msgid "Linear Regression"
 msgstr ""
 
 #: dialogs/keditloanwizard.cpp:313 dialogs/rc.cpp:626 dialogs/rc.cpp:645
-#: views/rc.cpp:37
+#: views/rc.cpp:43
 msgid "Summary"
 msgstr "总计"
 
-#: views/rc.cpp:39
+#: views/rc.cpp:45
 msgid "0 days"
 msgstr "0天"
 
-#: views/rc.cpp:40
+#: views/rc.cpp:46
 msgid "30 days"
 msgstr "30天"
 
-#: views/rc.cpp:41
+#: views/rc.cpp:47
 msgid "60 days"
 msgstr "60天"
 
-#: views/rc.cpp:42
+#: views/rc.cpp:48
 msgid "90 days"
 msgstr "90天"
 
-#: views/rc.cpp:43
+#: views/rc.cpp:49
 msgid "New Item"
 msgstr "新项目"
 
-#: views/rc.cpp:44 widgets/rc.cpp:64
+#: views/rc.cpp:50 widgets/rc.cpp:64
 msgid "Detail"
 msgstr "详细信息"
 
-#: views/rc.cpp:45
+#: views/rc.cpp:51
 msgid "Advanced"
 msgstr "高级"
 
-#: views/rc.cpp:46
+#: views/rc.cpp:52
 msgid "Budget Forecast"
 msgstr "预算预报"
 
-#: views/rc.cpp:49
+#: views/rc.cpp:55
 msgid "Investment Summary"
 msgstr "投资概述"
 
-#: views/rc.cpp:50
+#: views/rc.cpp:56
 msgid "Select Account:"
 msgstr "选择账户："
 
-#: views/rc.cpp:51
+#: views/rc.cpp:57
 msgid ""
 "Summary of the equities contained in this account, showing your holdings and "
 "their most recent price."
 msgstr "此账户所包含的产权概述。显示您的持有状况和它们最新的价值。"
 
-#: views/rc.cpp:54 widgets/register.cpp:542
+#: views/rc.cpp:60 widgets/register.cpp:542
 msgid "No."
 msgstr "序号"
 
-#: views/rc.cpp:58
+#: views/rc.cpp:64
 msgid "Balance: "
 msgstr "余额："
 
-#: views/rc.cpp:59
+#: views/rc.cpp:65
 msgid "Address"
 msgstr "地址"
 
-#: views/rc.cpp:60
+#: views/rc.cpp:66
 msgid "Payee Information"
 msgstr "收款人信息"
 
-#: views/rc.cpp:61
+#: views/rc.cpp:67
 msgid "E-Mail:"
 msgstr "电子邮件："
 
-#: dialogs/rc.cpp:391 views/rc.cpp:63
+#: dialogs/rc.cpp:391 views/rc.cpp:69
 msgid "Telephone/Fax:"
 msgstr "电话/传真号码："
 
-#: views/rc.cpp:64
+#: views/rc.cpp:70
 msgid "Notes"
 msgstr "备忘"
 
-#: views/rc.cpp:65
+#: views/rc.cpp:71
 msgid "Address:"
 msgstr "地址："
 
-#: dialogs/settings/rc.cpp:158 views/rc.cpp:66
+#: dialogs/settings/rc.cpp:158 views/rc.cpp:72
 msgid "Matching"
 msgstr "正在匹配"
 
-#: views/rc.cpp:67
+#: views/rc.cpp:73
 msgid "Transaction Matching"
 msgstr "交易匹配"
 
-#: views/rc.cpp:68
+#: views/rc.cpp:74
 msgid "No matching"
 msgstr "无匹配"
 
-#: views/rc.cpp:69
+#: views/rc.cpp:75
 msgid "Match on Payee name"
 msgstr "匹配交款人名称"
 
-#: views/rc.cpp:70
+#: views/rc.cpp:76
 msgid "Match on a name listed below"
 msgstr "按下列名称匹配"
 
-#: views/rc.cpp:71
+#: views/rc.cpp:77
 msgid "List of matching names"
 msgstr "匹配名称列表"
 
-#: views/rc.cpp:72
+#: views/rc.cpp:78
 msgid ""
 "This list contains the names that will match this payee if a transaction is "
 "imported from an external source. Keep in mind, that you can specify regular "
@@ -6999,23 +7076,23 @@ msgstr ""
 "此列表中包含了从外部数据源中导入交易时，用来匹配本收/付款人的名字。提醒一下，"
 "在 这里你可以使用正则表达式。"
 
-#: views/rc.cpp:73
+#: views/rc.cpp:79
 msgid "Ignore Case"
 msgstr "不区分大小写"
 
-#: views/rc.cpp:75
+#: views/rc.cpp:81
 msgid "New Schedule"
 msgstr "新建定期事件"
 
-#: views/rc.cpp:76
+#: views/rc.cpp:82
 msgid "Filter Accounts"
 msgstr "过滤账户"
 
-#: views/rc.cpp:77
+#: views/rc.cpp:83
 msgid "List View"
 msgstr "列表视图"
 
-#: views/rc.cpp:78
+#: views/rc.cpp:84
 msgid "Calendar View"
 msgstr "日历视图"
 
@@ -7044,7 +7121,7 @@ msgstr "无法载入账户："
 msgid "Bills"
 msgstr "账单"
 
-#: dialogs/rc.cpp:230 dialogs/rc.cpp:721 views/kscheduledview.cpp:171
+#: dialogs/rc.cpp:230 dialogs/rc.cpp:704 views/kscheduledview.cpp:171
 #: views/kscheduledview.cpp:428 views/kscheduledview.cpp:444
 #: widgets/kmymoneyscheduledcalendar.cpp:47
 msgid "Deposits"
@@ -7242,7 +7319,7 @@ msgstr "最远日期%1"
 msgid "Average"
 msgstr "平均"
 
-#: views/kforecastview.cpp:647 views/khomeview.cpp:266 views/khomeview.cpp:273
+#: views/kforecastview.cpp:649 views/khomeview.cpp:266 views/khomeview.cpp:273
 msgid "Networth Forecast"
 msgstr "净值预报"
 
@@ -7457,36 +7534,54 @@ msgstr "格式错误"
 msgid "Unable to parse file"
 msgstr "无法解析文件"
 
-#: plugins/ofximport/ofximporterplugin.cpp:570
+#: plugins/ofximport/ofximporterplugin.cpp:569
 msgid "Online settings"
 msgstr "在线设置"
 
-#: plugins/ofximport/ofximporterplugin.cpp:625
+#: plugins/ofximport/ofximporterplugin.cpp:626
 #, c-format
 msgid "Error connecting to bank: %1"
 msgstr "连接到银行时出错：%1"
 
-#: plugins/ofximport/ofximporterplugin.cpp:636
+#: plugins/ofximport/ofximporterplugin.cpp:637
 msgid ""
 "Unable to import %1 using the OFX importer plugin.  The plugin returned the "
 "following error:<p>%2"
 msgstr "无法使用OFX导入插件导入%1。插件返回下列错误：<p>%2"
 
-#: plugins/ofximport/ofximporterplugin.cpp:667
+#: plugins/ofximport/ofximporterplugin.cpp:668
 msgid "Importing process terminated unexpectedly."
 msgstr "导入过程异常终止。"
 
-#: plugins/ofximport/ofximporterplugin.cpp:667
+#: plugins/ofximport/ofximporterplugin.cpp:668
 msgid "Failed to import all statements."
 msgstr "未能完成全部对帐单导入。"
 
-#: dialogs/konlinebankingsetupwizard.cpp:61
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:75
+#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:195
+#: plugins/ofximport/ofxpartner.cpp:331
+msgid "The HTTP request failed."
+msgstr "HTTP请求失败"
+
+#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:195
+#: plugins/ofximport/ofxpartner.cpp:331
+msgid "Failed"
+msgstr "失败"
+
+#: plugins/ofximport/ofxpartner.cpp:367
+#, fuzzy
+msgid "Cannot open file %1 for writing"
+msgstr "无法为写入操作打开文件“%1”。"
+
+#: plugins/ofximport/ofxpartner.cpp:371
+#, fuzzy
+msgid "OFX setup error"
+msgstr "文件类型错误"
+
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 msgid "Loading banklist"
 msgstr "正在载入银行列表..."
 
-#: dialogs/konlinebankingsetupwizard.cpp:61
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:75
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 msgid ""
 "Getting list of banks from http://moneycentral.msn.com/\n"
 "This may take some time depending on the available bandwidth."
@@ -7494,84 +7589,60 @@ msgstr ""
 "正在从http://moneycentral.msn.com/获取银行列表\n"
 "完成该操作所需的具体时间取决于您实际的网络带宽。"
 
-#: dialogs/konlinebankingsetupwizard.cpp:81
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:97
-msgid ""
-"Reading the bank list failed with the following error: '%1'. The console "
-"output may have more information."
-msgstr "读取银行列表出错：'%1'。从控制台的输出可以获得更多信息。"
-
-#: dialogs/konlinebankingsetupwizard.cpp:81
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:97
-msgid "XMLPP error"
-msgstr "XMLPP 错误"
-
-#: dialogs/konlinebankingsetupwizard.cpp:143
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:164
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:208
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:155
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:199
 msgid "Supports online statements<br>"
 msgstr "支持在线（交易）清单<br>"
 
-#: dialogs/konlinebankingsetupwizard.cpp:145
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:166
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:210
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:157
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:201
 msgid "Supports investments<br>"
 msgstr "支持投资<br>"
 
-#: dialogs/konlinebankingsetupwizard.cpp:147
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:168
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:212
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:159
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:203
 msgid "Supports bill payment (but not supported by KMyMoney yet)<br>"
 msgstr "支持账单支付 (但KMyMoney尚不支持)<br>"
 
-#: dialogs/konlinebankingsetupwizard.cpp:151
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:172
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:163
 msgid "Does not support online banking</p>"
 msgstr "不支持网上银行</p>"
 
-#: dialogs/konlinebankingsetupwizard.cpp:161
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:182
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:173
 msgid "Please choose a bank."
 msgstr "请选择一个银行"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:188
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:179
 #, fuzzy
 msgid "Please fill all fields with values."
 msgstr "请填写金额栏目。"
 
-#: dialogs/konlinebankingsetupwizard.cpp:241
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:309
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:271
 msgid "No suitable accounts were found at this bank."
 msgstr "未能在该银行找到合适的账户"
 
-#: dialogs/konlinebankingsetupwizard.cpp:253
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:321
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:283
 msgid "Please choose an account"
 msgstr "请选择一个账户"
 
-#: dialogs/konlinebankingsetupwizard.cpp:342
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:416
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:381
 msgid "Server message: %1\n"
 msgstr "服务器信息：%1\n"
 
-#: dialogs/konlinebankingsetupwizard.cpp:350
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:424
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
 msgid "Your bank returned warnings when signing on"
 msgstr "在登录您的银行时，收到了警告信息。"
 
-#: dialogs/konlinebankingsetupwizard.cpp:350
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:424
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
 #, c-format
 msgid "WARNING %1"
 msgstr "警告 %1"
 
-#: dialogs/konlinebankingsetupwizard.cpp:353
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:427
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
 msgid "Error signing onto your bank"
 msgstr "登录到银行时出错：%1"
 
-#: dialogs/konlinebankingsetupwizard.cpp:353
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:427
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
 #, c-format
 msgid "ERROR %1"
 msgstr "错误 %1"
@@ -7579,10 +7650,6 @@ msgstr "错误 %1"
 #: plugins/ofximport/dialogs/konlinebankingstatus.cpp:59
 msgid "Enabled & configured"
 msgstr "已配置和启用"
-
-#: plugins/ofximport/dialogs/konlinebankingstatus.cpp:90
-msgid "Disabled. No online banking services are available"
-msgstr "已禁用。无可用的网银服务。"
 
 #: plugins/ofximport/dialogs/rc.cpp:1
 msgid "OFX Direct Connect"
@@ -7592,15 +7659,15 @@ msgstr "OFX直接连接"
 msgid "Contacting bank..."
 msgstr "联系银行..."
 
-#: dialogs/rc.cpp:680 plugins/ofximport/dialogs/rc.cpp:4
+#: plugins/ofximport/dialogs/rc.cpp:4
 msgid "Online Banking Account Setup"
 msgstr "网上银行账户设置"
 
-#: dialogs/rc.cpp:681 plugins/ofximport/dialogs/rc.cpp:5
+#: plugins/ofximport/dialogs/rc.cpp:5
 msgid "Select Financial Institution"
 msgstr "选择金融机构"
 
-#: dialogs/rc.cpp:682 plugins/ofximport/dialogs/rc.cpp:6
+#: plugins/ofximport/dialogs/rc.cpp:6
 msgid "Please select your financial institution from the list below..."
 msgstr "请从下面的列表中选择你的金融机构..."
 
@@ -7608,7 +7675,7 @@ msgstr "请从下面的列表中选择你的金融机构..."
 msgid "Automatic"
 msgstr ""
 
-#: dialogs/rc.cpp:683 plugins/ofximport/dialogs/rc.cpp:8
+#: plugins/ofximport/dialogs/rc.cpp:8
 msgid "Financial Institution"
 msgstr "金融机构"
 
@@ -7631,19 +7698,11 @@ msgstr "FIID"
 msgid "URL"
 msgstr "网址"
 
-#: dialogs/rc.cpp:684 plugins/ofximport/dialogs/rc.cpp:13
+#: plugins/ofximport/dialogs/rc.cpp:13
 msgid "Enter Login Details"
 msgstr "输入登录详细信息"
 
-#: dialogs/rc.cpp:688 plugins/ofximport/dialogs/rc.cpp:14
-msgid "Connection Details"
-msgstr "接入详细信息"
-
-#: dialogs/rc.cpp:686 plugins/ofximport/dialogs/rc.cpp:15
-msgid "Username"
-msgstr "用户名"
-
-#: dialogs/rc.cpp:685 plugins/ofximport/dialogs/rc.cpp:16
+#: plugins/ofximport/dialogs/rc.cpp:14
 msgid ""
 "Please enter the username and password you use to log into this bank for "
 "online banking.  Please note that many banks require a separate signup, and "
@@ -7652,160 +7711,175 @@ msgstr ""
 "请输入登录该银行的网银时使用的用户名和密码。请注意，许多银行需要 一个分开的签"
 "入，并且单独为在家中访问网银指定了一个分开的PIN或者密码。"
 
-#: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:35
+#: plugins/ofximport/dialogs/rc.cpp:15
+msgid "Connection Details"
+msgstr "接入详细信息"
+
+#: plugins/ofximport/dialogs/rc.cpp:16
+msgid "Username"
+msgstr "用户名"
+
+#: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:36
+#, fuzzy
+msgid "Header Version"
+msgstr "表头字体"
+
+#: plugins/ofximport/dialogs/rc.cpp:18 plugins/ofximport/dialogs/rc.cpp:37
 msgid "Identify as"
 msgstr "认证为"
 
-#: dialogs/rc.cpp:687 dialogs/rc.cpp:757 plugins/ofximport/dialogs/rc.cpp:18
+#: dialogs/rc.cpp:740 plugins/ofximport/dialogs/rc.cpp:19
 msgid "Password"
 msgstr "密码"
 
-#: dialogs/rc.cpp:689 plugins/ofximport/dialogs/rc.cpp:19
+#: plugins/ofximport/dialogs/rc.cpp:20
 msgid "Select Account"
 msgstr "选择账户"
 
-#: dialogs/rc.cpp:690 plugins/ofximport/dialogs/rc.cpp:20
+#: plugins/ofximport/dialogs/rc.cpp:21
 msgid ""
 "Please select the account from your financial institution from the list "
 "below which matches this account."
 msgstr "请在下面的列表中选择与该账户对应的金融机构里的账户。"
 
-#: dialogs/rc.cpp:693 plugins/ofximport/dialogs/rc.cpp:23
+#: plugins/ofximport/dialogs/rc.cpp:24
 msgid "Bank"
 msgstr "银行"
 
-#: dialogs/rc.cpp:694 plugins/ofximport/dialogs/rc.cpp:24
+#: plugins/ofximport/dialogs/rc.cpp:25
 msgid "Branch"
 msgstr "支行"
 
-#: dialogs/rc.cpp:695 plugins/ofximport/dialogs/rc.cpp:25
+#: plugins/ofximport/dialogs/rc.cpp:26
 msgid "WizardPage"
 msgstr "向导页"
 
-#: dialogs/rc.cpp:696 plugins/ofximport/dialogs/rc.cpp:26
+#: plugins/ofximport/dialogs/rc.cpp:27
 msgid ""
 "Congratulations!  You have successfully set up your bank for online banking "
 "via OFX."
 msgstr "恭喜！您已经成功的为您的银行设置了通过OFX访问网上银行业务。"
 
-#: plugins/ofximport/dialogs/rc.cpp:27
+#: plugins/ofximport/dialogs/rc.cpp:28
 msgid "Account Details"
 msgstr "账户详细信息"
 
-#: plugins/ofximport/dialogs/rc.cpp:28 plugins/ofximport/dialogs/rc.cpp:30
+#: plugins/ofximport/dialogs/rc.cpp:29 plugins/ofximport/dialogs/rc.cpp:31
 msgid "&lt;Not configured&gt;"
 msgstr "&lt;未配置&gt;"
 
-#: plugins/ofximport/dialogs/rc.cpp:29
+#: plugins/ofximport/dialogs/rc.cpp:30
 msgid "BANK/BROKER:"
 msgstr "银行/代理人："
 
-#: plugins/ofximport/dialogs/rc.cpp:31
+#: plugins/ofximport/dialogs/rc.cpp:32
 msgid "Unavailable"
 msgstr "状态:不可用"
 
-#: plugins/ofximport/dialogs/rc.cpp:32
+#: plugins/ofximport/dialogs/rc.cpp:33
 msgid "ACCOUNT:"
 msgstr "账户: "
 
-#: plugins/ofximport/dialogs/rc.cpp:33
+#: plugins/ofximport/dialogs/rc.cpp:34
 msgid "STATUS:"
 msgstr "状态："
 
-#: plugins/ofximport/dialogs/rc.cpp:34
+#: plugins/ofximport/dialogs/rc.cpp:35
 msgid "OFX Details"
 msgstr "OFX详细信息"
 
-#: plugins/ofximport/dialogs/rc.cpp:36
+#: plugins/ofximport/dialogs/rc.cpp:38
 #, fuzzy
 msgid "Start date of import"
 msgstr "对帐单起始日期"
 
-#: plugins/ofximport/dialogs/rc.cpp:37
+#: plugins/ofximport/dialogs/rc.cpp:39
 #, fuzzy
 msgid "To&day minus"
 msgstr "本日支付"
 
-#: plugins/ofximport/dialogs/rc.cpp:38
+#: plugins/ofximport/dialogs/rc.cpp:40
 #, fuzzy
 msgid "days"
 msgstr "0天"
 
-#: plugins/ofximport/dialogs/rc.cpp:39
+#: plugins/ofximport/dialogs/rc.cpp:41
 #, fuzzy
 msgid "Last &update"
 msgstr "上季度"
 
-#: plugins/ofximport/dialogs/rc.cpp:40
+#: plugins/ofximport/dialogs/rc.cpp:42
 #, fuzzy
 msgid "Pi&ck date"
 msgstr "创建日期"
 
-#: plugins/ofximport/dialogs/rc.cpp:41
+#: plugins/ofximport/dialogs/rc.cpp:43
 msgid "Name is derived from"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:42
+#: plugins/ofximport/dialogs/rc.cpp:44
 msgid "P&AYEEID"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:43
+#: plugins/ofximport/dialogs/rc.cpp:45
 #, fuzzy
 msgid "&NAME"
 msgstr "AMEX"
 
-#: plugins/ofximport/dialogs/rc.cpp:44
+#: plugins/ofximport/dialogs/rc.cpp:46
 msgid "field if both are present in download"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:57
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
+#, fuzzy
+msgid "Quicken Windows 2003"
+msgstr "Quicken Windows 2005"
+
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:82
+#, fuzzy
+msgid "Quicken Windows 2004"
+msgstr "Quicken Windows 2005"
+
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:83
 msgid "Quicken Windows 2005"
 msgstr "Quicken Windows 2005"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:58
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:84
 msgid "Quicken Windows 2006"
 msgstr "Quicken Windows 2006"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:59
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
 msgid "Quicken Windows 2007"
 msgstr "Quicken Windows 2007"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:60
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:86
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:111
 msgid "Quicken Windows 2008"
 msgstr "Quicken Windows 2008"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:63
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:89
 msgid "MS-Money 2003"
 msgstr "MS-Money 2003"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:64
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:90
 msgid "MS-Money 2004"
 msgstr "MS-Money 2004"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:65
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:91
 msgid "MS-Money 2005"
 msgstr "MS-Money 2005"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:66
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:92
 msgid "MS-Money 2006"
 msgstr "MS-Money 2006"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:67
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:93
 msgid "MS-Money 2007"
 msgstr "MS-Money 2007"
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:68
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:94
 msgid "MS-Money Plus"
 msgstr "MS-Money Plus"
-
-#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:196
-msgid "The HTTP request failed."
-msgstr "HTTP请求失败"
-
-#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:196
-msgid "Failed"
-msgstr "失败"
 
 #: dialogs/kreportconfigurationfilterdlg.cpp:91
 msgid "Report Configuration"
@@ -7816,42 +7890,10 @@ msgstr "报表配置"
 msgid "Rows/Columns"
 msgstr "行/栏目"
 
-#: dialogs/konlinebankingsetupwizard.cpp:273
-msgid "CHECKING"
-msgstr "核对"
-
-#: dialogs/konlinebankingsetupwizard.cpp:276
-msgid "SAVINGS"
-msgstr "储蓄"
-
-#: dialogs/konlinebankingsetupwizard.cpp:279
-msgid "MONEY MARKET"
-msgstr "货币市场"
-
-#: dialogs/konlinebankingsetupwizard.cpp:282
-msgid "CREDIT LINE"
-msgstr "信贷限额"
-
-#: dialogs/konlinebankingsetupwizard.cpp:285
-msgid "CMA"
-msgstr "CMA"
-
-#: dialogs/konlinebankingsetupwizard.cpp:288
-msgid "CREDIT CARD"
-msgstr "信用卡"
-
-#: dialogs/konlinebankingsetupwizard.cpp:291
-msgid "INVESTMENT"
-msgstr "投资"
-
-#: dialogs/konlinebankingsetupwizard.cpp:294
-msgid "UNKNOWN"
-msgstr "未知"
-
 #: dialogs/investtransactioneditor.cpp:203
 #: dialogs/investtransactioneditor.cpp:537
 #: dialogs/investtransactioneditor.cpp:579 dialogs/rc.cpp:102
-#: dialogs/rc.cpp:157 dialogs/rc.cpp:243 dialogs/rc.cpp:795
+#: dialogs/rc.cpp:157 dialogs/rc.cpp:243 dialogs/rc.cpp:748 dialogs/rc.cpp:792
 #: widgets/kmymoneyaccountselector.cpp:182 widgets/register.cpp:64
 #: widgets/register.cpp:545 widgets/transaction.cpp:1490
 msgid "Security"
@@ -8231,20 +8273,20 @@ msgid "Category/Account"
 msgstr "交易类别/账户"
 
 #: dialogs/transactioneditor.cpp:963 dialogs/transactioneditor.cpp:999
-#: dialogs/transactioneditor.cpp:1345 dialogs/transactioneditor.cpp:1366
-#: dialogs/transactioneditor.cpp:1389 dialogs/transactioneditor.cpp:1410
-#: dialogs/transactioneditor.cpp:1472 dialogs/transactioneditor.cpp:1476
+#: dialogs/transactioneditor.cpp:1354 dialogs/transactioneditor.cpp:1375
+#: dialogs/transactioneditor.cpp:1398 dialogs/transactioneditor.cpp:1419
+#: dialogs/transactioneditor.cpp:1481 dialogs/transactioneditor.cpp:1485
 #: widgets/transaction.cpp:892
 msgid "Transfer from"
 msgstr "转账来自"
 
 #: dialogs/transactioneditor.cpp:965 dialogs/transactioneditor.cpp:1001
-#: dialogs/transactioneditor.cpp:1368 dialogs/transactioneditor.cpp:1412
-#: dialogs/transactioneditor.cpp:1473 widgets/transaction.cpp:892
+#: dialogs/transactioneditor.cpp:1377 dialogs/transactioneditor.cpp:1421
+#: dialogs/transactioneditor.cpp:1482 widgets/transaction.cpp:892
 msgid "Transfer to"
 msgstr "转账到"
 
-#: dialogs/transactioneditor.cpp:1228
+#: dialogs/transactioneditor.cpp:1235
 msgid "Select autofill transaction"
 msgstr "选择自动填充交易"
 
@@ -8327,7 +8369,7 @@ msgstr ""
 msgid "Fatal error in determining data: "
 msgstr "在确定数据时发生致命错误。"
 
-#: dialogs/kselectdatabasedlg.cpp:55
+#: dialogs/kselectdatabasedlg.cpp:56
 msgid ""
 "There are no Qt SQL drivers installed in your system.\n"
 "Please consult documentation for your distro, or visit the Qt web site (www."
@@ -8337,55 +8379,35 @@ msgstr ""
 "请参考您的系统发行版文档，或者访问Qt官方网站（http://www.trolltech.com）寻找"
 "SQL驱动程序。"
 
-#: dialogs/kselectdatabasedlg.cpp:138
-msgid "SQLite requires a file name; try again?"
-msgstr "SQLite需要一个文件名；重试？"
-
-#: dialogs/kselectdatabasedlg.cpp:165
-msgid ""
-"<h3>Database Type</h3><p>This box lists all Qt SQL drivers installed on your "
-"system. Select the driver for your database type. If the one you want is not "
-"in the list, you need to install the appropriate driver. See your distro "
-"documentation, or visit the Qt web Site (http://www.trolltech.com) and "
-"search for 'SQL drivers'.</p><h3>Database Name</h3><p>The default database "
-"name is KMyMoney, but you may choose some other name if you like. SQLite has "
-"one database per file; selecting this driver opens the file dialog. For "
-"database types other than SQLite and MySql, the database itself must be pre-"
-"created, though KMyMoney will create all table structures where necessary.</"
-"p><h3>Host Name</h3><p>For the average user, the default name of localhost, "
-"being the machine you are currently using, is correct. For networked "
-"databases, enter the host name of the system where the database is stored. "
-"You may need to contact your database administrator for this information.</"
-"p><h3>User Name and Password</h3><p>Check the permissions set up on your "
-"database, or contact the database administrator, for the correct values to "
-"use here. The user name must be capable of deleting, inserting and updating "
-"records. If the user name is the same as your login name, a password is not "
-"normally required.</p><h3>Generate SQL</h3><p>Click this button to create a "
-"text file and write the commands needed to create the database tables and "
-"other objects. With care, this may be edited if the in-built commands do not "
-"work for your database system.</p><p>Please read the appropriate chapter of "
-"the KMyMoney handbook for further information on database usage.</p>"
+#: dialogs/kselectdatabasedlg.cpp:100
+msgid "Qt SQL driver %1 is no longer installed on your system"
 msgstr ""
-"<h3>数据库类型</h3><p>这个列表框中列出了您系统中安装的所有Qt SQL驱动程序。 选"
-"择与您的数据库类型对应的驱动。如果列表中没有您想要的驱动，那么就需要您安装正"
-"确的驱动程序。请参考您的系统发行版文档，或者访问Qt官方网站（http://www."
-"trolltech.com）查找SQL驱动程序。</p><h3>数据库名称</h3><p>缺省的数据库名是"
-"KMyMoney, 但您也可以任意选择其他您喜欢的名字。 SQLite的每个数据库对应一个文"
-"件，选择使用该驱动将打开文件对话框。虽然本程序 可以自动创建需要的数据表结构，"
-"但对于 MySQL以外的数据库类型，必须预先在数据库系统中创建对应的数据库。</p> "
-"<h3>主机名</h3><p>对于一般用户，填入“localhost”,即你正在使用的主机， 就可以"
-"了。如果要使用网络服务器上的数据库，则请输入正确的服务器主机名。</p> <h3>用户"
-"名和密码</h3><p>检查你的数据库中的权限设置，或者与数据库管理员联系，以 确定这"
-"里应该填入的正确内容是什么。该数据库用户名必须具有删除、插入和更新数据库 记录"
-"的权限。如果数据库用户名与您的登录用户名相同，则可能不需要再输入密码。</p> "
-"<h3>生成SQL</h3><p>该按钮将会生成CREATE TABLE命令，并保存到一个文本文件中。 "
-"这样，如果“自动生成”命令在你的数据库系统中不能正常工作，你可以自行手工编辑和"
-"修改 这些命令。</p><p>请参考KMyMoney手册中对应章节的内容，以获取更多关于数据"
-"库 使用的知识。</p>"
 
-#: dialogs/kselectdatabasedlg.cpp:208
-msgid "Selecting a SQL database"
-msgstr "正在选择一个SQL数据库"
+#: dialogs/kselectdatabasedlg.cpp:107
+msgid "Qt SQL driver %1 is not suported"
+msgstr ""
+
+#: dialogs/kselectdatabasedlg.cpp:164
+#, fuzzy
+msgid "SQLite files (*.sql);; All files (*.*)"
+msgstr ""
+"*.%1|%2文件 (%3)\n"
+"*.*|所有文件(*.*) "
+
+#: dialogs/kselectdatabasedlg.cpp:167
+#, fuzzy
+msgid "Select SQLite file"
+msgstr "选择样式"
+
+#: dialogs/kselectdatabasedlg.cpp:188
+#, fuzzy
+msgid "All files (*.*)"
+msgstr "所有文件"
+
+#: dialogs/kselectdatabasedlg.cpp:191
+#, fuzzy
+msgid "Select output file"
+msgstr "选择文件"
 
 #: dialogs/investactivities.cpp:168
 msgid "%1 (Brokerage)"
@@ -8802,7 +8824,7 @@ msgstr "大尺寸 (64px)"
 msgid "Show title bar on each page"
 msgstr ""
 
-#: dialogs/rc.cpp:836 dialogs/settings/rc.cpp:70
+#: dialogs/rc.cpp:833 dialogs/settings/rc.cpp:70
 msgid "Filter"
 msgstr "过滤器"
 
@@ -9045,7 +9067,7 @@ msgstr ""
 "输入用于获取股票报价的地址。将用被报价证券的代号来代替<b>%1</b>。在兑换货币"
 "时， 将用要报价的货币代替<b>%2</b>,用报价的基准货币代替<b>%3</b>。"
 
-#: dialogs/rc.cpp:808 dialogs/settings/rc.cpp:119 widgets/rc.cpp:45
+#: dialogs/rc.cpp:805 dialogs/settings/rc.cpp:119 widgets/rc.cpp:45
 msgid "Date Format"
 msgstr "日期格式"
 
@@ -9244,56 +9266,48 @@ msgstr "用它为在线报价新建一个来源项"
 msgid "New Quote Source"
 msgstr "新报价来源"
 
-#: dialogs/ksplittransactiondlg.cpp:78 widgets/kmymoneywizard.cpp:123
-msgid "&Finish"
-msgstr "完成(&F)"
-
-#: dialogs/ksplittransactiondlg.cpp:80
-msgid "Accept splits and return to transaction form"
-msgstr "接受拆分并返回交易输入界面。"
-
-#: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
-msgstr "接受对拆分的全部改动并返回交易输入界面。"
-
-#: dialogs/ksplittransactiondlg.cpp:86
+#: dialogs/ksplittransactiondlg.cpp:77 dialogs/rc.cpp:786
 msgid "Clear &All"
 msgstr "全部清除(&A)"
 
-#: dialogs/ksplittransactiondlg.cpp:88
+#: dialogs/ksplittransactiondlg.cpp:79
 msgid "Clear all splits"
 msgstr "清除所有拆分。"
 
-#: dialogs/ksplittransactiondlg.cpp:89
+#: dialogs/ksplittransactiondlg.cpp:80
 msgid "Use this to clear all splits of this transaction"
 msgstr "清除对此交易的全部拆分"
 
-#: dialogs/ksplittransactiondlg.cpp:174
+#: dialogs/ksplittransactiondlg.cpp:84
+#, fuzzy
+msgid "&Merge"
+msgstr "平均"
+
+#: dialogs/ksplittransactiondlg.cpp:182
 msgid ""
 "The total amount of this transaction is %1 while the sum of the splits is %"
 "2. The remaining %3 are unassigned."
 msgstr "此交易的总金额为%1。但是已拆分金额总计为%2。还有%3的剩余金额尚未指定。"
 
-#: dialogs/ksplittransactiondlg.cpp:182
+#: dialogs/ksplittransactiondlg.cpp:190
 #, c-format
 msgid "Change &total amount of transaction to %1."
 msgstr "将交易总额改为%1。"
 
-#: dialogs/ksplittransactiondlg.cpp:185
+#: dialogs/ksplittransactiondlg.cpp:193
 msgid "&Distribute difference of %1 among all splits."
 msgstr "将差额%1均摊到各拆分中。(&D)"
 
-#: dialogs/ksplittransactiondlg.cpp:194
+#: dialogs/ksplittransactiondlg.cpp:202
 #, c-format
 msgid "&Leave total amount of transaction at %1."
 msgstr "将交易总额留为%1。"
 
-#: dialogs/ksplittransactiondlg.cpp:196
+#: dialogs/ksplittransactiondlg.cpp:204
 msgid "&Leave %1 unassigned."
 msgstr "保持%1未指派状态。(&L)"
 
-#: dialogs/ksplittransactiondlg.cpp:266
+#: dialogs/ksplittransactiondlg.cpp:274
 msgid ""
 "You are about to delete all splits of this transaction. Do you really want "
 "to continue?"
@@ -9304,7 +9318,7 @@ msgid "Use this to create a new QIF import/export profile"
 msgstr "用它来创建一个新的QIF导入/导出配置"
 
 #: dialogs/mymoneyqifprofileeditor.cpp:147
-#: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:798
+#: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:795
 msgid "QIF Profile Editor"
 msgstr "QIF配置文件编辑器"
 
@@ -9369,7 +9383,7 @@ msgstr "%1 余额历史"
 msgid "Split Options"
 msgstr "分割选项"
 
-#: dialogs/kmymoneysplittable.cpp:99 dialogs/rc.cpp:746
+#: dialogs/kmymoneysplittable.cpp:99 dialogs/rc.cpp:729
 #: widgets/kmymoneypriceview.cpp:149
 msgid "Edit..."
 msgstr "编辑..."
@@ -9382,17 +9396,17 @@ msgstr "复制"
 msgid "Delete ..."
 msgstr "删除..."
 
-#: dialogs/kmymoneysplittable.cpp:271
+#: dialogs/kmymoneysplittable.cpp:275
 msgid ""
 "_: Duplicate split\n"
 "CTRL+c"
 msgstr "CTRL+c"
 
-#: dialogs/kmymoneysplittable.cpp:541
+#: dialogs/kmymoneysplittable.cpp:557
 msgid "will be calculated"
 msgstr "将被计算"
 
-#: dialogs/kmymoneysplittable.cpp:627
+#: dialogs/kmymoneysplittable.cpp:643
 msgid ""
 "You are about to delete the selected split. Do you really want to continue?"
 msgstr "此操作将删除选择的交易分割。您确定要继续此操作吗？"
@@ -9608,7 +9622,7 @@ msgstr "货币"
 msgid "real ID"
 msgstr "真实ID"
 
-#: dialogs/rc.cpp:73 dialogs/rc.cpp:737
+#: dialogs/rc.cpp:73 dialogs/rc.cpp:720
 msgid "ID"
 msgstr "ID"
 
@@ -9620,7 +9634,7 @@ msgstr "X"
 msgid "Online Source"
 msgstr "在线数据源"
 
-#: dialogs/rc.cpp:78 dialogs/rc.cpp:276 dialogs/rc.cpp:310 dialogs/rc.cpp:699
+#: dialogs/rc.cpp:78 dialogs/rc.cpp:276 dialogs/rc.cpp:310 dialogs/rc.cpp:682
 msgid "F1"
 msgstr "F1"
 
@@ -9678,7 +9692,7 @@ msgstr "频率："
 msgid "Payment information"
 msgstr "支付信息"
 
-#: dialogs/rc.cpp:104 dialogs/rc.cpp:159 dialogs/rc.cpp:245
+#: dialogs/rc.cpp:104 dialogs/rc.cpp:159 dialogs/rc.cpp:245 dialogs/rc.cpp:750
 #: widgets/register.cpp:547
 msgid "C"
 msgstr "C"
@@ -9778,7 +9792,7 @@ msgstr "验证支付"
 #: dialogs/rc.cpp:650 dialogs/rc.cpp:652 dialogs/rc.cpp:655 dialogs/rc.cpp:656
 #: dialogs/rc.cpp:657 dialogs/rc.cpp:662 dialogs/rc.cpp:663 dialogs/rc.cpp:666
 #: dialogs/rc.cpp:668 dialogs/rc.cpp:670 dialogs/rc.cpp:672 dialogs/rc.cpp:674
-#: dialogs/rc.cpp:676 dialogs/rc.cpp:679 dialogs/rc.cpp:824 widgets/rc.cpp:165
+#: dialogs/rc.cpp:676 dialogs/rc.cpp:679 dialogs/rc.cpp:821 widgets/rc.cpp:165
 msgid "1"
 msgstr "1"
 
@@ -10123,7 +10137,7 @@ msgstr "结果"
 msgid "F"
 msgstr "F"
 
-#: dialogs/rc.cpp:255 dialogs/rc.cpp:845
+#: dialogs/rc.cpp:255 dialogs/rc.cpp:842
 msgid "Reset"
 msgstr "重置"
 
@@ -10354,7 +10368,7 @@ msgstr "开户信息"
 msgid "Currency:"
 msgstr "货币："
 
-#: dialogs/rc.cpp:350 dialogs/rc.cpp:794
+#: dialogs/rc.cpp:350 dialogs/rc.cpp:791
 msgid "Date:"
 msgstr "日期："
 
@@ -10543,7 +10557,7 @@ msgid ""
 "online update details."
 msgstr "填写下面的详细信息，之后按“Next”键来继续填写在线更新的详细信息。"
 
-#: dialogs/rc.cpp:440 dialogs/rc.cpp:743
+#: dialogs/rc.cpp:440 dialogs/rc.cpp:726
 msgid "Fraction"
 msgstr "份额"
 
@@ -11176,23 +11190,23 @@ msgstr "应付利息:"
 msgid "Payment frequency:"
 msgstr "支付频率："
 
-#: dialogs/rc.cpp:697
+#: dialogs/rc.cpp:680
 msgid "Online Quote Configuration"
 msgstr "在线报价配置："
 
-#: dialogs/rc.cpp:702
+#: dialogs/rc.cpp:685
 msgid "Perl Location:"
 msgstr "Perl脚本所在位置："
 
-#: dialogs/rc.cpp:703
+#: dialogs/rc.cpp:686
 msgid "Script:"
 msgstr "脚本："
 
-#: dialogs/rc.cpp:705
+#: dialogs/rc.cpp:688
 msgid "Reassign payees"
 msgstr "重新指定收款人"
 
-#: dialogs/rc.cpp:706
+#: dialogs/rc.cpp:689
 msgid ""
 "The transactions associated with the selected payees need to be re-assigned "
 "to a different payee before the selected payees can be deleted. Please "
@@ -11201,36 +11215,36 @@ msgstr ""
 "在删除选中的收款人前，需要先将与相关的交易指定给其他收款人。请在下面的列表中 "
 "选择一个收款人。"
 
-#: dialogs/rc.cpp:707
+#: dialogs/rc.cpp:690
 msgid "Available payees:"
 msgstr "可用的收款人："
 
-#: dialogs/rc.cpp:708
+#: dialogs/rc.cpp:691
 msgid "Assign deleted names to the above selected payee's matching list"
 msgstr "将删除的名字添加到以上所选收/付款人的匹配列表中"
 
-#: dialogs/rc.cpp:711
+#: dialogs/rc.cpp:694
 msgid "PluginDlg"
 msgstr "插件对话框"
 
-#: dialogs/rc.cpp:712
+#: dialogs/rc.cpp:695
 msgid "PlugIn"
 msgstr "插件"
 
-#: dialogs/rc.cpp:713 widgets/transaction.cpp:1061
+#: dialogs/rc.cpp:696 widgets/transaction.cpp:1061
 #: widgets/transaction.cpp:1648
 msgid "Status"
 msgstr "状态"
 
-#: dialogs/rc.cpp:714
+#: dialogs/rc.cpp:697
 msgid "Feature"
 msgstr "特性"
 
-#: dialogs/rc.cpp:718
+#: dialogs/rc.cpp:701
 msgid "Reconciliation Dialog"
 msgstr "对帐对话框"
 
-#: dialogs/rc.cpp:719
+#: dialogs/rc.cpp:702
 msgid ""
 "This dialog will assist in helping you to balance your account.\n"
 "\n"
@@ -11248,73 +11262,73 @@ msgstr ""
 "点击“编辑交易”键可以返回账簿修改或创建交易记录。\n"
 "当差额为零时，您的账户就完成了平衡结算。 此时点击“完成”键保存已对帐记录。"
 
-#: dialogs/rc.cpp:720
+#: dialogs/rc.cpp:703
 msgid "Withdrawals"
 msgstr "取款"
 
-#: dialogs/rc.cpp:722 dialogs/rc.cpp:723 dialogs/rc.cpp:823
+#: dialogs/rc.cpp:705 dialogs/rc.cpp:706 dialogs/rc.cpp:820
 msgid "$"
 msgstr "$"
 
-#: dialogs/rc.cpp:725
+#: dialogs/rc.cpp:708
 msgid "Previous Balance:"
 msgstr "上一期余额："
 
-#: dialogs/rc.cpp:726 dialogs/rc.cpp:728 dialogs/rc.cpp:730 dialogs/rc.cpp:732
-#: dialogs/rc.cpp:821
+#: dialogs/rc.cpp:709 dialogs/rc.cpp:711 dialogs/rc.cpp:713 dialogs/rc.cpp:715
+#: dialogs/rc.cpp:818
 msgid "0"
 msgstr "0"
 
-#: dialogs/rc.cpp:727
+#: dialogs/rc.cpp:710
 msgid "Ending Balance:"
 msgstr "期末余额："
 
-#: dialogs/rc.cpp:729
+#: dialogs/rc.cpp:712
 msgid "Cleared Balance:"
 msgstr "已清算余额："
 
-#: dialogs/rc.cpp:731
+#: dialogs/rc.cpp:714
 msgid "Difference:"
 msgstr "差额："
 
-#: dialogs/rc.cpp:733
+#: dialogs/rc.cpp:716
 msgid "Edit Transactions..."
 msgstr "编辑交易..."
 
-#: dialogs/rc.cpp:736
+#: dialogs/rc.cpp:719
 msgid "Security List Editor"
 msgstr "证券列表编辑器"
 
-#: dialogs/rc.cpp:741
+#: dialogs/rc.cpp:724
 msgid "Market"
 msgstr "市场"
 
-#: dialogs/rc.cpp:744
+#: dialogs/rc.cpp:727
 msgid "Cash Fraction"
 msgstr "现金比例"
 
-#: dialogs/rc.cpp:745
+#: dialogs/rc.cpp:728
 #, fuzzy
 msgid "Add..."
 msgstr "添加..."
 
-#: dialogs/rc.cpp:747 widgets/kmymoneypriceview.cpp:157
+#: dialogs/rc.cpp:730 widgets/kmymoneypriceview.cpp:157
 msgid "Delete..."
 msgstr "删除..."
 
-#: dialogs/rc.cpp:748
+#: dialogs/rc.cpp:731
 msgid "Show national currencies"
 msgstr "显示不同国家货币"
 
-#: dialogs/rc.cpp:750
+#: dialogs/rc.cpp:733
 msgid "KMyMoney - Select Database"
 msgstr "KMyMoney - 选择数据库"
 
-#: dialogs/rc.cpp:751
+#: dialogs/rc.cpp:734
 msgid "CAUTION!"
 msgstr "注意!"
 
-#: dialogs/rc.cpp:752
+#: dialogs/rc.cpp:735
 msgid ""
 "<font color=\"#ff2727\">This software is still in an experimental stage, and "
 "loss of data is possible. Please ensure that you have an alternative backup "
@@ -11323,120 +11337,150 @@ msgstr ""
 "<font color=\"#ff2727\">该软件仍然处于试验阶段，可能会有数据丢失。在使用数据"
 "库功能前， 请确认您已经对您的数据做了有效的备份。</font>"
 
-#: dialogs/rc.cpp:753
+#: dialogs/rc.cpp:736
 msgid "Database Type"
 msgstr "数据库类型"
 
-#: dialogs/rc.cpp:754
+#: dialogs/rc.cpp:737
 msgid "Database Name"
 msgstr "数据库名称"
 
-#: dialogs/rc.cpp:755
+#: dialogs/rc.cpp:738
 msgid "Host Name"
 msgstr "主机名"
 
-#: dialogs/rc.cpp:756
+#: dialogs/rc.cpp:739
 msgid "User Name"
 msgstr "用户名"
 
-#: dialogs/rc.cpp:758
+#: dialogs/rc.cpp:741
 msgid "Preload all data"
 msgstr "预载全部数据"
 
-#: dialogs/rc.cpp:760
-msgid "Generate SQL"
+#: dialogs/rc.cpp:743
+#, fuzzy
+msgid "&Generate SQL"
 msgstr "生成SQL语句"
 
-#: dialogs/rc.cpp:768 widgets/rc.cpp:169
+#: dialogs/rc.cpp:745
+msgid "Ca&ncel"
+msgstr "取消(&n)"
+
+#: dialogs/rc.cpp:760 widgets/rc.cpp:169
 msgid "Sort options"
 msgstr "排序选项"
 
-#: dialogs/rc.cpp:769
+#: dialogs/rc.cpp:761
 msgid "Use default"
 msgstr "使用缺省设定"
 
-#: dialogs/rc.cpp:773
+#: dialogs/rc.cpp:765
 msgid "Correct splits"
 msgstr "改正交易拆分"
 
-#: dialogs/rc.cpp:775
+#: dialogs/rc.cpp:767
 msgid "How do you want to proceed?"
 msgstr "您想如何继续？"
 
-#: dialogs/rc.cpp:776
+#: dialogs/rc.cpp:768
 msgid "Continue to edit splits"
 msgstr "继续编辑拆分"
 
-#: dialogs/rc.cpp:777
+#: dialogs/rc.cpp:769
 #, c-format
 msgid "Change total amount of transaction to %1."
 msgstr "将交易总额改为%1。"
 
-#: dialogs/rc.cpp:778
+#: dialogs/rc.cpp:770
 msgid "Distribute difference of %1 among all splits."
 msgstr "将差额%1均摊到各拆分中。"
 
-#: dialogs/rc.cpp:779
+#: dialogs/rc.cpp:771
 msgid "Leave %1 unassigned."
 msgstr "保持%1未指派状态。"
 
-#: dialogs/rc.cpp:782
+#: dialogs/rc.cpp:774
 msgid "Split transaction"
 msgstr "拆分交易"
 
-#: dialogs/rc.cpp:783
+#: dialogs/rc.cpp:775
 msgid "<b>11,00<b>"
 msgstr "<b>11,00</b>"
 
-#: dialogs/rc.cpp:784
+#: dialogs/rc.cpp:776
 msgid "<b>111,00<b>"
 msgstr "<b>111,00</b>"
 
-#: dialogs/rc.cpp:785
+#: dialogs/rc.cpp:777
 msgid "Unassigned"
 msgstr "未指派"
 
-#: dialogs/rc.cpp:786
+#: dialogs/rc.cpp:778
 msgid "Sum of splits"
 msgstr "已拆分总额"
 
-#: dialogs/rc.cpp:787
+#: dialogs/rc.cpp:779
 msgid "100,00"
 msgstr "100,00"
 
-#: dialogs/rc.cpp:788
+#: dialogs/rc.cpp:780
 msgid "Transaction amount"
 msgstr "交易金额"
 
-#: dialogs/rc.cpp:792
+#: dialogs/rc.cpp:781
+#, fuzzy
+msgid "Merge"
+msgstr "更多"
+
+#: dialogs/rc.cpp:782
+msgid "Merges splits with the same category to one split"
+msgstr ""
+
+#: dialogs/rc.cpp:783
+msgid ""
+"In case you have multiple split entries to the same category and you like to "
+"keep them as a single split, press this button. The amount for identical "
+"categories will be added and stored in a single split for that category."
+msgstr ""
+
+#: dialogs/rc.cpp:784
+#, fuzzy
+msgid "Clear &Zero"
+msgstr "已清算"
+
+#: dialogs/rc.cpp:785
+msgid "Removes all splits that have a value of zero."
+msgstr ""
+
+#: dialogs/rc.cpp:789
 msgid "New price entry"
 msgstr "新建价格项"
 
-#: dialogs/rc.cpp:800
+#: dialogs/rc.cpp:797
 msgid "Void mark"
 msgstr "空标记"
 
-#: dialogs/rc.cpp:801
+#: dialogs/rc.cpp:798
 msgid "Opening Balance text"
 msgstr "开户余额文本"
 
-#: dialogs/rc.cpp:802
+#: dialogs/rc.cpp:799
 msgid "Type field text"
 msgstr "类型栏目文本"
 
-#: dialogs/rc.cpp:803
+#: dialogs/rc.cpp:800
 msgid "Account delimiter"
 msgstr "账户分界符"
 
-#: dialogs/rc.cpp:805
+#: dialogs/rc.cpp:802
 msgid "Attempt to match similar transactions"
 msgstr "尝试匹配类似的交易"
 
-#: dialogs/rc.cpp:807 dialogs/rc.cpp:809
+#: dialogs/rc.cpp:804 dialogs/rc.cpp:806
 msgid "The format of the dates in the QIF file."
 msgstr "在QIF文件中的日期格式"
 
-#: dialogs/rc.cpp:810 dialogs/rc.cpp:812
+#: dialogs/rc.cpp:807 dialogs/rc.cpp:809
 msgid ""
 "If a QIF file contains date entries with years represented with two digits "
 "then either an apostrophe or a slash may be used to delimit the year in the "
@@ -11448,91 +11492,91 @@ msgstr ""
 "中的年份。 这样可以将像是1905和2005这样的年份区分开来。这里请指定带'号的年份"
 "所在的时间段（例如，在Quicken中， 通常使用1900-1949）。"
 
-#: dialogs/rc.cpp:811
+#: dialogs/rc.cpp:808
 msgid "Apostrophe Handling"
 msgstr "“'”处理"
 
-#: dialogs/rc.cpp:813
+#: dialogs/rc.cpp:810
 msgid "Amounts"
 msgstr "金额"
 
-#: dialogs/rc.cpp:814
+#: dialogs/rc.cpp:811
 msgid "Field"
 msgstr "项"
 
-#: dialogs/rc.cpp:815
+#: dialogs/rc.cpp:812
 msgid "QIF-Record"
 msgstr "QIF记录"
 
-#: dialogs/rc.cpp:816 dialogs/rc.cpp:834
+#: dialogs/rc.cpp:813 dialogs/rc.cpp:831
 msgid "Decimal Symbol"
 msgstr "小数点符号"
 
-#: dialogs/rc.cpp:817
+#: dialogs/rc.cpp:814
 msgid "Thousand Delimiter"
 msgstr "千位分隔符"
 
-#: dialogs/rc.cpp:818
+#: dialogs/rc.cpp:815
 msgid "SortColumnInvisible"
 msgstr "SortColumnInvisible"
 
-#: dialogs/rc.cpp:820
+#: dialogs/rc.cpp:817
 msgid "T"
 msgstr "T"
 
-#: dialogs/rc.cpp:822
+#: dialogs/rc.cpp:819
 msgid "Split-Value"
 msgstr "拆分价值"
 
-#: dialogs/rc.cpp:825
+#: dialogs/rc.cpp:822
 msgid "Commission"
 msgstr "佣金"
 
-#: dialogs/rc.cpp:826
+#: dialogs/rc.cpp:823
 msgid "O"
 msgstr "O"
 
-#: dialogs/rc.cpp:827
+#: dialogs/rc.cpp:824
 msgid "2"
 msgstr "2"
 
-#: dialogs/rc.cpp:829
+#: dialogs/rc.cpp:826
 msgid "I"
 msgstr "I"
 
-#: dialogs/rc.cpp:830
+#: dialogs/rc.cpp:827
 msgid "3"
 msgstr "3"
 
-#: dialogs/rc.cpp:832
+#: dialogs/rc.cpp:829
 msgid "Q"
 msgstr "Q"
 
-#: dialogs/rc.cpp:833
+#: dialogs/rc.cpp:830
 msgid "4"
 msgstr "4"
 
-#: dialogs/rc.cpp:835
+#: dialogs/rc.cpp:832
 msgid "Thousands Separator"
 msgstr "千位分隔符"
 
-#: dialogs/rc.cpp:837
+#: dialogs/rc.cpp:834
 msgid "Output filter location"
 msgstr "输出过滤器地址"
 
-#: dialogs/rc.cpp:838
+#: dialogs/rc.cpp:835
 msgid "Input filter file type"
 msgstr "输入过滤器文件类型"
 
-#: dialogs/rc.cpp:839
+#: dialogs/rc.cpp:836
 msgid "*.qif"
 msgstr "*.qif"
 
-#: dialogs/rc.cpp:840
+#: dialogs/rc.cpp:837
 msgid "Input filter location"
 msgstr "输入过滤器地址"
 
-#: dialogs/rc.cpp:844
+#: dialogs/rc.cpp:841
 msgid "Rename"
 msgstr "重命名"
 
@@ -11852,23 +11896,23 @@ msgstr "帐期"
 msgid "principal and interest"
 msgstr "本金与利率"
 
-#: dialogs/knewloanwizard.cpp:843
+#: dialogs/knewloanwizard.cpp:741
 #, c-format
 msgid ""
 "The number of payments has been decremented and the final payment has been "
 "modified to %1."
 msgstr "偿还次数已经减少，因此最后一期应偿还金额相应修改为%1。"
 
-#: dialogs/knewloanwizard.cpp:851 dialogs/knewloanwizard.cpp:871
+#: dialogs/knewloanwizard.cpp:749 dialogs/knewloanwizard.cpp:769
 #, c-format
 msgid "The final payment has been modified to %1."
 msgstr "最后一期偿还金额已修改为%1。"
 
-#: dialogs/knewloanwizard.cpp:902
+#: dialogs/knewloanwizard.cpp:800
 msgid "KMyMoney has calculated a final payment of %1 for this loan."
 msgstr "KMyMoney算出此贷款最后一期偿还额为%1。"
 
-#: dialogs/knewloanwizard.cpp:917
+#: dialogs/knewloanwizard.cpp:815
 msgid ""
 "You have entered mis-matching information. Please backup to the appropriate "
 "page and update your figures or leave one value empty to let KMyMoney "
@@ -12316,10 +12360,6 @@ msgstr "No.%1 栏"
 msgid "S&earch:"
 msgstr "搜索(&S):"
 
-#: widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
-msgid "All"
-msgstr "全部"
-
 #: widgets/kmymoneyaccountselector.cpp:110
 #: widgets/kmymoneyaccountselector.cpp:371
 msgid "Income categories"
@@ -12407,6 +12447,10 @@ msgstr "返回(&B)"
 #: widgets/kmymoneywizard.cpp:122
 msgid "&Next"
 msgstr "继续(&N)"
+
+#: widgets/kmymoneywizard.cpp:123
+msgid "&Finish"
+msgstr "完成(&F)"
 
 #: widgets/kmymoneywizard.cpp:274
 msgid "Step %1 of %2"
@@ -12627,18 +12671,6 @@ msgid ""
 "<p>On this tab, you configure how you'd like the rows and columns to be "
 "selected and organized.</p>"
 msgstr "<p>在此标签中，你配置如何对选中的行和栏目进行组织。</p>"
-
-#: widgets/rc.cpp:66
-msgid "Top-Level"
-msgstr "顶层"
-
-#: widgets/rc.cpp:67
-msgid "Groups"
-msgstr "组"
-
-#: widgets/rc.cpp:68
-msgid "Totals"
-msgstr "总计"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
 msgid ""
@@ -13041,6 +13073,100 @@ msgstr "前3个月到今后3个月"
 msgid "User defined"
 msgstr "用户自定义"
 
+#~ msgid "Multi-user mode not yet implemented\n"
+#~ msgstr "尚未实现多用户模式\n"
+
+#~ msgid ""
+#~ "Reading the bank list failed with the following error: '%1'. The console "
+#~ "output may have more information."
+#~ msgstr "读取银行列表出错：'%1'。从控制台的输出可以获得更多信息。"
+
+#~ msgid "XMLPP error"
+#~ msgstr "XMLPP 错误"
+
+#~ msgid "Disabled. No online banking services are available"
+#~ msgstr "已禁用。无可用的网银服务。"
+
+#~ msgid "CHECKING"
+#~ msgstr "核对"
+
+#~ msgid "SAVINGS"
+#~ msgstr "储蓄"
+
+#~ msgid "MONEY MARKET"
+#~ msgstr "货币市场"
+
+#~ msgid "CREDIT LINE"
+#~ msgstr "信贷限额"
+
+#~ msgid "CMA"
+#~ msgstr "CMA"
+
+#~ msgid "CREDIT CARD"
+#~ msgstr "信用卡"
+
+#~ msgid "INVESTMENT"
+#~ msgstr "投资"
+
+#~ msgid "UNKNOWN"
+#~ msgstr "未知"
+
+#~ msgid "SQLite requires a file name; try again?"
+#~ msgstr "SQLite需要一个文件名；重试？"
+
+#~ msgid ""
+#~ "<h3>Database Type</h3><p>This box lists all Qt SQL drivers installed on "
+#~ "your system. Select the driver for your database type. If the one you "
+#~ "want is not in the list, you need to install the appropriate driver. See "
+#~ "your distro documentation, or visit the Qt web Site (http://www.trolltech."
+#~ "com) and search for 'SQL drivers'.</p><h3>Database Name</h3><p>The "
+#~ "default database name is KMyMoney, but you may choose some other name if "
+#~ "you like. SQLite has one database per file; selecting this driver opens "
+#~ "the file dialog. For database types other than SQLite and MySql, the "
+#~ "database itself must be pre-created, though KMyMoney will create all "
+#~ "table structures where necessary.</p><h3>Host Name</h3><p>For the average "
+#~ "user, the default name of localhost, being the machine you are currently "
+#~ "using, is correct. For networked databases, enter the host name of the "
+#~ "system where the database is stored. You may need to contact your "
+#~ "database administrator for this information.</p><h3>User Name and "
+#~ "Password</h3><p>Check the permissions set up on your database, or contact "
+#~ "the database administrator, for the correct values to use here. The user "
+#~ "name must be capable of deleting, inserting and updating records. If the "
+#~ "user name is the same as your login name, a password is not normally "
+#~ "required.</p><h3>Generate SQL</h3><p>Click this button to create a text "
+#~ "file and write the commands needed to create the database tables and "
+#~ "other objects. With care, this may be edited if the in-built commands do "
+#~ "not work for your database system.</p><p>Please read the appropriate "
+#~ "chapter of the KMyMoney handbook for further information on database "
+#~ "usage.</p>"
+#~ msgstr ""
+#~ "<h3>数据库类型</h3><p>这个列表框中列出了您系统中安装的所有Qt SQL驱动程"
+#~ "序。 选择与您的数据库类型对应的驱动。如果列表中没有您想要的驱动，那么就需"
+#~ "要您安装正确的驱动程序。请参考您的系统发行版文档，或者访问Qt官方网站"
+#~ "（http://www.trolltech.com）查找SQL驱动程序。</p><h3>数据库名称</h3><p>缺"
+#~ "省的数据库名是KMyMoney, 但您也可以任意选择其他您喜欢的名字。 SQLite的每个"
+#~ "数据库对应一个文件，选择使用该驱动将打开文件对话框。虽然本程序 可以自动创"
+#~ "建需要的数据表结构，但对于 MySQL以外的数据库类型，必须预先在数据库系统中创"
+#~ "建对应的数据库。</p> <h3>主机名</h3><p>对于一般用户，填入“localhost”,即你"
+#~ "正在使用的主机， 就可以了。如果要使用网络服务器上的数据库，则请输入正确的"
+#~ "服务器主机名。</p> <h3>用户名和密码</h3><p>检查你的数据库中的权限设置，或"
+#~ "者与数据库管理员联系，以 确定这里应该填入的正确内容是什么。该数据库用户名"
+#~ "必须具有删除、插入和更新数据库 记录的权限。如果数据库用户名与您的登录用户"
+#~ "名相同，则可能不需要再输入密码。</p> <h3>生成SQL</h3><p>该按钮将会生成"
+#~ "CREATE TABLE命令，并保存到一个文本文件中。 这样，如果“自动生成”命令在你的"
+#~ "数据库系统中不能正常工作，你可以自行手工编辑和修改 这些命令。</p><p>请参考"
+#~ "KMyMoney手册中对应章节的内容，以获取更多关于数据库 使用的知识。</p>"
+
+#~ msgid "Selecting a SQL database"
+#~ msgstr "正在选择一个SQL数据库"
+
+#~ msgid "Accept splits and return to transaction form"
+#~ msgstr "接受拆分并返回交易输入界面。"
+
+#~ msgid ""
+#~ "Use this to accept all changes to the splits and return to the transaction"
+#~ msgstr "接受对拆分的全部改动并返回交易输入界面。"
+
 #~ msgid ""
 #~ "This QIF file contains investment transactions.  You are trying to import "
 #~ "this file into an account which is not an investment account.  These "
@@ -13214,9 +13340,6 @@ msgstr "用户自定义"
 #~ msgid "&Create"
 #~ msgstr "新建(&C)"
 
-#~ msgid "Ca&ncel"
-#~ msgstr "取消(&n)"
-
 #~ msgid "Co&nfigure"
 #~ msgstr "配置(&n)"
 
@@ -13328,13 +13451,6 @@ msgstr "用户自定义"
 
 #~ msgid "Match With This Transaction"
 #~ msgstr "与此交易匹配"
-
-#~ msgid ""
-#~ "%1|%2 files (%3)\n"
-#~ "*.*|All files (*.*)"
-#~ msgstr ""
-#~ "*.%1|%2文件 (%3)\n"
-#~ "*.*|所有文件(*.*) "
 
 #~ msgid "Import %1 Statement..."
 #~ msgstr "导入%1对帐单..."

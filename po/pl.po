@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-07 23:33+0100\n"
+"POT-Creation-Date: 2009-02-01 17:05+0100\n"
 "PO-Revision-Date: 2007-02-21 21:57+0100\n"
 "Last-Translator: Robert Gomulka <rgom@o2.pl>\n"
 "Language-Team: polish <pl@li.org>\n"
@@ -32,12 +32,12 @@ msgid ""
 msgstr ""
 
 #: dialogs/kequitypriceupdatedlg.cpp:71 dialogs/rc.cpp:397 dialogs/rc.cpp:483
-#: dialogs/rc.cpp:739 dialogs/settings/rc.cpp:107 reports/listtable.cpp:214
+#: dialogs/rc.cpp:722 dialogs/settings/rc.cpp:107 reports/listtable.cpp:226
 #: views/kinvestmentview.cpp:72 views/kpayeesview.cpp:334 views/rc.cpp:13
 #: widgets/rc.cpp:5 widgets/rc.cpp:34
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1591
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1621
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1665
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1598
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1628
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1672
 #: wizards/wizardpages/rc.cpp:3
 msgid "Name"
 msgstr "Nazwa"
@@ -47,7 +47,7 @@ msgid "ISO Code"
 msgstr ""
 
 #: dialogs/kequitypriceupdatedlg.cpp:69 dialogs/kequitypriceupdatedlg.cpp:70
-#: dialogs/rc.cpp:71 dialogs/rc.cpp:740 dialogs/settings/rc.cpp:111
+#: dialogs/rc.cpp:71 dialogs/rc.cpp:723 dialogs/settings/rc.cpp:111
 #: views/kinvestmentview.cpp:73 widgets/rc.cpp:37 wizards/wizardpages/rc.cpp:5
 msgid "Symbol"
 msgstr "Symbol"
@@ -100,7 +100,7 @@ msgstr "Twoje imię:"
 msgid "Load from Addressbook"
 msgstr "Wczytaj z książki adresowej"
 
-#: dialogs/rc.cpp:390 dialogs/rc.cpp:424 views/rc.cpp:62
+#: dialogs/rc.cpp:390 dialogs/rc.cpp:424 views/rc.cpp:68
 #: wizards/wizardpages/rc.cpp:14
 msgid "Postal Code:"
 msgstr "Kod pocztowy:"
@@ -109,9 +109,9 @@ msgstr "Kod pocztowy:"
 msgid "KMyMoney New Account Setup"
 msgstr ""
 
-#: dialogs/rc.cpp:358 dialogs/rc.cpp:359 reports/listtable.cpp:218
+#: dialogs/rc.cpp:358 dialogs/rc.cpp:359 reports/listtable.cpp:230
 #: wizards/newaccountwizard/knewaccountwizard.cpp:83
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1608
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1615
 #: wizards/newaccountwizard/rc.cpp:61
 msgid "Institution"
 msgstr "Instytucja"
@@ -119,12 +119,12 @@ msgstr "Instytucja"
 #: dialogs/investactivities.cpp:198 dialogs/investactivities.cpp:286
 #: dialogs/investactivities.cpp:367 dialogs/kfindtransactiondlg.cpp:201
 #: dialogs/rc.cpp:138 dialogs/rc.cpp:191 dialogs/rc.cpp:205
-#: dialogs/transactioneditor.cpp:719 reports/listtable.cpp:189
-#: reports/pivottable.cpp:1295 reports/pivottable.cpp:1537
+#: dialogs/transactioneditor.cpp:719 reports/listtable.cpp:201
+#: reports/pivottable.cpp:1314 reports/pivottable.cpp:1564
 #: views/kforecastview.cpp:393 views/kgloballedgerview.cpp:175
 #: views/khomeview.cpp:417 views/khomeview.cpp:481 views/khomeview.cpp:515
 #: views/khomeview.cpp:754 views/khomeview.cpp:957 views/khomeview.cpp:1425
-#: views/kscheduledview.cpp:71 views/rc.cpp:17 views/rc.cpp:38
+#: views/kscheduledview.cpp:71 views/rc.cpp:17 views/rc.cpp:44
 #: widgets/kmymoneyaccounttreebase.cpp:58
 #: widgets/kmymoneyaccounttreeforecast.cpp:41 widgets/rc.cpp:109
 #: widgets/register.cpp:544 widgets/transaction.cpp:968
@@ -139,22 +139,22 @@ msgid "Broker"
 msgstr " (Brokerskie)"
 
 #: dialogs/kfindtransactiondlg.cpp:245 dialogs/rc.cpp:70 dialogs/rc.cpp:103
-#: dialogs/rc.cpp:158 dialogs/rc.cpp:221 dialogs/rc.cpp:244
+#: dialogs/rc.cpp:158 dialogs/rc.cpp:221 dialogs/rc.cpp:244 dialogs/rc.cpp:749
 #: dialogs/settings/rc.cpp:108 widgets/rc.cpp:35 widgets/register.cpp:546
 #: wizards/newaccountwizard/knewaccountwizard.cpp:86
 msgid "Details"
 msgstr "Szczegóły"
 
-#: dialogs/knewloanwizard.cpp:633 dialogs/rc.cpp:229 dialogs/rc.cpp:606
-#: kmymoneyutils.cpp:234 views/khomeview.cpp:398
+#: dialogs/knewloanwizard.cpp:634 dialogs/rc.cpp:229 dialogs/rc.cpp:606
+#: kmymoneyutils.cpp:236 views/khomeview.cpp:398
 #: wizards/newaccountwizard/knewaccountwizard.cpp:87
-#: wizards/newaccountwizard/knewaccountwizard.cpp:878
+#: wizards/newaccountwizard/knewaccountwizard.cpp:879
 msgid "Payments"
 msgstr "Płatności"
 
 #: dialogs/investactivities.cpp:195 dialogs/investactivities.cpp:283
 #: dialogs/investactivities.cpp:422 dialogs/investtransactioneditor.cpp:217
-#: reports/listtable.cpp:209 widgets/transaction.cpp:1555
+#: reports/listtable.cpp:221 widgets/transaction.cpp:1555
 #: wizards/newaccountwizard/knewaccountwizard.cpp:88
 msgid "Fees"
 msgstr "Opłaty"
@@ -176,8 +176,7 @@ msgstr "Płatność dla"
 msgid "Parent Account"
 msgstr "Konta płatności"
 
-#: dialogs/rc.cpp:734 dialogs/rc.cpp:789
-#: wizards/newaccountwizard/knewaccountwizard.cpp:92
+#: dialogs/rc.cpp:717 wizards/newaccountwizard/knewaccountwizard.cpp:92
 #: wizards/newuserwizard/knewuserwizard.cpp:86
 #, fuzzy
 msgid "Finish"
@@ -193,7 +192,7 @@ msgstr "Karta kredytowa"
 msgid "Loan payment for %1"
 msgstr "Spłata pożyczki z %1"
 
-#: mymoney/mymoneyscheduled.cpp:1109
+#: mymoney/mymoneyscheduled.cpp:1141
 #: wizards/newaccountwizard/knewaccountwizard.cpp:278
 msgid "Loan payment"
 msgstr "Spłata pożyczki"
@@ -205,7 +204,7 @@ msgstr "Amortyzacja"
 #: dialogs/investactivities.cpp:196 dialogs/investactivities.cpp:284
 #: dialogs/investactivities.cpp:366 dialogs/investactivities.cpp:423
 #: dialogs/investtransactioneditor.cpp:227 dialogs/rc.cpp:134
-#: dialogs/rc.cpp:151 dialogs/rc.cpp:542 reports/listtable.cpp:210
+#: dialogs/rc.cpp:151 dialogs/rc.cpp:542 reports/listtable.cpp:222
 #: widgets/transaction.cpp:1587
 #: wizards/newaccountwizard/knewaccountwizard.cpp:301
 msgid "Interest"
@@ -219,205 +218,205 @@ msgstr "Użytkownik"
 
 #: kmymoneyutils.cpp:64 mymoney/mymoneyaccount.cpp:708
 #: reports/querytabletest.cpp:422
-#: wizards/newaccountwizard/knewaccountwizard.cpp:451
+#: wizards/newaccountwizard/knewaccountwizard.cpp:450
 msgid "Checking"
 msgstr "Oszczędnościowo-rozliczeniowe"
 
 #: kmymoneyutils.cpp:66 mymoney/mymoneyaccount.cpp:711
-#: wizards/newaccountwizard/knewaccountwizard.cpp:452
+#: wizards/newaccountwizard/knewaccountwizard.cpp:451
 msgid "Savings"
 msgstr "Oszczędnościowe"
 
 #: kmymoneyutils.cpp:68 mymoney/mymoneyaccount.cpp:714
 #: reports/querytabletest.cpp:423
-#: wizards/newaccountwizard/knewaccountwizard.cpp:453
+#: wizards/newaccountwizard/knewaccountwizard.cpp:452
 msgid "Credit Card"
 msgstr "Karta kredytowa"
 
 #: kmymoneyutils.cpp:70 mymoney/mymoneyaccount.cpp:717
-#: wizards/newaccountwizard/knewaccountwizard.cpp:454
+#: wizards/newaccountwizard/knewaccountwizard.cpp:453
 msgid "Cash"
 msgstr "Gotówka"
 
 #: kmymoneyutils.cpp:72 mymoney/mymoneyaccount.cpp:720
-#: wizards/newaccountwizard/knewaccountwizard.cpp:455
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1596
+#: wizards/newaccountwizard/knewaccountwizard.cpp:454
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1603
 msgid "Loan"
 msgstr "Pożyczka"
 
 #: kmymoneyutils.cpp:76 mymoney/mymoneyaccount.cpp:726
-#: wizards/newaccountwizard/knewaccountwizard.cpp:456
+#: wizards/newaccountwizard/knewaccountwizard.cpp:455
 msgid "Investment"
 msgstr "Inwestycja"
 
 #: converter/mymoneytemplate.cpp:178 converter/mymoneytemplate.cpp:179
 #: dialogs/knewaccountdlg.cpp:1014 kmymoneyutils.cpp:80
 #: mymoney/mymoneyaccount.cpp:732 views/kaccountsview.cpp:352
-#: views/kmymoneyview.cpp:773 widgets/kmymoneyaccountselector.cpp:177
+#: views/kmymoneyview.cpp:764 widgets/kmymoneyaccountselector.cpp:177
 #: widgets/kmymoneyaccountselector.cpp:356
-#: wizards/newaccountwizard/knewaccountwizard.cpp:457
+#: wizards/newaccountwizard/knewaccountwizard.cpp:456
 msgid "Asset"
 msgstr "Aktywa"
 
 #: converter/mymoneytemplate.cpp:182 converter/mymoneytemplate.cpp:183
 #: dialogs/knewaccountdlg.cpp:1016 kmymoneyutils.cpp:82
 #: mymoney/mymoneyaccount.cpp:735 views/kaccountsview.cpp:356
-#: views/kmymoneyview.cpp:774 widgets/kmymoneyaccountselector.cpp:178
+#: views/kmymoneyview.cpp:765 widgets/kmymoneyaccountselector.cpp:178
 #: widgets/kmymoneyaccountselector.cpp:363
-#: wizards/newaccountwizard/knewaccountwizard.cpp:458
+#: wizards/newaccountwizard/knewaccountwizard.cpp:457
 msgid "Liability"
 msgstr "Zobowiązanie"
 
 #: converter/mymoneytemplate.cpp:194 converter/mymoneytemplate.cpp:195
 #: kmymoneyutils.cpp:94 mymoney/mymoneyaccount.cpp:753
-#: views/kaccountsview.cpp:369 views/kmymoneyview.cpp:777
+#: views/kaccountsview.cpp:369 views/kmymoneyview.cpp:768
 #: widgets/kmymoneyaccountselector.cpp:181
 #: widgets/kmymoneyaccountselector.cpp:390
-#: wizards/newaccountwizard/knewaccountwizard.cpp:460
+#: wizards/newaccountwizard/knewaccountwizard.cpp:459
 msgid "Equity"
 msgstr "Kapitał"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:555
+#: wizards/newaccountwizard/knewaccountwizard.cpp:554
 msgid ""
 "Please make sure to enter the correct conversion for the selected opening "
 "date. If you requested an online quote it might be provided for a different "
 "date."
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:555
+#: wizards/newaccountwizard/knewaccountwizard.cpp:554
 #, fuzzy
 msgid "Check date"
 msgstr "Czek"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:562
+#: wizards/newaccountwizard/knewaccountwizard.cpp:561
 msgid "1 %1 equals %2"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:577
+#: wizards/newaccountwizard/knewaccountwizard.cpp:576
 msgid "Conversion rate is not positive"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:583
+#: wizards/newaccountwizard/knewaccountwizard.cpp:582
 msgid "No account name supplied"
 msgstr ""
 
-#: dialogs/keditscheduledlg.cpp:112 mymoney/mymoneyscheduled.cpp:1137
-#: wizards/newaccountwizard/knewaccountwizard.cpp:680
+#: dialogs/keditscheduledlg.cpp:112 mymoney/mymoneyscheduled.cpp:1169
+#: wizards/newaccountwizard/knewaccountwizard.cpp:679
 msgid "Write check"
 msgstr "Czek"
 
-#: dialogs/keditscheduledlg.cpp:109 mymoney/mymoneyscheduled.cpp:1125
-#: wizards/newaccountwizard/knewaccountwizard.cpp:682
+#: dialogs/keditscheduledlg.cpp:109 mymoney/mymoneyscheduled.cpp:1157
+#: wizards/newaccountwizard/knewaccountwizard.cpp:681
 msgid "Direct debit"
 msgstr "Polecenie zapłaty"
 
-#: dialogs/keditscheduledlg.cpp:111 mymoney/mymoneyscheduled.cpp:1143
-#: wizards/newaccountwizard/knewaccountwizard.cpp:683
+#: dialogs/keditscheduledlg.cpp:111 mymoney/mymoneyscheduled.cpp:1175
+#: wizards/newaccountwizard/knewaccountwizard.cpp:682
 #, fuzzy
 msgid "Bank transfer"
 msgstr "Przelew"
 
-#: dialogs/keditscheduledlg.cpp:110 mymoney/mymoneyscheduled.cpp:1140
-#: wizards/newaccountwizard/knewaccountwizard.cpp:685
+#: dialogs/keditscheduledlg.cpp:110 mymoney/mymoneyscheduled.cpp:1172
+#: wizards/newaccountwizard/knewaccountwizard.cpp:684
 msgid "Standing order"
 msgstr ""
 
-#: dialogs/keditscheduledlg.cpp:108 mymoney/mymoneyscheduled.cpp:1131
-#: wizards/newaccountwizard/knewaccountwizard.cpp:686
+#: dialogs/keditscheduledlg.cpp:108 mymoney/mymoneyscheduled.cpp:1163
+#: wizards/newaccountwizard/knewaccountwizard.cpp:685
 msgid "Manual deposit"
 msgstr "Wpłata własna"
 
-#: dialogs/keditscheduledlg.cpp:107 mymoney/mymoneyscheduled.cpp:1128
-#: wizards/newaccountwizard/knewaccountwizard.cpp:687
+#: dialogs/keditscheduledlg.cpp:107 mymoney/mymoneyscheduled.cpp:1160
+#: wizards/newaccountwizard/knewaccountwizard.cpp:686
 msgid "Direct deposit"
 msgstr "Wpłata bezpośrednia"
 
-#: dialogs/keditscheduledlg.cpp:113 mymoney/mymoneyscheduled.cpp:1134
-#: wizards/newaccountwizard/knewaccountwizard.cpp:688
+#: dialogs/keditscheduledlg.cpp:113 mymoney/mymoneyscheduled.cpp:1166
+#: wizards/newaccountwizard/knewaccountwizard.cpp:687
 msgid "Other"
 msgstr "Inny"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:697
+#: wizards/newaccountwizard/knewaccountwizard.cpp:696
 #, fuzzy
 msgid "CreditCard %1 monthly payment"
 msgstr "Szacowane miesięczne płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:703
+#: wizards/newaccountwizard/knewaccountwizard.cpp:702
 msgid "Finish entry and create account"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:705
+#: wizards/newaccountwizard/knewaccountwizard.cpp:704
 #, fuzzy
 msgid "Finish entry and create account and schedule"
 msgstr "Użyj tego przycisku, żeby stworzyć nowy harmonogram."
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:708
+#: wizards/newaccountwizard/knewaccountwizard.cpp:707
 msgid "Next due date is prior to opening date"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:712
+#: wizards/newaccountwizard/knewaccountwizard.cpp:711
 #, fuzzy
 msgid "No account selected"
 msgstr "Wybór konta"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:716
+#: wizards/newaccountwizard/knewaccountwizard.cpp:715
 msgid "No amount for payment selected"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:720
+#: wizards/newaccountwizard/knewaccountwizard.cpp:719
 msgid "No payee for payment selected"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:724
+#: wizards/newaccountwizard/knewaccountwizard.cpp:723
 msgid "No name assigned for schedule"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:805
+#: wizards/newaccountwizard/knewaccountwizard.cpp:804
 msgid "No payee supplied"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:819
+#: wizards/newaccountwizard/knewaccountwizard.cpp:818
 #, fuzzy
 msgid "No opening balance supplied"
 msgstr "Stany otwarcia"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:826
+#: wizards/newaccountwizard/knewaccountwizard.cpp:825
 msgid "An interest change can only happen after the first payment"
 msgstr ""
 
-#: dialogs/knewloanwizard.cpp:613 dialogs/knewloanwizard.cpp:631
-#: wizards/newaccountwizard/knewaccountwizard.cpp:882
+#: dialogs/knewloanwizard.cpp:613 dialogs/knewloanwizard.cpp:632
+#: wizards/newaccountwizard/knewaccountwizard.cpp:883
 #: wizards/newaccountwizard/rc.cpp:55
 msgid "Months"
 msgstr "Miesiące"
 
-#: dialogs/knewloanwizard.cpp:614 dialogs/knewloanwizard.cpp:632
-#: wizards/newaccountwizard/knewaccountwizard.cpp:883
-#: wizards/newaccountwizard/knewaccountwizard.cpp:887
+#: dialogs/knewloanwizard.cpp:614 dialogs/knewloanwizard.cpp:633
+#: wizards/newaccountwizard/knewaccountwizard.cpp:884
+#: wizards/newaccountwizard/knewaccountwizard.cpp:888
 #: wizards/newaccountwizard/rc.cpp:56
 msgid "Years"
 msgstr "Lata"
 
-#: dialogs/knewloanwizard.cpp:811
-#: wizards/newaccountwizard/knewaccountwizard.cpp:959
+#: dialogs/knewloanwizard.cpp:709
+#: wizards/newaccountwizard/knewaccountwizard.cpp:960
 #, c-format
 msgid "KMyMoney has calculated the amount of the loan as %1."
 msgstr "KMyMoney wyliczył kwotę pożyczki na %1."
 
-#: dialogs/knewloanwizard.cpp:818
-#: wizards/newaccountwizard/knewaccountwizard.cpp:966
+#: dialogs/knewloanwizard.cpp:716
+#: wizards/newaccountwizard/knewaccountwizard.cpp:967
 msgid "KMyMoney has calculated the interest rate to %1%."
 msgstr "KMyMoney wyliczył stopę procentową na %1%."
 
-#: dialogs/knewloanwizard.cpp:831
-#: wizards/newaccountwizard/knewaccountwizard.cpp:979
+#: dialogs/knewloanwizard.cpp:729
+#: wizards/newaccountwizard/knewaccountwizard.cpp:980
 msgid ""
 "KMyMoney has calculated a periodic payment of %1 to cover principal and "
 "interest."
 msgstr ""
 "KMyMoney wyliczył płatność okresową %1 żeby pokryć kapitał główny i odsetki."
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:991
+#: wizards/newaccountwizard/knewaccountwizard.cpp:992
 #, fuzzy, c-format
 msgid ""
 "The number of payments has been decremented and the balloon payment has been "
@@ -425,28 +424,28 @@ msgid ""
 msgstr ""
 "Liczba płatności została zmniejszona a końcowa płatność zmieniona na %1."
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:999
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1019
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1000
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1020
 #, fuzzy, c-format
 msgid "The balloon payment has been modified to %1."
 msgstr "Ostatnia płatność została zmieniona na %1."
 
-#: dialogs/knewloanwizard.cpp:863
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1011
+#: dialogs/knewloanwizard.cpp:761
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1012
 msgid "KMyMoney has calculated the term of your loan as %1. "
 msgstr "KMyMoney wyliczył okres ważności pożyczki na %1."
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1050
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1051
 #, fuzzy
 msgid "KMyMoney has calculated a balloon payment of %1 for this loan."
 msgstr "KMyMoney wyliczył końcową płatność %1 dla tej pożyczki."
 
-#: dialogs/knewloanwizard.cpp:909
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1057
+#: dialogs/knewloanwizard.cpp:807
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1058
 msgid "KMyMoney has successfully verified your loan information."
 msgstr "KMyMoney pomyślnie zweryfikował informacje o pożyczce."
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1065
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1066
 #, fuzzy
 msgid ""
 "You have entered mis-matching information. Please modify your figures or "
@@ -458,13 +457,13 @@ msgstr ""
 
 #: dialogs/knewloanwizard.cpp:504 dialogs/knewloanwizard.cpp:513
 #: dialogs/knewloanwizard.cpp:522 dialogs/knewloanwizard.cpp:532
-#: dialogs/knewloanwizard.cpp:920
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1068
+#: dialogs/knewloanwizard.cpp:818
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1069
 msgid "Calculation error"
 msgstr "Błąd obliczania"
 
-#: dialogs/knewloanwizard.cpp:924
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1072
+#: dialogs/knewloanwizard.cpp:822
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1073
 msgid ""
 "\n"
 "\n"
@@ -474,13 +473,13 @@ msgstr ""
 "\n"
 "Zaakceptuj to albo zmień informacje o pożyczce i przelicz ponownie."
 
-#: dialogs/knewloanwizard.cpp:926
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1074
+#: dialogs/knewloanwizard.cpp:824
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1075
 msgid "Calculation successful"
 msgstr "Obliczanie zakończone powodzeniem"
 
-#: dialogs/knewloanwizard.cpp:946
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1127
+#: dialogs/knewloanwizard.cpp:844
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1128
 #, fuzzy, c-format
 msgid ""
 "_n: one month\n"
@@ -490,8 +489,8 @@ msgstr ""
 "%n miesiące\n"
 "%n miesięcy"
 
-#: dialogs/knewloanwizard.cpp:950
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1131
+#: dialogs/knewloanwizard.cpp:848
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1132
 #, fuzzy, c-format
 msgid ""
 "_n: one year\n"
@@ -501,8 +500,8 @@ msgstr ""
 "%n lata\n"
 "%n lat"
 
-#: dialogs/knewloanwizard.cpp:954
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1135
+#: dialogs/knewloanwizard.cpp:852
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1136
 #, fuzzy, c-format
 msgid ""
 "_n: one payment\n"
@@ -512,219 +511,218 @@ msgstr ""
 "%n płatności\n"
 "%n płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1188
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1189
 msgid "Press Calculate to verify the values"
 msgstr ""
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1192
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1193
 msgid "Not all details supplied"
 msgstr ""
 
 #: dialogs/kaccountselectdlg.cpp:70 dialogs/knewloanwizard.cpp:122
 #: dialogs/knewloanwizard.cpp:136
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1379
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1380
 msgid "&Create..."
 msgstr "&Utwórz..."
 
 #: dialogs/knewloanwizard.cpp:138
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1381
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1382
 msgid "Create a new asset account"
 msgstr "Stwórz nowy rachunek aktywów"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1382
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1383
 #, fuzzy
 msgid ""
 "If the asset account does not yet exist, press this button to create it."
 msgstr ""
 "Nie istnieje obecnie papier wartościowy \"%1\". Czy chcesz go utworzyć?"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1588
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1595
 #, fuzzy
 msgid "Account information"
 msgstr "Opcje konta"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1593
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1600
 #: wizards/newaccountwizard/rc.cpp:59
 #, fuzzy
 msgid "Subaccount of"
 msgstr "Podkonto"
 
-#: dialogs/rc.cpp:223 dialogs/rc.cpp:324 dialogs/rc.cpp:369 dialogs/rc.cpp:692
-#: dialogs/rc.cpp:738 plugins/ofximport/dialogs/rc.cpp:22
-#: reports/listtable.cpp:213 widgets/kmymoneyaccounttreebase.cpp:113
-#: widgets/register.cpp:61 wizards/newaccountwizard/knewaccountwizard.cpp:1596
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1598
+#: dialogs/rc.cpp:223 dialogs/rc.cpp:324 dialogs/rc.cpp:369 dialogs/rc.cpp:721
+#: plugins/ofximport/dialogs/rc.cpp:23 reports/listtable.cpp:225
+#: widgets/kmymoneyaccounttreebase.cpp:113 widgets/register.cpp:61
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1603
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1605
 msgid "Type"
 msgstr "Typ"
 
 #: dialogs/kcurrencyeditdlg.cpp:62 dialogs/rc.cpp:56 dialogs/rc.cpp:59
-#: dialogs/rc.cpp:75 dialogs/rc.cpp:742 dialogs/rc.cpp:793
+#: dialogs/rc.cpp:75 dialogs/rc.cpp:725 dialogs/rc.cpp:790
 #: kmymoneyutils.cpp:84 kmymoneyutils.cpp:111 mymoney/mymoneyaccount.cpp:738
-#: mymoney/mymoneysecurity.cpp:169 reports/listtable.cpp:221
+#: mymoney/mymoneysecurity.cpp:169 reports/listtable.cpp:233
 #: widgets/kmymoneypriceview.cpp:127
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1599
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1622
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1606
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1629
 #: wizards/newaccountwizard/rc.cpp:6 wizards/newaccountwizard/rc.cpp:24
 msgid "Currency"
 msgstr "Waluta"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1600
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1607
 #: wizards/newaccountwizard/rc.cpp:7 wizards/newuserwizard/rc.cpp:9
 #, fuzzy
 msgid "Opening date"
 msgstr "Aktualizacja online"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1602
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1609
 #: wizards/newaccountwizard/rc.cpp:9
 #, fuzzy
 msgid "Conversion rate"
 msgstr "Stopa procentowa"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1605
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1612
 #: wizards/newaccountwizard/rc.cpp:15 wizards/newuserwizard/rc.cpp:13
 #, fuzzy
 msgid "Opening balance"
 msgstr "Stany otwarcia"
 
-#: dialogs/keditscheduledlg.cpp:477 dialogs/rc.cpp:691
-#: dialogs/transactioneditor.cpp:769 dialogs/transactioneditor.cpp:833
-#: plugins/ofximport/dialogs/rc.cpp:21 widgets/rc.cpp:111
-#: widgets/register.cpp:59 widgets/transaction.cpp:988
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1610
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1624
+#: dialogs/keditscheduledlg.cpp:478 dialogs/transactioneditor.cpp:769
+#: dialogs/transactioneditor.cpp:833 plugins/ofximport/dialogs/rc.cpp:22
+#: widgets/rc.cpp:111 widgets/register.cpp:59 widgets/transaction.cpp:988
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1617
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1631
 msgid "Number"
 msgstr "Numer"
 
-#: dialogs/rc.cpp:363 wizards/newaccountwizard/knewaccountwizard.cpp:1613
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1626
+#: dialogs/rc.cpp:363 wizards/newaccountwizard/knewaccountwizard.cpp:1620
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1633
 #: wizards/newaccountwizard/rc.cpp:26 wizards/newaccountwizard/rc.cpp:66
 msgid "IBAN"
 msgstr "IBAN"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1619
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1626
 msgid "Brokerage Account"
 msgstr "Konto brokerskie"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1632
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1639
 #, fuzzy
 msgid "Loan information"
 msgstr "Informacje o płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1635
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1642
 #, fuzzy
 msgid "Amount borrowed"
 msgstr "pożyczone od"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1637
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1644
 #, fuzzy
 msgid "Amount lent"
 msgstr "Wpisano kwotę"
 
 #: dialogs/rc.cpp:513 dialogs/rc.cpp:544
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1639
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1646
 #: wizards/newaccountwizard/rc.cpp:75
 msgid "Interest rate"
 msgstr "Stopa procentowa"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1640
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1647
 #, fuzzy
 msgid "Interest rate is"
 msgstr "Stopa procentowa"
 
 #: dialogs/rc.cpp:507 dialogs/rc.cpp:570
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1641
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1648
 msgid "Principal and interest"
 msgstr "Kwota główna i odsetki"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1642
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1649
 #: wizards/newaccountwizard/rc.cpp:90
 #, fuzzy
 msgid "Additional fees"
 msgstr "Dodatkowe opłaty:"
 
-#: dialogs/rc.cpp:523 wizards/newaccountwizard/knewaccountwizard.cpp:1643
+#: dialogs/rc.cpp:523 wizards/newaccountwizard/knewaccountwizard.cpp:1650
 #: wizards/newaccountwizard/rc.cpp:44
 msgid "Payment frequency"
 msgstr "Częstotliwość płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1644
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1651
 #: wizards/newaccountwizard/rc.cpp:105
 #, fuzzy
 msgid "Payment account"
 msgstr "Konta płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1647
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1654
 #, fuzzy
 msgid "Payout information"
 msgstr "Informacje o płatności"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1650
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1657
 #, fuzzy
 msgid "Refinance"
 msgstr "&Zmień nazwę"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1653
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1660
 #, fuzzy
 msgid "Transfer amount to"
 msgstr "Przelew na"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1655
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1662
 #, fuzzy
 msgid "Transfer amount from"
 msgstr "Przelew z"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1657
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1664
 #, fuzzy
 msgid "Payment date"
 msgstr "Płatności dla"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1663
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1670
 #, fuzzy
 msgid "Schedule information"
 msgstr "Zaplanowane transakcje"
 
-#: reports/listtable.cpp:216
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1668
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1676
+#: reports/listtable.cpp:228
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1675
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1683
 #, fuzzy
 msgid "Occurence"
 msgstr "Waluty"
 
-#: kmymoneyutils.cpp:143 mymoney/mymoneyscheduled.cpp:1074 widgets/rc.cpp:19
-#: widgets/rc.cpp:74 wizards/newaccountwizard/knewaccountwizard.cpp:1668
+#: kmymoneyutils.cpp:145 mymoney/mymoneyscheduled.cpp:1106 widgets/rc.cpp:19
+#: widgets/rc.cpp:74 wizards/newaccountwizard/knewaccountwizard.cpp:1675
 msgid "Monthly"
 msgstr "Miesięcznie"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1669
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1676
 #, fuzzy
 msgid "Paid from"
 msgstr "Ważny od:"
 
 #: widgets/kmymoneycombo.cpp:473 widgets/transaction.cpp:164
 #: widgets/transaction.cpp:166
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1670
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1677
 msgid "Pay to"
 msgstr "Płatność dla"
 
 #: dialogs/investactivities.cpp:197 dialogs/investactivities.cpp:285
 #: dialogs/investactivities.cpp:365 dialogs/kfindtransactiondlg.cpp:217
 #: dialogs/kmymoneysplittable.cpp:80 dialogs/rc.cpp:51 dialogs/rc.cpp:210
-#: dialogs/rc.cpp:248 reports/listtable.cpp:185 views/khomeview.cpp:420
+#: dialogs/rc.cpp:248 reports/listtable.cpp:197 views/khomeview.cpp:420
 #: views/khomeview.cpp:484 views/khomeview.cpp:518 views/kscheduledview.cpp:73
-#: views/rc.cpp:57 widgets/register.cpp:58 widgets/transaction.cpp:1045
+#: views/rc.cpp:63 widgets/register.cpp:58 widgets/transaction.cpp:1045
 #: widgets/transaction.cpp:1568 widgets/transaction.cpp:1600
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1671
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1677
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1678
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1684
 msgid "Amount"
 msgstr "Suma/kwota"
 
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1672
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1678
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1679
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1685
 #, fuzzy
 msgid "First payment due"
 msgstr "Pierwsza płatność planowana na"
 
-#: dialogs/rc.cpp:101 wizards/newaccountwizard/knewaccountwizard.cpp:1673
+#: dialogs/rc.cpp:101 wizards/newaccountwizard/knewaccountwizard.cpp:1680
 #: wizards/newaccountwizard/rc.cpp:115
 msgid "Payment method"
 msgstr "Metoda płatności"
@@ -741,8 +739,8 @@ msgstr ""
 msgid "Item"
 msgstr "termin"
 
-#: dialogs/rc.cpp:109 dialogs/rc.cpp:164 dialogs/rc.cpp:250 dialogs/rc.cpp:819
-#: views/kinvestmentview.cpp:75 widgets/register.cpp:552
+#: dialogs/rc.cpp:109 dialogs/rc.cpp:164 dialogs/rc.cpp:250 dialogs/rc.cpp:755
+#: dialogs/rc.cpp:816 views/kinvestmentview.cpp:75 widgets/register.cpp:552
 #: wizards/newaccountwizard/rc.cpp:3
 msgid "Value"
 msgstr "Wartość"
@@ -789,7 +787,7 @@ msgstr ""
 "zmienić przez rozpoczęciem uzgadniania."
 
 #: dialogs/rc.cpp:52 dialogs/rc.cpp:54 dialogs/rc.cpp:57 dialogs/rc.cpp:60
-#: dialogs/rc.cpp:763 dialogs/rc.cpp:764 dialogs/rc.cpp:774 widgets/rc.cpp:6
+#: dialogs/rc.cpp:746 dialogs/rc.cpp:747 dialogs/rc.cpp:766 widgets/rc.cpp:6
 #: widgets/rc.cpp:7 widgets/rc.cpp:8 widgets/rc.cpp:9 widgets/rc.cpp:10
 #: widgets/rc.cpp:11 widgets/rc.cpp:12 widgets/rc.cpp:13 widgets/rc.cpp:14
 #: widgets/rc.cpp:15 widgets/rc.cpp:16 widgets/rc.cpp:17
@@ -1359,7 +1357,7 @@ msgid "Name of schedule"
 msgstr "Nowy harmonogram"
 
 #: dialogs/rc.cpp:150 dialogs/rc.cpp:216 dialogs/rc.cpp:217
-#: reports/listtable.cpp:187 views/kscheduledview.cpp:72 widgets/rc.cpp:113
+#: reports/listtable.cpp:199 views/kscheduledview.cpp:72 widgets/rc.cpp:113
 #: widgets/register.cpp:57 wizards/newaccountwizard/rc.cpp:111
 msgid "Payee"
 msgstr "Beneficjent"
@@ -1597,31 +1595,31 @@ msgstr "Fundusz powierniczy"
 msgid "Bond"
 msgstr "Obligacja"
 
-#: mymoney/mymoneysecurity.cpp:172 reports/querytable.cpp:1205
+#: mymoney/mymoneysecurity.cpp:172 reports/querytable.cpp:1137
 #: widgets/kmymoneyaccountselector.cpp:76
 msgid "None"
 msgstr "Brak"
 
-#: dialogs/rc.cpp:46 kmymoneyutils.cpp:590 mymoney/mymoneyaccount.cpp:756
-#: mymoney/mymoneyscheduled.cpp:1113 mymoney/mymoneysecurity.cpp:175
+#: dialogs/rc.cpp:46 kmymoneyutils.cpp:540 mymoney/mymoneyaccount.cpp:756
+#: mymoney/mymoneyscheduled.cpp:1145 mymoney/mymoneysecurity.cpp:175
 #: views/kforecastview.cpp:174 widgets/register.cpp:54
 #: widgets/register.cpp:463 widgets/transaction.cpp:698
 #: widgets/transaction.cpp:1449
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: mymoney/storage/mymoneystoragesql.cpp:193
+#: mymoney/storage/mymoneystoragesql.cpp:189
 msgid ""
 "Database apparently in use\n"
 "Opened by %1 on %2 at %3.\n"
 "Open anyway?"
 msgstr ""
 
-#: mymoney/storage/mymoneystoragesql.cpp:231
+#: mymoney/storage/mymoneystoragesql.cpp:227
 msgid "Cannot currently create database for driver %1; please create manually"
 msgstr ""
 
-#: mymoney/storage/mymoneystoragesql.cpp:246
+#: mymoney/storage/mymoneystoragesql.cpp:242
 msgid "Error in create database %1; do you have create permissions?"
 msgstr ""
 
@@ -1727,7 +1725,7 @@ msgstr "Giełda pieniężn"
 #: dialogs/knewaccountdlg.cpp:1018 kmymoneyutils.cpp:86
 #: mymoney/mymoneyaccount.cpp:741 views/kaccountsview.cpp:360
 #: views/kbudgetview.cpp:372 views/kcategoriesview.cpp:178
-#: views/khomeview.cpp:1796 views/kmymoneyview.cpp:775
+#: views/khomeview.cpp:1796 views/kmymoneyview.cpp:766
 #: widgets/kmymoneyaccountselector.cpp:68
 #: widgets/kmymoneyaccountselector.cpp:179
 #: widgets/kmymoneyaccountselector.cpp:370 widgets/register.cpp:806
@@ -1738,7 +1736,7 @@ msgstr "Dochód"
 #: dialogs/knewaccountdlg.cpp:1020 kmymoneyutils.cpp:88
 #: mymoney/mymoneyaccount.cpp:744 views/kaccountsview.cpp:364
 #: views/kbudgetview.cpp:378 views/kcategoriesview.cpp:182
-#: views/kmymoneyview.cpp:776 widgets/kmymoneyaccountselector.cpp:72
+#: views/kmymoneyview.cpp:767 widgets/kmymoneyaccountselector.cpp:72
 #: widgets/kmymoneyaccountselector.cpp:180
 #: widgets/kmymoneyaccountselector.cpp:380 widgets/register.cpp:807
 msgid "Expense"
@@ -1879,607 +1877,612 @@ msgstr ""
 msgid "Finish! %1 problem(s) corrected. %2 problem(s) still present."
 msgstr ""
 
-#: mymoney/mymoneyscheduled.cpp:1055
+#: mymoney/mymoneyscheduled.cpp:1085
 msgid "Any"
 msgstr ""
 
-#: kmymoneyutils.cpp:127 mymoney/mymoneyscheduled.cpp:1058
+#: kmymoneyutils.cpp:127 mymoney/mymoneyscheduled.cpp:1088
 msgid "Once"
 msgstr "Jednorazowo"
 
-#: kmymoneyutils.cpp:129 mymoney/mymoneyscheduled.cpp:1060 widgets/rc.cpp:72
+#: kmymoneyutils.cpp:129 mymoney/mymoneyscheduled.cpp:1090 widgets/rc.cpp:72
 msgid "Daily"
 msgstr "Dziennie"
 
-#: kmymoneyutils.cpp:131 mymoney/mymoneyscheduled.cpp:1062 widgets/rc.cpp:73
+#: kmymoneyutils.cpp:131 mymoney/mymoneyscheduled.cpp:1092 widgets/rc.cpp:73
 msgid "Weekly"
 msgstr "Tygodniowo"
 
-#: kmymoneyutils.cpp:133 mymoney/mymoneyscheduled.cpp:1064
+#: kmymoneyutils.cpp:133 mymoney/mymoneyscheduled.cpp:1094
 msgid "Fortnightly"
 msgstr "Co dwa tygodnie"
 
-#: kmymoneyutils.cpp:135 mymoney/mymoneyscheduled.cpp:1066
+#: kmymoneyutils.cpp:135 mymoney/mymoneyscheduled.cpp:1096
 msgid "Every other week"
 msgstr "Co drugi tydzień"
 
-#: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1068
+#: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1098
+#, fuzzy
+msgid "Every half month"
+msgstr "Co cztery miesiące"
+
+#: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1100
 #, fuzzy
 msgid "Every three weeks"
 msgstr "Co drugi tydzień"
 
-#: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1070
+#: kmymoneyutils.cpp:141 mymoney/mymoneyscheduled.cpp:1102
 msgid "Every four weeks"
 msgstr "Co cztery tygodnie"
 
-#: kmymoneyutils.cpp:141 mymoney/mymoneyscheduled.cpp:1072
+#: kmymoneyutils.cpp:143 mymoney/mymoneyscheduled.cpp:1104
 #, fuzzy
 msgid "Every thirty days"
 msgstr "Co dwa lata"
 
-#: kmymoneyutils.cpp:145 mymoney/mymoneyscheduled.cpp:1076
+#: kmymoneyutils.cpp:147 mymoney/mymoneyscheduled.cpp:1108
 #, fuzzy
 msgid "Every eight weeks"
 msgstr "Co drugi tydzień"
 
-#: kmymoneyutils.cpp:147 mymoney/mymoneyscheduled.cpp:1078
+#: kmymoneyutils.cpp:149 mymoney/mymoneyscheduled.cpp:1110
 msgid "Every two months"
 msgstr "Co dwa miesiące"
 
-#: kmymoneyutils.cpp:149 mymoney/mymoneyscheduled.cpp:1080
+#: kmymoneyutils.cpp:151 mymoney/mymoneyscheduled.cpp:1112
 msgid "Every three months"
 msgstr "Co trzy miesiące"
 
-#: kmymoneyutils.cpp:151 mymoney/mymoneyscheduled.cpp:1082 widgets/rc.cpp:76
+#: kmymoneyutils.cpp:153 mymoney/mymoneyscheduled.cpp:1114 widgets/rc.cpp:76
 msgid "Quarterly"
 msgstr "Co kwartał"
 
-#: kmymoneyutils.cpp:153 mymoney/mymoneyscheduled.cpp:1084
+#: kmymoneyutils.cpp:155 mymoney/mymoneyscheduled.cpp:1116
 msgid "Every four months"
 msgstr "Co cztery miesiące"
 
-#: kmymoneyutils.cpp:155 mymoney/mymoneyscheduled.cpp:1086
+#: kmymoneyutils.cpp:157 mymoney/mymoneyscheduled.cpp:1118
 msgid "Twice yearly"
 msgstr "Dwa razy do roku"
 
-#: kmymoneyutils.cpp:157 mymoney/mymoneyscheduled.cpp:1088 widgets/rc.cpp:20
+#: kmymoneyutils.cpp:159 mymoney/mymoneyscheduled.cpp:1120 widgets/rc.cpp:20
 #: widgets/rc.cpp:77
 msgid "Yearly"
 msgstr "Raz do roku"
 
-#: kmymoneyutils.cpp:159 mymoney/mymoneyscheduled.cpp:1090
+#: kmymoneyutils.cpp:161 mymoney/mymoneyscheduled.cpp:1122
 msgid "Every other year"
 msgstr "Co dwa lata"
 
-#: mymoney/mymoneyscheduled.cpp:1100
+#: mymoney/mymoneyscheduled.cpp:1132
 msgid "Bill"
 msgstr "Opłata"
 
-#: dialogs/rc.cpp:106 dialogs/rc.cpp:161 dialogs/rc.cpp:247
-#: mymoney/mymoneyscheduled.cpp:1103 widgets/kmymoneycombo.cpp:420
+#: dialogs/rc.cpp:106 dialogs/rc.cpp:161 dialogs/rc.cpp:247 dialogs/rc.cpp:752
+#: mymoney/mymoneyscheduled.cpp:1135 widgets/kmymoneycombo.cpp:420
 #: widgets/register.cpp:549
 msgid "Deposit"
 msgstr "Wpłata"
 
-#: mymoney/mymoneyscheduled.cpp:1106 reports/querytable.cpp:662
-#: reports/querytable.cpp:761 widgets/kmymoneycombo.cpp:419
+#: mymoney/mymoneyscheduled.cpp:1138 reports/querytable.cpp:594
+#: reports/querytable.cpp:693 widgets/kmymoneycombo.cpp:419
 msgid "Transfer"
 msgstr "Przelew"
 
-#: mymoney/mymoneyscheduled.cpp:1146
+#: mymoney/mymoneyscheduled.cpp:1178
 msgid "Any (Error)"
 msgstr "Dowolnie (błąd)"
 
-#: dialogs/rc.cpp:113 mymoney/mymoneyscheduled.cpp:1158
+#: dialogs/rc.cpp:113 mymoney/mymoneyscheduled.cpp:1190
 msgid "Change the date to the previous Friday"
 msgstr "Zmień datę na poprzedni piątek"
 
-#: dialogs/rc.cpp:114 mymoney/mymoneyscheduled.cpp:1161
+#: dialogs/rc.cpp:114 mymoney/mymoneyscheduled.cpp:1193
 msgid "Change the date to the next Monday"
 msgstr "Zmień datę na kolejny poniedziałek"
 
-#: mymoney/mymoneyscheduled.cpp:1164
+#: mymoney/mymoneyscheduled.cpp:1196
 msgid "Do Nothing"
 msgstr "Nic nie rób"
 
-#: kmymoney2.cpp:217
+#: kmymoney2.cpp:220
 msgid "No plugins loaded"
 msgstr ""
 
-#: kmymoney2.cpp:303
+#: kmymoney2.cpp:306
 #, fuzzy
 msgid "Open database..."
 msgstr "Otwórz plik..."
 
-#: kmymoney2.cpp:304
+#: kmymoney2.cpp:307
 #, fuzzy
 msgid "Save as database..."
 msgstr "Zapisz jako..."
 
-#: kmymoney2.cpp:305
+#: kmymoney2.cpp:308
 msgid "Backup..."
 msgstr "Kopia zapasowa..."
 
-#: kmymoney2.cpp:306 kmymoney2.cpp:312
+#: kmymoney2.cpp:309 kmymoney2.cpp:315
 #, fuzzy
 msgid "QIF..."
 msgstr "QIF ..."
 
-#: kmymoney2.cpp:307
+#: kmymoney2.cpp:310
 #, fuzzy
 msgid "Gnucash..."
 msgstr "Gnucash ..."
 
-#: kmymoney2.cpp:308
+#: kmymoney2.cpp:311
 #, fuzzy
 msgid "Statement file..."
 msgstr "Plik wyciągu ..."
 
-#: kmymoney2.cpp:310 kmymoney2.cpp:311
+#: kmymoney2.cpp:313 kmymoney2.cpp:314
 #, fuzzy
 msgid "Account Template..."
 msgstr "Szablon konta ..."
 
-#: kmymoney2.cpp:313
+#: kmymoney2.cpp:316
 msgid "Personal Data..."
 msgstr "Dane osobiste..."
 
-#: kmymoney2.cpp:316
+#: kmymoney2.cpp:319
 #, fuzzy
 msgid "Dump Memory"
 msgstr "Zrzut pamięci..."
 
-#: kmymoney2.cpp:318
+#: kmymoney2.cpp:321
 #, fuzzy
 msgid "File-Information..."
 msgstr "Informacje o beneficjencie"
 
-#: kmymoney2.cpp:323
+#: kmymoney2.cpp:326
 msgid "Find transaction..."
 msgstr "Znajdź transakcję..."
 
-#: kmymoney2.cpp:328
+#: kmymoney2.cpp:331
 msgid "Show Transaction Detail"
 msgstr "Pokaż szczegóły transakcji"
 
-#: kmymoney2.cpp:329 rc.cpp:59
+#: kmymoney2.cpp:332 rc.cpp:59
 msgid "Hide reconciled transactions"
 msgstr "Ukryj uzgodnione transakcje"
 
-#: kmymoney2.cpp:330 rc.cpp:56
+#: kmymoney2.cpp:333 rc.cpp:56
 #, fuzzy
 msgid "Hide unused categories"
 msgstr "Ukryte kategorie"
 
-#: kmymoney2.cpp:331
+#: kmymoney2.cpp:334
 #, fuzzy
 msgid "Show all accounts"
 msgstr "Brak rachunku aktywów"
 
-#: kmymoney2.cpp:336
+#: kmymoney2.cpp:339
 #, fuzzy
 msgid "New institution..."
 msgstr "Nowa instytucja..."
 
-#: kmymoney2.cpp:337
+#: kmymoney2.cpp:340
 #, fuzzy
 msgid "Edit institution..."
 msgstr "Dodaj nową instytucję..."
 
-#: kmymoney2.cpp:338
+#: kmymoney2.cpp:341
 #, fuzzy
 msgid "Delete institution..."
 msgstr "Nowa instytucja..."
 
-#: kmymoney2.cpp:343
+#: kmymoney2.cpp:346
 msgid "New account..."
 msgstr "Nowe konto..."
 
-#: kmymoney2.cpp:345
+#: kmymoney2.cpp:348
 #, fuzzy
 msgid "Open ledger"
 msgstr "Otwórz plik."
 
-#: kmymoney2.cpp:346
+#: kmymoney2.cpp:349
 msgid "Reconcile..."
 msgstr "Uzgodnij..."
 
-#: kmymoney2.cpp:347
+#: kmymoney2.cpp:350
 #, fuzzy
 msgid ""
 "_: Finish reconciliation\n"
 "Finish"
 msgstr "Zakończ uzgadnianie"
 
-#: kmymoney2.cpp:348
+#: kmymoney2.cpp:351
 #, fuzzy
 msgid ""
 "_: Postpone reconciliation\n"
 "Postpone"
 msgstr "Przełóż uzgadnianie"
 
-#: kmymoney2.cpp:349
+#: kmymoney2.cpp:352
 #, fuzzy
 msgid "Edit account..."
 msgstr "Edytuj konto"
 
-#: kmymoney2.cpp:350
+#: kmymoney2.cpp:353
 #, fuzzy
 msgid "Delete account..."
 msgstr "Nowe konto..."
 
-#: kmymoney2.cpp:351
+#: kmymoney2.cpp:354
 #, fuzzy
 msgid "Close account"
 msgstr "Brak rachunku aktywów"
 
-#: kmymoney2.cpp:352
+#: kmymoney2.cpp:355
 #, fuzzy
 msgid "Reopen account"
 msgstr "konto przeciwstawne"
 
-#: kmymoney2.cpp:353
+#: kmymoney2.cpp:356
 #, fuzzy
 msgid "Transaction report"
 msgstr "Kwota transakcji"
 
-#: kmymoney2.cpp:355
+#: kmymoney2.cpp:358
 msgid "Show balance chart..."
 msgstr ""
 
-#: kmymoney2.cpp:357
+#: kmymoney2.cpp:360
 #, fuzzy
 msgid "Map to online account"
 msgstr "Mapuj do konta HBCI..."
 
-#: kmymoney2.cpp:358
+#: kmymoney2.cpp:361
 #, fuzzy
 msgid "Unmap account"
 msgstr "Kwota pożyczki"
 
-#: dialogs/settings/rc.cpp:123 kmymoney2.cpp:359 views/kpayeesview.cpp:342
+#: dialogs/settings/rc.cpp:123 kmymoney2.cpp:362 views/kpayeesview.cpp:342
 #: widgets/rc.cpp:50
 #, fuzzy
 msgid "Update"
 msgstr "Aktualizuj &wszystko"
 
-#: kmymoney2.cpp:363
+#: kmymoney2.cpp:366
 #, fuzzy
 msgid "Update account..."
 msgstr "Edytuj konto"
 
-#: kmymoney2.cpp:364
+#: kmymoney2.cpp:367
 #, fuzzy
 msgid "Update all accounts..."
 msgstr "Edytuj konto"
 
-#: kmymoney2.cpp:369
+#: kmymoney2.cpp:372
 msgid "New category..."
 msgstr "Nowa kategoria..."
 
-#: kmymoney2.cpp:370
+#: kmymoney2.cpp:373
 #, fuzzy
 msgid "Edit category..."
 msgstr "Edytuj kategorię"
 
-#: kmymoney2.cpp:371
+#: kmymoney2.cpp:374
 #, fuzzy
 msgid "Delete category..."
 msgstr "Nowa kategoria..."
 
-#: kmymoney2.cpp:377
+#: kmymoney2.cpp:380
 msgid "QIF Profile Editor..."
 msgstr "Edytor profilu QIF..."
 
-#: kmymoney2.cpp:378
+#: kmymoney2.cpp:381
 #, fuzzy
 msgid "Securities..."
 msgstr "Papiery wartościowe ..."
 
-#: kmymoney2.cpp:379
+#: kmymoney2.cpp:382
 #, fuzzy
 msgid "Currencies..."
 msgstr "Waluty ..."
 
-#: kmymoney2.cpp:380
+#: kmymoney2.cpp:383
 #, fuzzy
 msgid "Prices..."
 msgstr "Ceny ..."
 
-#: kmymoney2.cpp:381
+#: kmymoney2.cpp:384
 msgid "Update Stock and Currency Prices..."
 msgstr "Aktualizuj ceny walut i papierów wartościowych..."
 
-#: kmymoney2.cpp:382
+#: kmymoney2.cpp:385
 msgid "Consistency Check"
 msgstr "Sprawdzenie spójności"
 
-#: kmymoney2.cpp:383
+#: kmymoney2.cpp:386
 msgid "Performance-Test"
 msgstr ""
 
-#: kmymoney2.cpp:384
+#: kmymoney2.cpp:387
 msgid "KCalc..."
 msgstr ""
 
-#: kmymoney2.cpp:385
+#: kmymoney2.cpp:388
 #, fuzzy
 msgid "Plugins"
 msgstr "&Wtyczki"
 
-#: kmymoney2.cpp:391
+#: kmymoney2.cpp:394
 msgid "Enable all messages"
 msgstr "Włącz wszystkie komunikaty"
 
-#: kmymoney2.cpp:392
+#: kmymoney2.cpp:395
 msgid "KDE language settings..."
 msgstr ""
 
-#: kmymoney2.cpp:397
+#: kmymoney2.cpp:400
 msgid "&Show tip of the day"
 msgstr "&Pokaż podpowiedź dnia"
 
-#: kmymoney2.cpp:402
+#: kmymoney2.cpp:405
 #, fuzzy
 msgid ""
 "_: New transaction button\n"
 "New"
 msgstr "Pokaż formularz transakcji"
 
-#: kmymoney2.cpp:407
+#: kmymoney2.cpp:410
 #, fuzzy
 msgid ""
 "_: Edit transaction button\n"
 "Edit"
 msgstr "Podziel transakcję"
 
-#: kmymoney2.cpp:409
+#: kmymoney2.cpp:412
 #, fuzzy
 msgid ""
 "_: Enter transaction\n"
 "Enter"
 msgstr "Dowolna transakcja"
 
-#: kmymoney2.cpp:412
+#: kmymoney2.cpp:415
 #, fuzzy
 msgid ""
 "_: Edit split button\n"
 "Edit splits"
 msgstr "Edytuj podziały..."
 
-#: kmymoney2.cpp:413
+#: kmymoney2.cpp:416
 #, fuzzy
 msgid ""
 "_: Cancel transaction edit\n"
 "Cancel"
 msgstr "Ważna transakcja"
 
-#: kmymoney2.cpp:414
+#: kmymoney2.cpp:417
 #, fuzzy
 msgid ""
 "_: Delete transaction\n"
 "Delete"
 msgstr "Usuń transakcję"
 
-#: kmymoney2.cpp:415
+#: kmymoney2.cpp:418
 #, fuzzy
 msgid ""
 "_: Duplicate transaction\n"
 "Duplicate"
 msgstr "Podziel transakcję"
 
-#: kmymoney2.cpp:417 kmymoney2.cpp:4761
+#: kmymoney2.cpp:420 kmymoney2.cpp:4786 kmymoney2.cpp:5067
 #, fuzzy
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
 msgstr "Użyj tego przycisku, żeby zapisać tę transakcję"
 
-#: kmymoney2.cpp:418
+#: kmymoney2.cpp:421
 #, fuzzy
 msgid ""
 "_: Accept 'imported' and 'matched' transaction\n"
 "Accept"
 msgstr "Import transakcji"
 
-#: kmymoney2.cpp:420
+#: kmymoney2.cpp:423
 #, fuzzy
 msgid ""
 "_: Toggle reconciliation flag\n"
 "Toggle"
 msgstr "Przełóż uzgadnianie"
 
-#: kmymoney2.cpp:421
+#: kmymoney2.cpp:424
 #, fuzzy
 msgid ""
 "_: Mark transaction cleared\n"
 "Cleared"
 msgstr "Przeszukuj transakcje"
 
-#: kmymoney2.cpp:422
+#: kmymoney2.cpp:425
 #, fuzzy
 msgid ""
 "_: Mark transaction reconciled\n"
 "Reconciled"
 msgstr "Transakcja uprzednio uzgodniona"
 
-#: kmymoney2.cpp:423
+#: kmymoney2.cpp:426
 #, fuzzy
 msgid ""
 "_: Mark transaction not reconciled\n"
 "Not reconciled"
 msgstr "Transakcja uprzednio uzgodniona"
 
-#: kmymoney2.cpp:424
+#: kmymoney2.cpp:427
 #, fuzzy
 msgid ""
 "_: Select all transactions\n"
 "Select all"
 msgstr "Usuń transakcję"
 
-#: kmymoney2.cpp:426 kmymoney2.cpp:5399
+#: kmymoney2.cpp:429 kmymoney2.cpp:5424
 #, fuzzy
 msgid "Goto account"
 msgstr "konto"
 
-#: kmymoney2.cpp:427 kmymoney2.cpp:5397
+#: kmymoney2.cpp:430 kmymoney2.cpp:5422
 #, fuzzy
 msgid "Goto payee"
 msgstr "Przejdź do beneficjenta/odbiorcy"
 
-#: kmymoney2.cpp:428
+#: kmymoney2.cpp:431
 msgid "Create schedule..."
 msgstr "Stwórz harmonogram..."
 
-#: kmymoney2.cpp:429
+#: kmymoney2.cpp:432
 msgid "Assign next number"
 msgstr ""
 
-#: kmymoney2.cpp:430
+#: kmymoney2.cpp:433
 #, fuzzy
 msgid ""
 "_: Combine transactions\n"
 "Combine"
 msgstr "Napraw transakcje"
 
-#: kmymoney2.cpp:432
+#: kmymoney2.cpp:435
 #, fuzzy
 msgid "New investment"
 msgstr "Usuń inwestycję"
 
-#: kmymoney2.cpp:433
+#: kmymoney2.cpp:436
 #, fuzzy
 msgid "Edit investment..."
 msgstr "Usuń inwestycję"
 
-#: kmymoney2.cpp:434
+#: kmymoney2.cpp:437
 #, fuzzy
 msgid "Delete investment..."
 msgstr "Usuń inwestycję"
 
-#: kmymoney2.cpp:435
+#: kmymoney2.cpp:438
 #, fuzzy
 msgid "Online price update..."
 msgstr "Aktualizacja cen online..."
 
-#: kmymoney2.cpp:436
+#: kmymoney2.cpp:439
 #, fuzzy
 msgid "Manual price update..."
 msgstr "Ręczna aktualizacja cen..."
 
-#: kmymoney2.cpp:438
+#: kmymoney2.cpp:441
 #, fuzzy
 msgid "New schedule..."
 msgstr "&Nowy harmonogram..."
 
-#: kmymoney2.cpp:439
+#: kmymoney2.cpp:442
 #, fuzzy
 msgid "Edit schedule..."
 msgstr "Wczytywanie harmonogramów..."
 
-#: kmymoney2.cpp:440
+#: kmymoney2.cpp:443
 #, fuzzy
 msgid "Delete schedule..."
 msgstr "Stwórz harmonogram..."
 
-#: kmymoney2.cpp:441
+#: kmymoney2.cpp:444
 #, fuzzy
 msgid "Duplicate schedule"
 msgstr "Ponowne otwarcie"
 
-#: kmymoney2.cpp:442
+#: kmymoney2.cpp:445
 #, fuzzy
 msgid "Enter schedule..."
 msgstr "Stwórz harmonogram..."
 
-#: kmymoney2.cpp:443
+#: kmymoney2.cpp:446
 #, fuzzy
 msgid "Skip schedule..."
 msgstr "Wczytywanie harmonogramów..."
 
-#: kmymoney2.cpp:445
+#: kmymoney2.cpp:448
 #, fuzzy
 msgid "New payee"
 msgstr "Nowy beneficjent"
 
-#: kmymoney2.cpp:446
+#: kmymoney2.cpp:449
 #, fuzzy
 msgid "Rename payee"
 msgstr "Usuń beneficjenta"
 
-#: kmymoney2.cpp:447
+#: kmymoney2.cpp:450
 #, fuzzy
 msgid "Delete payee"
 msgstr "Usuń beneficjenta..."
 
-#: kmymoney2.cpp:449
+#: kmymoney2.cpp:452
 msgid "New budget"
 msgstr ""
 
-#: kmymoney2.cpp:450
+#: kmymoney2.cpp:453
 #, fuzzy
 msgid "Rename budget"
 msgstr "Zmień nazwę..."
 
-#: kmymoney2.cpp:451
+#: kmymoney2.cpp:454
 #, fuzzy
 msgid "Delete budget"
 msgstr "Usunąć raport?"
 
-#: kmymoney2.cpp:452
+#: kmymoney2.cpp:455
 #, fuzzy
 msgid "Copy budget"
 msgstr "Budżety"
 
-#: kmymoney2.cpp:453
+#: kmymoney2.cpp:456
 msgid "Change budget year"
 msgstr ""
 
-#: kmymoney2.cpp:454
+#: kmymoney2.cpp:457
 msgid ""
 "_: Budget based on forecast\n"
 "Forecast"
 msgstr ""
 
-#: kmymoney2.cpp:459 kmymoney2.cpp:3957 kmymoney2.cpp:3960 kmymoney2.cpp:3966
+#: kmymoney2.cpp:462 kmymoney2.cpp:3982 kmymoney2.cpp:3985 kmymoney2.cpp:3991
 msgid "New currency"
 msgstr "Nowa waluta"
 
-#: kmymoney2.cpp:460 kmymoney2.cpp:3988 kmymoney2.cpp:3993
+#: kmymoney2.cpp:463 kmymoney2.cpp:4013 kmymoney2.cpp:4018
 #, fuzzy
 msgid "Rename currency"
 msgstr "Nowa waluta"
 
-#: kmymoney2.cpp:461 kmymoney2.cpp:4006
+#: kmymoney2.cpp:464 kmymoney2.cpp:4031
 #, fuzzy
 msgid "Delete currency"
 msgstr "Wybierz walutę podstawową"
 
-#: dialogs/rc.cpp:69 kmymoney2.cpp:462
+#: dialogs/rc.cpp:69 kmymoney2.cpp:465
 msgid "Select as base currency"
 msgstr "Wybierz jako walutę podstawową"
 
-#: kmymoney2.cpp:473
+#: kmymoney2.cpp:476
 msgid "View back"
 msgstr "Widok wstecz"
 
-#: kmymoney2.cpp:474
+#: kmymoney2.cpp:477
 msgid "View forward"
 msgstr "Widok w przód"
 
-#: kmymoney2.cpp:603
+#: kmymoney2.cpp:606
 msgid "KMyMoney file needs saving.  Save ?"
 msgstr "Plik KMyMoney potrzebuje zapisania. Zapisać?"
 
-#: kmymoney2.cpp:749
+#: kmymoney2.cpp:752
 msgid "Creating new document..."
 msgstr "Tworzenie nowego dokumentu..."
 
-#: kmymoney2.cpp:861 kmymoney2.cpp:876
+#: kmymoney2.cpp:864 kmymoney2.cpp:879
 msgid "Open a file."
 msgstr "Otwórz plik."
 
-#: kmymoney2.cpp:864
+#: kmymoney2.cpp:867
 msgid ""
 "%1|KMyMoney files\n"
 "%2|All files (*.*)"
@@ -2487,15 +2490,15 @@ msgstr ""
 "%1|Pliki KMyMoney\n"
 "%2|Wszystkie pliki (*.*)"
 
-#: kmymoney2.cpp:865
+#: kmymoney2.cpp:868
 msgid "Open File..."
 msgstr "Otwórz plik..."
 
-#: kmymoney2.cpp:917
+#: kmymoney2.cpp:920
 msgid "Loading file..."
 msgstr "Wczytywanie pliku..."
 
-#: kmymoney2.cpp:970
+#: kmymoney2.cpp:981
 msgid ""
 "<b>%1</b> is either an invalid filename or the file does not exist. You can "
 "open another file or create a new one."
@@ -2503,123 +2506,123 @@ msgstr ""
 "<b>%1</b> albo nie jest ważną nazwą pliku, albo plik nie istnieje. Możesz "
 "otworzyć inny plik lub stworzyć nowy."
 
-#: kmymoney2.cpp:970
+#: kmymoney2.cpp:981
 msgid "File not found"
 msgstr "Nie znaleziono pliku"
 
-#: kmymoney2.cpp:973
+#: kmymoney2.cpp:984
 msgid "File <b>%1</b> is already opened in another instance of KMyMoney"
 msgstr "Inna instancja KMyMoney już posiada otwarty plik <b>%1</b>"
 
-#: kmymoney2.cpp:973
+#: kmymoney2.cpp:984
 msgid "Duplicate open"
 msgstr "Ponowne otwarcie"
 
-#: kmymoney2.cpp:985
+#: kmymoney2.cpp:996
 msgid "Saving file..."
 msgstr "Zapisywanie pliku..."
 
-#: kmymoney2.cpp:1019 kmymoney2.cpp:1031 kmymoney2.cpp:1055
+#: kmymoney2.cpp:1030 kmymoney2.cpp:1042 kmymoney2.cpp:1066
 #, c-format
 msgid "Additional encryption key(s) to be used: %1"
 msgstr ""
 
-#: kmymoney2.cpp:1040
+#: kmymoney2.cpp:1051
 msgid "Saving file with a new filename..."
 msgstr "Zapisywanie pliku z nową nazwą..."
 
-#: kmymoney2.cpp:1051
+#: kmymoney2.cpp:1062
 msgid "Encryption key to be used"
 msgstr ""
 
-#: kmymoney2.cpp:1056
+#: kmymoney2.cpp:1067
 #, fuzzy
 msgid "Manage additional keys"
 msgstr "Wprowadź dodatkowe opłaty"
 
-#: kmymoney2.cpp:1063
+#: kmymoney2.cpp:1074
 #, fuzzy
 msgid "No encryption"
 msgstr "Szyfrowanie"
 
-#: kmymoney2.cpp:1086
+#: kmymoney2.cpp:1097
 #, fuzzy
 msgid ""
 "_: KMyMoney (Filefilter)\n"
 "KMyMoney files"
 msgstr "Brak otwartego pliku KMyMoney"
 
-#: kmymoney2.cpp:1087
+#: kmymoney2.cpp:1098
 msgid ""
 "_: XML (Filefilter)\n"
 "XML files"
 msgstr ""
 
-#: kmymoney2.cpp:1088
+#: kmymoney2.cpp:1099
 msgid ""
 "_: Anonymous (Filefilter)\n"
 "Anonymous files"
 msgstr ""
 
-#: kmymoney2.cpp:1089
+#: kmymoney2.cpp:1100
 #, fuzzy
 msgid "All files"
 msgstr "Wszystkie daty"
 
-#: kmymoney2.cpp:1177
+#: kmymoney2.cpp:1188
 #, fuzzy
 msgid "Saving file to database..."
 msgstr "Zapisywanie pliku..."
 
-#: kmymoney2.cpp:1191
+#: kmymoney2.cpp:1202
 msgid "Cannot save to current database."
 msgstr ""
 
-#: kmymoney2.cpp:1204
+#: kmymoney2.cpp:1220
 msgid "Closing window..."
 msgstr "Zamykanie okna..."
 
-#: kmymoney2.cpp:1207 kmymoney2.cpp:1228
+#: kmymoney2.cpp:1223 kmymoney2.cpp:1244
 msgid "The file has been changed, save it ?"
 msgstr "Plik został zmieniony, zapisać go?"
 
-#: kmymoney2.cpp:1314 kmymoney2.cpp:1327
+#: kmymoney2.cpp:1330 kmymoney2.cpp:1343
 msgid "Ready."
 msgstr "Gotowy."
 
-#: kmymoney2.cpp:1372 kmymoney2.cpp:1408
+#: kmymoney2.cpp:1388 kmymoney2.cpp:1424
 #, fuzzy
 msgid "No KMyMoneyFile open"
 msgstr "Brak otwartego pliku KMyMoney"
 
-#: kmymoney2.cpp:1376
+#: kmymoney2.cpp:1392
 msgid "Viewing personal data..."
 msgstr "Przeglądanie danych osobistych..."
 
-#: kmymoney2.cpp:1383
+#: kmymoney2.cpp:1399
 msgid "Edit Personal Data"
 msgstr "Edycja danych osobistych"
 
-#: kmymoney2.cpp:1399
+#: kmymoney2.cpp:1415
 #, fuzzy, c-format
 msgid "Unable to store user information: %1"
 msgstr "Nie można pobrać informacji o koncie"
 
-#: kmymoney2.cpp:1422
+#: kmymoney2.cpp:1438
 msgid "Importing account templates."
 msgstr "Importowanie szablonów kont."
 
-#: kmymoney2.cpp:1437
+#: kmymoney2.cpp:1453
 #, fuzzy
 msgid "Unable to import template(s): %1, thrown in %2:%3"
 msgstr "Nie można przetworzyć daty %1 z użyciem formatu %2: %3"
 
-#: kmymoney2.cpp:1446
+#: kmymoney2.cpp:1462
 #, fuzzy
 msgid "Exporting account templates."
 msgstr "Importowanie szablonów kont."
 
-#: kmymoney2.cpp:1449
+#: kmymoney2.cpp:1465
 msgid ""
 "*.kmt|KMyMoney template files\n"
 "*.*|All files"
@@ -2627,15 +2630,24 @@ msgstr ""
 "*.kmt|Pliki szablonów KMyMoney\n"
 "*.*|Wszystkie pliki"
 
-#: kmymoney2.cpp:1450
+#: kmymoney2.cpp:1466
 msgid "Save as..."
 msgstr "Zapisz jako..."
 
-#: kmymoney2.cpp:1492
+#: kmymoney2.cpp:1508
 msgid "Importing file..."
 msgstr "Importowanie pliku..."
 
-#: kmymoney2.cpp:1573
+#: kmymoney2.cpp:1544 kmymoney2.cpp:5960 kmymoney2.cpp:5982
+msgid "The statements have been processed with the following results:"
+msgstr ""
+
+#: kmymoney2.cpp:1544 kmymoney2.cpp:1746 kmymoney2.cpp:5960 kmymoney2.cpp:5982
+#, fuzzy
+msgid "Statement stats"
+msgstr "Data wyciągu:"
+
+#: kmymoney2.cpp:1594
 msgid ""
 "You cannot import GnuCash data into an existing file. Do you wish to save "
 "this file?"
@@ -2643,11 +2655,11 @@ msgstr ""
 "Nie można zaimportować danych GnuCash do istniejącego pliku. Czy chcesz go "
 "zapisać?"
 
-#: kmymoney2.cpp:1586
+#: kmymoney2.cpp:1607
 msgid "Importing a Gnucash file."
 msgstr "Importowanie pliku Gnucash."
 
-#: kmymoney2.cpp:1589
+#: kmymoney2.cpp:1610
 msgid ""
 "%1|Gnucash files\n"
 "%2|All files (*.*)"
@@ -2655,15 +2667,15 @@ msgstr ""
 "%1|Pliki Gnucash\n"
 "%2|Wszystkie pliki (*.*)"
 
-#: kmymoney2.cpp:1590
+#: kmymoney2.cpp:1611
 msgid "Import Gnucash file..."
 msgstr "Import pliku Gnucash..."
 
-#: kmymoney2.cpp:1629
+#: kmymoney2.cpp:1650
 msgid "Importing an XML Statement."
 msgstr "Importowanie wyciągu XML."
 
-#: kmymoney2.cpp:1632
+#: kmymoney2.cpp:1653
 msgid ""
 "%1|XML files\n"
 "%2|All files (*.*)"
@@ -2671,77 +2683,72 @@ msgstr ""
 "%1|Pliki XML\n"
 "%2|Wszystkie pliki (*.*)"
 
-#: kmymoney2.cpp:1633
+#: kmymoney2.cpp:1654
 msgid "Import XML Statement..."
 msgstr "Import wyciągu XML..."
 
-#: kmymoney2.cpp:1689
+#: kmymoney2.cpp:1710
 msgid "Error importing %1: This file is not a valid KMM statement file."
 msgstr "Błąd przy imporcie %1. Plik nie jest poprawnym wyciągiem KMM."
 
-#: kmymoney2.cpp:1689
+#: kmymoney2.cpp:1710
 msgid "Invalid Statement"
 msgstr "Nieprawidłowy wyciąg"
 
-#: kmymoney2.cpp:1724
+#: kmymoney2.cpp:1746
 msgid "The statement has been processed with the following results:"
 msgstr ""
 
-#: kmymoney2.cpp:1724
-#, fuzzy
-msgid "Statement stats"
-msgstr "Data wyciągu:"
-
-#: kmymoney2.cpp:1730
+#: kmymoney2.cpp:1755
 msgid "Exporting file..."
 msgstr "Eksportowanie pliku..."
 
-#: kmymoney2.cpp:1753
+#: kmymoney2.cpp:1778
 #, fuzzy
 msgid "The file <b>%1</b> already exists. Do you really want to override it?"
 msgstr "Kategoria <b>%1</b> nie występuje obecnie. Czy chcesz ją utworzyć?"
 
-#: kmymoney2.cpp:1753
+#: kmymoney2.cpp:1778
 msgid "File already exists"
 msgstr ""
 
-#: dialogs/rc.cpp:345 dialogs/rc.cpp:647 dialogs/rc.cpp:799 kmymoney2.cpp:1781
+#: dialogs/rc.cpp:345 dialogs/rc.cpp:647 dialogs/rc.cpp:796 kmymoney2.cpp:1806
 msgid "General"
 msgstr "Ogólne"
 
-#: kmymoney2.cpp:1782
+#: kmymoney2.cpp:1807
 msgid "Register"
 msgstr "Rejestr"
 
-#: kmymoney2.cpp:1783 views/khomeview.cpp:88 views/kmymoneyview.cpp:136
+#: kmymoney2.cpp:1808 views/khomeview.cpp:88 views/kmymoneyview.cpp:136
 msgid "Home"
 msgstr "Strona domowa"
 
-#: dialogs/rc.cpp:330 dialogs/settings/rc.cpp:76 kmymoney2.cpp:1784
+#: dialogs/rc.cpp:330 dialogs/settings/rc.cpp:76 kmymoney2.cpp:1809
 #: widgets/rc.cpp:158
 msgid "Schedules"
 msgstr "Harmonogramy"
 
-#: kmymoney2.cpp:1785
+#: kmymoney2.cpp:1810
 msgid "Encryption"
 msgstr "Szyfrowanie"
 
-#: kmymoney2.cpp:1786
+#: kmymoney2.cpp:1811
 #, fuzzy
 msgid "Colors"
 msgstr "Kolory"
 
-#: dialogs/rc.cpp:342 dialogs/settings/rc.cpp:106 kmymoney2.cpp:1788
+#: dialogs/rc.cpp:342 dialogs/settings/rc.cpp:106 kmymoney2.cpp:1813
 #: widgets/rc.cpp:33
 msgid "Online Quotes"
 msgstr "Wyceny online"
 
-#: kmymoney2.cpp:1789 reports/pivottable.cpp:2364 views/kmymoneyview.cpp:250
-#: views/kmymoneyview.cpp:252 views/kreportsview.cpp:1361 views/rc.cpp:35
+#: kmymoney2.cpp:1814 reports/pivottable.cpp:2391 views/kmymoneyview.cpp:250
+#: views/kmymoneyview.cpp:252 views/kreportsview.cpp:1373 views/rc.cpp:41
 msgid "Forecast"
 msgstr ""
 
-#: kmymoney2.cpp:1856
+#: kmymoney2.cpp:1881
 msgid ""
 "The file must be saved first before it can be backed up.  Do you want to "
 "continue?"
@@ -2749,7 +2756,7 @@ msgstr ""
 "Plik musi zostać zapisany przed robieniem kopii zapasowej. Czy chcesz "
 "kontynuować?"
 
-#: kmymoney2.cpp:1873
+#: kmymoney2.cpp:1898
 msgid ""
 "The current implementation of the backup functionality only supports local "
 "files as source files! Your current source file is '%1'."
@@ -2757,89 +2764,89 @@ msgstr ""
 "Obecna implementacja funkcjonalności kopii zapasowych obsługuje jako pliki "
 "źródłowe tylko pliki lokalne. Twoim aktualnym plikiem źródłowym jest '%1'."
 
-#: kmymoney2.cpp:1876
+#: kmymoney2.cpp:1901
 msgid "Local files only"
 msgstr "Tylko pliki lokalne"
 
-#: kmymoney2.cpp:1891
+#: kmymoney2.cpp:1916
 #, c-format
 msgid "Mounting %1"
 msgstr "Montowanie %1"
 
-#: kmymoney2.cpp:1930
+#: kmymoney2.cpp:1955
 msgid "Backup file for today exists on that device.  Replace ?"
 msgstr "Dzisiejsza kopia zapasowa istnieje na tym urządzeniu. Zastąpić?"
 
-#: dialogs/rc.cpp:7 kmymoney2.cpp:1930 kmymoney2.cpp:1957 kmymoney2.cpp:1987
-#: kmymoney2.cpp:1995 kmymoney2.cpp:2020 kmymoney2.cpp:2022
+#: dialogs/rc.cpp:7 kmymoney2.cpp:1955 kmymoney2.cpp:1982 kmymoney2.cpp:2012
+#: kmymoney2.cpp:2020 kmymoney2.cpp:2045 kmymoney2.cpp:2047
 msgid "Backup"
 msgstr "Kopia zapasowa"
 
-#: kmymoney2.cpp:1930
+#: kmymoney2.cpp:1955
 msgid "&Replace"
 msgstr "&Zastąp"
 
-#: kmymoney2.cpp:1935 kmymoney2.cpp:1960 kmymoney2.cpp:1979 kmymoney2.cpp:1998
+#: kmymoney2.cpp:1960 kmymoney2.cpp:1985 kmymoney2.cpp:2004 kmymoney2.cpp:2023
 #, c-format
 msgid "Unmounting %1"
 msgstr "Odmontowywanie %1"
 
-#: kmymoney2.cpp:1950
+#: kmymoney2.cpp:1975
 #, c-format
 msgid "Writing %1"
 msgstr "Zapisywanie %1"
 
-#: kmymoney2.cpp:1957
+#: kmymoney2.cpp:1982
 msgid "Error mounting device"
 msgstr "Błąd montowania urządzenia"
 
-#: converter/mymoneygncreader.cpp:1995 kmymoney2.cpp:1986 kmymoney2.cpp:2018
+#: converter/mymoneygncreader.cpp:1995 kmymoney2.cpp:2011 kmymoney2.cpp:2043
 msgid "Done"
 msgstr "Zrobione"
 
-#: kmymoney2.cpp:1987 kmymoney2.cpp:2020
+#: kmymoney2.cpp:2012 kmymoney2.cpp:2045
 msgid "File successfully backed up"
 msgstr "Pomyślnie utworzono kopię zapasową"
 
-#: kmymoney2.cpp:1995
+#: kmymoney2.cpp:2020
 msgid "Error copying file to device"
 msgstr "Błąd przy kopiowaniu pliku na urządzenie"
 
-#: kmymoney2.cpp:2022
+#: kmymoney2.cpp:2047
 msgid "Error unmounting device"
 msgstr "Błąd przy odmontowywaniu urządzenia"
 
-#: kmymoney2.cpp:2113
+#: kmymoney2.cpp:2138
 #, fuzzy, c-format
 msgid "Cannot add institution: %1"
 msgstr "Nie można dodać instytucji: "
 
-#: kmymoney2.cpp:2155
+#: kmymoney2.cpp:2180
 #, fuzzy, c-format
 msgid "Unable to store institution: %1"
 msgstr "Nie można edytować instytucji: "
 
-#: kmymoney2.cpp:2162
+#: kmymoney2.cpp:2187
 #, fuzzy, c-format
 msgid "Unable to edit institution: %1"
 msgstr "Nie można edytować instytucji: "
 
-#: kmymoney2.cpp:2173
+#: kmymoney2.cpp:2198
 #, fuzzy
 msgid "Do you really want to delete institution <b>%1</b> ?"
 msgstr "Czy na pewno usunąć profil '%1'?"
 
-#: kmymoney2.cpp:2181 kmymoney2.cpp:2185
+#: kmymoney2.cpp:2206 kmymoney2.cpp:2210
 #, fuzzy, c-format
 msgid "Unable to delete institution: %1"
 msgstr "Nie można edytować instytucji: "
 
-#: kmymoney2.cpp:2238
+#: kmymoney2.cpp:2263
 #, fuzzy, c-format
 msgid "Unable to find account: %1"
 msgstr "Nie można wczytać kont:"
 
-#: kmymoney2.cpp:2279
+#: kmymoney2.cpp:2304
 msgid ""
 "This account is a liability and if the opening balance represents money "
 "owed, then it should be negative.  Negate the amount?\n"
@@ -2856,16 +2863,16 @@ msgstr ""
 "Proszę kliknąć Nie, żebu pozostawić sumę %2,\n"
 "Proszę wcisnąć Anuluj, żeby przerwać tworzenie konta."
 
-#: kmymoney2.cpp:2315 kmymoney2.cpp:2316
+#: kmymoney2.cpp:2340 kmymoney2.cpp:2341
 msgid "Loan payout"
 msgstr "Uruchomienie pożyczki"
 
-#: dialogs/knewloanwizard.cpp:992 kmymoney2.cpp:2344
+#: dialogs/knewloanwizard.cpp:890 kmymoney2.cpp:2369
 #, fuzzy, c-format
 msgid "Unable to add account: %1"
 msgstr "Nie można wczytać kont:"
 
-#: kmymoney2.cpp:2362
+#: kmymoney2.cpp:2387
 #, fuzzy
 msgid ""
 "The category <b>%1</b> currently does not exist. Do you want to create it?"
@@ -2873,155 +2880,155 @@ msgid ""
 "following dialog</i>."
 msgstr "Kategoria <b>%1</b> nie występuje obecnie. Czy chcesz ją utworzyć?"
 
-#: kmymoney2.cpp:2362
+#: kmymoney2.cpp:2387
 msgid "Create category"
 msgstr "Stwórz kategorię"
 
-#: kmymoney2.cpp:2399
+#: kmymoney2.cpp:2424
 msgid "Create a new Category"
 msgstr "Stwórz nową kategorię"
 
-#: kmymoney2.cpp:2475
+#: kmymoney2.cpp:2500
 #, fuzzy, c-format
 msgid "Unable to create account: %1"
 msgstr "Nie można usunąć konta: "
 
-#: kmymoney2.cpp:2486
+#: kmymoney2.cpp:2511
 #, fuzzy
 msgid ""
 "The security <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
 "Do you want to create it?"
 msgstr "Kategoria <b>%1</b> nie występuje obecnie. Czy chcesz ją utworzyć?"
 
-#: kmymoney2.cpp:2487
+#: kmymoney2.cpp:2512
 #, fuzzy
 msgid "Create security"
 msgstr "Usuń papier wartościowy"
 
-#: kmymoney2.cpp:2521
+#: kmymoney2.cpp:2546
 #, fuzzy
 msgid "Do you really want to delete the investment <b>%1</b>?"
 msgstr "Czy na pewno usunąć wybraną inwestycję?"
 
-#: kmymoney2.cpp:2521
+#: kmymoney2.cpp:2546
 msgid "Delete investment"
 msgstr "Usuń inwestycję"
 
-#: kmymoney2.cpp:2528
+#: kmymoney2.cpp:2553
 #, fuzzy, c-format
 msgid "Unable to delete investment: %1"
 msgstr "Nie można edytować instytucji: "
 
-#: kmymoney2.cpp:2610 kmymoney2.cpp:2616 views/kmymoneyview.cpp:1980
+#: kmymoney2.cpp:2635 kmymoney2.cpp:2641 views/kmymoneyview.cpp:1938
 msgid "Unable to add schedule: "
 msgstr "Nie można dodać harmonogramu: "
 
-#: kmymoney2.cpp:2692
+#: kmymoney2.cpp:2717
 #, fuzzy
 msgid "Adjusting transactions..."
 msgstr "Wczytywanie transakcji..."
 
-#: kmymoney2.cpp:2717
+#: kmymoney2.cpp:2742
 #, fuzzy
 msgid "Adjusting schedules..."
 msgstr "Wczytywanie harmonogramów..."
 
-#: kmymoney2.cpp:2735
+#: kmymoney2.cpp:2760
 #, fuzzy
 msgid "Adjusting budgets..."
 msgstr "Wczytywanie harmonogramów..."
 
-#: kmymoney2.cpp:2753
+#: kmymoney2.cpp:2778
 msgid ""
 "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
 msgstr ""
 
-#: kmymoney2.cpp:2774
+#: kmymoney2.cpp:2799
 #, fuzzy
 msgid "Do you really want to delete category <b>%1</b>?"
 msgstr "Czy na pewno usunąć kategorię '%1'"
 
-#: kmymoney2.cpp:2781
+#: kmymoney2.cpp:2806
 #, fuzzy
 msgid "Unable to delete category <b>%1</b>. Cause: %2"
 msgstr "Nie można usunąć kategorii: "
 
-#: kmymoney2.cpp:2793
+#: kmymoney2.cpp:2818
 msgid ""
 "Do you want to delete category <b>%1</b> with all its sub-categories or only "
 "the category itself? If you only delete the category itself, all its sub-"
 "categories will be made sub-categories of <b>%2</b>."
 msgstr ""
 
-#: kmymoney2.cpp:2797
+#: kmymoney2.cpp:2822
 #, fuzzy
 msgid "Delete all"
 msgstr "Zaznacz wszystko"
 
-#: kmymoney2.cpp:2798
+#: kmymoney2.cpp:2823
 #, fuzzy
 msgid "Just the category"
 msgstr "Stwórz kategorię"
 
-#: kmymoney2.cpp:2828
+#: kmymoney2.cpp:2853
 msgid ""
 "Some sub-categories of category <b>%1</b> cannot be deleted, because they "
 "are still used. They will be made sub-categories of <b>%2</b>. Proceed?"
 msgstr ""
 
-#: kmymoney2.cpp:2848
+#: kmymoney2.cpp:2873
 msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
 msgstr ""
 
-#: kmymoney2.cpp:2859
+#: kmymoney2.cpp:2884
 #, fuzzy
 msgid "Do you really want to delete account <b>%1</b>?"
 msgstr "Czy na pewno usunąć konto '%1'"
 
-#: kmymoney2.cpp:2871
+#: kmymoney2.cpp:2896
 #, fuzzy
 msgid "Unable to delete account '%1'. Cause: %2"
 msgstr "Nie można wczytać kont:"
 
-#: kmymoney2.cpp:2887
+#: kmymoney2.cpp:2912
 #, fuzzy
 msgid "Edit account '%1'"
 msgstr "Edytuj konto"
 
-#: kmymoney2.cpp:2892
+#: kmymoney2.cpp:2917
 #, fuzzy
 msgid "Edit category '%1'"
 msgstr "Edytuj kategorię"
 
-#: kmymoney2.cpp:2978
+#: kmymoney2.cpp:3003
 #, fuzzy
 msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "Nie można wczytać kont:"
 
-#: kmymoney2.cpp:3034
+#: kmymoney2.cpp:3059
 msgid ""
 "KMyMoney has detected some overdue schedules for this account. Do you want "
 "to enter those scheduled transactions now?"
 msgstr ""
 
-#: kmymoney2.cpp:3034
+#: kmymoney2.cpp:3059
 #, fuzzy
 msgid "Scheduled transactions found"
 msgstr "Zaplanowane transakcje"
 
-#: kmymoney2.cpp:3131
+#: kmymoney2.cpp:3156
 msgid ""
 "You are about to finish the reconciliation of this account with a difference "
 "between your bank statement and the transactions marked as cleared.\n"
 "Are you sure you want to finish the reconciliation ?"
 msgstr ""
 
-#: kmymoney2.cpp:3133
+#: kmymoney2.cpp:3158
 #, fuzzy
 msgid "Confirm end of reconciliation"
 msgstr "Przełóż uzgadnianie"
 
-#: kmymoney2.cpp:3307
+#: kmymoney2.cpp:3332
 msgid ""
 "You have closed this account. It remains in the system because you have "
 "transactions which still refer to it, but is not shown in the views. You can "
@@ -3029,42 +3036,42 @@ msgid ""
 "accounts</b> or by unselecting the <b>Don't show closed accounts</b> setting."
 msgstr ""
 
-#: kmymoney2.cpp:3347
+#: kmymoney2.cpp:3372
 msgid "<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3"
 msgstr ""
 
-#: kmymoney2.cpp:3361
+#: kmymoney2.cpp:3386
 msgid "<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3"
 msgstr ""
 
-#: kmymoney2.cpp:3376
+#: kmymoney2.cpp:3401
 #, fuzzy
 msgid "%1 YTD Account Transactions"
 msgstr "Transakcje podatkowe"
 
-#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3377
-#: views/kforecastview.cpp:648 views/khomeview.cpp:274
+#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3402
+#: views/kforecastview.cpp:650 views/khomeview.cpp:274
 #: views/khomeview.cpp:1372 views/kreportsview.cpp:619
 #, fuzzy
 msgid "Generated Report"
 msgstr "Usunąć raport?"
 
-#: dialogs/rc.cpp:322 dialogs/settings/rc.cpp:79 kmymoney2.cpp:3379
-#: views/kreportsview.cpp:1065 views/rc.cpp:52 views/rc.cpp:53
+#: dialogs/rc.cpp:322 dialogs/settings/rc.cpp:79 kmymoney2.cpp:3404
+#: views/kreportsview.cpp:1065 views/rc.cpp:58 views/rc.cpp:59
 msgid "Transactions"
 msgstr "Transakcje"
 
-#: kmymoney2.cpp:3417
+#: kmymoney2.cpp:3442
 #, fuzzy, c-format
 msgid "Unable to add schedule: %1"
 msgstr "Nie można dodać harmonogramu: "
 
-#: kmymoney2.cpp:3417
+#: kmymoney2.cpp:3442
 #, fuzzy
 msgid "Add schedule"
 msgstr " harmonogramy\n"
 
-#: kmymoney2.cpp:3457
+#: kmymoney2.cpp:3482
 msgid ""
 "You have entered a Schedule date of <b>%1</b>.  Because the schedule was "
 "last paid on <b>%2</b>, KMyMoney will automatically adjust the schedule date "
@@ -3072,22 +3079,22 @@ msgid ""
 "reset the last payment date?"
 msgstr ""
 
-#: kmymoney2.cpp:3457
+#: kmymoney2.cpp:3482
 #, fuzzy
 msgid "Reset Last Payment Date"
 msgstr "Płatności dla"
 
-#: kmymoney2.cpp:3467 kmymoney2.cpp:3487 kmymoney2.cpp:3499
+#: kmymoney2.cpp:3492 kmymoney2.cpp:3512 kmymoney2.cpp:3524
 #, fuzzy
 msgid "Unable to modify schedule '%1'"
 msgstr "Nie można zmodyfikować harmonogramu: "
 
-#: kmymoney2.cpp:3511
+#: kmymoney2.cpp:3536
 #, fuzzy
 msgid "Are you sure you want to delete the schedule <b>%1</b>?"
 msgstr "Czy na pewno usunąć wybrany harmonogram?"
 
-#: kmymoney2.cpp:3514
+#: kmymoney2.cpp:3539
 #, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
@@ -3096,24 +3103,24 @@ msgstr ""
 "W przypadku spłat pożyczki nie jest obecnie możliwe ponowne stworzenie "
 "harmonogramu"
 
-#: kmymoney2.cpp:3523
+#: kmymoney2.cpp:3548
 #, fuzzy
 msgid "Unable to remove schedule '%1'"
 msgstr "Nie można usunąć harmonogramu"
 
-#: kmymoney2.cpp:3537
+#: kmymoney2.cpp:3562
 #, c-format
 msgid ""
 "_: Copy of schedulename\n"
 "Copy of %1"
 msgstr ""
 
-#: kmymoney2.cpp:3549 kmymoney2.cpp:4311
+#: kmymoney2.cpp:3574 kmymoney2.cpp:4336
 #, fuzzy
 msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
 msgstr "Nie można dodać transakcji: "
 
-#: kmymoney2.cpp:3563
+#: kmymoney2.cpp:3588
 #, fuzzy
 msgid ""
 "Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</"
@@ -3121,16 +3128,16 @@ msgid ""
 msgstr ""
 "Czy na pewno chcesz przenieść <b>%1</b>, żeby stało się podkontem <b>%2</b>?"
 
-#: kmymoney2.cpp:3573
+#: kmymoney2.cpp:3598
 #, fuzzy
 msgid "Unable to skip schedule <b>%1</b>."
 msgstr "Nie można edytować harmonogramu"
 
-#: kmymoney2.cpp:3586
+#: kmymoney2.cpp:3611
 msgid "Unknown schedule '%1'"
 msgstr ""
 
-#: kmymoney2.cpp:3641
+#: kmymoney2.cpp:3666
 msgid ""
 "Are you sure you wish to stop this schedule from being entered into the "
 "register?\n"
@@ -3143,162 +3150,162 @@ msgstr ""
 "KMyMoney zapyta ponownie przy kolejnym uruchomieniu, chyba że wprowadzisz go "
 "później ręcznie."
 
-#: kmymoney2.cpp:3692 kmymoney2.cpp:3699
+#: kmymoney2.cpp:3717 kmymoney2.cpp:3724
 #, fuzzy
 msgid "Unable to enter transaction for schedule '%1'"
 msgstr "Nie można dodać transakcji/zmienić harmonogramu"
 
-#: kmymoney2.cpp:3710 kmymoney2.cpp:3750
+#: kmymoney2.cpp:3735 kmymoney2.cpp:3775
 msgid "New Payee"
 msgstr "Nowy beneficjent"
 
-#: kmymoney2.cpp:3712
+#: kmymoney2.cpp:3737
 #, fuzzy
 msgid "Do you want to add <b>%1</b> as payer/receiver ?"
 msgstr "Czy chcesz dodać '%1' jako beneficjenta/odbiorcę?"
 
-#: converter/mymoneystatementreader.cpp:869 kmymoney2.cpp:3714
+#: converter/mymoneystatementreader.cpp:869 kmymoney2.cpp:3739
 msgid "New payee/receiver"
 msgstr "Nowy beneficjent/odbiorca"
 
-#: kmymoney2.cpp:3740
+#: kmymoney2.cpp:3765
 msgid "Unable to add payee"
 msgstr "Nie można dodać beneficjenta"
 
-#: kmymoney2.cpp:3793
+#: kmymoney2.cpp:3818
 #, fuzzy
 msgid "Do you really want to remove the payee <b>%1</b>?"
 msgstr "Czy na pewno usunąć tego beneficjenta: "
 
-#: kmymoney2.cpp:3795
+#: kmymoney2.cpp:3820
 #, fuzzy
 msgid "Do you really want to remove all selected payees?"
 msgstr "Czy na pewno usunąć tego beneficjenta: "
 
-#: kmymoney2.cpp:3797
+#: kmymoney2.cpp:3822
 msgid "Remove Payee"
 msgstr "Usuń beneficjenta"
 
-#: kmymoney2.cpp:3837
+#: kmymoney2.cpp:3862
 msgid ""
 "At least one transaction/schedule is still referenced by a payee. Currently "
 "you have all payees selected. However, at least one payee must remain so "
 "that the transactions/schedules can be reassigned."
 msgstr ""
 
-#: kmymoney2.cpp:3892
+#: kmymoney2.cpp:3917
 #, fuzzy
 msgid "Unable to reassign payee of transaction/split"
 msgstr "Nie można usunąć transakcji"
 
 #: converter/mymoneyqifreader.cpp:525 converter/mymoneystatementreader.cpp:895
-#: kmymoney2.cpp:3893 kmymoney2.cpp:3950 views/kbudgetview.cpp:636
+#: kmymoney2.cpp:3918 kmymoney2.cpp:3975 views/kbudgetview.cpp:636
 #: views/kbudgetview.cpp:737 views/kbudgetview.cpp:751
 #: views/kpayeesview.cpp:451 views/kpayeesview.cpp:769
 msgid "thrown in"
 msgstr "rzucony w"
 
-#: kmymoney2.cpp:3949
+#: kmymoney2.cpp:3974
 #, fuzzy
 msgid "Unable to remove payee(s)"
 msgstr "Nie można usunąć beneficjenta"
 
-#: kmymoney2.cpp:3957
+#: kmymoney2.cpp:3982
 #, fuzzy
 msgid "Enter ISO 4217 code for the new currency"
 msgstr "Wprowadź kod ISO 4217 nowej waluty"
 
-#: kmymoney2.cpp:3966
+#: kmymoney2.cpp:3991
 #, fuzzy, c-format
 msgid "Cannot create new currency. %1"
 msgstr "Nie można stworzyć nowej waluty."
 
-#: kmymoney2.cpp:3988 kmymoney2.cpp:3993
+#: kmymoney2.cpp:4013 kmymoney2.cpp:4018
 #, fuzzy, c-format
 msgid "Cannot rename currency. %1"
 msgstr "Nie można stworzyć nowej waluty."
 
-#: kmymoney2.cpp:4006
+#: kmymoney2.cpp:4031
 #, fuzzy
 msgid "Cannot delete currency %1. %2"
 msgstr "Nie można stworzyć nowej waluty."
 
-#: kmymoney2.cpp:4021 views/kmymoneyview.cpp:1314
+#: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
 #, fuzzy
 msgid "Cannot set %1 as base currency: %2"
 msgstr "Wybierz jako walutę podstawową"
 
-#: kmymoney2.cpp:4021 views/kmymoneyview.cpp:1314
+#: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
 #, fuzzy
 msgid "Set base currency"
 msgstr "Wybierz walutę podstawową"
 
-#: kmymoney2.cpp:4032
+#: kmymoney2.cpp:4057
 #, fuzzy, c-format
 msgid "Budget %1"
 msgstr "Budżety"
 
-#: kmymoney2.cpp:4042
+#: kmymoney2.cpp:4067
 msgid "Budget %1 (%2)"
 msgstr ""
 
-#: kmymoney2.cpp:4057 kmymoney2.cpp:4106
+#: kmymoney2.cpp:4082 kmymoney2.cpp:4131
 #, fuzzy
 msgid "Unable to add budget: %1, thrown in %2:%3"
 msgstr "Nie można przetworzyć daty %1 z użyciem formatu %2: %3"
 
-#: kmymoney2.cpp:4072
+#: kmymoney2.cpp:4097
 #, fuzzy
 msgid "Do you really want to remove the budget <b>%1</b>?"
 msgstr "Czy na pewno usunąć z pliku %1 <b>%2</b>?"
 
-#: kmymoney2.cpp:4074
+#: kmymoney2.cpp:4099
 #, fuzzy
 msgid "Do you really want to remove all selected budgets?"
 msgstr "Czy na pewno usunąć wybraną inwestycję?"
 
-#: kmymoney2.cpp:4076
+#: kmymoney2.cpp:4101
 #, fuzzy
 msgid "Remove Budget"
 msgstr "Usuń beneficjenta"
 
-#: kmymoney2.cpp:4089
+#: kmymoney2.cpp:4114
 #, fuzzy
 msgid "Unable to remove budget: %1, thrown in %2:%3"
 msgstr "Nie można przetworzyć daty %1 z użyciem formatu %2: %3"
 
-#: kmymoney2.cpp:4101 views/kreportsview.cpp:659
+#: kmymoney2.cpp:4126 views/kreportsview.cpp:659
 #, c-format
 msgid "Copy of %1"
 msgstr "Kopia %1"
 
-#: kmymoney2.cpp:4131
+#: kmymoney2.cpp:4156
 #, fuzzy
 msgid "Select year"
 msgstr "Wybierz rok"
 
-#: kmymoney2.cpp:4131
+#: kmymoney2.cpp:4156
 #, fuzzy
 msgid "Budget year"
 msgstr "Następny rok"
 
-#: kmymoney2.cpp:4143 kmymoney2.cpp:4181 kmymoney2.cpp:4233
+#: kmymoney2.cpp:4168 kmymoney2.cpp:4206 kmymoney2.cpp:4258
 msgid "Unable to modify budget: %1, thrown in %2:%3"
 msgstr ""
 
-#: kmymoney2.cpp:4159 kmymoney2.cpp:4209
+#: kmymoney2.cpp:4184 kmymoney2.cpp:4234
 msgid ""
 "The current budget already contains data. Continuing will replace all "
 "current values of this budget."
 msgstr ""
 
-#: kmymoney2.cpp:4189
+#: kmymoney2.cpp:4214
 msgid ""
 "Please be aware that changes made in the following dialog affect all KDE "
 "applications not only KMyMoney."
 msgstr ""
 
-#: kmymoney2.cpp:4251
+#: kmymoney2.cpp:4276
 #, fuzzy
 msgid ""
 "At least one split of the selected transactions has been reconciled. Do you "
@@ -3307,45 +3314,45 @@ msgstr ""
 "Co najmniej jeden z podziałów tej transakcji został rozliczony. Czy chcesz "
 "kontynuować i mimo to edytować transakcję?"
 
-#: kmymoney2.cpp:4254 views/kgloballedgerview.cpp:1024
+#: kmymoney2.cpp:4279 views/kgloballedgerview.cpp:1024
 msgid "Transaction already reconciled"
 msgstr "Transakcja uprzednio uzgodniona"
 
-#: kmymoney2.cpp:4260
+#: kmymoney2.cpp:4285
 #, fuzzy
 msgid "Do you really want to delete the selected transaction?"
 msgstr "Czy na pewno usunąć wybraną inwestycję?"
 
-#: kmymoney2.cpp:4262
+#: kmymoney2.cpp:4287
 #, fuzzy
 msgid "Do you really want to delete all %1 selected transactions?"
 msgstr "Czy na pewno usunąć wybraną inwestycję?"
 
-#: kmymoney2.cpp:4264
+#: kmymoney2.cpp:4289
 msgid "Delete transaction"
 msgstr "Usuń transakcję"
 
-#: kmymoney2.cpp:4265
+#: kmymoney2.cpp:4290
 #, fuzzy
 msgid "Deleting transactions"
 msgstr "Usuń transakcję"
 
-#: kmymoney2.cpp:4280
+#: kmymoney2.cpp:4305
 #, fuzzy
 msgid "Duplicating transactions"
 msgstr "Podziel transakcję"
 
-#: kmymoney2.cpp:4334
+#: kmymoney2.cpp:4359
 #, fuzzy
 msgid "Unable to delete transaction(s): %1, thrown in %2:%3"
 msgstr "Nie można dodać transakcji: "
 
-#: kmymoney2.cpp:4393 kmymoney2.cpp:4557
+#: kmymoney2.cpp:4418 kmymoney2.cpp:4582
 #, fuzzy
 msgid "Unable to modify transaction: %1, thrown in %2:%3"
 msgstr "Nie można dodać/zmodyfikować transakcji"
 
-#: kmymoney2.cpp:4449
+#: kmymoney2.cpp:4474
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3354,12 +3361,12 @@ msgid ""
 "automatically when e.g. selecting another transaction."
 msgstr ""
 
-#: kmymoney2.cpp:4449 kmymoney2.cpp:4452
+#: kmymoney2.cpp:4474 kmymoney2.cpp:4477
 #, fuzzy
 msgid "Cancel transaction edit"
 msgstr "Ważna transakcja"
 
-#: kmymoney2.cpp:4452
+#: kmymoney2.cpp:4477
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3367,72 +3374,79 @@ msgid ""
 "transaction automatically when e.g. selecting another transaction."
 msgstr ""
 
-#: kmymoney2.cpp:4602
+#: kmymoney2.cpp:4627
 #, fuzzy
 msgid "Unable to accept transaction: %1, thrown in %2:%3"
 msgstr "Nie można dodać transakcji: "
 
-#: kmymoney2.cpp:4781
+#: kmymoney2.cpp:4806
 #, fuzzy
 msgid "Unable to unmatch the selected transactions"
 msgstr "Nie można usunąć transakcji"
 
-#: kmymoney2.cpp:4820
+#: kmymoney2.cpp:4845
 msgid "No manually entered transaction selected for matching"
 msgstr ""
 
-#: kmymoney2.cpp:4822
+#: kmymoney2.cpp:4847
 #, fuzzy
 msgid "No imported transaction selected for matching"
 msgstr "Akceptuje zaimportowane transakcje i kontynuuje"
 
-#: kmymoney2.cpp:4830
+#: kmymoney2.cpp:4855
 #, fuzzy
 msgid "Unable to match the selected transactions"
 msgstr "Nie można usunąć transakcji"
 
-#: kmymoney2.cpp:5032
+#: kmymoney2.cpp:5057
 #, fuzzy
 msgid "Create a new transaction"
 msgstr "Stwórz nowy rachunek aktywów"
 
-#: kmymoney2.cpp:5083
+#: kmymoney2.cpp:5108
 #, fuzzy
 msgid "Duplicate the current selected transactions"
 msgstr "Skasuj wybrany profil"
 
-#: kmymoney2.cpp:5353 kmymoney2.cpp:5375
+#: kmymoney2.cpp:5158
+#, fuzzy
+msgid ""
+"_: Button text for unmatch transaction\n"
+"Unmatch"
+msgstr "Użyj tego przycisku, żeby zapisać tę transakcję"
+
+#: kmymoney2.cpp:5378 kmymoney2.cpp:5400
 msgid "Goto '%1'"
 msgstr "Idź do '%1'"
 
-#: kmymoney2.cpp:5484
+#: kmymoney2.cpp:5509
 msgid "Running consistency check..."
 msgstr "Uruchamianie sprawdzania spójności..."
 
-#: kmymoney2.cpp:5492
+#: kmymoney2.cpp:5517
 #, fuzzy, c-format
 msgid "Consistency check failed: %1"
 msgstr "Wynik sprawdzania spójności"
 
-#: kmymoney2.cpp:5496
+#: kmymoney2.cpp:5521
 msgid "Consistency check result"
 msgstr "Wynik sprawdzania spójności"
 
-#: kmymoney2.cpp:5505
+#: kmymoney2.cpp:5530
 msgid "Checking for overdue schedules..."
 msgstr "Sprawdzanie zaległych harmonogramów..."
 
-#: kmymoney2.cpp:5642
+#: kmymoney2.cpp:5667
 msgid ""
 "You must first select a KMyMoney file before you can import a statement."
 msgstr ""
 "Musisz wpierw wybrać plik KMyMoney, zanim będziesz mógł zaimportować wyciąg."
 
-#: kmymoney2.cpp:5648
+#: kmymoney2.cpp:5673
 msgid "Importing a statement via Web Connect"
 msgstr "Import wyciągu przez Web Connect"
 
-#: kmymoney2.cpp:5661
+#: kmymoney2.cpp:5686
 msgid ""
 "Unable to import %1 using %2 plugin.  The plugin returned the following "
 "error: %3"
@@ -3440,83 +3454,101 @@ msgstr ""
 "Nie można zaimportować %1 przy pomocy wtyczki %2. Wtyczka zwróciła "
 "następujący błąd: %3."
 
-#: kmymoney2.cpp:5661 plugins/ofximport/ofximporterplugin.cpp:636
+#: kmymoney2.cpp:5686 plugins/ofximport/ofximporterplugin.cpp:637
 msgid "Importing error"
 msgstr "Błąd importu"
 
-#: kmymoney2.cpp:5682
+#: kmymoney2.cpp:5707
 msgid "All messages have been enabled."
 msgstr "Włączono wszystkie komunikaty."
 
-#: kmymoney2.cpp:5682
+#: kmymoney2.cpp:5707
 msgid "All messages"
 msgstr "Wszystkie komunikaty"
 
-#: kmymoney2.cpp:5724
+#: kmymoney2.cpp:5749
 #, fuzzy
 msgid "Loaded"
 msgstr "Pożyczka"
 
-#: kmymoney2.cpp:5732
+#: kmymoney2.cpp:5757
 msgid ""
 "_: Plugin interface description\n"
 "Online access"
 msgstr ""
 
-#: kmymoney2.cpp:5741
+#: kmymoney2.cpp:5766
 msgid ""
 "_: Plugin interface description\n"
 "File import"
 msgstr ""
 
-#: kmymoney2.cpp:5745
+#: kmymoney2.cpp:5770
 #, fuzzy, c-format
 msgid "not loaded: %1"
 msgstr "Rozliczone: %1"
 
-#: kmymoney2.cpp:5759
+#: kmymoney2.cpp:5784
 #, fuzzy
 msgid "Auto saving..."
 msgstr "Zapisywanie pliku..."
 
-#: kmymoney2.cpp:5817
+#: kmymoney2.cpp:5842
 #, fuzzy
 msgid "Unable to setup online parameters for account ''%1'"
 msgstr "Nie można usunąć konta: "
 
-#: kmymoney2.cpp:5832
+#: kmymoney2.cpp:5857
 msgid ""
 "Do you really want to remove the mapping of account <b>%1</b> to an online "
 "account? Depending on the details of the online banking method used, this "
 "action cannot be reverted."
 msgstr ""
 
-#: kmymoney2.cpp:5832
+#: kmymoney2.cpp:5857
 #, fuzzy
 msgid "Remove mapping to online account"
 msgstr "Mapuj do konta HBCI..."
 
-#: kmymoney2.cpp:5843
+#: kmymoney2.cpp:5868
 #, fuzzy, c-format
 msgid "Unable to unmap account from online account: %1"
 msgstr "Nie można usunąć konta: "
 
-#: kmymoney2.cpp:5861
+#: kmymoney2.cpp:5885
+#, fuzzy
+msgid " (Brokerage)"
+msgstr " (Brokerskie)"
+
+#: kmymoney2.cpp:5886
+msgid ""
+"You try to map a brokerage account to an online account. This is usually not "
+"advisable. In general, the investment account should be mapped to the online "
+"account. Please cancel if you intended to map the investment account, "
+"continue otherwise"
+msgstr ""
+
+#: kmymoney2.cpp:5886
+#, fuzzy
+msgid "Mapping brokerage account"
+msgstr "Konto brokerskie"
+
+#: kmymoney2.cpp:5893
 msgid "Select online banking plugin"
 msgstr ""
 
-#: kmymoney2.cpp:5902
+#: kmymoney2.cpp:5934
 #, fuzzy, c-format
 msgid "Unable to map account to online account: %1"
 msgstr "Nie można usunąć konta: "
 
 #: converter/mymoneyqifreader.cpp:398 converter/mymoneytemplate.cpp:73
-#: views/kmymoneyview.cpp:598
+#: views/kmymoneyview.cpp:589
 msgid "Error while loading file '%1'!"
 msgstr "Błąd wczytywania pliku '%1'!"
 
 #: converter/mymoneyqifreader.cpp:400 converter/mymoneyqifreader.cpp:955
-#: converter/mymoneytemplate.cpp:75 views/kmymoneyview.cpp:600
+#: converter/mymoneytemplate.cpp:75 views/kmymoneyview.cpp:591
 msgid "File access error"
 msgstr "Błąd przy dostępie do pliku"
 
@@ -3524,7 +3556,7 @@ msgstr "Błąd przy dostępie do pliku"
 msgid "<b>%1</b> is not a template file."
 msgstr "<b>%1</b> nie jest plikiem szablonu."
 
-#: converter/mymoneytemplate.cpp:85 views/kmymoneyview.cpp:611
+#: converter/mymoneytemplate.cpp:85 views/kmymoneyview.cpp:602
 msgid "Filetype Error"
 msgstr "Błąd typu pliku"
 
@@ -3562,11 +3594,11 @@ msgstr ""
 "b>!"
 
 #: converter/mymoneytemplate.cpp:398 converter/mymoneytemplate.cpp:401
-#: views/kmymoneyview.cpp:1158 views/kmymoneyview.cpp:1161
+#: views/kmymoneyview.cpp:1148 views/kmymoneyview.cpp:1151
 msgid "Unable to write changes to '%1'"
 msgstr "Nie można zapisać zmian do '%1'"
 
-#: converter/mymoneytemplate.cpp:407 views/kmymoneyview.cpp:1169
+#: converter/mymoneytemplate.cpp:407 views/kmymoneyview.cpp:1159
 msgid "Unable to upload to '%1'"
 msgstr "Nie można zapisać do '%1'"
 
@@ -4413,126 +4445,126 @@ msgstr ""
 "Konto lub kategoria %1, data transakcji %2; podział zawiera nieważną "
 "wartość; proszę sprawdzić"
 
-#: kmymoneyutils.cpp:189
+#: kmymoneyutils.cpp:191
 msgid "&New Schedule..."
 msgstr "&Nowy harmonogram..."
 
-#: kmymoneyutils.cpp:191
+#: kmymoneyutils.cpp:193
 msgid "Create a new schedule."
 msgstr "Tworzy nowy harmonogram."
 
-#: kmymoneyutils.cpp:192
+#: kmymoneyutils.cpp:194
 msgid "Use this to create a new schedule."
 msgstr "Użyj tego przycisku, żeby stworzyć nowy harmonogram."
 
-#: kmymoneyutils.cpp:201
+#: kmymoneyutils.cpp:203
 msgid "&Filter"
 msgstr "&Filtr"
 
-#: kmymoneyutils.cpp:203
+#: kmymoneyutils.cpp:205
 msgid "Filter out accounts"
 msgstr "Odfiltruj konta"
 
-#: kmymoneyutils.cpp:204
+#: kmymoneyutils.cpp:206
 msgid "Use this to filter out accounts"
 msgstr "Użyj, żeby odfiltrować konta"
 
-#: kmymoneyutils.cpp:235
+#: kmymoneyutils.cpp:237
 msgid "Preferred accounts"
 msgstr "Preferowane konta"
 
-#: kmymoneyutils.cpp:236
+#: kmymoneyutils.cpp:238
 msgid "Payment accounts"
 msgstr "Konta płatności"
 
-#: kmymoneyutils.cpp:237
+#: kmymoneyutils.cpp:239
 msgid "Favorite reports"
 msgstr "Ulubione raporty"
 
-#: kmymoneyutils.cpp:238
+#: kmymoneyutils.cpp:240
 #, fuzzy
 msgid "Forecast (schedule)"
 msgstr "Stwórz harmonogram..."
 
-#: kmymoneyutils.cpp:239
+#: kmymoneyutils.cpp:241
 #, fuzzy
 msgid "Networth forecast"
 msgstr "Wartość netto dziś"
 
-#: kmymoneyutils.cpp:240
+#: kmymoneyutils.cpp:242
 msgid "Forecast (history)"
 msgstr ""
 
-#: kmymoneyutils.cpp:241
+#: kmymoneyutils.cpp:243
 #, fuzzy
 msgid "Assets and Liabilities"
 msgstr "Aktywa i pasywa"
 
-#: kmymoneyutils.cpp:242 reports/pivottable.cpp:2346 views/khomeview.cpp:1381
+#: kmymoneyutils.cpp:244 reports/pivottable.cpp:2373 views/khomeview.cpp:1381
 #: widgets/rc.cpp:70
 #, fuzzy
 msgid "Budget"
 msgstr "Budżety"
 
-#: kmymoneyutils.cpp:243
+#: kmymoneyutils.cpp:245
 #, fuzzy
 msgid "CashFlow"
 msgstr "Gotówka"
 
-#: dialogs/kenterscheduledlg.cpp:153 kmymoneyutils.cpp:554
+#: dialogs/kenterscheduledlg.cpp:153 kmymoneyutils.cpp:504
 msgid "Unable to load schedule details"
 msgstr "Nie można wczytać szczegółów harmonogramu"
 
-#: kmymoneyutils.cpp:578 widgets/register.cpp:451
+#: kmymoneyutils.cpp:528 widgets/register.cpp:451
 #, fuzzy
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
 msgstr "nieuzgodnione"
 
-#: kmymoneyutils.cpp:581 widgets/register.cpp:454
+#: kmymoneyutils.cpp:531 widgets/register.cpp:454
 #, fuzzy
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
 msgstr "Asystent uzgadniania"
 
-#: kmymoneyutils.cpp:584 widgets/register.cpp:457
+#: kmymoneyutils.cpp:534 widgets/register.cpp:457
 #, fuzzy
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
 msgstr "nieuzgodnione"
 
-#: kmymoneyutils.cpp:587 widgets/register.cpp:460
+#: kmymoneyutils.cpp:537 widgets/register.cpp:460
 #, fuzzy
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
 msgstr "Ostatni uzgodniony wyciąg: %1"
 
-#: kmymoneyutils.cpp:598
+#: kmymoneyutils.cpp:548
 #, fuzzy
 msgid ""
 "_: Reconcile flag C\n"
 "C"
 msgstr "Uzgodnione"
 
-#: kmymoneyutils.cpp:601
+#: kmymoneyutils.cpp:551
 #, fuzzy
 msgid ""
 "_: Reconcile flag R\n"
 "R"
 msgstr "Uzgodnione"
 
-#: kmymoneyutils.cpp:604
+#: kmymoneyutils.cpp:554
 #, fuzzy
 msgid ""
 "_: Reconcile flag F\n"
 "F"
 msgstr "Uzgodnione"
 
-#: kmymoneyutils.cpp:607
+#: kmymoneyutils.cpp:557
 msgid ""
 "_: Flag for unknown reconciliation state\n"
 "?"
@@ -4707,86 +4739,93 @@ msgid ""
 "<p>Provided by Jose Jorge</p>\n"
 msgstr ""
 
-#: reports/listtable.cpp:159 reports/pivottable.cpp:1522
+#: reports/listtable.cpp:159 reports/listtable.cpp:163
+#: reports/pivottable.cpp:1542
+msgid ""
+"_: Report date range\n"
+"%1 through %2"
+msgstr ""
+
+#: reports/listtable.cpp:171 reports/pivottable.cpp:1549
 #, c-format
 msgid "All currencies converted to %1"
 msgstr "Wszystkie waluty skonwertowano na %1"
 
-#: reports/listtable.cpp:160 reports/pivottable.cpp:1287
+#: reports/listtable.cpp:172 reports/pivottable.cpp:1306
 msgid "All currencies converted to %1\n"
 msgstr "Wszystkie waluty skonwertowano na %1\n"
 
-#: reports/listtable.cpp:164 reports/pivottable.cpp:1524
+#: reports/listtable.cpp:176 reports/pivottable.cpp:1551
 msgid "All values shown in %1 unless otherwise noted"
 msgstr "Wszystkie wartości pokazane w %1, chyba że zaznaczono inaczej"
 
-#: reports/listtable.cpp:165 reports/pivottable.cpp:1289
+#: reports/listtable.cpp:177 reports/pivottable.cpp:1308
 msgid "All values shown in %1 unless otherwise noted\n"
 msgstr "Wszystkie wartości pokazane w %1, chyba że zaznaczono inaczej\n"
 
 #: dialogs/kequitypriceupdatedlg.cpp:73 dialogs/kfindtransactiondlg.cpp:208
-#: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:206 dialogs/rc.cpp:806
+#: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:206 dialogs/rc.cpp:803
 #: dialogs/settings/rc.cpp:110 dialogs/transactioneditor.cpp:829
-#: reports/listtable.cpp:184 views/khomeview.cpp:411 views/khomeview.cpp:475
-#: views/khomeview.cpp:509 views/rc.cpp:55 widgets/kmymoneypriceview.cpp:128
+#: reports/listtable.cpp:196 views/khomeview.cpp:411 views/khomeview.cpp:475
+#: views/khomeview.cpp:509 views/rc.cpp:61 widgets/kmymoneypriceview.cpp:128
 #: widgets/rc.cpp:36 widgets/register.cpp:543 widgets/transaction.cpp:1017
 #: widgets/transaction.cpp:1474
 msgid "Date"
 msgstr "Data"
 
-#: reports/listtable.cpp:186
+#: reports/listtable.cpp:198
 msgid "Num"
 msgstr "Num"
 
 #: dialogs/kfindtransactiondlg.cpp:224 dialogs/kmymoneysplittable.cpp:78
-#: dialogs/kmymoneysplittable.cpp:791 dialogs/rc.cpp:215
-#: dialogs/transactioneditor.cpp:816 dialogs/transactioneditor.cpp:1341
-#: dialogs/transactioneditor.cpp:1349 dialogs/transactioneditor.cpp:1363
-#: dialogs/transactioneditor.cpp:1416 dialogs/transactioneditor.cpp:1423
-#: dialogs/transactioneditor.cpp:1471 reports/listtable.cpp:188
-#: views/kcategoriesview.cpp:76 views/rc.cpp:56 widgets/rc.cpp:115
+#: dialogs/kmymoneysplittable.cpp:814 dialogs/rc.cpp:215
+#: dialogs/transactioneditor.cpp:816 dialogs/transactioneditor.cpp:1350
+#: dialogs/transactioneditor.cpp:1358 dialogs/transactioneditor.cpp:1372
+#: dialogs/transactioneditor.cpp:1425 dialogs/transactioneditor.cpp:1432
+#: dialogs/transactioneditor.cpp:1480 reports/listtable.cpp:200
+#: views/kcategoriesview.cpp:76 views/rc.cpp:62 widgets/rc.cpp:115
 #: widgets/register.cpp:62 widgets/transaction.cpp:838
 #: widgets/transaction.cpp:896
 msgid "Category"
 msgstr "Kategoria"
 
-#: dialogs/kmymoneysplittable.cpp:79 dialogs/kmymoneysplittable.cpp:797
-#: reports/listtable.cpp:190 widgets/rc.cpp:101 widgets/transaction.cpp:1032
+#: dialogs/kmymoneysplittable.cpp:79 dialogs/kmymoneysplittable.cpp:820
+#: reports/listtable.cpp:202 widgets/rc.cpp:101 widgets/transaction.cpp:1032
 #: widgets/transaction.cpp:1618
 msgid "Memo"
 msgstr "Notatka"
 
-#: reports/listtable.cpp:191
+#: reports/listtable.cpp:203
 msgid "Top Category"
 msgstr "Kategoria główna"
 
-#: reports/listtable.cpp:192
+#: reports/listtable.cpp:204
 msgid "Category Type"
 msgstr "Typ kategorii"
 
-#: reports/listtable.cpp:193 widgets/kmymoneycalendar.cpp:124
+#: reports/listtable.cpp:205 widgets/kmymoneycalendar.cpp:124
 #: widgets/rc.cpp:96
 msgid "Month"
 msgstr "Miesiąc"
 
-#: reports/listtable.cpp:194 widgets/kmymoneycalendar.cpp:123
+#: reports/listtable.cpp:206 widgets/kmymoneycalendar.cpp:123
 #: widgets/rc.cpp:97
 msgid "Week"
 msgstr "Tydzień"
 
-#: dialogs/rc.cpp:227 dialogs/settings/rc.cpp:147 reports/listtable.cpp:195
+#: dialogs/rc.cpp:227 dialogs/settings/rc.cpp:147 reports/listtable.cpp:207
 #: widgets/kmymoneycombo.cpp:346 widgets/rc.cpp:107
 msgid "Reconciled"
 msgstr "Uzgodnione"
 
-#: reports/listtable.cpp:196 widgets/rc.cpp:117
+#: reports/listtable.cpp:208 widgets/rc.cpp:117
 msgid "Action"
 msgstr "Działanie"
 
 #: dialogs/investactivities.cpp:199 dialogs/investactivities.cpp:287
 #: dialogs/investactivities.cpp:424 dialogs/investactivities.cpp:504
 #: dialogs/investactivities.cpp:544 dialogs/investtransactioneditor.cpp:241
-#: reports/listtable.cpp:197 widgets/rc.cpp:103 widgets/transaction.cpp:1503
+#: reports/listtable.cpp:209 widgets/rc.cpp:103 widgets/transaction.cpp:1503
 msgid "Shares"
 msgstr "Udziały"
 
@@ -4795,131 +4834,133 @@ msgstr "Udziały"
 #: dialogs/investtransactioneditor.cpp:1068
 #: dialogs/investtransactioneditor.cpp:1072
 #: dialogs/kequitypriceupdatedlg.cpp:72 dialogs/rc.cpp:108 dialogs/rc.cpp:163
-#: dialogs/rc.cpp:249 dialogs/rc.cpp:828 dialogs/settings/rc.cpp:117
-#: reports/listtable.cpp:198 reports/listtable.cpp:199
-#: views/kinvestmentview.cpp:81 widgets/kmymoneypriceview.cpp:129
-#: widgets/rc.cpp:43 widgets/rc.cpp:105 widgets/register.cpp:551
+#: dialogs/rc.cpp:249 dialogs/rc.cpp:754 dialogs/rc.cpp:825
+#: dialogs/settings/rc.cpp:117 reports/listtable.cpp:210
+#: reports/listtable.cpp:211 views/kinvestmentview.cpp:81
+#: widgets/kmymoneypriceview.cpp:129 widgets/rc.cpp:43 widgets/rc.cpp:105
+#: widgets/register.cpp:551
 msgid "Price"
 msgstr "Cena"
 
-#: reports/listtable.cpp:200
+#: reports/listtable.cpp:212
 msgid "Net Value"
 msgstr "Wartość netto"
 
-#: reports/listtable.cpp:201
+#: reports/listtable.cpp:213
 msgid "Buys"
 msgstr "Zakupy"
 
-#: reports/listtable.cpp:202
+#: reports/listtable.cpp:214
 msgid "Sells"
 msgstr "Sprzedaże"
 
-#: reports/listtable.cpp:203
+#: reports/listtable.cpp:215
 msgid "Dividends Reinvested"
 msgstr "Dywidendy zainwestowane"
 
-#: reports/listtable.cpp:204
+#: reports/listtable.cpp:216
 msgid "Dividends Paid Out"
 msgstr "Dywidendy wypłacone"
 
-#: reports/listtable.cpp:205
+#: reports/listtable.cpp:217
 msgid "Starting Balance"
 msgstr "Saldo początkowe"
 
-#: reports/listtable.cpp:206
+#: reports/listtable.cpp:218
 msgid "Ending Balance"
 msgstr "Saldo końcowe"
 
-#: reports/listtable.cpp:207
+#: reports/listtable.cpp:219
 msgid "Annualized Return"
 msgstr "Roczna stopa zwrotu"
 
-#: reports/listtable.cpp:208
+#: reports/listtable.cpp:220
 #, fuzzy
 msgid "Return On Investment"
 msgstr "Inwestycja"
 
 #: dialogs/rc.cpp:105 dialogs/rc.cpp:160 dialogs/rc.cpp:246 dialogs/rc.cpp:503
-#: dialogs/rc.cpp:568 dialogs/rc.cpp:665 reports/listtable.cpp:211
-#: widgets/register.cpp:548
+#: dialogs/rc.cpp:568 dialogs/rc.cpp:665 dialogs/rc.cpp:751
+#: reports/listtable.cpp:223 widgets/register.cpp:548
 msgid "Payment"
 msgstr "Płatność"
 
-#: dialogs/rc.cpp:110 dialogs/rc.cpp:165 dialogs/rc.cpp:251 dialogs/rc.cpp:724
-#: reports/listtable.cpp:212 widgets/rc.cpp:119 widgets/register.cpp:553
+#: dialogs/rc.cpp:110 dialogs/rc.cpp:165 dialogs/rc.cpp:251 dialogs/rc.cpp:707
+#: dialogs/rc.cpp:756 reports/listtable.cpp:224 widgets/rc.cpp:119
+#: widgets/register.cpp:553
 msgid "Balance"
 msgstr "Saldo"
 
-#: reports/listtable.cpp:215 views/kscheduledview.cpp:74
+#: reports/listtable.cpp:227 views/kscheduledview.cpp:74
 msgid "Next Due Date"
 msgstr "Kolejna data płatności"
 
-#: reports/listtable.cpp:217 views/kscheduledview.cpp:76
+#: reports/listtable.cpp:229 views/kscheduledview.cpp:76
 msgid "Payment Method"
 msgstr "Sposób zapłaty"
 
-#: dialogs/rc.cpp:804 reports/listtable.cpp:219 widgets/rc.cpp:2
+#: dialogs/rc.cpp:801 reports/listtable.cpp:231 widgets/rc.cpp:2
 msgid "Description"
 msgstr "Opis"
 
-#: reports/listtable.cpp:220
+#: reports/listtable.cpp:232
 #, fuzzy
 msgid "Opening Date"
 msgstr "Aktualizacja online"
 
-#: reports/listtable.cpp:222
+#: reports/listtable.cpp:234
 msgid "Balance Early Warning"
 msgstr ""
 
-#: reports/listtable.cpp:223
+#: reports/listtable.cpp:235
 #, fuzzy
 msgid "Balance Max Limit"
 msgstr "Saldo: "
 
-#: reports/listtable.cpp:224
+#: reports/listtable.cpp:236
 #, fuzzy
 msgid "Credit Early Warning"
 msgstr "Import transakcji"
 
-#: reports/listtable.cpp:225
+#: reports/listtable.cpp:237
 #, fuzzy
 msgid "Credit Max Limit"
 msgstr "Karta kredytowa"
 
-#: dialogs/rc.cpp:374 reports/listtable.cpp:226
+#: dialogs/rc.cpp:374 reports/listtable.cpp:238
 msgid "Tax"
 msgstr "Podatek"
 
-#: reports/listtable.cpp:227
+#: reports/listtable.cpp:239
 #, fuzzy
 msgid "Preferred"
 msgstr "Preferowane konto"
 
-#: reports/listtable.cpp:228
+#: reports/listtable.cpp:240
 #, fuzzy
 msgid "Loan Amount"
 msgstr "Kwota pożyczki"
 
-#: dialogs/rc.cpp:509 reports/listtable.cpp:229
+#: dialogs/rc.cpp:509 reports/listtable.cpp:241
 msgid "Interest Rate"
 msgstr "Stopa procentowa"
 
-#: reports/listtable.cpp:230
+#: reports/listtable.cpp:242
 #, fuzzy
 msgid "Next Interest Change"
 msgstr "Kolejna zmiana oprocentowania"
 
-#: reports/listtable.cpp:231
+#: reports/listtable.cpp:243
 #, fuzzy
 msgid "Periodic Payment"
 msgstr "Okresowa płatność:"
 
-#: reports/listtable.cpp:232
+#: reports/listtable.cpp:244
 #, fuzzy
 msgid "Final Payment"
 msgstr "Końcowa płatność:"
 
-#: reports/listtable.cpp:233 views/khomeview.cpp:756 views/khomeview.cpp:1255
+#: reports/listtable.cpp:245 views/khomeview.cpp:756 views/khomeview.cpp:1255
 #: views/khomeview.cpp:1263
 #, fuzzy
 msgid "Current Balance"
@@ -4927,13 +4968,13 @@ msgstr "Aktualne saldo: "
 
 #: dialogs/investactivities.cpp:201 dialogs/investactivities.cpp:289
 #: dialogs/investactivities.cpp:368 dialogs/investactivities.cpp:426
-#: dialogs/rc.cpp:325 reports/listtable.cpp:348 reports/listtable.cpp:352
-#: reports/listtable.cpp:544 reports/listtable.cpp:546
-#: reports/pivottable.cpp:1302 reports/pivottable.cpp:1404
-#: reports/pivottable.cpp:1464 reports/pivottable.cpp:1549
-#: reports/pivottable.cpp:1719 reports/pivottable.cpp:1796
-#: reports/pivottable.cpp:2103 reports/pivottable.cpp:2105
-#: reports/pivottable.cpp:2125 reports/pivottable.cpp:2127
+#: dialogs/rc.cpp:325 reports/listtable.cpp:360 reports/listtable.cpp:364
+#: reports/listtable.cpp:556 reports/listtable.cpp:558
+#: reports/pivottable.cpp:1321 reports/pivottable.cpp:1423
+#: reports/pivottable.cpp:1483 reports/pivottable.cpp:1576
+#: reports/pivottable.cpp:1746 reports/pivottable.cpp:1823
+#: reports/pivottable.cpp:2130 reports/pivottable.cpp:2132
+#: reports/pivottable.cpp:2152 reports/pivottable.cpp:2154
 #: reports/querytabletest.cpp:134 reports/querytabletest.cpp:135
 #: reports/querytabletest.cpp:136 reports/querytabletest.cpp:137
 #: reports/querytabletest.cpp:162 reports/querytabletest.cpp:163
@@ -4948,33 +4989,33 @@ msgstr "Aktualne saldo: "
 msgid "Total"
 msgstr "Suma"
 
-#: reports/listtable.cpp:432
+#: reports/listtable.cpp:444
 msgid "Initial Market Value"
 msgstr ""
 
-#: reports/listtable.cpp:433
+#: reports/listtable.cpp:445
 #, fuzzy
 msgid "Ending Market Value"
 msgstr "Saldo końcowe"
 
-#: reports/listtable.cpp:436 reports/querytabletest.cpp:651
+#: reports/listtable.cpp:448 reports/querytabletest.cpp:651
 #, fuzzy
 msgid "Opening Balance"
 msgstr "Stany otwarcia"
 
-#: reports/listtable.cpp:437 reports/querytabletest.cpp:652
+#: reports/listtable.cpp:449 reports/querytabletest.cpp:652
 #: reports/querytabletest.cpp:653
 #, fuzzy
 msgid "Closing Balance"
 msgstr "Saldo końcowe"
 
-#: reports/listtable.cpp:478 reports/listtable.cpp:479
+#: reports/listtable.cpp:490 reports/listtable.cpp:491
 #, fuzzy
 msgid "Calculated"
 msgstr "oblicz"
 
-#: reports/listtable.cpp:560 reports/listtable.cpp:562
-#: reports/pivottable.cpp:1489 reports/pivottable.cpp:1837
+#: reports/listtable.cpp:572 reports/listtable.cpp:574
+#: reports/pivottable.cpp:1508 reports/pivottable.cpp:1864
 #: reports/querytabletest.cpp:138 reports/querytabletest.cpp:165
 #: reports/querytabletest.cpp:199 reports/querytabletest.cpp:225
 #: reports/querytabletest.cpp:253 reports/querytabletest.cpp:278
@@ -4984,46 +5025,48 @@ msgstr "oblicz"
 msgid "Grand Total"
 msgstr "Suma całkowita"
 
-#: dialogs/rc.cpp:231 reports/pivottable.cpp:308 views/kscheduledview.cpp:173
+#: dialogs/rc.cpp:231 reports/pivottable.cpp:334 views/kscheduledview.cpp:173
 #: views/kscheduledview.cpp:430 views/kscheduledview.cpp:446
 #: widgets/kmymoneyscheduledcalendar.cpp:48
 msgid "Transfers"
 msgstr "Przelewy"
 
-#: reports/pivottable.cpp:1902
+#: reports/pivottable.cpp:1929
 #, fuzzy
 msgid "Legend"
 msgstr "Księgi rachunkowe"
 
-#: reports/pivottable.cpp:2354 views/khomeview.cpp:1394
+#: reports/pivottable.cpp:2381 views/khomeview.cpp:1394
 #: views/khomeview.cpp:1431
 msgid "Actual"
 msgstr ""
 
-#: reports/pivottable.cpp:2359 views/khomeview.cpp:1397
+#: reports/pivottable.cpp:2386 views/khomeview.cpp:1397
 #: views/khomeview.cpp:1434
 #, fuzzy
 msgid "Difference"
 msgstr "Różnica:"
 
-#: reports/pivottable.cpp:2369
+#: reports/pivottable.cpp:2396
 #, fuzzy
 msgid "Moving Average"
 msgstr "Wszystkie stany"
 
-#: reports/objectinfotable.cpp:214 reports/querytable.cpp:758
-#: reports/querytable.cpp:797 views/kpayeesview.cpp:670
+#: reports/objectinfotable.cpp:214 reports/querytable.cpp:690
+#: reports/querytable.cpp:729 reports/querytable.cpp:1343
+#: reports/querytable.cpp:1362 views/kpayeesview.cpp:670
 #, c-format
 msgid "Transfer from %1"
 msgstr "Przelew od %1"
 
-#: reports/objectinfotable.cpp:215 reports/querytable.cpp:759
-#: reports/querytable.cpp:796 views/kpayeesview.cpp:668
+#: reports/objectinfotable.cpp:215 reports/querytable.cpp:691
+#: reports/querytable.cpp:728 reports/querytable.cpp:1342
+#: reports/querytable.cpp:1361 views/kpayeesview.cpp:668
 #, c-format
 msgid "Transfer to %1"
 msgstr "Przelew na %1"
 
-#: reports/querytabletest.cpp:471 views/kreportsview.cpp:1135
+#: reports/querytabletest.cpp:471 views/kreportsview.cpp:1147
 msgid "Investment Transactions"
 msgstr "Transakcje inwestycyjne"
 
@@ -5035,36 +5078,37 @@ msgstr "Raport testowy"
 msgid "Total Stock 1"
 msgstr "Total Stock 1"
 
-#: reports/querytabletest.cpp:563 views/kreportsview.cpp:1165
+#: reports/querytabletest.cpp:563 views/kreportsview.cpp:1177
 msgid "Investment Performance by Account"
 msgstr "Rentowność inwestycji wg konta"
 
-#: reports/querytable.cpp:499
+#: reports/querytable.cpp:431 reports/querytable.cpp:1187
 #, c-format
 msgid "Month of %1"
 msgstr "Miesiąc %1"
 
-#: reports/querytable.cpp:500
+#: reports/querytable.cpp:432 reports/querytable.cpp:1188
 #, c-format
 msgid "Week of %1"
 msgstr "Tydzień %1"
 
-#: reports/querytable.cpp:644 reports/querytable.cpp:800
-#: reports/querytable.cpp:913
+#: reports/querytable.cpp:576 reports/querytable.cpp:732
+#: reports/querytable.cpp:845 reports/querytable.cpp:1312
+#: reports/querytable.cpp:1468
 #, fuzzy
 msgid "No Institution"
 msgstr "<Bez instytucji>"
 
-#: reports/querytable.cpp:648
+#: reports/querytable.cpp:580 reports/querytable.cpp:1316
 msgid "[Empty Payee]"
 msgstr "[Pusty beneficjent]"
 
-#: reports/querytable.cpp:685
+#: reports/querytable.cpp:617 reports/querytable.cpp:1348
 #, fuzzy
 msgid "[Split Transaction]"
 msgstr "Podziel transakcję"
 
-#: reports/querytable.cpp:686 reports/querytable.cpp:687
+#: reports/querytable.cpp:618 reports/querytable.cpp:619
 msgid "Split"
 msgstr "Podział"
 
@@ -5112,7 +5156,7 @@ msgstr "Wykrywanie wycieków pamięci"
 msgid "Compiled with the following settings:\n"
 msgstr "Skompilowany z następującymi ustawieniami:\n"
 
-#: dialogs/kmymoneysplittable.cpp:629 dialogs/ksplittransactiondlg.cpp:268
+#: dialogs/kmymoneysplittable.cpp:645 dialogs/ksplittransactiondlg.cpp:276
 #: main.cpp:98
 msgid "KMyMoney"
 msgstr "KMyMoney"
@@ -5722,7 +5766,7 @@ msgid "Unable to generate report"
 msgstr "Nie można wygenerować raportu"
 
 #: dialogs/kreportconfigurationfilterdlg.cpp:125 views/kreportsview.cpp:286
-#: views/rc.cpp:47 widgets/rc.cpp:144
+#: views/rc.cpp:53 widgets/rc.cpp:144
 msgid "Chart"
 msgstr "Wykres"
 
@@ -5793,20 +5837,20 @@ msgstr "&Eksport"
 #: views/kreportsview.cpp:1073 views/kreportsview.cpp:1082
 #: views/kreportsview.cpp:1090 views/kreportsview.cpp:1098
 #: views/kreportsview.cpp:1106 views/kreportsview.cpp:1114
-#: views/kreportsview.cpp:1123 views/kreportsview.cpp:1136
-#: views/kreportsview.cpp:1146 views/kreportsview.cpp:1156
-#: views/kreportsview.cpp:1166 views/kreportsview.cpp:1176
-#: views/kreportsview.cpp:1186 views/kreportsview.cpp:1200
-#: views/kreportsview.cpp:1215 views/kreportsview.cpp:1232
-#: views/kreportsview.cpp:1255 views/kreportsview.cpp:1264
-#: views/kreportsview.cpp:1273 views/kreportsview.cpp:1282
-#: views/kreportsview.cpp:1296 views/kreportsview.cpp:1307
-#: views/kreportsview.cpp:1317 views/kreportsview.cpp:1328
-#: views/kreportsview.cpp:1338 views/kreportsview.cpp:1349
-#: views/kreportsview.cpp:1369 views/kreportsview.cpp:1378
-#: views/kreportsview.cpp:1390 views/kreportsview.cpp:1410
-#: views/kreportsview.cpp:1419 views/kreportsview.cpp:1428
-#: views/kreportsview.cpp:1437
+#: views/kreportsview.cpp:1123 views/kreportsview.cpp:1135
+#: views/kreportsview.cpp:1148 views/kreportsview.cpp:1158
+#: views/kreportsview.cpp:1168 views/kreportsview.cpp:1178
+#: views/kreportsview.cpp:1188 views/kreportsview.cpp:1198
+#: views/kreportsview.cpp:1212 views/kreportsview.cpp:1227
+#: views/kreportsview.cpp:1244 views/kreportsview.cpp:1267
+#: views/kreportsview.cpp:1276 views/kreportsview.cpp:1285
+#: views/kreportsview.cpp:1294 views/kreportsview.cpp:1308
+#: views/kreportsview.cpp:1319 views/kreportsview.cpp:1329
+#: views/kreportsview.cpp:1340 views/kreportsview.cpp:1350
+#: views/kreportsview.cpp:1361 views/kreportsview.cpp:1381
+#: views/kreportsview.cpp:1390 views/kreportsview.cpp:1402
+#: views/kreportsview.cpp:1422 views/kreportsview.cpp:1431
+#: views/kreportsview.cpp:1440 views/kreportsview.cpp:1449
 msgid "Default Report"
 msgstr "Domyślny raport"
 
@@ -5932,134 +5976,144 @@ msgstr "Transakcje podatkowe"
 msgid "Transactions by Reconciliation Status"
 msgstr "Transakcje wg konta"
 
-#: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
 #: views/kreportsview.cpp:1128
+#, fuzzy
+msgid "Cash Flow"
+msgstr "Gotówka"
+
+#: views/kreportsview.cpp:1134
+#, fuzzy
+msgid "Cash Flow Transactions This Month"
+msgstr "Transakcje wg miesiąca"
+
+#: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
+#: views/kreportsview.cpp:1140
 msgid "Investments"
 msgstr "Inwestycje"
 
-#: views/kreportsview.cpp:1145
+#: views/kreportsview.cpp:1157
 msgid "Investment Holdings by Account"
 msgstr "Udziały inwestycyjne wg konta"
 
-#: views/kreportsview.cpp:1155
+#: views/kreportsview.cpp:1167
 msgid "Investment Holdings by Type"
 msgstr "Udziały inwestycyjne wg typu"
 
-#: views/kreportsview.cpp:1175
+#: views/kreportsview.cpp:1187
 msgid "Investment Performance by Type"
 msgstr "Rentowność inwestycji wg typu"
 
-#: views/kreportsview.cpp:1185
+#: views/kreportsview.cpp:1197
 #, fuzzy
 msgid "Investment Holdings Pie"
 msgstr "Udziały inwestycyjne wg typu"
 
-#: views/kreportsview.cpp:1199
+#: views/kreportsview.cpp:1211
 #, fuzzy
 msgid "Investment Worth Graph"
 msgstr "Wartość netto: "
 
-#: views/kreportsview.cpp:1214
+#: views/kreportsview.cpp:1226
 #, fuzzy
 msgid "Investment Moving Average"
 msgstr "Udziały inwestycyjne wg typu"
 
-#: views/kreportsview.cpp:1231
+#: views/kreportsview.cpp:1243
 #, fuzzy
 msgid "Investment Moving Average vs Actual"
 msgstr "Udziały inwestycyjne wg konta"
 
-#: views/kreportsview.cpp:1247
+#: views/kreportsview.cpp:1259
 msgid "Taxes"
 msgstr "Podatki"
 
-#: views/kreportsview.cpp:1254
+#: views/kreportsview.cpp:1266
 #, fuzzy
 msgid "Tax Transactions by Category"
 msgstr "Transakcje wg kategorii"
 
-#: views/kreportsview.cpp:1263
+#: views/kreportsview.cpp:1275
 #, fuzzy
 msgid "Tax Transactions by Payee"
 msgstr "Transakcje wg beneficjenta"
 
-#: views/kreportsview.cpp:1272
+#: views/kreportsview.cpp:1284
 #, fuzzy
 msgid "Tax Transactions by Category Last Fiscal Year"
 msgstr "Transakcje wg kategorii"
 
-#: views/kreportsview.cpp:1281
+#: views/kreportsview.cpp:1293
 #, fuzzy
 msgid "Tax Transactions by Payee Last Fiscal Year"
 msgstr "Transakcje wg beneficjenta"
 
-#: views/kreportsview.cpp:1288
+#: views/kreportsview.cpp:1300
 #, fuzzy
 msgid "Budgeting"
 msgstr "Budżety"
 
-#: views/kreportsview.cpp:1295
+#: views/kreportsview.cpp:1307
 msgid "Budgeted vs. Actual This Year"
 msgstr ""
 
-#: views/khomeview.cpp:1371 views/kreportsview.cpp:1306
+#: views/khomeview.cpp:1371 views/kreportsview.cpp:1318
 msgid "Monthly Budgeted vs. Actual"
 msgstr ""
 
-#: views/kreportsview.cpp:1316
+#: views/kreportsview.cpp:1328
 msgid "Yearly Budgeted vs. Actual"
 msgstr ""
 
-#: views/kreportsview.cpp:1327
+#: views/kreportsview.cpp:1339
 #, fuzzy
 msgid "Monthly Budget"
 msgstr "Miesięcznie"
 
-#: views/kreportsview.cpp:1337
+#: views/kreportsview.cpp:1349
 #, fuzzy
 msgid "Yearly Budget"
 msgstr "Budżety"
 
-#: views/kreportsview.cpp:1348
+#: views/kreportsview.cpp:1360
 msgid "Yearly Budgeted vs Actual Graph"
 msgstr ""
 
-#: views/kreportsview.cpp:1368
+#: views/kreportsview.cpp:1380
 #, fuzzy
 msgid "Forecast By Month"
 msgstr "Sposób zapłaty"
 
-#: views/kreportsview.cpp:1377
+#: views/kreportsview.cpp:1389
 #, fuzzy
 msgid "Forecast Next Quarter"
 msgstr "Kolejna data płatności"
 
-#: views/kreportsview.cpp:1389
+#: views/kreportsview.cpp:1401
 #, fuzzy
 msgid "Net Worth Forecast Graph"
 msgstr "Wartość netto dziś"
 
 #: dialogs/rc.cpp:125 dialogs/rc.cpp:127 dialogs/rc.cpp:464
-#: views/kreportsview.cpp:1402
+#: views/kreportsview.cpp:1414
 msgid "General Information"
 msgstr "Informacje ogólne"
 
-#: views/kreportsview.cpp:1409
+#: views/kreportsview.cpp:1421
 #, fuzzy
 msgid "Schedule Information"
 msgstr "Zaplanowane transakcje"
 
-#: views/kreportsview.cpp:1418
+#: views/kreportsview.cpp:1430
 #, fuzzy
 msgid "Schedule Summary Information"
 msgstr "Zaplanowane transakcje"
 
-#: views/kreportsview.cpp:1427
+#: views/kreportsview.cpp:1439
 #, fuzzy
 msgid "Account Information"
 msgstr "Opcje konta"
 
-#: views/kreportsview.cpp:1436
+#: views/kreportsview.cpp:1448
 #, fuzzy
 msgid "Loan Information"
 msgstr "Informacje o płatności"
@@ -6108,63 +6162,58 @@ msgstr ""
 msgid "Edit the current selected transactions"
 msgstr "Ukryj uzgodnione transakcje"
 
-#: views/kmymoneyview.cpp:610
+#: views/kmymoneyview.cpp:601
 msgid "<b>%1</b> is not a KMyMoney file."
 msgstr "<b>%1</b> nie jest plikiem KMyMoney."
 
-#: views/kmymoneyview.cpp:651
+#: views/kmymoneyview.cpp:642
 #, fuzzy
 msgid "GPG is not available for decryption of file <b>%1</b>"
 msgstr "GPG nie jest dostępne dla odszyfrowania pliku '%1'"
 
-#: views/kmymoneyview.cpp:729
+#: views/kmymoneyview.cpp:720
 msgid ""
 "File <b>%1</b> contains the old binary format used by KMyMoney. Please use "
 "an older version of KMyMoney (0.8.x) that still supports this format to "
 "convert it to the new XML based format."
 msgstr ""
 
-#: views/kmymoneyview.cpp:731
+#: views/kmymoneyview.cpp:722
 #, fuzzy
 msgid "File <b>%1</b> contains an unknown file format!"
 msgstr "Plik '%1' zawiera nieznany format pliku!"
 
-#: views/kmymoneyview.cpp:736
+#: views/kmymoneyview.cpp:727
 #, fuzzy
 msgid "Cannot read from file <b>%1</b>!"
 msgstr "Nie można czytać z pliku '%1'!"
 
-#: views/kmymoneyview.cpp:740
+#: views/kmymoneyview.cpp:731
 msgid "Cannot load file <b>%1</b>. Reason: %2"
 msgstr ""
 
-#: views/kmymoneyview.cpp:750 views/kmymoneyview.cpp:756
+#: views/kmymoneyview.cpp:741 views/kmymoneyview.cpp:747
 #, fuzzy
 msgid "File <b>%1</b> not found!"
 msgstr "Nie znaleziono pliku '%1'!"
 
-#: views/kmymoneyview.cpp:806
-#, fuzzy
-msgid "Multi-user mode not yet implemented\n"
-msgstr "Funkcja nie jest dostępna"
-
-#: views/kmymoneyview.cpp:825
+#: views/kmymoneyview.cpp:811
 msgid "Can't open database %1\n"
 msgstr ""
 
-#: views/kmymoneyview.cpp:853
+#: views/kmymoneyview.cpp:843
 msgid "An unrecoverable error occurred while reading the database"
 msgstr ""
 
-#: views/kmymoneyview.cpp:855 views/kmymoneyview.cpp:1215
+#: views/kmymoneyview.cpp:845 views/kmymoneyview.cpp:1205
 msgid "Database malfunction"
 msgstr ""
 
-#: views/kmymoneyview.cpp:947
+#: views/kmymoneyview.cpp:937
 msgid "Unknown fix level in input file"
 msgstr ""
 
-#: views/kmymoneyview.cpp:993
+#: views/kmymoneyview.cpp:983
 msgid ""
 "GPG does not seem to be installed on your system. Please make sure, that GPG "
 "can be found using the standard search path. This time, encryption is "
@@ -6174,11 +6223,11 @@ msgstr ""
 "że można go znaleźć na standardowej ścieżce przeszukiwań. A teraz "
 "szyfrowanie jest wyłączone."
 
-#: views/kmymoneyview.cpp:993
+#: views/kmymoneyview.cpp:983
 msgid "GPG not found"
 msgstr "Nie znaleziono GPG"
 
-#: views/kmymoneyview.cpp:1000
+#: views/kmymoneyview.cpp:990
 msgid ""
 "You have selected to encrypt your data also with the KMyMoney recover key, "
 "but the key with id</p><p><center><b>%1</b></center></p>has not been found "
@@ -6194,11 +6243,11 @@ msgstr ""
 "KMyMoney</a>. Tym razem Twoje dane nie zostaną zaszyfrowane z kluczem "
 "odzyskiwania KMyMoney."
 
-#: views/kmymoneyview.cpp:1000 views/kmymoneyview.cpp:1009
+#: views/kmymoneyview.cpp:990 views/kmymoneyview.cpp:999
 msgid "GPG-Key not found"
 msgstr "Nie znaleziono klucza GPG"
 
-#: views/kmymoneyview.cpp:1009
+#: views/kmymoneyview.cpp:999
 msgid ""
 "You have specified to encrypt your data for the user-id</p><p><center><b>%1</"
 "b>.</center></p>Unfortunately, a valid key for this user-id was not found in "
@@ -6209,7 +6258,7 @@ msgstr ""
 "p><p><center><b>%1</b>.</center></p> Niestety, w kręgu kluczy nie znaleziono "
 "ważnego klucza dla tego identyfikatora. Tym razem szyfrowanie jest wyłączone"
 
-#: views/kmymoneyview.cpp:1015
+#: views/kmymoneyview.cpp:1005
 msgid ""
 "You have configured to save your data in encrypted form using GPG. Please be "
 "aware, that this is a brand new feature which is yet untested. Make sure, "
@@ -6223,23 +6272,23 @@ msgstr ""
 "wszystkich danych jeśli przechowujesz je zaszyfrowane i nie możesz ich "
 "później odszyfrować! Jeśli nie jesteś pewien, odpowiedz <b>Nie</b>."
 
-#: views/kmymoneyview.cpp:1017
+#: views/kmymoneyview.cpp:1007
 msgid "Store GPG encrypted"
 msgstr "Przechowuj szyfrowane GPG"
 
-#: views/kmymoneyview.cpp:1047 views/kmymoneyview.cpp:1061
+#: views/kmymoneyview.cpp:1037 views/kmymoneyview.cpp:1051
 msgid "Unable to open file '%1' for writing."
 msgstr "Nie można otworzyć pliku '%1' do zapisu."
 
-#: views/kmymoneyview.cpp:1074 views/kmymoneyview.cpp:1083
+#: views/kmymoneyview.cpp:1064 views/kmymoneyview.cpp:1073
 msgid "Failure while writing to '%1'"
 msgstr "Błąd podczas zapisu do '%1'"
 
-#: views/kmymoneyview.cpp:1095 views/kmymoneyview.cpp:1188
+#: views/kmymoneyview.cpp:1085 views/kmymoneyview.cpp:1178
 msgid "Tried to access a file when it's not open"
 msgstr "Próba dostępu do pliku kiedy nie jest otwarty"
 
-#: views/kmymoneyview.cpp:1101
+#: views/kmymoneyview.cpp:1091
 #, fuzzy
 msgid ""
 "Since this version of KMyMoney only writes data files in its new format, "
@@ -6254,754 +6303,754 @@ msgstr ""
 "się, że przechowujesz kopię zapasową swoich danych finansowych. Jeśli chcesz "
 "przerwać, wciśnij Anuluj."
 
-#: views/kmymoneyview.cpp:1131
+#: views/kmymoneyview.cpp:1121
 msgid "Malformed URL '%1'"
 msgstr "Zły format URL-a '%1'"
 
-#: views/kmymoneyview.cpp:1199
+#: views/kmymoneyview.cpp:1189
 msgid ""
 "Database contains data which must be removed before using SaveAs.\n"
 "Do you wish to continue?"
 msgstr ""
 
-#: views/kmymoneyview.cpp:1212
+#: views/kmymoneyview.cpp:1202
 msgid ""
 "An unrecoverable error occurred while writing to the database.\n"
 "It may well be corrupt."
 msgstr ""
 
-#: views/kmymoneyview.cpp:1222
+#: views/kmymoneyview.cpp:1212
 msgid ""
 "Can't open or create database %1\n"
 "Retry SaveAsDatabase and click Help for further info"
 msgstr ""
 
-#: views/kmymoneyview.cpp:1393
+#: views/kmymoneyview.cpp:1351
 msgid "Afghanistan Afghani"
 msgstr "Afgańskie afgani"
 
-#: views/kmymoneyview.cpp:1394
+#: views/kmymoneyview.cpp:1352
 msgid "Albanian Lek"
 msgstr "Albański Lek"
 
-#: views/kmymoneyview.cpp:1395
+#: views/kmymoneyview.cpp:1353
 msgid "Netherland Antillian Guilder"
 msgstr "Gulden antylijski"
 
-#: views/kmymoneyview.cpp:1396
+#: views/kmymoneyview.cpp:1354
 msgid "Algerian Dinar"
 msgstr "Dinar algierski"
 
-#: views/kmymoneyview.cpp:1397
+#: views/kmymoneyview.cpp:1355
 msgid "Andorran Franc"
 msgstr "Frank andorski"
 
-#: views/kmymoneyview.cpp:1398
+#: views/kmymoneyview.cpp:1356
 msgid "Andorran Peseta"
 msgstr "Peseta andorska"
 
-#: views/kmymoneyview.cpp:1399
+#: views/kmymoneyview.cpp:1357
 msgid "Angolan New Kwanza"
 msgstr "Nowa kwanza Angoli"
 
-#: views/kmymoneyview.cpp:1400
+#: views/kmymoneyview.cpp:1358
 msgid "Argentine Peso"
 msgstr "Peso argentyńskie"
 
-#: views/kmymoneyview.cpp:1401
+#: views/kmymoneyview.cpp:1359
 msgid "Aruban Florin"
 msgstr "Florin arubański"
 
-#: views/kmymoneyview.cpp:1402
+#: views/kmymoneyview.cpp:1360
 msgid "Australian Dollar"
 msgstr "Dolar australijski"
 
-#: views/kmymoneyview.cpp:1403
+#: views/kmymoneyview.cpp:1361
 msgid "Azerbaijani Manat"
 msgstr "Manat azerbejdżański"
 
-#: views/kmymoneyview.cpp:1404
+#: views/kmymoneyview.cpp:1362
 msgid "Bahamian Dollar"
 msgstr "Dolar bahamski"
 
-#: views/kmymoneyview.cpp:1405
+#: views/kmymoneyview.cpp:1363
 msgid "Bahraini Dinar"
 msgstr "Dinar Bahrajnu"
 
-#: views/kmymoneyview.cpp:1406
+#: views/kmymoneyview.cpp:1364
 msgid "Bangladeshi Taka"
 msgstr "Taka Bangladeszu"
 
-#: views/kmymoneyview.cpp:1407
+#: views/kmymoneyview.cpp:1365
 msgid "Barbados Dollar"
 msgstr "Dolar barbadoski"
 
-#: views/kmymoneyview.cpp:1408
+#: views/kmymoneyview.cpp:1366
 msgid "Belarussian Ruble"
 msgstr "Rubel białoruski"
 
-#: views/kmymoneyview.cpp:1409
+#: views/kmymoneyview.cpp:1367
 msgid "Belize Dollar"
 msgstr "Dolar Belize"
 
-#: views/kmymoneyview.cpp:1410
+#: views/kmymoneyview.cpp:1368
 msgid "Bermudian Dollar"
 msgstr "Dolar bermudzki"
 
-#: views/kmymoneyview.cpp:1411
+#: views/kmymoneyview.cpp:1369
 msgid "Bhutan Ngultrum"
 msgstr "Ngultrum Bhutanu"
 
-#: views/kmymoneyview.cpp:1412
+#: views/kmymoneyview.cpp:1370
 msgid "Bolivian Boliviano"
 msgstr "Boliviano boliwijskie"
 
-#: views/kmymoneyview.cpp:1413
+#: views/kmymoneyview.cpp:1371
 msgid "Bosnian Convertible Mark"
 msgstr "Marka konwertybilna Bośni"
 
-#: views/kmymoneyview.cpp:1414
+#: views/kmymoneyview.cpp:1372
 msgid "Botswana Pula"
 msgstr "Pula Botswany"
 
-#: views/kmymoneyview.cpp:1415
+#: views/kmymoneyview.cpp:1373
 msgid "Brazilian Real"
 msgstr "Real brazylijski"
 
-#: views/kmymoneyview.cpp:1416
+#: views/kmymoneyview.cpp:1374
 msgid "British Pound"
 msgstr "Funt brytyjski"
 
-#: views/kmymoneyview.cpp:1417
+#: views/kmymoneyview.cpp:1375
 msgid "Brunei Dollar"
 msgstr "Dolar brunejski"
 
-#: views/kmymoneyview.cpp:1418
+#: views/kmymoneyview.cpp:1376
 msgid "Bulgarian Lev"
 msgstr "Bułgarska lewa"
 
-#: views/kmymoneyview.cpp:1419
+#: views/kmymoneyview.cpp:1377
 msgid "Burundi Franc"
 msgstr "Frank burundyjski"
 
-#: views/kmymoneyview.cpp:1420
+#: views/kmymoneyview.cpp:1378
 msgid "CFA Franc BEAC"
 msgstr "Frank CFA BEAC"
 
-#: views/kmymoneyview.cpp:1421
+#: views/kmymoneyview.cpp:1379
 msgid "CFA Franc BCEAO"
 msgstr "Frank CFA BCEAO"
 
-#: views/kmymoneyview.cpp:1422
+#: views/kmymoneyview.cpp:1380
 msgid "CFP Franc Pacifique"
 msgstr "Frank CFP"
 
-#: views/kmymoneyview.cpp:1423
+#: views/kmymoneyview.cpp:1381
 msgid "Cambodia Riel"
 msgstr "Riel kambodżański"
 
-#: views/kmymoneyview.cpp:1424
+#: views/kmymoneyview.cpp:1382
 msgid "Canadian Dollar"
 msgstr "Dolar kanadyjski"
 
-#: views/kmymoneyview.cpp:1425
+#: views/kmymoneyview.cpp:1383
 msgid "Cape Verde Escudo"
 msgstr "Cape Verde Escudo"
 
-#: views/kmymoneyview.cpp:1426
+#: views/kmymoneyview.cpp:1384
 msgid "Cayman Islands Dollar"
 msgstr "Dolar kajmański"
 
-#: views/kmymoneyview.cpp:1427
+#: views/kmymoneyview.cpp:1385
 msgid "Chilean Peso"
 msgstr "Chilijskie peso"
 
-#: views/kmymoneyview.cpp:1428
+#: views/kmymoneyview.cpp:1386
 msgid "Chinese Yuan Renminbi"
 msgstr "Chiński juan renminbi"
 
-#: views/kmymoneyview.cpp:1429
+#: views/kmymoneyview.cpp:1387
 msgid "Colombian Peso"
 msgstr "Kolumbijskie peso"
 
-#: views/kmymoneyview.cpp:1430
+#: views/kmymoneyview.cpp:1388
 msgid "Comoros Franc"
 msgstr "Frank komoryjski"
 
-#: views/kmymoneyview.cpp:1431
+#: views/kmymoneyview.cpp:1389
 msgid "Costa Rican Colon"
 msgstr "Colon kostarykański"
 
-#: views/kmymoneyview.cpp:1432
+#: views/kmymoneyview.cpp:1390
 msgid "Croatian Kuna"
 msgstr "Kuna chorwacka"
 
-#: views/kmymoneyview.cpp:1433
+#: views/kmymoneyview.cpp:1391
 msgid "Cuban Peso"
 msgstr "Kubańskie peso"
 
-#: views/kmymoneyview.cpp:1434
+#: views/kmymoneyview.cpp:1392
 msgid "Czech Koruna"
 msgstr "Korona czeska"
 
-#: views/kmymoneyview.cpp:1435
+#: views/kmymoneyview.cpp:1393
 msgid "Danish Krone"
 msgstr "Korona duńska"
 
-#: views/kmymoneyview.cpp:1436
+#: views/kmymoneyview.cpp:1394
 msgid "Djibouti Franc"
 msgstr "Frank Dżibuti"
 
-#: views/kmymoneyview.cpp:1437
+#: views/kmymoneyview.cpp:1395
 msgid "Dominican Peso"
 msgstr "Peso dominikańskie"
 
-#: views/kmymoneyview.cpp:1438
+#: views/kmymoneyview.cpp:1396
 msgid "East Caribbean Dollar"
 msgstr "Dolar wschodniokaraibski"
 
-#: views/kmymoneyview.cpp:1439
+#: views/kmymoneyview.cpp:1397
 msgid "Egyptian Pound"
 msgstr "Funt egipski"
 
-#: views/kmymoneyview.cpp:1440
+#: views/kmymoneyview.cpp:1398
 msgid "El Salvador Colon"
 msgstr "Colon salwadorski"
 
-#: views/kmymoneyview.cpp:1441
+#: views/kmymoneyview.cpp:1399
 msgid "Eritrean Nakfa"
 msgstr "Nakfa Erytrei"
 
-#: views/kmymoneyview.cpp:1442
+#: views/kmymoneyview.cpp:1400
 msgid "Estonian Kroon"
 msgstr "Korona estońska"
 
-#: views/kmymoneyview.cpp:1443
+#: views/kmymoneyview.cpp:1401
 msgid "Ethiopian Birr"
 msgstr "Brr etiopski"
 
-#: views/kmymoneyview.cpp:1444
+#: views/kmymoneyview.cpp:1402
 msgid "Euro"
 msgstr "Euro"
 
-#: views/kmymoneyview.cpp:1445
+#: views/kmymoneyview.cpp:1403
 msgid "Falkland Islands Pound"
 msgstr "Funt falklandzki"
 
-#: views/kmymoneyview.cpp:1446
+#: views/kmymoneyview.cpp:1404
 msgid "Fiji Dollar"
 msgstr "Dolar Fidżi"
 
-#: views/kmymoneyview.cpp:1447
+#: views/kmymoneyview.cpp:1405
 msgid "Gambian Dalasi"
 msgstr "Dalasi gambijskie"
 
-#: views/kmymoneyview.cpp:1448
+#: views/kmymoneyview.cpp:1406
 msgid "Georgian Lari"
 msgstr "Lari gruzińskie"
 
-#: views/kmymoneyview.cpp:1449
+#: views/kmymoneyview.cpp:1407
 msgid "Ghanaian Cedi"
 msgstr "Cedi Ghany"
 
-#: views/kmymoneyview.cpp:1450
+#: views/kmymoneyview.cpp:1408
 msgid "Gibraltar Pound"
 msgstr "Funt gibraltarski"
 
-#: views/kmymoneyview.cpp:1451
+#: views/kmymoneyview.cpp:1409
 msgid "Guatemalan Quetzal"
 msgstr "Quetzal gwatemalski"
 
-#: views/kmymoneyview.cpp:1452
+#: views/kmymoneyview.cpp:1410
 msgid "Guinea-Bissau Peso"
 msgstr "Peso Gwinea Bissau"
 
-#: views/kmymoneyview.cpp:1453
+#: views/kmymoneyview.cpp:1411
 msgid "Guyanan Dollar"
 msgstr "Dolar gujański"
 
-#: views/kmymoneyview.cpp:1454
+#: views/kmymoneyview.cpp:1412
 msgid "Haitian Gourde"
 msgstr "Gourde Haiti"
 
-#: views/kmymoneyview.cpp:1455
+#: views/kmymoneyview.cpp:1413
 msgid "Honduran Lempira"
 msgstr "Lempira Hondurasu"
 
-#: views/kmymoneyview.cpp:1456
+#: views/kmymoneyview.cpp:1414
 msgid "Hong Kong Dollar"
 msgstr "Dolar hongkoński"
 
-#: views/kmymoneyview.cpp:1457
+#: views/kmymoneyview.cpp:1415
 msgid "Hungarian Forint"
 msgstr "Funt węgierski"
 
-#: views/kmymoneyview.cpp:1458
+#: views/kmymoneyview.cpp:1416
 msgid "Iceland Krona"
 msgstr "Korona islandzka"
 
-#: views/kmymoneyview.cpp:1459
+#: views/kmymoneyview.cpp:1417
 msgid "Indian Rupee"
 msgstr "Rupia indyjska"
 
-#: views/kmymoneyview.cpp:1460
+#: views/kmymoneyview.cpp:1418
 msgid "Indonesian Rupiah"
 msgstr "Rupia indonezyjska"
 
-#: views/kmymoneyview.cpp:1461
+#: views/kmymoneyview.cpp:1419
 msgid "Iranian Rial"
 msgstr "Rial irański"
 
-#: views/kmymoneyview.cpp:1462
+#: views/kmymoneyview.cpp:1420
 msgid "Iraqi Dinar"
 msgstr "Dinar iracki"
 
-#: views/kmymoneyview.cpp:1463
+#: views/kmymoneyview.cpp:1421
 msgid "Israeli New Shekel"
 msgstr "Nowy szekel izraelski"
 
-#: views/kmymoneyview.cpp:1464
+#: views/kmymoneyview.cpp:1422
 msgid "Jamaican Dollar"
 msgstr "Dolar jamajski"
 
-#: views/kmymoneyview.cpp:1465
+#: views/kmymoneyview.cpp:1423
 msgid "Japanese Yen"
 msgstr "Japoński jen"
 
-#: views/kmymoneyview.cpp:1466
+#: views/kmymoneyview.cpp:1424
 msgid "Jordanian Dinar"
 msgstr "Dinar jordański"
 
-#: views/kmymoneyview.cpp:1467
+#: views/kmymoneyview.cpp:1425
 msgid "Kazakhstan Tenge"
 msgstr "Tenge Kazachstanu"
 
-#: views/kmymoneyview.cpp:1468
+#: views/kmymoneyview.cpp:1426
 msgid "Kenyan Shilling"
 msgstr "Szyling kenijski"
 
-#: views/kmymoneyview.cpp:1469
+#: views/kmymoneyview.cpp:1427
 msgid "Kuwaiti Dinar"
 msgstr "Dinar kuwejcki"
 
-#: views/kmymoneyview.cpp:1470
+#: views/kmymoneyview.cpp:1428
 msgid "Kyrgyzstan Som"
 msgstr "Som Kirgistanu"
 
-#: views/kmymoneyview.cpp:1471
+#: views/kmymoneyview.cpp:1429
 msgid "Laos Kip"
 msgstr "Kip Laosu"
 
-#: views/kmymoneyview.cpp:1472
+#: views/kmymoneyview.cpp:1430
 msgid "Latvian Lats"
 msgstr "Łat łotewski"
 
-#: views/kmymoneyview.cpp:1473
+#: views/kmymoneyview.cpp:1431
 msgid "Lebanese Pound"
 msgstr "Funt libański"
 
-#: views/kmymoneyview.cpp:1474
+#: views/kmymoneyview.cpp:1432
 msgid "Lesotho Loti"
 msgstr "Loti Lesotho"
 
-#: views/kmymoneyview.cpp:1475
+#: views/kmymoneyview.cpp:1433
 msgid "Liberian Dollar"
 msgstr "Dolar liberyjski"
 
-#: views/kmymoneyview.cpp:1476
+#: views/kmymoneyview.cpp:1434
 msgid "Libyan Dinar"
 msgstr "Dinar libijski"
 
-#: views/kmymoneyview.cpp:1477
+#: views/kmymoneyview.cpp:1435
 msgid "Lithuanian Litas"
 msgstr "Lit litewski"
 
-#: views/kmymoneyview.cpp:1478
+#: views/kmymoneyview.cpp:1436
 msgid "Macau Pataca"
 msgstr "Pataca Macau"
 
-#: views/kmymoneyview.cpp:1479
+#: views/kmymoneyview.cpp:1437
 msgid "Macedonian Denar"
 msgstr "Denar macedoński"
 
-#: views/kmymoneyview.cpp:1480
+#: views/kmymoneyview.cpp:1438
 msgid "Malagasy Franc"
 msgstr "Frank malgaski"
 
-#: views/kmymoneyview.cpp:1481
+#: views/kmymoneyview.cpp:1439
 msgid "Malawi Kwacha"
 msgstr "Kwacha malabijska"
 
-#: views/kmymoneyview.cpp:1482
+#: views/kmymoneyview.cpp:1440
 msgid "Malaysian Ringgit"
 msgstr "Ringgit Malezji"
 
-#: views/kmymoneyview.cpp:1483
+#: views/kmymoneyview.cpp:1441
 msgid "Maldive Rufiyaa"
 msgstr "Rupia malediwska"
 
-#: views/kmymoneyview.cpp:1484
+#: views/kmymoneyview.cpp:1442
 msgid "Mali Republic Franc"
 msgstr "Frank Republiki Mali"
 
-#: views/kmymoneyview.cpp:1485
+#: views/kmymoneyview.cpp:1443
 msgid "Mauritanian Ouguiya"
 msgstr "Mauretańska Ouguiya"
 
-#: views/kmymoneyview.cpp:1486
+#: views/kmymoneyview.cpp:1444
 msgid "Mauritius Rupee"
 msgstr "Rupia Mauritiusa"
 
-#: views/kmymoneyview.cpp:1487
+#: views/kmymoneyview.cpp:1445
 msgid "Mexican Peso"
 msgstr "Meksykańskie peso"
 
-#: views/kmymoneyview.cpp:1488
+#: views/kmymoneyview.cpp:1446
 #, fuzzy
 msgid "Moldavian Leu"
 msgstr "Lej rumuński"
 
-#: views/kmymoneyview.cpp:1489
+#: views/kmymoneyview.cpp:1447
 msgid "Mongolian Tugrik"
 msgstr "Tugrik mongolski"
 
-#: views/kmymoneyview.cpp:1490
+#: views/kmymoneyview.cpp:1448
 msgid "Moroccan Dirham"
 msgstr "Dirham marokański"
 
-#: views/kmymoneyview.cpp:1491
+#: views/kmymoneyview.cpp:1449
 msgid "Mozambique Metical"
 msgstr "Metical Mozambiku"
 
-#: views/kmymoneyview.cpp:1492
+#: views/kmymoneyview.cpp:1450
 msgid "Myanmar Kyat"
 msgstr "Kiat birmański"
 
-#: views/kmymoneyview.cpp:1493
+#: views/kmymoneyview.cpp:1451
 msgid "Namibian Dollar"
 msgstr "Dolar namibijski"
 
-#: views/kmymoneyview.cpp:1494
+#: views/kmymoneyview.cpp:1452
 msgid "Nepalese Rupee"
 msgstr "Rupia nepalska"
 
-#: views/kmymoneyview.cpp:1495
+#: views/kmymoneyview.cpp:1453
 msgid "New Zealand Dollar"
 msgstr "Dolar nowozelandzki"
 
-#: views/kmymoneyview.cpp:1496
+#: views/kmymoneyview.cpp:1454
 msgid "Nicaraguan Cordoba Oro"
 msgstr "Cordoba nikaraguańska"
 
-#: views/kmymoneyview.cpp:1497
+#: views/kmymoneyview.cpp:1455
 msgid "Nigerian Naira"
 msgstr "Naria nigeryjska"
 
-#: views/kmymoneyview.cpp:1498
+#: views/kmymoneyview.cpp:1456
 msgid "North Korean Won"
 msgstr "Won północnokoreański"
 
-#: views/kmymoneyview.cpp:1499
+#: views/kmymoneyview.cpp:1457
 msgid "Norwegian Kroner"
 msgstr "Korona norweska"
 
-#: views/kmymoneyview.cpp:1500
+#: views/kmymoneyview.cpp:1458
 msgid "Omani Rial"
 msgstr "Rial omański"
 
-#: views/kmymoneyview.cpp:1501
+#: views/kmymoneyview.cpp:1459
 msgid "Pakistan Rupee"
 msgstr "Rupia pakistańska"
 
-#: views/kmymoneyview.cpp:1502
+#: views/kmymoneyview.cpp:1460
 msgid "Panamanian Balboa"
 msgstr "Balboa panamska"
 
-#: views/kmymoneyview.cpp:1503
+#: views/kmymoneyview.cpp:1461
 msgid "Papua New Guinea Kina"
 msgstr "Kina Papui Nowej Gwinei"
 
-#: views/kmymoneyview.cpp:1504
+#: views/kmymoneyview.cpp:1462
 msgid "Paraguay Guarani"
 msgstr "Guarani paragwajskie"
 
-#: views/kmymoneyview.cpp:1505
+#: views/kmymoneyview.cpp:1463
 msgid "Peruvian Nuevo Sol"
 msgstr "Nowy sol Peru"
 
-#: views/kmymoneyview.cpp:1506
+#: views/kmymoneyview.cpp:1464
 msgid "Philippine Peso"
 msgstr "Peso filipińskie"
 
-#: views/kmymoneyview.cpp:1507
+#: views/kmymoneyview.cpp:1465
 msgid "Polish Zloty"
 msgstr "Złoty polski"
 
-#: views/kmymoneyview.cpp:1508
+#: views/kmymoneyview.cpp:1466
 msgid "Qatari Rial"
 msgstr "Rial katarski"
 
-#: views/kmymoneyview.cpp:1509
+#: views/kmymoneyview.cpp:1467
 msgid "Romanian Leu (new)"
 msgstr "Lej rumuński (nowy)"
 
-#: views/kmymoneyview.cpp:1510
+#: views/kmymoneyview.cpp:1468
 msgid "Russian Ruble"
 msgstr "Rubel rosyjski"
 
-#: views/kmymoneyview.cpp:1511
+#: views/kmymoneyview.cpp:1469
 msgid "Rwanda Franc"
 msgstr "Frank rwandyjski"
 
-#: views/kmymoneyview.cpp:1512
+#: views/kmymoneyview.cpp:1470
 msgid "Samoan Tala"
 msgstr "Tala Samoa"
 
-#: views/kmymoneyview.cpp:1513
+#: views/kmymoneyview.cpp:1471
 msgid "Sao Tome and Principe Dobra"
 msgstr "Dobra Wysp Świętego Tomasza i Książęcej"
 
-#: views/kmymoneyview.cpp:1514
+#: views/kmymoneyview.cpp:1472
 msgid "Saudi Riyal"
 msgstr "Rial saudyjski"
 
-#: views/kmymoneyview.cpp:1515
+#: views/kmymoneyview.cpp:1473
 msgid "Seychelles Rupee"
 msgstr "Rupia seszelska"
 
-#: views/kmymoneyview.cpp:1516
+#: views/kmymoneyview.cpp:1474
 msgid "Sierra Leone Leone"
 msgstr "Leone Sierra Leone"
 
-#: views/kmymoneyview.cpp:1517
+#: views/kmymoneyview.cpp:1475
 msgid "Singapore Dollar"
 msgstr "Dolar singapurski"
 
-#: views/kmymoneyview.cpp:1520
+#: views/kmymoneyview.cpp:1478
 msgid "Solomon Islands Dollar"
 msgstr "Dolar Wysp Salomona"
 
-#: views/kmymoneyview.cpp:1521
+#: views/kmymoneyview.cpp:1479
 msgid "Somali Shilling"
 msgstr "Szyling somalijski"
 
-#: views/kmymoneyview.cpp:1522
+#: views/kmymoneyview.cpp:1480
 msgid "South African Rand"
 msgstr "Rand południowoafrykański"
 
-#: views/kmymoneyview.cpp:1523
+#: views/kmymoneyview.cpp:1481
 msgid "South Korean Won"
 msgstr "Won południowokoreański"
 
-#: views/kmymoneyview.cpp:1524
+#: views/kmymoneyview.cpp:1482
 msgid "Sri Lanka Rupee"
 msgstr "Rupia Sri Lanka"
 
-#: views/kmymoneyview.cpp:1525
+#: views/kmymoneyview.cpp:1483
 msgid "St. Helena Pound"
 msgstr "Funt Św. Heleny"
 
-#: views/kmymoneyview.cpp:1526
+#: views/kmymoneyview.cpp:1484
 msgid "Sudanese Dinar"
 msgstr "Dinar sudański"
 
-#: views/kmymoneyview.cpp:1527
+#: views/kmymoneyview.cpp:1485
 msgid "Suriname Guilder"
 msgstr "Gulden surinamski"
 
-#: views/kmymoneyview.cpp:1528
+#: views/kmymoneyview.cpp:1486
 msgid "Swaziland Lilangeni"
 msgstr "Lilangeni Suazi"
 
-#: views/kmymoneyview.cpp:1529
+#: views/kmymoneyview.cpp:1487
 msgid "Swedish Krona"
 msgstr "Korona szwedzka"
 
-#: views/kmymoneyview.cpp:1530
+#: views/kmymoneyview.cpp:1488
 msgid "Swiss Franc"
 msgstr "Frank szwajcarski"
 
-#: views/kmymoneyview.cpp:1531
+#: views/kmymoneyview.cpp:1489
 msgid "Syrian Pound"
 msgstr "Funt syryjski"
 
-#: views/kmymoneyview.cpp:1532
+#: views/kmymoneyview.cpp:1490
 msgid "Taiwan Dollar"
 msgstr "Dolar tajwański"
 
-#: views/kmymoneyview.cpp:1533
+#: views/kmymoneyview.cpp:1491
 msgid "Tajikistan Somani"
 msgstr "Somoni Tadżykistanu"
 
-#: views/kmymoneyview.cpp:1534
+#: views/kmymoneyview.cpp:1492
 msgid "Tanzanian Shilling"
 msgstr "Szyling tanzański"
 
-#: views/kmymoneyview.cpp:1535
+#: views/kmymoneyview.cpp:1493
 msgid "Thai Baht"
 msgstr "Bat Tajlandii"
 
-#: views/kmymoneyview.cpp:1536
+#: views/kmymoneyview.cpp:1494
 msgid "Tongan Pa'anga"
 msgstr "Pa'anga Tonga"
 
-#: views/kmymoneyview.cpp:1537
+#: views/kmymoneyview.cpp:1495
 msgid "Trinidad and Tobago Dollar"
 msgstr "Dolar Trynidad i Tobago"
 
-#: views/kmymoneyview.cpp:1538
+#: views/kmymoneyview.cpp:1496
 msgid "Tunisian Dinar"
 msgstr "Dinar tunezyjski"
 
-#: views/kmymoneyview.cpp:1539
+#: views/kmymoneyview.cpp:1497
 msgid "Turkish Lira (new)"
 msgstr "Nowa lira turecka"
 
-#: views/kmymoneyview.cpp:1540
+#: views/kmymoneyview.cpp:1498
 msgid "Turkmenistan Manat"
 msgstr "Manat turkmeński"
 
-#: views/kmymoneyview.cpp:1541
+#: views/kmymoneyview.cpp:1499
 msgid "US Dollar"
 msgstr "Dolar amerykański"
 
-#: views/kmymoneyview.cpp:1542
+#: views/kmymoneyview.cpp:1500
 msgid "Uganda Shilling"
 msgstr "Szyling ugandyjski"
 
-#: views/kmymoneyview.cpp:1543
+#: views/kmymoneyview.cpp:1501
 msgid "Ukraine Hryvnia"
 msgstr "Hrywna ukraińska"
 
-#: views/kmymoneyview.cpp:1544
+#: views/kmymoneyview.cpp:1502
 msgid "United Arab Emirates Dirham"
 msgstr "Dirham Zjednoczonych Emiratów Arabskich"
 
-#: views/kmymoneyview.cpp:1545
+#: views/kmymoneyview.cpp:1503
 msgid "Uruguayan Peso"
 msgstr "Peso urugwajskie"
 
-#: views/kmymoneyview.cpp:1546
+#: views/kmymoneyview.cpp:1504
 msgid "Uzbekistani Sum"
 msgstr "Sum Uzbekistanu"
 
-#: views/kmymoneyview.cpp:1547
+#: views/kmymoneyview.cpp:1505
 msgid "Vanuatu Vatu"
 msgstr "Vanuatu Vatu"
 
-#: views/kmymoneyview.cpp:1548
+#: views/kmymoneyview.cpp:1506
 msgid "Venezuelan Bolivar"
 msgstr "Bolivar wenezuelski"
 
-#: views/kmymoneyview.cpp:1549
+#: views/kmymoneyview.cpp:1507
 msgid "Vietnamese Dong"
 msgstr "Dong wietnamski"
 
-#: views/kmymoneyview.cpp:1550
+#: views/kmymoneyview.cpp:1508
 msgid "Yugoslav Dinar"
 msgstr "Dinar jugosłowiański"
 
-#: views/kmymoneyview.cpp:1551
+#: views/kmymoneyview.cpp:1509
 msgid "Zambian Kwacha"
 msgstr "Kwacha Zambii"
 
-#: views/kmymoneyview.cpp:1552
+#: views/kmymoneyview.cpp:1510
 msgid "Zimbabwe Dollar"
 msgstr "Dolar Zimbabwe"
 
-#: views/kmymoneyview.cpp:1554
+#: views/kmymoneyview.cpp:1512
 msgid "Gold"
 msgstr "Złoto"
 
-#: views/kmymoneyview.cpp:1555
+#: views/kmymoneyview.cpp:1513
 msgid "Palladium"
 msgstr "Pallad"
 
-#: views/kmymoneyview.cpp:1556
+#: views/kmymoneyview.cpp:1514
 msgid "Platinum"
 msgstr "Platyna"
 
-#: views/kmymoneyview.cpp:1557
+#: views/kmymoneyview.cpp:1515
 msgid "Silver"
 msgstr "Srebro"
 
-#: views/kmymoneyview.cpp:1590
+#: views/kmymoneyview.cpp:1548
 msgid "Austrian Schilling"
 msgstr "Szyling austriacki"
 
-#: views/kmymoneyview.cpp:1591
+#: views/kmymoneyview.cpp:1549
 msgid "German Mark"
 msgstr "Marka niemiecka"
 
-#: views/kmymoneyview.cpp:1592
+#: views/kmymoneyview.cpp:1550
 msgid "French Franc"
 msgstr "Frank francuski"
 
-#: views/kmymoneyview.cpp:1593
+#: views/kmymoneyview.cpp:1551
 msgid "Italian Lira"
 msgstr "Lir włoski"
 
-#: views/kmymoneyview.cpp:1594
+#: views/kmymoneyview.cpp:1552
 msgid "Spanish Peseta"
 msgstr "Hiszpańska peseta"
 
-#: views/kmymoneyview.cpp:1595
+#: views/kmymoneyview.cpp:1553
 msgid "Dutch Guilder"
 msgstr "Gulden holenderski"
 
-#: views/kmymoneyview.cpp:1596
+#: views/kmymoneyview.cpp:1554
 msgid "Belgian Franc"
 msgstr "Frank belgijski"
 
-#: views/kmymoneyview.cpp:1597
+#: views/kmymoneyview.cpp:1555
 msgid "Luxembourg Franc"
 msgstr "Frank luksemburski"
 
-#: views/kmymoneyview.cpp:1598
+#: views/kmymoneyview.cpp:1556
 msgid "Portuguese Escudo"
 msgstr "Escudo portugalskie"
 
-#: views/kmymoneyview.cpp:1599
+#: views/kmymoneyview.cpp:1557
 msgid "Irish Pound"
 msgstr "Funt irlandzki"
 
-#: views/kmymoneyview.cpp:1600
+#: views/kmymoneyview.cpp:1558
 msgid "Finnish Markka"
 msgstr "Marka fińska"
 
-#: views/kmymoneyview.cpp:1601
+#: views/kmymoneyview.cpp:1559
 msgid "Greek Drachma"
 msgstr "Drachma grecka"
 
-#: views/kmymoneyview.cpp:1603
+#: views/kmymoneyview.cpp:1561
 msgid "Romanian Leu"
 msgstr "Lej rumuński"
 
-#: views/kmymoneyview.cpp:1605
+#: views/kmymoneyview.cpp:1563
 msgid "Russian Ruble (old)"
 msgstr "Rubel rosyjski (stary)"
 
-#: views/kmymoneyview.cpp:1607
+#: views/kmymoneyview.cpp:1565
 msgid "Slovenian Tolar"
 msgstr "Tolar słoweński"
 
-#: views/kmymoneyview.cpp:1610
+#: views/kmymoneyview.cpp:1568
 msgid "Turkish Lira"
 msgstr "Lira turecka"
 
-#: views/kmymoneyview.cpp:1613
+#: views/kmymoneyview.cpp:1571
 msgid "Maltese Lira"
 msgstr "Lira maltańska"
 
-#: views/kmymoneyview.cpp:1614
+#: views/kmymoneyview.cpp:1572
 msgid "Cyprus Pound"
 msgstr "Funt cypryjski"
 
-#: views/kmymoneyview.cpp:1617
+#: views/kmymoneyview.cpp:1575
 msgid "Slovak Koruna"
 msgstr "Korona słowacka"
 
-#: views/kmymoneyview.cpp:1927
+#: views/kmymoneyview.cpp:1885
 #, fuzzy
 msgid ""
 "The account \"%1\" was previously created as loan account but some "
@@ -7014,11 +7063,11 @@ msgstr ""
 "zebrania odpowiednich informacji. Jeśli zakończysz działanie asystenta, plik "
 "zostanie zamknięty."
 
-#: views/kmymoneyview.cpp:1931
+#: views/kmymoneyview.cpp:1889
 msgid "Account problem"
 msgstr "Problem z kontem"
 
-#: views/kmymoneyview.cpp:2009
+#: views/kmymoneyview.cpp:1967
 msgid "Fix transactions"
 msgstr "Napraw transakcje"
 
@@ -7026,7 +7075,7 @@ msgstr "Napraw transakcje"
 msgid "Net Worth: "
 msgstr "Wartość netto: "
 
-#: dialogs/rc.cpp:107 dialogs/rc.cpp:162 dialogs/rc.cpp:831
+#: dialogs/rc.cpp:107 dialogs/rc.cpp:162 dialogs/rc.cpp:753 dialogs/rc.cpp:828
 #: views/kinvestmentview.cpp:78 widgets/register.cpp:550
 msgid "Quantity"
 msgstr "Ilość"
@@ -7128,7 +7177,7 @@ msgstr ""
 "Uwaga: nieużywane kategorie nie są pokazywane zgodnie z wybranymi "
 "ustawieniami."
 
-#: views/rc.cpp:6 views/rc.cpp:23 views/rc.cpp:48
+#: views/rc.cpp:6 views/rc.cpp:23 views/rc.cpp:54
 msgid "Total Profits:"
 msgstr "Całkowite zyski:"
 
@@ -7137,7 +7186,7 @@ msgstr "Całkowite zyski:"
 msgid "Your budgets"
 msgstr "Budżety"
 
-#: dialogs/rc.cpp:338 dialogs/rc.cpp:842 dialogs/settings/rc.cpp:121
+#: dialogs/rc.cpp:338 dialogs/rc.cpp:839 dialogs/settings/rc.cpp:121
 #: views/rc.cpp:8 widgets/rc.cpp:48 widgets/rc.cpp:148
 msgid "New"
 msgstr "Nowy"
@@ -7206,84 +7255,113 @@ msgstr ""
 
 #: views/rc.cpp:29
 #, fuzzy
+msgid "Chart Detail:"
+msgstr "Wykres"
+
+#: views/rc.cpp:30 widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
+msgid "All"
+msgstr "Wszystko"
+
+#: views/rc.cpp:31 widgets/rc.cpp:66
+msgid "Top-Level"
+msgstr ""
+
+#: views/rc.cpp:32 widgets/rc.cpp:67
+msgid "Groups"
+msgstr ""
+
+#: views/rc.cpp:33 widgets/rc.cpp:68
+#, fuzzy
+msgid "Totals"
+msgstr "Suma"
+
+#: views/rc.cpp:34
+#, fuzzy
+msgid "<p>Choose what level of detail to show on the chart.</p>"
+msgstr ""
+"<p>Wybierz jaki rodzaj kont powinien być wyświetlany w wierszach tego "
+"raportu.</p>"
+
+#: views/rc.cpp:35
+#, fuzzy
 msgid "Current Forecast Method:"
 msgstr "Sposób zapłaty"
 
-#: views/rc.cpp:30
+#: views/rc.cpp:36
 #, fuzzy
 msgid "method"
 msgstr "Metoda:"
 
-#: dialogs/settings/rc.cpp:32 views/rc.cpp:31
+#: dialogs/settings/rc.cpp:32 views/rc.cpp:37
 #, fuzzy
 msgid "History Forecast Method"
 msgstr "Sposób zapłaty"
 
-#: dialogs/settings/rc.cpp:33 views/rc.cpp:32
+#: dialogs/settings/rc.cpp:33 views/rc.cpp:38
 msgid "Simple Moving Average"
 msgstr ""
 
-#: dialogs/settings/rc.cpp:34 views/rc.cpp:33
+#: dialogs/settings/rc.cpp:34 views/rc.cpp:39
 msgid "Weighted Moving Average"
 msgstr ""
 
-#: dialogs/settings/rc.cpp:35 views/rc.cpp:34
+#: dialogs/settings/rc.cpp:35 views/rc.cpp:40
 msgid "Linear Regression"
 msgstr ""
 
 #: dialogs/keditloanwizard.cpp:313 dialogs/rc.cpp:626 dialogs/rc.cpp:645
-#: views/rc.cpp:37
+#: views/rc.cpp:43
 msgid "Summary"
 msgstr "Podsumowanie"
 
-#: views/rc.cpp:39
+#: views/rc.cpp:45
 #, fuzzy
 msgid "0 days"
 msgstr "Ostatnie 30 dni"
 
-#: views/rc.cpp:40
+#: views/rc.cpp:46
 #, fuzzy
 msgid "30 days"
 msgstr "Ostatnie 30 dni"
 
-#: views/rc.cpp:41
+#: views/rc.cpp:47
 #, fuzzy
 msgid "60 days"
 msgstr "Ostatnie 30 dni"
 
-#: views/rc.cpp:42
+#: views/rc.cpp:48
 #, fuzzy
 msgid "90 days"
 msgstr "Ostatnie 30 dni"
 
-#: views/rc.cpp:43
+#: views/rc.cpp:49
 msgid "New Item"
 msgstr ""
 
-#: views/rc.cpp:44 widgets/rc.cpp:64
+#: views/rc.cpp:50 widgets/rc.cpp:64
 #, fuzzy
 msgid "Detail"
 msgstr "Szczegóły"
 
-#: views/rc.cpp:45
+#: views/rc.cpp:51
 #, fuzzy
 msgid "Advanced"
 msgstr "Z&aawansowane..."
 
-#: views/rc.cpp:46
+#: views/rc.cpp:52
 #, fuzzy
 msgid "Budget Forecast"
 msgstr "Następny rok"
 
-#: views/rc.cpp:49
+#: views/rc.cpp:55
 msgid "Investment Summary"
 msgstr "Podsumowanie inwestycji"
 
-#: views/rc.cpp:50
+#: views/rc.cpp:56
 msgid "Select Account:"
 msgstr "Wybierz konto:"
 
-#: views/rc.cpp:51
+#: views/rc.cpp:57
 msgid ""
 "Summary of the equities contained in this account, showing your holdings and "
 "their most recent price."
@@ -7291,95 +7369,95 @@ msgstr ""
 "Podsumowanie akcji zwykłych zawartych w tym koncie, pokazujące Twoje udziały "
 "i ich najświeższe ceny."
 
-#: views/rc.cpp:54 widgets/register.cpp:542
+#: views/rc.cpp:60 widgets/register.cpp:542
 msgid "No."
 msgstr "Nr"
 
-#: views/rc.cpp:58
+#: views/rc.cpp:64
 msgid "Balance: "
 msgstr "Saldo: "
 
-#: views/rc.cpp:59
+#: views/rc.cpp:65
 #, fuzzy
 msgid "Address"
 msgstr "Adres:"
 
-#: views/rc.cpp:60
+#: views/rc.cpp:66
 msgid "Payee Information"
 msgstr "Informacje o beneficjencie"
 
-#: views/rc.cpp:61
+#: views/rc.cpp:67
 msgid "E-Mail:"
 msgstr "E-Mail:"
 
-#: dialogs/rc.cpp:391 views/rc.cpp:63
+#: dialogs/rc.cpp:391 views/rc.cpp:69
 msgid "Telephone/Fax:"
 msgstr "Telefon/fax:"
 
-#: views/rc.cpp:64
+#: views/rc.cpp:70
 #, fuzzy
 msgid "Notes"
 msgstr "Adnotacje:"
 
-#: views/rc.cpp:65
+#: views/rc.cpp:71
 msgid "Address:"
 msgstr "Adres:"
 
-#: dialogs/settings/rc.cpp:158 views/rc.cpp:66
+#: dialogs/settings/rc.cpp:158 views/rc.cpp:72
 #, fuzzy
 msgid "Matching"
 msgstr "Nic nie rób"
 
-#: views/rc.cpp:67
+#: views/rc.cpp:73
 #, fuzzy
 msgid "Transaction Matching"
 msgstr "Opcje transakcji"
 
-#: views/rc.cpp:68
+#: views/rc.cpp:74
 #, fuzzy
 msgid "No matching"
 msgstr "Nic nie rób"
 
-#: views/rc.cpp:69
+#: views/rc.cpp:75
 #, fuzzy
 msgid "Match on Payee name"
 msgstr "Nazwisko menadżera:"
 
-#: views/rc.cpp:70
+#: views/rc.cpp:76
 #, fuzzy
 msgid "Match on a name listed below"
 msgstr "Nazwisko menadżera:"
 
-#: views/rc.cpp:71
+#: views/rc.cpp:77
 #, fuzzy
 msgid "List of matching names"
 msgstr "Nic nie rób"
 
-#: views/rc.cpp:72
+#: views/rc.cpp:78
 msgid ""
 "This list contains the names that will match this payee if a transaction is "
 "imported from an external source. Keep in mind, that you can specify regular "
 "expressions here."
 msgstr ""
 
-#: views/rc.cpp:73
+#: views/rc.cpp:79
 #, fuzzy
 msgid "Ignore Case"
 msgstr "Powiększ"
 
-#: views/rc.cpp:75
+#: views/rc.cpp:81
 msgid "New Schedule"
 msgstr "Nowy harmonogram"
 
-#: views/rc.cpp:76
+#: views/rc.cpp:82
 msgid "Filter Accounts"
 msgstr "Filtruj konta"
 
-#: views/rc.cpp:77
+#: views/rc.cpp:83
 msgid "List View"
 msgstr "Widok listy"
 
-#: views/rc.cpp:78
+#: views/rc.cpp:84
 msgid "Calendar View"
 msgstr "Widok kalendarza"
 
@@ -7409,7 +7487,7 @@ msgstr "Nie można wczytać kont:"
 msgid "Bills"
 msgstr "Opłaty"
 
-#: dialogs/rc.cpp:230 dialogs/rc.cpp:721 views/kscheduledview.cpp:171
+#: dialogs/rc.cpp:230 dialogs/rc.cpp:704 views/kscheduledview.cpp:171
 #: views/kscheduledview.cpp:428 views/kscheduledview.cpp:444
 #: widgets/kmymoneyscheduledcalendar.cpp:47
 msgid "Deposits"
@@ -7635,7 +7713,7 @@ msgstr ""
 msgid "Average"
 msgstr "Wszystkie stany"
 
-#: views/kforecastview.cpp:647 views/khomeview.cpp:266 views/khomeview.cpp:273
+#: views/kforecastview.cpp:649 views/khomeview.cpp:266 views/khomeview.cpp:273
 #, fuzzy
 msgid "Networth Forecast"
 msgstr "Wartość netto dziś"
@@ -7868,17 +7946,17 @@ msgstr "Niepoprawny format"
 msgid "Unable to parse file"
 msgstr "Nie można dodać beneficjenta"
 
-#: plugins/ofximport/ofximporterplugin.cpp:570
+#: plugins/ofximport/ofximporterplugin.cpp:569
 #, fuzzy
 msgid "Online settings"
 msgstr "Ustawienia wycen online"
 
-#: plugins/ofximport/ofximporterplugin.cpp:625
+#: plugins/ofximport/ofximporterplugin.cpp:626
 #, c-format
 msgid "Error connecting to bank: %1"
 msgstr "Błąd połączenia do banku: %1"
 
-#: plugins/ofximport/ofximporterplugin.cpp:636
+#: plugins/ofximport/ofximporterplugin.cpp:637
 #, fuzzy
 msgid ""
 "Unable to import %1 using the OFX importer plugin.  The plugin returned the "
@@ -7887,118 +7965,108 @@ msgstr ""
 "Nie można zaimportować %1 przy pomocy wtyczki %2. Wtyczka zwróciła "
 "następujący błąd: %3."
 
-#: plugins/ofximport/ofximporterplugin.cpp:667
+#: plugins/ofximport/ofximporterplugin.cpp:668
 msgid "Importing process terminated unexpectedly."
 msgstr "Nieoczekiwane zakończenie procesu importowania."
 
-#: plugins/ofximport/ofximporterplugin.cpp:667
+#: plugins/ofximport/ofximporterplugin.cpp:668
 msgid "Failed to import all statements."
 msgstr "Nieudany import wszystkich wyciągów."
 
-#: dialogs/konlinebankingsetupwizard.cpp:61
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:75
+#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:195
+#: plugins/ofximport/ofxpartner.cpp:331
+msgid "The HTTP request failed."
+msgstr "Niepowodzenie żądania HTTP."
+
+#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:195
+#: plugins/ofximport/ofxpartner.cpp:331
+msgid "Failed"
+msgstr "Nieudane"
+
+#: plugins/ofximport/ofxpartner.cpp:367
+#, fuzzy
+msgid "Cannot open file %1 for writing"
+msgstr "Nie można otworzyć pliku '%1' do zapisu"
+
+#: plugins/ofximport/ofxpartner.cpp:371
+#, fuzzy
+msgid "OFX setup error"
+msgstr "Błąd typu pliku"
+
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 #, fuzzy
 msgid "Loading banklist"
 msgstr "Wczytywanie kont..."
 
-#: dialogs/konlinebankingsetupwizard.cpp:61
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:75
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 msgid ""
 "Getting list of banks from http://moneycentral.msn.com/\n"
 "This may take some time depending on the available bandwidth."
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:81
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:97
-msgid ""
-"Reading the bank list failed with the following error: '%1'. The console "
-"output may have more information."
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:81
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:97
-msgid "XMLPP error"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:143
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:164
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:208
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:155
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:199
 msgid "Supports online statements<br>"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:145
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:166
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:210
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:157
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:201
 #, fuzzy
 msgid "Supports investments<br>"
 msgstr "Typ inwestycji"
 
-#: dialogs/konlinebankingsetupwizard.cpp:147
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:168
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:212
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:159
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:203
 msgid "Supports bill payment (but not supported by KMyMoney yet)<br>"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:151
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:172
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:163
 msgid "Does not support online banking</p>"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:161
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:182
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:173
 msgid "Please choose a bank."
 msgstr ""
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:188
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:179
 #, fuzzy
 msgid "Please fill all fields with values."
 msgstr "Proszę wypełnić pole sumy/kwoty."
 
-#: dialogs/konlinebankingsetupwizard.cpp:241
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:309
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:271
 msgid "No suitable accounts were found at this bank."
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:253
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:321
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:283
 #, fuzzy
 msgid "Please choose an account"
 msgstr "Proszę wybrać konto nadrzędne."
 
-#: dialogs/konlinebankingsetupwizard.cpp:342
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:416
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:381
 msgid "Server message: %1\n"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:350
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:424
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
 msgid "Your bank returned warnings when signing on"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:350
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:424
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
 #, c-format
 msgid "WARNING %1"
 msgstr ""
 
-#: dialogs/konlinebankingsetupwizard.cpp:353
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:427
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
 #, fuzzy
 msgid "Error signing onto your bank"
 msgstr "Błąd połączenia do banku: %1"
 
-#: dialogs/konlinebankingsetupwizard.cpp:353
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:427
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
 #, c-format
 msgid "ERROR %1"
 msgstr ""
 
 #: plugins/ofximport/dialogs/konlinebankingstatus.cpp:59
 msgid "Enabled & configured"
-msgstr ""
-
-#: plugins/ofximport/dialogs/konlinebankingstatus.cpp:90
-msgid "Disabled. No online banking services are available"
 msgstr ""
 
 #: plugins/ofximport/dialogs/rc.cpp:1
@@ -8009,16 +8077,16 @@ msgstr "Bezpośrednie połączenie OFX"
 msgid "Contacting bank..."
 msgstr "Kontaktowanie się z bankiem..."
 
-#: dialogs/rc.cpp:680 plugins/ofximport/dialogs/rc.cpp:4
+#: plugins/ofximport/dialogs/rc.cpp:4
 msgid "Online Banking Account Setup"
 msgstr ""
 
-#: dialogs/rc.cpp:681 plugins/ofximport/dialogs/rc.cpp:5
+#: plugins/ofximport/dialogs/rc.cpp:5
 #, fuzzy
 msgid "Select Financial Institution"
 msgstr "Stany kont wg instytucji"
 
-#: dialogs/rc.cpp:682 plugins/ofximport/dialogs/rc.cpp:6
+#: plugins/ofximport/dialogs/rc.cpp:6
 msgid "Please select your financial institution from the list below..."
 msgstr ""
 
@@ -8026,7 +8094,7 @@ msgstr ""
 msgid "Automatic"
 msgstr ""
 
-#: dialogs/rc.cpp:683 plugins/ofximport/dialogs/rc.cpp:8
+#: plugins/ofximport/dialogs/rc.cpp:8
 #, fuzzy
 msgid "Financial Institution"
 msgstr "Instytucja"
@@ -8050,186 +8118,191 @@ msgstr "FIID"
 msgid "URL"
 msgstr "URL"
 
-#: dialogs/rc.cpp:684 plugins/ofximport/dialogs/rc.cpp:13
+#: plugins/ofximport/dialogs/rc.cpp:13
 #, fuzzy
 msgid "Enter Login Details"
 msgstr "Szczegóły transakcji"
 
-#: dialogs/rc.cpp:688 plugins/ofximport/dialogs/rc.cpp:14
-#, fuzzy
-msgid "Connection Details"
-msgstr "Szczegóły transakcji"
-
-#: dialogs/rc.cpp:686 plugins/ofximport/dialogs/rc.cpp:15
-msgid "Username"
-msgstr "Nazwa użytkownika"
-
-#: dialogs/rc.cpp:685 plugins/ofximport/dialogs/rc.cpp:16
+#: plugins/ofximport/dialogs/rc.cpp:14
 msgid ""
 "Please enter the username and password you use to log into this bank for "
 "online banking.  Please note that many banks require a separate signup, and "
 "assign a separate PIN or password just for online banking from home."
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:35
+#: plugins/ofximport/dialogs/rc.cpp:15
+#, fuzzy
+msgid "Connection Details"
+msgstr "Szczegóły transakcji"
+
+#: plugins/ofximport/dialogs/rc.cpp:16
+msgid "Username"
+msgstr "Nazwa użytkownika"
+
+#: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:36
+#, fuzzy
+msgid "Header Version"
+msgstr "Czcionka nagłówka"
+
+#: plugins/ofximport/dialogs/rc.cpp:18 plugins/ofximport/dialogs/rc.cpp:37
 #, fuzzy
 msgid "Identify as"
 msgstr "Identyfikacja"
 
-#: dialogs/rc.cpp:687 dialogs/rc.cpp:757 plugins/ofximport/dialogs/rc.cpp:18
+#: dialogs/rc.cpp:740 plugins/ofximport/dialogs/rc.cpp:19
 msgid "Password"
 msgstr "Hasło"
 
-#: dialogs/rc.cpp:689 plugins/ofximport/dialogs/rc.cpp:19
+#: plugins/ofximport/dialogs/rc.cpp:20
 #, fuzzy
 msgid "Select Account"
 msgstr "Wybierz konto:"
 
-#: dialogs/rc.cpp:690 plugins/ofximport/dialogs/rc.cpp:20
+#: plugins/ofximport/dialogs/rc.cpp:21
 msgid ""
 "Please select the account from your financial institution from the list "
 "below which matches this account."
 msgstr ""
 
-#: dialogs/rc.cpp:693 plugins/ofximport/dialogs/rc.cpp:23
+#: plugins/ofximport/dialogs/rc.cpp:24
 msgid "Bank"
 msgstr ""
 
-#: dialogs/rc.cpp:694 plugins/ofximport/dialogs/rc.cpp:24
+#: plugins/ofximport/dialogs/rc.cpp:25
 #, fuzzy
 msgid "Branch"
 msgstr "Saldo"
 
-#: dialogs/rc.cpp:695 plugins/ofximport/dialogs/rc.cpp:25
+#: plugins/ofximport/dialogs/rc.cpp:26
 msgid "WizardPage"
 msgstr ""
 
-#: dialogs/rc.cpp:696 plugins/ofximport/dialogs/rc.cpp:26
+#: plugins/ofximport/dialogs/rc.cpp:27
 msgid ""
 "Congratulations!  You have successfully set up your bank for online banking "
 "via OFX."
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:27
+#: plugins/ofximport/dialogs/rc.cpp:28
 msgid "Account Details"
 msgstr "Szczegóły konta"
 
-#: plugins/ofximport/dialogs/rc.cpp:28 plugins/ofximport/dialogs/rc.cpp:30
+#: plugins/ofximport/dialogs/rc.cpp:29 plugins/ofximport/dialogs/rc.cpp:31
 msgid "&lt;Not configured&gt;"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:29
+#: plugins/ofximport/dialogs/rc.cpp:30
 msgid "BANK/BROKER:"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:31
+#: plugins/ofximport/dialogs/rc.cpp:32
 #, fuzzy
 msgid "Unavailable"
 msgstr "Wartość"
 
-#: plugins/ofximport/dialogs/rc.cpp:32
+#: plugins/ofximport/dialogs/rc.cpp:33
 msgid "ACCOUNT:"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:33
+#: plugins/ofximport/dialogs/rc.cpp:34
 msgid "STATUS:"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:34
+#: plugins/ofximport/dialogs/rc.cpp:35
 #, fuzzy
 msgid "OFX Details"
 msgstr "Szczegóły"
 
-#: plugins/ofximport/dialogs/rc.cpp:36
+#: plugins/ofximport/dialogs/rc.cpp:38
 #, fuzzy
 msgid "Start date of import"
 msgstr "Początkowa data wyciągu"
 
-#: plugins/ofximport/dialogs/rc.cpp:37
+#: plugins/ofximport/dialogs/rc.cpp:39
 #, fuzzy
 msgid "To&day minus"
 msgstr "Dzisiejsze płatności"
 
-#: plugins/ofximport/dialogs/rc.cpp:38
+#: plugins/ofximport/dialogs/rc.cpp:40
 #, fuzzy
 msgid "days"
 msgstr "Ostatnie 30 dni"
 
-#: plugins/ofximport/dialogs/rc.cpp:39
+#: plugins/ofximport/dialogs/rc.cpp:41
 #, fuzzy
 msgid "Last &update"
 msgstr "Ostatni rok"
 
-#: plugins/ofximport/dialogs/rc.cpp:40
+#: plugins/ofximport/dialogs/rc.cpp:42
 #, fuzzy
 msgid "Pi&ck date"
 msgstr "Data wykonania"
 
-#: plugins/ofximport/dialogs/rc.cpp:41
+#: plugins/ofximport/dialogs/rc.cpp:43
 msgid "Name is derived from"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:42
+#: plugins/ofximport/dialogs/rc.cpp:44
 msgid "P&AYEEID"
 msgstr ""
 
-#: plugins/ofximport/dialogs/rc.cpp:43
+#: plugins/ofximport/dialogs/rc.cpp:45
 #, fuzzy
 msgid "&NAME"
 msgstr "AMEX"
 
-#: plugins/ofximport/dialogs/rc.cpp:44
+#: plugins/ofximport/dialogs/rc.cpp:46
 msgid "field if both are present in download"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:57
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
+msgid "Quicken Windows 2003"
+msgstr ""
+
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:82
+msgid "Quicken Windows 2004"
+msgstr ""
+
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:83
 msgid "Quicken Windows 2005"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:58
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:84
 msgid "Quicken Windows 2006"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:59
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
 msgid "Quicken Windows 2007"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:60
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:85
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:86
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:111
 msgid "Quicken Windows 2008"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:63
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:89
 msgid "MS-Money 2003"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:64
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:90
 msgid "MS-Money 2004"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:65
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:91
 msgid "MS-Money 2005"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:66
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:92
 msgid "MS-Money 2006"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:67
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:93
 msgid "MS-Money 2007"
 msgstr ""
 
-#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:68
+#: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:94
 msgid "MS-Money Plus"
 msgstr ""
-
-#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:196
-msgid "The HTTP request failed."
-msgstr "Niepowodzenie żądania HTTP."
-
-#: plugins/ofximport/dialogs/kofxdirectconnectdlg.cpp:196
-msgid "Failed"
-msgstr "Nieudane"
 
 #: dialogs/kreportconfigurationfilterdlg.cpp:91
 msgid "Report Configuration"
@@ -8240,42 +8313,10 @@ msgstr "Konfiguracja raportu"
 msgid "Rows/Columns"
 msgstr "Wiersze/kolumny"
 
-#: dialogs/konlinebankingsetupwizard.cpp:273
-msgid "CHECKING"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:276
-msgid "SAVINGS"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:279
-msgid "MONEY MARKET"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:282
-msgid "CREDIT LINE"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:285
-msgid "CMA"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:288
-msgid "CREDIT CARD"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:291
-msgid "INVESTMENT"
-msgstr ""
-
-#: dialogs/konlinebankingsetupwizard.cpp:294
-msgid "UNKNOWN"
-msgstr ""
-
 #: dialogs/investtransactioneditor.cpp:203
 #: dialogs/investtransactioneditor.cpp:537
 #: dialogs/investtransactioneditor.cpp:579 dialogs/rc.cpp:102
-#: dialogs/rc.cpp:157 dialogs/rc.cpp:243 dialogs/rc.cpp:795
+#: dialogs/rc.cpp:157 dialogs/rc.cpp:243 dialogs/rc.cpp:748 dialogs/rc.cpp:792
 #: widgets/kmymoneyaccountselector.cpp:182 widgets/register.cpp:64
 #: widgets/register.cpp:545 widgets/transaction.cpp:1490
 msgid "Security"
@@ -8689,20 +8730,20 @@ msgid "Category/Account"
 msgstr "Kategoria/konto"
 
 #: dialogs/transactioneditor.cpp:963 dialogs/transactioneditor.cpp:999
-#: dialogs/transactioneditor.cpp:1345 dialogs/transactioneditor.cpp:1366
-#: dialogs/transactioneditor.cpp:1389 dialogs/transactioneditor.cpp:1410
-#: dialogs/transactioneditor.cpp:1472 dialogs/transactioneditor.cpp:1476
+#: dialogs/transactioneditor.cpp:1354 dialogs/transactioneditor.cpp:1375
+#: dialogs/transactioneditor.cpp:1398 dialogs/transactioneditor.cpp:1419
+#: dialogs/transactioneditor.cpp:1481 dialogs/transactioneditor.cpp:1485
 #: widgets/transaction.cpp:892
 msgid "Transfer from"
 msgstr "Przelew z"
 
 #: dialogs/transactioneditor.cpp:965 dialogs/transactioneditor.cpp:1001
-#: dialogs/transactioneditor.cpp:1368 dialogs/transactioneditor.cpp:1412
-#: dialogs/transactioneditor.cpp:1473 widgets/transaction.cpp:892
+#: dialogs/transactioneditor.cpp:1377 dialogs/transactioneditor.cpp:1421
+#: dialogs/transactioneditor.cpp:1482 widgets/transaction.cpp:892
 msgid "Transfer to"
 msgstr "Przelew na"
 
-#: dialogs/transactioneditor.cpp:1228
+#: dialogs/transactioneditor.cpp:1235
 #, fuzzy
 msgid "Select autofill transaction"
 msgstr "Usuń transakcję"
@@ -8783,46 +8824,42 @@ msgstr ""
 msgid "Fatal error in determining data: "
 msgstr "Poważny błąd przy określaniu danych: "
 
-#: dialogs/kselectdatabasedlg.cpp:55
+#: dialogs/kselectdatabasedlg.cpp:56
 msgid ""
 "There are no Qt SQL drivers installed in your system.\n"
 "Please consult documentation for your distro, or visit the Qt web site (www."
 "trolltech.com) and search for SQL drivers."
 msgstr ""
 
-#: dialogs/kselectdatabasedlg.cpp:138
-msgid "SQLite requires a file name; try again?"
+#: dialogs/kselectdatabasedlg.cpp:100
+msgid "Qt SQL driver %1 is no longer installed on your system"
 msgstr ""
 
-#: dialogs/kselectdatabasedlg.cpp:165
-msgid ""
-"<h3>Database Type</h3><p>This box lists all Qt SQL drivers installed on your "
-"system. Select the driver for your database type. If the one you want is not "
-"in the list, you need to install the appropriate driver. See your distro "
-"documentation, or visit the Qt web Site (http://www.trolltech.com) and "
-"search for 'SQL drivers'.</p><h3>Database Name</h3><p>The default database "
-"name is KMyMoney, but you may choose some other name if you like. SQLite has "
-"one database per file; selecting this driver opens the file dialog. For "
-"database types other than SQLite and MySql, the database itself must be pre-"
-"created, though KMyMoney will create all table structures where necessary.</"
-"p><h3>Host Name</h3><p>For the average user, the default name of localhost, "
-"being the machine you are currently using, is correct. For networked "
-"databases, enter the host name of the system where the database is stored. "
-"You may need to contact your database administrator for this information.</"
-"p><h3>User Name and Password</h3><p>Check the permissions set up on your "
-"database, or contact the database administrator, for the correct values to "
-"use here. The user name must be capable of deleting, inserting and updating "
-"records. If the user name is the same as your login name, a password is not "
-"normally required.</p><h3>Generate SQL</h3><p>Click this button to create a "
-"text file and write the commands needed to create the database tables and "
-"other objects. With care, this may be edited if the in-built commands do not "
-"work for your database system.</p><p>Please read the appropriate chapter of "
-"the KMyMoney handbook for further information on database usage.</p>"
+#: dialogs/kselectdatabasedlg.cpp:107
+msgid "Qt SQL driver %1 is not suported"
 msgstr ""
 
-#: dialogs/kselectdatabasedlg.cpp:208
-msgid "Selecting a SQL database"
+#: dialogs/kselectdatabasedlg.cpp:164
+#, fuzzy
+msgid "SQLite files (*.sql);; All files (*.*)"
 msgstr ""
+"*.%1|Pliki %2\n"
+"*.*|Wszystkie pliki (*.*)"
+
+#: dialogs/kselectdatabasedlg.cpp:167
+#, fuzzy
+msgid "Select SQLite file"
+msgstr "Zaznacz styl"
+
+#: dialogs/kselectdatabasedlg.cpp:188
+#, fuzzy
+msgid "All files (*.*)"
+msgstr "Wszystkie daty"
+
+#: dialogs/kselectdatabasedlg.cpp:191
+#, fuzzy
+msgid "Select output file"
+msgstr "Wybierz nazwę pliku"
 
 #: dialogs/investactivities.cpp:168
 #, fuzzy
@@ -9276,7 +9313,7 @@ msgstr ""
 msgid "Show title bar on each page"
 msgstr ""
 
-#: dialogs/rc.cpp:836 dialogs/settings/rc.cpp:70
+#: dialogs/rc.cpp:833 dialogs/settings/rc.cpp:70
 msgid "Filter"
 msgstr "Filtr"
 
@@ -9543,7 +9580,7 @@ msgstr ""
 "która będzie wyceniana, a <b>%1</b> przez walutę, na której oparta jest "
 "wycena."
 
-#: dialogs/rc.cpp:808 dialogs/settings/rc.cpp:119 widgets/rc.cpp:45
+#: dialogs/rc.cpp:805 dialogs/settings/rc.cpp:119 widgets/rc.cpp:45
 msgid "Date Format"
 msgstr "Format daty"
 
@@ -9742,32 +9779,24 @@ msgstr "Użyj w celu stworzenia nowego wpisu wycen online"
 msgid "New Quote Source"
 msgstr "Nowe źródło wyceny"
 
-#: dialogs/ksplittransactiondlg.cpp:78 widgets/kmymoneywizard.cpp:123
-msgid "&Finish"
-msgstr "&Zakończ"
-
-#: dialogs/ksplittransactiondlg.cpp:80
-msgid "Accept splits and return to transaction form"
-msgstr "Zaakceptuj podziały i wróć do formularza transakcji"
-
-#: dialogs/ksplittransactiondlg.cpp:81
-msgid ""
-"Use this to accept all changes to the splits and return to the transaction"
-msgstr "Użyj, żeby zaakceptować wszystkie zmiany i powrócić do transakcji"
-
-#: dialogs/ksplittransactiondlg.cpp:86
+#: dialogs/ksplittransactiondlg.cpp:77 dialogs/rc.cpp:786
 msgid "Clear &All"
 msgstr "&Rozlicz wszystko"
 
-#: dialogs/ksplittransactiondlg.cpp:88
+#: dialogs/ksplittransactiondlg.cpp:79
 msgid "Clear all splits"
 msgstr "Rozlicz wszystkie podziały"
 
-#: dialogs/ksplittransactiondlg.cpp:89
+#: dialogs/ksplittransactiondlg.cpp:80
 msgid "Use this to clear all splits of this transaction"
 msgstr "Użyj, żeby rozliczyć wszystkie podziały tej transakcji"
 
-#: dialogs/ksplittransactiondlg.cpp:174
+#: dialogs/ksplittransactiondlg.cpp:84
+#, fuzzy
+msgid "&Merge"
+msgstr "Wszystkie stany"
+
+#: dialogs/ksplittransactiondlg.cpp:182
 msgid ""
 "The total amount of this transaction is %1 while the sum of the splits is %"
 "2. The remaining %3 are unassigned."
@@ -9775,25 +9804,25 @@ msgstr ""
 "Całkowita suma tej transakcji to %1, podczas gdy suma podziałów wynosi %2. "
 "Pozostałe %3 nie są przypisane."
 
-#: dialogs/ksplittransactiondlg.cpp:182
+#: dialogs/ksplittransactiondlg.cpp:190
 #, fuzzy, c-format
 msgid "Change &total amount of transaction to %1."
 msgstr "&Zmień całkowitą kwotę transakcji na %1."
 
-#: dialogs/ksplittransactiondlg.cpp:185
+#: dialogs/ksplittransactiondlg.cpp:193
 msgid "&Distribute difference of %1 among all splits."
 msgstr "Ro&zdziel różnicę %1 pomiędzy wszystkie podziały."
 
-#: dialogs/ksplittransactiondlg.cpp:194
+#: dialogs/ksplittransactiondlg.cpp:202
 #, fuzzy, c-format
 msgid "&Leave total amount of transaction at %1."
 msgstr "&Zmień całkowitą kwotę transakcji na %1."
 
-#: dialogs/ksplittransactiondlg.cpp:196
+#: dialogs/ksplittransactiondlg.cpp:204
 msgid "&Leave %1 unassigned."
 msgstr "&Pozostaw %1 nieprzydzielony."
 
-#: dialogs/ksplittransactiondlg.cpp:266
+#: dialogs/ksplittransactiondlg.cpp:274
 msgid ""
 "You are about to delete all splits of this transaction. Do you really want "
 "to continue?"
@@ -9806,7 +9835,7 @@ msgid "Use this to create a new QIF import/export profile"
 msgstr "Użyj, żeby stworzyć nowe profil importu/eksportu QIF"
 
 #: dialogs/mymoneyqifprofileeditor.cpp:147
-#: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:798
+#: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:795
 msgid "QIF Profile Editor"
 msgstr "Edytor profilu QIF"
 
@@ -9875,7 +9904,7 @@ msgstr "Historia ceny"
 msgid "Split Options"
 msgstr "Opcje podziału"
 
-#: dialogs/kmymoneysplittable.cpp:99 dialogs/rc.cpp:746
+#: dialogs/kmymoneysplittable.cpp:99 dialogs/rc.cpp:729
 #: widgets/kmymoneypriceview.cpp:149
 #, fuzzy
 msgid "Edit..."
@@ -9889,17 +9918,17 @@ msgstr "Duplikat"
 msgid "Delete ..."
 msgstr "Usuń..."
 
-#: dialogs/kmymoneysplittable.cpp:271
+#: dialogs/kmymoneysplittable.cpp:275
 msgid ""
 "_: Duplicate split\n"
 "CTRL+c"
 msgstr "CTRL+c"
 
-#: dialogs/kmymoneysplittable.cpp:541
+#: dialogs/kmymoneysplittable.cpp:557
 msgid "will be calculated"
 msgstr "będzie obliczone"
 
-#: dialogs/kmymoneysplittable.cpp:627
+#: dialogs/kmymoneysplittable.cpp:643
 msgid ""
 "You are about to delete the selected split. Do you really want to continue?"
 msgstr "Zamierzasz usunąć wybrany podział. Czy chcesz kontynuować?"
@@ -10131,7 +10160,7 @@ msgstr "Waluty"
 msgid "real ID"
 msgstr "rzeczywisty ID"
 
-#: dialogs/rc.cpp:73 dialogs/rc.cpp:737
+#: dialogs/rc.cpp:73 dialogs/rc.cpp:720
 msgid "ID"
 msgstr "ID"
 
@@ -10143,7 +10172,7 @@ msgstr "X"
 msgid "Online Source"
 msgstr "Źródło danych online"
 
-#: dialogs/rc.cpp:78 dialogs/rc.cpp:276 dialogs/rc.cpp:310 dialogs/rc.cpp:699
+#: dialogs/rc.cpp:78 dialogs/rc.cpp:276 dialogs/rc.cpp:310 dialogs/rc.cpp:682
 msgid "F1"
 msgstr "F1"
 
@@ -10206,7 +10235,7 @@ msgstr "Częstotliwość:"
 msgid "Payment information"
 msgstr "Informacje o płatności"
 
-#: dialogs/rc.cpp:104 dialogs/rc.cpp:159 dialogs/rc.cpp:245
+#: dialogs/rc.cpp:104 dialogs/rc.cpp:159 dialogs/rc.cpp:245 dialogs/rc.cpp:750
 #: widgets/register.cpp:547
 msgid "C"
 msgstr "R"
@@ -10311,7 +10340,7 @@ msgstr "Weryfikacja płatności"
 #: dialogs/rc.cpp:650 dialogs/rc.cpp:652 dialogs/rc.cpp:655 dialogs/rc.cpp:656
 #: dialogs/rc.cpp:657 dialogs/rc.cpp:662 dialogs/rc.cpp:663 dialogs/rc.cpp:666
 #: dialogs/rc.cpp:668 dialogs/rc.cpp:670 dialogs/rc.cpp:672 dialogs/rc.cpp:674
-#: dialogs/rc.cpp:676 dialogs/rc.cpp:679 dialogs/rc.cpp:824 widgets/rc.cpp:165
+#: dialogs/rc.cpp:676 dialogs/rc.cpp:679 dialogs/rc.cpp:821 widgets/rc.cpp:165
 msgid "1"
 msgstr "1"
 
@@ -10675,7 +10704,7 @@ msgstr "Ustawienia domyślne"
 msgid "F"
 msgstr "F"
 
-#: dialogs/rc.cpp:255 dialogs/rc.cpp:845
+#: dialogs/rc.cpp:255 dialogs/rc.cpp:842
 msgid "Reset"
 msgstr "Ustawienia domyślne"
 
@@ -10926,7 +10955,7 @@ msgstr "Informacje o płatności"
 msgid "Currency:"
 msgstr "Waluta:"
 
-#: dialogs/rc.cpp:350 dialogs/rc.cpp:794
+#: dialogs/rc.cpp:350 dialogs/rc.cpp:791
 msgid "Date:"
 msgstr "Data:"
 
@@ -11124,7 +11153,7 @@ msgstr ""
 "Wpisz poniżej szczegóły i kliknij na <b>Dalej</b>, żeby kontynuować "
 "wpisywanie szczegółów aktualizacji online."
 
-#: dialogs/rc.cpp:440 dialogs/rc.cpp:743
+#: dialogs/rc.cpp:440 dialogs/rc.cpp:726
 msgid "Fraction"
 msgstr "Ułamek"
 
@@ -11780,63 +11809,63 @@ msgstr "Data naliczania odsetek:"
 msgid "Payment frequency:"
 msgstr "Częstotliwość płatności:"
 
-#: dialogs/rc.cpp:697
+#: dialogs/rc.cpp:680
 msgid "Online Quote Configuration"
 msgstr "Konfiguracja wyceny online"
 
-#: dialogs/rc.cpp:702
+#: dialogs/rc.cpp:685
 msgid "Perl Location:"
 msgstr "Położenie Perla:"
 
-#: dialogs/rc.cpp:703
+#: dialogs/rc.cpp:686
 msgid "Script:"
 msgstr "Skrypt:"
 
-#: dialogs/rc.cpp:705
+#: dialogs/rc.cpp:688
 msgid "Reassign payees"
 msgstr ""
 
-#: dialogs/rc.cpp:706
+#: dialogs/rc.cpp:689
 msgid ""
 "The transactions associated with the selected payees need to be re-assigned "
 "to a different payee before the selected payees can be deleted. Please "
 "select a payee from the list below."
 msgstr ""
 
-#: dialogs/rc.cpp:707
+#: dialogs/rc.cpp:690
 msgid "Available payees:"
 msgstr ""
 
-#: dialogs/rc.cpp:708
+#: dialogs/rc.cpp:691
 msgid "Assign deleted names to the above selected payee's matching list"
 msgstr ""
 
-#: dialogs/rc.cpp:711
+#: dialogs/rc.cpp:694
 #, fuzzy
 msgid "PluginDlg"
 msgstr "&Wtyczki"
 
-#: dialogs/rc.cpp:712
+#: dialogs/rc.cpp:695
 #, fuzzy
 msgid "PlugIn"
 msgstr "&Wtyczki"
 
-#: dialogs/rc.cpp:713 widgets/transaction.cpp:1061
+#: dialogs/rc.cpp:696 widgets/transaction.cpp:1061
 #: widgets/transaction.cpp:1648
 #, fuzzy
 msgid "Status"
 msgstr "Stan:"
 
-#: dialogs/rc.cpp:714
+#: dialogs/rc.cpp:697
 #, fuzzy
 msgid "Feature"
 msgstr "&Stwórz"
 
-#: dialogs/rc.cpp:718
+#: dialogs/rc.cpp:701
 msgid "Reconciliation Dialog"
 msgstr "Okno uzgadniania"
 
-#: dialogs/rc.cpp:719
+#: dialogs/rc.cpp:702
 msgid ""
 "This dialog will assist in helping you to balance your account.\n"
 "\n"
@@ -11858,206 +11887,235 @@ msgstr ""
 "Konto jest zbilansowane kiedy Różnica wynosi zero. Kliknij na przycisk "
 "Zakończ, żeby zapisać uzgodnione transakcje."
 
-#: dialogs/rc.cpp:720
+#: dialogs/rc.cpp:703
 msgid "Withdrawals"
 msgstr "Wypłaty"
 
-#: dialogs/rc.cpp:722 dialogs/rc.cpp:723 dialogs/rc.cpp:823
+#: dialogs/rc.cpp:705 dialogs/rc.cpp:706 dialogs/rc.cpp:820
 msgid "$"
 msgstr "$"
 
-#: dialogs/rc.cpp:725
+#: dialogs/rc.cpp:708
 msgid "Previous Balance:"
 msgstr "Poprzednie saldo:"
 
-#: dialogs/rc.cpp:726 dialogs/rc.cpp:728 dialogs/rc.cpp:730 dialogs/rc.cpp:732
-#: dialogs/rc.cpp:821
+#: dialogs/rc.cpp:709 dialogs/rc.cpp:711 dialogs/rc.cpp:713 dialogs/rc.cpp:715
+#: dialogs/rc.cpp:818
 msgid "0"
 msgstr "0"
 
-#: dialogs/rc.cpp:727
+#: dialogs/rc.cpp:710
 msgid "Ending Balance:"
 msgstr "Końcowe saldo:"
 
-#: dialogs/rc.cpp:729
+#: dialogs/rc.cpp:712
 msgid "Cleared Balance:"
 msgstr "Rozliczone saldo:"
 
-#: dialogs/rc.cpp:731
+#: dialogs/rc.cpp:714
 msgid "Difference:"
 msgstr "Różnica:"
 
-#: dialogs/rc.cpp:733
+#: dialogs/rc.cpp:716
 #, fuzzy
 msgid "Edit Transactions..."
 msgstr "&Edycja transakcji..."
 
-#: dialogs/rc.cpp:736
+#: dialogs/rc.cpp:719
 msgid "Security List Editor"
 msgstr "Edycja listy papierów wartościowych"
 
-#: dialogs/rc.cpp:741
+#: dialogs/rc.cpp:724
 msgid "Market"
 msgstr "Giełda"
 
-#: dialogs/rc.cpp:744
+#: dialogs/rc.cpp:727
 msgid "Cash Fraction"
 msgstr "Ułamek pieniężny"
 
-#: dialogs/rc.cpp:745
+#: dialogs/rc.cpp:728
 #, fuzzy
 msgid "Add..."
 msgstr "&Dodaj..."
 
-#: dialogs/rc.cpp:747 widgets/kmymoneypriceview.cpp:157
+#: dialogs/rc.cpp:730 widgets/kmymoneypriceview.cpp:157
 #, fuzzy
 msgid "Delete..."
 msgstr "Usuń..."
 
-#: dialogs/rc.cpp:748
+#: dialogs/rc.cpp:731
 msgid "Show national currencies"
 msgstr "Pokaż waluty narodowe"
 
-#: dialogs/rc.cpp:750
+#: dialogs/rc.cpp:733
 msgid "KMyMoney - Select Database"
 msgstr ""
 
-#: dialogs/rc.cpp:751
+#: dialogs/rc.cpp:734
 msgid "CAUTION!"
 msgstr ""
 
-#: dialogs/rc.cpp:752
+#: dialogs/rc.cpp:735
 msgid ""
 "<font color=\"#ff2727\">This software is still in an experimental stage, and "
 "loss of data is possible. Please ensure that you have an alternative backup "
 "copy of your data before committing to database usage.</font>"
 msgstr ""
 
-#: dialogs/rc.cpp:753
+#: dialogs/rc.cpp:736
 #, fuzzy
 msgid "Database Type"
 msgstr "Typ kategorii"
 
-#: dialogs/rc.cpp:754
+#: dialogs/rc.cpp:737
 #, fuzzy
 msgid "Database Name"
 msgstr "Zakres dat"
 
-#: dialogs/rc.cpp:755
+#: dialogs/rc.cpp:738
 #, fuzzy
 msgid "Host Name"
 msgstr "Nazwa raportu"
 
-#: dialogs/rc.cpp:756
+#: dialogs/rc.cpp:739
 #, fuzzy
 msgid "User Name"
 msgstr "Nazwa użytkownika"
 
-#: dialogs/rc.cpp:758
+#: dialogs/rc.cpp:741
 msgid "Preload all data"
 msgstr ""
 
-#: dialogs/rc.cpp:760
+#: dialogs/rc.cpp:743
 #, fuzzy
-msgid "Generate SQL"
+msgid "&Generate SQL"
 msgstr "Ogólne"
 
-#: dialogs/rc.cpp:768 widgets/rc.cpp:169
+#: dialogs/rc.cpp:745
+msgid "Ca&ncel"
+msgstr ""
+
+#: dialogs/rc.cpp:760 widgets/rc.cpp:169
 #, fuzzy
 msgid "Sort options"
 msgstr "Opcje importu"
 
-#: dialogs/rc.cpp:769
+#: dialogs/rc.cpp:761
 #, fuzzy
 msgid "Use default"
 msgstr "Własne użytkownika"
 
-#: dialogs/rc.cpp:773
+#: dialogs/rc.cpp:765
 msgid "Correct splits"
 msgstr "Popraw podziały"
 
-#: dialogs/rc.cpp:775
+#: dialogs/rc.cpp:767
 msgid "How do you want to proceed?"
 msgstr ""
 
-#: dialogs/rc.cpp:776
+#: dialogs/rc.cpp:768
 #, fuzzy
 msgid "Continue to edit splits"
 msgstr "Kontynuuj &edycję podziałów"
 
-#: dialogs/rc.cpp:777
+#: dialogs/rc.cpp:769
 #, fuzzy, c-format
 msgid "Change total amount of transaction to %1."
 msgstr "&Zmień całkowitą kwotę transakcji na %1."
 
-#: dialogs/rc.cpp:778
+#: dialogs/rc.cpp:770
 #, fuzzy
 msgid "Distribute difference of %1 among all splits."
 msgstr "Ro&zdziel różnicę %1 pomiędzy wszystkie podziały."
 
-#: dialogs/rc.cpp:779
+#: dialogs/rc.cpp:771
 #, fuzzy
 msgid "Leave %1 unassigned."
 msgstr "&Pozostaw %1 nieprzydzielony."
 
-#: dialogs/rc.cpp:782
+#: dialogs/rc.cpp:774
 msgid "Split transaction"
 msgstr "Podziel transakcję"
 
-#: dialogs/rc.cpp:783
+#: dialogs/rc.cpp:775
 msgid "<b>11,00<b>"
 msgstr "<b>11,00<b>"
 
-#: dialogs/rc.cpp:784
+#: dialogs/rc.cpp:776
 msgid "<b>111,00<b>"
 msgstr "<b>111,00<b>"
 
-#: dialogs/rc.cpp:785
+#: dialogs/rc.cpp:777
 msgid "Unassigned"
 msgstr "Nieprzydzielone"
 
-#: dialogs/rc.cpp:786
+#: dialogs/rc.cpp:778
 msgid "Sum of splits"
 msgstr "Suma podziałów"
 
-#: dialogs/rc.cpp:787
+#: dialogs/rc.cpp:779
 msgid "100,00"
 msgstr "100,00"
 
-#: dialogs/rc.cpp:788
+#: dialogs/rc.cpp:780
 msgid "Transaction amount"
 msgstr "Kwota transakcji"
 
-#: dialogs/rc.cpp:792
+#: dialogs/rc.cpp:781
+#, fuzzy
+msgid "Merge"
+msgstr "Więcej"
+
+#: dialogs/rc.cpp:782
+msgid "Merges splits with the same category to one split"
+msgstr ""
+
+#: dialogs/rc.cpp:783
+msgid ""
+"In case you have multiple split entries to the same category and you like to "
+"keep them as a single split, press this button. The amount for identical "
+"categories will be added and stored in a single split for that category."
+msgstr ""
+
+#: dialogs/rc.cpp:784
+#, fuzzy
+msgid "Clear &Zero"
+msgstr "Rozliczony"
+
+#: dialogs/rc.cpp:785
+msgid "Removes all splits that have a value of zero."
+msgstr ""
+
+#: dialogs/rc.cpp:789
 msgid "New price entry"
 msgstr "Nowa pozycja ceny"
 
-#: dialogs/rc.cpp:800
+#: dialogs/rc.cpp:797
 msgid "Void mark"
 msgstr "Znacznik nieważności"
 
-#: dialogs/rc.cpp:801
+#: dialogs/rc.cpp:798
 msgid "Opening Balance text"
 msgstr "Tekst stanu otwarcia"
 
-#: dialogs/rc.cpp:802
+#: dialogs/rc.cpp:799
 msgid "Type field text"
 msgstr "Wpisz tekst pozycji"
 
-#: dialogs/rc.cpp:803
+#: dialogs/rc.cpp:800
 msgid "Account delimiter"
 msgstr "Separator konta"
 
-#: dialogs/rc.cpp:805
+#: dialogs/rc.cpp:802
 #, fuzzy
 msgid "Attempt to match similar transactions"
 msgstr "Próba dopasowania podobnych transakcji"
 
-#: dialogs/rc.cpp:807 dialogs/rc.cpp:809
+#: dialogs/rc.cpp:804 dialogs/rc.cpp:806
 msgid "The format of the dates in the QIF file."
 msgstr "Format dat w pliku QIF."
 
-#: dialogs/rc.cpp:810 dialogs/rc.cpp:812
+#: dialogs/rc.cpp:807 dialogs/rc.cpp:809
 msgid ""
 "If a QIF file contains date entries with years represented with two digits "
 "then either an apostrophe or a slash may be used to delimit the year in the "
@@ -12071,91 +12129,91 @@ msgstr ""
 "określić, który zakres lat będzie miał rok oddzielony apostrofem (np. dla "
 "Quickena to zwykle 1900-1949)."
 
-#: dialogs/rc.cpp:811
+#: dialogs/rc.cpp:808
 msgid "Apostrophe Handling"
 msgstr "Obsługa apostrofów"
 
-#: dialogs/rc.cpp:813
+#: dialogs/rc.cpp:810
 msgid "Amounts"
 msgstr "Sumy/kwoty"
 
-#: dialogs/rc.cpp:814
+#: dialogs/rc.cpp:811
 msgid "Field"
 msgstr "Pole"
 
-#: dialogs/rc.cpp:815
+#: dialogs/rc.cpp:812
 msgid "QIF-Record"
 msgstr "Rekord QIF"
 
-#: dialogs/rc.cpp:816 dialogs/rc.cpp:834
+#: dialogs/rc.cpp:813 dialogs/rc.cpp:831
 msgid "Decimal Symbol"
 msgstr "Symbol dziesiętny"
 
-#: dialogs/rc.cpp:817
+#: dialogs/rc.cpp:814
 msgid "Thousand Delimiter"
 msgstr "Separator tysięcy"
 
-#: dialogs/rc.cpp:818
+#: dialogs/rc.cpp:815
 msgid "SortColumnInvisible"
 msgstr "SortColumnInvisible"
 
-#: dialogs/rc.cpp:820
+#: dialogs/rc.cpp:817
 msgid "T"
 msgstr "T"
 
-#: dialogs/rc.cpp:822
+#: dialogs/rc.cpp:819
 msgid "Split-Value"
 msgstr "Wartość podziału"
 
-#: dialogs/rc.cpp:825
+#: dialogs/rc.cpp:822
 msgid "Commission"
 msgstr "Prowizja"
 
-#: dialogs/rc.cpp:826
+#: dialogs/rc.cpp:823
 msgid "O"
 msgstr "O"
 
-#: dialogs/rc.cpp:827
+#: dialogs/rc.cpp:824
 msgid "2"
 msgstr "2"
 
-#: dialogs/rc.cpp:829
+#: dialogs/rc.cpp:826
 msgid "I"
 msgstr "I"
 
-#: dialogs/rc.cpp:830
+#: dialogs/rc.cpp:827
 msgid "3"
 msgstr "3"
 
-#: dialogs/rc.cpp:832
+#: dialogs/rc.cpp:829
 msgid "Q"
 msgstr "Q"
 
-#: dialogs/rc.cpp:833
+#: dialogs/rc.cpp:830
 msgid "4"
 msgstr "4"
 
-#: dialogs/rc.cpp:835
+#: dialogs/rc.cpp:832
 msgid "Thousands Separator"
 msgstr "Separator tysięcy"
 
-#: dialogs/rc.cpp:837
+#: dialogs/rc.cpp:834
 msgid "Output filter location"
 msgstr "Położenie filtra wyjściowego"
 
-#: dialogs/rc.cpp:838
+#: dialogs/rc.cpp:835
 msgid "Input filter file type"
 msgstr "Typ pliku filtra wejściowego"
 
-#: dialogs/rc.cpp:839
+#: dialogs/rc.cpp:836
 msgid "*.qif"
 msgstr "*.qif"
 
-#: dialogs/rc.cpp:840
+#: dialogs/rc.cpp:837
 msgid "Input filter location"
 msgstr "Położenie filtra wejściowego"
 
-#: dialogs/rc.cpp:844
+#: dialogs/rc.cpp:841
 #, fuzzy
 msgid "Rename"
 msgstr "&Zmień nazwę"
@@ -12504,7 +12562,7 @@ msgstr "termin"
 msgid "principal and interest"
 msgstr "kapitał główny i odsetki"
 
-#: dialogs/knewloanwizard.cpp:843
+#: dialogs/knewloanwizard.cpp:741
 #, c-format
 msgid ""
 "The number of payments has been decremented and the final payment has been "
@@ -12512,16 +12570,16 @@ msgid ""
 msgstr ""
 "Liczba płatności została zmniejszona a końcowa płatność zmieniona na %1."
 
-#: dialogs/knewloanwizard.cpp:851 dialogs/knewloanwizard.cpp:871
+#: dialogs/knewloanwizard.cpp:749 dialogs/knewloanwizard.cpp:769
 #, c-format
 msgid "The final payment has been modified to %1."
 msgstr "Ostatnia płatność została zmieniona na %1."
 
-#: dialogs/knewloanwizard.cpp:902
+#: dialogs/knewloanwizard.cpp:800
 msgid "KMyMoney has calculated a final payment of %1 for this loan."
 msgstr "KMyMoney wyliczył końcową płatność %1 dla tej pożyczki."
 
-#: dialogs/knewloanwizard.cpp:917
+#: dialogs/knewloanwizard.cpp:815
 msgid ""
 "You have entered mis-matching information. Please backup to the appropriate "
 "page and update your figures or leave one value empty to let KMyMoney "
@@ -13005,10 +13063,6 @@ msgstr ""
 msgid "S&earch:"
 msgstr "Szukaj"
 
-#: widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
-msgid "All"
-msgstr "Wszystko"
-
 #: widgets/kmymoneyaccountselector.cpp:110
 #: widgets/kmymoneyaccountselector.cpp:371
 msgid "Income categories"
@@ -13108,6 +13162,10 @@ msgstr "Kopia zapasowa"
 #, fuzzy
 msgid "&Next"
 msgstr "&Nowy"
+
+#: widgets/kmymoneywizard.cpp:123
+msgid "&Finish"
+msgstr "&Zakończ"
 
 #: widgets/kmymoneywizard.cpp:274
 #, fuzzy
@@ -13350,19 +13408,6 @@ msgid ""
 msgstr ""
 "<p>Na tej karcie konfiguruje się, w jaki sposób powinny być wybrane i "
 "poukładane wiersze i kolumny.</p>"
-
-#: widgets/rc.cpp:66
-msgid "Top-Level"
-msgstr ""
-
-#: widgets/rc.cpp:67
-msgid "Groups"
-msgstr ""
-
-#: widgets/rc.cpp:68
-#, fuzzy
-msgid "Totals"
-msgstr "Suma"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
 msgid ""
@@ -13802,6 +13847,17 @@ msgstr "Ostatnie 3 miesiące"
 msgid "User defined"
 msgstr "Własne użytkownika"
 
+#, fuzzy
+#~ msgid "Multi-user mode not yet implemented\n"
+#~ msgstr "Funkcja nie jest dostępna"
+
+#~ msgid "Accept splits and return to transaction form"
+#~ msgstr "Zaakceptuj podziały i wróć do formularza transakcji"
+
+#~ msgid ""
+#~ "Use this to accept all changes to the splits and return to the transaction"
+#~ msgstr "Użyj, żeby zaakceptować wszystkie zmiany i powrócić do transakcji"
+
 #~ msgid ""
 #~ "This QIF file contains investment transactions.  You are trying to import "
 #~ "this file into an account which is not an investment account.  These "
@@ -14074,14 +14130,6 @@ msgstr "Własne użytkownika"
 #, fuzzy
 #~ msgid "Match With This Transaction"
 #~ msgstr "Pomiń tę transakcję"
-
-#, fuzzy
-#~ msgid ""
-#~ "%1|%2 files (%3)\n"
-#~ "*.*|All files (*.*)"
-#~ msgstr ""
-#~ "*.%1|Pliki %2\n"
-#~ "*.*|Wszystkie pliki (*.*)"
 
 #~ msgid "Import %1 Statement..."
 #~ msgstr "Import wyciągu %1..."
