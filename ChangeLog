@@ -1,7 +1,7 @@
 
 2009-01-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed loan interest calculation in pivot reports when the loan
-    account is not included in the report
+    account is not included in the report - #2541605
 
 2009-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added #2551345 (Maintain geometry of split transaction editor
