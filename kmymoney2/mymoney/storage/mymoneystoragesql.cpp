@@ -1427,7 +1427,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":typeString", MyMoneySchedule::scheduleTypeToString(sch.type()));
   q.bindValue(":occurence", sch.occurence());
   q.bindValue(":occurenceMultiplier", sch.occurenceMultiplier());
-  q.bindValue(":occurenceString", MyMoneySchedule::occurenceToString(sch.occurence()));
+  q.bindValue(":occurenceString", sch.occurenceToString());
   q.bindValue(":paymentType", sch.paymentType());
   q.bindValue(":paymentTypeString", MyMoneySchedule::paymentMethodToString(sch.paymentType()));
   q.bindValue(":startDate", sch.startDate().toString(Qt::ISODate));

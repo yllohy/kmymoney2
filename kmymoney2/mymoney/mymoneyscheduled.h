@@ -436,6 +436,13 @@ public:
   virtual bool hasReferenceTo(const QString& id) const;
 
   /**
+   * Returns the human-readable format of Schedule's occurence
+   *
+   * @return QString representing the human readable format
+   */
+  QString occurenceToString() const;
+
+  /**
    * This method is used to convert the occurence type from it's
    * internal representation into a human readable format.
    *
@@ -492,7 +499,7 @@ public:
   *
   * @return int  Number of days between events
   */
-  static int eventsPerYear(MyMoneySchedule::occurenceE occurence); 
+  static int eventsPerYear(MyMoneySchedule::occurenceE occurence);
 
  /**
   *

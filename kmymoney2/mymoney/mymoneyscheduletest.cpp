@@ -1277,3 +1277,50 @@ void MyMoneyScheduleTest::testEventsPerYear()
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYOTHERYEAR) == 0);
 }
 
+void MyMoneyScheduleTest::testOccurenceToString()
+{
+  // For each occurenceE test MyMoneySchedule::occurenceToString(occurenceE)
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_ONCE) == "Once" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_DAILY) == "Daily" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY) == "Weekly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK) == "Every other week" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY) == "Fortnightly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYHALFMONTH) == "Every half month" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS) == "Every three weeks" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS) == "Every four weeks" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS) == "Every thirty days" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY) == "Monthly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS) == "Every eight weeks" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH) == "Every two months" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == "Every three months" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY) == "Quarterly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS) == "Every four months" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY) == "Twice yearly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_YEARLY) == "Yearly" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERYEAR) == "Every other year" );
+  // TODO: create test schedule
+  // For each occurenceE set occurence and compare occurenceToString() with oTS(occurence())
+  MyMoneySchedule s;
+  s.setStartDate(QDate(2007, 1, 1));
+  s.setNextDueDate(s.startDate());
+  s.setLastPayment(s.startDate());
+  s.setOccurence(MyMoneySchedule::OCCUR_ONCE); CPPUNIT_ASSERT(s.occurenceToString() == "Once" );
+  s.setOccurence(MyMoneySchedule::OCCUR_DAILY); CPPUNIT_ASSERT(s.occurenceToString() == "Daily" );
+  s.setOccurence(MyMoneySchedule::OCCUR_WEEKLY); CPPUNIT_ASSERT(s.occurenceToString() == "Weekly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK); CPPUNIT_ASSERT(s.occurenceToString() == "Every other week" );
+  s.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY); CPPUNIT_ASSERT(s.occurenceToString() == "Fortnightly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYHALFMONTH); CPPUNIT_ASSERT(s.occurenceToString() == "Every half month" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS); CPPUNIT_ASSERT(s.occurenceToString() == "Every three weeks" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS); CPPUNIT_ASSERT(s.occurenceToString() == "Every four weeks" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS); CPPUNIT_ASSERT(s.occurenceToString() == "Every thirty days" );
+  s.setOccurence(MyMoneySchedule::OCCUR_MONTHLY); CPPUNIT_ASSERT(s.occurenceToString() == "Monthly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS); CPPUNIT_ASSERT(s.occurenceToString() == "Every eight weeks" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH); CPPUNIT_ASSERT(s.occurenceToString() == "Every two months" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS); CPPUNIT_ASSERT(s.occurenceToString() == "Every three months" );
+  s.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY); CPPUNIT_ASSERT(s.occurenceToString() == "Quarterly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS); CPPUNIT_ASSERT(s.occurenceToString() == "Every four months" );
+  s.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY); CPPUNIT_ASSERT(s.occurenceToString() == "Twice yearly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_YEARLY); CPPUNIT_ASSERT(s.occurenceToString() == "Yearly" );
+  s.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR); CPPUNIT_ASSERT(s.occurenceToString() == "Every other year" );
+}
+

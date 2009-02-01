@@ -139,7 +139,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     else
       setText(4, KGlobal::locale()->formatDate(schedule.nextDueDate(), true));
 
-    setText(5, i18n(MyMoneySchedule::occurenceToString(schedule.occurence())));
+    setText(5, i18n(schedule.occurenceToString()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));
   }
   catch (MyMoneyException *e)

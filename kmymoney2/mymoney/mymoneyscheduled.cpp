@@ -1075,6 +1075,11 @@ bool MyMoneySchedule::hasReferenceTo(const QString& id) const
   return m_transaction.hasReferenceTo(id);
 }
 
+QString MyMoneySchedule::occurenceToString() const
+{
+  return occurenceToString( occurence() );
+}
+
 QString MyMoneySchedule::occurenceToString(occurenceE occurence)
 {
   QString occurenceString = I18N_NOOP("Any");
