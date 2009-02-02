@@ -36,17 +36,6 @@ AM_PATH_CPPUNIT(1.8.0,
 	)
 
 dnl
-dnl check for libxml2
-dnl
-AM_PATH_XML2(2.0.0,
-	AM_CONDITIONAL(LIBXML2, test "x$no_xml" = x)
-	AC_DEFINE_UNQUOTED(HAVE_LIBXML2, 1, [Define if you have libxml2])
-	AC_SUBST(XML2_LIBS),
-	AM_CONDITIONAL(LIBXML2, test "x$no_xml" = x)
-	AC_SUBST(XML2_LIBS)
-	)
-
-dnl
 dnl check for tools required for generation of PDF documentation 
 dnl
 AC_PDF_GENERATION()
