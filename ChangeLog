@@ -1,4 +1,9 @@
 
+2009-02-01 Alvaro Soliverez <asoliverez@gmail.com>
+  * Code cleanup of calculateAutoLoan in kmymoneyutils
+  * Added interestSplit method to MyMoneyTransaction
+  * Added isInterestSplit method to MyMoneySplit
+
 2009-02-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (occurenceToString.diff)
   * Regenerated POT file and merged all PO files

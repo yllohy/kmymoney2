@@ -194,6 +194,12 @@ public:
   const MyMoneySplit& amortizationSplit(void) const;
 
   /**
+   * This method returns a const reference to the interest split.
+   * In case none is found, a reference to an empty split will be returned.
+   */
+  const MyMoneySplit& interestSplit(void) const;
+
+  /**
     * This method is used to check if two transactions are identical.
     * Identical transactions have:
     *

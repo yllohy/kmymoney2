@@ -309,6 +309,19 @@ const MyMoneySplit& MyMoneyTransaction::amortizationSplit(void) const
   return nullSplit;
 }
 
+const MyMoneySplit& MyMoneyTransaction::interestSplit(void) const
+{
+  static MyMoneySplit nullSplit;
+
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).isInterestSplit() && (*it).isAutoCalc())
+      return *it;
+  }
+  return nullSplit;
+}
+
 unsigned long MyMoneyTransaction::hash(const QString& txt, unsigned long h)
 {
   unsigned long g;

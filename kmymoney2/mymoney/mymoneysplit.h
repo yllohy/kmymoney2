@@ -146,6 +146,7 @@ public:
   const QString& action(void) const { return m_action; }
   const QString& number(void) const { return m_number; }
   bool isAmortizationSplit(void) const { return m_action == ActionAmortization; }
+  bool isInterestSplit(void) const { return m_action == ActionInterest; }
   bool isAutoCalc(void) const { return (m_shares == MyMoneyMoney::autoCalc) || (m_value == MyMoneyMoney::autoCalc); }
   const QString& bankID(void) const { return m_bankID; }
   const QString& transactionId(void) const { return m_transactionId; }

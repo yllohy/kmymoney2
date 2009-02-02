@@ -407,17 +407,10 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
 {
   try {
     if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
-      MyMoneySplit interestSplit, amortizationSplit;
-      QValueList<MyMoneySplit>::ConstIterator it_s;
-      for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-        if((*it_s).value() == MyMoneyMoney::autoCalc) {
-          if((*it_s).action() == MyMoneySplit::ActionAmortization) {
-            amortizationSplit = (*it_s);
-          } else if((*it_s).action() == MyMoneySplit::ActionInterest) {
-            interestSplit = (*it_s);
-          }
-        }
-      }
+
+      //get amortization and interest autoCalc splits
+      MyMoneySplit amortizationSplit = transaction.amortizationSplit();
+      MyMoneySplit interestSplit = transaction.interestSplit();
 
       if(!amortizationSplit.id().isEmpty() && !interestSplit.id().isEmpty()) {
         MyMoneyAccountLoan acc(MyMoneyFile::instance()->account(amortizationSplit.accountId()));
@@ -487,13 +480,13 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
           interest = -interest;
           amortization = -amortization;
         }
-        amortizationSplit.setValue(amortization);
-        interestSplit.setValue(interest);
 
-        // FIXME: for now we only assume loans to be in the base currency
         amortizationSplit.setShares(amortization);
         interestSplit.setShares(interest);
 
+        // FIXME: for now we only assume loans to be in the currency of the transaction
+        amortizationSplit.setValue(amortization);
+        interestSplit.setValue(interest);
 
         transaction.modifySplit(amortizationSplit);
         transaction.modifySplit(interestSplit);
