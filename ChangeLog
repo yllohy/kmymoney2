@@ -1,4 +1,7 @@
 
+2009-02-02 Alvaro Soliverez <asoliverez@gmail.com>
+  * Updated Spanish translation
+
 2009-02-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Code cleanup of calculateAutoLoan in kmymoneyutils
   * Added interestSplit method to MyMoneyTransaction
