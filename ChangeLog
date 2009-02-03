@@ -1,9 +1,11 @@
 
 2009-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show correct amount for multi-currency schedules
-  * Updated portuguese translation from José Jorge
+  * Updated Portuguese translation from José Jorge
   * Added home_pt.html from José Jorge
   * Fixed #2558627 (Account entry widget mess about splits)
+  * Updated Romanian translation by Cristian Onet
+  * Fixed an OFX issue when the bank_id field was not filled
 
 2009-02-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed dependancy to libxml2-devel

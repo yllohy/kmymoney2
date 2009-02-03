@@ -444,6 +444,10 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
   {
     s.m_strRoutingNumber = data.bank_id;
   }
+  if(data.broker_id_valid == true)
+  {
+    s.m_strRoutingNumber = data.broker_id;
+  }
   if(data.currency_valid==true)
   {
     s.m_strCurrency = data.currency;

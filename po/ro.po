@@ -5,15 +5,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-01-10 13:06+0200\n"
+"PO-Revision-Date: 2009-02-01 22:01+0200\n"
 "Last-Translator: Cristian Onet <onet.cristian@gmail.com>\n"
-"Language-Team: Română <KMyMoney2-i18n-request@lists.sourceforge.net>\n"
+"Language-Team: Română <KMyMoney2-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
+"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
 
 #: wizards/wizardpages/rc.cpp:1
 msgid ""
@@ -532,8 +531,7 @@ msgid "Create a new asset account"
 msgstr "Creează un nou cont de active"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1383
-msgid ""
-"If the asset account does not yet exist, press this button to create it."
+msgid "If the asset account does not yet exist, press this button to create it."
 msgstr "Dacă contul de active nu există apăsaţi acest buton pentru a-l crea"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1595
@@ -885,10 +883,8 @@ msgid "Preferred account"
 msgstr "Cont preferat"
 
 #: wizards/newaccountwizard/rc.cpp:18
-msgid ""
-"Mark this checkbox if the account should be maintained as preferred account"
-msgstr ""
-"Bifaţi acestă căsuţă dacă doriţi ca acest cont să fie un cont preferat."
+msgid "Mark this checkbox if the account should be maintained as preferred account"
+msgstr "Bifaţi acestă căsuţă dacă doriţi ca acest cont să fie un cont preferat."
 
 #: wizards/newaccountwizard/rc.cpp:19
 msgid ""
@@ -1097,8 +1093,7 @@ msgstr "Variabilă"
 
 #: wizards/newaccountwizard/rc.cpp:52
 msgid "Time between interest changes"
-msgstr ""
-"Intervalul de timp dintre momentele în care se recalculează rata dobânzii"
+msgstr "Intervalul de timp dintre momentele în care se recalculează rata dobânzii"
 
 #: dialogs/knewloanwizard.cpp:611 wizards/newaccountwizard/rc.cpp:53
 msgid "Days"
@@ -1341,8 +1336,7 @@ msgid "Refinance existing loan"
 msgstr "Refinanţează un împrumut existent"
 
 #: wizards/newaccountwizard/rc.cpp:97
-msgid ""
-"Check this if you are refinancing a loan that already exists in KMyMoney"
+msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
 msgstr ""
 "Bifaţi această opţiune dacă refinanţaţi un împrumut care există deja în "
 "KMyMoney."
@@ -1499,8 +1493,7 @@ msgstr ""
 
 #: wizards/newuserwizard/rc.cpp:2
 msgid "I have a checking account that I want to manage with KMyMoney"
-msgstr ""
-"Am un cont curent şi vreau să-l gestionez cu ajutorul aplicaţiei KMyMoney"
+msgstr "Am un cont curent şi vreau să-l gestionez cu ajutorul aplicaţiei KMyMoney"
 
 #: wizards/newuserwizard/rc.cpp:3
 msgid "The name of the instititution that issued the account."
@@ -1915,8 +1908,7 @@ msgstr "  * Beneficiarul %1 a fost recreat cu identificator fix"
 
 #: mymoney/mymoneyfile.cpp:1583
 msgid "  * Payee id updated in split of transaction '%1'."
-msgstr ""
-"  * Identificatorul beneficiarului a fost actualizat în tranzacţia '%1'."
+msgstr "  * Identificatorul beneficiarului a fost actualizat în tranzacţia '%1'."
 
 #: mymoney/mymoneyfile.cpp:1596
 msgid "  * shares set to value in split of transaction '%1'."
@@ -1945,8 +1937,7 @@ msgstr ""
 "1'."
 
 #: mymoney/mymoneyfile.cpp:1649
-msgid ""
-"  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
+msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
 msgstr ""
 "  * O parte din tranzacţia '%1' conţine o valoare nenulă iar acţiunile au "
 "valoare nulă."
@@ -2018,9 +2009,8 @@ msgid "Every other week"
 msgstr "La fiecare două săptămâni"
 
 #: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1098
-#, fuzzy
 msgid "Every half month"
-msgstr "La fiecare patru luni"
+msgstr "La fiecare jumătate de lună"
 
 #: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1100
 msgid "Every three weeks"
@@ -2349,7 +2339,7 @@ msgstr "Creează un duplicat"
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
-msgstr "Asociere"
+msgstr "Asociază"
 
 #: kmymoney2.cpp:421
 msgid ""
@@ -2678,7 +2668,6 @@ msgid "Importing file..."
 msgstr "Se importă fişierul..."
 
 #: kmymoney2.cpp:1544 kmymoney2.cpp:5960 kmymoney2.cpp:5982
-#, fuzzy
 msgid "The statements have been processed with the following results:"
 msgstr "Bilanţul a fost procesat şi s-au obţinut următoarele rezultate:"
 
@@ -2975,10 +2964,8 @@ msgid "Adjusting budgets..."
 msgstr "Se ajustează bugete..."
 
 #: kmymoney2.cpp:2778
-msgid ""
-"Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
-msgstr ""
-"Nu s-a putut schimba categoria <b>%1</b> cu categoria <b>%2</b>. Motivul: %3"
+msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3"
+msgstr "Nu s-a putut schimba categoria <b>%1</b> cu categoria <b>%2</b>. Motivul: %3"
 
 #: kmymoney2.cpp:2799
 msgid "Do you really want to delete category <b>%1</b>?"
@@ -3017,8 +3004,7 @@ msgstr ""
 
 #: kmymoney2.cpp:2873
 msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
-msgstr ""
-"Nu s-a putut şterge o sub-categorie a categoriei <b>%1</b>. Motivul: %2"
+msgstr "Nu s-a putut şterge o sub-categorie a categoriei <b>%1</b>. Motivul: %2"
 
 #: kmymoney2.cpp:2884
 msgid "Do you really want to delete account <b>%1</b>?"
@@ -3139,8 +3125,7 @@ msgstr "Sunteţi siguri că doriţi să ştergeţi plata programată <b>%1</b>?"
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "schedule."
-msgstr ""
-"În cazul plăţilor pentru împrumuturi nu este posibilă recreerea programului."
+msgstr "În cazul plăţilor pentru împrumuturi nu este posibilă recreerea programului."
 
 #: kmymoney2.cpp:3548
 msgid "Unable to remove schedule '%1'"
@@ -3434,11 +3419,10 @@ msgid "Duplicate the current selected transactions"
 msgstr "Creează duplicate pentru tranzacţiile marcate"
 
 #: kmymoney2.cpp:5158
-#, fuzzy
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
-msgstr "Asociere"
+msgstr "Disociază"
 
 #: kmymoney2.cpp:5378 kmymoney2.cpp:5400
 msgid "Goto '%1'"
@@ -3462,10 +3446,8 @@ msgid "Checking for overdue schedules..."
 msgstr "Se verifică existenţa unor plăţi programate restante..."
 
 #: kmymoney2.cpp:5667
-msgid ""
-"You must first select a KMyMoney file before you can import a statement."
-msgstr ""
-"Înainte să puteţi importa un bilanţ trebuie să alegeţi un fişier KMyMoney."
+msgid "You must first select a KMyMoney file before you can import a statement."
+msgstr "Înainte să puteţi importa un bilanţ trebuie să alegeţi un fişier KMyMoney."
 
 #: kmymoney2.cpp:5673
 msgid "Importing a statement via Web Connect"
@@ -3540,9 +3522,8 @@ msgid "Unable to unmap account from online account: %1"
 msgstr "Nu s-a putut realiza dezasocierea de contul online: %1"
 
 #: kmymoney2.cpp:5885
-#, fuzzy
 msgid " (Brokerage)"
-msgstr "%1 (Brokeraj)"
+msgstr " (Brokeraj)"
 
 #: kmymoney2.cpp:5886
 msgid ""
@@ -3550,12 +3531,11 @@ msgid ""
 "advisable. In general, the investment account should be mapped to the online "
 "account. Please cancel if you intended to map the investment account, "
 "continue otherwise"
-msgstr ""
+msgstr "Aţi încercat să asociaţi un cont de brokeraj cu un cont online. Acest lucru nu este recomandat. În general contul de investiţii este cel care trebuie asociat cu contul online. Vă rugăm să renunţaţi la această operaţie dacă intenţionaţi să asociaţi contul de investiţii, continuaţi în caz contrar."
 
 #: kmymoney2.cpp:5886
-#, fuzzy
 msgid "Mapping brokerage account"
-msgstr "Creează un cont de brokeraj"
+msgstr "Asociază un cont de brokeraj"
 
 #: kmymoney2.cpp:5893
 msgid "Select online banking plugin"
@@ -3586,8 +3566,7 @@ msgstr "Eroare de tip de fişier"
 
 #: converter/mymoneytemplate.cpp:93
 msgid "Error while reading template file <b>%1</b> in line %2, column %3"
-msgstr ""
-"Eroare la citirea fişierului şablon <b>%1</b> în linia %2, la coloana %3s"
+msgstr "Eroare la citirea fişierului şablon <b>%1</b> în linia %2, la coloana %3s"
 
 #: converter/mymoneytemplate.cpp:94
 msgid "Template Error"
@@ -3608,12 +3587,10 @@ msgstr "Se încarcă şablonul %1s"
 
 #: converter/mymoneytemplate.cpp:241
 msgid "Invalid top-level account type <b>%1</b> in template file <b>%2</b>!"
-msgstr ""
-"Tipul de cont rădăcină <b>%1</b> este invalid în fişierul şablon <b>%2</b>!"
+msgstr "Tipul de cont rădăcină <b>%1</b> este invalid în fişierul şablon <b>%2</b>!"
 
 #: converter/mymoneytemplate.cpp:309
-msgid ""
-"Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
+msgid "Invalid flag type <b>%1</b> for account <b>%3</b> in template file <b>%2</b>!"
 msgstr ""
 "Tipul de stare <b>%1</b> pentru contul <b>%3</b> este invalid în fişierul "
 "şablon <b>%2</b>!"
@@ -3925,8 +3902,7 @@ msgstr "Alege %1"
 msgid ""
 "The %1 <b>%2</b> currently exists. Do you want to import transactions to "
 "this account?"
-msgstr ""
-"%1 <b>%2</b> deja există. Doriţi să importaţi tranzacţii în acest cont?"
+msgstr "%1 <b>%2</b> deja există. Doriţi să importaţi tranzacţii în acest cont?"
 
 #: converter/mymoneyqifreader.cpp:2135
 msgid ""
@@ -4076,12 +4052,10 @@ msgstr "A fost găsit un program"
 
 #: converter/mymoneystatementreader.cpp:1117
 msgid "Problem adding or matching imported transaction with id '%1': %2"
-msgstr ""
-"Problemă la adăugarea sau asocierea tranzacţiilor importate cu id '%1': %2"
+msgstr "Problemă la adăugarea sau asocierea tranzacţiilor importate cu id '%1': %2"
 
 #: converter/mymoneystatementreader.cpp:1166
-msgid ""
-"<b>You have downloaded a statement for the following account:</b><br><br>"
+msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr "<b>Aţi descărcat un extras pentru următorul cont:</b><br><br>"
 
 #: converter/mymoneystatementreader.cpp:1167
@@ -4410,8 +4384,7 @@ msgstr ""
 
 #: converter/mymoneygncreader.cpp:2416
 msgid "Schedule %1 has interval of %2 which is not currently available"
-msgstr ""
-"Programul %1 are un interval de %2 care nu este disponibil în acest moment"
+msgstr "Programul %1 are un interval de %2 care nu este disponibil în acest moment"
 
 #: converter/mymoneygncreader.cpp:2417
 msgid "Schedule %1 dropped at user request"
@@ -4646,8 +4619,7 @@ msgstr ""
 
 #: _tips.cpp:49
 msgid "<p>...that the KMyMoney development team wishes you a nice day?\n"
-msgstr ""
-"<p>...echipa de dezvoltare a programului KMyMoney vă urează o zi minunată?\n"
+msgstr "<p>...echipa de dezvoltare a programului KMyMoney vă urează o zi minunată?\n"
 
 #: _tips.cpp:54
 msgid ""
@@ -4751,7 +4723,7 @@ msgstr ""
 msgid ""
 "_: Report date range\n"
 "%1 through %2"
-msgstr ""
+msgstr "din %1 până în %2"
 
 #: reports/listtable.cpp:171 reports/pivottable.cpp:1549
 #, c-format
@@ -5445,8 +5417,7 @@ msgstr "Ordinea elementelor pe prima pagină"
 
 #: rc.cpp:53
 msgid "Percentage of default font size used for home view HTML page"
-msgstr ""
-"Procentul din mărimea standard de fonturi folosit pentru pagina de start"
+msgstr "Procentul din mărimea standard de fonturi folosit pentru pagina de start"
 
 #: rc.cpp:54
 msgid "Remember (manually adjusted) font size in home view on program end."
@@ -5559,16 +5530,14 @@ msgid "Sort order of register in search dialog"
 msgstr "Ordinea de sortare a registrului în modul de căutare"
 
 #: rc.cpp:84
-msgid ""
-"Default reconciliation state for transactions entered during reconciliation"
+msgid "Default reconciliation state for transactions entered during reconciliation"
 msgstr ""
 "Starea implicită a reconcilierii pentru tranzacţiile introduse în timpul "
 "reconcilierii"
 
 #: rc.cpp:85
 msgid "Number of days (plus/minus) to search for matching transactions"
-msgstr ""
-"Numărul de zile (plus/minus) pentru căutarea tranzacţiilor care se asociază"
+msgstr "Numărul de zile (plus/minus) pentru căutarea tranzacţiilor care se asociază"
 
 #: rc.cpp:86
 msgid "Method to calculate forecast"
@@ -5604,8 +5573,7 @@ msgstr "Include tranzacţii viitoare când se foloseşte estimarea programării"
 
 #: rc.cpp:94
 msgid "Include scheduled transactions when using Schedule Forecast"
-msgstr ""
-"Include tranzacţiile programate când se foloseşte estimarea programării"
+msgstr "Include tranzacţiile programate când se foloseşte estimarea programării"
 
 #: rc.cpp:95
 msgid "additional names for cash account"
@@ -5928,14 +5896,12 @@ msgid "Transactions by Reconciliation Status"
 msgstr "Tranzacţii după starea reconcilierii"
 
 #: views/kreportsview.cpp:1128
-#, fuzzy
 msgid "Cash Flow"
 msgstr "Fluxul de numerar"
 
 #: views/kreportsview.cpp:1134
-#, fuzzy
 msgid "Cash Flow Transactions This Month"
-msgstr "Tranzacţii ordonate după lună"
+msgstr "Tranzacţii de flux de numerar din această lună"
 
 #: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
 #: views/kreportsview.cpp:1140
@@ -5988,8 +5954,7 @@ msgstr "Tranzacţii de impozite ordonate după categorie în ultimul an fiscal"
 
 #: views/kreportsview.cpp:1293
 msgid "Tax Transactions by Payee Last Fiscal Year"
-msgstr ""
-"Tranzacţii de impozite ordonate după beneficiar/plătitor în ultimul an fiscal"
+msgstr "Tranzacţii de impozite ordonate după beneficiar/plătitor în ultimul an fiscal"
 
 #: views/kreportsview.cpp:1300
 msgid "Budgeting"
@@ -7171,9 +7136,8 @@ msgid "Historic Cycles:"
 msgstr "Cicluri istorice:"
 
 #: views/rc.cpp:29
-#, fuzzy
 msgid "Chart Detail:"
-msgstr "Fila de grafice"
+msgstr "Detaliile graficului:"
 
 #: views/rc.cpp:30 widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
 msgid "All"
@@ -7192,7 +7156,6 @@ msgid "Totals"
 msgstr "Totaluri"
 
 #: views/rc.cpp:34
-#, fuzzy
 msgid "<p>Choose what level of detail to show on the chart.</p>"
 msgstr ""
 "<p>Alegeţi ce fel de conturi să fie afişate ca rânduri ale acestui raport.</"
@@ -7507,8 +7470,7 @@ msgstr "Nu pot fi create tranzacţii într-un cont închis."
 
 #: views/kgloballedgerview.cpp:1351
 msgid "Cannot process transaction with focus if it is not selected."
-msgstr ""
-"Nu poate fi procesată tranzacţia care deţine focusul, dacă nu e selectată."
+msgstr "Nu poate fi procesată tranzacţia care deţine focusul, dacă nu e selectată."
 
 #: views/kgloballedgerview.cpp:1381
 msgid "Cannot edit transactions with frozen splits."
@@ -7519,10 +7481,8 @@ msgid "Cannot edit transactions in the context of a category."
 msgstr "Nu pot fi modificate tranzacţii în contextul unei categorii."
 
 #: views/kgloballedgerview.cpp:1411
-msgid ""
-"Cannot edit investment transactions and non-investment transactions together."
-msgstr ""
-"Nu pot fi modificate împreună tranzacţii de investiţii şi fără investiţi."
+msgid "Cannot edit investment transactions and non-investment transactions together."
+msgstr "Nu pot fi modificate împreună tranzacţii de investiţii şi fără investiţi."
 
 #: views/kgloballedgerview.cpp:1419
 msgid "Cannot edit multiple split transactions at once."
@@ -7830,14 +7790,12 @@ msgid "Failed"
 msgstr "Greşit"
 
 #: plugins/ofximport/ofxpartner.cpp:367
-#, fuzzy
 msgid "Cannot open file %1 for writing"
-msgstr "Nu s-a putut deschide fişierul '%1' pentru scriere"
+msgstr "Nu s-a putut deschide fişierul %1 pentru scriere"
 
 #: plugins/ofximport/ofxpartner.cpp:371
-#, fuzzy
 msgid "OFX setup error"
-msgstr "Eroare de tip de fişier"
+msgstr "Eroare de configurare OFX"
 
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 msgid "Loading banklist"
@@ -7984,9 +7942,8 @@ msgid "Username"
 msgstr "Nume utilizator"
 
 #: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:36
-#, fuzzy
 msgid "Header Version"
-msgstr "Fontul antetului"
+msgstr "Versiunea antetului"
 
 #: plugins/ofximport/dialogs/rc.cpp:18 plugins/ofximport/dialogs/rc.cpp:37
 msgid "Identify as"
@@ -8093,14 +8050,12 @@ msgid "field if both are present in download"
 msgstr "dacă ambele sunt prezente la descărcare"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
-#, fuzzy
 msgid "Quicken Windows 2003"
-msgstr "Quicken Windows 2005"
+msgstr "Quicken Windows 2003"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:82
-#, fuzzy
 msgid "Quicken Windows 2004"
-msgstr "Quicken Windows 2005"
+msgstr "Quicken Windows 2004"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:83
 msgid "Quicken Windows 2005"
@@ -8254,8 +8209,7 @@ msgstr "Modifică intrarea selectată"
 
 #: dialogs/ksecuritylisteditor.cpp:82
 msgid "Change the security information of the selected entry."
-msgstr ""
-"Schimbă informaţiile titlului de valoare pentru înregistrarea selectată."
+msgstr "Schimbă informaţiile titlului de valoare pentru înregistrarea selectată."
 
 #: dialogs/kmymoneypricedlg.cpp:80 dialogs/ksecuritylisteditor.cpp:87
 msgid "Close the dialog"
@@ -8263,8 +8217,7 @@ msgstr "Închide dialogul"
 
 #: dialogs/kmymoneypricedlg.cpp:81 dialogs/ksecuritylisteditor.cpp:88
 msgid "Use this to close the dialog and return to the application."
-msgstr ""
-"Folosiţi aceasta pentru a închide dialogul şi a vă reîntoarce la aplicaţie."
+msgstr "Folosiţi aceasta pentru a închide dialogul şi a vă reîntoarce la aplicaţie."
 
 #: dialogs/ksecuritylisteditor.cpp:184
 msgid ""
@@ -8420,8 +8373,7 @@ msgstr "Preţ pentru %1 actualizat (id %2)"
 
 #: dialogs/kequitypriceupdatedlg.cpp:534
 msgid "Received an invalid price for %1, unable to update."
-msgstr ""
-"S-a primit un preţ invalid pentru %1 şi nu s-a putut face actualizarea."
+msgstr "S-a primit un preţ invalid pentru %1 şi nu s-a putut face actualizarea."
 
 #: dialogs/kequitypriceupdatedlg.cpp:554
 msgid ""
@@ -8503,7 +8455,7 @@ msgstr "Memorează tranzacţii"
 
 #: dialogs/transactioneditor.cpp:588 widgets/kmymoneybriefschedule.cpp:64
 msgid "&Enter"
-msgstr "&Intră"
+msgstr "&Introdu"
 
 #: dialogs/transactioneditor.cpp:591
 msgid "Use this to enter the transaction into the ledger."
@@ -8539,13 +8491,11 @@ msgid ""
 msgstr "Introducere sau programare?"
 
 #: dialogs/transactioneditor.cpp:656
-msgid ""
-"The balance of account <b>%1</b> dropped below the warning balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr "Soldul contului <b>%1</b> a căzut sub soldul de avertisment al %2."
 
 #: dialogs/transactioneditor.cpp:662
-msgid ""
-"The balance of account <b>%1</b> dropped below the minimum balance of %2."
+msgid "The balance of account <b>%1</b> dropped below the minimum balance of %2."
 msgstr "Soldul contului <b>%1</b> a căzut sub soldul minim al %2."
 
 #: dialogs/transactioneditor.cpp:668
@@ -8646,8 +8596,7 @@ msgstr ""
 "1</b> Noul cont: <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid ""
-"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
 "Categoria a fost schimbată.<br>&nbsp;&nbsp;&nbsp;Vechia categorie: <b>%1</b> "
 "Noua categorie: <b>%2</b><p>"
@@ -8693,33 +8642,27 @@ msgstr ""
 
 #: dialogs/kselectdatabasedlg.cpp:100
 msgid "Qt SQL driver %1 is no longer installed on your system"
-msgstr ""
+msgstr "Driverul SQL Qt %1 nu mai este instalat pe sistemul dumneavoastră"
 
 #: dialogs/kselectdatabasedlg.cpp:107
 msgid "Qt SQL driver %1 is not suported"
-msgstr ""
+msgstr "Driverul SQL Qt %1 nu este compatibil"
 
 #: dialogs/kselectdatabasedlg.cpp:164
-#, fuzzy
 msgid "SQLite files (*.sql);; All files (*.*)"
-msgstr ""
-"%1|fişiere KMyMoney (*.kmy)\n"
-"%2|Toate fişierele (*.*)"
+msgstr "fişiere SQLLite (*.sql);; Toate fişierele (*.*)"
 
 #: dialogs/kselectdatabasedlg.cpp:167
-#, fuzzy
 msgid "Select SQLite file"
-msgstr "Alege stil"
+msgstr "Alege fişierul SQLite"
 
 #: dialogs/kselectdatabasedlg.cpp:188
-#, fuzzy
 msgid "All files (*.*)"
-msgstr "Toate fişierele"
+msgstr "Toate fişierele (*.*)"
 
 #: dialogs/kselectdatabasedlg.cpp:191
-#, fuzzy
 msgid "Select output file"
-msgstr "Selectează numele de fişier"
+msgstr "Selectează numele fişierului de ieşire"
 
 #: dialogs/investactivities.cpp:168
 msgid "%1 (Brokerage)"
@@ -8774,8 +8717,7 @@ msgstr "Selectează numele de fişier"
 
 #: dialogs/kexportdlg.cpp:74 dialogs/kimportdlg.cpp:75
 msgid "Use this to select a filename to export to"
-msgstr ""
-"Folosiţi aceasta pentru a selecta numele fişierului în care trebuie exportat"
+msgstr "Folosiţi aceasta pentru a selecta numele fişierului în care trebuie exportat"
 
 #: dialogs/kexportdlg.cpp:77 dialogs/kimportdlg.cpp:78
 #: dialogs/settings/ksettingsonlinequotes.cpp:64
@@ -9122,8 +9064,7 @@ msgstr "Vizualizări"
 
 #: dialogs/settings/rc.cpp:62
 msgid "Synchronize account selection of ledger and investment view"
-msgstr ""
-"Sincronizează selecţia de cont a registrului cu vizualizarea investiţiei"
+msgstr "Sincronizează selecţia de cont a registrului cu vizualizarea investiţiei"
 
 #: dialogs/settings/rc.cpp:63
 msgid ""
@@ -9625,8 +9566,7 @@ msgstr "Creează o nouă sursă online de cotaţii"
 #: dialogs/settings/ksettingsonlinequotes.cpp:67
 #: widgets/kmymoneyonlinequoteconfig.cpp:67
 msgid "Use this to create a new entry for online quotes"
-msgstr ""
-"Folosiţi această funcţie pentru a creea o nouă de sursă de cotaţii online"
+msgstr "Folosiţi această funcţie pentru a creea o nouă de sursă de cotaţii online"
 
 #: dialogs/settings/ksettingsonlinequotes.cpp:107
 #: dialogs/settings/ksettingsonlinequotes.cpp:186
@@ -9652,9 +9592,8 @@ msgid "Use this to clear all splits of this transaction"
 msgstr "Foloseşte aceasta pentru a şterge toate părţile acestei tranzacţii"
 
 #: dialogs/ksplittransactiondlg.cpp:84
-#, fuzzy
 msgid "&Merge"
-msgstr "Medie"
+msgstr "&Combină"
 
 #: dialogs/ksplittransactiondlg.cpp:182
 msgid ""
@@ -9692,8 +9631,7 @@ msgstr ""
 
 #: dialogs/mymoneyqifprofileeditor.cpp:98
 msgid "Use this to create a new QIF import/export profile"
-msgstr ""
-"Folosiţi această funcţie pentru a creea un nou profil de import/export QIF"
+msgstr "Folosiţi această funcţie pentru a creea un nou profil de import/export QIF"
 
 #: dialogs/mymoneyqifprofileeditor.cpp:147
 #: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:795
@@ -9789,8 +9727,7 @@ msgid "will be calculated"
 msgstr "va fi calculat"
 
 #: dialogs/kmymoneysplittable.cpp:643
-msgid ""
-"You are about to delete the selected split. Do you really want to continue?"
+msgid "You are about to delete the selected split. Do you really want to continue?"
 msgstr ""
 "Urmează să stegeţi partea de tranzacţie marcată. Doriţi într-adevăr să "
 "continuaţi?"
@@ -9912,14 +9849,12 @@ msgid "Please choose what you wish to do with the above changes"
 msgstr "Vă rog să alegeţi ce doriţi să faceţi cu schimbările de mai sus."
 
 #: dialogs/rc.cpp:31
-msgid ""
-"Discard the changes and enter the original transaction into the register."
+msgid "Discard the changes and enter the original transaction into the register."
 msgstr "Renunţă la modificări şi introdu tranzacţia originală în registru."
 
 #: dialogs/rc.cpp:32
 msgid "Enter these new values this one time, for this occurence only."
-msgstr ""
-"Introduce aceste valori noi de această dată, doar pentru această apariţie."
+msgstr "Introduce aceste valori noi de această dată, doar pentru această apariţie."
 
 #: dialogs/rc.cpp:33
 msgid "Set all further occurences in this schedule to be these values."
@@ -10107,8 +10042,7 @@ msgstr "Dacă plata programată ar trebui să aibă loc la sfârşit de săptăm
 
 #: dialogs/rc.cpp:116
 msgid "The amount is an estimate because it varies for each payment"
-msgstr ""
-"Această sumă este una aproximativă deoarece ea variază la fiecare plată"
+msgstr "Această sumă este una aproximativă deoarece ea variază la fiecare plată"
 
 #: dialogs/rc.cpp:117
 msgid "Enter this schedule into the register automatically when it is due"
@@ -10353,8 +10287,7 @@ msgstr "Actualizează cotaţiile acţiunilor şi a monedelor"
 
 #: dialogs/rc.cpp:176
 msgid "List of known Equities, and the date they were last updated on."
-msgstr ""
-"Lista capitalurilor cunoscute şi data ultimei actualizări ale acestora."
+msgstr "Lista capitalurilor cunoscute şi data ultimei actualizări ale acestora."
 
 #: dialogs/rc.cpp:178
 msgid "Update All"
@@ -10649,8 +10582,7 @@ msgid "Online Quotes - Select price source"
 msgstr "Cotaţii online - Alegeţi sursa preţului"
 
 #: dialogs/rc.cpp:282
-msgid ""
-"This price source is not known to KMyMoney. Please select an option below."
+msgid "This price source is not known to KMyMoney. Please select an option below."
 msgstr ""
 "Această sursă nu este cunoscută de către KMyMoney. Vă rog să alegeţi o "
 "opţiune din lista de mai jos."
@@ -10673,8 +10605,7 @@ msgstr ""
 
 #: dialogs/rc.cpp:286
 msgid "Always use this selection for this price source."
-msgstr ""
-"Foloseşte întotdeauna această selecţie pentru această sursă de preţuri."
+msgstr "Foloseşte întotdeauna această selecţie pentru această sursă de preţuri."
 
 #: dialogs/rc.cpp:287
 msgid "QIF Import"
@@ -11827,13 +11758,12 @@ msgid "Preload all data"
 msgstr "Preîncarcă toate datele"
 
 #: dialogs/rc.cpp:743
-#, fuzzy
 msgid "&Generate SQL"
-msgstr "Generează instrucţiuni SQL"
+msgstr "&Generează instrucţiuni SQL"
 
 #: dialogs/rc.cpp:745
 msgid "Ca&ncel"
-msgstr ""
+msgstr "&Renunţă"
 
 #: dialogs/rc.cpp:760 widgets/rc.cpp:169
 msgid "Sort options"
@@ -11897,29 +11827,27 @@ msgid "Transaction amount"
 msgstr "Suma tranzacţiei"
 
 #: dialogs/rc.cpp:781
-#, fuzzy
 msgid "Merge"
-msgstr "Mai mult"
+msgstr "Combină"
 
 #: dialogs/rc.cpp:782
 msgid "Merges splits with the same category to one split"
-msgstr ""
+msgstr "Combină părţile de tranzacţie din aceeaşi categorie într-o singură parte de tranzacţie"
 
 #: dialogs/rc.cpp:783
 msgid ""
 "In case you have multiple split entries to the same category and you like to "
 "keep them as a single split, press this button. The amount for identical "
 "categories will be added and stored in a single split for that category."
-msgstr ""
+msgstr "În cazul în care aveţi mai multe părţi de tranzacţie din aceeaşi categorie şi aţi dori să le păstraţi ca o singură parte, folosiţi acest buton. Sumele pentru categoriile identice vor fi însumate şi stocate într-o singură parte de tranzacţie pentru acea categorie."
 
 #: dialogs/rc.cpp:784
-#, fuzzy
 msgid "Clear &Zero"
-msgstr "Verificate"
+msgstr "Curăţă valorile nule"
 
 #: dialogs/rc.cpp:785
 msgid "Removes all splits that have a value of zero."
-msgstr ""
+msgstr "Şterge toate părţile de tranzacţie care au valoarea zero."
 
 #: dialogs/rc.cpp:789
 msgid "New price entry"
@@ -12057,8 +11985,7 @@ msgid "Select Transaction"
 msgstr "Alege o tranzacţie"
 
 #: dialogs/kselecttransactionsdlg.cpp:45
-msgid ""
-"Select a transaction and press the OK button or use Cancel to select none."
+msgid "Select a transaction and press the OK button or use Cancel to select none."
 msgstr ""
 "Alegeţi o tranzacţie şi apăsaţi butonul OK sau folosiţi butonul Renunţă "
 "pentru a nu alege nicio tranzacţie."
@@ -12122,8 +12049,7 @@ msgid "Skip this transaction"
 msgstr "Omite această tranzacţie"
 
 #: dialogs/kaccountselectdlg.cpp:67
-msgid ""
-"Use this to skip importing this transaction and proceed with the next one."
+msgid "Use this to skip importing this transaction and proceed with the next one."
 msgstr ""
 "Folosiţi funcţia aceasta pentru a omite importarea acestei tranzacţii şi să "
 "continuaţi cu tranzacţia următoare."
@@ -12134,8 +12060,7 @@ msgstr "Creează o categorie nouă / cont nou"
 
 #: dialogs/kaccountselectdlg.cpp:73
 msgid "Use this to add a new account/category to the file"
-msgstr ""
-"Folosiţi această funcţie pentru a adăuga un cont/o categorie nouă la fişier"
+msgstr "Folosiţi această funcţie pentru a adăuga un cont/o categorie nouă la fişier"
 
 #: dialogs/kaccountselectdlg.cpp:77
 msgid "&Abort"
@@ -12252,8 +12177,7 @@ msgstr "Creează o categorie nouă"
 
 #: dialogs/knewloanwizard.cpp:125
 msgid "Use this to open the new account editor"
-msgstr ""
-"Foloseşte această funcţie pentru a deschide editorul pentru un cont nou"
+msgstr "Foloseşte această funcţie pentru a deschide editorul pentru un cont nou"
 
 #: dialogs/knewloanwizard.cpp:129
 msgid "&Additional fees..."
@@ -12272,8 +12196,7 @@ msgstr ""
 "împrumutul şi dobânda conţinute în plăţile dumneavoastră periodice."
 
 #: dialogs/knewloanwizard.cpp:139
-msgid ""
-"Use this to create a new account to which the initial payment should be made"
+msgid "Use this to create a new account to which the initial payment should be made"
 msgstr ""
 "Folosiţi această funcţie pentru a crea un cont nou în care se va efectua "
 "plata iniţială"
@@ -12319,8 +12242,7 @@ msgstr ""
 "sau lăsaţi câmpul gol pentru a fi calculat."
 
 #: dialogs/knewloanwizard.cpp:248
-msgid ""
-"Please enter the date, the first payment for this loan was/is due this year."
+msgid "Please enter the date, the first payment for this loan was/is due this year."
 msgstr ""
 "Vă rog să introduceţi data în care prima plată pentru acest împrumut a fost/"
 "este scadentă în din acest an."
@@ -12406,8 +12328,7 @@ msgstr "împrumutul şi dobânda"
 msgid ""
 "The number of payments has been decremented and the final payment has been "
 "modified to %1."
-msgstr ""
-"Numărul de plăţi a fost decrementat iar plata finală a fost modificată la %1."
+msgstr "Numărul de plăţi a fost decrementat iar plata finală a fost modificată la %1."
 
 #: dialogs/knewloanwizard.cpp:749 dialogs/knewloanwizard.cpp:769
 #, c-format
@@ -12457,8 +12378,7 @@ msgstr ""
 "care au avut-o în momentul pornirii acestui dialog."
 
 #: dialogs/kfindtransactiondlg.cpp:250
-msgid ""
-"Warning: Filtering by Category will exclude all transfers from the results."
+msgid "Warning: Filtering by Category will exclude all transfers from the results."
 msgstr ""
 "Atenţie: Filtrarea după categorie va exclude toate transferurile din "
 "rezultatul căutării."
@@ -12678,8 +12598,7 @@ msgstr "Înregistrează această tranzacţie în registru"
 
 #: widgets/kmymoneybriefschedule.cpp:67
 msgid "Use this button to record this transaction"
-msgstr ""
-"Foloseşte acest buton pentru a înregistra această tranzacţie în registru"
+msgstr "Foloseşte acest buton pentru a înregistra această tranzacţie în registru"
 
 #: widgets/kmymoneybriefschedule.cpp:95
 msgid "%1 of %2"
@@ -13143,8 +13062,7 @@ msgstr "Fila raporturilor"
 
 #: widgets/rc.cpp:53
 msgid "<p>On this tab, you set the basic properties of this report.</p>"
-msgstr ""
-"<p>În aceasta filă puteţi alege parametrii de bază a acestui raport.</p>"
+msgstr "<p>În aceasta filă puteţi alege parametrii de bază a acestui raport.</p>"
 
 #: widgets/rc.cpp:54
 msgid "Report Name"
@@ -13204,8 +13122,7 @@ msgstr ""
 "organizate rândurile şi coloanele.</p>"
 
 #: widgets/rc.cpp:69 widgets/rc.cpp:81
-msgid ""
-"<p>Choose what kind of accounts to display as the rows of this report.</p>"
+msgid "<p>Choose what kind of accounts to display as the rows of this report.</p>"
 msgstr ""
 "<p>Alegeţi ce fel de conturi să fie afişate ca rânduri ale acestui raport.</"
 "p>"
@@ -13220,8 +13137,7 @@ msgstr "Bilunar"
 
 #: widgets/rc.cpp:78
 msgid "<p>Choose how large of a time period each column should encompass</p>"
-msgstr ""
-"<p>Alegeţi perioada de timp care ar trebui să fie cuprinsă într-o coloană</p>"
+msgstr "<p>Alegeţi perioada de timp care ar trebui să fie cuprinsă într-o coloană</p>"
 
 #: widgets/rc.cpp:79
 msgid "Income & Expenses"
@@ -13311,8 +13227,7 @@ msgstr "<p>Alege această opţiune pentru a afişa coloana Număr</p>"
 
 #: widgets/rc.cpp:114
 msgid "<p>Select this option to show the Payee column</p>"
-msgstr ""
-"<p>Alege această opţiune pentru a afişa coloana Beneficiar/Plătitor</p>"
+msgstr "<p>Alege această opţiune pentru a afişa coloana Beneficiar/Plătitor</p>"
 
 #: widgets/rc.cpp:116
 msgid "<p>Select this option to show the Category column</p>"
@@ -13347,10 +13262,8 @@ msgid "Hide Split Transaction Details"
 msgstr "Ascunde detaliile tranzacţiei împărţite"
 
 #: widgets/rc.cpp:125
-msgid ""
-"Do not display the individual transactions that make up a split transaction"
-msgstr ""
-"Nu afişa tranzacţiile individuale care foarmează o tranzacţie împărţită"
+msgid "Do not display the individual transactions that make up a split transaction"
+msgstr "Nu afişa tranzacţiile individuale care foarmează o tranzacţie împărţită"
 
 #: widgets/rc.cpp:126
 msgid "Include only Tax categories"
@@ -13621,112 +13534,3 @@ msgstr "Ultimele 3 luni şi următoarele 3 luni"
 msgid "User defined"
 msgstr "Definit de către utilizator"
 
-#~ msgid "Multi-user mode not yet implemented\n"
-#~ msgstr "Sitemul multi-utilizator nu a fost implementat încă\n"
-
-#~ msgid ""
-#~ "Reading the bank list failed with the following error: '%1'. The console "
-#~ "output may have more information."
-#~ msgstr ""
-#~ "Citirea listei bancare a eşuat cu următoarea eroare: '%1'. Consola de "
-#~ "ieşire ar putea avea mai multe informaţii."
-
-#~ msgid "XMLPP error"
-#~ msgstr "Eroare XMLPP"
-
-#~ msgid "Disabled. No online banking services are available"
-#~ msgstr "Inactiv. Nu este valabil niciun serviciu bancar online"
-
-#~ msgid "CHECKING"
-#~ msgstr "CONT CURENT"
-
-#~ msgid "SAVINGS"
-#~ msgstr "ECONOMII"
-
-#~ msgid "MONEY MARKET"
-#~ msgstr "PIAŢA MONETARĂ"
-
-#~ msgid "CREDIT LINE"
-#~ msgstr "LINIE DE CREDIT"
-
-#~ msgid "CMA"
-#~ msgstr "CMA"
-
-#~ msgid "CREDIT CARD"
-#~ msgstr "CARD DE CREDIT"
-
-#~ msgid "INVESTMENT"
-#~ msgstr "INVESTIŢIE"
-
-#~ msgid "UNKNOWN"
-#~ msgstr "NECUNOSCUT"
-
-#~ msgid "SQLite requires a file name; try again?"
-#~ msgstr "SQLite are nevoie de un nume de fişier; încerc din nou?"
-
-#~ msgid ""
-#~ "<h3>Database Type</h3><p>This box lists all Qt SQL drivers installed on "
-#~ "your system. Select the driver for your database type. If the one you "
-#~ "want is not in the list, you need to install the appropriate driver. See "
-#~ "your distro documentation, or visit the Qt web Site (http://www.trolltech."
-#~ "com) and search for 'SQL drivers'.</p><h3>Database Name</h3><p>The "
-#~ "default database name is KMyMoney, but you may choose some other name if "
-#~ "you like. SQLite has one database per file; selecting this driver opens "
-#~ "the file dialog. For database types other than SQLite and MySql, the "
-#~ "database itself must be pre-created, though KMyMoney will create all "
-#~ "table structures where necessary.</p><h3>Host Name</h3><p>For the average "
-#~ "user, the default name of localhost, being the machine you are currently "
-#~ "using, is correct. For networked databases, enter the host name of the "
-#~ "system where the database is stored. You may need to contact your "
-#~ "database administrator for this information.</p><h3>User Name and "
-#~ "Password</h3><p>Check the permissions set up on your database, or contact "
-#~ "the database administrator, for the correct values to use here. The user "
-#~ "name must be capable of deleting, inserting and updating records. If the "
-#~ "user name is the same as your login name, a password is not normally "
-#~ "required.</p><h3>Generate SQL</h3><p>Click this button to create a text "
-#~ "file and write the commands needed to create the database tables and "
-#~ "other objects. With care, this may be edited if the in-built commands do "
-#~ "not work for your database system.</p><p>Please read the appropriate "
-#~ "chapter of the KMyMoney handbook for further information on database "
-#~ "usage.</p>"
-#~ msgstr ""
-#~ "<h3>Tipul bazei de date</h3><p>Această casetă listează toate driverele Qt "
-#~ "SQL instalate pe sistemul dumneavoastră. Selectaţi driverul pentru tipul "
-#~ "bazei dumneavoastră de date. Dacă doriţi vreunul care nu e în listă, "
-#~ "trebuie să-l instalaţi pe cel potrivit. Citiţi documentaţia distribuţiei "
-#~ "dumneavoastră sau vizitaţi site-ul web al Qt (http://www.trolltech.com) "
-#~ "şi căutaţi 'SQL drivers'.</p><h3>Numele bazei de date</h3>Numele implicit "
-#~ "al bazei de date este KMyMonkey, dar puteţi alege alt nume dacă vreţi. "
-#~ "SQLite are o singură bază de date pe fişier; selectarea acestui driver va "
-#~ "deschide caseta de dialog a fişierului. Pentru alte baze de date decât "
-#~ "SQLite şi MySql, baza de date însăşi trebuie creată dinainte, deşi "
-#~ "KMyMoney va crea toată structura de tabele necesare.</p><h3>Nume gazdă</"
-#~ "h3><p>Pentru utilizatorul obişnuit, numele implicit al gazdei, fiind pe "
-#~ "maşina pe care o folosiţi în mod curent, este corect. Pentru bazele de "
-#~ "date aflate în reţea, introduceţi numele gazdei de pe sistemul unde e "
-#~ "memorată baza de date. Ar putea fi nevoie de contactarea "
-#~ "administratorului pentru aceste informaţii.</p><h3>Utilizator şi parolă</"
-#~ "h3><p>Verificaţi permisiunile pentru baza dumneavoastră de date sau "
-#~ "contactaţi administratorul pentru valorile corecte. Numele utilizatorlui "
-#~ "trebuie să fie capabil să şteargă, să insereze şi să actualizeze "
-#~ "înregistrări. Daca numele de utilizator este acelaşi cu numele de "
-#~ "autentificare, în mod normal nu e nevoie de parolă.</p><h3>Generează SQL</"
-#~ "h3><p>Faceţi clic pe acest buton pentru a crea un fişier text şi scrieţi "
-#~ "comenzile pentru crearea tabelelor bazei de date şi altor obiecte. Cu "
-#~ "grijă, acestea ar putea fi editate în cazul în care comenzile implicite "
-#~ "nu funcţionează pentru baza de date de pe sistemul dumneavoastră.</"
-#~ "p><p>Vă rog să citiţi capitolul potrivit din manualul KMyMoney pentru "
-#~ "informaţii suplimentare despre folosirea acestei baze de date.</p>"
-
-#~ msgid "Selecting a SQL database"
-#~ msgstr "Selectează o bază de date SQL"
-
-#~ msgid "Accept splits and return to transaction form"
-#~ msgstr ""
-#~ "Acceptă părţile de tranzacţii şi reveniţi la formularul de tranzacţie"
-
-#~ msgid ""
-#~ "Use this to accept all changes to the splits and return to the transaction"
-#~ msgstr ""
-#~ "Foloseşte această funcţie pentru a accepta toate modificările aduse "
-#~ "părţilor de tranzacţie şi reveniţi la formularul tranzacţie"
