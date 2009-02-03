@@ -1,6 +1,7 @@
 
 2009-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show correct amount for multi-currency schedules
+  * Updated portuguese translation from José Jorge
 
 2009-02-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed dependancy to libxml2-devel
