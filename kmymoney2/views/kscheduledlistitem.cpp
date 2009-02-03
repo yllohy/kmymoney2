@@ -129,7 +129,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
       setText(2, MyMoneyFile::instance()->payee(s1.payeeId()).name());
     else
       setText(2, "---");
-    m_amount = split.value().abs();
+    m_amount = split.shares().abs();
     setText(3, QString("%1  ").arg(m_amount.formatMoney(acc, currency)));
     // Do the real next payment like ms-money etc
     if (schedule.isFinished())
