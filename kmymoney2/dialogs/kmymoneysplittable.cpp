@@ -205,7 +205,7 @@ void kMyMoneySplitTable::endEdit(int /*row*/, int /*col*/, bool /*accept*/, bool
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
-  MYMONEYTRACER(tracer);
+  // MYMONEYTRACER(tracer);
   QKeyEvent *k = static_cast<QKeyEvent *> (e);
   bool rc = false;
   int row = currentRow();
@@ -333,7 +333,7 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         }
 
         if(terminate) {
-          QTimer::singleShot(0, this, SLOT(slotEndEdit()));
+          QTimer::singleShot(0, this, SLOT(slotEndEditKeyboard()));
         }
         break;
 
@@ -439,6 +439,8 @@ void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* /* e */ )
 
 void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
 {
+  MYMONEYTRACER(tracer);
+
   int col = columnAt(e->pos().x());
   slotSetFocus( rowAt(e->pos().y()), col, e->button(), e->pos() );
   slotStartEdit();
@@ -467,6 +469,8 @@ void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
 
 void kMyMoneySplitTable::setCurrentCell(int row, int /* col */)
 {
+  MYMONEYTRACER(tracer);
+
   if(row > m_maxRows)
     row = m_maxRows;
   m_currentRow = row;
@@ -505,6 +509,7 @@ void kMyMoneySplitTable::setNumRows(int irows)
 
 void kMyMoneySplitTable::setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const MyMoneyAccount& acc)
 {
+  MYMONEYTRACER(tracer);
   m_transaction = t;
   m_account = acc;
   m_hiddenSplit = s;
@@ -669,6 +674,16 @@ QWidget* kMyMoneySplitTable::slotStartEdit(void)
 
 void kMyMoneySplitTable::slotEndEdit(void)
 {
+  endEdit(false);
+}
+
+void kMyMoneySplitTable::slotEndEditKeyboard(void)
+{
+  endEdit(true);
+}
+
+void kMyMoneySplitTable::endEdit(bool keyBoardDriven)
+{
   MyMoneyFile* file = MyMoneyFile::instance();
 
   MYMONEYTRACER(tracer);
@@ -763,10 +778,12 @@ void kMyMoneySplitTable::slotEndEdit(void)
 
   // if we still have more splits, we start editing right away
   // in case we have selected 'enter moves betweeen fields'
-  if(currentRow() < static_cast<int> (m_transaction.splits().count()-1)
+  if(keyBoardDriven
+  && currentRow() < static_cast<int> (m_transaction.splits().count()-1)
   && KMyMoneyGlobalSettings::enterMovesBetweenFields()) {
     slotStartEdit();
   }
+
 }
 
 void kMyMoneySplitTable::slotCancelEdit(void)

@@ -132,6 +132,8 @@ protected:
     */
   const QColor rowBackgroundColor(const int row) const;
 
+  void endEdit(bool keyboardDriven);
+
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
@@ -140,6 +142,7 @@ public slots:
 
   QWidget* slotStartEdit(void);
   void slotEndEdit(void);
+  void slotEndEditKeyboard(void);
   void slotDeleteSplit(void);
   void slotCancelEdit(void);
   void slotDuplicateSplit(void);
