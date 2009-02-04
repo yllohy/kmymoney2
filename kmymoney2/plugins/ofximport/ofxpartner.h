@@ -82,7 +82,7 @@ class OfxHttpsRequest : public QObject
 Q_OBJECT
 public:
   OfxHttpsRequest(const QString& method, const KURL &url, const QByteArray &postData, const QMap<QString, QString>& metaData, const KURL& dst, bool showProgressInfo=true);
-  virtual ~OfxHttpsRequest() {}
+  virtual ~OfxHttpsRequest();
 
   QHttp::Error error(void) const { return m_error; }
 
@@ -92,6 +92,8 @@ protected slots:
   void slotOfxConnected(KIO::Job*);
 
 private:
+  class Private;
+  Private*          d;
   KURL              m_dst;
   QFile             m_file;
   QHttp::Error      m_error;

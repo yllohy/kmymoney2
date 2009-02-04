@@ -1,3 +1,7 @@
+
+2009-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added trace functionality to HTTPS connections for OFX
+
 2009-02-04 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed loan amortization calculation on reports when there
     are multiple amortization splits

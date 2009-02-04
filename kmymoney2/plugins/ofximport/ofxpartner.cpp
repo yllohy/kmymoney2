@@ -30,6 +30,8 @@
 #include <qapplication.h>
 #include <qdom.h>
 #include <qregexp.h>
+#include <qdir.h>
+#include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -278,12 +280,31 @@ bool post(const QString& request, const QMap<QString, QString>& attr, const KURL
 
 } // namespace OfxPartner
 
+class OfxHttpsRequest::Private
+{
+public:
+  QFile		m_fpTrace;
+};
 
 OfxHttpsRequest::OfxHttpsRequest(const QString& type, const KURL &url, const QByteArray &postData, const QMap<QString, QString>& metaData, const KURL& dst, bool showProgressInfo) :
-    m_dst(dst)
+  d(new Private),
+  m_dst(dst)
 {
+  QDir homeDir(QDir::home());
+  if(homeDir.exists("ofxlog.txt")) {
+    d->m_fpTrace.setName(QString("%1/ofxlog.txt").arg(QDir::homeDirPath()));
+    d->m_fpTrace.open(IO_WriteOnly | IO_Append);
+  }
+
   m_job = KIO::http_post(url, postData, showProgressInfo);
   m_job->addMetaData("content-type", "Content-type: application/x-ofx" );
+
+  if(d->m_fpTrace.isOpen()) {
+    QTextStream ts(&d->m_fpTrace);
+    ts << "url: " << url.prettyURL() << "\n";
+    ts << "request:\n" << QString(postData) << "\n" << "response:\n";
+  }
+
   connect(m_job,SIGNAL(result(KIO::Job*)),this,SLOT(slotOfxFinished(KIO::Job*)));
   connect(m_job,SIGNAL(data(KIO::Job*, const QByteArray&)),this,SLOT(slotOfxData(KIO::Job*,const QByteArray&)));
   connect(m_job,SIGNAL(connected(KIO::Job*)),this,SLOT(slotOfxConnected(KIO::Job*)));
@@ -291,6 +312,12 @@ OfxHttpsRequest::OfxHttpsRequest(const QString& type, const KURL &url, const QBy
   qApp->enter_loop();
 }
 
+OfxHttpsRequest::~OfxHttpsRequest()
+{
+  if(d->m_fpTrace.isOpen()) {
+    d->m_fpTrace.close();
+  }
+}
 
 void OfxHttpsRequest::slotOfxConnected(KIO::Job*)
 {
@@ -303,6 +330,12 @@ void OfxHttpsRequest::slotOfxData(KIO::Job*,const QByteArray& _ba)
   if(m_file.isOpen()) {
     QTextStream ts(&m_file);
     ts << QString(_ba);
+
+    if(d->m_fpTrace.isOpen()) {
+      d->m_fpTrace.writeBlock(_ba, _ba.size());
+    }
+
+
   }
 }
 
@@ -310,6 +343,9 @@ void OfxHttpsRequest::slotOfxFinished(KIO::Job* /* e */)
 {
   if(m_file.isOpen()) {
     m_file.close();
+    if(d->m_fpTrace.isOpen()) {
+      d->m_fpTrace.writeBlock("\nCompleted\n\n\n\n", 14);
+    }
   }
 
   int error = m_job->error();
