@@ -1,5 +1,8 @@
+2009-02-04 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed loan amortization calculation on reports when there
+    are multiple amortization splits
 
-2009-02-02 Alvaro Soliverez <asoliverez@gmail.com>
+2009-02-03 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Spanish translation
 
 2009-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>

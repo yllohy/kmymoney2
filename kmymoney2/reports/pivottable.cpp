@@ -292,7 +292,7 @@ void PivotTable::init(void)
         if(!m_config_f.includes( splitAccount )) {
           QValueList<MyMoneySplit>::ConstIterator it_loanSplits;
           for(it_loanSplits = tx.splits().begin(); it_loanSplits != tx.splits().end(); ++it_loanSplits) {
-            if((*it_loanSplits).isAmortizationSplit() )
+            if((*it_loanSplits).isAmortizationSplit() && (*it_loanSplits).accountId() == splitAccount.id() )
               loanBalances[splitAccount.id()] = loanBalances[splitAccount.id()] + (*it_loanSplits).shares();
           }
         }
