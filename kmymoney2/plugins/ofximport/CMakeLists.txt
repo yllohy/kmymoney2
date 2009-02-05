@@ -9,7 +9,7 @@ ADD_SUBDIRECTORY( dialogs )
 ########### next target ###############
 
 SET(kmm_ofximport_PART_SRCS
-  ofximporterplugin.cpp nodeparser.cpp ofxpartner.cpp)
+  ofximporterplugin.cpp ofxpartner.cpp)
 
 KDE3_AUTOMOC(${kmm_ofximport_PART_SRCS})
 
