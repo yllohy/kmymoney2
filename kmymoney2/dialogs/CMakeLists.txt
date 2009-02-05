@@ -59,7 +59,7 @@ ksplittransactiondlgdecl.ui kupdatestockpricedlgdecl.ui
 mymoneyqifprofileeditordecl.ui kgncpricesourcedlgdecl.ui
 kmymoneyfileinfodlgdecl.ui kselectdatabasedlgdecl.ui
 kpayeereassigndlgdecl.ui kcategoryreassigndlgdecl.ui
-konlinebankingsetupdecl.ui knewbudgetdlgdecl.ui
+knewbudgetdlgdecl.ui
 kselecttransactionsdlgdecl.ui ksortoptiondlg.ui
 keditscheduledlgdecl.ui kplugindlg.ui kloadtemplatedlgdecl.ui
 )
