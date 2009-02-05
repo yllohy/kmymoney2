@@ -18,6 +18,10 @@
 
 #include <iostream>
 #include <string>
+#include <stdexcept>
+
+/* required for Q_UNUSED( ) */
+#include <qglobal.h>
 
 #ifdef HAVE_LIBCPPUNIT
 
@@ -53,6 +57,8 @@
 #include "mymoney/mymoneypricetest.h"
 #include "mymoney/mymoneyobjecttest.h"
 #include "mymoney/mymoneyforecasttest.h"
+
+#include "mymoney/storage/mymoneymaptest.h"
 
 #include "reports/pivottabletest.h"
 #include "reports/pivotgridtest.h"
@@ -104,8 +110,16 @@ int main(int testargc, char** testargv)
   int rc = 0;
 
 #ifdef HAVE_LIBCPPUNIT
+  static const KCmdLineOptions options[] =
+  {
+     { "+[test_suite]", ("Optionally specify a test suite"), 0 },
+     { "", ("Optional arguments are for ctest"), 0 },
+     KCmdLineLastOption // End of options.
+  };
+
   // we seem to need a KApplication object to use KGlobal::locale()
   KCmdLineArgs::init(testargc, testargv, testargv[0], "UNIT TESTS", "", "0.1");
+  KCmdLineArgs::addCmdLineOptions( options );
   KApplication::disableAutoDcopRegistration();
   KApplication app(false, false);
 
@@ -114,36 +128,51 @@ int main(int testargc, char** testargv)
 #endif
 
   // mymoney tests
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObjectTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFinancialCalculatorTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyAccountTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySeqAccessMgrTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyDatabaseMgrTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPriceTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyForecastTest);
-
-  // reports tests
-  CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(PivotGridTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(QueryTableTest);
-
-  // converter tests
+  //CPPUNIT_TEST_SUITE_REGISTRATION(KReportsViewTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMapTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(ConverterTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyAccountTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyDatabaseMgrTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySeqAccessMgrTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObjectTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFinancialCalculatorTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyForecastTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPriceTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(PivotGridTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(QueryTableTest);
 
   // off we go
   CppUnit::TestFactoryRegistry &registry =
     CppUnit::TestFactoryRegistry::getRegistry();
+
+  // run all tests if no test is specified on the command line
+  // this way, CTest can perform each test individually
   CppUnit::Test *suite = registry.makeTest();
+  if (testargc>1)
+  {
+    try
+    {
+      suite = suite->findTest(testargv[1]);
+    }
+    catch(const std::invalid_argument &ex)
+    {
+      // oh, cmake perfomed bad at guessing the correct test names.
+      std::cout << ex.what() << std::endl;
+      // we output that the test passed since the test is deactivated
+      return 0;
+    }
+  }
 
   CppUnit::TextTestRunner* runner = new CppUnit::TextTestRunner();
 

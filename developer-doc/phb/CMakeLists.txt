@@ -1,5 +1,68 @@
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
 
+#SET( DOCBOOK_FILES phb.docbook cfg-mgmt.docbook coding.docbook
+# cvs-examples.docbook  src-examples.docbook licence.docbook
+# error-mgmt.docbook unit-test.docbook rel-mgmt.docbook
+# test-examples.docbook rpm-example.docbook fdl-licence
+# translation.docbook dialogs.docbook documentation.docbook )
+
+#this was copied from KDE4Macros.cmake and quickly hacked so that it works.
+macro (My_CREATE_HANDBOOK _docbook)
+  get_filename_component(_input ${_docbook} ABSOLUTE)
+  set(_doc ${CMAKE_CURRENT_BINARY_DIR}/index.cache.bz2)
+
+  set(_ssheet ${KDE3PREFIX}/share/apps/ksgmltools2/customization/kde-nochunk.xsl)
+
+  file(GLOB _docs *.docbook)
+  add_custom_command(OUTPUT ${_doc}
+    COMMAND ${MEINPROC_EXECUTABLE} --stylesheet ${_ssheet} --cache ${_doc} ${_input}
+    DEPENDS ${_docs} ${_MEINPROC_EXECUTABLE_DEP} ${_ssheet}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+  set(_htmlDoc ${CMAKE_CURRENT_BINARY_DIR}/index.html)
+  add_custom_command(OUTPUT ${_htmlDoc}
+    COMMAND ${MEINPROC_EXECUTABLE} --stylesheet ${_ssheet} -o ${_htmlDoc} ${_input}
+    DEPENDS ${_input} ${_MEINPROC_EXECUTABLE_DEP} ${_ssheet}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+  add_custom_target(developer-doc DEPENDS ${_doc} ${_htmlDoc})
+
+  set(_args ${ARGN})
+
+  set(_installDest)
+  if(_args)
+    list(GET _args 0 _tmp)
+    if("${_tmp}" STREQUAL "INSTALL_DESTINATION")
+      list(GET _args 1 _installDest )
+      list(REMOVE_AT _args 0 1)
+    endif("${_tmp}" STREQUAL "INSTALL_DESTINATION")
+  endif(_args)
+
+  get_filename_component(dirname ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
+  if(_args)
+    list(GET _args 0 _tmp)
+    if("${_tmp}" STREQUAL "SUBDIR")
+      list(GET _args 1 dirname )
+      list(REMOVE_AT _args 0 1)
+    endif("${_tmp}" STREQUAL "SUBDIR")
+  endif(_args)
+
+  if(_installDest)
+    file(GLOB _images *.png)
+    install(FILES ${_doc} ${_docs} ${_images} DESTINATION ${_installDest}/${dirname})
+    # TODO symlinks on non-unix platforms
+    if (UNIX)
+      # execute some cmake code on make install which creates the symlink
+      install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink \"${_installDest}/common\"  \"\$ENV{DESTDIR}${_installDest}/${dirname}/common\" )" )
+    endif (UNIX)
+  endif(_installDest)
+
+endmacro (My_CREATE_HANDBOOK)
+
+# in kde4 the command is called 'kde4_create_handbook'
+my_create_handbook(phb.docbook)
 
 ########### install files ###############
 

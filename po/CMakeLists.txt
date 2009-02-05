@@ -4,8 +4,10 @@ FILE(GLOB PO_FILES *.po)
 ADD_TRANSLATIONS(KMyMoney ${PO_FILES})
 
 
-########### install files ###############
+add_custom_target(message-stats
+  COMMAND "sh" "${CMAKE_CURRENT_SOURCE_DIR}/message-stats.sh" "${CMAKE_CURRENT_SOURCE_DIR}")
 
+########### install files ###############
 
 
 

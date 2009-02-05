@@ -99,6 +99,14 @@ Quickstart 4: More options
     installation.
     The default is "/usr/local/".
 
+-D CMAKE_BUILD_TYPE=<type>
+    Choose the type of build, possible values are:
+    None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used)
+    Debug Release RelWithDebInfo MinSizeRel.
+
+-D KDE3_BUILD_TESTS=ON
+    To also build the tests.
+
 -----------------------------------------------------
 Quickstart 5: Makefile targets
 -----------------------------------------------------
@@ -110,7 +118,7 @@ $ make help
     to see all the targets that are defined.
 
 $ make
-    to reconfigure the Makefiles and build the project
+    to reconfigure the Makefiles and build the project.
 
 $ make install
     to build and install kmymoney to the previously given install
@@ -124,13 +132,25 @@ $ make package_source
     to create a source package
     (Warning: have a clean source directory and build out-of-source)
 
+$ make messages
+    to extract and merge translations. This will change the source directory.
+
+$ make message-stats
+    to create the translation status for every language.
+
+$ make developer-doc
+    to create the developer handbook. Will also create html-version.
+
+$ make test
+    to process all unit tests.
+
 -----------------------------------------------------
 How to create release packages
 -----------------------------------------------------
 
 Best use CPack for release generation.
 'make package' automatically invokes CPack with its default options.
-By default, only .sh .tar.gz .tar.bz2 .tar.Z packages are built.
+By default, only .tar.gz and .tar.bz2 packages are built.
 
 To create an rpm, say, go to the build directory and just type
 

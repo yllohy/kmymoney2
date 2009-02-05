@@ -1,4 +1,7 @@
 
+2009-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added update for CMake build environment (a bit broken for me atm)
+
 2009-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added trace functionality to HTTPS connections for OFX
 
