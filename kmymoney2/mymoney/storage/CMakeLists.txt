@@ -15,7 +15,7 @@ SET(storage_a_SOURCES
 KMM_KDE3_ADD_KCFG_FILES(storage_a_SOURCES
   ${KMyMoney2_SOURCE_DIR} ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc )
 
-ADD_LIBRARY( storage STATIC ${storage_a_SOURCES} )
+ADD_LIBRARY( storage SHARED ${storage_a_SOURCES} )
 
 ########### install files ###############
 
