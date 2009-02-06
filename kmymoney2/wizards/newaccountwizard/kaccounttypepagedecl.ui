@@ -86,7 +86,7 @@ Enter the date the account was opened and its currency.</string>
                         <bool>false</bool>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>The opening balance is the balance of the account when you start using it with KMyMoney. For new accounts this is usually 0 but for exisiting accounts this may well differ. Please consult the account statements to figure out this value. The opening balance is to be provided in the currency of the account as selected with the currency button.</string>
+                        <string>The opening balance is the balance of the account when you start using it with KMyMoney. For new accounts this is usually 0 but for existing accounts this may well differ. Please consult the account statements to figure out this value. The opening balance is to be provided in the currency of the account as selected with the currency button.</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="5" column="0">

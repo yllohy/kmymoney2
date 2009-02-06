@@ -8,6 +8,7 @@
   * Fixed auto detection of variable sizes for CMake based build system
   * Fixed some more CMake related things (mostly cleanup)
   * Added missing file
+  * Fixed typos in two messsages
 
 2009-02-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Spanish translation
