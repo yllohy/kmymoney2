@@ -187,22 +187,22 @@
 #cmakedefine PERFORM_ONLINE_UNITTESTS 
 
 /* The size of `char *', as computed by sizeof. */
-#cmakedefine SIZEOF_CHAR_P 4
+#cmakedefine SIZEOF_CHAR_P @SIZEOF_CHAR_P@
 
 /* The size of `int', as computed by sizeof. */
-#cmakedefine SIZEOF_INT 4
+#cmakedefine SIZEOF_INT @SIZEOF_INT@
 
 /* The size of `long', as computed by sizeof. */
-#cmakedefine SIZEOF_LONG 4
+#cmakedefine SIZEOF_LONG @SIZEOF_LONG@
 
 /* The size of `short', as computed by sizeof. */
-#cmakedefine SIZEOF_SHORT 2
+#cmakedefine SIZEOF_SHORT @SIZEOF_SHORT@
 
 /* The size of `size_t', as computed by sizeof. */
-#cmakedefine SIZEOF_SIZE_T 4
+#cmakedefine SIZEOF_SIZE_T @SIZEOF_SIZE_T@
 
 /* The size of `unsigned long', as computed by sizeof. */
-#cmakedefine SIZEOF_UNSIGNED_LONG 4
+#cmakedefine SIZEOF_UNSIGNED_LONG @SIZEOF_UNSIGNED_LONG@
 
 /* Define to 1 if you have the ANSI C header files. */
 #cmakedefine STDC_HEADERS 1
