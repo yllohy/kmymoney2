@@ -6,6 +6,8 @@
 2009-02-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed CMake based build system (still not 100% compatible w/ autotools)
   * Fixed auto detection of variable sizes for CMake based build system
+  * Fixed some more CMake related things (mostly cleanup)
+  * Added missing file
 
 2009-02-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Spanish translation

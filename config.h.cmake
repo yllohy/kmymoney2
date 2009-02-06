@@ -1,7 +1,25 @@
 /* config.h.  Generated from config.h.cmake by cmake  */
 
+/* Name of package */
 #define PACKAGE "kmymoney2"
-#define VERSION "0.9-CVS"
+
+/* Version number of package */
+#define VERSION "0.9.2-CVS"
+
+/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT "kmymoney2-developer@lists.sourceforge.net"
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME "KMyMoney"
+
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING ""
+
+/* Define to the one symbol short name of this package. */
+#define PACKAGE_TARNAME ""
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION PACKAGE_NAME " " PACKAGE_VERSION
 
 /* define if you have atoll */
 #cmakedefine HAVE_ATOLL 1
@@ -24,9 +42,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H 1
 
-/* Defines if your system has the kbanking package */
-#cmakedefine HAVE_KBANKING 
-
 /* Define if you have libkdchart */
 #cmakedefine HAVE_KDCHART 
 
@@ -36,9 +51,6 @@
 /* Define if you have libcppunit */
 #cmakedefine HAVE_LIBCPPUNIT 1
 
-/* Define to 1 if you have a functional curl library. */
-#cmakedefine HAVE_LIBCURL 
-
 /* Define if you have libjpeg */
 #cmakedefine HAVE_LIBJPEG 1
 
@@ -47,12 +59,6 @@
 
 /* Define if you have a working libpthread (will enable threaded code) */
 #cmakedefine HAVE_LIBPTHREAD 1
-
-/* Define if you have libxml2 */
-#cmakedefine HAVE_LIBXML2 1
-
-/* Defined if libxml++ is available */
-#cmakedefine HAVE_LIBXMLPP 
 
 /* Define if you have libz */
 #cmakedefine HAVE_LIBZ 1
@@ -120,69 +126,6 @@
 /* Define to 1 if you have the `vsnprintf' function. */
 #cmakedefine HAVE_VSNPRINTF 1
 
-/* Suffix for lib directories */
-#cmakedefine KDELIBSUFF ""
-
-/* Defined if libcurl supports AsynchDNS */
-#cmakedefine LIBCURL_FEATURE_ASYNCHDNS 
-
-/* Defined if libcurl supports IPv6 */
-#cmakedefine LIBCURL_FEATURE_IPV6 
-
-/* Defined if libcurl supports KRB4 */
-#cmakedefine LIBCURL_FEATURE_KRB4 
-
-/* Defined if libcurl supports libz */
-#cmakedefine LIBCURL_FEATURE_LIBZ 
-
-/* Defined if libcurl supports SSL */
-#cmakedefine LIBCURL_FEATURE_SSL 
-
-/* Defined if libcurl supports DICT */
-#cmakedefine LIBCURL_PROTOCOL_DICT 
-
-/* Defined if libcurl supports FILE */
-#cmakedefine LIBCURL_PROTOCOL_FILE 
-
-/* Defined if libcurl supports FTP */
-#cmakedefine LIBCURL_PROTOCOL_FTP 
-
-/* Defined if libcurl supports FTPS */
-#cmakedefine LIBCURL_PROTOCOL_FTPS 
-
-/* Defined if libcurl supports GOPHER */
-#cmakedefine LIBCURL_PROTOCOL_GOPHER 
-
-/* Defined if libcurl supports HTTP */
-#cmakedefine LIBCURL_PROTOCOL_HTTP 
-
-/* Defined if libcurl supports HTTPS */
-#cmakedefine LIBCURL_PROTOCOL_HTTPS 
-
-/* Defined if libcurl supports LDAP */
-#cmakedefine LIBCURL_PROTOCOL_LDAP 
-
-/* Defined if libcurl supports TELNET */
-#cmakedefine LIBCURL_PROTOCOL_TELNET 
-
-/* Name of package */
-#cmakedefine PACKAGE "kmymoney2"
-
-/* Define to the address where bug reports for this package should be sent. */
-#cmakedefine PACKAGE_BUGREPORT ""
-
-/* Define to the full name of this package. */
-#cmakedefine PACKAGE_NAME ""
-
-/* Define to the full name and version of this package. */
-#cmakedefine PACKAGE_STRING ""
-
-/* Define to the one symbol short name of this package. */
-#cmakedefine PACKAGE_TARNAME ""
-
-/* Define to the version of this package. */
-#cmakedefine PACKAGE_VERSION ""
-
 /* Define if unit tests requiring online access should be compiled */
 #cmakedefine PERFORM_ONLINE_UNITTESTS 
 
@@ -210,17 +153,11 @@
 /* whether to use OFX directconnect */
 #cmakedefine USE_OFX_DIRECTCONNECT 
 
-/* Version number of package */
-#cmakedefine VERSION "0.9-CVS"
-
 /* Defined if compiling without arts */
 #cmakedefine WITHOUT_ARTS 1
 
 /* define to 1 if -fvisibility is supported */
 #cmakedefine __KDE_HAVE_GCC_VISIBILITY 
-
-/* Define curl_free() as free() if our version of curl lacks curl_free. */
-#cmakedefine curl_free 
 
 /* type to use in place of socklen_t if not defined */
 #cmakedefine kde_socklen_t socklen_t

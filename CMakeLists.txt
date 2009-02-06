@@ -42,12 +42,6 @@ IF (JPEG_FOUND)
   SET(HAVE_LIBJPEG 1)
 ENDIF (JPEG_FOUND)
 
-# check for CURL
-FIND_PACKAGE(CURL)
-IF (CURL_FOUND)
-  SET(HAVE_LIBCURL 1)
-ENDIF (CURL_FOUND)
-
 # check for PNGL
 FIND_PACKAGE(PNG)
 IF (PNG_FOUND)
@@ -292,7 +286,7 @@ Memory leak check support (deprecated): ${nice_USE_LEAK_CHECK}
 -------------------------------------------
 
 Good - your configure finished.
-Now type 'make' to build KMyMoney2
+Now type 'make' to build KMyMoney
 
 ")
 
