@@ -462,6 +462,11 @@ void KHomeView::showPayments(void)
       if ((*t_it).nextDueDate() == QDate::currentDate()) {
         todays.append(*t_it);
         (*t_it).setNextDueDate((*t_it).nextPayment((*t_it).nextDueDate()));
+
+        //if nextDueDate is still currentDate then remove it from scheduled payments
+        if ((*t_it).nextDueDate() == QDate::currentDate()) {
+          t_it = schedule.remove(t_it);
+        }
       }
       ++t_it;
     }
@@ -1523,9 +1528,10 @@ void KHomeView::doForecast(void)
 
 MyMoneyMoney KHomeView::forecastPaymentBalance(const MyMoneyAccount& acc, const MyMoneyMoney& payment, QDate& paymentDate)
 {
-  //if paymentDate before currentDate set it to current date
-  if(paymentDate < QDate::currentDate())
-    paymentDate = QDate::currentDate();
+  //if paymentDate before or equal to currentDate set it to current date plus 1
+  //so we get to accumulate forecast balance correctly
+  if(paymentDate <= QDate::currentDate())
+    paymentDate = QDate::currentDate().addDays(1);
 
   //check if the account is already there
   if(m_accountList.find(acc.id()) == m_accountList.end()
