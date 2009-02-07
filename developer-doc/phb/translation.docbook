@@ -73,7 +73,7 @@ is your language code e.g. <emphasis>de</emphasis> for German.
 <para>
 In case you already have a language file it is advisable that you check how
 the English text entries in that file differ from the English texts in the
-pot file. May be for some reason the pot file is further developed than the
+pot file. Maybe for some reason the pot file is further developed than the
 po file. In this case even though you would translate the whole po file you
 would still see some English texts in &app;. If you know that this is not
 the case, i.e. your po file has all the latest English text inside, you can
@@ -83,7 +83,7 @@ and you see how many messages you have in each file.
 </para>
 <para>
 In case that both files differ you should merge them (since
-you don't want to loose someone else's work). Merging can be
+you don't want to lose someone else's work). Merging can be
 done using <application>kbabel</application> very easily .
 
 <itemizedlist>
@@ -124,7 +124,7 @@ Don't select anything else.
 <caution>
 The original po file could have entries marked as "fuzzy", that means that
 the translation might be not very good or even horribly wrong. After you
-did this merger process you loose these information. It might be a good
+did this merger process you lose this information. It might be a good
 idea to translate all fuzzy strings in the old, unmerged po file before
 you do this explained merging process.
 </caution>
@@ -215,6 +215,34 @@ is the language you want to test) or call it via
 
 from a <application>konsole</application> or
 <application>xterm</application>.
+</para>
+</sect1>
+<sect1 id="merging">
+<title>Merging an old po file with an updated pot file</title>
+<para>
+There are cases when the pot file is regenerated before you can send your 
+updated po file. If you just commit your file after that, it will show up 
+as old in the translation stats, because it references an outdated pot file.
+</para>
+<para>
+To fix this, you have to merge the po file with the updated pot file.
+
+First, get the latest pot file. And in the po folder, run this command.
+
+<screen>
+
+  <prompt>thb:~/kmymoney2/po&gt; </prompt><userinput><command>make</command> <option>-f</option> <option>../admin/Makefile.common</option> <option>package-merge</option> <option>POFILES=<replaceable>"de.po"</replaceable></option> <option>PACKAGE=kmymoney2</option></userinput>
+
+</screen>
+
+You can merge multiple po files at the same time. Just list them in the POFILES option.
+
+<screen>
+
+  <prompt>thb:~/kmymoney2/po&gt; </prompt><userinput><command>make</command> <option>-f</option> <option>../admin/Makefile.common</option> <option>package-merge</option> <option>POFILES=<replaceable>"de.po es.po"</replaceable></option> <option>PACKAGE=kmymoney2</option></userinput>
+
+</screen>
+
 </para>
 </sect1>
 </chapter>
