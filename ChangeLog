@@ -1,4 +1,8 @@
 
+2009-02-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a sign issue with investment sell/buy imports from OFX
+  * Allow higher precision for price and share information from OFX
+
 2009-02-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Balance After calculation in Home Page Payments
   * Fixed one-time schedules duplicating in Home Page Payments

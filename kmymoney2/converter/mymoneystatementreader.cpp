@@ -573,10 +573,16 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             // an option
             QString basecurrencyid = file->baseCurrency().id();
             MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
-            if ( !price.isValid()  && !t_in.m_amount.isZero() && !t_in.m_shares.isZero())
+            if ( !price.isValid()  && ((!t_in.m_amount.isZero() && !t_in.m_shares.isZero()) || !t_in.m_price.isZero()))
             {
-              MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted,
-                  t_in.m_amount / t_in.m_shares, i18n("Statement Importer") );
+              MyMoneyPrice newprice;
+              if(!t_in.m_price.isZero()) {
+                newprice = MyMoneyPrice( currencyid, basecurrencyid, t_in.m_datePosted,
+                                         t_in.m_price.abs(), i18n("Statement Importer") );
+              } else {
+                newprice = MyMoneyPrice( currencyid, basecurrencyid, t_in.m_datePosted,
+                  (t_in.m_amount / t_in.m_shares).abs(), i18n("Statement Importer") );
+              }
               file->addPrice(newprice);
             }
           }
@@ -737,10 +743,19 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           s1.setPrice((total / t_in.m_shares).abs().convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())));
       }
 
-      s1.setShares(t_in.m_shares);
       s1.setAction(MyMoneySplit::ActionBuyShares);
 
-      transfervalue = -t_in.m_amount;
+      // Make sure to setup the sign correctly
+      if(t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy ) {
+        s1.setShares(t_in.m_shares.abs());
+        s1.setValue(s1.value().abs());
+        transfervalue = -(t_in.m_amount.abs());
+      } else {
+        s1.setShares(-(t_in.m_shares.abs()));
+        s1.setValue(-(s1.value().abs()));
+        transfervalue = t_in.m_amount.abs();
+      }
+
     }
     else if ((t_in.m_eAction==MyMoneyStatement::Transaction::eaShrsin) ||
               (t_in.m_eAction==MyMoneyStatement::Transaction::eaShrsout))

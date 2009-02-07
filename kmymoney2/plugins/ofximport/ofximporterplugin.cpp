@@ -260,24 +260,24 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   t.m_shares = MyMoneyMoney();
   if(data.units_valid==true)
   {
-    t.m_shares = MyMoneyMoney(data.units);
+    t.m_shares = MyMoneyMoney(data.units, 100000).reduce();
   }
 
   t.m_price = MyMoneyMoney();
   if(data.unitprice_valid == true)
   {
-    t.m_price = MyMoneyMoney(data.unitprice);
+    t.m_price = MyMoneyMoney(data.unitprice, 100000).reduce();
   }
 
   t.m_fees = MyMoneyMoney();
   if(data.fees_valid==true)
   {
-    t.m_fees += MyMoneyMoney(data.fees);
+    t.m_fees += MyMoneyMoney(data.fees, 1000).reduce();
   }
 
   if(data.commission_valid==true)
   {
-    t.m_fees += MyMoneyMoney(data.commission);
+    t.m_fees += MyMoneyMoney(data.commission, 1000).reduce();
   }
 
   bool unhandledtype = false;
