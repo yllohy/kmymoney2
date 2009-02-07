@@ -186,7 +186,7 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
 
   if(data.amount_valid==true)
   {
-    t.m_amount = MyMoneyMoney(data.amount);
+    t.m_amount = MyMoneyMoney(data.amount, 1000);
     // if this is an investment statement, reverse the sign.  not sure
     // why this is needed, so I suppose it's a bit of a hack for the moment.
     if (data.invtransactiontype_valid==true)
@@ -232,10 +232,11 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   }
 
   // If the payee or memo fields are blank, set them to
-  // the other one which is NOT blank.
+  // the other one which is NOT blank.  (acejones)
   if ( t.m_strPayee.isEmpty() )
   {
-    if ( ! t.m_strMemo.isEmpty() )
+    // But we only create a payee for non-investment transactions (ipwizard)
+    if ( ! t.m_strMemo.isEmpty() && data.invtransactiontype_valid == false)
       t.m_strPayee = t.m_strMemo;
   }
   else
