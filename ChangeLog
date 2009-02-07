@@ -1,9 +1,11 @@
+
 2009-02-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated translation documentation to merge outdated po files
 
 2009-02-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a sign issue with investment sell/buy imports from OFX
   * Allow higher precision for price and share information from OFX
+  * Updated translations for de, pt and fr
 
 2009-02-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Balance After calculation in Home Page Payments

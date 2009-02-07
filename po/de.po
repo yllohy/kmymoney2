@@ -1,3 +1,4 @@
+# translation of de.po to german
 # translation of de.po to
 # This file is put in the public domain.
 #
@@ -6,7 +7,7 @@
 # Holger Bunzel <holger.bunzel@gmx.net>, 2006.
 # Marko <marko.kaening@email.de>, 2008.
 # Marko Kaening <mk-lists@email.de>, 2008.
-# yllohy <yllohy@googlemail.com>, 2008.
+# yllohy <yllohy@googlemail.com>, 2008, 2009.
 # Thomas Baumgart <ipwizard@users.sourceforge.net>, 2006, 2007, 2008.
 # Thomas Baumgart <thb@net-bembel.de>, 2008, 2009.
 msgid ""
@@ -14,9 +15,9 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-02-01 17:34+0100\n"
-"Last-Translator: Thomas Baumgart <thb@net-bembel.de>\n"
-"Language-Team:  <en@li.org>\n"
+"PO-Revision-Date: 2009-02-07 16:15+0100\n"
+"Last-Translator: yllohy <yllohy@googlemail.com>\n"
+"Language-Team: german <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3533,7 +3534,6 @@ msgid "Unable to unmap account from online account: %1"
 msgstr "Kann Zuordnung vom Konto nicht vom Onlinekonto %1 entfernen"
 
 #: kmymoney2.cpp:5885
-
 msgid " (Brokerage)"
 msgstr "%1 (Verrechnungskonto)"
 
@@ -5901,7 +5901,6 @@ msgid "Transactions by Reconciliation Status"
 msgstr "Buchungen nach Abgleichstatus"
 
 #: views/kreportsview.cpp:1128
-
 msgid "Cash Flow"
 msgstr "Geldfluß"
 
@@ -7800,7 +7799,6 @@ msgid "Failed"
 msgstr "Fehlgeschlagen"
 
 #: plugins/ofximport/ofxpartner.cpp:367
-
 msgid "Cannot open file %1 for writing"
 msgstr "Datei '%1' kann nicht zum Schreiben geöffnet werden"
 
@@ -11747,7 +11745,6 @@ msgid "Preload all data"
 msgstr "Vorwegladen aller Daten"
 
 #: dialogs/rc.cpp:743
-
 msgid "&Generate SQL"
 msgstr "SQL &generieren"
 
@@ -12630,31 +12627,31 @@ msgstr "Abgleich-Status"
 msgid ""
 "_: Deposits onto account\n"
 "Deposits"
-msgstr "Gutschrift"
+msgstr "Gutschriften"
 
 #: widgets/register.cpp:420
 msgid ""
 "_: Payments towards credit card\n"
 "Payments"
-msgstr "Gutschrift"
+msgstr "Gutschriften"
 
 #: widgets/register.cpp:424
 msgid ""
 "_: Payments made from account\n"
 "Payments"
-msgstr "Zahlungen"
+msgstr "Belastungen"
 
 #: widgets/register.cpp:426
 msgid ""
 "_: Payments made with credit card\n"
 "Charges"
-msgstr "Zahlungen"
+msgstr "Belastungen"
 
 #: widgets/register.cpp:714
 msgid ""
 "_: Payment made from account\n"
 "Payment"
-msgstr "Zahlung"
+msgstr "Belastung"
 
 #: widgets/register.cpp:715
 msgid ""
@@ -12666,7 +12663,7 @@ msgstr "Gutschrift"
 msgid ""
 "_: Payment made with credit card\n"
 "Charge"
-msgstr "Zahlung"
+msgstr "Belastung"
 
 #: widgets/register.cpp:792
 msgid ""

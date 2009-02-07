@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-01-24 17:36+0100\n"
+"POT-Creation-Date: 2009-01-07 23:33+0100\n"
+"PO-Revision-Date: 2009-02-07 12:36+0100\n"
 "Last-Translator: Patrick PETIT <patrick.petit17@orange.fr>\n"
 "Language-Team: French <kde-i18n-doc@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgid ""
 "to be created. Select the groups that are relevant to you. You can always "
 "create additional accounts manually later."
 msgstr ""
-"frais additioSélectionner les groupes de comptes qui correspondent à ceux "
+"Sélectionner les groupes de comptes qui correspondent à ceux "
 "que vous utiliserez KMyMoney. Chaque groupe que vous sélectionnez fera que "
 "plusieurs catégories et comptes seront créés. Sélectionnez les groupes qui "
 "sont pertinents pour vous. Vous pouvez toujours créer des comptes "
@@ -747,16 +747,16 @@ msgstr "Sélectionnez la monnaie avec laquelle ce compte est géré."
 #: wizards/newaccountwizard/rc.cpp:8
 msgid ""
 "The opening balance is the balance of the account when you start using it "
-"with KMyMoney. For new accounts this is usually 0 but for existing accounts "
+"with KMyMoney. For new accounts this is usually 0 but for exisiting accounts "
 "this may well differ. Please consult the account statements to figure out "
 "this value. The opening balance is to be provided in the currency of the "
 "account as selected with the currency button."
 msgstr ""
 "Le solde d'ouverture est le solde du compte lorsque vous commencez à "
-"l'utiliseravec KMyMoney. Pour les nouveaux comptes, c'est généralement 0, "
+"l'utiliser avec KMyMoney. Pour les nouveaux comptes, c'est généralement 0, "
 "mais pour les comptes existants, il peut être différent. Veuillez consulter "
 "les relevés de compte pour déterminer cette valeur. Le solde d'ouverture est "
-"fourni dans la monnaie ducompte comme choisi avec le bouton de la monnaie."
+"fourni dans la monnaie du compte comme choisi avec le bouton de la monnaie."
 
 #: wizards/newaccountwizard/rc.cpp:10
 msgid ""
@@ -2016,9 +2016,8 @@ msgid "Every other week"
 msgstr "Toutes les autres semaines"
 
 #: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1098
-#, fuzzy
 msgid "Every half month"
-msgstr "Tous les quatre mois"
+msgstr "Tous les quinze jours"
 
 #: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1100
 msgid "Every three weeks"
@@ -2677,9 +2676,8 @@ msgid "Importing file..."
 msgstr "Importation du fichier ..."
 
 #: kmymoney2.cpp:1544 kmymoney2.cpp:5960 kmymoney2.cpp:5982
-#, fuzzy
 msgid "The statements have been processed with the following results:"
-msgstr "Le relevé a été réalisé avec les résultats suivants :"
+msgstr "Les relevés ont été réalisés avec les résultats suivants :"
 
 #: kmymoney2.cpp:1544 kmymoney2.cpp:1746 kmymoney2.cpp:5960 kmymoney2.cpp:5982
 msgid "Statement stats"
@@ -3442,11 +3440,10 @@ msgid "Duplicate the current selected transactions"
 msgstr "Dupliquer les opérations courantes sélectionnées"
 
 #: kmymoney2.cpp:5158
-#, fuzzy
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
-msgstr "Correspondre"
+msgstr "Supprimer la correspondance"
 
 #: kmymoney2.cpp:5378 kmymoney2.cpp:5400
 msgid "Goto '%1'"
@@ -3549,9 +3546,8 @@ msgid "Unable to unmap account from online account: %1"
 msgstr "Impossible de supprimer les paramètres en ligne pour le compte : %1"
 
 #: kmymoney2.cpp:5885
-#, fuzzy
 msgid " (Brokerage)"
-msgstr "%1 (Courtage)"
+msgstr " (Courtage)"
 
 #: kmymoney2.cpp:5886
 msgid ""
@@ -3560,11 +3556,14 @@ msgid ""
 "account. Please cancel if you intended to map the investment account, "
 "continue otherwise"
 msgstr ""
+"Vous essayez de lier un compte de courtage à un compte en ligne. Ce n'est "
+"généralement pas souhaitable. En général, le compte de placement doit être "
+"lié ave un compte en ligne. Veuillez annuler si vous aviez l'intention de "
+"lier le compte dl'investissement, sinon continuer"
 
 #: kmymoney2.cpp:5886
-#, fuzzy
 msgid "Mapping brokerage account"
-msgstr "Créer un compte de courtage"
+msgstr "Lier un compte de courtage"
 
 #: kmymoney2.cpp:5893
 msgid "Select online banking plugin"
@@ -4808,7 +4807,7 @@ msgstr ""
 msgid ""
 "_: Report date range\n"
 "%1 through %2"
-msgstr ""
+msgstr "%& jusqu'à %2"
 
 #: reports/listtable.cpp:171 reports/pivottable.cpp:1549
 #, c-format
@@ -5953,27 +5952,27 @@ msgstr "Soldes de compte par établissement"
 
 #: views/kreportsview.cpp:1058
 msgid "Account Balances by Type"
-msgstr "Soldes de compte par Type"
+msgstr "Soldes de compte par type"
 
 #: views/kreportsview.cpp:1072
 msgid "Transactions by Account"
-msgstr "Opérations par Compte"
+msgstr "Opérations par compte"
 
 #: views/kreportsview.cpp:1081
 msgid "Transactions by Category"
-msgstr "Opérations par Catégorie"
+msgstr "Opérations par catégorie"
 
 #: views/kreportsview.cpp:1089
 msgid "Transactions by Payee"
-msgstr "Opérations par Tiers"
+msgstr "Opérations par tiers"
 
 #: views/kreportsview.cpp:1097
 msgid "Transactions by Month"
-msgstr "Opérations par Mois"
+msgstr "Opérations par mois"
 
 #: views/kreportsview.cpp:1105
 msgid "Transactions by Week"
-msgstr "Opérations par Semaines"
+msgstr "Opérations par semaines"
 
 #: views/kreportsview.cpp:1113
 msgid "Loan Transactions"
@@ -5984,14 +5983,12 @@ msgid "Transactions by Reconciliation Status"
 msgstr "Opérations par état de rapprochement"
 
 #: views/kreportsview.cpp:1128
-#, fuzzy
 msgid "Cash Flow"
 msgstr "Flux de trésorerie"
 
 #: views/kreportsview.cpp:1134
-#, fuzzy
 msgid "Cash Flow Transactions This Month"
-msgstr "Opérations par Mois"
+msgstr "Opérations du flux de trésorerie pour le mois"
 
 #: views/kmymoneyview.cpp:225 views/kmymoneyview.cpp:227
 #: views/kreportsview.cpp:1140
@@ -6004,11 +6001,11 @@ msgstr "Avoirs de l'investissement par compte"
 
 #: views/kreportsview.cpp:1167
 msgid "Investment Holdings by Type"
-msgstr "Avoirs de l'Investissement par Type"
+msgstr "Avoirs de l'Investissement par type"
 
 #: views/kreportsview.cpp:1187
 msgid "Investment Performance by Type"
-msgstr "Performance de l'Investissement par Type"
+msgstr "Performance de l'Investissement par type"
 
 #: views/kreportsview.cpp:1197
 msgid "Investment Holdings Pie"
@@ -7234,9 +7231,8 @@ msgid "Historic Cycles:"
 msgstr "Cycles d'historique :"
 
 #: views/rc.cpp:29
-#, fuzzy
 msgid "Chart Detail:"
-msgstr "Onglet Diagramme"
+msgstr "Détail du graphique :"
 
 #: views/rc.cpp:30 widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
 msgid "All"
@@ -7255,10 +7251,8 @@ msgid "Totals"
 msgstr "Totaux"
 
 #: views/rc.cpp:34
-#, fuzzy
 msgid "<p>Choose what level of detail to show on the chart.</p>"
-msgstr ""
-"<p>Choisir quel type de comptes afficher pour les lignes de ce rapport.</p>"
+msgstr "<p>Choisir quel niveau de détail à affichersur le graphique.</p>"
 
 #: views/rc.cpp:35
 msgid "Current Forecast Method:"
@@ -7899,14 +7893,12 @@ msgid "Failed"
 msgstr "A échoué"
 
 #: plugins/ofximport/ofxpartner.cpp:367
-#, fuzzy
 msgid "Cannot open file %1 for writing"
-msgstr "Impossible d'ouvrir le fichier '%1' pour écriture"
+msgstr "Impossible d'ouvrir le fichier %1 pour écriture"
 
 #: plugins/ofximport/ofxpartner.cpp:371
-#, fuzzy
 msgid "OFX setup error"
-msgstr "Erreur de type de fichier"
+msgstr "Erreur d'initialisation OFX"
 
 #: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:72
 msgid "Loading banklist"
@@ -8055,9 +8047,8 @@ msgid "Username"
 msgstr "Nom Utilisateur"
 
 #: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:36
-#, fuzzy
 msgid "Header Version"
-msgstr "Police de l'entête"
+msgstr "Version de l'entête"
 
 #: plugins/ofximport/dialogs/rc.cpp:18 plugins/ofximport/dialogs/rc.cpp:37
 msgid "Identify as"
@@ -8164,14 +8155,12 @@ msgid "field if both are present in download"
 msgstr "champ si les deux sont présents dans le téléchargement"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
-#, fuzzy
 msgid "Quicken Windows 2003"
-msgstr "Quicken Windows 2005"
+msgstr "Quicken Windows 2003"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:82
-#, fuzzy
 msgid "Quicken Windows 2004"
-msgstr "Quicken Windows 2005"
+msgstr "Quicken Windows 2004"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:83
 msgid "Quicken Windows 2005"
@@ -8767,33 +8756,27 @@ msgstr ""
 
 #: dialogs/kselectdatabasedlg.cpp:100
 msgid "Qt SQL driver %1 is no longer installed on your system"
-msgstr ""
+msgstr "Le pilote SQL pour Qt n'est pas installé sur votre système"
 
 #: dialogs/kselectdatabasedlg.cpp:107
 msgid "Qt SQL driver %1 is not suported"
-msgstr ""
+msgstr "Le pilote SQL pour Qt %1 n'est pas supporté"
 
 #: dialogs/kselectdatabasedlg.cpp:164
-#, fuzzy
 msgid "SQLite files (*.sql);; All files (*.*)"
-msgstr ""
-"%1|Fichiers KMyMoney (*.kmy)\n"
-"%2|Tous les fichiers (*.*)"
+msgstr "Fichiers SQLite (*.sql);; Tous les fichiers (*.*)"
 
 #: dialogs/kselectdatabasedlg.cpp:167
-#, fuzzy
 msgid "Select SQLite file"
-msgstr "Sélectionner le Style"
+msgstr "Sélectionner le fichier SQLite"
 
 #: dialogs/kselectdatabasedlg.cpp:188
-#, fuzzy
 msgid "All files (*.*)"
-msgstr "Tous les fichiers"
+msgstr "Tous les fichiers (*.*)"
 
 #: dialogs/kselectdatabasedlg.cpp:191
-#, fuzzy
 msgid "Select output file"
-msgstr "Sélectionnez le nom du fichier"
+msgstr "Sélectionnez le fichier de sortie"
 
 #: dialogs/investactivities.cpp:168
 msgid "%1 (Brokerage)"
@@ -8940,7 +8923,7 @@ msgstr "Date d'échéance suivante"
 #: dialogs/settings/ksettingsgpg.cpp:180
 msgid ""
 "You have turned on the GPG encryption support. This means, that new files "
-"will be stored encrypted. Existing files will not be encrypted "
+"will be stored encrypted. Exisiting files will not be encrypted "
 "automatically.  To achieve encryption of existing files, please use the "
 "<b>File/Save as...</b> feature and store the file under a different name. "
 "Once confident with the result, feel free to delete the old file and rename "
@@ -9725,9 +9708,8 @@ msgid "Use this to clear all splits of this transaction"
 msgstr "Utilisez ceci pour supprimer toutes les parties de l'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:84
-#, fuzzy
 msgid "&Merge"
-msgstr "Moyenne"
+msgstr "&Fusionner"
 
 #: dialogs/ksplittransactiondlg.cpp:182
 msgid ""
@@ -11892,13 +11874,12 @@ msgid "Preload all data"
 msgstr "Précharger toutes les données"
 
 #: dialogs/rc.cpp:743
-#, fuzzy
 msgid "&Generate SQL"
-msgstr "Générer SQL"
+msgstr "&Générer SQL"
 
 #: dialogs/rc.cpp:745
 msgid "Ca&ncel"
-msgstr ""
+msgstr "A&nnuler"
 
 #: dialogs/rc.cpp:760 widgets/rc.cpp:169
 msgid "Sort options"
@@ -11962,13 +11943,13 @@ msgid "Transaction amount"
 msgstr "Montant de l'opération"
 
 #: dialogs/rc.cpp:781
-#, fuzzy
 msgid "Merge"
-msgstr "Plus"
+msgstr "Fusionner"
 
 #: dialogs/rc.cpp:782
 msgid "Merges splits with the same category to one split"
 msgstr ""
+"Fusionner les répartitions avec la même catégorie dans une seule répartition"
 
 #: dialogs/rc.cpp:783
 msgid ""
@@ -11976,15 +11957,18 @@ msgid ""
 "keep them as a single split, press this button. The amount for identical "
 "categories will be added and stored in a single split for that category."
 msgstr ""
+"Dans le cas où vous avez plusieurs répartitions de la même catégorie et vous "
+"voulez les garder comme une seule répartition, appuyez sur ce bouton. Le "
+"montant identique pour les catégories sera ajouté et stocké dans une seule "
+"répartition pour cette catégorie."
 
 #: dialogs/rc.cpp:784
-#, fuzzy
 msgid "Clear &Zero"
-msgstr "Pointé"
+msgstr "Mettre à &Zéro"
 
 #: dialogs/rc.cpp:785
 msgid "Removes all splits that have a value of zero."
-msgstr ""
+msgstr "Supprimer les répartitions qui ont une valeur de 0."
 
 #: dialogs/rc.cpp:789
 msgid "New price entry"
@@ -13953,3 +13937,4 @@ msgstr "Défini par l'utilisateur"
 
 #~ msgid "New ..."
 #~ msgstr "Nouveau ..."
+
