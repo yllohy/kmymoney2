@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-02-05 23:23-0200\n"
+"PO-Revision-Date: 2009-02-07 19:06-0200\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11489,7 +11489,6 @@ msgid "Host Name"
 msgstr "Nombre de Equipo"
 
 #: dialogs/rc.cpp:739
-#, fuzzy
 msgid "User Name"
 msgstr "Nombre de Usuario"
 
@@ -11845,12 +11844,16 @@ msgid ""
 "An account named <b>%1</b> already exists. You cannot create a second "
 "account with the same name."
 msgstr ""
+"Ya existe una cuenta llamada <b>%1</b>. No puede crear una segunda "
+"cuenta con el mismo nombre."
 
 #: dialogs/knewaccountdlg.cpp:567
 msgid ""
 "A category named <b>%1</b> already exists. You cannot create a second "
 "category with the same name."
 msgstr ""
+"Ya existe una categoría llamada <b>%1</b>- No puede crear una segunda "
+"categoría con el mismo nombre."
 
 #: dialogs/knewaccountdlg.cpp:596
 msgid ""
@@ -11882,6 +11885,8 @@ msgid ""
 "This dialog does not allow to create new payees. Please pick a payee from "
 "the list."
 msgstr ""
+"Este cuadro de diálogo no permite crear nuevos beneficiarios. Por favor, "
+"escoja un beneficiario de la lista."
 
 #: dialogs/kpayeereassigndlg.cpp:75
 msgid "Payee creation"
@@ -11892,12 +11897,11 @@ msgid "Use this to start the import operation"
 msgstr "Use esto para comenzar la operación de importación"
 
 #: dialogs/kimportdlg.cpp:110
-#, fuzzy
 msgid ""
 "%1|Import files\n"
 "%2|All files (*.*)"
 msgstr ""
-"%1|Archivos XML\n"
+"%1|Archivos a importar\n"
 "%2|Todos los archivos (*.*)"
 
 #: dialogs/kimportdlg.cpp:111
@@ -12120,7 +12124,7 @@ msgstr "Selecciones actuales:"
 
 #: dialogs/kfindtransactiondlg.cpp:736
 msgid "Found %1 matching transactions (D %2 / P %3 = %4)"
-msgstr ""
+msgstr "Se han encontrado %1 asientos coincidentes (D %2 / P %3 = %4)"
 
 #: dialogs/kfindtransactiondlg.cpp:739
 msgid "Found %1 matching transactions"
@@ -12169,7 +12173,7 @@ msgstr "Le falta asignar una categoría al asiento."
 
 #: widgets/transaction.cpp:661
 msgid "The transaction has a missing assignment of <b>%1</b>."
-msgstr ""
+msgstr "Al asiento le falta asignar <b>%1</b>."
 
 #: widgets/transaction.cpp:864
 msgid "Sell"
@@ -12263,6 +12267,8 @@ msgid ""
 "KMyMoney has matched a downloaded transaction with a manually entered one "
 "(result above)"
 msgstr ""
+"KMyMoney ha conciliado un asiento descargado con uno ingresado manualmente "
+"(el resultado más arriba)"
 
 #: widgets/stdtransactionmatched.cpp:138
 msgid "Bank entry:"
@@ -12337,207 +12343,177 @@ msgid "Post date"
 msgstr "Fecha del asiento"
 
 #: widgets/register.cpp:56
-#, fuzzy
 msgid "Date entered"
-msgstr "Importe introducido"
+msgstr "Fecha ingresada"
 
 #: widgets/register.cpp:60
-#, fuzzy
 msgid "Entry order"
-msgstr "Fecha de entrada"
+msgstr "Orden de ingreso"
 
 #: widgets/register.cpp:63
-#, fuzzy
 msgid "Reconcile state"
-msgstr "Reconciliados"
+msgstr "Estado de reconciliación"
 
 #: widgets/register.cpp:418
-#, fuzzy
 msgid ""
 "_: Deposits onto account\n"
 "Deposits"
-msgstr "cuenta opuesta"
+msgstr "Depositos"
 
 #: widgets/register.cpp:420
-#, fuzzy
 msgid ""
 "_: Payments towards credit card\n"
 "Payments"
-msgstr "Método de Pago"
+msgstr "Pagos"
 
 #: widgets/register.cpp:424
-#, fuzzy
 msgid ""
 "_: Payments made from account\n"
 "Payments"
-msgstr ""
-"El pago debe realizarse\n"
-"desde una cuenta"
+msgstr "Débitos"
 
 #: widgets/register.cpp:426
-#, fuzzy
 msgid ""
 "_: Payments made with credit card\n"
 "Charges"
-msgstr "Método de Pago"
+msgstr "Cargos"
 
 #: widgets/register.cpp:714
-#, fuzzy
 msgid ""
 "_: Payment made from account\n"
 "Payment"
-msgstr ""
-"El pago debe realizarse\n"
-"desde una cuenta"
+msgstr "Débito"
 
 #: widgets/register.cpp:715
-#, fuzzy
 msgid ""
 "_: Deposit into account\n"
 "Deposit"
-msgstr "cuenta opuesta"
+msgstr "Deposito"
 
 #: widgets/register.cpp:791
-#, fuzzy
 msgid ""
 "_: Payment made with credit card\n"
 "Charge"
-msgstr "Método de Pago"
+msgstr "Cargo"
 
 #: widgets/register.cpp:792
-#, fuzzy
 msgid ""
 "_: Payment towards credit card\n"
 "Payment"
-msgstr "Método de Pago"
+msgstr "Pago"
 
 #: widgets/register.cpp:796 widgets/register.cpp:802
 msgid ""
 "_: Decrease of asset/liability value\n"
 "Decrease"
-msgstr ""
+msgstr "Depreciación"
 
 #: widgets/register.cpp:797 widgets/register.cpp:801
 msgid ""
 "_: Increase of asset/liability value\n"
 "Increase"
-msgstr ""
+msgstr "Apreciación"
 
 #: widgets/register.cpp:2258
-#, fuzzy
 msgid "Prior transactions possibly filtered"
-msgstr "Buscar Asientos"
+msgstr "Asientos anteriores posiblemente filtrados"
 
 #: widgets/register.cpp:2262
-#, fuzzy
 msgid "Last reconciliation"
-msgstr "Aplazar la reconciliación"
+msgstr "Última reconciliación"
 
 #: widgets/register.cpp:2267
-#, fuzzy, c-format
+#, c-format
 msgid "Online Statement Balance: %1"
-msgstr "Extracto: %1"
+msgstr "Extracto de banca online: %1"
 
 #: widgets/register.cpp:2271
-#, fuzzy
 msgid "This year"
-msgstr "Bianualmente"
+msgstr "Este año"
 
 #: widgets/kmymoneycombo.cpp:674 widgets/register.cpp:2272
 msgid "Last month"
 msgstr "El mes pasado"
 
 #: widgets/register.cpp:2273
-#, fuzzy
 msgid "This month"
-msgstr "El mes pasado"
+msgstr "Este mes"
 
 #: widgets/register.cpp:2274
-#, fuzzy
 msgid "Last week"
-msgstr "El año pasado"
+msgstr "La semana pasada"
 
 #: widgets/register.cpp:2275
 msgid "This week"
-msgstr ""
+msgstr "Esta semana"
 
 #: widgets/register.cpp:2276
 msgid "Yesterday"
-msgstr ""
+msgstr "Ayer"
 
 #: widgets/kmymoneycombo.cpp:666 widgets/register.cpp:2277
 msgid "Today"
-msgstr ""
+msgstr "Hoy"
 
 #: widgets/register.cpp:2278 widgets/register.cpp:2283
-#, fuzzy
 msgid "Future transactions"
-msgstr "Fijar asientos"
+msgstr "Asientos futuros"
 
 #: widgets/register.cpp:2279
-#, fuzzy
 msgid "Next week"
-msgstr "El año pasado"
+msgstr "La semana próxima"
 
 #: widgets/kmymoneycalendar.cpp:131 widgets/register.cpp:2280
 msgid "Next month"
 msgstr "El Mes que viene"
 
 #: widgets/kmymoneycombo.cpp:670 widgets/register.cpp:2291
-#, fuzzy
 msgid "Current fiscal year"
-msgstr "Este año"
+msgstr "Año fiscal actual"
 
 #: widgets/register.cpp:2292
-#, fuzzy
 msgid "Previous fiscal year"
-msgstr "El Año pasado"
+msgstr "El año fiscal pasado"
 
 #: widgets/register.cpp:2293
-#, fuzzy
 msgid "Next fiscal year"
-msgstr "El año pasado"
+msgstr "El próximo año fiscal"
 
 #: widgets/register.cpp:2325
-#, fuzzy
 msgid ""
 "_: Unknown payee\n"
 "Unknown"
-msgstr "Beneficiario Desconocido"
+msgstr "Desconocido"
 
 #: widgets/register.cpp:2344
-#, fuzzy
 msgid ""
 "_: Unknown category\n"
 "Unknown"
-msgstr "Beneficiario Desconocido"
+msgstr "Desconocida"
 
 #: widgets/register.cpp:2363
-#, fuzzy
 msgid ""
 "_: Unknown security\n"
 "Unknown"
-msgstr "Cuenta desconocida"
+msgstr "Desconocido"
 
 #: widgets/klistviewsearchline.cpp:249
-#, fuzzy
 msgid "Search Columns"
-msgstr "Mostrar Columnas"
+msgstr "Buscar Columnas"
 
 #: widgets/klistviewsearchline.cpp:251
 msgid "All Visible Columns"
-msgstr ""
+msgstr "Todas las Columnas visibles"
 
 #: widgets/klistviewsearchline.cpp:266
 msgid ""
 "_: Column number %1\n"
 "Column No. %1"
-msgstr ""
+msgstr "Columna N° %1"
 
 #: widgets/klistviewsearchline.cpp:461 widgets/registersearchline.cpp:286
-#, fuzzy
 msgid "S&earch:"
-msgstr "Buscar"
+msgstr "Buscar:"
 
 #: widgets/kmymoneyaccountselector.cpp:110
 #: widgets/kmymoneyaccountselector.cpp:371
@@ -12546,9 +12522,8 @@ msgstr "Categorías de Ingresos"
 
 #: widgets/kmymoneyaccountselector.cpp:349
 #: widgets/kmymoneyaccountselector.cpp:350
-#, fuzzy
 msgid "Favorites"
-msgstr "Informes favoritos"
+msgstr "Favoritos"
 
 #: widgets/kmymoneyaccountselector.cpp:357
 msgid "Asset accounts"
@@ -12563,17 +12538,14 @@ msgid "Expense categories"
 msgstr "Categorías de Gastos"
 
 #: widgets/kmymoneyaccountselector.cpp:391
-#, fuzzy
 msgid "Equity accounts"
-msgstr "Editar una cuenta"
+msgstr "Cuentas de patrimonio"
 
 #: widgets/kmymoneyaccounttreebase.cpp:120
-#, fuzzy
 msgid "Total Balance"
-msgstr "Saldo"
+msgstr "Saldo Total"
 
 #: widgets/kmymoneyaccounttreebase.cpp:124
-#, fuzzy
 msgid "Total Value"
 msgstr "Valor Neto"
 
@@ -12581,72 +12553,63 @@ msgstr "Valor Neto"
 msgid ""
 "_: label for status combo\n"
 "Stat&us"
-msgstr ""
+msgstr "Estado"
 
 #: widgets/registersearchline.cpp:79
-#, fuzzy
 msgid "Any status"
 msgstr "Todos los estados"
 
 #: widgets/registersearchline.cpp:80
-#, fuzzy
 msgid "Imported"
-msgstr "&Importar"
+msgstr "Importado"
 
 #: widgets/registersearchline.cpp:81
-#, fuzzy
 msgid "Matched"
-msgstr "Parches"
+msgstr "Conciliado"
 
 #: widgets/registersearchline.cpp:82
 msgid "Erroneous"
-msgstr ""
+msgstr "Erróneo"
 
 #: widgets/registersearchline.cpp:83
-#, fuzzy
 msgid "Not marked"
-msgstr "No librado"
+msgstr "No marcado"
 
 #: widgets/kmymoneyaccounttree.cpp:54
 msgid ""
 "_: Column heading for category in tax report\n"
 "Tax"
-msgstr ""
+msgstr "Impuestos"
 
 #: widgets/kmymoneyaccounttree.cpp:58
 msgid ""
 "_: Column heading for VAT category\n"
 "VAT"
-msgstr ""
+msgstr "IVA"
 
 #: widgets/kmymoneywizard.cpp:101
-#, fuzzy
 msgid "Continue with next page"
-msgstr "Continuar &editando partidas"
+msgstr "Continuar con la siguiente página"
 
 #: widgets/kmymoneywizard.cpp:103
-#, fuzzy
 msgid "Finish wizard"
-msgstr "Markka finlandesa"
+msgstr "Finalizar el asistente"
 
 #: widgets/kmymoneywizard.cpp:121
-#, fuzzy
 msgid "&Back"
-msgstr "Copia de seguridad"
+msgstr "Atrás"
 
 #: widgets/kmymoneywizard.cpp:122
-#, fuzzy
 msgid "&Next"
-msgstr "&Nuevo"
+msgstr "Siguie&nte"
 
 #: widgets/kmymoneywizard.cpp:123
 msgid "&Finish"
 msgstr "&Finalizar"
 
 #: widgets/kmymoneywizard.cpp:274
-#, fuzzy
 msgid "Step %1 of %2"
-msgstr "%1 de %2"
+msgstr "Paso %1 de %2"
 
 #: widgets/kmymoneydateinput.cpp:233
 #, fuzzy
@@ -12673,19 +12636,16 @@ msgid "&Payment"
 msgstr "&Pago"
 
 #: widgets/transactionform.cpp:315
-#, fuzzy
 msgid "&Charge"
-msgstr "Cargo"
+msgstr "&Cargo"
 
 #: widgets/transactionform.cpp:321 widgets/transactionform.cpp:335
-#, fuzzy
 msgid "&Decrease"
-msgstr "Disminuir"
+msgstr "&Disminuir"
 
 #: widgets/transactionform.cpp:325 widgets/transactionform.cpp:331
-#, fuzzy
 msgid "&Increase"
-msgstr "Aumentar"
+msgstr "&Aumentar"
 
 #: widgets/kmymoneyscheduledcalendar.cpp:42
 msgid "Select Schedules"
@@ -12733,22 +12693,20 @@ msgid "Week %1"
 msgstr "Semana %1"
 
 #: widgets/rc.cpp:1
-#, fuzzy
 msgid "Account Types"
-msgstr "Cuentas"
+msgstr "Tipos de Cuenta"
 
 #: widgets/rc.cpp:3
-#, fuzzy
 msgid "Detailed description"
-msgstr "Descripción"
+msgstr "Descripción detallada"
 
 #: widgets/rc.cpp:18
 msgid "Period"
-msgstr ""
+msgstr "Periodo"
 
 #: widgets/rc.cpp:21
 msgid "Individual"
-msgstr ""
+msgstr "Individual"
 
 #: widgets/rc.cpp:23
 msgid ""
@@ -12913,29 +12871,24 @@ msgid "Rows"
 msgstr "Filas"
 
 #: widgets/rc.cpp:83
-#, fuzzy
 msgid "Show totals column"
-msgstr "No hay cuenta de activos"
+msgstr "Mostrar columnas de total"
 
 #: widgets/rc.cpp:84
-#, fuzzy
 msgid "Average days"
-msgstr "Todos los estados"
+msgstr "Días de promedio"
 
 #: widgets/rc.cpp:85
-#, fuzzy
 msgid "Include scheduled transactions"
-msgstr "Asientos Planificados"
+msgstr "Incluir asientos planificados"
 
 #: widgets/rc.cpp:86
-#, fuzzy
 msgid "Include transfers"
-msgstr "Transferencias"
+msgstr "Incluir transferencias"
 
 #: widgets/rc.cpp:87
-#, fuzzy
 msgid "Include unused accounts/categories"
-msgstr "Cargar cuentas/categorías predefinidas"
+msgstr "Incluir cuentas/categorías no utilizadas"
 
 #: widgets/rc.cpp:90
 msgid "Organize by:"
@@ -13004,14 +12957,12 @@ msgid "<p>Select this option to show the Action column</p>"
 msgstr "<p>Elija esta opción para mostrar la columna Acción</p>"
 
 #: widgets/rc.cpp:120
-#, fuzzy
 msgid "<p>Select this option to show the Running balance column</p>"
-msgstr "<p>Elija esta opción para mostrar la columna Reconciliado</p>"
+msgstr "<p>Elija esta opción para mostrar la columna de saldo corriente</p>"
 
 #: widgets/rc.cpp:121
-#, fuzzy
 msgid "Include only Loan accounts"
-msgstr "Incluir solamente cuentas de Inversión"
+msgstr "Incluir solamente cuentas de Préstamo"
 
 #: widgets/rc.cpp:122
 msgid "Include only Investment accounts"
@@ -13026,91 +12977,88 @@ msgstr ""
 "como \"Incluir en informes de Impuestos\"</p>"
 
 #: widgets/rc.cpp:124
-#, fuzzy
 msgid "Hide Split Transaction Details"
-msgstr "Detalles de la transacción"
+msgstr "Ocultar detalles de los asientos con múltiples partidas"
 
 #: widgets/rc.cpp:125
 msgid "Do not display the individual transactions that make up a split transaction"
-msgstr ""
+msgstr "No mostrar las partidas individuales de un asiento con múltiples partidas"
 
 #: widgets/rc.cpp:126
 msgid "Include only Tax categories"
 msgstr "Incluir solamente categorias de Impuestos"
 
 #: widgets/rc.cpp:128
-#, fuzzy
 msgid "Chart Tab"
-msgstr "Gráfico"
+msgstr "Solapa de Gráfico"
 
 #: widgets/rc.cpp:129
-#, fuzzy
 msgid "<p>On this tab, you configure the chart drawn forthis report.</p>"
-msgstr "<p>En esta pestaña, configura las propriedades básicas de este informe.</p>"
+msgstr "<p>En esta pestaña, puede configurar el gráfico de este informe.</p>"
 
 #: widgets/rc.cpp:130
-#, fuzzy
 msgid "Chart Type"
-msgstr "Tipo de Categoría"
+msgstr "Tipo de Gráfico"
 
 #: widgets/rc.cpp:131
 msgid "<p>Select what form you would like the chart to be drawn as.</p>"
-msgstr ""
+msgstr "<p>Escoja qué forma le gustaría que tenga el gráfico.</p>"
 
 #: widgets/rc.cpp:132
 msgid "Line"
-msgstr ""
+msgstr "Líneas"
 
 #: widgets/rc.cpp:133
 msgid "Bar"
-msgstr ""
+msgstr "Barras"
 
 #: widgets/rc.cpp:134
 msgid "Stacked Bar"
-msgstr ""
+msgstr "Barras Acumuladas"
 
 #: widgets/rc.cpp:135
-#, fuzzy
 msgid "Pie"
-msgstr "Precio"
+msgstr "Torta"
 
 #: widgets/rc.cpp:136
-#, fuzzy
 msgid "Ring"
-msgstr "Rango"
+msgstr "Anillo"
 
 #: widgets/rc.cpp:137
-#, fuzzy
 msgid "Show grid lines"
-msgstr "Muestra una rejilla en el registro."
+msgstr "Mostrar lineas de referencia"
 
 #: widgets/rc.cpp:138
-#, fuzzy
 msgid ""
 "<p>Select this option to show horizontal and vertical grid lines on the "
 "chart.</p>"
-msgstr "<p>Elija esta opción para mostrar la columna Precio en las inversiones</p> "
+msgstr ""
+"<p>Elija esta opción para mostrar las líneas horizontales y verticales en "
+"el gráfico.</p> "
 
 #: widgets/rc.cpp:139
 msgid "Draw values on chart"
-msgstr ""
+msgstr "Dibujar valores en el gráfico"
 
 #: widgets/rc.cpp:140
-#, fuzzy
 msgid ""
 "<p>Select this option to draw the numeric values for data points next to "
 "their plot location.</p>"
-msgstr "<p>Elija esta opción para mostrar la columna Precio en las inversiones</p> "
+msgstr ""
+"<p>Elija esta opción para mostrar los valores numéricos de los puntos de datos "
+"junto a su ubicación en el gráfico.</p> "
 
 #: widgets/rc.cpp:141
 msgid "Show as chart by default"
-msgstr ""
+msgstr "Mostrar como gráfico al abrir"
 
 #: widgets/rc.cpp:142
 msgid ""
 "<p>Select this option to cause the report to be shown as a chart when you "
 "first open the report.  Otherwise, it will come up as a text report.</p>"
 msgstr ""
+"<p>Elija esta opción para mostrar el informe como gráfico cuando abre el "
+"informe por primera vez. Si no, se mostrará como un informe de texto.</p>"
 
 #: widgets/rc.cpp:143
 msgid "ReportControl"
@@ -13149,14 +13097,12 @@ msgid "Enter..."
 msgstr "Introducir..."
 
 #: widgets/rc.cpp:168
-#, fuzzy
 msgid "TransactionSortOptionDecl"
 msgstr "Opciones de asiento"
 
 #: widgets/rc.cpp:170
-#, fuzzy
 msgid "Sort order"
-msgstr "Escoger orden para la ordenación"
+msgstr "Ordenamiento"
 
 #: widgets/kmymoneydatetbl.cpp:131
 msgid ""
@@ -13184,26 +13130,23 @@ msgstr "Retirada"
 
 #: widgets/kmymoneycombo.cpp:421
 msgid "Cheque"
-msgstr ""
+msgstr "Cheque"
 
 #: widgets/kmymoneycombo.cpp:469
-#, fuzzy
 msgid ""
 "_: Activity for expense categories\n"
 "Paid"
-msgstr "Categorías de Gastos"
+msgstr "Pagado"
 
 #: widgets/kmymoneycombo.cpp:470
-#, fuzzy
 msgid ""
 "_: Activity for income categories\n"
 "Received"
-msgstr "Categorías de Ingresos"
+msgstr "Recibido"
 
 #: widgets/kmymoneycombo.cpp:519
-#, fuzzy
 msgid "Reinvest dividend"
-msgstr "Reinvestir Dividendo"
+msgstr "Reinvertir dividendo"
 
 #: widgets/kmymoneycombo.cpp:664
 msgid "All dates"
@@ -13211,16 +13154,15 @@ msgstr "Todas las fechas"
 
 #: widgets/kmymoneycombo.cpp:665
 msgid "As of today"
-msgstr ""
+msgstr "Al día de hoy"
 
 #: widgets/kmymoneycombo.cpp:667
 msgid "Current month"
 msgstr "Este mes"
 
 #: widgets/kmymoneycombo.cpp:668
-#, fuzzy
 msgid "Current quarter"
-msgstr "Tasa actual"
+msgstr "Este trimestre"
 
 #: widgets/kmymoneycombo.cpp:669
 #, fuzzy
@@ -13233,27 +13175,23 @@ msgstr "Lo que va de mes"
 
 #: widgets/kmymoneycombo.cpp:672
 msgid "Year to date"
-msgstr "Lo que va de año"
+msgstr "Lo que va del año"
 
 #: widgets/kmymoneycombo.cpp:673
-#, fuzzy
 msgid "Year to month"
-msgstr "Bimestral"
+msgstr "Los meses que van del año"
 
 #: widgets/kmymoneycombo.cpp:675
-#, fuzzy
 msgid "Last year"
 msgstr "El año pasado"
 
 #: widgets/kmymoneycombo.cpp:676
-#, fuzzy
 msgid "Last fiscal year"
-msgstr "El año pasado"
+msgstr "El año fiscal pasado"
 
 #: widgets/kmymoneycombo.cpp:677
-#, fuzzy
 msgid "Last 7 days"
-msgstr "Los últimos 30 dias"
+msgstr "Los últimos 7 días"
 
 #: widgets/kmymoneycombo.cpp:678
 msgid "Last 30 days"
@@ -13264,27 +13202,24 @@ msgid "Last 3 months"
 msgstr "Los últimos 3 meses"
 
 #: widgets/kmymoneycombo.cpp:680
-#, fuzzy
 msgid "Last quarter"
-msgstr "El año pasado"
+msgstr "El trimestre pasado"
 
 #: widgets/kmymoneycombo.cpp:681
 msgid "Last 6 months"
 msgstr "Los últimos 6 meses"
 
 #: widgets/kmymoneycombo.cpp:682
-#, fuzzy
 msgid "Last 11 months"
-msgstr "Los últimos 12 meses"
+msgstr "Los últimos 11 meses"
 
 #: widgets/kmymoneycombo.cpp:683
 msgid "Last 12 months"
 msgstr "Los últimos 12 meses"
 
 #: widgets/kmymoneycombo.cpp:684
-#, fuzzy
 msgid "Next 7 days"
-msgstr "Los próximos 30 dias"
+msgstr "Los próximos 7 días"
 
 #: widgets/kmymoneycombo.cpp:685
 msgid "Next 30 days"
@@ -13295,9 +13230,8 @@ msgid "Next 3 months"
 msgstr "Los próximos 3 meses"
 
 #: widgets/kmymoneycombo.cpp:687
-#, fuzzy
 msgid "Next quarter"
-msgstr "Próxima fecha de vencimiento"
+msgstr "El próximo trimestre"
 
 #: widgets/kmymoneycombo.cpp:688
 msgid "Next 6 months"
@@ -13308,9 +13242,8 @@ msgid "Next 12 months"
 msgstr "Los próximos 12 meses"
 
 #: widgets/kmymoneycombo.cpp:690
-#, fuzzy
 msgid "Last 3 months to next 3 months"
-msgstr "Los últimos 3 meses"
+msgstr "Los últimos 3 meses a los próximos 3 meses"
 
 #: widgets/kmymoneycombo.cpp:691
 msgid "User defined"
