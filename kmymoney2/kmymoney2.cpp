@@ -4223,6 +4223,14 @@ void KMyMoney2App::slotKDELanguageSettings(void)
 
 void KMyMoney2App::slotNewFeature(void)
 {
+  // accounts
+  // transactions
+  // budgets
+  // currency
+  // institutions
+  // payees
+  // schedules
+
   // slotStatementImport();
 #if 0
   if(m_selectedBudgets.size() == 1) {
