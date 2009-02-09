@@ -1,6 +1,7 @@
 
 2009-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (schedules_multiplier_prep.diff)
+  * Remove link to payee from second split if name is removed from transaction
 
 2009-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Vincenzo Reale

@@ -1829,7 +1829,7 @@ int StdTransactionEditor::slotEditSplits(void)
 
 void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QString& payeeId)
 {
-  if(s.accountId().isEmpty() || payeeId.isEmpty())
+  if(s.accountId().isEmpty())
     return;
 
   MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
