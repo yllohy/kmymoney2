@@ -1,4 +1,7 @@
 
+2009-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Colin Wright (schedules_multiplier_prep.diff)
+
 2009-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Vincenzo Reale
   * Updated Brazilian translation from Marcus Gama

@@ -124,7 +124,16 @@ public:
   occurenceE occurence(void) const { return m_occurence; }
 
   /**
-    * Simple get method that returns the occurence frequency multiplier.
+    * Simple get method that returns the occurence period
+    * multiplier and occurence
+    *
+    * @return occurenceE The instance period 
+    *
+    */
+  occurenceE occurencePeriod(void) const { return m_occurence; }
+
+  /**
+    * Simple get method that returns the occurence period multiplier.
     *
     * @return int The frequency multiplier
     */
@@ -244,6 +253,14 @@ public:
     * @return none
     */
   void setOccurence(occurenceE occ);
+
+  /**
+    * Simple method that sets the schedule period 
+    *
+    * @param occ The new occurence period (frequency)
+    * @return none
+    */
+  void setOccurencePeriod(occurenceE occ);
 
   /**
     * Simple method that sets the frequency multiplier for the schedule.
@@ -454,6 +471,19 @@ public:
   static QString occurenceToString(occurenceE type);
 
   /**
+   * This method is used to convert a multiplier and base occurence type
+   * from it's internal representation into a human readable format.
+   * When multiplier * occurence is equivalent to a simple occurence
+   * the method returns the same as occurenceToString of the simple occurence
+   *
+   * @param mult occurence multiplier
+   * @param type occurence period 
+   *
+   * @return QString representing the human readable format
+   */
+  static QString occurenceToString(int mult, occurenceE type);
+
+  /**
    * This method is used to convert the payment type from it's
    * internal representation into a human readable format.
    *
@@ -512,6 +542,22 @@ public:
   * @return int  Number of days between events
   */
   static int daysBetweenEvents(MyMoneySchedule::occurenceE occurence);
+
+  /**
+    * Helper method to convert simple occurence to compound occurence + multiplier
+    *
+    * @param multiplier Returned by reference.  Adjusted multiplier
+    * @param occurence Returned by reference.  Occurence type
+    */
+  static void simpleToCompoundOccurence(int& multiplier,occurenceE& occurence);
+
+  /**
+    * Helper method to convert compound occurence + multiplier to simple occurence
+    *
+    * @param multiplier Returned by reference.  Adjusted multiplier
+    * @param occurence Returned by reference.  Occurence type
+    */
+  static void compoundToSimpleOccurence(int& multiplier,occurenceE& occurence);
 
 private:
   /**

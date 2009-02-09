@@ -54,6 +54,8 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST(testEventsPerYear);
         CPPUNIT_TEST(testAddHalfMonth);
         CPPUNIT_TEST(testOccurenceToString);
+	CPPUNIT_TEST(testOccurencePeriod);
+        CPPUNIT_TEST(testSimpleToFromCompoundOccurence);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -91,6 +93,8 @@ public:
         void testDaysBetweenEvents();
         void testEventsPerYear();
 	void testOccurenceToString();
+	void testOccurencePeriod();
+        void testSimpleToFromCompoundOccurence();
 };
 
 #endif
