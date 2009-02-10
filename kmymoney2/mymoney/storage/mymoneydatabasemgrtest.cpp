@@ -92,7 +92,9 @@ void MyMoneyDatabaseMgrTest::testCreateDb() {
     //"QPSQL7"
     //"QSQLITE3"
     m_url = "sql://" + userName + "@localhost/kmm_test_driver?driver="
-                     //+ "QMYSQL3" + "&mode=single";
+                     //"QPSQL7&mode=single";
+                     //"QSQLITE3&mode=single";
+                     //"QMYSQL3&mode=single";
                      + *it + "&mode=single";
     MyMoneyStorageSql *sql = m->connectToDatabase(m_url);
     CPPUNIT_ASSERT(0 != sql);
@@ -835,12 +837,19 @@ void MyMoneyDatabaseMgrTest::testBalance() {
 
   m->addTransaction(t1);
 
-  //qDebug ("Balance of A000003 is %s", m->balance("A000003", QDate()).toString().ascii());
+  //qDebug ("Balance of A000003 is 0 = %s", m->balance("A000003", QDate()).toString().ascii());
   CPPUNIT_ASSERT(m->balance("A000003", QDate()).isZero());
 
+  //qDebug ("Balance of A000001 is 1600 = %s", m->balance("A000001", QDate()).toString().ascii());
   CPPUNIT_ASSERT(m->totalBalance("A000001", QDate()) == MyMoneyMoney(1600));
+
+  //qDebug ("Balance of A000006 is -11600 = %s", m->balance("A000006", QDate(2002,5,9)).toString().ascii());
   CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,9)) == MyMoneyMoney(-11600));
+
+  //qDebug ("Balance of A000005 is -100000 = %s", m->balance("A000005", QDate(2002,5,10)).toString().ascii());
   CPPUNIT_ASSERT(m->balance("A000005", QDate(2002,5,10)) == MyMoneyMoney(-100000));
+
+  //qDebug ("Balance of A000006 is 88400 = %s", m->balance("A000006", QDate(2002,5,10)).toString().ascii());
   CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,10)) == MyMoneyMoney(88400));
 }
 

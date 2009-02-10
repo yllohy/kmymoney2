@@ -1,3 +1,6 @@
+2009-02-09 Fernando Vilas <fvilas@iname.com>
+  * Fixed date calculation in SQL that was missed in my last patch
+  * Speed improvement in readSplit()
 
 2009-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (schedules_multiplier_prep.diff)

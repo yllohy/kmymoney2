@@ -2679,7 +2679,7 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
   QString dateClause;
   QString connector = "";
   if (end != QDate()) {
-    dateClause = QString("(postDate < '%1')").arg(end.toString(Qt::ISODate));
+    dateClause = QString("(postDate < '%1')").arg(end.addDays(1).toString(Qt::ISODate));
     connector = " and ";
   }
   if (start != QDate()) {
@@ -2713,26 +2713,25 @@ void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, co
   MyMoneyDbTable::field_iterator ft = t.begin();
   MyMoneyDbTable::field_iterator splitEnd = t.end();
   int i = 0;
-//  QString payeeId;
+
+  // Use the QString here instead of CASE, since this is called so often.
+  QString fieldName;
   while (ft != splitEnd) {
-    CASE(payeeId) s.setPayeeId(GETCSTRING);
-    else CASE(reconcileDate) s.setReconcileDate(GETDATE);
-    else CASE(action) s.setAction(GETCSTRING);
-    else CASE(reconcileFlag) s.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(GETINT));
-    else CASE(value) s.setValue(MyMoneyMoney(QStringEmpty(GETSTRING)));
-    else CASE(shares) s.setShares(MyMoneyMoney(QStringEmpty(GETSTRING)));
-    else CASE(price) s.setPrice(MyMoneyMoney(QStringEmpty(GETSTRING)));
-    else CASE(memo) s.setMemo(GETSTRING);
-    else CASE(accountId) s.setAccountId(GETCSTRING);
-    else CASE(checkNumber) s.setNumber(GETSTRING);
-    //else CASE(postDate) s.setPostDate(GETDATETIME); // FIXME - when Tom puts date into split object
+    fieldName = (*ft)->name();
+    if (fieldName == "payeeId") s.setPayeeId(GETCSTRING);
+    else if (fieldName == "reconcileDate") s.setReconcileDate(GETDATE);
+    else if (fieldName == "action") s.setAction(GETCSTRING);
+    else if (fieldName == "reconcileFlag") s.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(GETINT));
+    else if (fieldName == "value") s.setValue(MyMoneyMoney(QStringEmpty(GETSTRING)));
+    else if (fieldName == "shares") s.setShares(MyMoneyMoney(QStringEmpty(GETSTRING)));
+    else if (fieldName == "price") s.setPrice(MyMoneyMoney(QStringEmpty(GETSTRING)));
+    else if (fieldName == "memo") s.setMemo(GETSTRING);
+    else if (fieldName == "accountId") s.setAccountId(GETCSTRING);
+    else if (fieldName == "checkNumber") s.setNumber(GETSTRING);
+    //else if (fieldName == "postDate") s.setPostDate(GETDATETIME); // FIXME - when Tom puts date into split object
     ++ft; ++i;
   }
-//  s.setPayeeId(payeeId);
-//  if ((m_mode > 0) && (!m_payeeListRead)) {
-//    if (m_payeeList.find(payeeId) == m_payeeList.end())
-//      m_payeeList.append(payeeId);
-//  }
+
   return;
 }
 
