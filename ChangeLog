@@ -1,6 +1,7 @@
 
 2009-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (use_occurencePeriod.diff)
+  * Added "don't ask again" feature to balance warning dialog
 
 2009-02-09 Fernando Vilas <fvilas@iname.com>
   * Fixed date calculation in SQL that was missed in my last patch

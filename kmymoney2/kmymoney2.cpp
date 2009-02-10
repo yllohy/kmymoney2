@@ -119,6 +119,7 @@
 #include "dialogs/transactionmatcher.h"
 #include "wizards/newuserwizard/knewuserwizard.h"
 #include "wizards/newaccountwizard/knewaccountwizard.h"
+#include "dialogs/kbalancewarning.h"
 
 #include "views/kmymoneyview.h"
 
@@ -151,7 +152,7 @@ class KMyMoney2App::Private
 {
 public:
   Private() :
-    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0), m_collectingStatements(false)
+    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0), m_balanceWarning(0), m_collectingStatements(false)
   {}
   void unlinkStatementXML(void);
 
@@ -159,6 +160,7 @@ public:
   kMyMoneyAccountSelector* m_moveToAccountSelector;
   KPluginDlg*              m_pluginDlg;
   int                      statementXMLindex;
+  KBalanceWarning*         m_balanceWarning;
 
   bool                     m_collectingStatements;
   QStringList              m_statementResults;
@@ -243,6 +245,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   // make sure, we get a note when the engine changes state
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotDataChanged()));
+
+  // make sure we have a balance warning object
+  d->m_balanceWarning = new KBalanceWarning(this);
 
   // kickstart date change timer
   slotDateChanged();
@@ -1263,6 +1268,10 @@ void KMyMoney2App::slotFileClose(void)
   myMoneyView->closeFile();
   m_fileName = KURL();
   updateCaption();
+
+  // just create a new balance warning object
+  delete d->m_balanceWarning;
+  d->m_balanceWarning = new KBalanceWarning(this);
 
   emit fileLoaded(m_fileName);
 }
@@ -3699,6 +3708,7 @@ KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySched
             }
 
             QString newId;
+            connect(m_transactionEditor, SIGNAL(balanceWarning(QWidget*, const MyMoneyAccount&, const QString&)), d->m_balanceWarning, SLOT(slotShowMessage(QWidget*, const MyMoneyAccount&, const QString&)));
             if(m_transactionEditor->enterTransactions(newId, false)) {
               if(!newId.isEmpty()) {
                 MyMoneyTransaction t = MyMoneyFile::instance()->transaction(newId);
@@ -4420,6 +4430,7 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
         MyMoneyFileTransaction ft;
         try {
           QString id;
+          connect(m_transactionEditor, SIGNAL(balanceWarning(QWidget*, const MyMoneyAccount&, const QString&)), d->m_balanceWarning, SLOT(slotShowMessage(QWidget*, const MyMoneyAccount&, const QString&)));
           m_transactionEditor->enterTransactions(id);
           ft.commit();
         } catch(MyMoneyException* e) {
@@ -4455,6 +4466,7 @@ void KMyMoney2App::slotTransactionsEnter(void)
     if(m_transactionEditor) {
       QString accountId = m_selectedAccount.id();
       QString newId;
+      connect(m_transactionEditor, SIGNAL(balanceWarning(QWidget*, const MyMoneyAccount&, const QString&)), d->m_balanceWarning, SLOT(slotShowMessage(QWidget*, const MyMoneyAccount&, const QString&)));
       if(m_transactionEditor->enterTransactions(newId))
         deleteTransactionEditor();
       if(!newId.isEmpty()) {

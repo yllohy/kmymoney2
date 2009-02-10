@@ -676,7 +676,7 @@ bool TransactionEditor::enterTransactions(QString& newId, bool askForSchedule, b
           }
 
           if(!msg.isEmpty()) {
-            KMessageBox::information(m_regForm, msg);
+            emit balanceWarning(m_regForm, acc, msg);
           }
         }
       }

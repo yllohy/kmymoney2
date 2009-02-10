@@ -259,6 +259,13 @@ signals:
    */
   void returnPressed(void);
 
+  /**
+   * This signal is sent out, if any of the balance warning levels
+   * for @p account has been reached. @p msg contains the message text.
+   * @p parent points to the parent widget to be used for the warning message box.
+   */
+  void balanceWarning(QWidget* parent, const MyMoneyAccount& account, const QString& msg);
+
 protected:
   QValueList<MyMoneySplit>                          m_splits;
   KMyMoneyRegister::SelectedTransactions            m_transactions;
