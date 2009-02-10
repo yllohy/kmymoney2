@@ -1,6 +1,7 @@
 
 2009-02-10 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Argentinian translation
+  * Do not show investments accounts in detailAll charts
 
 2009-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (use_occurencePeriod.diff)

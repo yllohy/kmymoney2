@@ -2034,17 +2034,20 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           PivotInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
-            //iterate row types
-            for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
-              //skip the budget difference rowset
-              if(m_rowTypeList[i] != eBudgetDiff ) {
-                rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), m_rowTypeList[i]);
+            //Do not include investments accounts in the chart because they are merely container of stock and other accounts
+            if( it_row.key().accountType() != MyMoneyAccount::Investment) {
+              //iterate row types
+              for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+                //skip the budget difference rowset
+                if(m_rowTypeList[i] != eBudgetDiff ) {
+                  rowNum = drawChartRowSet(rowNum, seriesTotals, accountSeries, data, it_row.data(), m_rowTypeList[i]);
 
-                //only show the column type in the header if there is more than one type
-                if(m_rowTypeList.size() > 1) {
-                  _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_row.key().name() );
-                } else {
-                  _view.params().setLegendText( rowNum-1, it_row.key().name() );
+                  //only show the column type in the header if there is more than one type
+                  if(m_rowTypeList.size() > 1) {
+                    _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_row.key().name() );
+                  } else {
+                    _view.params().setLegendText( rowNum-1, it_row.key().name() );
+                  }
                 }
               }
             }
