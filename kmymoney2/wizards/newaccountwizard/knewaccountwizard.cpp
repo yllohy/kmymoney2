@@ -239,7 +239,8 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
       m_schedule.setType(MyMoneySchedule::TYPE_TRANSFER);
       m_schedule.setPaymentType(static_cast<MyMoneySchedule::paymentTypeE>(m_schedulePage->m_method->currentItem()));
       m_schedule.setFixed(false);
-      m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+      m_schedule.setOccurencePeriod(MyMoneySchedule::OCCUR_MONTHLY);
+      m_schedule.setOccurenceMultiplier(1);
       MyMoneyTransaction t;
       MyMoneySplit s;
       s.setPayeeId(m_schedulePage->m_payee->selectedItem());
@@ -268,7 +269,8 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEPOSIT);
 
       m_schedule.setFixed(true);
-      m_schedule.setOccurence(m_generalLoanInfoPage->m_paymentFrequency->currentItem());
+      m_schedule.setOccurencePeriod(m_generalLoanInfoPage->m_paymentFrequency->currentItem());
+      m_schedule.setOccurenceMultiplier(1);
 
       MyMoneyTransaction t;
       MyMoneySplit s;

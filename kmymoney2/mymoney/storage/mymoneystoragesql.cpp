@@ -1425,7 +1425,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
   q.bindValue(":name", sch.name());
   q.bindValue(":type", sch.type());
   q.bindValue(":typeString", MyMoneySchedule::scheduleTypeToString(sch.type()));
-  q.bindValue(":occurence", sch.occurence());
+  q.bindValue(":occurence", sch.occurencePeriod());
   q.bindValue(":occurenceMultiplier", sch.occurenceMultiplier());
   q.bindValue(":occurenceString", sch.occurenceToString());
   q.bindValue(":paymentType", sch.paymentType());
@@ -2811,7 +2811,7 @@ const QMap<QString, MyMoneySchedule> MyMoneyStorageSql::fetchSchedules (const QS
       CASE(id) sId = GETCSTRING;
       else CASE(name)  s.setName (GETSTRING);
       else CASE(type)  s.setType (static_cast<MyMoneySchedule::typeE>(GETINT));
-      else CASE(occurence)  s.setOccurence (static_cast<MyMoneySchedule::occurenceE>(GETINT));
+      else CASE(occurence)  s.setOccurencePeriod (static_cast<MyMoneySchedule::occurenceE>(GETINT));
       else CASE(occurenceMultiplier) s.setOccurenceMultiplier (GETINT);
       else CASE(paymentType)  s.setPaymentType (static_cast<MyMoneySchedule::paymentTypeE>(GETINT));
       else CASE(startDate)  s.setStartDate (GETDATE);

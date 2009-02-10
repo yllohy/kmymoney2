@@ -1006,7 +1006,7 @@ MyMoneyTransaction KNewLoanWizard::transaction() const
   return t;
 }
 
-MyMoneySchedule KNewLoanWizard::schedule() const
+MyMoneySchedule KNewLoanWizard::schedule(void) const
 {
   MyMoneySchedule sched(m_nameEdit->text(),
                         MyMoneySchedule::TYPE_LOANPAYMENT,

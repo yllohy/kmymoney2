@@ -1,3 +1,7 @@
+
+2009-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Colin Wright (use_occurencePeriod.diff)
+
 2009-02-09 Fernando Vilas <fvilas@iname.com>
   * Fixed date calculation in SQL that was missed in my last patch
   * Speed improvement in readSplit()
