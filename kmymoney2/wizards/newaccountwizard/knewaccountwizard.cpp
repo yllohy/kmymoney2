@@ -269,8 +269,7 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEPOSIT);
 
       m_schedule.setFixed(true);
-      m_schedule.setOccurencePeriod(m_generalLoanInfoPage->m_paymentFrequency->currentItem());
-      m_schedule.setOccurenceMultiplier(1);
+      m_schedule.setOccurence(m_generalLoanInfoPage->m_paymentFrequency->currentItem());
 
       MyMoneyTransaction t;
       MyMoneySplit s;
