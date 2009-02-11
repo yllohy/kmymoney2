@@ -487,9 +487,9 @@ void MyMoneyScheduleTest::testNextPayment()
 */
 }
 
-void MyMoneyScheduleTest::testAddHalfMonth()
+void MyMoneyScheduleTest::testAddHalfMonths()
 {
-  // addHalfMonth is private
+  // addHalfMonths is private
   // Test a Schedule with occurence OCCUR_EVERYHALFMONTH using nextPayment
   MyMoneySchedule s;
   s.setStartDate(QDate(2007, 1, 1));
@@ -573,6 +573,71 @@ void MyMoneyScheduleTest::testAddHalfMonth()
   // 29th of February (Leap year)
   s.setNextDueDate(QDate(2000, 2, 29));
   CPPUNIT_ASSERT( s.nextPayment(s.nextDueDate()).toString(format) == "2000-03-15" );
+  // Add multiple transactions
+  s.setStartDate(QDate(2007, 1, 1));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-01-16" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-01" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-02-16" );
+  s.setStartDate(QDate(2007, 1, 12));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-01-27" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-12" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-02-27" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-12" );
+  s.setStartDate(QDate(2007, 1, 13));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-01-28" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-13" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-15" );
+  s.setStartDate(QDate(2007, 1, 14));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-01-29" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-14" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-15" );
+  s.setStartDate(QDate(2007, 1, 15));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-01-31" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-15" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-15" );
+  s.setStartDate(QDate(2007, 1, 16));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-01" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-16" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-01" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-16" );
+  s.setStartDate(QDate(2007, 1, 27));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-12" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-27" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-12" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-27" );
+  s.setStartDate(QDate(2007, 1, 28));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-13" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-15" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-31" );
+  s.setStartDate(QDate(2007, 1, 29));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-14" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-15" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-31" );
+  s.setStartDate(QDate(2007, 1, 30));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-15" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-15" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-31" );
+  s.setStartDate(QDate(2007, 1, 31));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-02-15" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-02-28" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-03-15" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-03-31" );
+  s.setStartDate(QDate(2007, 4, 29));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-05-14" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-05-29" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-06-14" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-06-29" );
+  s.setStartDate(QDate(2007, 4, 30));
+  CPPUNIT_ASSERT( s.dateAfter(2).toString(format) == "2007-05-15" );
+  CPPUNIT_ASSERT( s.dateAfter(3).toString(format) == "2007-05-31" );
+  CPPUNIT_ASSERT( s.dateAfter(4).toString(format) == "2007-06-15" );
+  CPPUNIT_ASSERT( s.dateAfter(5).toString(format) == "2007-06-30" );
 }
 
 void MyMoneyScheduleTest::testPaymentDates()

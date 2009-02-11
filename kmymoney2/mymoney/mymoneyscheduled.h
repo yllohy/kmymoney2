@@ -121,7 +121,7 @@ public:
     *
     * @return occurenceE The instance frequency.
     */
-  occurenceE occurence(void) const { return m_occurence; }
+  occurenceE occurence(void) const;
 
   /**
     * Simple get method that returns the occurence period
@@ -583,9 +583,9 @@ private:
   void setTransaction(const MyMoneyTransaction& transaction, bool noDateCheck);
 
   /**
-    * This method adds a Half Month to the given Date.
+    * This method adds a number of Half Months to the given Date.
     * This is used for OCCUR_EVERYHALFMONTH occurences.
-    * The addition uses the following rules:
+    * The addition uses the following rules to add a half month:
     * Day 1-13: add 15 days
     * Day 14: add 15 days (except February: the last day of the month)
     * Day 15: last day of the month
@@ -600,8 +600,11 @@ private:
     * - Addition from Day 30 leads immediately to the (15th,last) day pair.
     *
     * @param date The date
+    * @param mult The number of half months to add.  Default is 1.
+    *
+    * @return QDate date with mult half months added
     */
-  QDate addHalfMonth( QDate date ) const;
+  QDate addHalfMonths( QDate date, int mult = 1 ) const;
 
 private:
   /// Its occurence

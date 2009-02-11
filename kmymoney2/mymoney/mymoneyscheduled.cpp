@@ -140,6 +140,11 @@ MyMoneySchedule::MyMoneySchedule(const QString& id, const MyMoneySchedule& right
   setId(id);
 }
 
+MyMoneySchedule::occurenceE MyMoneySchedule::occurence(void) const
+{
+  return m_occurence;
+}
+
 void MyMoneySchedule::setStartDate(const QDate& date)
 {
   m_startDate = date;
@@ -444,7 +449,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
       case OCCUR_EVERYHALFMONTH:
         do
         {
-           paymentDate = addHalfMonth(paymentDate);
+           paymentDate = addHalfMonths(paymentDate);
         }
         while (paymentDate <= refDate);
        break;
@@ -609,12 +614,12 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
     case OCCUR_EVERYHALFMONTH:
       while (paymentDate < _startDate)
       {
-        paymentDate = addHalfMonth(paymentDate);
+        paymentDate = addHalfMonths(paymentDate);
       }
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
-        paymentDate = addHalfMonth(paymentDate);
+        paymentDate = addHalfMonths(paymentDate);
       }
       break;
 
@@ -850,8 +855,7 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
       break;
 
     case OCCUR_EVERYHALFMONTH:
-      while (counter++ < transactions)
-        paymentDate = addHalfMonth(paymentDate);
+      paymentDate = addHalfMonths(paymentDate,transactions-1);
       break;
 
     case OCCUR_EVERYTHREEWEEKS:
@@ -1391,24 +1395,61 @@ int MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::occurenceE occurence)
  return rc;
 }
 
-QDate MyMoneySchedule::addHalfMonth( QDate date ) const
+QDate MyMoneySchedule::addHalfMonths( QDate date, int mult ) const
 {
-  QDate newdate;
-  int d = date.day();
-  if ( d <= 13 )
-    newdate = date.addDays(15);
-  else
+  QDate newdate = date;
+  int d, dm;
+  if ( mult > 0 )
   {
-    int dm = date.daysInMonth();
-    if ( d == 14 )
-      newdate = date.addDays(( dm < 30 ) ? dm - d : 15);
-    else if ( d == 15 ) 
-      newdate = date.addDays(dm - d);
-    else if ( d == dm )
-      newdate = date.addDays(15 - d).addMonths(1);
+    d = newdate.day();
+    if ( d <= 12 )
+    {
+      if ( mult % 2 == 0 )
+        newdate = newdate.addMonths(mult>>1);
+      else
+        newdate = newdate.addMonths(mult>>1).addDays(15);
+    }
     else
-      newdate = date.addDays(-15).addMonths(1);
+      for ( int i = 0; i < mult; i++ )
+      {
+        if ( d <= 13 )
+          newdate = newdate.addDays(15);
+        else
+        {
+          dm = newdate.daysInMonth();
+          if ( d == 14 )
+            newdate = newdate.addDays(( dm < 30 ) ? dm - d : 15);
+          else if ( d == 15 ) 
+            newdate = newdate.addDays(dm - d);
+          else if ( d == dm )
+            newdate = newdate.addDays(15 - d).addMonths(1);
+          else
+            newdate = newdate.addDays(-15).addMonths(1);
+        }
+        d = newdate.day();
+      }
   }
+  else if ( mult < 0 ) // Go backwards
+    for ( int i = 0; i > mult; i-- )
+    {
+      d = newdate.day();
+      dm = newdate.daysInMonth();
+      if ( d > 15 )
+      {
+        dm = newdate.daysInMonth();
+        newdate = newdate.addDays( (d == dm) ? 15 - dm : -15);
+      }
+      else if ( d <= 13 )
+        newdate = newdate.addMonths(-1).addDays(15);
+      else if ( d == 15 )
+        newdate = newdate.addDays(-15);
+      else // 14
+      {
+        newdate = newdate.addMonths(-1);
+        dm = newdate.daysInMonth();
+        newdate = newdate.addDays(( dm < 30 ) ? dm - d : 15 );
+      } 
+    }
   return newdate;
 } 
 
