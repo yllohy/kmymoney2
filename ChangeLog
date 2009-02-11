@@ -1,4 +1,8 @@
 
+2009-02-10 Alvaro Soliverez <asoliverez@gmail.com>
+  * Updated Argentinian translation
+  * Fixed typos in kmymoneygpgconfigdecl.ui and ksettingsgpgdecl.ui
+
 2009-02-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reverted parts of yesterdays patch
   * Added patch provided by Colin Wright (addHalfMonths.diff)
