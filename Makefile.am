@@ -1,8 +1,9 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 # just make sure, we don't ship the sqlite subdirectory with the tarball
-DIST_SUBDIRS = libkgpgfile libkdchart kmymoney2 po doc developer-doc
-SUBDIRS = @SQLITE3@ $(DIST_SUBDIRS)
+SOURCEDIRS = libkgpgfile libkdchart kmymoney2 po doc developer-doc
+SUBDIRS = @SQLITE3@ $(SOURCEDIRS)
+DIST_SUBDIRS =  $(SOURCEDIRS) contrib
 
 EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs inst-apps 23011-qt-sqlite3-0.2.tar.gz
 
