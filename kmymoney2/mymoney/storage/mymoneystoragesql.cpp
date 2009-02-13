@@ -2824,6 +2824,12 @@ const QMap<QString, MyMoneySchedule> MyMoneyStorageSql::fetchSchedules (const QS
       else CASE(nextPaymentDue) nextPaymentDue = GETDATE;
       ++ft; ++i;
     }
+    // convert simple occurence to compound occurence
+    int mult = s.occurenceMultiplier();
+    MyMoneySchedule::occurenceE occ = s.occurencePeriod();
+    MyMoneySchedule::simpleToCompoundOccurence(mult,occ);
+    s.setOccurencePeriod(occ);
+    s.setOccurenceMultiplier(mult);
     // now assign the id to the schedule
     MyMoneySchedule _s(sId, s);
     s = _s;

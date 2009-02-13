@@ -1,4 +1,11 @@
 
+  * !!!!FILE FORMAT CHANGE!!!! The previous change causes the file format
+    to change slightly. Be prepared, that schedules may show wrong
+    payment periods when loaded in earlier versions of the program.
+
+2009-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Colin Wright (use_compoundOccurence.diff)
+
 2009-02-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reverted parts of yesterdays patch
   * Added patch provided by Colin Wright (addHalfMonths.diff)

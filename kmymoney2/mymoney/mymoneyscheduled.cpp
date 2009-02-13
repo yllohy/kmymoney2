@@ -58,6 +58,7 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
   m_name = name;
   m_occurence = occurence;
   m_occurenceMultiplier = occurenceMultiplier;
+  simpleToCompoundOccurence(m_occurenceMultiplier,m_occurence);
   m_type = type;
   m_paymentType = paymentType;
   m_fixed = fixed;
@@ -83,6 +84,8 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   m_paymentType = static_cast<MyMoneySchedule::paymentTypeE>(node.attribute("paymentType").toInt());
   m_occurence = static_cast<MyMoneySchedule::occurenceE>(node.attribute("occurence").toInt());
   m_occurenceMultiplier = node.attribute("occurenceMultiplier", "1").toInt();
+  // Convert to compound occurence
+  simpleToCompoundOccurence(m_occurenceMultiplier,m_occurence);
   m_autoEnter = static_cast<bool>(node.attribute("autoEnter").toInt());
   m_fixed = static_cast<bool>(node.attribute("fixed").toInt());
   m_weekendOption = static_cast<MyMoneySchedule::weekendOptionE>(node.attribute("weekendOption").toInt());
@@ -142,7 +145,10 @@ MyMoneySchedule::MyMoneySchedule(const QString& id, const MyMoneySchedule& right
 
 MyMoneySchedule::occurenceE MyMoneySchedule::occurence(void) const
 {
-  return m_occurence;
+  MyMoneySchedule::occurenceE occ = m_occurence;
+  int mult = m_occurenceMultiplier;
+  compoundToSimpleOccurence(mult, occ);
+  return occ;
 }
 
 void MyMoneySchedule::setStartDate(const QDate& date)
@@ -296,7 +302,11 @@ void MyMoneySchedule::setName(const QString& nm)
 
 void MyMoneySchedule::setOccurence(occurenceE occ)
 {
-  m_occurence = occ;
+  MyMoneySchedule::occurenceE occ2 = occ;
+  int mult = 1;
+  simpleToCompoundOccurence(mult, occ2);
+  setOccurencePeriod( occ2 );
+  setOccurenceMultiplier( mult );
 }
 
 void MyMoneySchedule::setOccurencePeriod(occurenceE occ)
@@ -425,102 +435,32 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
       case OCCUR_DAILY:
         if (paymentDate <= refDate)
-          paymentDate = refDate.addDays(1);
+          paymentDate = refDate.addDays(m_occurenceMultiplier);
         else
-          paymentDate = paymentDate.addDays(1);
+          paymentDate = paymentDate.addDays(m_occurenceMultiplier);
         break;
 
       case OCCUR_WEEKLY:
-        do {
-          paymentDate = paymentDate.addDays(7);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_FORTNIGHTLY:
-      case OCCUR_EVERYOTHERWEEK:
-        do
         {
-          paymentDate = paymentDate.addDays(14);
+          int step = 7*m_occurenceMultiplier;
+          do {
+            paymentDate = paymentDate.addDays(step);
+          }
+          while (paymentDate <= refDate);
         }
-        while (paymentDate <= refDate);
         break;
 
       case OCCUR_EVERYHALFMONTH:
         do
         {
-           paymentDate = addHalfMonths(paymentDate);
+           paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
         }
         while (paymentDate <= refDate);
        break;
 
-      case OCCUR_EVERYTHREEWEEKS:
-        do {
-          paymentDate = paymentDate.addDays(21);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYTHIRTYDAYS:
-        do
-        {
-          paymentDate = paymentDate.addDays(30);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYFOURWEEKS:
-        do
-        {
-          paymentDate = paymentDate.addDays(28);
-        }
-        while (paymentDate <= refDate);
-        break;
-
       case OCCUR_MONTHLY:
         do {
-          paymentDate = paymentDate.addMonths(1);
-          fixDate(paymentDate);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYEIGHTWEEKS:
-        do
-        {
-          paymentDate = paymentDate.addDays(56);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYOTHERMONTH:
-        do {
-          paymentDate = paymentDate.addMonths(2);
-          fixDate(paymentDate);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_QUARTERLY:
-      case OCCUR_EVERYTHREEMONTHS:
-        do {
-          paymentDate = paymentDate.addMonths(3);
-          fixDate(paymentDate);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYFOURMONTHS:
-        do {
-          paymentDate = paymentDate.addMonths(4);
-          fixDate(paymentDate);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_TWICEYEARLY:
-        do {
-          paymentDate = paymentDate.addMonths(6);
+          paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
           fixDate(paymentDate);
         }
         while (paymentDate <= refDate);
@@ -528,21 +468,14 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
       case OCCUR_YEARLY:
         do {
-          paymentDate = paymentDate.addYears(1);
-          fixDate(paymentDate);
-        }
-        while (paymentDate <= refDate);
-        break;
-
-      case OCCUR_EVERYOTHERYEAR:
-        do {
-          paymentDate = paymentDate.addYears(2);
+          paymentDate = paymentDate.addYears(m_occurenceMultiplier);
           fixDate(paymentDate);
         }
         while (paymentDate <= refDate);
         break;
 
       case OCCUR_ANY:
+      default:
         paymentDate = QDate();
         break;
     }
@@ -586,176 +519,63 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(1);
+        paymentDate = paymentDate.addDays(m_occurenceMultiplier);
       }
       break;
 
     case OCCUR_WEEKLY:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(7);
-      while (paymentDate <= endDate)
       {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(7);
-      }
-      break;
-
-    case OCCUR_FORTNIGHTLY:
-    case OCCUR_EVERYOTHERWEEK:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(14);
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(14);
+        int step = 7*m_occurenceMultiplier;
+        while (paymentDate < _startDate)
+          paymentDate = paymentDate.addDays(step);
+        while (paymentDate <= endDate)
+        {
+          theDates.append(paymentDate);
+          paymentDate = paymentDate.addDays(step);
+        }
       }
       break;
 
     case OCCUR_EVERYHALFMONTH:
       while (paymentDate < _startDate)
       {
-        paymentDate = addHalfMonths(paymentDate);
+        paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
       }
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
-        paymentDate = addHalfMonths(paymentDate);
-      }
-      break;
-
-    case OCCUR_EVERYTHREEWEEKS:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(21);
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(21);
-      }
-      break;
-
-    case OCCUR_EVERYTHIRTYDAYS:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(30);
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(30);
-      }
-      break;
-
-    case OCCUR_EVERYFOURWEEKS:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(28);
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(28);
+        paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
       }
       break;
 
     case OCCUR_MONTHLY:
       while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(1);
+        paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
         fixDate(paymentDate);
       }
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
-        paymentDate = paymentDate.addMonths(1);
-        fixDate(paymentDate);
-      }
-      break;
-
-    case OCCUR_EVERYEIGHTWEEKS:
-      while (paymentDate < _startDate)
-        paymentDate = paymentDate.addDays(56);
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addDays(56);
-      }
-      break;
-
-    case OCCUR_EVERYOTHERMONTH:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(2);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addMonths(2);
-        fixDate(paymentDate);
-      }
-      break;
-
-    case OCCUR_QUARTERLY:
-    case OCCUR_EVERYTHREEMONTHS:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(3);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addMonths(3);
-        fixDate(paymentDate);
-      }
-      break;
-
-    case OCCUR_EVERYFOURMONTHS:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(4);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addMonths(4);
-        fixDate(paymentDate);
-      }
-      break;
-
-    case OCCUR_TWICEYEARLY:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(6);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addMonths(6);
+        paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
         fixDate(paymentDate);
       }
       break;
 
     case OCCUR_YEARLY:
       while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addYears(1);
+        paymentDate = paymentDate.addYears(m_occurenceMultiplier);
         fixDate(paymentDate);
       }
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
-        paymentDate = paymentDate.addYears(1);
-        fixDate(paymentDate);
-      }
-      break;
-
-    case OCCUR_EVERYOTHERYEAR:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addYears(2);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = paymentDate.addYears(2);
+        paymentDate = paymentDate.addYears(m_occurenceMultiplier);
         fixDate(paymentDate);
       }
       break;
 
     case OCCUR_ANY:
+    default:
       break;
   }
 
@@ -840,80 +660,33 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
 
     case OCCUR_DAILY:
       while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(1);
+        paymentDate = paymentDate.addDays(m_occurenceMultiplier);
       break;
 
     case OCCUR_WEEKLY:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(7);
-      break;
-
-    case OCCUR_FORTNIGHTLY:
-    case OCCUR_EVERYOTHERWEEK:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(14);
+      {
+        int step = 7 * m_occurenceMultiplier;
+        while (counter++ < transactions)
+          paymentDate = paymentDate.addDays(step);
+      }
       break;
 
     case OCCUR_EVERYHALFMONTH:
-      paymentDate = addHalfMonths(paymentDate,transactions-1);
-      break;
-
-    case OCCUR_EVERYTHREEWEEKS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(21);
-      break;
-
-    case OCCUR_EVERYTHIRTYDAYS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(30);
-      break;
-
-    case OCCUR_EVERYFOURWEEKS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(28);
+      paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier*(transactions-1));
       break;
 
     case OCCUR_MONTHLY:
       while (counter++ < transactions)
-        paymentDate = paymentDate.addMonths(1);
-      break;
-
-    case OCCUR_EVERYEIGHTWEEKS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addDays(56);
-      break;
-
-    case OCCUR_EVERYOTHERMONTH:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addMonths(2);
-      break;
-
-    case OCCUR_QUARTERLY:
-    case OCCUR_EVERYTHREEMONTHS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addMonths(3);
-      break;
-
-    case OCCUR_EVERYFOURMONTHS:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addMonths(4);
-      break;
-
-    case OCCUR_TWICEYEARLY:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addMonths(6);
+        paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
       break;
 
     case OCCUR_YEARLY:
       while (counter++ < transactions)
-        paymentDate = paymentDate.addYears(1);
+        paymentDate = paymentDate.addYears(m_occurenceMultiplier);
       break;
 
-    case OCCUR_EVERYOTHERYEAR:
-      while (counter++ < transactions)
-        paymentDate = paymentDate.addYears(2);
-      break;
     case OCCUR_ANY:
+    default:
       break;
   }
 
@@ -1086,7 +859,7 @@ bool MyMoneySchedule::hasReferenceTo(const QString& id) const
 
 QString MyMoneySchedule::occurenceToString() const
 {
-  return occurenceToString( occurence() );
+  return occurenceToString( occurenceMultiplier(), occurencePeriod() );
 }
 
 QString MyMoneySchedule::occurenceToString(occurenceE occurence)
