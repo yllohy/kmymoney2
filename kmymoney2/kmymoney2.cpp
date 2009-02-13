@@ -87,6 +87,7 @@
 #include "dialogs/settings/ksettingsonlinequotes.h"
 #include "dialogs/settings/ksettingshome.h"
 #include "dialogs/settings/ksettingsforecast.h"
+#include "dialogs/settings/ksettingsplugins.h"
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
@@ -136,6 +137,7 @@
 #include "plugins/interfaces/kmmviewinterface.h"
 #include "plugins/interfaces/kmmstatementinterface.h"
 #include "plugins/interfaces/kmmimportinterface.h"
+#include "plugins/pluginloader.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -152,18 +154,18 @@ class KMyMoney2App::Private
 {
 public:
   Private() :
-    m_ft(0), m_moveToAccountSelector(0), m_pluginDlg(0), statementXMLindex(0), m_balanceWarning(0), m_collectingStatements(false)
+    m_ft(0), m_moveToAccountSelector(0), statementXMLindex(0), m_collectingStatements(false)
   {}
   void unlinkStatementXML(void);
 
-  MyMoneyFileTransaction*  m_ft;
-  kMyMoneyAccountSelector* m_moveToAccountSelector;
-  KPluginDlg*              m_pluginDlg;
-  int                      statementXMLindex;
-  KBalanceWarning*         m_balanceWarning;
+  MyMoneyFileTransaction*       m_ft;
+  kMyMoneyAccountSelector*      m_moveToAccountSelector;
+  int                           statementXMLindex;
+  KBalanceWarning*              m_balanceWarning;
 
-  bool                     m_collectingStatements;
-  QStringList              m_statementResults;
+  bool                          m_collectingStatements;
+  QStringList                   m_statementResults;
+  KMyMoneyPlugin::PluginLoader* m_pluginLoader;
 };
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
@@ -215,11 +217,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   // now initialize the plugin structure
   ::timetrace("load plugins");
-  d->m_pluginDlg = new KPluginDlg(this);
-  d->m_pluginDlg->buttonCancel->hide();
-  d->m_pluginDlg->buttonOk->hide();
-
-  new KListViewItem(d->m_pluginDlg->m_listView, i18n("No plugins loaded"));
   createInterfaces();
   loadPlugins();
 
@@ -390,7 +387,6 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "tools_consistency_check");
   new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "tools_performancetest");
   new KAction(i18n("KCalc..."), "kcalc", 0, this, SLOT(slotToolsStartKCalc()), actionCollection(), "tools_kcalc");
-  new KAction(i18n("Plugins"), "", 0, this, SLOT(slotToolsPluginDlg()), actionCollection(), "tools_plugin_list");
 
   // *****************
   // The settings menu
@@ -1810,6 +1806,10 @@ void KMyMoney2App::slotSettings(void)
   KSettingsFonts* fontsPage = new KSettingsFonts();
   KSettingsOnlineQuotes* onlineQuotesPage = new KSettingsOnlineQuotes();
   KSettingsForecast* forecastPage = new KSettingsForecast();
+  KSettingsPlugins* pluginsPage = new KSettingsPlugins();
+
+  KMyMoneyPlugin::PluginLoader::PluginList list = d->m_pluginLoader->pluginList();
+  pluginsPage->initPlugins(list.count());
 
   // ... and add them to the dialog
   dlg->addPage(generalPage, i18n("General"), "misc");
@@ -1821,8 +1821,10 @@ void KMyMoney2App::slotSettings(void)
   dlg->addPage(fontsPage, i18n("Fonts"), "font");
   dlg->addPage(onlineQuotesPage, i18n("Online Quotes"), "network_local");
   dlg->addPage(forecastPage, i18n("Forecast"), "forcast");
+  dlg->addPage(pluginsPage, i18n("Plugins"), "connect_no");
 
   connect(dlg, SIGNAL(settingsChanged()), this, SLOT(slotUpdateConfiguration()));
+  connect(dlg, SIGNAL(okClicked()), pluginsPage, SLOT(slotApplyPlugins()));
 
   dlg->show();
 }
@@ -2104,13 +2106,6 @@ void KMyMoney2App::slotQifProfileEditor(void)
 void KMyMoney2App::slotToolsStartKCalc(void)
 {
   KRun::runCommand("kcalc");
-}
-
-void KMyMoney2App::slotToolsPluginDlg(void)
-{
-  if(d->m_pluginDlg) {
-    d->m_pluginDlg->exec();
-  }
 }
 
 void KMyMoney2App::slotFindTransaction(void)
@@ -5112,8 +5107,6 @@ void KMyMoney2App::slotUpdateActions(void)
   action("currency_delete")->setEnabled(false);
   action("currency_setbase")->setEnabled(false);
 
-  action("tools_plugin_list")->setEnabled(d->m_pluginDlg != 0);
-
   w = factory()->container("transaction_move_menu", this);
   if(w)
     w->setEnabled(false);
@@ -5745,54 +5738,47 @@ void KMyMoney2App::createInterfaces(void)
 
 void KMyMoney2App::loadPlugins(void)
 {
-  bool firstPlugin = true;
-  {
-    KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
+  d->m_pluginLoader = new KMyMoneyPlugin::PluginLoader(this);
 
-    KTrader::OfferList::ConstIterator iter;
-    for(iter = offers.begin(); iter != offers.end(); ++iter) {
-      KService::Ptr service = *iter;
-      int errCode = 0;
+  connect( d->m_pluginLoader, SIGNAL( replug() ), this, SLOT( slotPluginPlug() ) );
 
-      KMyMoneyPlugin::Plugin* plugin =
-        KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::Plugin>
-        ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
-      // here we ought to check the error code.
+  d->m_pluginLoader->loadPlugins();
+}
 
-      if(firstPlugin)
-        d->m_pluginDlg->m_listView->clear();
-      firstPlugin = false;
-      if (plugin) {
-        guiFactory()->addClient(plugin);
-        kdDebug() << "Loaded '"
-                  << plugin->name() << "' plugin" << endl;
-        KListViewItem* item = new KListViewItem(d->m_pluginDlg->m_listView, service->name(), i18n("Loaded"));
+void KMyMoney2App::slotPluginPlug(void)
+{
+  KMyMoneyPlugin::PluginLoader::PluginList list = d->m_pluginLoader->pluginList();
 
-        // check for online plugin
-        KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
-        if(op) {
-          m_onlinePlugins[plugin->name()] = op;
-          QStringList protocolList;
-          op->protocols(protocolList);
-          new KListViewItem(item, i18n("Plugin interface description", "Online access"), "", protocolList.join(", "));
-          item->setOpen(true);
-          kdDebug() << "It's an online banking plugin and supports '" << protocolList << "'" << endl;
-        }
+  for(KMyMoneyPlugin::PluginLoader::PluginList::Iterator it = list.begin() ; it != list.end() ; ++it) {
+    KMyMoneyPlugin::Plugin* plugin = (*it)->plugin();
 
-        // check for importer plugin
-        KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
-        if(ip) {
-          m_importerPlugins[plugin->name()] = ip;
-          new KListViewItem(item, i18n("Plugin interface description", "File import"), "");
-        }
+    if (!plugin)
+      continue;
 
-      } else {
-        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
+    // check for online plugin
+    KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
+    // check for importer plugin
+    KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
 
-        kdDebug() << "Failed to load '"
-                  << service->name() << "' service, error=" << errCode << endl;
-        kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
-      }
+    if ((*it)->shouldLoad()) {
+      // plug the plugin
+      guiFactory()->addClient(plugin);
+
+      if(op)
+        m_onlinePlugins[plugin->name()] = op;
+
+      if(ip)
+        m_importerPlugins[plugin->name()] = ip;
+
+    } else {
+      // unplug the plugin
+      guiFactory()->removeClient(plugin);
+
+      if(op)
+        m_onlinePlugins.erase(plugin->name());
+
+      if(ip)
+        m_importerPlugins.erase(plugin->name());
     }
   }
 }

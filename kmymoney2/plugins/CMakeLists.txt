@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${K
 
 SET(kmm_plugin_LIB_SRCS
    kmymoneyplugin.cpp
+   pluginloader.cpp
    viewinterface.cpp
    statementinterface.cpp
    importinterface.cpp
@@ -20,6 +21,7 @@ KDE3_AUTOMOC(${kmm_plugin_LIB_SRCS})
 
 SET(plugins_HEADERS
     kmymoneyplugin.h
+    pluginloader.h
     viewinterface.h
     statementinterface.h
     importinterface.h

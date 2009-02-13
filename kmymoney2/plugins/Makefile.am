@@ -9,7 +9,7 @@ DIST_SUBDIRS = interfaces ofximport
 
 # The library containing the plugin base class
 lib_LTLIBRARIES = libkmm_plugin.la
-libkmm_plugin_la_SOURCES = kmymoneyplugin.cpp viewinterface.cpp statementinterface.cpp importinterface.cpp
+libkmm_plugin_la_SOURCES = kmymoneyplugin.cpp pluginloader.cpp viewinterface.cpp statementinterface.cpp importinterface.cpp
 libkmm_plugin_la_LDFLAGS = $(all_libraries) -version-info 0:0:0
 
 #definition of the service type
@@ -19,6 +19,6 @@ kde_servicetypes_DATA = kmymoneyplugin.desktop kmymoneyimporterplugin.desktop
 BUILT_SOURCES = libkmm_plugin.la
 
 pluginsincludedir = $(includedir)/kmymoney
-pluginsinclude_HEADERS = kmymoneyplugin.h viewinterface.h statementinterface.h importinterface.h
+pluginsinclude_HEADERS = kmymoneyplugin.h pluginloader.h viewinterface.h statementinterface.h importinterface.h
 
 EXTRA_DIST = kmymoneyplugin.desktop kmymoneyimporterplugin.desktop

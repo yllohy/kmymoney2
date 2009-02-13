@@ -18,6 +18,7 @@ SET (libsettings_a_SOURCES
 	 ksettingsonlinequotes.cpp 
 	 ksettingshome.cpp
 	 ksettingsforecast.cpp
+         ksettingsplugins.cpp
 	 ${KMyMoney2_BINARY_DIR}/kmymoneysettings.h
 	)
 

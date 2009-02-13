@@ -1,5 +1,8 @@
 
-  * !!!!FILE FORMAT CHANGE!!!! The previous change causes the file format
+2009-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Cristian Onet (patch_plugins.patch)
+
+    !!!!FILE FORMAT CHANGE!!!! The previous change causes the file format
     to change slightly. Be prepared, that schedules may show wrong
     payment periods when loaded in earlier versions of the program.
 

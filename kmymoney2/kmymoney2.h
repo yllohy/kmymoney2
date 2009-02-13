@@ -955,11 +955,6 @@ public slots:
     */
   void slotToolsStartKCalc(void);
 
-  /**
-   * This slot shows the plugin dialog
-   */
-  void slotToolsPluginDlg(void);
-
   void slotResetSelections(void);
 
   void slotSelectAccount(const MyMoneyObject& account = MyMoneyAccount());
@@ -1023,6 +1018,11 @@ public slots:
     */
   void slotInstitutionNew(MyMoneyInstitution& institution);
 
+  /**
+    * Called whenever a plugins loaded state changes
+    */
+  void slotPluginPlug(void);
+  
 private:
   // bool verifyImportedData(const MyMoneyAccount& account);
 
