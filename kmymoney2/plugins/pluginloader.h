@@ -49,11 +49,11 @@ namespace KMyMoneyPlugin
     public:
       Info( const QString& name, const QString& comment, const QString& library, bool shouldLoad );
       ~Info();
-      QString name() const;
+      const QString& name() const;
 
-      QString comment() const;
+      const QString& comment() const;
 
-      QString library() const;
+      const QString& library() const;
 
       Plugin* plugin() const;
       void setPlugin(Plugin*);

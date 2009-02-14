@@ -67,17 +67,17 @@ PluginLoader::Info::~Info()
   delete d;
 }
 
-QString PluginLoader::Info::name() const
+const QString& PluginLoader::Info::name() const
 {
   return d->m_name;
 }
 
-QString PluginLoader::Info::comment() const
+const QString& PluginLoader::Info::comment() const
 {
   return d->m_comment;
 }
 
-QString PluginLoader::Info::library() const
+const QString& PluginLoader::Info::library() const
 {
   return d->m_library;
 }
@@ -167,7 +167,7 @@ void PluginLoader::loadPlugin( Info* info )
     int error;
     plugin = KParts::ComponentFactory
              ::createInstanceFromLibrary<Plugin>(info->library().local8Bit().data(),
-                                                 d->m_parent, 0, QStringList(), &error);
+                                                 d->m_parent, info->name(), QStringList(), &error);
 
     if (plugin)
       kdDebug() << "KMyMoneyPlugin::PluginLoader: Loaded plugin " << plugin->name()<< endl;

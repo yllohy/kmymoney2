@@ -3,6 +3,8 @@
   - Happy Valentine's Day
   * Added patch provided by Colin Wright (oops.diff)
   * Added testcase for the above correction
+  * Pass on plugin name to createInstanceFromLibrary()
+  * Use const reference for getters in plugin info object
 
 2009-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Cristian Onet (patch_plugins.patch)
