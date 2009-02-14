@@ -1,4 +1,9 @@
 
+2009-02-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  - Happy Valentine's Day
+  * Added patch provided by Colin Wright (oops.diff)
+  * Added testcase for the above correction
+
 2009-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Cristian Onet (patch_plugins.patch)
 

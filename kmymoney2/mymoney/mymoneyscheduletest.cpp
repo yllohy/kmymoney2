@@ -703,6 +703,13 @@ void MyMoneyScheduleTest::testPaymentDates()
  		CPPUNIT_ASSERT(list[2] == QDate(2009, 1, 3));
  		CPPUNIT_ASSERT(list[3] == QDate(2009, 1, 4));
  		CPPUNIT_ASSERT(list[4] == QDate(2009, 1, 5));
+		// MyMoneySchedule::OCCUR_DAILY with multiplier 2
+		sch.setOccurenceMultiplier(2);
+                list = sch.paymentDates(startDate.addDays(1),endDate);
+                CPPUNIT_ASSERT(list.count() == 2);
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 3));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 1, 5));
+		sch.setOccurenceMultiplier(1);
 		// MyMoneySchedule::OCCUR_WEEKLY
 		sch.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
 		startDate.setYMD(2009,1,6);
@@ -1152,7 +1159,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		CPPUNIT_ASSERT(sch.type() == MyMoneySchedule::TYPE_BILL);
 		CPPUNIT_ASSERT(sch.name() == "A Name");
 		CPPUNIT_ASSERT(sch.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
-    CPPUNIT_ASSERT(sch.occurenceMultiplier() == 1);
+		CPPUNIT_ASSERT(sch.occurenceMultiplier() == 1);
 		CPPUNIT_ASSERT(sch.nextDueDate() == sch.lastPayment().addDays(7));
 		CPPUNIT_ASSERT(sch.recordedPayments().count() == 1);
 		CPPUNIT_ASSERT(sch.recordedPayments()[0] == QDate::currentDate());

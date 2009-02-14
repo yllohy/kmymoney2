@@ -515,7 +515,10 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
 
     case OCCUR_DAILY:
       if (paymentDate < _startDate)
-        paymentDate = _startDate;
+      {
+        int daysMod = paymentDate.daysTo(_startDate) % m_occurenceMultiplier;
+        paymentDate = (daysMod==0) ? _startDate : _startDate.addDays( m_occurenceMultiplier - daysMod );
+      }
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
