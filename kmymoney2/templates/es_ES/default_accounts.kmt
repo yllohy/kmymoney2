@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
-  <title>KMyMoney 0.8 default</title>
-  <shortdesc></shortdesc>
-  <longdesc></longdesc>
+  <title>KMyMoney</title>
+  <shortdesc>Cuentas predeterminadas</shortdesc>
+  <longdesc>Estas son cuentas y categorías que vienen de manera predeterminada para esta versión de KMyMoney</longdesc>
   <accounts>
     <account name="" type="13">
         <account name="Alimentos y bebidas no alcohólicas" type="13">
@@ -68,9 +68,9 @@
             <account name="Servicios de catering" type="13"/>
             <account name="Servicios de alojamiento" type="13"/>
         </account>
-        <account name="Bienes i servicios diversos" type="13">
+        <account name="Bienes y servicios diversos" type="13">
             <account name="Cuidado personal" type="13"/>
-            <account name="Efectos persoais n.e.p." type="13"/>
+            <account name="Efectos personales n.e.p." type="13"/>
             <account name="Protección social" type="13"/>
             <account name="Seguros" type="13"/>
             <account name="Servicios financieros n.e.p." type="13"/>
@@ -82,7 +82,7 @@
       <account name="Otros Ingresos" type="12">
         <account name="Becas" type="12"/>
         <account name="Regalos Recibidos" type="12"/>
-        <account name="Loterias" type="12"/>
+        <account name="Loterías" type="12"/>
         <account name="Devolución de Impuestos" type="12"/>
         <account name="Pensión Recibida para Hijos" type="12"/>
       </account>
