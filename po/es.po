@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-02-07 19:06-0200\n"
+"PO-Revision-Date: 2009-02-15 09:49-0200\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1244,6 +1244,9 @@ msgid ""
 "or verifies that the values entered match. If something is not correct you "
 "will receive information about it."
 msgstr ""
+"Presionando este botón se calcula un posible parámetro faltante de su "
+"préstamo o verifica que los valores ingresados coincidan. Si algo no está "
+"correcto, se le informará sobre ello."
 
 #: wizards/newaccountwizard/rc.cpp:86
 #, fuzzy
@@ -1341,6 +1344,10 @@ msgid ""
 "category. If you lend the money, you receive the interest. In this case, "
 "select an income category here."
 msgstr ""
+"La categoría a la que se asignará el interés del pago. Si pide plata prestada "
+"usualmente debe pagar un interés, así que ésta debería ser una categoría de "
+"gastos. Si usted presta plata, usted recibe el interés. En ese caso, seleccione "
+"aquí una categoría de ingresos."
 
 #: wizards/newaccountwizard/rc.cpp:106
 msgid ""
@@ -1446,6 +1453,8 @@ msgid ""
 "Each institution has a routing number. Enter it here. If uncertain, leave "
 "the field blank. You can modify it later."
 msgstr ""
+"Cada organización tiene un número de enrutamiento. Ingréselo aquí. Si no "
+"está seguro, deje el campo en blanco. Puede modificarlo luego."
 
 #: wizards/newuserwizard/rc.cpp:5
 msgid "Name of the institution"
@@ -1460,12 +1469,16 @@ msgid ""
 "In general the institution that issued the account also issued a number for "
 "it. Enter it here. If uncertain, you can modify this entry later."
 msgstr ""
+"Generalmente la organización que emitió la cuenta también emitió un número "
+"para ella. Ingréselo aquí. Si no está seguro, puede modificarlo luego."
 
 #: wizards/newuserwizard/rc.cpp:8
 msgid ""
 "Enter a descriptive name that will be used by KMyMoney to identify your "
 "checking account."
 msgstr ""
+"Ingrese un nombre descriptivo que será utilizado por KMyMoney para "
+"identificar su cuenta corriente."
 
 #: wizards/newuserwizard/rc.cpp:10
 msgid ""
@@ -1473,6 +1486,9 @@ msgid ""
 "that account. This is usually the date of the last statement. If uncertain, "
 "leave as is."
 msgstr ""
+"Ingrese la fecha desde la que desea seguir las transacciones en esta cuenta. "
+"Usualmente es la fecha de su último resumen. Si no está seguro, déjela como "
+"está."
 
 #: wizards/newuserwizard/rc.cpp:11
 msgid "Number of the account"
@@ -1487,6 +1503,8 @@ msgid ""
 "Enter the opening balance of the account. This is usually the ending balance "
 "of the last statement. If uncertain, leave as is."
 msgstr ""
+"Ingrese el saldo inicila de la cuenta. Usualmente es el saldo final del último "
+"resumen. Si no está seguro, déjelo como está."
 
 #: wizards/newuserwizard/rc.cpp:16
 msgid ""
@@ -1494,6 +1512,8 @@ msgid ""
 "account. Once this wizard finishes, the account will be created for you "
 "within KMyMoney."
 msgstr ""
+"Los campos debajo le permiten ingresar información sobre su cuenta "
+"corriente. Una vez finalizado el asistente, la cuenta será creada en KMyMoney."
 
 #: wizards/newuserwizard/rc.cpp:17
 msgid ""
@@ -1501,6 +1521,9 @@ msgid ""
 "default curreny which you can select here. The default for new accounts is "
 "also the currency you select here."
 msgstr ""
+"KMyMoney soporte múltiples divisas. Sus informes estarán basados en una "
+"divisa base que puede seleccionar aquí. También es la opción predeterminada "
+"para las cuentas nuevas."
 
 #: wizards/newuserwizard/rc.cpp:18
 msgid ""
@@ -1508,6 +1531,9 @@ msgid ""
 "filename within your KDE user environment will be the default. This is just "
 "provided for convenience and you can choose any other location here."
 msgstr ""
+"KMyMoney guardará su información en un archivo en disco. Un nombre "
+"de archivo estándar en su ambiente de KDE se sugiere. Esto es sólo por "
+"comodidad y usted puede elegir otra ubicación aquí."
 
 #: wizards/newuserwizard/rc.cpp:19
 msgid ""
@@ -1525,19 +1551,21 @@ msgid ""
 "This finishes the setup of your KMyMoney environment. You can now press the "
 "Finish button and start using KMyMoney to record your financial transactions."
 msgstr ""
+"Esto finaliza la configuración de su ambiente de KMyMoney. Puede presionar "
+"el botón Finalizar y comenzar a utilizar KMyMoney para registrar sus transacciones "
+"financieras."
 
 #: wizards/newuserwizard/rc.cpp:21
-#, fuzzy
 msgid ""
 "Please enter some information about yourself.<br><br>\n"
 "\n"
 "This information will be seen and used only by you. The information is used "
 "to personalize KMyMoney, to encrypt your file, etc."
 msgstr ""
-"Use este diálogo para introducir su información persoal.\n"
+"Use este diálogo para introducir su información personal.<br><br>\n"
 "\n"
-"Toda la información es opcional y sirve para personalizar\n"
-" su archivo de KMyMoney."
+"Esta información será vista y utilizada sólo por usted. La información sirve para "
+"personalizar KMyMoney, codificar su archivo, etc."
 
 #: wizards/newuserwizard/rc.cpp:28
 msgid "Zip code"
@@ -1570,6 +1598,8 @@ msgid ""
 "If you would like to review or change any preference settings for KMyMoney "
 "at this time, you can do so here. If not just click <b>Next</b>."
 msgstr ""
+"Si desea revisar o cambiar alguna preferencia de KMyMoney en este momento, "
+"puede hacerlo aquí. Si no, presione <b>Siguiente</b>."
 
 #: wizards/newuserwizard/rc.cpp:34
 msgid "Configure preferences now"
@@ -1621,10 +1651,12 @@ msgstr ""
 #: mymoney/storage/mymoneystoragesql.cpp:227
 msgid "Cannot currently create database for driver %1; please create manually"
 msgstr ""
+"No se puede crear la base de datos para el manejador %1 en este momento. "
+"Por favor, creela manualmente."
 
 #: mymoney/storage/mymoneystoragesql.cpp:242
 msgid "Error in create database %1; do you have create permissions?"
-msgstr ""
+msgstr "Error al crear base de datos %1. ¿Tiene permisos para crear?"
 
 #: converter/mymoneygncreader.cpp:1329
 #: mymoney/storage/mymoneystoragexml.cpp:166
@@ -1646,11 +1678,11 @@ msgstr "Cargando reportes..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:268
 msgid "Unknown XML tag %1 found in line %2"
-msgstr ""
+msgstr "Etiqueta XML %1 desconocida encontrada en el archivo %2"
 
 #: mymoney/storage/mymoneystoragexml.cpp:274
 msgid "Exception while creating a %1 element: %2"
-msgstr ""
+msgstr "Excepción mientras creaba un elemento %1: %2"
 
 #: mymoney/storage/mymoneystoragexml.cpp:513
 msgid "Loading file information..."
@@ -1701,6 +1733,8 @@ msgid ""
 "Account %1 contains an opening balance. Please use a KMyMoney version >= 0.8 "
 "and < 0.9 to correct the problem."
 msgstr ""
+"La cuenta %1 contiene un saldo de apertura. Por favor, utilice una versión de "
+"KMyMoney >= 0.8 y < 0.9 para corregir el problema."
 
 #: mymoney/mymoneyaccount.cpp:597
 msgid ""
@@ -1746,23 +1780,21 @@ msgid "Opening Balances"
 msgstr "Saldos de Apertura"
 
 #: mymoney/mymoneyfile.cpp:398
-#, fuzzy
 msgid "Cannot remove transaction that references a closed account."
-msgstr "¿Desea importar asientos a esta cuenta?"
+msgstr "No se puede eliminar un asiento que hace referencia a una cuenta cerrada."
 
 #: mymoney/mymoneyfile.cpp:1414 mymoney/mymoneyfile.cpp:1433
 #: mymoney/mymoneyfile.cpp:1447 mymoney/mymoneyfile.cpp:1469
-#, fuzzy
 msgid "* Problem with account '%1'"
-msgstr "No fue posible cargar las cuentas:"
+msgstr "* Problema con cuenta '%1'"
 
 #: mymoney/mymoneyfile.cpp:1419
 msgid "  * Parent account '%1' belongs to a different group."
-msgstr ""
+msgstr "  * Cuenta madre '%1' pertenece a un grupo diferente."
 
 #: mymoney/mymoneyfile.cpp:1420 mymoney/mymoneyfile.cpp:1450
 msgid "    New parent account is the top level account '%1'."
-msgstr ""
+msgstr "    Nueva cuenta madre es la cuenta de nivel superior '%1'."
 
 #: mymoney/mymoneyfile.cpp:1436
 msgid "  * Parent account '%1' does not contain '%2' as sub-account."
@@ -1778,16 +1810,15 @@ msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1472
 msgid "    The child account list will be reconstructed."
-msgstr ""
+msgstr "    Se reconstruirá la lista de cuentas hijas."
 
 #: mymoney/mymoneyfile.cpp:1492
-#, fuzzy
 msgid "  * Unable to update account data in engine."
-msgstr "No fue posible eliminar la cuenta:"
+msgstr "  * No se pudo actualizar la cuenta en el motor."
 
 #: mymoney/mymoneyfile.cpp:1499
 msgid "* Reconstructing the child lists for"
-msgstr ""
+msgstr "* Reconstruyendo la lista de hijas para"
 
 #: mymoney/mymoneyfile.cpp:1536
 msgid "  * Unable to update account data for account %1 in engine"
@@ -1802,14 +1833,12 @@ msgid "  * Payee id updated in split of transaction '%1'."
 msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1596
-#, fuzzy
 msgid "  * shares set to value in split of transaction '%1'."
-msgstr "Use esto para eliminar todas las partidas de este asiento"
+msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1599
-#, fuzzy
 msgid "  * value set to shares in split of transaction '%1'."
-msgstr "Use esto para eliminar todas las partidas de este asiento"
+msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1605
 msgid ""
@@ -1834,19 +1863,16 @@ msgid "    Shares set to value."
 msgstr "    Acciones fijadas al valor."
 
 #: mymoney/mymoneyfile.cpp:1658
-#, fuzzy
 msgid "  * Removed bankid from split in scheduled transaction '%1'."
-msgstr "Use esto para eliminar todas las partidas de este asiento"
+msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1671
-#, fuzzy
 msgid "  * shares set to value in split in schedule '%1'."
-msgstr "Use esto para eliminar todas las partidas de este asiento"
+msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1674
-#, fuzzy
 msgid "  * value set to shares in split in schedule '%1'."
-msgstr "Use esto para eliminar todas las partidas de este asiento"
+msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1680
 msgid ""
@@ -1895,9 +1921,8 @@ msgid "Every other week"
 msgstr "De cada dos semanas"
 
 #: kmymoneyutils.cpp:137 mymoney/mymoneyscheduled.cpp:1098
-#, fuzzy
 msgid "Every half month"
-msgstr "Cuatrimestral"
+msgstr "Cada medio mes"
 
 #: kmymoneyutils.cpp:139 mymoney/mymoneyscheduled.cpp:1100
 msgid "Every three weeks"
@@ -2553,9 +2578,8 @@ msgid "Importing file..."
 msgstr "Importando archivo..."
 
 #: kmymoney2.cpp:1544 kmymoney2.cpp:5960 kmymoney2.cpp:5982
-#, fuzzy
 msgid "The statements have been processed with the following results:"
-msgstr "El extracto se procesó con los siguientes resultados:"
+msgstr "Se procesaron los extractos con los siguientes resultados:"
 
 #: kmymoney2.cpp:1544 kmymoney2.cpp:1746 kmymoney2.cpp:5960 kmymoney2.cpp:5982
 msgid "Statement stats"
@@ -2848,9 +2872,8 @@ msgid "Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3
 msgstr ""
 
 #: kmymoney2.cpp:2799
-#, fuzzy
 msgid "Do you really want to delete category <b>%1</b>?"
-msgstr "Está seguro de querer borrar la categoría \"%1\""
+msgstr "¿Está seguro de querer borrar la categoría <b>%1</b>?"
 
 #: kmymoney2.cpp:2806
 msgid "Unable to delete category <b>%1</b>. Cause: %2"
@@ -2882,40 +2905,36 @@ msgid "Unable to delete a sub-category of category <b>%1</b>. Reason: %2"
 msgstr ""
 
 #: kmymoney2.cpp:2884
-#, fuzzy
 msgid "Do you really want to delete account <b>%1</b>?"
-msgstr "Está seguro de querer borrar la cuenta \"%1\""
+msgstr "¿Está seguro de querer borrar la cuenta <b>%1</b>?"
 
 #: kmymoney2.cpp:2896
-#, fuzzy
 msgid "Unable to delete account '%1'. Cause: %2"
-msgstr "No fue posible cargar las cuentas:"
+msgstr "No fue posible borrar la cuenta '%1'. Razón: %2"
 
 #: kmymoney2.cpp:2912
-#, fuzzy
 msgid "Edit account '%1'"
-msgstr "Editar una cuenta"
+msgstr "Editar cuenta '%1'"
 
 #: kmymoney2.cpp:2917
-#, fuzzy
 msgid "Edit category '%1'"
-msgstr "Editar una categoría"
+msgstr "Editar categoría '%1'"
 
 #: kmymoney2.cpp:3003
-#, fuzzy
 msgid "Unable to modify account '%1'. Cause: %2"
-msgstr "No fue posible cargar las cuentas:"
+msgstr "No fue posible modificar la cuenta '%1'. Razón: %2"
 
 #: kmymoney2.cpp:3059
 msgid ""
 "KMyMoney has detected some overdue schedules for this account. Do you want "
 "to enter those scheduled transactions now?"
 msgstr ""
+"KMyMoney ha detectado planificaciones vencidas para esta cuenta. ¿Desea "
+"ingresar esos asientos planificados ahora?"
 
 #: kmymoney2.cpp:3059
-#, fuzzy
 msgid "Scheduled transactions found"
-msgstr "Asientos Planificados"
+msgstr "Asientos planificados encontrados"
 
 #: kmymoney2.cpp:3156
 msgid ""
@@ -2923,11 +2942,13 @@ msgid ""
 "between your bank statement and the transactions marked as cleared.\n"
 "Are you sure you want to finish the reconciliation ?"
 msgstr ""
+"Está por finalizar la reconciliación de esta cuenta con una diferencia entre "
+"su extracto bancario y los asientos marcados como librados.\n"
+"¿Está seguro que desea finalizar la reconciliación?"
 
 #: kmymoney2.cpp:3158
-#, fuzzy
 msgid "Confirm end of reconciliation"
-msgstr "Aplazar la reconciliación"
+msgstr "Confirmar el fin de la reconciliación"
 
 #: kmymoney2.cpp:3332
 msgid ""
@@ -2939,23 +2960,21 @@ msgstr ""
 
 #: kmymoney2.cpp:3372
 msgid "<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3"
-msgstr ""
+msgstr "<b>%1</b> no puede moverse a la organización <b>%2</b>. Razón: %3"
 
 #: kmymoney2.cpp:3386
 msgid "<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3"
-msgstr ""
+msgstr "<b>%1</b> no puede moverse a <b>%2</b>. Razón: %3"
 
 #: kmymoney2.cpp:3401
-#, fuzzy
 msgid "%1 YTD Account Transactions"
-msgstr "Asientos de Impuestos"
+msgstr "%1 Asientos de cuenta de este año"
 
 #: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3402
 #: views/kforecastview.cpp:650 views/khomeview.cpp:274
 #: views/khomeview.cpp:1372 views/kreportsview.cpp:619
-#, fuzzy
 msgid "Generated Report"
-msgstr "¿Borrar Informe?"
+msgstr "Informe Generado"
 
 #: dialogs/rc.cpp:322 dialogs/settings/rc.cpp:79 kmymoney2.cpp:3404
 #: views/kreportsview.cpp:1065 views/rc.cpp:58 views/rc.cpp:59
@@ -2963,14 +2982,13 @@ msgid "Transactions"
 msgstr "Transacciones"
 
 #: kmymoney2.cpp:3442
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to add schedule: %1"
-msgstr "No fue posible añadir la transacción programada:"
+msgstr "No fue posible añadir la transacción programada: %1"
 
 #: kmymoney2.cpp:3442
-#, fuzzy
 msgid "Add schedule"
-msgstr "planificaciones\n"
+msgstr "Agregar planificación"
 
 #: kmymoney2.cpp:3482
 msgid ""
@@ -2981,61 +2999,53 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:3482
-#, fuzzy
 msgid "Reset Last Payment Date"
-msgstr "Beneficiario"
+msgstr "Reiniciar última fecha de pago"
 
 #: kmymoney2.cpp:3492 kmymoney2.cpp:3512 kmymoney2.cpp:3524
-#, fuzzy
 msgid "Unable to modify schedule '%1'"
-msgstr "Incapaz de modificar lo planificado."
+msgstr "No se pudo modificar la planificación '%1'"
 
 #: kmymoney2.cpp:3536
-#, fuzzy
 msgid "Are you sure you want to delete the schedule <b>%1</b>?"
-msgstr "¿Está seguro de que desea borrar la transacción programada escogida?"
+msgstr "¿Está seguro que desea borrar la planificación <b>%1</b>?"
 
 #: kmymoney2.cpp:3539
-#, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "schedule."
 msgstr ""
-"En el caso de pago de préstamos, en la actualidad no es posible recrear las "
-"transacciones programadas"
+"En el caso de pago de préstamos, en la actualidad no es posible recrear los "
+"asientos planificados."
 
 #: kmymoney2.cpp:3548
-#, fuzzy
 msgid "Unable to remove schedule '%1'"
-msgstr "No fue posible eliminar las transacciones programadas"
+msgstr "No fue posible eliminar la planificación '%1'"
 
 #: kmymoney2.cpp:3562
 #, c-format
 msgid ""
 "_: Copy of schedulename\n"
 "Copy of %1"
-msgstr ""
+msgstr "Copia de %1"
 
 #: kmymoney2.cpp:3574 kmymoney2.cpp:4336
-#, fuzzy
 msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
-msgstr "Incapaz de asentar la transacción"
+msgstr "No se pudo duplicar el/los asiento(s): %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:3588
-#, fuzzy
 msgid ""
 "Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</"
 "b>?"
-msgstr "¿Desea realmente convertir a <b>%1</b> en una subcuenta de <b>%2</b>?"
+msgstr "¿Desea realmente saltar la ocurrencia de la planificación <b>%1</b> en <b>%2</b>?"
 
 #: kmymoney2.cpp:3598
-#, fuzzy
 msgid "Unable to skip schedule <b>%1</b>."
-msgstr "No se pudo editar la transacción programada"
+msgstr "No se pudo saltar la planificación <b>%1</b>."
 
 #: kmymoney2.cpp:3611
 msgid "Unknown schedule '%1'"
-msgstr ""
+msgstr "Planificación desconocida '%1'"
 
 #: kmymoney2.cpp:3666
 msgid ""
@@ -3052,18 +3062,16 @@ msgstr ""
 "asiente manualmente más tarde."
 
 #: kmymoney2.cpp:3717 kmymoney2.cpp:3724
-#, fuzzy
 msgid "Unable to enter transaction for schedule '%1'"
-msgstr "No ha sido posible añadir transacción/modificar plan"
+msgstr "No ha sido posible ingresar el asiento para la planificación '%1'"
 
 #: kmymoney2.cpp:3735 kmymoney2.cpp:3775
 msgid "New Payee"
 msgstr "Nuevo Beneficiario"
 
 #: kmymoney2.cpp:3737
-#, fuzzy
 msgid "Do you want to add <b>%1</b> as payer/receiver ?"
-msgstr "Desea añadir '%1' como un beneficiario/receptor? "
+msgstr "¿Desea añadir <b>%1</b> como un beneficiario/receptor? "
 
 #: converter/mymoneystatementreader.cpp:869 kmymoney2.cpp:3739
 msgid "New payee/receiver"
@@ -3074,14 +3082,12 @@ msgid "Unable to add payee"
 msgstr "No fue posible añadir un beneficiario"
 
 #: kmymoney2.cpp:3818
-#, fuzzy
 msgid "Do you really want to remove the payee <b>%1</b>?"
-msgstr "Desea realmente eliminar este beneficiario:"
+msgstr "¿Desea realmente eliminar el beneficiario <b>%1</b>?"
 
 #: kmymoney2.cpp:3820
-#, fuzzy
 msgid "Do you really want to remove all selected payees?"
-msgstr "Desea realmente eliminar este beneficiario:"
+msgstr "¿Desea realmente eliminar todos los beneficiarios seleccionados?"
 
 #: kmymoney2.cpp:3822
 msgid "Remove Payee"
@@ -3095,9 +3101,8 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:3917
-#, fuzzy
 msgid "Unable to reassign payee of transaction/split"
-msgstr "No fue posible eliminar el asiento"
+msgstr "No fue posible reasignar el beneficiario del asiento/partida"
 
 #: converter/mymoneyqifreader.cpp:525 converter/mymoneystatementreader.cpp:895
 #: kmymoney2.cpp:3918 kmymoney2.cpp:3975 views/kbudgetview.cpp:636
@@ -3107,73 +3112,63 @@ msgid "thrown in"
 msgstr "introducido"
 
 #: kmymoney2.cpp:3974
-#, fuzzy
 msgid "Unable to remove payee(s)"
-msgstr "no fue posible eliminar el beneficiario"
+msgstr "no fue posible eliminar el/los beneficiario(s)"
 
 #: kmymoney2.cpp:3982
-#, fuzzy
 msgid "Enter ISO 4217 code for the new currency"
 msgstr "Indique el código ISO 4217 de la nueva divisa"
 
 #: kmymoney2.cpp:3991
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create new currency. %1"
-msgstr "No ha sido posible crear la nueva divisa."
+msgstr "No ha sido posible crear la nueva divisa. %1"
 
 #: kmymoney2.cpp:4013 kmymoney2.cpp:4018
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename currency. %1"
-msgstr "No ha sido posible crear la nueva divisa."
+msgstr "No ha sido posible renombrar la divisa. %1"
 
 #: kmymoney2.cpp:4031
-#, fuzzy
 msgid "Cannot delete currency %1. %2"
-msgstr "No ha sido posible crear la nueva divisa."
+msgstr "No fue posible borrar la divisa %1. %2"
 
 #: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
-#, fuzzy
 msgid "Cannot set %1 as base currency: %2"
-msgstr "Escoger como divisa base"
+msgstr "No se puede elegir %1 como divisa base: %2"
 
 #: kmymoney2.cpp:4046 views/kmymoneyview.cpp:1272
-#, fuzzy
 msgid "Set base currency"
 msgstr "Escoger divisa base"
 
 #: kmymoney2.cpp:4057
-#, fuzzy, c-format
+#, c-format
 msgid "Budget %1"
-msgstr "Presupuestos"
+msgstr "Presupuesto %1"
 
 #: kmymoney2.cpp:4067
 msgid "Budget %1 (%2)"
-msgstr ""
+msgstr "Presupuesto %1 (%2)"
 
 #: kmymoney2.cpp:4082 kmymoney2.cpp:4131
-#, fuzzy
 msgid "Unable to add budget: %1, thrown in %2:%3"
-msgstr "No ha sido posible procesar la fecha %1 usando el formato %2: %3"
+msgstr "No se pudo agregar presupuesto: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4097
-#, fuzzy
 msgid "Do you really want to remove the budget <b>%1</b>?"
-msgstr "¿Desea realmente eliminar el %1 <b>%2</b> del archivo?"
+msgstr "¿Desea realmente eliminar el presupuesto <b>%1</b>?"
 
 #: kmymoney2.cpp:4099
-#, fuzzy
 msgid "Do you really want to remove all selected budgets?"
-msgstr "¿Desea realmente borrar la inversión elegida?"
+msgstr "¿Desea realmente borrar todos los presupuestos seleccionados?"
 
 #: kmymoney2.cpp:4101
-#, fuzzy
 msgid "Remove Budget"
-msgstr "Eliminar Beneficiario"
+msgstr "Eliminar Presupuesto"
 
 #: kmymoney2.cpp:4114
-#, fuzzy
 msgid "Unable to remove budget: %1, thrown in %2:%3"
-msgstr "No ha sido posible procesar la fecha %1 usando el formato %2: %3"
+msgstr "No ha sido posible eliminar el presupuesto: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4126 views/kreportsview.cpp:659
 #, c-format
@@ -3181,77 +3176,72 @@ msgid "Copy of %1"
 msgstr "Copia de %1"
 
 #: kmymoney2.cpp:4156
-#, fuzzy
 msgid "Select year"
-msgstr "Escoger un año"
+msgstr "Escoger año"
 
 #: kmymoney2.cpp:4156
-#, fuzzy
 msgid "Budget year"
-msgstr "El Año que viene"
+msgstr "Año de presupuesto"
 
 #: kmymoney2.cpp:4168 kmymoney2.cpp:4206 kmymoney2.cpp:4258
 msgid "Unable to modify budget: %1, thrown in %2:%3"
-msgstr ""
+msgstr "No ha sido posible modificar el presupuesto: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4184 kmymoney2.cpp:4234
 msgid ""
 "The current budget already contains data. Continuing will replace all "
 "current values of this budget."
 msgstr ""
+"El presupuesto actual contiene datos. Continuar reemplazar todos los "
+"valores actuales de este presupuesto."
 
 #: kmymoney2.cpp:4214
 msgid ""
 "Please be aware that changes made in the following dialog affect all KDE "
 "applications not only KMyMoney."
 msgstr ""
+"Por favor, tenga en cuenta que los cambios hechos en el siguiente cuadro "
+"de diálogo afectan a todas las aplicaciones KDE, no sólo a KMyMoney."
 
 #: kmymoney2.cpp:4276
-#, fuzzy
 msgid ""
 "At least one split of the selected transactions has been reconciled. Do you "
 "wish to delete the transactions anyway?"
 msgstr ""
-"Al menos una partida de este asiento fue reconciliada. ¿Desea continuar "
-"editando el asiento aún así?"
+"Al menos una partida de este asiento fue reconciliada. ¿Desea borrar el "
+"asiento aún así?"
 
 #: kmymoney2.cpp:4279 views/kgloballedgerview.cpp:1024
 msgid "Transaction already reconciled"
 msgstr "El asiento ya fue reconciliado"
 
 #: kmymoney2.cpp:4285
-#, fuzzy
 msgid "Do you really want to delete the selected transaction?"
-msgstr "¿Desea realmente borrar la inversión elegida?"
+msgstr "¿Desea realmente borrar el asiento elegido?"
 
 #: kmymoney2.cpp:4287
-#, fuzzy
 msgid "Do you really want to delete all %1 selected transactions?"
-msgstr "¿Desea realmente borrar la inversión elegida?"
+msgstr "¿Desea realmente borrar los %1 asientos elegidos?"
 
 #: kmymoney2.cpp:4289
 msgid "Delete transaction"
 msgstr "Borrar asiento"
 
 #: kmymoney2.cpp:4290
-#, fuzzy
 msgid "Deleting transactions"
-msgstr "Borrar asiento"
+msgstr "Borrando asientos"
 
 #: kmymoney2.cpp:4305
-#, fuzzy
 msgid "Duplicating transactions"
-msgstr "Detallar asiento"
+msgstr "Duplicando asientos"
 
 #: kmymoney2.cpp:4359
-#, fuzzy
 msgid "Unable to delete transaction(s): %1, thrown in %2:%3"
-msgstr "Incapaz de asentar la transacción"
+msgstr "No ha sido posible eliminar el/los asiento(s): %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4418 kmymoney2.cpp:4582
-#, fuzzy
 msgid "Unable to modify transaction: %1, thrown in %2:%3"
-msgstr "No fue posible añadir/modificar el asiento"
+msgstr "No ha sido posible modificar el asiento: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4474
 msgid ""
@@ -3263,9 +3253,8 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:4474 kmymoney2.cpp:4477
-#, fuzzy
 msgid "Cancel transaction edit"
-msgstr "Asientos válidos"
+msgstr "Cancelar la modficación del asiento"
 
 #: kmymoney2.cpp:4477
 msgid ""
@@ -3276,45 +3265,38 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:4627
-#, fuzzy
 msgid "Unable to accept transaction: %1, thrown in %2:%3"
-msgstr "Incapaz de asentar la transacción"
+msgstr "No ha sido posible aceptar el asiento: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4806
-#, fuzzy
 msgid "Unable to unmatch the selected transactions"
-msgstr "No fue posible eliminar el asiento"
+msgstr "No fue posible conciliar los asientos seleccionados"
 
 #: kmymoney2.cpp:4845
 msgid "No manually entered transaction selected for matching"
-msgstr ""
+msgstr "No se han seleccionado asientos manuales para conciliar"
 
 #: kmymoney2.cpp:4847
-#, fuzzy
 msgid "No imported transaction selected for matching"
-msgstr "Aceptar los asientos importados y continuar"
+msgstr "No se han seleccionado asientos importados para conciliar"
 
 #: kmymoney2.cpp:4855
-#, fuzzy
 msgid "Unable to match the selected transactions"
-msgstr "No fue posible eliminar el asiento"
+msgstr "No fue posible conciliar los asientos seleccionados"
 
 #: kmymoney2.cpp:5057
-#, fuzzy
 msgid "Create a new transaction"
-msgstr "Crear una nueva cuenta de activos"
+msgstr "Crear un nuevo asiento"
 
 #: kmymoney2.cpp:5108
-#, fuzzy
 msgid "Duplicate the current selected transactions"
-msgstr "Borrar el perfil seleccionado"
+msgstr "Duplicar los asientos seleccionados"
 
 #: kmymoney2.cpp:5158
-#, fuzzy
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
-msgstr "Concordar"
+msgstr "Desconciliar"
 
 #: kmymoney2.cpp:5378 kmymoney2.cpp:5400
 msgid "Goto '%1'"
@@ -3325,9 +3307,9 @@ msgid "Running consistency check..."
 msgstr "Ejecutando comprobación de consistencia..."
 
 #: kmymoney2.cpp:5517
-#, fuzzy, c-format
+#, c-format
 msgid "Consistency check failed: %1"
-msgstr "Resultados de la comprobación de consistencia"
+msgstr "La comprobación de consistencia falló: %1"
 
 #: kmymoney2.cpp:5521
 msgid "Consistency check result"
@@ -3366,36 +3348,33 @@ msgid "All messages"
 msgstr "Todos los mensajes"
 
 #: kmymoney2.cpp:5749
-#, fuzzy
 msgid "Loaded"
-msgstr "Préstamo"
+msgstr "Cargado"
 
 #: kmymoney2.cpp:5757
 msgid ""
 "_: Plugin interface description\n"
 "Online access"
-msgstr ""
+msgstr "Acceso online"
 
 #: kmymoney2.cpp:5766
 msgid ""
 "_: Plugin interface description\n"
 "File import"
-msgstr ""
+msgstr "Importar archivo"
 
 #: kmymoney2.cpp:5770
-#, fuzzy, c-format
+#, c-format
 msgid "not loaded: %1"
-msgstr "LIbrado: %1"
+msgstr "No cargado: %1"
 
 #: kmymoney2.cpp:5784
-#, fuzzy
 msgid "Auto saving..."
-msgstr "Guardando archivo..."
+msgstr "Autoguardando..."
 
 #: kmymoney2.cpp:5842
-#, fuzzy
 msgid "Unable to setup online parameters for account ''%1'"
-msgstr "No fue posible eliminar la cuenta:"
+msgstr ""
 
 #: kmymoney2.cpp:5857
 msgid ""
@@ -3405,19 +3384,17 @@ msgid ""
 msgstr ""
 
 #: kmymoney2.cpp:5857
-#, fuzzy
 msgid "Remove mapping to online account"
-msgstr "Mapear a cuenta HBCI..."
+msgstr "Eliminar vinculación a cuenta online"
 
 #: kmymoney2.cpp:5868
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to unmap account from online account: %1"
-msgstr "No fue posible eliminar la cuenta:"
+msgstr "No se pudo desvincular la cuenta de la cuenta online: %1"
 
 #: kmymoney2.cpp:5885
-#, fuzzy
 msgid " (Brokerage)"
-msgstr "(Corretaje)"
+msgstr " (Corretaje)"
 
 #: kmymoney2.cpp:5886
 msgid ""
@@ -3426,20 +3403,23 @@ msgid ""
 "account. Please cancel if you intended to map the investment account, "
 "continue otherwise"
 msgstr ""
+"Usted intenta vincular una cuenta de corretaje a una cuenta online. Esto no es "
+"recomendable generalmente. Usualmente, es la cuenta de inversión la que "
+"debería vincularse a la cuenta online. Por favor, cancele si intentaba vincular "
+"la cuenta de inversión. Continúe si no era así."
 
 #: kmymoney2.cpp:5886
-#, fuzzy
 msgid "Mapping brokerage account"
-msgstr "Crear cuenta de corretaje"
+msgstr "Vinculando cuenta de corretaje"
 
 #: kmymoney2.cpp:5893
 msgid "Select online banking plugin"
-msgstr ""
+msgstr "Seleccionar plugin de banca online"
 
 #: kmymoney2.cpp:5934
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to map account to online account: %1"
-msgstr "No fue posible eliminar la cuenta:"
+msgstr "No fue posible vincular la cuenta a la cuenta online: %1"
 
 #: converter/mymoneyqifreader.cpp:398 converter/mymoneytemplate.cpp:73
 #: views/kmymoneyview.cpp:589
