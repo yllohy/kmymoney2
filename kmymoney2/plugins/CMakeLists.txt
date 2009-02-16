@@ -34,7 +34,8 @@ ADD_LIBRARY(kmm_plugin SHARED ${kmm_plugin_LIB_SRCS})
 
 TARGET_LINK_LIBRARIES(kmm_plugin  ${QT_AND_KDECORE_LIBS} )
 
-SET_TARGET_PROPERTIES(kmm_plugin PROPERTIES VERSION 4.2.0 SOVERSION 4 )
+#SET_TARGET_PROPERTIES(kmm_plugin PROPERTIES VERSION 4.2.0 SOVERSION 4 )
+SET_TARGET_PROPERTIES(kmm_plugin PROPERTIES VERSION 0.0.0 SOVERSION 0 )
 
 INSTALL(TARGETS kmm_plugin 
 	DESTINATION lib
@@ -48,5 +49,3 @@ INSTALL(FILES  ${plugins_HEADERS}
 INSTALL(FILES  kmymoneyplugin.desktop kmymoneyimporterplugin.desktop
         DESTINATION share/servicetypes
 )
-
-

@@ -33,9 +33,9 @@ KMM_CREATE_LINKS( ${mymoney_HEADERS} )
 
 ADD_LIBRARY(kmm_mymoney SHARED ${kmm_mymoney_LIB_SRCS})
 
-TARGET_LINK_LIBRARIES(kmm_mymoney ${QT_AND_KDECORE_LIBS} storage)
+TARGET_LINK_LIBRARIES(kmm_mymoney ${QT_AND_KDECORE_LIBS} kmm_storage)
 
-SET_TARGET_PROPERTIES(kmm_mymoney PROPERTIES VERSION 5.0.0 SOVERSION 5 )
+SET_TARGET_PROPERTIES(kmm_mymoney PROPERTIES VERSION 5.0.0 SOVERSION 5)
 
 ########### install files ###############
 
@@ -44,4 +44,3 @@ INSTALL(TARGETS kmm_mymoney
 
 INSTALL(FILES ${mymoney_HEADERS}
 	DESTINATION include/kmymoney )
-

@@ -19,21 +19,21 @@ INCLUDE_DIRECTORIES( ${Dialogs_BINARY_DIR} )
 
 SET( _HEADERS export.h kmymoneyutils.h kmymoneyglobalsettings.h )
 
-# we call the module which creates symbolic links to the given files.
+# we call a macro that creates symbolic links in kmymoney/
 KMM_CREATE_LINKS( ${_HEADERS} )
 KMM_CREATE_LINKS_BIN( kmymoneysettings.h )
 
 ########### common sources for kmymoney2 and kmymoneytest ###############
 
 SET( kmymoney_common_SRCS
-   kmymoneyutils.cpp kstartuplogo.cpp kmymoneyglobalsettings.cpp )
+  kmymoneyutils.cpp kstartuplogo.cpp kmymoneyglobalsettings.cpp )
 
 SET( kmymoney_common_LIBS
   ${QT_AND_KDECORE_LIBS} views reports newuserwizard newaccountwizard
-  wizardpages dialogs settings widgets converter storage kmm_mymoney
+  wizardpages dialogs settings widgets converter kmm_storage kmm_mymoney
   kgpgfile interfaces kmm_plugin dialogs kmm_kdchart khtml kdeui kabc)
 
-########### next target ###############
+########### kmymoney2 executable ###############
 
 SET( kmymoney2_SRCS main.cpp kmymoney2.cpp ${kmymoney_common_SRCS} )
 
@@ -52,7 +52,7 @@ KDE3_ADD_EXECUTABLE( kmymoney2 ${kmymoney2_SRCS} )
 
 TARGET_LINK_LIBRARIES( kmymoney2 ${kmymoney_common_LIBS}  )
 
-########### next target ###############
+########### kmymoneytest executable ###############
 
 # shall we build the tests? can be set with ccmake.
 IF( KDE3_BUILD_TESTS )
@@ -113,7 +113,7 @@ IF( KDE3_BUILD_TESTS )
     # for each line, extract the name ${single_test} of the test
     FOREACH( _single_test ${_tests_in_this_suite} )
       STRING( REGEX MATCH "CPPUNIT_TEST *\\( *([^ )]+) *\\)"
-	_ign "${_single_test}" )
+        _ign "${_single_test}" )
       SET(single_test ${CMAKE_MATCH_1})
 
       # add the global name of the test to the list of all tests.
@@ -142,62 +142,84 @@ INSTALL( TARGETS kmymoney2 DESTINATION bin )
 INSTALL(CODE
   "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
   ${CMAKE_INSTALL_PREFIX}/bin/kmymoney2
-  ${CMAKE_INSTALL_PREFIX}/bin/kmymoney)")
+  ${CMAKE_INSTALL_PREFIX}/bin/kmymoney)"
+  )
 
 INSTALL(FILES kmymoney2.kcfg
-	DESTINATION share/config.kcfg 
-)
+  DESTINATION share/config.kcfg 
+  )
 INSTALL(FILES kmymoney2ui.rc tips
-	DESTINATION share/apps/kmymoney2 
-)
+  DESTINATION share/apps/kmymoney2 
+  )
 INSTALL(FILES ${_HEADERS}
-	DESTINATION include/kmymoney
-)
+  DESTINATION include/kmymoney
+  )
+INSTALL(FILES x-kmymoney2.desktop
+  DESTINATION ${KDE3MIMEDIR}/applications
+  )
 INSTALL(FILES kmymoney2.desktop
-	DESTINATION share/applications/kde
-)
-INSTALL(DIRECTORY icons/hicolor
-	DESTINATION share/apps/kmymoney2/icons
-	PATTERN "CVS" EXCLUDE
-	PATTERN "*Make*" EXCLUDE
-)
+  DESTINATION share/applications/kde
+  )
 INSTALL(FILES misc/financequote.pl
-	DESTINATION share/apps/kmymoney2/misc
-)
-# Application Icons
+  DESTINATION share/apps/kmymoney2/misc
+  )
+
+########## Application Icons #############
+INSTALL(DIRECTORY icons/hicolor
+  DESTINATION share/apps/kmymoney2/icons
+  PATTERN "CVS" EXCLUDE
+  PATTERN ".cvsignore" EXCLUDE
+  PATTERN "*Make*" EXCLUDE
+  )
 INSTALL(FILES hi16-app-kmymoney2.png
-	DESTINATION share/icons/hicolor/16x16/apps
-)
+  DESTINATION share/icons/hicolor/16x16/apps
+  RENAME kmymoney2.png
+  )
 INSTALL(FILES mimetype_kmy_16x16.png
-	DESTINATION share/icons/hicolor/16x16/mimetypes
-)
+  DESTINATION share/icons/hicolor/16x16/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES hi32-app-kmymoney2.png
-	DESTINATION share/icons/hicolor/32x32/apps
-)
+  DESTINATION share/icons/hicolor/32x32/apps
+  RENAME kmymoney2.png
+  )
+INSTALL(FILES mimetype_kmy_22x22.png
+  DESTINATION share/icons/hicolor/22x22/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES mimetype_kmy_32x32.png
-	DESTINATION share/icons/hicolor/32x32/mimetypes
-)
+  DESTINATION share/icons/hicolor/32x32/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES hi48-app-kmymoney2.png
-	DESTINATION share/icons/hicolor/48x48/apps
-)
+  DESTINATION share/icons/hicolor/48x48/apps
+  RENAME kmymoney2.png
+  )
 INSTALL(FILES mimetype_kmy_48x48.png
-	DESTINATION share/icons/hicolor/48x48/mimetypes
-)
+  DESTINATION share/icons/hicolor/48x48/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES hi64-app-kmymoney2.png
-	DESTINATION share/icons/hicolor/68x68/apps
-)
+  DESTINATION share/icons/hicolor/68x68/apps
+  RENAME kmymoney2.png
+  )
 INSTALL(FILES mimetype_kmy_64x64.png
-	DESTINATION share/icons/hicolor/64x64/mimetypes
-)
+  DESTINATION share/icons/hicolor/64x64/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES hi128-app-kmymoney2.png
-	DESTINATION share/icons/hicolor/128x128/apps
-)
+  DESTINATION share/icons/hicolor/128x128/apps
+  RENAME kmymoney2.png
+  )
 INSTALL(FILES mimetype_kmy_128x128.png
-	DESTINATION share/icons/hicolor/128x128/mimetypes
-)
+  DESTINATION share/icons/hicolor/128x128/mimetypes
+  RENAME kmy.png
+  )
 INSTALL(FILES lo16-app-kmymoney2.png
-	DESTINATION share/icons/locolor/16x16/apps
-)
+  DESTINATION share/icons/locolor/16x16/apps
+  RENAME kmymoney2.png
+  )
 INSTALL(FILES lo32-app-kmymoney2.png
-	DESTINATION share/icons/locolor/32x32/apps
-)
+  DESTINATION share/icons/locolor/32x32/apps
+  RENAME kmymoney2.png
+  )

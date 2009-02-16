@@ -1,9 +1,16 @@
 # Setting the name of the main project
 PROJECT(KMyMoney)
 
-# The cmake version we need
+# The current version of KMyMoney (used for packaging)
+SET(VERSION_MAJOR "0")
+SET(VERSION_MINOR "9")
+SET(VERSION_PATCH "2")
+
+# The CMake version we need
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-# Note that RPM creation using CPack requires version >=2.4
+
+# This option will make 'make' very verbose
+#SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # cmake 2.6 proposed to add this policy
 if(COMMAND cmake_policy)
@@ -20,8 +27,10 @@ ENDIF (PERL_FOUND)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
 
-# set a variable to install the html doc correctly
-SET(KDE3HTMLDIR share/doc/HTML)
+FIND_PACKAGE(KDECONFIG)
+IF(KDECONFIG_EXECUTABLE)
+    MESSAGE(STATUS "Program kde-config found (${KDECONFIG_EXECUTABLE})")
+ENDIF(KDECONFIG_EXECUTABLE)
 
 FIND_PACKAGE(MSGFMT REQUIRED)
 IF(MSGFMT_FOUND)
@@ -32,9 +41,6 @@ FIND_PACKAGE(MEINPROC REQUIRED)
 IF(MEINPROC_FOUND)
   MESSAGE(STATUS "Program meinproc found (${MEINPROC_EXECUTABLE})")
 ENDIF(MEINPROC_FOUND)
-
-# Using this option will make 'make' very verbose
-#SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # check for JPEG
 FIND_PACKAGE(JPEG)
@@ -60,6 +66,12 @@ IF (ZLIB_FOUND)
   SET(HAVE_LIBZ 1)
 ENDIF (ZLIB_FOUND)
 
+# check for Sqlite
+FIND_PACKAGE(Sqlite)
+IF (SQLITE_FOUND)
+  SET(HAVE_SQLITE 1)
+ENDIF (SQLITE_FOUND)
+
 # check for PkgConfig
 FIND_PACKAGE(PkgConfig)
 # check for some modules we require
@@ -81,7 +93,7 @@ IF( KDE3_BUILD_TESTS )
   ADD_DEFINITIONS( -DHAVE_LIBCPPUNIT )
   INCLUDE_DIRECTORIES( ${CPPUNIT_INCLUDE_DIR} )
 
-  #  INCLUDE(CTest) # makes sense only with a ctest online dashboard
+  # INCLUDE(CTest) # makes sense only with a ctest online dashboard
   ENABLE_TESTING()
 ENDIF( KDE3_BUILD_TESTS )
 
@@ -90,6 +102,8 @@ SET(HAVE_KDCHART 1)
 SET(HAVE_KDCHART_SETPROP 1)
 
 INCLUDE(KMyMoneyMacros)
+MARK_AS_ADVANCED(KDE3_DCOPIDL2CPP_EXECUTABLE KDE3_DCOPIDL_EXECUTABLE
+  KDE3_KCFGC_EXECUTABLE KDE3_KDECORE_LIBRARY KDECONFIG_EXECUTABLE)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
 # some definitions for the compiler
@@ -143,7 +157,7 @@ IF(HAVE_LIBOFX_H)
   # to config.h as specified in config.h.cmake
 ENDIF(HAVE_LIBOFX_H)
 
-OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support" OFF)
+OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support (deprecated)" OFF)
 if(USE_LEAK_CHECK)
   message("Warning: Leak check support is activated but deprecated. Better use valgrind.")
   ADD_DEFINITIONS( -D_CHECK_MEMORY )
@@ -175,10 +189,12 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+SET(MAN_INSTALL_DIR "/usr/share/man" CACHE PATH "Install path for manpages")
+
 
 # remark: these directories are used to find libs and .h files.
 # they are set globally after this point. no need to add everywhere.
-LINK_DIRECTORIES( ${KDE3_LIB_DIR} )
+LINK_DIRECTORIES( ${KDE3_LIB_DIR} ${SQLITE_LIB_DIRS} )
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -206,24 +222,28 @@ ADD_CUSTOM_TARGET(uninstall
 ADD_CUSTOM_TARGET(messages
   COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/admin/extract-messages.sh" "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
-######################### package generation #############################
-# by default, only create tar.gz and tar.bz2 source and binary packages.
+######################### package generation ##########################
+##### general setup (tar.gz / tar.bz2 source and binary) #####
 
-SET(CPACK_PACKAGE_VERSION_MAJOR "0")
-SET(CPACK_PACKAGE_VERSION_MINOR "9")
-SET(CPACK_PACKAGE_VERSION_PATCH "2-CVS")
+# by default, the package name is kmymoney
+SET(CPACK_PACKAGE_NAME "kmymoney")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A Personal Finance Manager")
+SET(CPACK_PACKAGE_VERSION_MAJOR  ${VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR  ${VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH  ${VERSION_PATCH})
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "/opt/kde3")
 
 # When building with 'make package', use these cpack generators
 SET(CPACK_GENERATOR "TGZ" "TBZ2")
-
 # When building with 'make package_source', use these cpack generators
 SET(CPACK_SOURCE_GENERATOR "TGZ" "TBZ2")
+
 # don't include files matching these into the source packages
 # (Note: all other files in the source directory will be included)
 SET(CPACK_SOURCE_IGNORE_FILES
   "${CMAKE_CURRENT_BINARY_DIR}" # the build directory. MUST build out-of-source!
   "/CVS/"      # cvs directories
-  "/\\\\."     # all files starting with '.'
+  "/\\\\."     # all files starting with '.' (this includes .cvsignore files)
   "~$"         # all files ending in '~'
   "\\\\.m4$"   # since this is a cmake dist, we remove automake files
   "\\\\.m4\\\\.in$" "\\\\.am$" "Makefile\\\\.dist" "configure\\\\.in"
@@ -231,7 +251,18 @@ SET(CPACK_SOURCE_IGNORE_FILES
 # This will create the cpack configuration files.
 INCLUDE(CPack)
 
+## RPM setup
+# We use cmake/modules/UseRPMTools.cmake for RPM creation
+INCLUDE(UseRPMTools)
+IF(RPMTools_FOUND)
+  # kmymoney conflicts with kmymoney-unstable
+  SET(RPM_CONFLICTING kmymoney-unstable)
+  RPMTools_ADD_RPM_TARGETS(kmymoney          kmymoney.spec.in)
 
+  # kmymoney-unstable conflicts with kmymoney
+  SET(RPM_CONFLICTING kmymoney)
+  RPMTools_ADD_RPM_TARGETS(kmymoney-unstable kmymoney.spec.in)
+ENDIF(RPMTools_FOUND)
 
 ######################### Output Results #############################
 
@@ -256,6 +287,7 @@ ENDMACRO(nice_yesno _varname)
 nice_yesno("HAVE_LIBOFX_H")
 nice_yesno("USE_OFX_DIRECTCONNECT")
 nice_yesno("HAVE_KDCHART")
+nice_yesno("HAVE_SQLITE")
 nice_yesno("USE_LEAK_CHECK")
 nice_yesno("USE_QT_DESIGNER")
 nice_yesno("CPPUNIT_FOUND")
@@ -269,7 +301,7 @@ OFX direct connect:                     ${nice_USE_OFX_DIRECTCONNECT}
 
 Chart support:                          ${nice_HAVE_KDCHART}
 
-SQLITE3 support:                        ?
+SQLITE3 support:                        ${nice_HAVE_SQLITE}
 -------------------------------------------
 
 
@@ -286,11 +318,6 @@ Memory leak check support (deprecated): ${nice_USE_LEAK_CHECK}
 -------------------------------------------
 
 Good - your configure finished.
-Now type 'make' to build KMyMoney
+Now type 'make' to build KMyMoney. For more help, consult README.cmake
 
 ")
-
-
-
-########### install files ###############
-

@@ -1,4 +1,26 @@
+# This file has been taken from 'Rosegarden'
+# A MIDI and audio sequencer and musical notation editor.
 #
+# This program is Copyright 2000-2008
+#     Guillaume Laurent   <glaurent@telegraph-road.org>,
+#     Chris Cannam        <cannam@all-day-breakfast.com>,
+#     Richard Bown        <richard.bown@ferventsoftware.com>
+#
+# The moral rights of Guillaume Laurent, Chris Cannam, and Richard
+# Bown to claim authorship of this work have been asserted.
+#
+# This file is Copyright 2006-2008
+#     Pedro Lopez-Cabanillas <plcl@users.sourceforge.net>
+#
+# Other copyrights also apply to some parts of this work.  Please
+# see the AUTHORS file and individual file headers for details.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.  See the file
+# COPYING included with this distribution for more information.
+
 # Find the msgfmt program
 #
 # Defined variables:
@@ -38,10 +60,9 @@ MACRO(ADD_TRANSLATIONS _baseName)
 	    COMMAND ${MSGFMT_EXECUTABLE} -o ${_out} ${_in}
 	    DEPENDS ${_in} )
 	INSTALL(FILES ${_out}
-	    DESTINATION share/local/${_file_we}/LC_MESSAGES/
+	    DESTINATION ${KDE3L18NDIR}/${_file_we}/LC_MESSAGES/
 	    RENAME ${_baseName}.mo )
 	SET(_outputs ${_outputs} ${_out})
     ENDFOREACH(_file)
     ADD_CUSTOM_TARGET(translations ALL DEPENDS ${_outputs})
 ENDMACRO(ADD_TRANSLATIONS)
-

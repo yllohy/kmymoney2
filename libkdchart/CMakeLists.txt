@@ -44,15 +44,9 @@ KDChartTableDataWrapper.cpp
 KDE3_AUTOMOC(${libkmm_kdchart_la_SOURCES})
 
 ADD_LIBRARY(kmm_kdchart SHARED ${libkmm_kdchart_la_SOURCES})
-# kdeui added manually
+SET_TARGET_PROPERTIES(kmm_kdchart PROPERTIES VERSION 0.0.0 SOVERSION 0)
 TARGET_LINK_LIBRARIES(kmm_kdchart  ${QT_AND_KDECORE_LIBRARIES} kdeui)
 
 ########### install files ###############
 INSTALL(TARGETS kmm_kdchart 
-	DESTINATION lib
-)
-
-#libkmm_kdchart_la_LDFLAGS = $(all_libraries) -no-undefined
-#libkmm_kdchart_la_LIBADD = $(LIB_QT) $(LIB_KDECORE)
-
-
+	DESTINATION lib)

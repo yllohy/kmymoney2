@@ -3,6 +3,10 @@
   * Fixed some issues around modification of addtional loan fees
   * Removed Makefile.in
   * Added patch provided by Colin Wright (stringToOccurence.diff)
+  * Added patches provided by Holger
+    (0001--non-fancy-sqlite3-support.patch,
+     0002-make-install-and-make-kmymoney-unstable_rpm.patch,
+     0003-added-fancy-qsqlite3-support.patch)
 
 2009-02-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Spanish translation
