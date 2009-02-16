@@ -4,14 +4,14 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${K
 ########### install files ###############
 
 INSTALL(FILES default_accounts.kmt 
-	DESTINATION share/apps/kmymoney2/templates/ru_SU
+	DESTINATION share/apps/kmymoney2/templates/ru_RU
 )
 
 
 
 #original Makefile.am contents follow:
 
-#templatedir=$(kde_datadir)/kmymoney2/templates/ru_SU
+#templatedir=$(kde_datadir)/kmymoney2/templates/ru_RU
 #template_DATA = default_accounts.kmt
 #
 #EXTRA_DIST = $(template_DATA)
