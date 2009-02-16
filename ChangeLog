@@ -7,6 +7,9 @@
     (0001--non-fancy-sqlite3-support.patch,
      0002-make-install-and-make-kmymoney-unstable_rpm.patch,
      0003-added-fancy-qsqlite3-support.patch)
+  * Removed Makefile
+  * Added updated Russian default account template from Andrey Cherepanov
+  * Renamed ru_SU into ru_RU for templates
 
 2009-02-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Spanish translation
