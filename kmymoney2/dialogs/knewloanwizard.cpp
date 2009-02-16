@@ -661,7 +661,7 @@ int KNewLoanWizard::calculateLoan(void)
   // FIXME: for now, we only support periodic compounding
   calc.setDisc();
 
-  PF = MyMoneySchedule::eventsPerYear(KMyMoneyUtils::stringToOccurence(
+  PF = MyMoneySchedule::eventsPerYear(MyMoneySchedule::stringToOccurence(
                             m_paymentFrequencyUnitEdit->currentText()));
   if(PF == 0)
     return 0;
@@ -833,7 +833,7 @@ QString KNewLoanWizard::updateTermWidgets(const long double val)
 
   QString valString;
   MyMoneySchedule::occurenceE unit;
-  unit = KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText());
+  unit = MyMoneySchedule::stringToOccurence(m_paymentFrequencyUnitEdit->currentText());
 
   if((unit == MyMoneySchedule::OCCUR_MONTHLY)
   && ((vl % 12) == 0)) {
@@ -1012,7 +1012,7 @@ MyMoneySchedule KNewLoanWizard::schedule(void) const
 {
   MyMoneySchedule sched(m_nameEdit->text(),
                         MyMoneySchedule::TYPE_LOANPAYMENT,
-                        KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()), 1,
+                        MyMoneySchedule::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()), 1,
                         MyMoneySchedule::STYPE_OTHER,
                         QDate(),
                         QDate(),
@@ -1057,8 +1057,8 @@ int KNewLoanWizard::term(void) const
         factor *= m_durationValueEdit->value();
         // factor now is the duration in days. we divide this by the
         // payment frequency and get the number of payments
-        factor /= MyMoneySchedule::daysBetweenEvents(KMyMoneyUtils::stringToOccurence(
-                            m_paymentFrequencyUnitEdit->currentText()));;
+        factor /= MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::stringToOccurence(
+                            m_paymentFrequencyUnitEdit->currentText()));
         break;
 
       case MyMoneySchedule::OCCUR_ONCE: // payments

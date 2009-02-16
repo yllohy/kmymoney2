@@ -1229,6 +1229,51 @@ QDate MyMoneySchedule::addHalfMonths( QDate date, int mult ) const
   return newdate;
 } 
 
+MyMoneySchedule::occurenceE MyMoneySchedule::stringToOccurence(const QString& text)
+{
+  MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY;
+  QString tmp = text.lower();
+
+  if(tmp == i18n("Once").lower())
+    occurence = MyMoneySchedule::OCCUR_ONCE;
+  else if(tmp == i18n("Daily").lower())
+    occurence = MyMoneySchedule::OCCUR_DAILY;
+  else if(tmp == i18n("Weekly").lower())
+    occurence = MyMoneySchedule::OCCUR_WEEKLY;
+  else if(tmp == i18n("Fortnightly").lower())
+    occurence = MyMoneySchedule::OCCUR_FORTNIGHTLY;
+  else if(tmp == i18n("Every other week").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERWEEK;
+  else if(tmp == i18n("Every half month").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYHALFMONTH;
+  else if(tmp == i18n("Every three weeks").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYTHREEWEEKS;
+  else if(tmp == i18n("Every four weeks").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYFOURWEEKS;
+  else if(tmp == i18n("Every thirty days").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS;
+  else if(tmp == i18n("Monthly").lower())
+    occurence = MyMoneySchedule::OCCUR_MONTHLY;
+  else if(tmp == i18n("Every eight weeks").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS;
+  else if(tmp == i18n("Every two months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERMONTH;
+  else if(tmp == i18n("Every three months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYTHREEMONTHS;
+  else if(tmp == i18n("Quarterly").lower())
+    occurence = MyMoneySchedule::OCCUR_QUARTERLY;
+  else if(tmp == i18n("Every four months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYFOURMONTHS;
+  else if(tmp == i18n("Twice yearly").lower())
+    occurence = MyMoneySchedule::OCCUR_TWICEYEARLY;
+  else if(tmp == i18n("Yearly").lower())
+    occurence = MyMoneySchedule::OCCUR_YEARLY;
+  else if(tmp == i18n("Every other year").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERYEAR;
+
+  return occurence;
+}
+
 /**
   * Helper method to convert simple occurence to compound occurence + multiplier
   *

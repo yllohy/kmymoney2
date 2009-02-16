@@ -180,15 +180,6 @@ public:
   static const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
 
   /**
-    * This method is used to convert the occurence type from the
-    * human readable form into it's internal representation.
-    *
-    * @param text reference to QString representing the human readable format
-    * @return numerical representation of the occurence
-    */
-  static MyMoneySchedule::occurenceE stringToOccurence(const QString& text);
-
-  /**
     * This method is used to convert the payment type from it's
     * internal representation into a human readable format.
     *

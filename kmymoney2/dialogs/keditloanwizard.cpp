@@ -466,7 +466,7 @@ const MyMoneySchedule KEditLoanWizard::schedule(void) const
 {
   MyMoneySchedule sched = m_schedule;
   sched.setTransaction(transaction());
-  sched.setOccurence(KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()));
+  sched.setOccurence(MyMoneySchedule::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()));
   if(m_nextDueDateEdit->date() < m_schedule.startDate())
     sched.setStartDate(m_nextDueDateEdit->date());
 
