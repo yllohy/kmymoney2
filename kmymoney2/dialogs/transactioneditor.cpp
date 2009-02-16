@@ -1490,6 +1490,7 @@ void StdTransactionEditor::updateAmount(const MyMoneyMoney& val)
           cashflow->setDirection(KMyMoneyRegister::Payment);
         else
           cashflow->setDirection(KMyMoneyRegister::Deposit);
+        slotUpdateCashFlow(cashflow->direction());
       }
       dynamic_cast<kMyMoneyEdit*>(m_editWidgets["amount"])->setValue(val.abs());
     }
