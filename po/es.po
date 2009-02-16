@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-02-15 09:49-0200\n"
+"PO-Revision-Date: 2009-02-15 13:21-0200\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3867,13 +3867,12 @@ msgid "Error creating security record: %1"
 msgstr "Error al crear registro de valor bursátil: %1"
 
 #: converter/mymoneystatementreader.cpp:598
-#, fuzzy
 msgid ""
 "This imported statement contains investment transactions with no security.  "
 "These transactions will be ignored."
 msgstr ""
-"Esta cuenta de inversiones no contiene el valor bursatil \"%1\". Los "
-"asientos que involucren este valor serán ignorados."
+"El extracto importado contiene asientos de inversión sin valor bursátil. Estos "
+"asientos serán ignorados."
 
 #: converter/mymoneystatementreader.cpp:780
 msgid "(Fees) "
@@ -3921,9 +3920,8 @@ msgid "Schedule found"
 msgstr "Planificación encontrada"
 
 #: converter/mymoneystatementreader.cpp:1117
-#, fuzzy
 msgid "Problem adding or matching imported transaction with id '%1': %2"
-msgstr "Problemas al añadir el asiento importado:"
+msgstr "Problemas al añadir o conciliar el asiento importado con id '%1': %2"
 
 #: converter/mymoneystatementreader.cpp:1166
 msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
@@ -3979,9 +3977,8 @@ msgid ""
 msgstr "Debe escoger una cuenta, crear una nueva o pulsar el botón <b>Abortar</b>."
 
 #: converter/mymoneygncreader.cpp:119
-#, fuzzy
 msgid "%1: Sorry. This importer cannot handle version %2 of element %3"
-msgstr "Esta versión del importador no puede manejar archivos multilibro."
+msgstr ""
 
 #: converter/mymoneygncreader.cpp:193
 #, c-format
@@ -4112,6 +4109,8 @@ msgid ""
 "Problems were encountered in converting schedule '%1'.\n"
 "Do you want to review or edit it now?"
 msgstr ""
+"Se han encontrado problemas al convertir la planificación '%1'.\n"
+"¿Desea revisarla o editarla ahora?"
 
 #: converter/mymoneygncreader.cpp:2039
 msgid ""
@@ -4275,22 +4274,20 @@ msgstr ""
 "pueden ser convertidas"
 
 #: converter/mymoneygncreader.cpp:2422
-#, fuzzy
 msgid ""
 "Schedule %1 contains unknown interval specification; please check for "
 "correct operation"
 msgstr ""
-"a planificación %1 contiene una especificación de intervalo compuesto; por "
-"favor compruebe que el funcionamento sea el correcto"
+"La planificación %1 contiene una especificación de intervalo desconocida; por "
+"favor, compruebe que el funcionamento sea el correcto"
 
 #: converter/mymoneygncreader.cpp:2423
-#, fuzzy
 msgid ""
 "Schedule %1 contains a deferred interval specification; please check for "
 "correct operation"
 msgstr ""
-"a planificación %1 contiene una especificación de intervalo compuesto; por "
-"favor compruebe que el funcionamento sea el correcto"
+"La planificación %1 contiene una especificación de intervalo diferida; por "
+"favor, compruebe que el funcionamento sea el correcto"
 
 #: converter/mymoneygncreader.cpp:2424
 msgid ""
@@ -4358,7 +4355,6 @@ msgid "Budget"
 msgstr "Presupuesto"
 
 #: kmymoneyutils.cpp:245
-#, fuzzy
 msgid "CashFlow"
 msgstr "Tesorería"
 
@@ -4424,17 +4420,16 @@ msgstr ""
 "pulsando con el botón derecho en la cabecera de la vista del libro?\n"
 
 #: _tips.cpp:9
-#, fuzzy
 msgid ""
 "<p>...that you can easily move to the other side of a transfer transaction\n"
 "by opening the context menu with the right mouse button and selecting one of "
 "the\n"
 "'Goto' functions?\n"
 msgstr ""
-"<p> ...que puede mover facilmente al otro lado de un asiento de "
+"<p> ...que puede moverse fácilmente al otro lado de un asiento de "
 "transferencia\n"
 "abriendo el menú contextual con el botón derecho del ratón y escogiendo\n"
-"la función 'Ir a..'?\n"
+"la función 'Ir a...'?\n"
 
 #: _tips.cpp:16
 msgid ""
@@ -4453,14 +4448,13 @@ msgstr ""
 "mediante la función 'lente del libro mayor', del diálogo configuración?\n"
 
 #: _tips.cpp:28
-#, fuzzy
 msgid ""
 "<p>...that transactions with no category assigned or split\n"
 "transactions with unassigned values are marked with an exclamation mark \n"
 "on a yellow triangle in the register?\n"
 msgstr ""
-"<p>...que los asientos sin categoría asignada o con partidas sin valores "
-"asignados son destacados  con color <font color=\"red\">rojo</font> en el "
+"<p>...que los asientos sin categoría asignada o con partidas sin valores \n"
+"asignados se marcan con un signo de exclamación en un triángulo amarillo \n "
 "registro?\n"
 
 #: _tips.cpp:35
@@ -6025,7 +6019,6 @@ msgid "Tried to access a file when it's not open"
 msgstr "Intentó acceder a un archivo cuando este no estaba abierto"
 
 #: views/kmymoneyview.cpp:1091
-#, fuzzy
 msgid ""
 "Since this version of KMyMoney only writes data files in its new format, "
 "files written with this version cannot be read by KMyMoney version 0.4. If "
@@ -6794,7 +6787,6 @@ msgid "Slovak Koruna"
 msgstr "Corona eslovaca (SKK)"
 
 #: views/kmymoneyview.cpp:1885
-#, fuzzy
 msgid ""
 "The account \"%1\" was previously created as loan account but some "
 "information is missing. The new loan wizard will be started to collect all "
@@ -6803,8 +6795,8 @@ msgid ""
 msgstr ""
 "La cuenta \"%1\" fue creada con anterioridad como de tipo préstamo pero "
 "falta alguna información. El asistente para nuevos préstamos comenzará a "
-"recoger toda la información relevante. Si cancela el asistente, entonces el "
-"archivo se cerrará."
+"recoger toda la información relevante. Por favor, utilice una versión de "
+"KMyMoney >= 0.8.7 y < 0.9 para corregir el problema."
 
 #: views/kmymoneyview.cpp:1889
 msgid "Account problem"
@@ -6877,6 +6869,9 @@ msgid ""
 "multiple budgets with the same identification name. Are you sure you would "
 "like to rename the budget?"
 msgstr ""
+"Ya existe un presupuesto con el nombre %1. No es recomendable tener "
+"múltiples presupuestos con el mismo nombre de identificación. ¿Está seguro "
+"que desea renombrar el presupuesto?"
 
 #: views/kbudgetview.cpp:635 views/kbudgetview.cpp:750
 msgid "Unable to modify budget"
@@ -7802,7 +7797,7 @@ msgstr "Sucursal"
 
 #: plugins/ofximport/dialogs/rc.cpp:26
 msgid "WizardPage"
-msgstr ""
+msgstr "WizardPage"
 
 #: plugins/ofximport/dialogs/rc.cpp:27
 msgid ""
@@ -8300,6 +8295,8 @@ msgid ""
 "The transaction you are about to enter has a post date in the future.<br/"
 "><br/>Do you want to enter it in the ledger or add it to the schedules?"
 msgstr ""
+"El asiento que está a punto de ingresar tiene una fecha en el futuro. <br/> "
+"<br/>¿Desea ingresarlo en el libro mayor o agregarlo a las planificaciones?"
 
 #: dialogs/transactioneditor.cpp:597
 msgid ""
@@ -8371,6 +8368,8 @@ msgid ""
 "cannot be matched.  Matching works with one imported transaction and one non-"
 "imported transaction."
 msgstr ""
+"Ambos asientos han sido importados en %1. Por lo tanto, no pueden ser concilidados. "
+"La conciliación sólo funciona con un asiento importado y un asiento no importado."
 
 #: dialogs/transactionmatcher.cpp:101 dialogs/transactionmatcher.cpp:156
 msgid "Unable to match all splits (%1)"
@@ -8433,6 +8432,9 @@ msgid ""
 "Please consult documentation for your distro, or visit the Qt web site (www."
 "trolltech.com) and search for SQL drivers."
 msgstr ""
+"No hay manejadores de Qt SQL instalados en su sistema.\n"
+"Por favor, consulte la información de su distribución, o visite el sitio de Qt "
+"(www.trolltech.com) y busque por manejadores de SQL."
 
 #: dialogs/kselectdatabasedlg.cpp:100
 msgid "Qt SQL driver %1 is no longer installed on your system"
@@ -8899,6 +8901,9 @@ msgid ""
 "at least a single transaction. They are still shown in the category "
 "selection lists."
 msgstr ""
+"Esta opción oculta todas las categorías en la vista de categorías que no sean "
+"utilizadas en al menos un asiento. Todavía se muestran en la lista de selección "
+"de categorías."
 
 #: dialogs/settings/rc.cpp:74
 msgid "Don't show closed accounts"
@@ -9414,13 +9419,12 @@ msgid "User identification"
 msgstr "Identificación de usuário"
 
 #: dialogs/kendingbalancedlg.cpp:71
-#, fuzzy
 msgid ""
 "Please enter the following fields with the information as you find them on "
 "your statement. Make sure to enter all values in <b>%1</b>."
 msgstr ""
 "Introduzca los siguientes campos con la información que viene en su extracto "
-"de cuenta."
+"de cuenta. Asegurese de ingresar todos los valores en <b>%1</b>."
 
 #: dialogs/kendingbalancedlg.cpp:124
 #, c-format
@@ -9545,6 +9549,10 @@ msgid ""
 "category need to be re-assigned to a different category before the selected "
 "category can be deleted. Please select a category from the list below."
 msgstr ""
+"Los asientos, planificaciones y presupuestos asociados con la categoría "
+"seleccionada necesitan ser reasignados a una categoría diferente antes "
+"que la categoría seleccionada pueda borrarse. Por favor, seleccione una "
+"categoría de la lista debajo."
 
 #: dialogs/rc.cpp:17
 msgid "Available categories:"
@@ -10629,15 +10637,12 @@ msgid "This wizard allows you to create a new investment."
 msgstr "Esta página le permite crear una nueva inversión."
 
 #: dialogs/rc.cpp:431
-#, fuzzy
 msgid ""
 "The first step in this process requires to select the type of investment. "
 "The following steps collect more details about the investment from you."
 msgstr ""
-"Este asistente le permitirá crear una nueva inversión.\n"
-"\n"
-"El primer paso en este proceso requiree que escoja el tipo de inversión. Los "
-"siguientes pasos le pedirán más datos."
+"El primer paso en este proceso requiere que escoja el tipo de inversión. "
+"Los siguientes pasos le pedirán más datos sobre la inversión."
 
 #: dialogs/rc.cpp:432
 msgid "Type of investment"
@@ -11333,6 +11338,9 @@ msgid ""
 "to a different payee before the selected payees can be deleted. Please "
 "select a payee from the list below."
 msgstr ""
+"Los asientos asociados con los beneficiarios seleccionado necesitan ser "
+"reasignados a un beneficiario diferente antes que los beneficiarios puedan "
+"borrarse. Por favor, seleccione un beneficiario de la lista debajo."
 
 #: dialogs/rc.cpp:690
 msgid "Available payees:"
@@ -12264,6 +12272,9 @@ msgid ""
 "a monthly budget of <b>%1</b>. Should this value be used to fill the monthly "
 "budget?"
 msgstr ""
+"Ha ingresado valores presupuestarios utilizando una base diferente, lo que "
+"resultaría en un presupuesto mensual de <b>%1</b>. ¿Debería utilizarse "
+"este valor para llenar el presupuesto mensual?"
 
 #: widgets/kbudgetvalues.cpp:187 widgets/kbudgetvalues.cpp:206
 #: widgets/kbudgetvalues.cpp:225
@@ -12278,6 +12289,9 @@ msgid ""
 "a yearly budget of <b>%1</b>. Should this value be used to fill the monthly "
 "budget?"
 msgstr ""
+"Ha ingresado valores presupuestarios utilizando una base diferente, lo que "
+"resultaría en un presupuesto anual de <b>%1</b>. ¿Debería utilizarse "
+"este valor para llenar el presupuesto anual?"
 
 #: widgets/kbudgetvalues.cpp:225
 msgid ""
@@ -12285,6 +12299,9 @@ msgid ""
 "an individual monthly budget of <b>%1</b>. Should this value be used to fill "
 "the monthly budgets?"
 msgstr ""
+"Ha ingresado valores presupuestarios utilizando una base diferente, lo que "
+"resultaría en presupuestos mensuales individuales de <b>%1</b>. ¿Debería utilizarse "
+"este valor para llenar los presupuestos mensuales?"
 
 #: widgets/kmymoneybriefschedule.cpp:60 widgets/rc.cpp:157
 msgid "Close this window"
@@ -12592,7 +12609,6 @@ msgid "Step %1 of %2"
 msgstr "Paso %1 de %2"
 
 #: widgets/kmymoneydateinput.cpp:233
-#, fuzzy
 msgid ""
 "_: Enter todays date into date input widget\n"
 "T"
@@ -13145,7 +13161,6 @@ msgid "Current quarter"
 msgstr "Este trimestre"
 
 #: widgets/kmymoneycombo.cpp:669
-#, fuzzy
 msgid "Current year"
 msgstr "Este año"
 
