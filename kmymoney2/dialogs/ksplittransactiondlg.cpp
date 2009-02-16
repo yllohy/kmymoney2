@@ -111,7 +111,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 
   // setup the precision
   try {
-    m_precision = MyMoneyMoney::denomToPrec(m_account.fraction());
+    MyMoneySecurity currency = MyMoneyFile::instance()->currency(t.commodity());
+    m_precision = MyMoneyMoney::denomToPrec(m_account.fraction(currency));
   } catch(MyMoneyException *e) {
     delete e;
   }
@@ -361,7 +362,7 @@ void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
   bool haveZeroSplit = false;
   for(it = list.begin(); it != list.end(); ++it) {
     splits[(*it).accountId()]++;
-    if((*it).shares().isZero())
+    if(((*it).id() != m_split.id()) && ((*it).shares().isZero()))
       haveZeroSplit = true;
   }
   QMap<QString, int>::const_iterator it_s;
@@ -378,16 +379,15 @@ void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
 void KSplitTransactionDlg::updateSums(void)
 {
   MyMoneyMoney splits(splitsValue());
-  MyMoneySplit split = m_transaction.splits()[0];
 
   if(m_amountValid == false) {
-    split.setValue(-splits);
-    m_transaction.modifySplit(split);
+    m_split.setValue(-splits);
+    m_transaction.modifySplit(m_split);
   }
 
   splitSum->setText("<b>" + splits.formatMoney("", m_precision) + " ");
   splitUnassigned->setText("<b>" + diffAmount().formatMoney("", m_precision) + " ");
-  transactionAmount->setText("<b>" + (-split.value()).formatMoney("", m_precision) + " ");
+  transactionAmount->setText("<b>" + (-m_split.value()).formatMoney("", m_precision) + " ");
 }
 
 MyMoneyMoney KSplitTransactionDlg::splitsValue(void)

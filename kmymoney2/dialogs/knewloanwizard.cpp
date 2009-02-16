@@ -554,11 +554,13 @@ void KNewLoanWizard::next()
     if(m_allPaymentsButton->isChecked() || m_noPreviousPaymentButton->isChecked()) {
       m_nextDueDateEdit->setDate(m_firstDueDateEdit->date());
       m_nextDueDateEdit->setEnabled(false);
-      setAppropriate(m_assetAccountPage, true);
+      if(m_assetAccountPage)
+        setAppropriate(m_assetAccountPage, true);
     } else {
       QDate nextPayment(QDate::currentDate().year(), 1, m_firstDueDateEdit->date().day());
       m_nextDueDateEdit->setDate(nextPayment);
-      setAppropriate(m_assetAccountPage, false);
+      if(m_assetAccountPage)
+        setAppropriate(m_assetAccountPage, false);
       m_assetAccountEdit->slotDeselectAllAccounts();
     }
     if(m_nextDueDateEdit->date() < m_firstDueDateEdit->date()) {
