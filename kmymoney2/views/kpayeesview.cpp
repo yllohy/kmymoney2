@@ -752,6 +752,7 @@ void KPayeesView::slotUpdatePayee(void)
 {
   if(m_updateButton->isEnabled()) {
     MyMoneyFileTransaction ft;
+    m_updateButton->setEnabled(false);
     try {
       m_payee.setName(m_newName);
       m_payee.setAddress(addressEdit->text());
@@ -769,7 +770,6 @@ void KPayeesView::slotUpdatePayee(void)
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
       delete e;
     }
-    m_updateButton->setEnabled(false);
   }
 }
 
