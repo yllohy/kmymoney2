@@ -154,26 +154,23 @@ void MyMoneyStatementReader::Private::scanCategories(QString& id, const MyMoneyA
 void MyMoneyStatementReader::Private::assignUniqueBankID(MyMoneySplit& s, const MyMoneyStatement::Transaction& t_in)
 {
   if( ! t_in.m_strBankID.isEmpty() ) {
+    // make sure that id's are unique from this point on by appending a -#
+    // postfix if needed
     QString base(t_in.m_strBankID);
-    if(uniqIds.find(base) != uniqIds.end()) {
-        // make sure that id's are unique from this point on by appending a -#
-        // postfix if needed
-      int idx = 1;
-      QString hash;
-      for(;;) {
-        hash = QString("%1-%2").arg(base).arg(idx);
-        QMap<QString, bool>::const_iterator it;
-        it = uniqIds.find(hash);
-        if(it == uniqIds.end()) {
-          uniqIds[hash] = true;
-          break;
-        }
-        ++idx;
+    QString hash(base);
+    int idx = 1;
+    for(;;) {
+      QMap<QString, bool>::const_iterator it;
+      it = uniqIds.find(hash);
+      if(it == uniqIds.end()) {
+        uniqIds[hash] = true;
+        break;
       }
-      base = hash;
+      hash = QString("%1-%2").arg(base).arg(idx);
+      ++idx;
     }
 
-    s.setBankID(base);
+    s.setBankID(hash);
   }
 }
 

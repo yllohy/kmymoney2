@@ -1,4 +1,7 @@
 
+2009-02-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed creation of unique bankID in MyMoneyStatementReader per statement
+
 2009-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some issues around modification of addtional loan fees
   * Removed Makefile.in
