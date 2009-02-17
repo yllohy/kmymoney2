@@ -2,6 +2,7 @@
 2009-02-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of unique bankID in MyMoneyStatementReader per statement
   * Fixed unnecessary popup of dialog box in payees view
+  * Fixed calculator widget to use same decimal symbol as edit widget
 
 2009-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some issues around modification of addtional loan fees

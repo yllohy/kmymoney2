@@ -41,7 +41,7 @@
 kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
   : QFrame(parent, name)
 {
-  m_comma = KGlobal::locale()->decimalSymbol()[0];
+  m_comma = KGlobal::locale()->monetaryDecimalSymbol()[0];
   m_clearOperandOnDigit = false;
 
   QGridLayout* grid = new QGridLayout(this, 5, 5, 1, 2);
@@ -373,12 +373,10 @@ void kMyMoneyCalculator::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_Plus:
       button = PLUS;
       break;
-    case Qt::Key_Comma:
-      button = COMMA;
-      break;
     case Qt::Key_Minus:
       button = MINUS;
       break;
+    case Qt::Key_Comma:
     case Qt::Key_Period:
       if(m_clearOperandOnDigit) {
         operand = QString();
