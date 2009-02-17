@@ -3,6 +3,8 @@
   * Fixed creation of unique bankID in MyMoneyStatementReader per statement
   * Fixed unnecessary popup of dialog box in payees view
   * Fixed calculator widget to use same decimal symbol as edit widget
+  * Fixed #1962055 (Crash in case AqBanking failed) Fix also requires
+    an updated KBanking package
 
 2009-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some issues around modification of addtional loan fees

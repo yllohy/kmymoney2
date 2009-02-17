@@ -5193,8 +5193,12 @@ void KMyMoney2App::slotUpdateActions(void)
       // check if provider is available
       it_p = m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider"));
       if(it_p != m_onlinePlugins.end()) {
-        action("account_online_update_all")->setEnabled(true);
-        action("account_online_update_menu")->setEnabled(true);
+        QStringList protocols;
+        (*it_p)->protocols(protocols);
+        if(protocols.count() > 0) {
+          action("account_online_update_all")->setEnabled(true);
+          action("account_online_update_menu")->setEnabled(true);
+        }
       }
     }
   }
@@ -5234,8 +5238,12 @@ void KMyMoney2App::slotUpdateActions(void)
             QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p;
             it_p = m_onlinePlugins.find(m_selectedAccount.onlineBankingSettings().value("provider"));
             if(it_p != m_onlinePlugins.end()) {
-              action("account_online_update")->setEnabled(true);
-              action("account_online_update_menu")->setEnabled(true);
+              QStringList protocols;
+              (*it_p)->protocols(protocols);
+              if(protocols.count() > 0) {
+                action("account_online_update")->setEnabled(true);
+                action("account_online_update_menu")->setEnabled(true);
+              }
             }
           } else
             action("account_online_map")->setEnabled(m_onlinePlugins.count() > 0);
