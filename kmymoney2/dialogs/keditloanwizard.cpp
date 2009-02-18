@@ -151,7 +151,8 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
     MyMoneyAccount acc = file->account((*it_s).accountId());
     // if it's the split that references the source/dest
     // of the money, we check if we borrow or loan money
-    if(acc.isAssetLiability() && !acc.isLoan()
+    if(paymentAccountId.isEmpty()
+    && acc.isAssetLiability() && !acc.isLoan()
     && (*it_s).value() != MyMoneyMoney::autoCalc) {
       if((*it_s).value().isNegative()) {
         m_lendButton->setChecked(false);

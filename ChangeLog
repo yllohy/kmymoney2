@@ -1,4 +1,8 @@
 
+2009-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem in case additional fees for loans referenced another
+    asset or liability account
+
 2009-02-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of unique bankID in MyMoneyStatementReader per statement
   * Fixed unnecessary popup of dialog box in payees view
