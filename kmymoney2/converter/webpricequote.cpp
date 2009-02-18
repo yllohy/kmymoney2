@@ -27,6 +27,7 @@
 // KDE Headers
 
 #include <kio/netaccess.h>
+#include <kio/scheduler.h>
 #include <kurl.h>
 #include <klocale.h>
 #include <kdebug.h>
@@ -35,6 +36,7 @@
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <kcalendarsystem.h>
+#include <ktempfile.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -46,6 +48,9 @@
 // define static members
 QString WebPriceQuote::m_financeQuoteScriptPath;
 QStringList WebPriceQuote::m_financeQuoteSources;
+
+QString * WebPriceQuote::lastErrorMsg;
+int WebPriceQuote::lastErrorCode = 0;
 
 WebPriceQuote::WebPriceQuote( QObject* _parent, const char* _name ):
   QObject( _parent, _name )
@@ -156,7 +161,7 @@ bool WebPriceQuote::launchNative( const QString& _symbol, const QString& _id, co
     emit status(QString("Fetching URL %1...").arg(url.prettyURL()));
 
     QString tmpFile;
-    if( KIO::NetAccess::download( url, tmpFile, NULL ) )
+    if( download( url, tmpFile, NULL ) )
     {
       kdDebug(2) << "Downloaded " << tmpFile << endl;
       QFile f(tmpFile);
@@ -171,7 +176,7 @@ bool WebPriceQuote::launchNative( const QString& _symbol, const QString& _id, co
       {
         slotParseQuote(QString());
       }
-      KIO::NetAccess::removeTempFile( tmpFile );
+      removeTempFile( tmpFile );
     }
     else
     {
@@ -181,6 +186,75 @@ bool WebPriceQuote::launchNative( const QString& _symbol, const QString& _id, co
   }
   return result;
 }
+
+void WebPriceQuote::removeTempFile(const QString& tmpFile)
+{
+  if(tmpFile == m_tmpFile) {
+    unlink(tmpFile);
+    m_tmpFile = QString();
+  }
+}
+
+bool WebPriceQuote::download(const KURL& u, QString & target, QWidget* window)
+{
+  m_tmpFile = QString();
+
+  // the following code taken and adapted from KIO::NetAccess::download()
+  if (target.isEmpty())
+  {
+    KTempFile tmpFile;
+    target = tmpFile.name();
+    m_tmpFile = target;
+  }
+
+  KURL dest;
+  dest.setPath( target );
+
+
+  // the following code taken and adapted from KIO::NetAccess::filecopyInternal()
+  bJobOK = true; // success unless further error occurs
+
+  KIO::Scheduler::checkSlaveOnHold(true);
+  KIO::Job * job = KIO::file_copy( u, dest, -1, true, false, false );
+  job->setWindow (window);
+  job->addMetaData("cache", "reload");  // bypass cache
+  connect( job, SIGNAL( result (KIO::Job *) ),
+           this, SLOT( slotResult (KIO::Job *) ) );
+
+  enter_loop();
+  return bJobOK;
+
+}
+
+// The following parts are copied and adjusted from KIO::NetAccess
+
+// If a troll sees this, he kills me
+void qt_enter_modal( QWidget *widget );
+void qt_leave_modal( QWidget *widget );
+
+void WebPriceQuote::enter_loop(void)
+{
+  QWidget dummy(0,0,WType_Dialog | WShowModal);
+  dummy.setFocusPolicy( QWidget::NoFocus );
+  qt_enter_modal(&dummy);
+  qApp->enter_loop();
+  qt_leave_modal(&dummy);
+}
+
+void WebPriceQuote::slotResult( KIO::Job * job )
+{
+  lastErrorCode = job->error();
+  bJobOK = !job->error();
+  if ( !bJobOK )
+  {
+    if ( !lastErrorMsg )
+      lastErrorMsg = new QString;
+    *lastErrorMsg = job->errorString();
+  }
+
+  qApp->exit_loop();
+}
+// The above parts are copied and adjusted from KIO::NetAccess
 
 bool WebPriceQuote::launchFinanceQuote ( const QString& _symbol, const QString& _id,
                                const QString& _sourcename ) {
@@ -479,17 +553,17 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
   // The original posting can be found here:
   // http://sourceforge.net/mailarchive/message.php?msg_name=200806060854.11682.pete.h%40pdh-online.info
 
-  // I have PEP and ISA accounts which I invest in Funds with Barclays 
+  // I have PEP and ISA accounts which I invest in Funds with Barclays
   // Stockbrokers. They give me Fund data via Financial Express:
-  // 
+  //
   // https://webfund6.financialexpress.net/Clients/Barclays/default.aspx
   //
   // A typical Fund Factsheet is:
   //
   // https://webfund6.financialexpress.net/Clients/Barclays/search_factsheet_summary.aspx?code=0585239
   //
-  // On the Factsheet to identify the fund you can see ISIN Code GB0005852396. 
-  // In the url, this code is shortened by loosing the first four and last 
+  // On the Factsheet to identify the fund you can see ISIN Code GB0005852396.
+  // In the url, this code is shortened by loosing the first four and last
   // characters.
 
   result["Financial Express"] = WebPriceQuoteSource("Financial Express",

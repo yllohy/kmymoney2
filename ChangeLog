@@ -2,6 +2,8 @@
 2009-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem in case additional fees for loans referenced another
     asset or liability account
+  * Fixed bko#118285 (kmymoney online quotes are cached by KDE)
+  * Assigned icons to dialog buttons
 
 2009-02-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of unique bankID in MyMoneyStatementReader per statement

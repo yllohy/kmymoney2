@@ -30,6 +30,9 @@
 // KDE Headers
 
 #include <kprocess.h>
+namespace KIO {
+  class Job;
+};
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -171,8 +174,18 @@ protected:
   static QMap<QString,WebPriceQuoteSource> defaultQuoteSources(void);
 
 private:
+  bool download(const KURL& u, QString & target, QWidget* window);
+  void removeTempFile(const QString& tmpFile);
+
+private slots:
+  void slotResult( KIO::Job * job );
+
+
+private:
   bool launchNative(const QString& _symbol, const QString& _id, const QString& _source=QString());
   bool launchFinanceQuote(const QString& _symbol, const QString& _id, const QString& _source=QString());
+  void enter_loop(void);
+
   static QStringList quoteSourcesNative();
   static QStringList quoteSourcesFinanceQuote();
 
@@ -184,6 +197,15 @@ private:
   WebPriceQuoteSource m_source;
   static QString m_financeQuoteScriptPath;
   static QStringList m_financeQuoteSources;
+
+
+  /**
+   * Whether the download succeeded or not. Taken from KIO::NetAccess
+   */
+  bool bJobOK;
+  static QString* lastErrorMsg;
+  static int lastErrorCode;
+  QString m_tmpFile;
 };
 
 class MyMoneyDateFormat

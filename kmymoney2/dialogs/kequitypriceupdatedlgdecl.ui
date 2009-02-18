@@ -30,6 +30,9 @@
                     <height>0</height>
                 </size>
             </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
             <property name="frameShadow">
                 <enum>Plain</enum>
             </property>
@@ -148,10 +151,13 @@
                         <cstring>btnOK</cstring>
                     </property>
                     <property name="text">
-                        <string>OK</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>1</number>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -159,14 +165,15 @@
                         <cstring>btnCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>2</number>
                     </property>
                 </widget>
             </hbox>
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
