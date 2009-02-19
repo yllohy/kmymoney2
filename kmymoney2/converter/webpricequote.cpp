@@ -565,11 +565,17 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
   // On the Factsheet to identify the fund you can see ISIN Code GB0005852396.
   // In the url, this code is shortened by loosing the first four and last
   // characters.
+  //
+  // Update:
+  //
+  // Nick Elliot has contributed a modified regular expression to cope with values presented
+  // in pounds as well as those presented in pence. The source can be found here:
+  // http://forum.kde.org/update-stock-and-currency-prices-t-32049.html
 
   result["Financial Express"] = WebPriceQuoteSource("Financial Express",
        "https://webfund6.financialexpress.net/Clients/Barclays/search_factsheet_summary.aspx?code=%1",
        "ISIN Code[^G]*(GB..........).*",  // symbolregexp
-       "[Bid|Mid|Offer] Price[^0-9]*([0-9,\\.]+)p.*", // priceregexp
+       "Current Market Information[^0-9]*([0-9,\\.]+).*", // priceregexp
        "Price Date[^0-9]*(../../....).*", // dateregexp
        "%d/%m/%y"                         // dateformat
   );

@@ -1,4 +1,7 @@
 
+2009-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated regular expression for Financial Express price source
+
 2009-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem in case additional fees for loans referenced another
     asset or liability account
