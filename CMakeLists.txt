@@ -1,10 +1,11 @@
 # Setting the name of the main project
 PROJECT(KMyMoney)
 
-# The current version of KMyMoney (used for packaging)
+# The current version of KMyMoney (used for packages and config.h)
 SET(VERSION_MAJOR "0")
 SET(VERSION_MINOR "9")
 SET(VERSION_PATCH "2")
+SET(VERSION_SUFFIX "cvs20090217")
 
 # The CMake version we need
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
@@ -17,30 +18,12 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-# Search the KDE3 packages and set the 
+# Our modules reside in the subdirectory cmake/modules/
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
+######################### general requirements ##########################
 FIND_PACKAGE(KDE3 REQUIRED)
-
 FIND_PACKAGE(Perl REQUIRED)
-IF (PERL_FOUND)
-  MESSAGE(STATUS "Perl found (${PERL_EXECUTABLE})")
-ENDIF (PERL_FOUND)
-
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
-
-FIND_PACKAGE(KDECONFIG)
-IF(KDECONFIG_EXECUTABLE)
-    MESSAGE(STATUS "Program kde-config found (${KDECONFIG_EXECUTABLE})")
-ENDIF(KDECONFIG_EXECUTABLE)
-
-FIND_PACKAGE(MSGFMT REQUIRED)
-IF(MSGFMT_FOUND)
-  MESSAGE(STATUS "Program msgfmt found (${MSGFMT_EXECUTABLE})")
-ENDIF(MSGFMT_FOUND)
-
-FIND_PACKAGE(MEINPROC REQUIRED)
-IF(MEINPROC_FOUND)
-  MESSAGE(STATUS "Program meinproc found (${MEINPROC_EXECUTABLE})")
-ENDIF(MEINPROC_FOUND)
 
 # check for JPEG
 FIND_PACKAGE(JPEG)
@@ -66,50 +49,12 @@ IF (ZLIB_FOUND)
   SET(HAVE_LIBZ 1)
 ENDIF (ZLIB_FOUND)
 
-# check for Sqlite
-FIND_PACKAGE(Sqlite)
-IF (SQLITE_FOUND)
-  SET(HAVE_SQLITE 1)
-ENDIF (SQLITE_FOUND)
-
 # check for PkgConfig
 FIND_PACKAGE(PkgConfig)
 # check for some modules we require
 pkg_check_modules (PKGS libxml-2.0 libxml++-2.6 glib-2.0 glibmm-2.4)
 # this sets variables like ${PKGS_INCLUDE_DIRS} ${PKGS_LIB_DIRS}
 # (cf. /usr/share/cmake/Modules/FindPkgConfig.cmake for more info)
-
-# check for CppUnit to build the tests
-FIND_PACKAGE(CppUnit)
-# check wether the user requests to build the test although it's not possible
-IF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
-  message( SEND_ERROR
-    "CppUnit has not been found. You can neither build nor run the tests.")
-  SET( KDE3_BUILD_TESTS OFF FORCE)
-ENDIF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
-
-IF( KDE3_BUILD_TESTS )
-  # here we know that we really want to build the tests
-  ADD_DEFINITIONS( -DHAVE_LIBCPPUNIT )
-  INCLUDE_DIRECTORIES( ${CPPUNIT_INCLUDE_DIR} )
-
-  # INCLUDE(CTest) # makes sense only with a ctest online dashboard
-  ENABLE_TESTING()
-ENDIF( KDE3_BUILD_TESTS )
-
-# setting the KDChart variable (will be written to config.h)
-SET(HAVE_KDCHART 1)
-SET(HAVE_KDCHART_SETPROP 1)
-
-INCLUDE(KMyMoneyMacros)
-MARK_AS_ADVANCED(KDE3_DCOPIDL2CPP_EXECUTABLE KDE3_DCOPIDL_EXECUTABLE
-  KDE3_KCFGC_EXECUTABLE KDE3_KDECORE_LIBRARY KDECONFIG_EXECUTABLE)
-
-ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
-# some definitions for the compiler
-ADD_DEFINITIONS( -DHAVE_CONFIG_H -fexceptions)
-# preprocessor definitions in case this is a debug build
-SET(COMPILE_DEFINITIONS_DEBUG ${COMPILE_DEFINITIONS_DEBUG} -DKMM_DEBUG )
 
 # check some  functions
 INCLUDE (CheckFunctionExists) 
@@ -150,21 +95,6 @@ CHECK_INCLUDE_FILE("sys/stat.h" HAVE_SYS_STAT_H)
 CHECK_INCLUDE_FILE("sys/types.h" HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILE("unistd.h" HAVE_UNISTD_H)
 
-CHECK_INCLUDE_FILE("libofx/libofx.h" HAVE_LIBOFX_H)
-IF(HAVE_LIBOFX_H)
-  OPTION(USE_OFX_DIRECTCONNECT "Enable to compile with ofximport support" ON)
-  # the USE_OFX_DIRECTCONNECT preprocessor definition is written
-  # to config.h as specified in config.h.cmake
-ENDIF(HAVE_LIBOFX_H)
-
-OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support (deprecated)" OFF)
-if(USE_LEAK_CHECK)
-  message("Warning: Leak check support is activated but deprecated. Better use valgrind.")
-  ADD_DEFINITIONS( -D_CHECK_MEMORY )
-endif(USE_LEAK_CHECK)
-
-#OPTION(USE_QT_DESIGNER "Enable to compile with Qt-Designer library support" OFF)
-
 #check sizes. Will be written to config.h
 INCLUDE(CheckTypeSize)
 CHECK_TYPE_SIZE(char* SIZEOF_CHAR_P)
@@ -173,6 +103,62 @@ CHECK_TYPE_SIZE(long SIZEOF_LONG)
 CHECK_TYPE_SIZE(short SIZEOF_SHORT)
 CHECK_TYPE_SIZE(size_t SIZEOF_SIZE_T)
 CHECK_TYPE_SIZE("unsigned long" SIZEOF_UNSIGNED_LONG)
+FIND_PACKAGE(KDECONFIG)
+FIND_PACKAGE(MSGFMT REQUIRED)
+FIND_PACKAGE(MEINPROC REQUIRED)
+
+MARK_AS_ADVANCED(KDE3_DCOPIDL2CPP_EXECUTABLE KDE3_DCOPIDL_EXECUTABLE
+  KDE3_KCFGC_EXECUTABLE KDE3_KDECORE_LIBRARY KDECONFIG_EXECUTABLE)
+
+######################### special requirements ##########################
+
+CHECK_INCLUDE_FILE("libofx/libofx.h" HAVE_LIBOFX_H)
+IF(HAVE_LIBOFX_H)
+  OPTION(USE_OFX_DIRECTCONNECT "Enable to compile with ofximport support" ON)
+  # the USE_OFX_DIRECTCONNECT preprocessor definition will be written
+  # to config.h as specified in config.h.cmake
+ENDIF(HAVE_LIBOFX_H)
+
+# check for Sqlite and QtSqlite
+FIND_PACKAGE(QtSqlite)
+
+# check for CppUnit to build the tests
+FIND_PACKAGE(CppUnit)
+# check wether the user requests to build the test although it's not possible
+IF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
+  message( SEND_ERROR
+    "CppUnit has not been found. You can neither build nor run the tests." )
+  SET( KDE3_BUILD_TESTS OFF FORCE )
+ENDIF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
+
+IF( KDE3_BUILD_TESTS )
+  # here we know that we really want to build the tests
+  ADD_DEFINITIONS( -DHAVE_LIBCPPUNIT )
+  INCLUDE_DIRECTORIES( ${CPPUNIT_INCLUDE_DIR} )
+
+  # INCLUDE(CTest) # makes sense only with a ctest online dashboard
+
+  ENABLE_TESTING()
+ENDIF( KDE3_BUILD_TESTS )
+
+INCLUDE(KMyMoneyMacros)
+
+######################### settings ##########################
+
+ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
+# some definitions for the compiler
+ADD_DEFINITIONS( -DHAVE_CONFIG_H -fexceptions)
+# preprocessor definitions in case this is a debug build
+SET(COMPILE_DEFINITIONS_DEBUG ${COMPILE_DEFINITIONS_DEBUG} -DKMM_DEBUG )
+
+
+OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support (deprecated)" OFF)
+if(USE_LEAK_CHECK)
+  message("Warning: Leak check support is activated but deprecated. Better use valgrind.")
+  ADD_DEFINITIONS( -D_CHECK_MEMORY )
+endif(USE_LEAK_CHECK)
+
+#OPTION(USE_QT_DESIGNER "Enable to compile with Qt-Designer library support" OFF)
 
 # initialize the default install prefix to the kde3 prefix
 # ( usually /opt/kde3. ${KDE3PREFIX} is set by FIND_PACKAGE(KDE3) above )
@@ -194,7 +180,7 @@ SET(MAN_INSTALL_DIR "/usr/share/man" CACHE PATH "Install path for manpages")
 
 # remark: these directories are used to find libs and .h files.
 # they are set globally after this point. no need to add everywhere.
-LINK_DIRECTORIES( ${KDE3_LIB_DIR} ${SQLITE_LIB_DIRS} )
+LINK_DIRECTORIES( ${KDE3_LIB_DIR} )
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -202,6 +188,9 @@ INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR}
   ${PKGS_INCLUDE_DIRS}
 )
+
+######################### The actual targets ##########################
+
 ADD_SUBDIRECTORY( libkgpgfile ) 
 ADD_SUBDIRECTORY( libkdchart )
 ADD_SUBDIRECTORY( kmymoney2 ) 
@@ -255,6 +244,8 @@ INCLUDE(CPack)
 # We use cmake/modules/UseRPMTools.cmake for RPM creation
 INCLUDE(UseRPMTools)
 IF(RPMTools_FOUND)
+  SET(RPM_VERSION_SUFFIX  ${VERSION_SUFFIX})
+
   # kmymoney conflicts with kmymoney-unstable
   SET(RPM_CONFLICTING kmymoney-unstable)
   RPMTools_ADD_RPM_TARGETS(kmymoney          kmymoney.spec.in)
@@ -268,7 +259,6 @@ ENDIF(RPMTools_FOUND)
 
 # create the config.h file out of the config.h.cmake
 CONFIGURE_FILE  (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-
 
 # this macro maps the boolean variable ${_varname} to "yes"/"no"
 # and writes the output to the variable nice_${_varname}
@@ -286,8 +276,7 @@ ENDMACRO(nice_yesno _varname)
 
 nice_yesno("HAVE_LIBOFX_H")
 nice_yesno("USE_OFX_DIRECTCONNECT")
-nice_yesno("HAVE_KDCHART")
-nice_yesno("HAVE_SQLITE")
+nice_yesno("QT_SQLITE_FOUND")
 nice_yesno("USE_LEAK_CHECK")
 nice_yesno("USE_QT_DESIGNER")
 nice_yesno("CPPUNIT_FOUND")
@@ -299,9 +288,7 @@ OFX plugin:                             ${nice_HAVE_LIBOFX_H}
 
 OFX direct connect:                     ${nice_USE_OFX_DIRECTCONNECT}
 
-Chart support:                          ${nice_HAVE_KDCHART}
-
-SQLITE3 support:                        ${nice_HAVE_SQLITE}
+SQLITE3 support:                        ${nice_QT_SQLITE_FOUND}
 -------------------------------------------
 
 
@@ -312,12 +299,21 @@ Qt-Designer library support:            ${nice_USE_QT_DESIGNER}
 PDF document generation:                ?
 
 CPPUNIT support:                        ${nice_CPPUNIT_FOUND}
-        online tests:                   ${nice_KDE3_BUILD_TESTS}
+        build tests:                    ${nice_KDE3_BUILD_TESTS}")
 
-Memory leak check support (deprecated): ${nice_USE_LEAK_CHECK}
--------------------------------------------
+if(USE_LEAK_CHECK)
+  message("
+Memory leak check support (deprecated): ${nice_USE_LEAK_CHECK}")
+endif(USE_LEAK_CHECK)
 
-Good - your configure finished.
+message("-------------------------------------------
+")
+
+if(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND)
+  message("Note: You should run 'make install-qsqlite3' to enable Sqlite3 support.
+  ")
+endif(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND)
+
+message("Good - your configure finished.
 Now type 'make' to build KMyMoney. For more help, consult README.cmake
-
 ")

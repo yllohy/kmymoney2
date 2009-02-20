@@ -1,4 +1,8 @@
 
+2009-02-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Holger
+    (0001-cmake-QtSqlite-and-small-tweaks.patch)
+
 2009-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated regular expression for Financial Express price source
 

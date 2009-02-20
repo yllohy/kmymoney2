@@ -7,7 +7,7 @@
 # norootforbuild
 
 %define _prefix /opt/kde3
-%define _cvs cvs20090211
+%define _cvs @RPM_VERSION_SUFFIX@
 
 Name:           @RPM_NAME@
 URL:            http://kmymoney2.sourceforge.net/

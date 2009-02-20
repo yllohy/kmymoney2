@@ -84,7 +84,7 @@ IF (UNIX)
       ELSE ("${SPECFILE_EXT}" STREQUAL ".spec")
         # This is a to-be-configured spec file
         SET(SPECFILE_NAME "${RPMNAME}.spec")
-        MESSAGE(STATUS "Configuring spec file <RPM/SPEC/${RPMNAME}.spec>")
+        MESSAGE(STATUS "Configuring spec file <RPM/SPECS/${RPMNAME}.spec>")
         #SET(CPACK_RPM_DIRECTORY RPM_ROOTDIR)
         SET(CPACK_RPM_FILE_NAME ${CMAKE_BINARY_DIR}/${CPACK_SOURCE_PACKAGE_FILE_NAME}.src.rpm)
         SET(RPM_NAME ${RPMNAME})# provided to the spec.in file

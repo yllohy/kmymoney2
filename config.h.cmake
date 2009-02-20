@@ -4,7 +4,7 @@
 #define PACKAGE "kmymoney2"
 
 /* Version number of package */
-#define VERSION "0.9.2-CVS"
+#define VERSION "@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@-@VERSION_SUFFIX@"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "kmymoney2-developer@lists.sourceforge.net"
@@ -43,10 +43,10 @@
 #cmakedefine HAVE_INTTYPES_H 1
 
 /* Define if you have libkdchart */
-#cmakedefine HAVE_KDCHART 
+#define HAVE_KDCHART 1
 
 /* Define if you have KDChartListTableData::setProp method */
-#cmakedefine HAVE_KDCHART_SETPROP 
+#define HAVE_KDCHART_SETPROP 1
 
 /* Define if you have libcppunit */
 #cmakedefine HAVE_LIBCPPUNIT 1
