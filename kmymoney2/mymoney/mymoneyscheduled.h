@@ -484,6 +484,17 @@ public:
   static QString occurenceToString(int mult, occurenceE type);
 
   /**
+   * This method is used to convert an occurence period from
+   * it's internal representation into a human-readable format.
+   *
+   * @param type numerical representation of the MyMoneySchedule
+   *                  occurence type
+   *
+   * @return QString representing the human readable format
+   */
+  static QString occurencePeriodToString(occurenceE type);
+
+  /**
    * This method is used to convert the payment type from it's
    * internal representation into a human readable format.
    *

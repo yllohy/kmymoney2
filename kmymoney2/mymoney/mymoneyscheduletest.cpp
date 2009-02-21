@@ -1321,7 +1321,7 @@ void MyMoneyScheduleTest::testDaysBetweenEvents()
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_MONTHLY) == 30);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS) == 56);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYOTHERMONTH) == 60);
-  CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == 0);
+  CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == 90);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_QUARTERLY) == 90);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_EVERYFOURMONTHS) == 120);
   CPPUNIT_ASSERT(MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::OCCUR_TWICEYEARLY) == 180);
@@ -1385,7 +1385,7 @@ void MyMoneyScheduleTest::testEventsPerYear()
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_MONTHLY) == 12);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS) == 6);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYOTHERMONTH) == 6);
-  CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == 0);
+  CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == 4);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_QUARTERLY) == 4);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_EVERYFOURMONTHS) == 3);
   CPPUNIT_ASSERT(MyMoneySchedule::eventsPerYear(MyMoneySchedule::OCCUR_TWICEYEARLY) == 2);
@@ -1507,6 +1507,31 @@ void MyMoneyScheduleTest::testOccurenceToString()
   s.setOccurenceMultiplier(1); CPPUNIT_ASSERT(s.occurenceToString() == "Yearly" );
   s.setOccurenceMultiplier(2); CPPUNIT_ASSERT(s.occurenceToString() == "Every other year" );
   s.setOccurenceMultiplier(3); CPPUNIT_ASSERT(s.occurenceToString() == "Every 3 years" );
+}
+
+void MyMoneyScheduleTest::testOccurencePeriodToString()
+{
+  // For each occurenceE test MyMoneySchedule::occurencePeriodToString(occurenceE)
+  // Base occurences are translated
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_ONCE) == "Once" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_DAILY) == "Day" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_WEEKLY) == "Week" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYHALFMONTH) == "Half-month" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_MONTHLY) == "Month" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_YEARLY) == "Year" );
+  // All others are not translated so return Any
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_FORTNIGHTLY) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_QUARTERLY) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_TWICEYEARLY) == "Any" );
+  CPPUNIT_ASSERT(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYOTHERYEAR) == "Any" );
 }
 
 void MyMoneyScheduleTest::testOccurencePeriod()

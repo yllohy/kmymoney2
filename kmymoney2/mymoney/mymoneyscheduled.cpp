@@ -517,7 +517,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
       if (paymentDate < _startDate)
       {
         int daysMod = paymentDate.daysTo(_startDate) % m_occurenceMultiplier;
-        paymentDate = (daysMod==0) ? _startDate : _startDate.addDays( m_occurenceMultiplier - daysMod );
+        paymentDate = (daysMod==0) ? _startDate : _startDate.addDays( m_occurenceMultiplier -daysMod );
       }
       while (paymentDate <= endDate)
       {
@@ -961,6 +961,25 @@ QString MyMoneySchedule::occurenceToString(int mult, occurenceE type)
   return occurenceString;
 }
 
+QString MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::occurenceE type)
+{
+  QString occurenceString = I18N_NOOP("Any");
+
+  if(type == MyMoneySchedule::OCCUR_ONCE)
+    occurenceString = I18N_NOOP("Once");
+  else if(type == MyMoneySchedule::OCCUR_DAILY)
+    occurenceString = I18N_NOOP("Day");
+  else if(type == MyMoneySchedule::OCCUR_WEEKLY)
+    occurenceString = I18N_NOOP("Week");
+  else if(type == MyMoneySchedule::OCCUR_EVERYHALFMONTH)
+    occurenceString = I18N_NOOP("Half-month");
+  else if(type == MyMoneySchedule::OCCUR_MONTHLY)
+    occurenceString = I18N_NOOP("Month");
+  else if(type == MyMoneySchedule::OCCUR_YEARLY)
+    occurenceString = I18N_NOOP("Year");
+  return occurenceString;
+}
+
 QString MyMoneySchedule::scheduleTypeToString(MyMoneySchedule::typeE type)
 {
   QString text;
@@ -1095,6 +1114,7 @@ int MyMoneySchedule::eventsPerYear(MyMoneySchedule::occurenceE occurence)
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
       rc = 6;
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
     case MyMoneySchedule::OCCUR_QUARTERLY:
       rc = 4;
       break;
@@ -1152,6 +1172,7 @@ int MyMoneySchedule::daysBetweenEvents(MyMoneySchedule::occurenceE occurence)
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
       rc = 60;
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
     case MyMoneySchedule::OCCUR_QUARTERLY:
       rc = 90;
       break;

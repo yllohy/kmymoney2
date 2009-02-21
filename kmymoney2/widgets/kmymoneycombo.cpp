@@ -724,13 +724,33 @@ void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end, MyMoneyTransactionFilt
 }
 #endif
 
-KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name) :
+KMyMoneyOccurenceCombo::KMyMoneyOccurenceCombo(QWidget* parent, const char* name) :
   KMyMoneyGeneralCombo(parent, name)
+{
+}
+
+MyMoneySchedule::occurenceE KMyMoneyOccurenceCombo::currentItem(void) const
+{
+  return static_cast<MyMoneySchedule::occurenceE>(KMyMoneyGeneralCombo::currentItem());
+}
+
+KMyMoneyOccurencePeriodCombo::KMyMoneyOccurencePeriodCombo(QWidget* parent, const char* name) :
+  KMyMoneyOccurenceCombo(parent, name)
+{
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_ONCE)), MyMoneySchedule::OCCUR_ONCE);
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_DAILY)), MyMoneySchedule::OCCUR_DAILY);
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_WEEKLY)), MyMoneySchedule::OCCUR_WEEKLY);
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_EVERYHALFMONTH)), MyMoneySchedule::OCCUR_EVERYHALFMONTH);
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_MONTHLY)), MyMoneySchedule::OCCUR_MONTHLY);
+  insertItem(i18n(MyMoneySchedule::occurencePeriodToString(MyMoneySchedule::OCCUR_YEARLY)), MyMoneySchedule::OCCUR_YEARLY);
+}
+
+KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name) :
+  KMyMoneyOccurenceCombo(parent, name)
 {
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_ONCE)), MyMoneySchedule::OCCUR_ONCE);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_DAILY)), MyMoneySchedule::OCCUR_DAILY);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY)), MyMoneySchedule::OCCUR_WEEKLY);
-  insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY)), MyMoneySchedule::OCCUR_FORTNIGHTLY);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK)), MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYHALFMONTH)), MyMoneySchedule::OCCUR_EVERYHALFMONTH);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS)), MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
@@ -740,16 +760,10 @@ KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS)), MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH)), MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS)), MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
-  insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY)), MyMoneySchedule::OCCUR_QUARTERLY);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS)), MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY)), MyMoneySchedule::OCCUR_TWICEYEARLY);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_YEARLY)), MyMoneySchedule::OCCUR_YEARLY);
   insertItem(i18n(MyMoneySchedule::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERYEAR)), MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
-}
-
-MyMoneySchedule::occurenceE KMyMoneyFrequencyCombo::currentItem(void) const
-{
-  return static_cast<MyMoneySchedule::occurenceE>(KMyMoneyGeneralCombo::currentItem());
 }
 
 int KMyMoneyFrequencyCombo::daysBetweenEvents(void) const

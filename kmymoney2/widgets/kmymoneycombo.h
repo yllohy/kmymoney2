@@ -413,16 +413,41 @@ public:
 };
 
 /**
+ * This class implements an occurence selector
+ * as a parent class for both OccurencePeriod and Frequency combos
+ *
+ * @author Colin Wright
+ */
+class KMyMoneyOccurenceCombo : public KMyMoneyGeneralCombo
+{
+  Q_OBJECT
+public:
+  KMyMoneyOccurenceCombo(QWidget* parent = 0, const char* name = 0);
+
+  MyMoneySchedule::occurenceE currentItem(void) const;
+};
+
+/**
+ * This class implements an occurence period selector 
+ * 
+ * @author Colin Wright
+ */
+class KMyMoneyOccurencePeriodCombo : public KMyMoneyOccurenceCombo
+{
+  Q_OBJECT
+public:
+  KMyMoneyOccurencePeriodCombo(QWidget* parent = 0, const char* name = 0);
+};
+
+/**
  * This class implements a payment frequency selector
  * @author Thomas Baumgart
  */
-class KMyMoneyFrequencyCombo : public KMyMoneyGeneralCombo
+class KMyMoneyFrequencyCombo : public KMyMoneyOccurenceCombo
 {
   Q_OBJECT
 public:
   KMyMoneyFrequencyCombo(QWidget* parent = 0, const char* name = 0);
-
-  MyMoneySchedule::occurenceE currentItem(void) const;
 
   /**
    * This method returns the number of events for the selected payment
