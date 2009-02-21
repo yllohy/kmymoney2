@@ -138,13 +138,12 @@ ENDIF( KDE3_BUILD_TESTS )
 
 ########### install files ###############
 
-INSTALL( TARGETS kmymoney2 DESTINATION bin )
+INSTALL(TARGETS kmymoney2 DESTINATION bin)
 INSTALL(CODE
-  "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-  ${CMAKE_INSTALL_PREFIX}/bin/kmymoney2
-  ${CMAKE_INSTALL_PREFIX}/bin/kmymoney)"
+  "EXECUTE_PROCESS(
+  COMMAND ${CMAKE_COMMAND} -E create_symlink kmymoney2 kmymoney
+  WORKING_DIRECTORY \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/)"
   )
-
 INSTALL(FILES kmymoney2.kcfg
   DESTINATION share/config.kcfg 
   )

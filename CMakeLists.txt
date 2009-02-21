@@ -1,13 +1,7 @@
 # Setting the name of the main project
 PROJECT(KMyMoney)
 
-# The current version of KMyMoney (used for packages and config.h)
-SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "9")
-SET(VERSION_PATCH "2")
-SET(VERSION_SUFFIX "cvs20090217")
-
-# The CMake version we need
+# The CMake version we require
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
 # This option will make 'make' very verbose
@@ -21,7 +15,21 @@ endif(COMMAND cmake_policy)
 # Our modules reside in the subdirectory cmake/modules/
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-######################### general requirements ##########################
+######################### KMyMoney Version ##########################
+
+# The current version of KMyMoney (used for packages and config.h)
+SET(VERSION_MAJOR "0")
+SET(VERSION_MINOR "9")
+SET(VERSION_PATCH "2")
+
+# Get the date of the last change from the ChangeLog
+SET(date_format "([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])")
+FILE(STRINGS ${CMAKE_SOURCE_DIR}/ChangeLog LAST_CHANGE
+  REGEX ${date_format} LIMIT_COUNT 1 LENGTH_MINIMUM 10 LENGTH_MAXIMUM 10)
+STRING(REGEX MATCH ${date_format} _ign "${LAST_CHANGE}")
+SET(VERSION_SUFFIX "cvs${CMAKE_MATCH_1}${CMAKE_MATCH_2}${CMAKE_MATCH_3}")
+
+######################### General Requirements ##########################
 FIND_PACKAGE(KDE3 REQUIRED)
 FIND_PACKAGE(Perl REQUIRED)
 
@@ -110,7 +118,7 @@ FIND_PACKAGE(MEINPROC REQUIRED)
 MARK_AS_ADVANCED(KDE3_DCOPIDL2CPP_EXECUTABLE KDE3_DCOPIDL_EXECUTABLE
   KDE3_KCFGC_EXECUTABLE KDE3_KDECORE_LIBRARY KDECONFIG_EXECUTABLE)
 
-######################### special requirements ##########################
+######################### Special Requirements ##########################
 
 CHECK_INCLUDE_FILE("libofx/libofx.h" HAVE_LIBOFX_H)
 IF(HAVE_LIBOFX_H)
@@ -143,7 +151,7 @@ ENDIF( KDE3_BUILD_TESTS )
 
 INCLUDE(KMyMoneyMacros)
 
-######################### settings ##########################
+######################### Settings ##########################
 
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
 # some definitions for the compiler
@@ -189,7 +197,7 @@ INCLUDE_DIRECTORIES(
   ${PKGS_INCLUDE_DIRS}
 )
 
-######################### The actual targets ##########################
+######################### The Actual Targets ##########################
 
 ADD_SUBDIRECTORY( libkgpgfile ) 
 ADD_SUBDIRECTORY( libkdchart )
@@ -211,8 +219,8 @@ ADD_CUSTOM_TARGET(uninstall
 ADD_CUSTOM_TARGET(messages
   COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/admin/extract-messages.sh" "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
-######################### package generation ##########################
-##### general setup (tar.gz / tar.bz2 source and binary) #####
+######################### Package Generation ##########################
+##### General Setup (tar.gz / tar.bz2 source and binary) #####
 
 # by default, the package name is kmymoney
 SET(CPACK_PACKAGE_NAME "kmymoney")
@@ -240,7 +248,7 @@ SET(CPACK_SOURCE_IGNORE_FILES
 # This will create the cpack configuration files.
 INCLUDE(CPack)
 
-## RPM setup
+##### RPM Setup (.rpm and .srpm) #####
 # We use cmake/modules/UseRPMTools.cmake for RPM creation
 INCLUDE(UseRPMTools)
 IF(RPMTools_FOUND)
@@ -282,31 +290,33 @@ nice_yesno("USE_QT_DESIGNER")
 nice_yesno("CPPUNIT_FOUND")
 nice_yesno("KDE3_BUILD_TESTS")
 message("
+-------- KMyMoney ${CPACK_PACKAGE_VERSION}-${VERSION_SUFFIX} --------
+
 Configure results (user options):
--------------------------------------------
-OFX plugin:                             ${nice_HAVE_LIBOFX_H}
+--------------------------------------------
+OFX plugin:                              ${nice_HAVE_LIBOFX_H}
 
-OFX direct connect:                     ${nice_USE_OFX_DIRECTCONNECT}
+OFX direct connect:                      ${nice_USE_OFX_DIRECTCONNECT}
 
-SQLITE3 support:                        ${nice_QT_SQLITE_FOUND}
--------------------------------------------
+SQLITE3 support:                         ${nice_QT_SQLITE_FOUND}
+--------------------------------------------
 
 
 Configure results (developer options):
--------------------------------------------
-Qt-Designer library support:            ${nice_USE_QT_DESIGNER}
+--------------------------------------------
+Qt-Designer library support:             ${nice_USE_QT_DESIGNER}
 
-PDF document generation:                ?
+PDF document generation:                 ?
 
-CPPUNIT support:                        ${nice_CPPUNIT_FOUND}
-        build tests:                    ${nice_KDE3_BUILD_TESTS}")
+CPPUNIT support:                         ${nice_CPPUNIT_FOUND}
+        build tests:                     ${nice_KDE3_BUILD_TESTS}")
 
 if(USE_LEAK_CHECK)
   message("
-Memory leak check support (deprecated): ${nice_USE_LEAK_CHECK}")
+Memory leak check support (deprecated):  ${nice_USE_LEAK_CHECK}")
 endif(USE_LEAK_CHECK)
 
-message("-------------------------------------------
+message("--------------------------------------------
 ")
 
 if(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND)

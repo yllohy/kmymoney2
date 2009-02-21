@@ -42,7 +42,8 @@ else(QT_SQLITE3_LIB)
       DESTINATION ${QT_SQLITE3_LIB_DIR}
       COMPONENT qsqlite3)
     ADD_CUSTOM_TARGET(install-qsqlite3 ${CMAKE_COMMAND}
-      -DCMAKE_INSTALL_COMPONENT=qsqlite3 -P cmake_install.cmake)
+      -DCMAKE_INSTALL_COMPONENT=qsqlite3 -P cmake_install.cmake
+      DEPENDS qsqlite3)
 
     SET(QT_SQLITE_FOUND TRUE)
     SET(QT_SQLITE_FALLBACK TRUE)

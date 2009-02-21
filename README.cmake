@@ -53,15 +53,19 @@ Quick-start 2: How to compile Debug-Builds
 As an example configuration option, you would like to configure a
 debug build just as './configure --enable-debug=full' did before.
 
-For this, assuming you are in ./build/, you can either use a GUI
+For this, you can conveniently create a new out-of-source build directory:
 
+$ mkdir Debug
+$ cd Debug
+$ cmake -D CMAKE_BUILD_TYPE=Debug ..
+
+Instead of the last command, you could also call CMake without command
+line arguments and use the GUI to switch the build type.
+
+$ cmake ..
 $ ccmake .
     and change the option CMAKE_BUILD_TYPE to 'Debug'.  Selecting an
     option and pressing 'h' will show you its allowed values.
-
-Or you can pass the option to cmake on the command line
-
-$ cmake -D CMAKE_BUILD_TYPE=Debug .
 
 In any case, your choices are safely stored in the file CMakeCache.txt
 which will never be completely overwritten.
@@ -93,14 +97,19 @@ After cmake has finished, you have a set of ordinary Makefiles in your
 directory.  You can type
 
 $ make help
-    to see all available make targets.
+    to see all available make targets in the current directory.
 
 $ make
     to reconfigure the Makefiles and build the project.
 
 $ make install
     to install KMyMoney to the directory CMAKE_INSTALL_PREFIX.
-    (Warning: There is no uninstall command!)
+
+$ make DESTDIR=/tmp install
+    to install KMyMoney to the directory /tmp/CMAKE_INSTALL_PREFIX.
+
+$ make uninstall
+    to uninstall a previous installation.
 
 $ make package
     to create a binary tarball.
@@ -130,3 +139,9 @@ $ make developer-doc
 
 $ make test
     to process all unit tests.
+
+$ make qsqlite3
+    to compile qsqlite3 (in case it is not installed on the system)
+
+$ make install-qsqlite3
+    to install qsqlite3 (this is implied by 'make install')
