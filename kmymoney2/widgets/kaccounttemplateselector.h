@@ -39,12 +39,13 @@ class KAccountTemplateSelector : public KAccountTemplateSelectorDecl
   public:
     KAccountTemplateSelector(QWidget* parent = 0, const char* name = 0);
     ~KAccountTemplateSelector();
-    QValueList<MyMoneyTemplate> selectedTemplates(void) const;
 
-    void loadTemplateList(void);
+    QValueList<MyMoneyTemplate> selectedTemplates(void) const;
 
   private slots:
     void slotLoadHierarchy(void);
+    void slotLoadCountry(void);
+    void slotLoadTemplateList(void);
 
   private:
     /// \internal d-pointer class.

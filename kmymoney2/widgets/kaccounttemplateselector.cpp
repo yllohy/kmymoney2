@@ -20,6 +20,7 @@
 
 #include <qdir.h>
 #include <qheader.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -72,6 +73,10 @@ class KAccountTemplateSelector::Private
     QMap<QString, QListViewItem*>     m_templateHierarchy;
 #ifndef KMM_DESIGNER
     QMap<QString, MyMoneyTemplate>    m_templates;
+    QMap<QString, QString> countries;
+    QMap<QString, QString>::iterator it_m;
+    QStringList                      dirlist;
+    int                              id;
 #endif
 };
 
@@ -159,9 +164,10 @@ KAccountTemplateSelector::KAccountTemplateSelector(QWidget* parent, const char* 
   d(new Private(this))
 {
   m_accountList->header()->hide();
-  loadTemplateList();
-  slotLoadHierarchy();
   connect(m_groupList, SIGNAL(selectionChanged()), this, SLOT(slotLoadHierarchy()));
+
+  // kick off loading of account template data
+  QTimer::singleShot(0, this, SLOT(slotLoadTemplateList()));
 }
 
 KAccountTemplateSelector::~KAccountTemplateSelector()
@@ -169,15 +175,14 @@ KAccountTemplateSelector::~KAccountTemplateSelector()
   delete d;
 }
 
-void KAccountTemplateSelector::loadTemplateList(void)
+void KAccountTemplateSelector::slotLoadTemplateList(void)
 {
 #ifndef KMM_DESIGNER
-  QMap<QString, QString> countries;
   QStringList dirs;
   // get list of template subdirs and scan them for the list of subdirs
-  QStringList list = KGlobal::dirs()->findDirs("appdata", "templates");
+  d->dirlist = KGlobal::dirs()->findDirs("appdata", "templates");
   QStringList::iterator it;
-  for(it = list.begin(); it != list.end(); ++it) {
+  for(it = d->dirlist.begin(); it != d->dirlist.end(); ++it) {
     QDir dir(*it);
     // qDebug("Reading dir '%s' with %d entries", (*it).data(), dir.count());
     dirs = dir.entryList("*", QDir::Dirs);
@@ -192,22 +197,22 @@ void KAccountTemplateSelector::loadTemplateList(void)
         if(country.isEmpty())
           country = exp.cap(2);
         QString lang = KGlobal::locale()->twoAlphaToLanguageName(exp.cap(1));
-        if(countries.contains(country)) {
-          if(countries[country] != *it_d) {
-            QString oName = countries[country];
+        if(d->countries.contains(country)) {
+          if(d->countries[country] != *it_d) {
+            QString oName = d->countries[country];
             exp.search(oName);
             QString oCountry = KGlobal::locale()->twoAlphaToCountryName(exp.cap(2));
             QString oLang = KGlobal::locale()->twoAlphaToLanguageName(exp.cap(1));
-            countries.remove(country);
-            countries[QString("%1 (%2)").arg(oCountry).arg(oLang)] = oName;
-            countries[QString("%1 (%2)").arg(country).arg(lang)] = *it_d;
+            d->countries.remove(country);
+            d->countries[QString("%1 (%2)").arg(oCountry).arg(oLang)] = oName;
+            d->countries[QString("%1 (%2)").arg(country).arg(lang)] = *it_d;
           }
         } else {
-          countries[country] = *it_d;
+          d->countries[country] = *it_d;
         }
       } else if((*it_d).length() == 2) {
         QString country = KGlobal::locale()->twoAlphaToCountryName((*it_d).upper());
-        countries[country] = *it_d;
+        d->countries[country] = *it_d;
       } else {
         qDebug("'%s/%s' not scanned", (*it).data(), (*it_d).data());
       }
@@ -216,29 +221,43 @@ void KAccountTemplateSelector::loadTemplateList(void)
 
   // now that we know, what we can get at max, we scan everything
   // and parse the templates into memory
-  QMap<QString, QString>::iterator it_m;
   m_groupList->clear();
   d->m_templates.clear();
-  int id = 1;
-  for(it_m = countries.begin(); it_m != countries.end(); ++it_m) {
-    // create new top item for each language
-    KListViewItem* parent = new KListViewItem(m_groupList, it_m.key());
-    parent->setSelectable(false);
-    for(it = list.begin(); it != list.end(); ++it) {
-      QStringList::iterator it_f;
-      QDir dir(QString("%1%2").arg(*it).arg(*it_m));
-      if(dir.exists()) {
-        QStringList files = dir.entryList("*", QDir::Files);
-        for(it_f = files.begin(); it_f != files.end(); ++it_f) {
-          MyMoneyTemplate templ(QString("%1/%2").arg(dir.canonicalPath()).arg(*it_f));
-          d->m_templates[QString("%1").arg(id)] = templ;
-          new KListViewItem(parent, templ.title(), templ.shortDescription(), QString("%1").arg(id));
-          ++id;
-        }
+  d->it_m = d->countries.begin();
+  d->id = 1;
+  QTimer::singleShot(0, this, SLOT(slotLoadCountry()));
+#endif
+}
+
+void KAccountTemplateSelector::slotLoadCountry(void)
+{
+#ifndef KMM_DESIGNER
+
+  KListViewItem* parent = new KListViewItem(m_groupList, d->it_m.key());
+  parent->setSelectable(false);
+  QStringList::iterator it;
+  for(it = d->dirlist.begin(); it != d->dirlist.end(); ++it) {
+    QStringList::iterator it_f;
+    QDir dir(QString("%1%2").arg(*it).arg(*(d->it_m)));
+    if(dir.exists()) {
+      QStringList files = dir.entryList("*", QDir::Files);
+      for(it_f = files.begin(); it_f != files.end(); ++it_f) {
+        MyMoneyTemplate templ(QString("%1/%2").arg(dir.canonicalPath()).arg(*it_f));
+        d->m_templates[QString("%1").arg(d->id)] = templ;
+        new KListViewItem(parent, templ.title(), templ.shortDescription(), QString("%1").arg(d->id));
+        ++d->id;
       }
     }
   }
+
+  ++d->it_m;
+  if(d->it_m != d->countries.end())
+    QTimer::singleShot(0, this, SLOT(slotLoadCountry()));
+  else {
+    d->loadHierarchy();
+  }
 #endif
+
 }
 
 void KAccountTemplateSelector::slotLoadHierarchy(void)

@@ -1,4 +1,7 @@
 
+2009-02-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Load data for account template widget in the background
+
 2009-02-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Holger
     (0001-cmake-QtSqlite-and-small-tweaks.patch)
