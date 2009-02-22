@@ -60,6 +60,8 @@ bool KMyMoneyDateEdit::event(QEvent* e)
   if(e->type() == QEvent::FocusOut && p) {
     QDate d = p->date();
     rc = QDateEdit::event(e);
+    if(d.isValid())
+      d = p->date();
     p->loadDate(d);
   } else {
     rc = QDateEdit::event(e);
