@@ -63,6 +63,8 @@ public:
 
 protected slots:
   void slotLoadFromKABC(void);
+  void slotAddressBookLoaded(void);
+
 };
 
 /**

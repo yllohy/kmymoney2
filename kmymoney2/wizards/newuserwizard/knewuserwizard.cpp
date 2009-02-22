@@ -171,14 +171,24 @@ GeneralPage::GeneralPage(Wizard* wizard, const char* name) :
   WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   m_userNameEdit->setFocus();
-  KABC::StdAddressBook *ab = dynamic_cast<KABC::StdAddressBook*>(KABC::StdAddressBook::self());
-  m_loadAddressButton->setEnabled(ab != 0);
+  KABC::StdAddressBook *ab = KABC::StdAddressBook::self(true);
+  connect(ab, SIGNAL(addressBookChanged(AddressBook*)), this, SLOT(slotAddressBookLoaded()));
   connect(m_loadAddressButton, SIGNAL(clicked()), this, SLOT(slotLoadFromKABC()));
+  m_loadAddressButton->setEnabled(false);
+}
+
+void GeneralPage::slotAddressBookLoaded(void)
+{
+  KABC::StdAddressBook *ab = KABC::StdAddressBook::self();
+  if (!ab)
+    return;
+
+  m_loadAddressButton->setEnabled(!ab->whoAmI().isEmpty());
 }
 
 void GeneralPage::slotLoadFromKABC(void)
 {
-  KABC::StdAddressBook *ab = dynamic_cast<KABC::StdAddressBook*>(KABC::StdAddressBook::self());
+  KABC::StdAddressBook *ab = KABC::StdAddressBook::self();
   if (!ab)
     return;
 

@@ -1,4 +1,7 @@
 
+2009-02-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Load addressbook for new user wizard in background
+
 2009-02-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Load data for account template widget in the background
   * Added patch provided by Colin Wright (fix3months_removefq_occurencePeriodToString.diff)
