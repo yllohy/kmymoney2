@@ -1,4 +1,7 @@
 
+2009-02-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed register column resizing algorithm
+
 2009-02-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Load addressbook for new user wizard in background
   * Fixed bko#185212 (Default year prefix)

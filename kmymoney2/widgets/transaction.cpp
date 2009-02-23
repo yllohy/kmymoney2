@@ -1186,7 +1186,7 @@ int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetric
   for(int i = firstRow; i <= lastRow; ++i) {
     int align;
     registerCellText(txt, align, i, col, 0);
-    int w = cellFontMetrics.width(txt+"  ");
+    int w = cellFontMetrics.width(txt+"   ");
     if(w > nw)
       nw = w;
   }
