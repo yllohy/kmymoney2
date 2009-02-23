@@ -1,8 +1,10 @@
+
 2009-02-23 Robert Wadley <robntina@users.sourceforge.net>
   * Updated Summary view style.
 
 2009-02-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed register column resizing algorithm
+  * Show database options in File menu
 
 2009-02-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Load addressbook for new user wizard in background
