@@ -1,3 +1,4 @@
+
 @media screen {
 
   A.el { text-decoration: none; }
@@ -6,44 +7,127 @@
   A.codeRef { font-weight: normal; color: #4C59A6 }
   A:hover { text-decoration: none; font-weight: normal; color: #4C59A6 }
 
-  body { /* background color for all pages */
+  body {
     background-color: Window;
-  }
-
-  .gap { /* used for spacing in financial summary and reports -match background color of body*/
-    background-color: Window;
-    padding-top: 1px;
-    height:5px;
-  }
-
-  body.highlighted {
-    background-color: highlight;
-    color: highlighttext;
-  }
-
-  p {
-  color:WindowText;
-  }
-
-  h1 {
-  color:WindowText;
-  }
-
-  h2 { /* "your financial summary" title on summary page */
-    font-size: 18px;
+    color:WindowText;
     font-family: verdana, arial, sans-serif;
-    margin-right: 10px;
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+  }
+
+  .setcolor { /*sets color of some spacing elements (such as the column between assets and liabilities) to the desired color*/
+    background-color:Window;
+}
+
+body#summaryview { /* set body attributes that affect only the summary view (and not reports) */
+    /*background-color:lightgrey;*/
+}
+
+
+#vieweffect { /* creates a dropshadow at the top of the view creating a resessed effect */
+  /*  background: url(./images/top-shadow.png) repeat-x top;
+    margin:0px -10px 0px -10px;
+    position:fixed;
+    top:0px;
+    width:100%;
+    height:20px;
+    z-index:50;*/
+}
+
+  #summarytitle { /* "your financial summary" title on summary page */
+    display:block;
+    margin-bottom:6px;
     text-align: right;
+    color:WindowText;
+    Font-size:20px;
+    padding:10px 15px 15px 0;
+  }
+
+  .shadow {/*wraps .displayblock -can be used for special decorative effects like a drop shadow */
+   /*background: url(./images/shadow.png) no-repeat bottom right;*/
+    margin:0px 5px 30px 15px;
+  }
+
+  .displayblock {/*ties together a summary header and a table into a single content block*/
+    display:block;
+    position:relative;
+    top:-6px;
+    left:-6px;
+    background-color: Window;
+    /*border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid lightgrey;*/
+border:1px solid WindowText;
+    padding: 0px;
+  }
+
+  .summaryheader { /*section labels over each table in the financial summary*/
+   background: HighLight /* url(./images/currencyflourish.png) no-repeat bottom right*/;
+    color:HighLightText;
+    Font-size:1.2em;
+    font-weight:bold;
+    padding:5px 10px;
+  }
+
+  .summarytable { /*the tables in the financial summary */
+    padding:5px;
+  }
+
+  .summarytable td { /*style <td> in the tables in the financial summary */
+    padding:5px 10px;
+    border-left: medium solid Window; 
+    border-right: medium solid window; 
     color:WindowText;
   }
 
-  h2.highlighted {
-    background-color: highlight;
-    color: highlighttext;
+  .itemtitle { /*<tr> -additional label for table headers. example "Assets" and "Liabilities"*/
+    color:HighLight;
+    Font-weight:bold;
   }
+
+  .itemtitle td { /*<td> table data cells related to .itemtitle*/
+    padding:0px 10px 0px 10px;
+    border-left: 0px; 
+    border-right: 0px;
+    font-size:1.2em;
+  }
+
+  .item { /*<tr> -item labels (table headers) for sections in the financial summary */
+    font-weight:bold;
+    color:WindowText;
+  }
+
+  .item td { /*<td> table data cells related to .item*/
+    border-left: 0px; 
+    border-right: 0px;
+    border-bottom:3px solid WindowText;
+  }
+
+  .warningtitle { /*<tr> -set warning background color -overdue payments -items of this class also belong to the class called "itemtitle"*/
+    color:red;/*set programatically, not by css*/
+    background-color: infobackground;
+  }
+
+  .warning { /*<tr> -set warning background color -items of this class also belong to the class called "item"*/
+    background-color: infobackground;
+  }
+
+  th.left, td.left {/*rule to align table header and table data cells*/
+    text-align: left;
+  }
+
+  th.right, td.right {/*rule to align table header and table data cells*/
+    text-align: right;
+  }
+
+  th.center, td.center {/*rule to align table header and table data cells*/
+    text-align: center;
+  }
+
+  .gap { /* used for spacing in financial summary and reports if needed -match to background color of body if you don't want it to show.*/
+
+  }
+
+/***********************************************************/
+/* These affect only the reports found in the reports view */
 
   h2.report { /* header -title on report pages */
     font-size: 18px;
@@ -66,178 +150,67 @@
     padding-bottom: 5px;
   }
 
-  .summaryheader { /*section labels in the financial summary*/
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-weight: bold;
-    background-color: highlight;
-    color: highlighttext;
-    padding-top: 5px;
-    padding-left: 20px;
-    padding-bottom: 5px;
-    margin-top: 20px;
-    border: thin solid WindowText;
-  }
-
-  .summarytable { /*this style is used by the tables in the financial summary */
-    border: thin solid WindowText; 
-margin-top:-1px;
-  }
-
-  .summarytable td { /*this style is used by the tables in the financial summary */
-    border-left: medium solid Window; 
-    border-right: medium solid Window; 
-    border-collapse: collapse;
-  }
-
-  li {
-  color:WindowText;
-  }
-
-  td {
-  /*  font-size: 11px; */
-    font-family: verdana, arial, sans-serif;
-  }
-
-  td.highlighted
-  {
-    background-color: highlight;
-    color: highlighttext;highlight
-  }
-
-  .row-even {
-    font-family: verdana, arial, helvetica, sans-serif; /*  font-size: 11px; */
-    background-color: #FFFFEE;
-    color: black;
-    padding-top: 2px;
-    padding-left: 20px;
-  }
-
-  .row-odd {
-    font-family: verdana, arial, helvetica, sans-serif; /*  font-size: 11px; */
-    background-color: #FFFFCC;
-    color: black;
-    padding-top: 2px;
-    padding-left: 20px;
-  }
-
-  .item { /*item labels (sub-titles) for sections in the financial summary */
-  /*  font-size: 11px; */
-    font-weight: bold;
-    padding-top: 2px;
-  }
-
-  .warning { /* "overdue payments" */
-    background-color: infobackground;
-    font-weight: bold;
-    padding-bottom: 2px;
-    text-align: left;
-  }
-
-  .warning td { /* Needed to override the effect of .summarytable td */ 
-    border-color: infobackground;
-  }
-
-  table.highlighted {
-    background-color: highlight;
-    color: highlighttext;
-  }
-
-  font.kmymoney2 {
-    color: #4C59A6;
-    font-weight: bold;
-  }
-
-  font.highlighted {
-    background-color: highlight;
-    color: highlighttext;
-  }
-
-  th.highlighted {
-    background-color: highlight;
-    color: highlighttext;
-  }
-
-  th.left,
-  td.left
-  {
-    text-align: left;
-  }
-
-  th.right,
-  td.right
-  {
-    text-align: right;
-  }
-
-  th.center,
-  td.center
-  {
-    text-align: center;
-  }
-
-  /* These affect only the reports found in the reports view */
-
   div.subtitle { /*subtitle of each report page*/
     text-align: center;
     color:WindowText;
   }
 
-  table.report {
+  table.report {/*center the report*/
     margin-left:auto;
     margin-right:auto;
   }
 
-  table.report th {
+  table.report th {/*styles table header cells*/
     padding: 0.5em 0.5em;
   }
 
-  table.report td {
+  table.report td {/*styles table cells- but not background color*/
     font-size: 9pt;
     padding: 0 0.5em;
     text-align: right;
   }
 
-  table.report td.leftborder {
+  table.report td.leftborder {/*does not appear to be in use*/
     border-left: 1px solid;
   }
 
-  table.report td.left {
+  table.report td.left {/*far left column*/
     text-align: left;
   }
 
-  table.report td.left0 {
+  table.report td.left0 {/*does not appear to be in use*/
     text-align: left;
   }
 
-  table.report td.left1 {
+  table.report td.left1 {/*does not appear to be in use*/
     text-align: left;
     text-indent: 1.0em;
   }
 
-  table.report td.left2 {
+  table.report td.left2 {/*does not appear to be in use*/
     text-align: left;
     text-indent: 2.0em;
   }
 
-  table.report tr#subtotal td {
+  table.report tr#subtotal td {/*line separating row groups*/
     border-bottom: 1px solid black;
     font-weight: normal;
   }
 
-  table.report tr#topparent td.left {
-    font-weight: bold;
-  }
-
-  table.report tr#solo td {
+table.report tr#solo td {/*line separating rows that are not groups*/
     border-bottom: 1px solid black;
     font-weight: normal;
   }
-
-  table.report tr#solo td.left {
+  
+table.report tr#topparent td.left {/*parent label for each row group containing children*/
     font-weight: bold;
   }
 
-  table.report tr.sectionheader td { /* label (title) of each section -subtotals */
+  table.report tr#solo td.left {/*label for each row group _not_ containing children*/
+    font-weight: bold;
+  }
+
+  table.report tr.sectionheader td { /* label (title) of each section -subtotals  -for example 'Income' and 'Expenses' */
     font-weight: bold;
     padding: 0.5em 0.5em 0 0.5em;
     color:WindowText;
@@ -256,12 +229,12 @@ margin-top:-1px;
     color:WindowText;
   }
 
-  table.report tr.reportfooter td.left { /* "Grand Total" */
+  table.report tr.reportfooter td.left { /* "Grand Total" label in the left column */
     font-weight: bold;
     color:WindowText;
   }
 
-  table.report tr.spacer td {
+  table.report tr.spacer td {/*used to make a table row act as a spacer when needed*/
     font-size: 4pt;
     padding: 1em 0;
   }
@@ -287,85 +260,8 @@ margin-top:-1px;
 
   table { border-collapse: separate; border-spacing: 1px; }
   table { margin-left: auto; margin-right: auto }
-  table.report {
-    margin-left:auto;
-    margin-right:auto;
-  }
-  table.report td {
-    padding: 0 0.5em;
-    text-align: right;
-  }
-  table.report th {
-    padding: 0.5em 0.5em;
-  }
-  table.report td.leftborder {
-    border-left: 1px solid;
-  }
-
-  table.report td.left {
-    text-align: left;
-  }
-
-  table.report td.left0 {
-    text-align: left;
-  }
-
-  table.report td.left1 {
-    text-align: left;
-    text-indent: 1.0em;
-  }
-
-  table.report td.left2 {
-    text-align: left;
-    text-indent: 2.0em;
-  }
-
-  table.report tr#subtotal td {
-    border-bottom: 1px solid black;
-    font-weight: normal;
-  }
-  table.report tr#topparent td.left {
-    font-weight: bold;
-  }
-
-  table.report tr#solo td {
-    border-bottom: 1px solid black;
-    font-weight: normal;
-  }
-
-  table.report tr#solo td.left {
-    font-weight: bold;
-  }
-
-  table.report tr.sectionheader td { /* label (title) of each section -subtotals */
-    font-weight: bold;
-    padding: 0.5em 0.5em 0 0.5em;
-    color:WindowText;
-  }
-
-  table.report tr.sectionfooter td { /* totals for each section -subtotals */
-    border-top: 1px solid black;
-    padding: 0 0.5em 0.5em 0.5em;
-    color:WindowText;
-  }
-
-  table.report tr.reportfooter td { /* "Grand Total" totals" */
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    padding: 0 0.5em 0 0.5em;
-    color:WindowText;
-  }
-  table.report tr.reportfooter td.left { /* "Grand Total" */
-    font-weight: bold;
-    color:WindowText;
-  }
-
-  table.report tr.spacer td {
-    font-size: 4pt;
-    padding: 1em 0;
-  }
-
   td    { vertical-align: baseline }
+
   th { border-bottom: 1pt solid black }
 /*  th             { background: #cccccc } */
   tr.item0 td    { background: #f2f2ff }
@@ -408,12 +304,19 @@ margin-top:-1px;
 /*  #topparent td, #solo td { border-top: 1px solid gray } */
 }
 
-tr.item0 td,
-tr.item1 td,
-tr.itemA td,
-tr.itemZ td { font-style: italic }
-tr.itemA td { border-bottom: 1px dotted gray }
-tr.itemZ td { border-top:    1px dotted gray }
+tr.item0 td,tr.item1 td,tr.itemA td,tr.itemZ td {
+    font-style: italic;
+  }
 
-.item0 .value,
-.item1 .value { padding-right: 2em }
+tr.itemA td {
+    border-bottom: 1px dotted gray;
+  }
+
+tr.itemZ td {
+    border-top: 1px dotted gray;
+  }
+
+.item0 .value,.item1 .value {
+    padding-right: 2em;
+  }
+

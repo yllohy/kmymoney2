@@ -193,7 +193,7 @@ void KHomeView::loadView(void)
 
     header += KMyMoneyUtils::variableCSS();
 
-    header += "</head><body>\n";
+    header += "</head><body id=\"summaryview\">\n";
 
     QString footer = "</body></html>\n";
 
@@ -252,8 +252,10 @@ void KHomeView::loadView(void)
       }
     }
 
+    m_part->write("<div id=\"returnlink\">");
     m_part->write(link(VIEW_WELCOME, QString()) + i18n("Show KMyMoney welcome page") + linkend());
-
+    m_part->write("</div>");
+    m_part->write("<div id=\"vieweffect\"></div>");
     m_part->write(footer);
     m_part->end();
 
@@ -1264,7 +1266,7 @@ void KHomeView::showAssetsLiabilities(void)
     m_part->write(i18n("Current Balance"));
     m_part->write("</td>");
     //intermediate row to separate both columns
-    m_part->write("<td width=\"10%\" style=\"background-color: Window;\"></td>");
+    m_part->write("<td width=\"10%\" class=\"setcolor\"></td>");
     m_part->write("<td class=\"left\" width=\"30%\">");
     m_part->write(i18n("Liability Accounts"));
     m_part->write("</td>");
@@ -1304,7 +1306,7 @@ void KHomeView::showAssetsLiabilities(void)
       }
 
       //leave the intermediate column empty
-      m_part->write("<td style=\"background-color: Window;\"></td>");
+      m_part->write("<td class=\"setcolor\"></td>");
 
       //write a liability account
       if(liabilities_it != nameLiabilitiesIdx.end()) {
@@ -1345,7 +1347,7 @@ void KHomeView::showAssetsLiabilities(void)
     m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Assets")).arg(showColoredAmount(amountAssets, netAssets.isNegative())));
 
     //leave the intermediate column empty
-    m_part->write("<td style=\"background-color: Window;\"></td>");
+    m_part->write("<td class=\"setcolor\"></td>");
 
     //print total liabilities
     m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Liabilities")).arg(showColoredAmount(amountLiabilities, netLiabilities.isNegative())));
@@ -1354,7 +1356,7 @@ void KHomeView::showAssetsLiabilities(void)
     //print net worth
     m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
-    m_part->write("<td></td><td></td><td style=\"background-color: Window;\"></td>");
+    m_part->write("<td></td><td></td><td class=\"setcolor\"></td>");
     m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
 
     m_part->write("</tr>");
