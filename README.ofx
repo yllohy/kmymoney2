@@ -46,10 +46,5 @@ is needed if it cannot find the right one.
 2. Ensure you have pkg-config installed, and that your PKG_CONFIG_PATH includes
 the location of libofx.pc.
 
-3. Install libcurl version >= 7.9.7
-
-4. Install libxml++-1.0.  Versions 2.0 and above are not sufficient.  You need
-1.0.  Both 1.0 and 2.0 can co-exist on the same system.
-
-5. Add --enable-ofxbanking to the options you pass to the configure script.
+3. Add --enable-ofxbanking to the options you pass to the configure script.
 
