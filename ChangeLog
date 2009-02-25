@@ -1,5 +1,9 @@
 
-2009-02-24 Robert Wadley <robntina@users.sourceforge.net>
+2009-02-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Colin Wright (editcompoundoccurence.diff)
+  * Fixed connection for edit widget signal in schedule editor
+
+2009-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated README.ofx
   * Released 0.9.3
 

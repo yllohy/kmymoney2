@@ -76,16 +76,24 @@ protected:
 
 private slots:
   void slotSetupSize(void);
-  void slotRemainingChanged(const QString& text);
+  void slotRemainingChanged(int);
   void slotEndDateChanged(const QDate& date);
+  void slotPostDateChanged(const QDate& date);
   void slotSetPaymentMethod(int);
   void slotFrequencyChanged(int item);
   void slotShowHelp(void);
+  void slotOccurenceMultiplierChanged(int mult);
 
   /// Overridden for internal reasons. No API changes.
   void accept(void);
 
 private:
+  /**
+    * Helper method to recalculate and update Transactions Remaining
+    * when other values are changed
+    */
+  void updateTransactionsRemaining(void);
+
   /// \internal d-pointer class.
   class Private;
   /// \internal d-pointer instance.

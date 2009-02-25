@@ -69,7 +69,21 @@
                                 <string>Frequency:</string>
                             </property>
                         </widget>
-                        <widget class="KMyMoneyFrequencyCombo">
+                        <widget class="KIntNumInput">
+                            <property name="name">
+                                <cstring>m_frequencyNoEdit</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>999</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Number of selected periods between entries</string>
+		            </property>
+                        </widget>
+		        <widget class="KMyMoneyOccurencePeriodCombo">
                             <property name="name">
                                 <cstring>m_frequencyEdit</cstring>
                             </property>
@@ -373,9 +387,15 @@
                                 <string>Number of transactions remaining:</string>
                             </property>
                         </widget>
-                        <widget class="QLineEdit">
+                        <widget class="KIntNumInput">
                             <property name="name">
                                 <cstring>m_RemainingEdit</cstring>
+                            </property>
+                            <property name="minValue">
+                                <number>0</number>
+                            </property>
+                            <property name="maxValue">
+                                <number>9999</number>
                             </property>
                         </widget>
                         <widget class="QLabel">
