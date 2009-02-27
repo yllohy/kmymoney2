@@ -516,9 +516,12 @@ void KMyMoneySelector::slotShowSelected(void)
     m_listView->ensureItemVisible(m_visibleItem);
 }
 
-int KMyMoneySelector::slotMakeCompletion(const QString& txt)
+int KMyMoneySelector::slotMakeCompletion(const QString& _txt)
 {
-  return slotMakeCompletion(QRegExp(QRegExp::escape(txt), false));
+  QString txt(QRegExp::escape(_txt));
+  if(KMyMoneyGlobalSettings::stringMatchFromStart() && this->isA("KMyMoneySelector") )
+    txt.prepend('^');
+  return slotMakeCompletion(QRegExp(txt, false));
 }
 
 bool KMyMoneySelector::match(const QRegExp& exp, QListViewItem* item) const

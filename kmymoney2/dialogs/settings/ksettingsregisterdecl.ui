@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>632</width>
-            <height>361</height>
+            <height>403</height>
         </rect>
     </property>
     <property name="caption">
@@ -263,6 +263,17 @@
                             <string></string>
                         </property>
                     </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_stringMatchFromStart</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Match names from start</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Mark this option, if you always want to match names e.g. for payees from the start. If unset, any substring is matched.</string>
+                        </property>
+                    </widget>
                     <widget class="QLayoutWidget">
                         <property name="name">
                             <cstring>layout5</cstring>
@@ -424,7 +435,7 @@ Selecting 0% will list all transactions.</string>
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>30</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>

@@ -1,4 +1,8 @@
 
+2009-02-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added option 'Match names from start'
+  * Fixed spelling of principal in account templates
+
 2009-02-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (editcompoundoccurence.diff)
   * Fixed connection for edit widget signal in schedule editor

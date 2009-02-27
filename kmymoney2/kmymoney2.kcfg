@@ -121,6 +121,10 @@
    <label>Show title bar on each view</label>
    <default>true</default>
   </entry>
+  <entry name="stringMatchFromStart" type="Bool">
+   <label>Start string matches for e.g. payees at start of string</label>
+   <default>false</default>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">
