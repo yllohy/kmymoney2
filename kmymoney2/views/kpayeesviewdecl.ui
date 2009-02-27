@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>689</width>
-            <height>521</height>
+            <height>540</height>
         </rect>
     </property>
     <vbox>
@@ -36,7 +36,7 @@
                             <hsizetype>7</hsizetype>
                             <vsizetype>7</vsizetype>
                             <horstretch>1</horstretch>
-                            <verstretch>0</verstretch>
+                            <verstretch>1</verstretch>
                         </sizepolicy>
                     </property>
                     <property name="selectionMode" stdset="0">
@@ -61,7 +61,7 @@
                             <hsizetype>7</hsizetype>
                             <vsizetype>7</vsizetype>
                             <horstretch>2</horstretch>
-                            <verstretch>0</verstretch>
+                            <verstretch>1</verstretch>
                         </sizepolicy>
                     </property>
                     <widget class="QWidget">
@@ -528,6 +528,23 @@
                 </widget>
             </hbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout10</cstring>

@@ -39,6 +39,7 @@
 #include <qpainter.h>
 #include <qheader.h>
 #include <qbuttongroup.h>
+#include <qsplitter.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -324,6 +325,11 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   // and insert it into the existing layout
   m_searchWidget = new KListViewSearchLineWidget(m_payeesList, this);
   KPayeesViewDeclLayout->insertWidget(0, m_searchWidget);
+
+  QSplitter* splitter = new QSplitter(this);
+  m_payeesList->reparent(splitter, QPoint(0,0), true);
+  m_tabWidget->reparent(splitter, QPoint(0, 0), true);
+  layout10->addWidget(splitter);
 
   m_transactionView->setSorting(-1);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);
