@@ -57,6 +57,7 @@ public:
 
 signals:
   void enterClicked(const MyMoneySchedule&, const QDate&);
+  void skipClicked(const MyMoneySchedule&, const QDate&);
 
 protected:
   void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate);

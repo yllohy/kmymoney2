@@ -1,6 +1,8 @@
 
 2009-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Return valid value from  PivotGrid::rowSet(QString id)
+  * Added patch provided by Colin Wright (schedulecalendarskipbutton.diff)
+  * Fixed a few button icons
 
 2009-02-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option 'Match names from start'

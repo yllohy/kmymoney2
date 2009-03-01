@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>kScheduleBriefWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -285,7 +285,7 @@
                             <property name="name">
                                 <cstring>Layout5</cstring>
                             </property>
-                            <vbox>
+                            <hbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
@@ -305,13 +305,24 @@
                                 </widget>
                                 <widget class="KPushButton">
                                     <property name="name">
+                                        <cstring>m_skipButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Skip</string>
+                                    </property>
+                                </widget>
+                                <widget class="KPushButton">
+                                    <property name="name">
                                         <cstring>m_closeButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Close</string>
+                                        <string>&amp;Close</string>
+                                    </property>
+                                    <property name="stdItem" stdset="0">
+                                        <number>13</number>
                                     </property>
                                 </widget>
-                            </vbox>
+                            </hbox>
                         </widget>
                         <spacer>
                             <property name="name">

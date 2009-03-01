@@ -67,6 +67,7 @@ kMyMoneyScheduledDateTbl::kMyMoneyScheduledDateTbl(QWidget *parent, QDate date_,
   m_filterBills(false), m_filterDeposits(false), m_filterTransfers(false)
 {
   connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)));
+  connect(&briefWidget, SIGNAL(skipClicked(const MyMoneySchedule&, const QDate&)), this, SIGNAL(skipClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 kMyMoneyScheduledDateTbl::~kMyMoneyScheduledDateTbl()

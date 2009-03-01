@@ -46,23 +46,24 @@
 KMyMoneyBriefSchedule::KMyMoneyBriefSchedule(QWidget *parent, const char *name )
   : kScheduleBriefWidget(parent,name, WStyle_Customize | WStyle_NoBorder)
 {
+  KIconLoader *ic = KGlobal::iconLoader();
   m_nextButton->setPixmap(BarIcon(QString::fromLatin1("1rightarrow")));
   m_prevButton->setPixmap(BarIcon(QString::fromLatin1("1leftarrow")));
 
   connect(m_prevButton, SIGNAL(clicked()), this, SLOT(slotPrevClicked()));
   connect(m_nextButton, SIGNAL(clicked()), this, SLOT(slotNextClicked()));
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(m_skipButton, SIGNAL(clicked()), this, SLOT(slotSkipClicked()));
   connect(m_buttonEnter, SIGNAL(clicked()), this, SLOT(slotEnterClicked()));
 
-  KIconLoader *ic = KGlobal::iconLoader();
-  KGuiItem closeGuiItem(  i18n("&Close"),
-                          QIconSet(ic->loadIcon("remove", KIcon::Small, KIcon::SizeSmall)),
-                          i18n("Close this window"),
-                          i18n("Use this button to close the window"));
-  m_closeButton->setGuiItem(closeGuiItem);
+  KGuiItem skipGuiItem(  i18n("&Skip"),
+                          QIconSet(ic->loadIcon("player_fwd", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Skip this transaction"),
+                          i18n("Use this button to skip this transaction"));
+  m_skipButton->setGuiItem(skipGuiItem);
 
   KGuiItem enterGuiItem(  i18n("&Enter"),
-                          QIconSet(ic->loadIcon("enter", KIcon::Small, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("key_enter", KIcon::Small, KIcon::SizeSmall)),
                           i18n("Record this transaction into the register"),
                           i18n("Use this button to record this transaction"));
   m_buttonEnter->setGuiItem(enterGuiItem);
@@ -180,5 +181,10 @@ void KMyMoneyBriefSchedule::slotEnterClicked()
   emit enterClicked(m_scheduleList[m_index], m_date);
 }
 
+void KMyMoneyBriefSchedule::slotSkipClicked()
+{
+  hide();
+  emit skipClicked(m_scheduleList[m_index], m_date);
+}
 
 #include "kmymoneybriefschedule.moc"

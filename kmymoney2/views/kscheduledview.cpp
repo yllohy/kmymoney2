@@ -111,6 +111,7 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name ) :
     this, SLOT(slotListViewCollapsed(QListViewItem*)));
 
   connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
+  connect(m_calendar, SIGNAL(skipClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefSkipClicked(const MyMoneySchedule&, const QDate&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadView()));
 }
@@ -463,6 +464,14 @@ void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, cons
 
   emit scheduleSelected(schedule);
   emit enterSchedule();
+}
+
+void KScheduledView::slotBriefSkipClicked(const MyMoneySchedule& schedule, const QDate& date)
+{
+  Q_UNUSED(date);
+
+  emit scheduleSelected(schedule);
+  emit skipSchedule();
 }
 
 void KScheduledView::slotSetSelectedItem(QListViewItem* item)

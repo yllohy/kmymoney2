@@ -63,6 +63,8 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
 
   connect(m_scheduledDateTable, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)),
     this, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)));
+  connect(m_scheduledDateTable, SIGNAL(skipClicked(const MyMoneySchedule&, const QDate&)),
+    this, SIGNAL(skipClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()

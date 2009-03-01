@@ -181,6 +181,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_scheduledView, SIGNAL(scheduleSelected(const MyMoneySchedule&)), kmymoney2, SLOT(slotSelectSchedule(const MyMoneySchedule&)));
   connect(m_scheduledView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowScheduleContextMenu()));
   connect(m_scheduledView, SIGNAL(enterSchedule()), kmymoney2, SLOT(slotScheduleEnter()));
+  connect(m_scheduledView, SIGNAL(skipSchedule()), kmymoney2, SLOT(slotScheduleSkip()));
   connect(m_scheduledView, SIGNAL(editSchedule()), kmymoney2, SLOT(slotScheduleEdit()));
 
   // Page 4

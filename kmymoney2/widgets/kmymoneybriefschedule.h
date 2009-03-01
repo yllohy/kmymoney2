@@ -49,11 +49,13 @@ public:
 
 signals:
   void enterClicked(const MyMoneySchedule&, const QDate&);
+  void skipClicked(const MyMoneySchedule&, const QDate&);
 
 protected slots:
   void slotPrevClicked();
   void slotNextClicked();
   void slotEnterClicked();
+  void slotSkipClicked();
 
 private:
   QValueList<MyMoneySchedule> m_scheduleList;
