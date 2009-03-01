@@ -1,4 +1,7 @@
 
+2009-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Return valid value from  PivotGrid::rowSet(QString id)
+
 2009-02-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option 'Match names from start'
   * Fixed spelling of principal in account templates

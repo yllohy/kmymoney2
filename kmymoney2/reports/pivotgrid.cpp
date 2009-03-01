@@ -153,6 +153,7 @@ PivotGridRowSet PivotGrid::rowSet(QString id)
     }
     ++it_outergroup;
   }
+  return PivotGridRowSet();
 }
 
 } // namespace
