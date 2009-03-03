@@ -14,6 +14,10 @@
 # https://savannah.nongnu.org/projects/tsp
 #
 
+IF(RPMTools_RPMBUILD_EXECUTABLE)
+  SET(RPMTools_FIND_QUIETLY TRUE)
+ENDIF(RPMTools_RPMBUILD_EXECUTABLE)
+
 IF (WIN32)
   MESSAGE(STATUS "RPM tools not available on Win32 systems")
 ENDIF(WIN32)
@@ -28,12 +32,16 @@ IF (UNIX)
   MARK_AS_ADVANCED(RPMTools_RPMBUILD_EXECUTABLE)
 
   IF (RPMTools_RPMBUILD_EXECUTABLE)
-    MESSAGE(STATUS "Looking for RPMTools... - found rpmuild is ${RPMTools_RPMBUILD_EXECUTABLE}")
+    IF(NOT RPMTools_FIND_QUIETLY)
+      MESSAGE(STATUS "Looking for RPMTools... - found rpmuild is ${RPMTools_RPMBUILD_EXECUTABLE}")
+    ENDIF(NOT RPMTools_FIND_QUIETLY)
     SET(RPMTools_RPMBUILD_FOUND "YES")
     GET_FILENAME_COMPONENT(RPMTools_BINARY_DIRS ${RPMTools_RPMBUILD_EXECUTABLE} PATH)
   ELSE (RPMTools_RPMBUILD_EXECUTABLE)
     SET(RPMTools_RPMBUILD_FOUND "NO")
-    MESSAGE(STATUS "Looking for RPMTools... - rpmbuild NOT FOUND")
+    IF(NOT RPMTools_FIND_QUIETLY)
+      MESSAGE(STATUS "Looking for RPMTools... - rpmbuild NOT FOUND")
+    ENDIF(NOT RPMTools_FIND_QUIETLY)
   ENDIF (RPMTools_RPMBUILD_EXECUTABLE)
 
   # Detect if CPack was included or not
@@ -56,7 +64,9 @@ IF (UNIX)
       ELSE ("${ARGV2}" STREQUAL "")
         SET(RPM_ROOTDIR "${ARGV2}")
       ENDIF("${ARGV2}" STREQUAL "")
-      #MESSAGE(STATUS "RPMTools:: Using RPM_ROOTDIR=${RPM_ROOTDIR}")
+      IF(NOT RPMTools_FIND_QUIETLY)
+        MESSAGE(STATUS "RPMTools:: Using RPM_ROOTDIR=${RPM_ROOTDIR}")
+      ENDIF(NOT RPMTools_FIND_QUIETLY)
 
       # Prepare RPM build tree
       SET(RPMTools_RPM_BUILD_TREE "${RPM_ROOTDIR}"
@@ -84,7 +94,9 @@ IF (UNIX)
       ELSE ("${SPECFILE_EXT}" STREQUAL ".spec")
         # This is a to-be-configured spec file
         SET(SPECFILE_NAME "${RPMNAME}.spec")
-        MESSAGE(STATUS "Configuring spec file <RPM/SPECS/${RPMNAME}.spec>")
+        IF(NOT RPMTools_FIND_QUIETLY)
+          MESSAGE(STATUS "Configuring spec file <RPM/SPECS/${RPMNAME}.spec>")
+        ENDIF(NOT RPMTools_FIND_QUIETLY)
         #SET(CPACK_RPM_DIRECTORY RPM_ROOTDIR)
         SET(CPACK_RPM_FILE_NAME ${CMAKE_BINARY_DIR}/${CPACK_SOURCE_PACKAGE_FILE_NAME}.src.rpm)
         SET(RPM_NAME ${RPMNAME})# provided to the spec.in file

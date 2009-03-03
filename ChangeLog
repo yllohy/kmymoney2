@@ -1,4 +1,7 @@
 
+2009-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Holger (0001-USE_QT_DESIGNER-Version-number-and-minor-fixes.patch)
+
 2009-03-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Colin Wright (briefscheduleskipiconanddisable.diff)
 

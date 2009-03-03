@@ -55,7 +55,7 @@ KDE3_AUTOMOC(${libkmymoney_la_SOURCES})
 SET (libkmymoney_la_UI
   kbudgetvaluesdecl.ui transactionsortoption.ui kaccounttemplateselectordecl.ui
   )
-KDE3_ADD_UI_FILES(libkmymoney_la_SOURCES ${libkmymoney_la_UI} )  
+KDE3_ADD_UI_FILES(libkmymoney_la_SOURCES ${libkmymoney_la_UI})  
 
 SET( kmymoney2_KCFG_SRCS ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc )
 KMM_KDE3_ADD_KCFG_FILES( libkmymoney_la_SOURCES
@@ -65,7 +65,7 @@ ADD_LIBRARY(kmymoney SHARED ${libkmymoney_la_SOURCES})
 # kmm_mymoney and kdeui added manually
 TARGET_LINK_LIBRARIES(kmymoney ${QT_AND_KDECORE_LIBRARIES} kmm_mymoney kdeui)
 #SET_TARGET_PROPERTIES(kmymoney PROPERTIES
-#		      COMPILE_FLAGS "-U_CHECK_MEMORY -DKMM_DESIGNER")
+#  COMPILE_FLAGS "-U_CHECK_MEMORY -DKMM_DESIGNER")
 
 ############# next target (widgets) STATIC ###################
 
@@ -109,3 +109,10 @@ ADD_DEPENDENCIES(widgets kmymoney)
 
 INSTALL(FILES ${kmymoney_STAT_HEADERS} 
 	DESTINATION include/kmymoney )
+
+IF( USE_QT_DESIGNER )
+  INSTALL(TARGETS kmymoney
+    DESTINATION ${QT_INSTALL_DIR}/plugins/designer)
+  INSTALL(FILES kmymoneytitlelabel.png
+    DESTINATION ${KDE3DATADIR}/kmymoney2/pics)
+ENDIF( USE_QT_DESIGNER )

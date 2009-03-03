@@ -20,7 +20,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 # The current version of KMyMoney (used for packages and config.h)
 SET(VERSION_MAJOR "0")
 SET(VERSION_MINOR "9")
-SET(VERSION_PATCH "2")
+SET(VERSION_PATCH "3")
 
 # Get the date of the last change from the ChangeLog
 SET(date_format "([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])")
@@ -127,6 +127,13 @@ IF(HAVE_LIBOFX_H)
   # to config.h as specified in config.h.cmake
 ENDIF(HAVE_LIBOFX_H)
 
+# This is needed for QtSqlite and QtDesigner
+# (they'll install files to ${QT_INSTALL_DIR}/plugins/)
+GET_FILENAME_COMPONENT(QT_BIN_DIR ${QT_MOC_EXECUTABLE} PATH)
+GET_FILENAME_COMPONENT(QT_DIR     ${QT_BIN_DIR}        PATH)
+SET(QT_INSTALL_DIR ${QT_DIR} CACHE PATH
+  "Qt install prefix defaults to the Qt prefix: ${QT_DIR}")
+
 # check for Sqlite and QtSqlite
 FIND_PACKAGE(QtSqlite)
 
@@ -134,8 +141,8 @@ FIND_PACKAGE(QtSqlite)
 FIND_PACKAGE(CppUnit)
 # check wether the user requests to build the test although it's not possible
 IF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
-  message( SEND_ERROR
-    "CppUnit has not been found. You can neither build nor run the tests." )
+  message( STATUS
+    "CppUnit has not been found. Tests have been deactivated." )
   SET( KDE3_BUILD_TESTS OFF FORCE )
 ENDIF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
 
@@ -155,7 +162,7 @@ INCLUDE(KMyMoneyMacros)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
 # some definitions for the compiler
-ADD_DEFINITIONS( -DHAVE_CONFIG_H -fexceptions)
+ADD_DEFINITIONS( -DHAVE_CONFIG_H -fexceptions )
 # preprocessor definitions in case this is a debug build
 SET(COMPILE_DEFINITIONS_DEBUG ${COMPILE_DEFINITIONS_DEBUG} -DKMM_DEBUG )
 
@@ -166,14 +173,15 @@ if(USE_LEAK_CHECK)
   ADD_DEFINITIONS( -D_CHECK_MEMORY )
 endif(USE_LEAK_CHECK)
 
-#OPTION(USE_QT_DESIGNER "Enable to compile with Qt-Designer library support" OFF)
+OPTION(USE_QT_DESIGNER
+  "Install KMyMoney specific widget library for Qt-Designer (default=OFF)" OFF)
 
 # initialize the default install prefix to the kde3 prefix
 # ( usually /opt/kde3. ${KDE3PREFIX} is set by FIND_PACKAGE(KDE3) above )
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  SET(CMAKE_INSTALL_PREFIX "${KDE3PREFIX}"
-    CACHE PATH "KMyMoney2 install prefix
-defaults to the KDE3 install prefix: ${KDE3PREFIX}" FORCE)
+  SET(CMAKE_INSTALL_PREFIX "${KDE3PREFIX}" CACHE PATH
+    "KMyMoney2 install prefix defaults
+    to the KDE3 install prefix: ${KDE3PREFIX}" FORCE)
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # the RPATH to be used when installing
@@ -319,10 +327,11 @@ endif(USE_LEAK_CHECK)
 message("--------------------------------------------
 ")
 
-if(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND)
+# Display this message the first time only.
+if(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND AND NOT Sqlite_FIND_QUIETLY)
   message("Note: You should run 'make install-qsqlite3' to enable Sqlite3 support.
   ")
-endif(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND)
+endif(QT_SQLITE_FALLBACK AND QT_SQLITE_FOUND AND NOT Sqlite_FIND_QUIETLY)
 
 message("Good - your configure finished.
 Now type 'make' to build KMyMoney. For more help, consult README.cmake
