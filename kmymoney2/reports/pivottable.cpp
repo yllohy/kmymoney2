@@ -913,12 +913,15 @@ void PivotTable::calculateBudgetMapping( void )
               value = value * MyMoneyMoney(m_config_f.columnType(), 1);
               while ( column < m_numColumns )
               {
+                MyMoneyMoney finalValue = value;
+
                 //convert to base currency if the category is in foreign currency
                 if ( m_config_f.isConvertCurrency() && splitAccount.isForeignCurrency()) {
                   price = splitAccount.baseCurrencyPrice(columnDate(column));
-                  value = value * price;
+                  finalValue = value * price;
+                  finalValue = finalValue.convert(10000);
                 }
-                assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                assignCell( outergroup, splitAccount, column, finalValue, true /*budget*/ );
                 ++column;
               }
             }
@@ -2297,9 +2300,6 @@ void PivotTable::calculateForecast(void)
 
   //setup forecast settings
 
-  //we only want to display what is on the report timeframe
-  forecast.setBeginForecastDay(0);
-
   //since this is a net worth forecast we want to include all account even those that are not in use
   forecast.setIncludeUnusedAccounts(true);
 
@@ -2307,13 +2307,18 @@ void PivotTable::calculateForecast(void)
   if(m_endDate > QDate::currentDate()) {
     forecast.setForecastEndDate(m_endDate);
     forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate));
+  } else if (m_beginDate > QDate::currentDate()) {
+    //always start the forecast at least in the current date, even if it is not being shown
+    forecast.setForecastStartDate(QDate::currentDate());
+    forecast.setForecastEndDate(m_endDate);
+    forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate) + 1);
   } else {
     forecast.setForecastStartDate(m_beginDate);
     forecast.setForecastEndDate(m_endDate);
     forecast.setForecastDays(m_beginDate.daysTo(m_endDate) + 1);
   }
 
-  //set history dates
+  //adjust history dates if beginning date is before today
   if(m_beginDate < QDate::currentDate()) {
     forecast.setHistoryEndDate(m_beginDate.addDays(-1));
     forecast.setHistoryStartDate(forecast.historyEndDate().addDays(-forecast.accountsCycle()*forecast.forecastCycles()));
@@ -2321,7 +2326,6 @@ void PivotTable::calculateForecast(void)
 
   //run forecast
   forecast.doForecast();
-
 
   //go through the data and add forecast
   PivotGrid::iterator it_outergroup = m_grid.begin();

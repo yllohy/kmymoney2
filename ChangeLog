@@ -1,4 +1,8 @@
 
+2009-03-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed Forecast reports when start date is after current date
+  * Fixed Budget reports for monthly budget of foreign currency categories
+
 2009-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Holger (0001-USE_QT_DESIGNER-Version-number-and-minor-fixes.patch)
 
