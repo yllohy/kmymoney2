@@ -166,6 +166,7 @@ ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
 ADD_DEFINITIONS(
   -DHAVE_CONFIG_H  # tells the KMyMoney sources that a config.h is present
   -fexceptions     # tells gcc to enable exception handling
+  -fPIC            # use position independent code
   )
 
 # preprocessor definitions in case this is a debug build
