@@ -2314,12 +2314,8 @@ void PivotTable::calculateForecast(void)
   //setup forecast dates
   if(m_endDate > QDate::currentDate()) {
     forecast.setForecastEndDate(m_endDate);
-    forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate));
-  } else if (m_beginDate > QDate::currentDate()) {
-    //always start the forecast at least in the current date, even if it is not being shown
     forecast.setForecastStartDate(QDate::currentDate());
-    forecast.setForecastEndDate(m_endDate);
-    forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate) + 1);
+    forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate));
   } else {
     forecast.setForecastStartDate(m_beginDate);
     forecast.setForecastEndDate(m_endDate);
