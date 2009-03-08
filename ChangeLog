@@ -7,6 +7,7 @@
     0001-moved-calculateAutoLoan-to-MyMoneyForecast.patch
     0002-Bugfixes-and-Preparation-for-cleaner-library-builds.patch
     0003-Fixed-last-patch.patch
+  * Show online balance for liability accounts in register as positive amount
 
 2009-03-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Forecast reports when start date is after current date
