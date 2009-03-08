@@ -1969,7 +1969,8 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     break;
   case MyMoneyReport::eChartPie:
     _view.params().setChartType( KDChartParams::Pie );
-    _view.params().setThreeDPies( true );
+    // Charts should only be 3D if this adds any information
+    _view.params().setThreeDPies( false );
     accountSeries = false;
     seriesTotals = true;
     break;
@@ -1979,6 +1980,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     accountSeries = false;
     break;
   }
+
+  // For onMouseOver events, we want to activate mouse tracking
+  _view.setMouseTracking( true );
 
   //
   // In KDChart parlance, a 'series' (or row) is an account (or accountgroup, etc)
@@ -1997,6 +2001,10 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     r = m_numColumns - 1;
   }
   KDChartTableData data( r,c );
+
+  // The KReportChartView widget needs to know whether the legend
+  // corresponds to rows or columns
+  _view.setAccountSeries( accountSeries );
 
   // Set up X axis labels (ie "abscissa" to use the technical term)
   QStringList& abscissaNames = _view.abscissaNames();

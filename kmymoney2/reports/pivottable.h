@@ -89,9 +89,6 @@ public:
   /**
     * Render the report to a graphical chart
     *
-    * Currently, this is not implemented, but it's here as a stub for an
-    * ambitious chart-writer.
-    *
     * @param view The KReportChartView into which to draw the chart.
     */
     void drawChart( KReportChartView& view ) const;

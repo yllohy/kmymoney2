@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES(kmymoney_common
 
 # must build kmymoney/transactionsortoption.h
 # from transactionsortoption.ui first
-ADD_DEPENDENCIES(kmymoney_common kmymoney-base)
+ADD_DEPENDENCIES(kmymoney_common kmymoney_base)
 
 SET( kmymoney_common_LIBS
   ${QT_AND_KDECORE_LIBS} kmymoney_common views reports newuserwizard

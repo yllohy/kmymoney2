@@ -7,6 +7,8 @@
     0001-moved-calculateAutoLoan-to-MyMoneyForecast.patch
     0002-Bugfixes-and-Preparation-for-cleaner-library-builds.patch
     0003-Fixed-last-patch.patch
+    0004-OnMouseOver-in-Charts_NEW.patch
+    typo-in-0001-0003.patch
   * Show online balance for liability accounts in register as positive amount
 
 2009-03-08 Alvaro Soliverez <asoliverez@gmail.com>

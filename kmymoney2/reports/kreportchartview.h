@@ -34,6 +34,7 @@
   #undef new
 #endif
 
+#include <qlabel.h>
 #include <KDChartWidget.h>
 #include <KDChartTable.h>
 #include <KDChartParams.h>
@@ -60,10 +61,20 @@ public:
   void setProperty(int row, int col, int id);
 //   void setCircularLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosCircular,&m_abscissaNames,0); }
 
+  void setAccountSeries(bool accountSeries) {_accountSeries = accountSeries; }
+  bool getAccountSeries(void) {return _accountSeries; }
+
+protected:
+  virtual void mouseMoveEvent( QMouseEvent* event );
+
 private:
   KDChartParams m_params;
   KDChartTableData m_data;
   QStringList m_abscissaNames;
+  bool _accountSeries;
+
+  // label to display when hovering on a data region
+  QLabel *label;
 };
 
 } // end namespace reports
