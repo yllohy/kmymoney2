@@ -1,4 +1,9 @@
 
+2009-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Dim update button if plugin status changed
+  * Added selection combo to negate text filter (not persistant yet)
+  * Use standard buttons for filter dialog
+
 2009-03-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Forecast reports when start date is after current date
   * Fixed Budget reports for monthly budget of foreign currency categories

@@ -37,6 +37,7 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter()
   m_filterSet.allFilter = 0;
   m_reportAllSplits = true;
   m_considerCategory = true;
+  m_invertText = false;
 }
 
 MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QString& id)
@@ -44,6 +45,7 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QString& id)
   m_filterSet.allFilter = 0;
   m_reportAllSplits = false;
   m_considerCategory = false;
+  m_invertText = false;
 
   addAccount(id);
   // addCategory(id);
@@ -52,9 +54,11 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QString& id)
 MyMoneyTransactionFilter::~MyMoneyTransactionFilter()
 {
 }
+
 void MyMoneyTransactionFilter::clear(void)
 {
   m_filterSet.allFilter = 0;
+  m_invertText = false;
   m_accounts.clear();
   m_categories.clear();
   m_payees.clear();
@@ -72,9 +76,10 @@ void MyMoneyTransactionFilter::clearAccountFilter(void)
   m_accounts.clear();
 }
 
-void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
+void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text, bool invert)
 {
   m_filterSet.singleFilter.textFilter = 1;
+  m_invertText = invert;
   m_text = text;
 }
 
@@ -217,42 +222,47 @@ const QValueList<MyMoneySplit>& MyMoneyTransactionFilter::matchingSplits(void) c
   return m_matchingSplits;
 }
 
-bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp) const
+bool MyMoneyTransactionFilter::matchText(const MyMoneySplit * const sp) const
 {
-  bool rc = true;
-  MyMoneyFile* file = MyMoneyFile::instance();
-
   // check if the text is contained in one of the fields
   // memo, value, number, payee, account, date
   if(m_filterSet.singleFilter.textFilter) {
-    bool textMatch = false;
+    MyMoneyFile* file = MyMoneyFile::instance();
     const MyMoneyAccount& acc = file->account(sp->accountId());
     const MyMoneySecurity& sec = file->security(acc.currencyId());
     if(sp->memo().contains(m_text)
+    || sp->shares().formatMoney(acc.fraction(sec)).contains(m_text)
     || sp->value().formatMoney(acc.fraction(sec)).contains(m_text)
     || sp->number().contains(m_text))
-      textMatch = true;
+      return !m_invertText;
 
-    if(!textMatch && acc.name().contains(m_text))
-      textMatch = true;
+    if(acc.name().contains(m_text))
+      return !m_invertText;
 
-    if(!textMatch && !sp->payeeId().isEmpty()) {
+    if(!sp->payeeId().isEmpty()) {
       const MyMoneyPayee& payee = file->payee(sp->payeeId());
       if(payee.name().contains(m_text))
-        textMatch = true;
+        return !m_invertText;
     }
-
-    if(!textMatch)
-      rc = false;
+    return m_invertText;
   }
+  return true;
+}
 
-  if(rc && m_filterSet.singleFilter.amountFilter) {
+bool MyMoneyTransactionFilter::matchAmount(const MyMoneySplit * const sp) const
+{
+  if(m_filterSet.singleFilter.amountFilter) {
     if(((sp->value().abs() < m_fromAmount) || sp->value().abs() > m_toAmount)
     && ((sp->shares().abs() < m_fromAmount) || sp->shares().abs() > m_toAmount))
-      rc = false;
+      return false;
   }
 
-  return rc;
+  return true;
+}
+
+bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp) const
+{
+  return matchText(sp) && matchAmount(sp);
 }
 
 bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
@@ -388,10 +398,27 @@ bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
   filterSet.singleFilter.accountFilter =
   filterSet.singleFilter.categoryFilter = 0;
 
+  // in case of an inverted text match, we have to make sure that none of
+  // the splits matches
+  if(m_invertText && m_filterSet.singleFilter.textFilter) {
+    for(sp = matchingSplits.first(); sp != 0; sp = matchingSplits.next()) {
+      if(!matchText(sp))
+        return false;
+    }
+  }
+
   // check if we still have something to do
   if(filterSet.allFilter != 0) {
     for(sp = matchingSplits.first(); sp != 0;) {
-      MyMoneySplit* removeSplit = match(sp) ? 0 : sp;
+      // in case a split does not match the selected criteria, we simply remove it
+      // from the list of matching splits. In case of inverted text filtering
+      // we have already checked and don't need to do that here again
+      MyMoneySplit* removeSplit = 0;
+      if(m_invertText) {
+        removeSplit = matchAmount(sp) ? 0 : sp;
+      } else {
+        removeSplit = (matchAmount(sp) && matchText(sp)) ? 0 : sp;
+      }
 
       const MyMoneyAccount& acc = file->account(sp->accountId());
 
@@ -404,50 +431,6 @@ bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
         default:
           break;
       }
-
-#if 0
-      // TODO code moved to match() and should be removed here
-      const MyMoneyAccount& acc = storage->account(sp->accountId());
-
-      // Determine if this account is a category or an account
-      bool isCategory = false;
-      switch(acc.accountGroup()) {
-        case MyMoneyAccount::Income:
-        case MyMoneyAccount::Expense:
-          isCategory = true;
-        default:
-          break;
-      }
-
-      // check if the text is contained in one of the fields
-      // memo, value, number, payee, account, date
-      if(m_filterSet.singleFilter.textFilter) {
-        bool textMatch = false;
-        if(sp->memo().contains(m_text)
-        || sp->value().formatMoney().contains(m_text)
-        || sp->number().contains(m_text))
-          textMatch = true;
-
-        if(!textMatch && acc.name().contains(m_text))
-          textMatch = true;
-
-        if(!textMatch && !sp->payeeId().isEmpty()) {
-          const MyMoneyPayee& payee = storage->payee(sp->payeeId());
-          if(payee.name().contains(m_text))
-            textMatch = true;
-        }
-
-        if(!textMatch)
-          removeSplit = sp;
-      }
-
-      if(!removeSplit && m_filterSet.singleFilter.amountFilter) {
-        if(sp->value().abs() < m_fromAmount)
-          removeSplit = sp;
-        if(sp->value().abs() > m_toAmount)
-          removeSplit = sp;
-      }
-#endif
 
       if(!isCategory && !removeSplit) {
         // check the payee list

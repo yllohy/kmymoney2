@@ -82,28 +82,6 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name) :
   m_helpAnchor[m_payeeTab] = QString("details.search.payee");
   m_helpAnchor[m_detailsTab] = QString("details.search.details");
 
-  m_closeButton->setGuiItem(KStdGuiItem::close());
-  m_helpButton->setGuiItem(KStdGuiItem::help());
-
-#if KDE_IS_VERSION(3,4,0)
-  m_searchButton->setGuiItem(KStdGuiItem::find());
-  m_resetButton->setGuiItem(KStdGuiItem::reset());
-#else
-  KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem searchButtonItem( i18n( "&Search" ),
-                    QIconSet(il->loadIcon("find", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Start the search"),
-                    i18n("Takes the current criteria and searches for matching transactions."));
-  m_searchButton->setGuiItem(searchButtonItem);
-
-  KGuiItem resetButtonItem( i18n( "&Reset" ),
-                            QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
-                            i18n("Reset all settings"),
-                            i18n("Use this to reset all settings to the state they were when the dialog was opened."));
-  m_resetButton->setGuiItem(resetButtonItem);
-#endif
-
-
   // setup the register
   QValueList<KMyMoneyRegister::Column> cols;
   cols << KMyMoneyRegister::DateColumn;
@@ -193,6 +171,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     m_regExp->setEnabled(false);
 
   m_caseSensitive->setEnabled(!m_textEdit->text().isEmpty());
+  m_textNegate->setEnabled(!m_textEdit->text().isEmpty());
 
   // Account tab
   if(!m_accountsView->allItemsSelected()) {
@@ -569,7 +548,7 @@ void KFindTransactionDlg::setupFilter(void)
   // Text tab
   if(!m_textEdit->text().isEmpty()) {
     QRegExp exp(m_textEdit->text(), m_caseSensitive->isChecked(), !m_regExp->isChecked());
-    m_filter.setTextFilter(exp);
+    m_filter.setTextFilter(exp, m_textNegate->currentItem() != 0);
   }
 
   // Account tab

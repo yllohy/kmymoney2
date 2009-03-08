@@ -5789,6 +5789,7 @@ void KMyMoney2App::slotPluginPlug(void)
         m_importerPlugins.erase(plugin->name());
     }
   }
+  slotUpdateActions();
 }
 
 void KMyMoney2App::slotAutoSave(void)

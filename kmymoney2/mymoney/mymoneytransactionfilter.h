@@ -182,11 +182,15 @@ public:
     * - Memo
     * - Payee
     * - Category
+    * - Shares / Value
+    * - Number
     *
     * @param exp The regular expression that must be found in a transaction
     *            before it is included in the result set.
+    * @param invert If true, value must not be contained in any of the above mentioned fields
+    *
     */
-  void setTextFilter(const QRegExp& exp);
+  void setTextFilter(const QRegExp& exp, bool invert = false);
 
   /**
     * This method will add the account with id @p id to the list of matching accounts.
@@ -290,7 +294,7 @@ public:
 
   /**
     * This method is used to check a specific split against the
-    * text and amount filter. The split will match if all specified and
+    * text filter. The split will match if all specified and
     * checked filters match. If the filter is cleared using the clear()
     * method, any split matches.
     *
@@ -300,6 +304,25 @@ public:
     * @retval false The split does not match at least one of
     *               the filters in the filter set
     */
+  bool matchText(const MyMoneySplit * const sp) const;
+
+  /**
+    * This method is used to check a specific split against the
+    * amount filter. The split will match if all specified and
+    * checked filters match. If the filter is cleared using the clear()
+    * method, any split matches.
+    *
+    * @param sp pointer to the split to be checked
+    *
+    * @retval true The split matches the filter set
+    * @retval false The split does not match at least one of
+    *               the filters in the filter set
+    */
+  bool matchAmount(const MyMoneySplit * const sp) const;
+
+  /**
+   * Convenience method which actually returns matchText(sp) && matchAmount(sp).
+   */
   bool match(const MyMoneySplit * const sp) const;
 
   /**
@@ -533,6 +556,7 @@ protected:
   bool                m_considerCategory;
 
   QRegExp             m_text;
+  bool                m_invertText;
   QAsciiDict<char>    m_accounts;
   QAsciiDict<char>    m_payees;
   QAsciiDict<char>    m_categories;
