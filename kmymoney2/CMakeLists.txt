@@ -23,34 +23,39 @@ SET( _HEADERS export.h kmymoneyutils.h kmymoneyglobalsettings.h )
 KMM_CREATE_LINKS( ${_HEADERS} )
 KMM_CREATE_LINKS_BIN( kmymoneysettings.h )
 
-########### common sources for kmymoney2 and kmymoneytest ###############
+########### common code (kmymoney_common) STATIC ###############
+# will be linked into kmymoney2, kmymoneytest, and libkmymoney.so
 
 SET( kmymoney_common_SRCS
   kmymoneyutils.cpp kstartuplogo.cpp kmymoneyglobalsettings.cpp )
 
+KDE3_ADD_KCFG_FILES( kmymoney_common_SRCS kmymoneysettings.kcfgc )
+KDE3_AUTOMOC( ${kmymoney_common_SRCS} )
+
+ADD_LIBRARY(kmymoney_common STATIC ${kmymoney_common_SRCS})
+TARGET_LINK_LIBRARIES(kmymoney_common
+  ${QT_AND_KDECORE_LIBS} kmm_mymoney)
+
+# must build kmymoney/transactionsortoption.h
+# from transactionsortoption.ui first
+ADD_DEPENDENCIES(kmymoney_common kmymoney-base)
+
 SET( kmymoney_common_LIBS
-  ${QT_AND_KDECORE_LIBS} views reports newuserwizard newaccountwizard
-  wizardpages dialogs settings widgets converter kmm_storage kmm_mymoney
-  kgpgfile interfaces kmm_plugin dialogs kmm_kdchart khtml kdeui kabc)
+  ${QT_AND_KDECORE_LIBS} kmymoney_common views reports newuserwizard
+  newaccountwizard wizardpages dialogs settings widgets converter
+  kmm_storage kmm_mymoney kgpgfile interfaces kmm_plugin dialogs
+  kmm_kdchart khtml kdeui kabc)
 
 ########### kmymoney2 executable ###############
 
-SET( kmymoney2_SRCS main.cpp kmymoney2.cpp ${kmymoney_common_SRCS} )
+SET( kmymoney2_SRCS main.cpp kmymoney2.cpp )#${kmymoney_common_SRCS} )
 
-SET( kmymoney2_DCOP_SKEL_SRCS kmymoney2.h )
-KDE3_ADD_DCOP_SKELS( kmymoney2_SRCS ${kmymoney2_DCOP_SKEL_SRCS} )
-
-SET( kmymoney2_DCOP_STUB_SRCS kmymoney2.h )
-KDE3_ADD_DCOP_STUBS( kmymoney2_SRCS ${kmymoney2_DCOP_STUB_SRCS} )
-
-SET( kmymoney2_KCFG_SRCS kmymoneysettings.kcfgc )
-KDE3_ADD_KCFG_FILES( kmymoney2_SRCS ${kmymoney2_KCFG_SRCS} )
-
+KDE3_ADD_DCOP_SKELS( kmymoney2_SRCS kmymoney2.h )
+KDE3_ADD_DCOP_STUBS( kmymoney2_SRCS kmymoney2.h )
 KDE3_AUTOMOC( ${kmymoney2_SRCS} )
 
 KDE3_ADD_EXECUTABLE( kmymoney2 ${kmymoney2_SRCS} )
-
-TARGET_LINK_LIBRARIES( kmymoney2 ${kmymoney_common_LIBS}  )
+TARGET_LINK_LIBRARIES( kmymoney2 ${kmymoney_common_LIBS} )
 
 ########### kmymoneytest executable ###############
 
@@ -74,11 +79,9 @@ IF( KDE3_BUILD_TESTS )
     ENDIF ( EXISTS ${hdr_candidate} )
   ENDFOREACH(cpp_FILE)
 
-  SET( kmymoneytest_SRCS ${kmymoneytest_SRCS} reports/reportstestcommon.cpp
-    ${kmymoney_common_SRCS} )
-
-  KDE3_ADD_KCFG_FILES( kmymoneytest_SRCS ${kmymoney2_KCFG_SRCS} )
+  SET( kmymoneytest_SRCS ${kmymoneytest_SRCS} reports/reportstestcommon.cpp )
   KDE3_AUTOMOC( ${kmymoneytest_SRCS} )
+
   KDE3_ADD_EXECUTABLE( kmymoneytest ${kmymoneytest_SRCS} )
   TARGET_LINK_LIBRARIES( kmymoneytest
     ${kmymoney_common_LIBS} ${CPPUNIT_LIBRARY})

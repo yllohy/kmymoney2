@@ -35,6 +35,7 @@
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/export.h>
 #include "mymoneybudget.h"
 
@@ -167,6 +168,18 @@ public:
   bool isForecastDone(void) const { return m_forecastDone; }
   bool isIncludingFutureTransactions(void) const { return m_includeFutureTransactions; }
   bool isIncludingScheduledTransactions(void) const { return m_includeScheduledTransactions; }
+
+  /**
+    * This method modifies a scheduled loan transaction such that all
+    * references to automatic calculated values are resolved to actual values.
+    *
+    * @param schedule const reference to the schedule the transaction is based on
+    * @param transaction reference to the transaction to be checked and modified
+    * @param balances QMap of (account-id,balance) pairs to be used as current balance
+    *                 for the calculation of interest. If map is empty, the engine
+    *                 will be interrogated for current balances.
+    */
+  static void calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QString, MyMoneyMoney>& balances);
 
 private:
 

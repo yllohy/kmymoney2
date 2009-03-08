@@ -3,6 +3,10 @@
   * Dim update button if plugin status changed
   * Added selection combo to negate text filter (not persistant yet)
   * Use standard buttons for filter dialog
+  * Added patches by Holger:
+    0001-moved-calculateAutoLoan-to-MyMoneyForecast.patch
+    0002-Bugfixes-and-Preparation-for-cleaner-library-builds.patch
+    0003-Fixed-last-patch.patch
 
 2009-03-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Forecast reports when start date is after current date

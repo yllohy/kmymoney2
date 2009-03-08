@@ -4,7 +4,7 @@
 # Variables:
 #  QT_SQLITE_FOUND - system has Qt-Sqlite3
 #  QT_SQLITE_FALLBACK - our fallback library is used
-#  QT_DIR - the Qt directory
+#  QSQLITE3_INSTALL_DIR - the install directory for the Qt-Sqlite3 driver
 
 FIND_PACKAGE(Sqlite)
 
@@ -13,8 +13,10 @@ SET(QSQLITE3_INSTALL_DIR "${QT_INSTALL_DIR}/plugins/sqldrivers" CACHE PATH
 MARK_AS_ADVANCED(QSQLITE3_INSTALL_DIR)
 
 # Look for libsqlite3[.lib[64]].so in ${QSQLITE3_INSTALL_DIR}
+# NOTE: This is NOT the sqlite3 library /usr/lib/sqlite3.so
 FIND_LIBRARY(QT_SQLITE3_LIB NAMES sqlite3.lib64 sqlite3.lib sqlite3
-  HINTS ${QSQLITE3_INSTALL_DIR} ${QT_DIR}/plugins/sqldrivers)
+  HINTS ${QSQLITE3_INSTALL_DIR} ${QT_DIR}/plugins/sqldrivers
+  NO_DEFAULT_PATH)
 
 if(QT_SQLITE3_LIB)
   message(STATUS "Found Qt-Sqlite3 library: ${QT_SQLITE3_LIB}")
@@ -38,6 +40,7 @@ else(QT_SQLITE3_LIB)
     ADD_LIBRARY(qsqlite3 SHARED ${QSQLITE3_SOURCES})
     SET_TARGET_PROPERTIES(qsqlite3 PROPERTIES
       LIBRARY_OUTPUT_DIRECTORY ${QSQLITE3_DIR}/sqldrivers/)
+    TARGET_LINK_LIBRARIES(qsqlite3 ${QT_AND_KDECORE_LIBS} ${SQLITE_LIBRARIES})
 
     INSTALL(TARGETS qsqlite3
       DESTINATION ${QSQLITE3_INSTALL_DIR}

@@ -61,10 +61,10 @@ ENDIF (ZLIB_FOUND)
 FIND_PACKAGE(PkgConfig)
 # check for some modules we require
 pkg_check_modules (PKGS libxml-2.0 libxml++-2.6 glib-2.0 glibmm-2.4)
-# this sets variables like ${PKGS_INCLUDE_DIRS} ${PKGS_LIB_DIRS}
+# this sets variables like ${PKGS_INCLUDE_DIRS} ${PKGS_LIBRARY_DIRS}
 # (cf. /usr/share/cmake/Modules/FindPkgConfig.cmake for more info)
 
-# check some  functions
+# check some functions
 INCLUDE (CheckFunctionExists) 
 CHECK_FUNCTION_EXISTS(atoll HAVE_ATOLL)
 CHECK_FUNCTION_EXISTS(vsnprintf HAVE_VSNPRINTF)
@@ -139,20 +139,21 @@ FIND_PACKAGE(QtSqlite)
 
 # check for CppUnit to build the tests
 FIND_PACKAGE(CppUnit)
+IF( CPPUNIT_FOUND )
+  SET(HAVE_LIBCPPUNIT 1)
+  INCLUDE_DIRECTORIES( ${CPPUNIT_INCLUDE_DIR} )
+ENDIF( CPPUNIT_FOUND )
+
 # check wether the user requests to build the test although it's not possible
 IF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
-  message( STATUS
+  message( SEND_ERROR
     "CppUnit has not been found. Tests have been deactivated." )
   SET( KDE3_BUILD_TESTS OFF FORCE )
 ENDIF( KDE3_BUILD_TESTS AND NOT CPPUNIT_FOUND )
 
+# do we build the tests?
 IF( KDE3_BUILD_TESTS )
-  # here we know that we really want to build the tests
-  ADD_DEFINITIONS( -DHAVE_LIBCPPUNIT )
-  INCLUDE_DIRECTORIES( ${CPPUNIT_INCLUDE_DIR} )
-
-  # INCLUDE(CTest) # makes sense only with a ctest online dashboard
-
+  # INCLUDE(CTest) # (makes sense only with a ctest online dashboard)
   ENABLE_TESTING()
 ENDIF( KDE3_BUILD_TESTS )
 
@@ -162,9 +163,19 @@ INCLUDE(KMyMoneyMacros)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
 # some definitions for the compiler
-ADD_DEFINITIONS( -DHAVE_CONFIG_H -fexceptions )
+ADD_DEFINITIONS(
+  -DHAVE_CONFIG_H  # tells the KMyMoney sources that a config.h is present
+  -fexceptions     # tells gcc to enable exception handling
+  )
+
 # preprocessor definitions in case this is a debug build
 SET(COMPILE_DEFINITIONS_DEBUG ${COMPILE_DEFINITIONS_DEBUG} -DKMM_DEBUG )
+
+### the following options help to ensure platform-independence
+# be pedantic about undefined symbols when linking shared libraries
+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+# be more pedantic about common symbols
+ADD_DEFINITIONS( -fno-common )
 
 
 OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support (deprecated)" OFF)
@@ -202,8 +213,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${KDE3_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
-  ${PKGS_INCLUDE_DIRS}
-)
+  ${PKGS_INCLUDE_DIRS})
 
 ######################### The Actual Targets ##########################
 
@@ -295,7 +305,7 @@ nice_yesno("USE_OFX_DIRECTCONNECT")
 nice_yesno("QT_SQLITE_FOUND")
 nice_yesno("USE_LEAK_CHECK")
 nice_yesno("USE_QT_DESIGNER")
-nice_yesno("CPPUNIT_FOUND")
+nice_yesno("HAVE_LIBCPPUNIT")
 nice_yesno("KDE3_BUILD_TESTS")
 message("
 -------- KMyMoney ${CPACK_PACKAGE_VERSION}-${VERSION_SUFFIX} --------
@@ -316,7 +326,7 @@ Qt-Designer library support:             ${nice_USE_QT_DESIGNER}
 
 PDF document generation:                 ?
 
-CPPUNIT support:                         ${nice_CPPUNIT_FOUND}
+CPPUNIT support:                         ${nice_HAVE_LIBCPPUNIT}
         build tests:                     ${nice_KDE3_BUILD_TESTS}")
 
 if(USE_LEAK_CHECK)

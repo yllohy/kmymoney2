@@ -1,16 +1,19 @@
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
-SET (libnewuserwizard_a_SOURCES 
-	knewuserwizard.cpp
-	)
+SET (libnewuserwizard_a_SOURCES
+  knewuserwizard.cpp
+  )
 
 SET (libnewuserwizard_a_UI
-	kgeneralpagedecl.ui kcurrencypagedecl.ui kpasswordpagedecl.ui
-        kintropagedecl.ui kaccountpagedecl.ui kpreferencepagedecl.ui 
-        kfilepagedecl.ui
-	)
+  kaccountpagedecl.ui kcurrencypagedecl.ui kfilepagedecl.ui
+  kgeneralpagedecl.ui kintropagedecl.ui kpasswordpagedecl.ui
+  kpreferencepagedecl.ui
+  )
 
-KMM_ADD_UI_FILES(libnewuserwizard_a_SOURCES ${libnewuserwizard_a_UI})
+# The handling of these ui files depends
+# on libkmymoney.so (the widgets library)
+KMM_ADD_UI_FILES(libnewuserwizard_a_SOURCES ${libnewuserwizard_a_UI}
+  DEPENDS kmymoney)
 
 KDE3_AUTOMOC(${libnewuserwizard_a_SOURCES})
 
@@ -18,10 +21,3 @@ KDE3_ADD_MOC_FILES(libnewuserwizard_a_SOURCES knewuserwizard_p.h)
 
 ADD_LIBRARY(newuserwizard STATIC ${libnewuserwizard_a_SOURCES})
 ADD_DEPENDENCIES(newuserwizard wizardpages)
-
-########### install files ###############
-
-
-
-
-

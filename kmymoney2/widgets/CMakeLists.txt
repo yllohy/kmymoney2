@@ -10,85 +10,131 @@ CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/makekdewidgets.in
 
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/kmmwidgets.cpp
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets 
   COMMAND ${CMAKE_CURRENT_BINARY_DIR}/makekdewidgets -g KMyMoney
-  -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney
-  ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets 
+    -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney
+    ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets
+  DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/kmymoney.widgets
+    ${CMAKE_CURRENT_BINARY_DIR}/makekdewidgets
   )
 
 ########### create links ###############
 SET(kmymoney_STAT_HEADERS
-  register.h registeritem.h transaction.h kmymoneydateinput.h kmymoneyedit.h
-  kmymoneytitlelabel.h kmymoneyaccountselector.h kmymoneycategory.h
-  kmymoneyaccounttree.h kmymoneycurrencyselector.h kguiutils.h kmymoneywizard.h
-  kmymoneyaccounttreebudget.h kmymoneyaccountcombo.h selectedtransaction.h
-  transactionform.h transactioneditorcontainer.h kmymoneylineedit.h
-  kmymoneychecklistitem.h kmymoneylistviewitem.h kmymoneyselector.h
-  kmymoneyaccountcompletion.h kmymoneycompletion.h kmymoneycombo.h
-  kbudgetvalues.h kaccounttemplateselector.h stdtransactiondownloaded.h
-  stdtransactionmatched.h kmymoneyaccounttreebase.h scheduledtransaction.h
-  kmymoneyaccounttreeforecast.h 
+  kaccounttemplateselector.h kbudgetvalues.h kguiutils.h
+  kmymoneyaccountcombo.h kmymoneyaccountcompletion.h
+  kmymoneyaccountselector.h kmymoneyaccounttreebase.h
+  kmymoneyaccounttreebudget.h kmymoneyaccounttreeforecast.h
+  kmymoneyaccounttree.h kmymoneycategory.h kmymoneychecklistitem.h
+  kmymoneycombo.h kmymoneycompletion.h kmymoneycurrencyselector.h
+  kmymoneydateinput.h kmymoneyedit.h kmymoneylineedit.h
+  kmymoneylistviewitem.h kmymoneyselector.h kmymoneytitlelabel.h
+  kmymoneywizard.h register.h registeritem.h scheduledtransaction.h
+  selectedtransaction.h stdtransactiondownloaded.h
+  stdtransactionmatched.h transactioneditorcontainer.h
+  transactionform.h transaction.h
   )
 
 KMM_CREATE_LINKS( ${kmymoney_STAT_HEADERS} )
-
 KMM_CREATE_LINKS_BIN( transactionsortoption.h )
 
-########### next target (kmymoney.la) SHARED #################
+########### Basic Widget Library (kmymoney_base) STATIC #################
 
-SET (libkmymoney_la_SOURCES
-  kmmwidgets.cpp kmymoneycompletion.cpp kmymoneyaccountcombo.cpp
-  kmymoneyaccountcompletion.cpp kmymoneycurrencyselector.cpp
-  kmymoneyaccountselector.cpp kmymoneydatetbl.cpp kmymoneycalculator.cpp
-  kmymoneycategory.cpp kmymoneycombo.cpp kmymoneylineedit.cpp kmymoneyedit.cpp
-  kmymoneydateinput.cpp kmymoneyaccounttree.cpp kmymoneytitlelabel.cpp
-  kguiutils.cpp kmymoneyaccounttreebudget.cpp register.cpp registeritem.cpp
-  transaction.cpp transactionform.cpp kmymoneychecklistitem.cpp
-  kmymoneylistviewitem.cpp kmymoneyselector.cpp kbudgetvalues.cpp
-  kaccounttemplateselector.cpp kmymoneyaccounttreebase.cpp
-  kmymoneyaccounttreeforecast.cpp scheduledtransaction.cpp
-  stdtransactiondownloaded.cpp stdtransactionmatched.cpp 
+# Common sources for libkmymoney.so and libwidgets.a that do not
+# contain the KMM_DESIGNER flag
+SET(_uncritial_common_sources
+  kbudgetvalues.cpp
+  kguiutils.cpp
+  kmymoneyaccountselector.cpp
+  kmymoneyaccounttreebudget.cpp
+  kmymoneyaccounttree.cpp
+  kmymoneyaccounttreeforecast.cpp
+  kmymoneycalculator.cpp
+  kmymoneycategory.cpp
+  kmymoneychecklistitem.cpp
+  kmymoneycombo.cpp
+  kmymoneycompletion.cpp
+  kmymoneycurrencyselector.cpp
+  kmymoneydateinput.cpp
+  kmymoneydatetbl.cpp
+  kmymoneyedit.cpp
+  kmymoneylineedit.cpp
+  kmymoneylistviewitem.cpp
+  kmymoneytitlelabel.cpp
+  kmymoneywizard.cpp
+  registeritem.cpp
+  scheduledtransaction.cpp
+  stdtransactiondownloaded.cpp
+  stdtransactionmatched.cpp 
+  transaction.cpp
+  transactionform.cpp
   )
 
-KDE3_AUTOMOC(${libkmymoney_la_SOURCES})
+# sources that contain the KMM_DESIGNER flag
+SET (_critial_common_sources
+  kaccounttemplateselector.cpp
+  kmymoneyaccountcombo.cpp
+  kmymoneyaccountcompletion.cpp
+  kmymoneyaccounttreebase.cpp
+  kmymoneyselector.cpp
+  register.cpp
+  )
 
-SET (libkmymoney_la_UI
+KDE3_AUTOMOC(${_uncritial_common_sources} ${_critial_common_sources})
+KDE3_ADD_MOC_FILES(_uncritial_common_sources kmymoneywizard_p.h)
+
+SET (kmymoney_base_UI
   kbudgetvaluesdecl.ui transactionsortoption.ui kaccounttemplateselectordecl.ui
   )
-KDE3_ADD_UI_FILES(libkmymoney_la_SOURCES ${libkmymoney_la_UI})  
+KDE3_ADD_UI_FILES(_uncritial_common_sources ${kmymoney_base_UI})
+KMM_KDE3_ADD_KCFG_FILES(_uncritial_common_sources ${KMyMoney2_SOURCE_DIR}
+  ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc)
 
-SET( kmymoney2_KCFG_SRCS ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc )
-KMM_KDE3_ADD_KCFG_FILES( libkmymoney_la_SOURCES
-  ${KMyMoney2_SOURCE_DIR} ${kmymoney2_KCFG_SRCS} )
+# We can compile the uncritical sources without KMM_DESIGNER flags
+ADD_LIBRARY(kmymoney_base STATIC ${_uncritial_common_sources})
 
-ADD_LIBRARY(kmymoney SHARED ${libkmymoney_la_SOURCES})
-# kmm_mymoney and kdeui added manually
-TARGET_LINK_LIBRARIES(kmymoney ${QT_AND_KDECORE_LIBRARIES} kmm_mymoney kdeui)
+########### QtDesigner Widget Library (kmymoney) SHARED #################
+# we never link against this library,
+# but it is needed for uic and QtDesigner
+
+ADD_LIBRARY(kmymoney SHARED
+ ${_critial_common_sources} ${_uncritial_common_sources} kmmwidgets.cpp)
+TARGET_LINK_LIBRARIES(kmymoney kmm_mymoney kdeui)
+
+# Build directly with INSTALL_RPATH.
+# This avoids relinking (and rerunning uic) on 'make install'
+#SET_TARGET_PROPERTIES(kmymoney PROPERTIES
+#  BUILD_WITH_INSTALL_RPATH TRUE)
+
+# For now, be NOT pedantic about this library.
+# Some undefined references remain.
+SET_TARGET_PROPERTIES(kmymoney PROPERTIES
+  LINK_FLAGS "-Wl,--undefined")
+
+##### Is the option -DKMM_DESIGNER needed??
+# The option -DKMM_DESIGNER will leave away any code that breaks uic.
 #SET_TARGET_PROPERTIES(kmymoney PROPERTIES
 #  COMPILE_FLAGS "-U_CHECK_MEMORY -DKMM_DESIGNER")
+#####
 
-############# next target (widgets) STATIC ###################
-
+########### Widget Library (widgets) STATIC #################
+ 
 SET(libwidgets_a_SOURCES
-  kmymoneycompletion.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp
-  kmymoneycurrencyselector.cpp kmymoneypriceview.cpp kmymoneyaccountselector.cpp
-  kmymoneybriefschedule.cpp kmymoneyscheduleddatetbl.cpp kmymoneydatetbl.cpp
-  kmymoneyscheduledcalendar.cpp kmymoneycalendar.cpp kmymoneycalculator.cpp
-  kmymoneycategory.cpp kmymoneycombo.cpp kmymoneylineedit.cpp kmymoneyedit.cpp
-  kmymoneydateinput.cpp kmymoneyonlinequoteconfig.cpp kmymoneygpgconfig.cpp
-  kmymoneytitlelabel.cpp kguiutils.cpp kmymoneywizard.cpp
-  kmymoneyaccounttreebudget.cpp register.cpp registeritem.cpp transaction.cpp
-  transactionform.cpp transactioneditorcontainer.cpp kmymoneychecklistitem.cpp
-  kmymoneylistviewitem.cpp kmymoneyselector.cpp kmymoneyaccounttree.cpp
-  klistviewsearchline.cpp registersearchline.cpp kbudgetvalues.cpp
-  kmymoneyforecastlistviewitem.cpp kaccounttemplateselector.cpp
-  selectedtransaction.cpp stdtransactiondownloaded.cpp stdtransactionmatched.cpp
-  kmymoneyaccounttreebase.cpp scheduledtransaction.cpp
-  kmymoneyaccounttreeforecast.cpp
+  ${_critial_common_sources}
+  klistviewsearchline.cpp
+  kmymoneybriefschedule.cpp
+  kmymoneycalendar.cpp
+  kmymoneyforecastlistviewitem.cpp
+  kmymoneygpgconfig.cpp
+  kmymoneyonlinequoteconfig.cpp
+  kmymoneypriceview.cpp
+  kmymoneyscheduledcalendar.cpp
+  kmymoneyscheduleddatetbl.cpp
+  registersearchline.cpp
+  selectedtransaction.cpp
+  transactioneditorcontainer.cpp
   )
 
-KDE3_AUTOMOC( ${libwidgets_a_SOURCES} )
-KDE3_ADD_MOC_FILES(libwidgets_a_SOURCES kmymoneywizard_p.h)
+KDE3_AUTOMOC(${libwidgets_a_SOURCES})
 
 SET(libwidgets_a_UI
   kschedulebriefwidget.ui kmymoneyreportcontroldecl.ui
@@ -97,18 +143,22 @@ SET(libwidgets_a_UI
   kmymoneyonlinequoteconfigdecl.ui kmymoneygpgconfigdecl.ui 
   )
 
-KDE3_ADD_UI_FILES(libwidgets_a_SOURCES
-  ${libkmymoney_la_UI})
-KMM_ADD_UI_FILES(libwidgets_a_SOURCES
-  ${libwidgets_a_UI} )
+# this one is important: uic DEPENDS on libkmymoney.so. If uic does
+# not find libkmymoney.so, gcc will fail compiling
+# kmymoneyreportconfigtab2decl.cpp and throw errors like
+# "invalid use of undefined type `struct KMyMoneyGeneralCombo'"
+KMM_ADD_UI_FILES(libwidgets_a_SOURCES ${libwidgets_a_UI}
+  DEPENDS kmymoney)
 
 ADD_LIBRARY(widgets STATIC ${libwidgets_a_SOURCES})
-ADD_DEPENDENCIES(widgets kmymoney)
+TARGET_LINK_LIBRARIES(widgets kmymoney_base)
+SET_TARGET_PROPERTIES(widgets PROPERTIES
+  LINK_FLAGS "-Wl,--undefined")
 
 ########### install files ###############
 
 INSTALL(FILES ${kmymoney_STAT_HEADERS} 
-	DESTINATION include/kmymoney )
+  DESTINATION include/kmymoney)
 
 IF( USE_QT_DESIGNER )
   INSTALL(TARGETS kmymoney

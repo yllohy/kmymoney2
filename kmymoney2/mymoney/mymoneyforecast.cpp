@@ -33,10 +33,10 @@
 // Project Includes
 
 #include "mymoneyforecast.h"
-#include "../kmymoneyutils.h"
 #include "../kmymoneyglobalsettings.h"
 #include "mymoneyfile.h"
 #include "mymoneytransactionfilter.h"
+#include "mymoneyfinancialcalculator.h"
 
 MyMoneyForecast::MyMoneyForecast() :
     m_forecastMethod(0),
@@ -705,7 +705,7 @@ void MyMoneyForecast::addScheduledTransactions (void)
               }
 
               // take care of the autoCalc stuff
-              KMyMoneyUtils::calculateAutoLoan(*it, t, balanceMap);
+              calculateAutoLoan(*it, t, balanceMap);
 
               // now add the splits to the balances
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
@@ -1242,4 +1242,93 @@ void MyMoneyForecast::setStartingBalance(const MyMoneyAccount &acc)
   }
 }
 
+void MyMoneyForecast::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QString, MyMoneyMoney>& balances)
+{
+  if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+
+    //get amortization and interest autoCalc splits
+    MyMoneySplit amortizationSplit = transaction.amortizationSplit();
+    MyMoneySplit interestSplit = transaction.interestSplit();
+
+    if(!amortizationSplit.id().isEmpty() && !interestSplit.id().isEmpty()) {
+      MyMoneyAccountLoan acc(MyMoneyFile::instance()->account(amortizationSplit.accountId()));
+      MyMoneyFinancialCalculator calc;
+      QDate dueDate;
+
+      // FIXME: setup dueDate according to when the interest should be calculated
+      // current implementation: take the date of the next payment according to
+      // the schedule. If the calculation is based on the payment reception, and
+      // the payment is overdue then take the current date
+      dueDate = schedule.nextDueDate();
+      if(acc.interestCalculation() == MyMoneyAccountLoan::paymentReceived) {
+        if(dueDate < QDate::currentDate())
+          dueDate = QDate::currentDate();
+      }
+
+      // we need to calculate the balance at the time the payment is due
+
+      MyMoneyMoney balance;
+      if(balances.count() == 0)
+        balance = MyMoneyFile::instance()->balance(acc.id(), dueDate.addDays(-1));
+      else
+        balance = balances[acc.id()];
+
+      /*
+         QValueList<MyMoneyTransaction> list;
+         QValueList<MyMoneyTransaction>::ConstIterator it;
+         MyMoneySplit split;
+         MyMoneyTransactionFilter filter(acc.id());
+
+         filter.setDateFilter(QDate(), dueDate.addDays(-1));
+         list = MyMoneyFile::instance()->transactionList(filter);
+
+         for(it = list.begin(); it != list.end(); ++it) {
+         try {
+         split = (*it).splitByAccount(acc.id());
+         balance += split.value();
+
+         } catch(MyMoneyException *e) {
+      // account is not referenced within this transaction
+      delete e;
+      }
+      }
+      */
+
+      // FIXME: for now, we only support interest calculation at the end of the period
+      calc.setBep();
+      // FIXME: for now, we only support periodic compounding
+      calc.setDisc();
+
+      calc.setPF(MyMoneySchedule::eventsPerYear(schedule.occurence()));
+      MyMoneySchedule::occurenceE compoundingOccurence = static_cast<MyMoneySchedule::occurenceE>(acc.interestCompounding());
+      if(compoundingOccurence == MyMoneySchedule::OCCUR_ANY)
+        compoundingOccurence = schedule.occurence();
+
+      calc.setCF(MyMoneySchedule::eventsPerYear(compoundingOccurence));
+
+      calc.setPv(balance.toDouble());
+      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));
+      calc.setPmt(acc.periodicPayment().toDouble());
+
+      MyMoneyMoney interest(calc.interestDue()), amortization;
+      interest = interest.abs();    // make sure it's positive for now
+      amortization = acc.periodicPayment() - interest;
+
+      if(acc.accountType() == MyMoneyAccount::AssetLoan) {
+        interest = -interest;
+        amortization = -amortization;
+      }
+
+      amortizationSplit.setShares(amortization);
+      interestSplit.setShares(interest);
+
+      // FIXME: for now we only assume loans to be in the currency of the transaction
+      amortizationSplit.setValue(amortization);
+      interestSplit.setValue(interest);
+
+      transaction.modifySplit(amortizationSplit);
+      transaction.modifySplit(interestSplit);
+    }
+  }
+}
 
