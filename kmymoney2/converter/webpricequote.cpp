@@ -307,18 +307,20 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
 
   if ( ! quotedata.isEmpty() )
   {
-    //
-    // First, remove extranous non-data elements
-    //
+    if(!m_source.m_skipStripping) {
+      //
+      // First, remove extranous non-data elements
+      //
 
-    // HTML tags
-    quotedata.remove(QRegExp("<[^>]*>"));
+      // HTML tags
+      quotedata.remove(QRegExp("<[^>]*>"));
 
-    // &...;'s
-    quotedata.replace(QRegExp("&\\w+;")," ");
+      // &...;'s
+      quotedata.replace(QRegExp("&\\w+;")," ");
 
-    // Extra white space
-    quotedata = quotedata.simplifyWhiteSpace();
+      // Extra white space
+      quotedata = quotedata.simplifyWhiteSpace();
+    }
 
 #if KMM_DEBUG
     // Enable to get a look at the data coming back from the source after it's stripped
@@ -684,6 +686,7 @@ WebPriceQuoteSource::WebPriceQuoteSource(const QString& name)
   m_dateformat = kconfig->readEntry("DateFormatRegex","%m %d %y");
   m_price = kconfig->readEntry("PriceRegex");
   m_url = kconfig->readEntry("URL");
+  m_skipStripping = kconfig->readBoolEntry("SkipStripping", false);
 }
 
 void WebPriceQuoteSource::write(void) const
@@ -695,6 +698,10 @@ void WebPriceQuoteSource::write(void) const
   kconfig->writeEntry("DateRegex", m_date);
   kconfig->writeEntry("DateFormatRegex", m_dateformat);
   kconfig->writeEntry("SymbolRegex", m_sym);
+  if(m_skipStripping)
+    kconfig->writeEntry("SkipStripping", m_skipStripping);
+  else
+    kconfig->deleteEntry("SkipStripping");
 }
 
 void WebPriceQuoteSource::rename(const QString& name)

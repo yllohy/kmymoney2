@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KSettingsOnlineQuotesDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -68,104 +68,114 @@
             <property name="whatsThis" stdset="0">
                 <string>&lt;i&gt;Enter regular expressions which can be used to parse the data returned from the URL entered above.  The symbol, price, and date must be found in the quote data to be usable. You may also try the KMyMoney user's mailinglist at &lt;a href="mailto:kmymoney2-user@lists.sourceforge.net"&gt;kmymoney2-user@lists.sourceforge.net&lt;/a&gt; to find what settings work for other users in your country.&lt;/i&gt;</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
-                        <cstring>layout3</cstring>
+                        <cstring>textLabel4</cstring>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Date</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Symbol</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="1" column="1">
-                            <property name="name">
-                                <cstring>m_editSymbol</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the symbol from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_editPrice</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the price from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="4" column="1">
-                            <property name="name">
-                                <cstring>m_editDateFormat</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the date from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_editURL</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>URL to be used to download the quote</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the URL from which stock quotes will be fetched.  &lt;b&gt;%1&lt;/b&gt; will be replaced with the symbol for the security being quoted. For currency conversions, &lt;b&gt;%2&lt;/b&gt; will be replaced with the currency to be quoted and &lt;b&gt;%1&lt;/b&gt; with the currency the quote is based on.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Price</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="3" column="1">
-                            <property name="name">
-                                <cstring>m_editDate</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the date from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
-                            <property name="name">
-                                <cstring>textLabel4_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Date Format</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>URL</string>
-                            </property>
-                        </widget>
-                    </grid>
+                    <property name="text">
+                        <string>Date</string>
+                    </property>
                 </widget>
-            </vbox>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Symbol</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_editSymbol</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Regular Expression to extract the symbol from the downloaded data</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_editPrice</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Regular Expression to extract the price from the downloaded data</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_editURL</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>URL to be used to download the quote</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enter the URL from which stock quotes will be fetched.  &lt;b&gt;%1&lt;/b&gt; will be replaced with the symbol for the security being quoted. For currency conversions, &lt;b&gt;%2&lt;/b&gt; will be replaced with the currency to be quoted and &lt;b&gt;%1&lt;/b&gt; with the currency the quote is based on.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Price</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_editDate</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Regular Expression to extract the date from the downloaded data</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>textLabel4_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Date Format</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>URL</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>m_editDateFormat</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Regular Expression to extract the date from the downloaded data</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="4" column="2">
+                    <property name="name">
+                        <cstring>m_skipStripping</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Skip HTML stripping</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>&lt;p&gt;For easier processing of the data returned by the online source, KMyMoney usually strips unused parts before it is parsed with the regular expressions. If matching of the fields relies on those items, then use this option to turn stripping off.&lt;/p&gt;
+
+&lt;p&gt;The following items are usually removed by stripping:
+
+&lt;ul&gt;
+&lt;li&gt;HTML tags such as &lt;b&gt;&amp;lt;tag&amp;gt;&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&amp; encoded characters such as &lt;b&gt;&amp;amp;nbsp;&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;duplicate whitespace&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">

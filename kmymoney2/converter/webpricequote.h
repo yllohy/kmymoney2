@@ -117,6 +117,7 @@ struct WebPriceQuoteSource
   QString    m_price;
   QString    m_date;
   QString    m_dateformat;
+  bool       m_skipStripping;
 };
 
 /**

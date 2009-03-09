@@ -1,5 +1,8 @@
 
-2009-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2009-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added option to skip stripping of online price info data
+
+2009-03-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Dim update button if plugin status changed
   * Added selection combo to negate text filter (not persistant yet)
   * Use standard buttons for filter dialog

@@ -19,6 +19,7 @@
 // QT Includes
 
 #include <qregexp.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -41,7 +42,6 @@
 KSettingsOnlineQuotes::KSettingsOnlineQuotes(QWidget *parent, const char *name )
   : KSettingsOnlineQuotesDecl(parent, name)
 {
-#if 1
   QStringList groups = WebPriceQuote::quoteSources();
 
   loadList(true /*updateResetList*/);
@@ -79,10 +79,10 @@ KSettingsOnlineQuotes::KSettingsOnlineQuotes(QWidget *parent, const char *name )
   connect(m_editDate, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
   connect(m_editDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
   connect(m_editPrice, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
+  connect(m_skipStripping, SIGNAL(toggled(bool)), this, SLOT(slotEntryChanged()));
 
   // FIXME deleting a source is not yet implemented
   m_deleteButton->setEnabled(false);
-#endif
 }
 
 void KSettingsOnlineQuotes::loadList(const bool updateResetList)
@@ -133,6 +133,7 @@ void KSettingsOnlineQuotes::slotLoadWidgets(QListViewItem* item)
   m_editPrice->setEnabled(true);
   m_editDate->setEnabled(true);
   m_editDateFormat->setEnabled(true);
+  m_skipStripping->setEnabled(true);
   m_editURL->setText(QString());
   m_editSymbol->setText(QString());
   m_editPrice->setText(QString());
@@ -146,13 +147,14 @@ void KSettingsOnlineQuotes::slotLoadWidgets(QListViewItem* item)
     m_editPrice->setText(m_currentItem.m_price);
     m_editDate->setText(m_currentItem.m_date);
     m_editDateFormat->setText(m_currentItem.m_dateformat);
-
+    m_skipStripping->setChecked(m_currentItem.m_skipStripping);
   } else {
     m_editURL->setEnabled(false);
     m_editSymbol->setEnabled(false);
     m_editPrice->setEnabled(false);
     m_editDate->setEnabled(false);
     m_editDateFormat->setEnabled(false);
+    m_skipStripping->setEnabled(false);
   }
 
   m_updateButton->setEnabled(false);
@@ -165,7 +167,8 @@ void KSettingsOnlineQuotes::slotEntryChanged(void)
                || m_editSymbol->text() != m_currentItem.m_sym
                || m_editDate->text() != m_currentItem.m_date
                || m_editDateFormat->text() != m_currentItem.m_dateformat
-               || m_editPrice->text() != m_currentItem.m_price;
+               || m_editPrice->text() != m_currentItem.m_price
+               || m_skipStripping->isChecked() != m_currentItem.m_skipStripping;
 
   m_updateButton->setEnabled(modified);
 }
@@ -177,6 +180,7 @@ void KSettingsOnlineQuotes::slotUpdateEntry(void)
   m_currentItem.m_date = m_editDate->text();
   m_currentItem.m_dateformat = m_editDateFormat->text();
   m_currentItem.m_price = m_editPrice->text();
+  m_currentItem.m_skipStripping = m_skipStripping->isChecked();
   m_currentItem.write();
   slotEntryChanged();
 }
