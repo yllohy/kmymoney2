@@ -252,6 +252,11 @@ protected:
     */
     void calculateForecast(void);
 
+    /**
+     * This method inserts units to be used to display prices
+     */
+    void calculatePrices(void);
+
   /**
     * This method calculates moving average for a report
     */

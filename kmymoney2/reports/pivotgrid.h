@@ -35,7 +35,7 @@
 
 namespace reports {
 
-  enum ERowType {eActual, eBudget, eBudgetDiff, eForecast, eAverage };
+  enum ERowType {eActual, eBudget, eBudgetDiff, eForecast, eAverage, ePrice };
 
   /**
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:

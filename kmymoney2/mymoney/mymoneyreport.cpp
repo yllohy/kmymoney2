@@ -76,7 +76,8 @@ MyMoneyReport::MyMoneyReport() :
     m_includeUnusedAccounts ( false ),
     m_showRowTotals ( false ),
     m_includeForecast ( false ),
-    m_includeMovingAverage ( false )
+    m_includeMovingAverage ( false ),
+    m_includePrice ( false )
 {
 }
 
@@ -111,7 +112,8 @@ MyMoneyReport::MyMoneyReport ( ERowType _rt, unsigned _ct, dateOptionE _dl, bool
     m_includeUnusedAccounts ( false ),
     m_showRowTotals ( false ),
     m_includeForecast ( false ),
-    m_includeMovingAverage ( false )
+    m_includeMovingAverage ( false ),
+    m_includePrice ( false )
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType> ( _ct );
@@ -334,6 +336,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
   e.setAttribute ( "includesactuals", m_includeBudgetActuals );
   e.setAttribute ( "includeunused", m_includeUnusedAccounts );
   e.setAttribute ( "includesforecast", m_includeForecast );
+  e.setAttribute ( "includesprice", m_includePrice );
   e.setAttribute ( "includesmovingaverage", m_includeMovingAverage );
   if( m_includeMovingAverage )
     e.setAttribute ( "movingaveragedays", m_movingAverageDays );
@@ -603,6 +606,7 @@ bool MyMoneyReport::read ( const QDomElement& e )
     m_includeBudgetActuals = e.attribute ( "includesactuals", "0" ).toUInt();
     m_includeUnusedAccounts = e.attribute ( "includeunused", "0" ).toUInt();
     m_includeForecast = e.attribute ( "includesforecast", "0" ).toUInt();
+    m_includePrice = e.attribute ( "includesprice", "0" ).toUInt();
     m_includeMovingAverage = e.attribute ( "includesmovingaverage", "0" ).toUInt();
     if( m_includeMovingAverage )
       m_movingAverageDays = e.attribute ( "movingaveragedays", "1" ).toUInt();

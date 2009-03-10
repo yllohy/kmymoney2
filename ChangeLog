@@ -1,4 +1,9 @@
 
+2009-03-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Investment Price Graph
+  * Added patch by Holger: 
+    0002-turned-bullets-off-and-simplified-the-chart-class-a.patch
+
 2009-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to skip stripping of online price info data
 

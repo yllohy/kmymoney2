@@ -34,49 +34,63 @@
 
 using namespace reports;
 
-KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChartWidget(parent,name), m_data(3,5)
+KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChartWidget(parent,name)
 {
     // ********************************************************************
-    // Chart Params
+    // Set KMyMoney's Chart Parameter Defaults
     // ********************************************************************
-    m_params.setChartType( KDChartParams::Line );
-    m_params.setLineWidth( 2 );
-    m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0);
-    m_params.setDataSubduedColors();
+    this->setPaletteBackgroundColor( Qt::white );
 
+    KDChartParams* _params = new KDChartParams();
+    _params->setChartType( KDChartParams::Line );
+    _params->setLineWidth( 2 );
+    _params->setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0);
+    _params->setDataSubduedColors();
+
+    /**
     // use line marker, but only circles.
-    m_params.setLineMarker( true );
-    m_params.setLineMarkerSize( QSize(8,8) );
-    m_params.setLineMarkerStyle( 0, KDChartParams::LineMarkerCircle );
-    m_params.setLineMarkerStyle( 1, KDChartParams::LineMarkerCircle );
-    m_params.setLineMarkerStyle( 2, KDChartParams::LineMarkerCircle );
+    _params->setLineMarker( true );
+    _params->setLineMarkerSize( QSize(8,8) );
+    _params->setLineMarkerStyle( 0, KDChartParams::LineMarkerCircle );
+    _params->setLineMarkerStyle( 1, KDChartParams::LineMarkerCircle );
+    _params->setLineMarkerStyle( 2, KDChartParams::LineMarkerCircle );
+    **/
+
+    // initialize parameters
+    this->setParams(_params);
+
+    // initialize data
+    KDChartTableData* _data = new KDChartTableData();
+    this->setData(_data);
 
     // ********************************************************************
-    // set Chart Table Data
+    // Some Examplatory Chart Table Data
     // ********************************************************************
+
+    /**
     // 1st series
-    m_data.setCell( 0, 0,    17.5   );
-    m_data.setCell( 0, 1,   125     );  // highest value
-    m_data.setCell( 0, 2,     6.67  );  // lowest value
-    m_data.setCell( 0, 3,    33.333 );
-    m_data.setCell( 0, 4,    30     );
+    this->data()->setCell( 0, 0,    17.5   );
+    this->data()->setCell( 0, 1,   125     );  // highest value
+    this->data()->setCell( 0, 2,     6.67  );  // lowest value
+    this->data()->setCell( 0, 3,    33.333 );
+    this->data()->setCell( 0, 4,    30     );
     // 2nd series
-    m_data.setCell( 1, 0,    40     );
-    m_data.setCell( 1, 1,    40     );
-    m_data.setCell( 1, 2,    45.5   );
-    m_data.setCell( 1, 3,    45     );
-    m_data.setCell( 1, 4,    35     );
+    this->data()->setCell( 1, 0,    40     );
+    this->data()->setCell( 1, 1,    40     );
+    this->data()->setCell( 1, 2,    45.5   );
+    this->data()->setCell( 1, 3,    45     );
+    this->data()->setCell( 1, 4,    35     );
     // 3rd series
-    m_data.setCell( 2, 0,    25     );
-    // missing value: d.setCell( 2, 1,   25 );
-    m_data.setCell( 2, 2,    30     );
-    m_data.setCell( 2, 3,    45     );
-    m_data.setCell( 2, 4,    40     );
+    this->data()->setCell( 2, 0,    25     );
+    // missing value: setCell( 2, 1,   25 );
+    this->data()->setCell( 2, 2,    30     );
+    this->data()->setCell( 2, 3,    45     );
+    this->data()->setCell( 2, 4,    40     );
+    **/
 
-    setPaletteBackgroundColor( Qt::white );
-    setData(&m_data);
-    setParams(&m_params);
-
+    // ********************************************************************
+    // Tooltip Setup
+    // ********************************************************************
     label = new QLabel( this );
     label->hide();
     // mouse tracking on will force the mouseMoveEvent() method to be called from Qt
@@ -92,9 +106,12 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
 void KReportChartView::mouseMoveEvent( QMouseEvent* event )
 {
     QPoint translate, pos; // some movement helpers
-    uint current_category; // the current row (or column) (e.g. category)
+    uint dataset;          // the current dataset (eg. category)
     double value;          // the value of the region
     double pivot_sum;      // the sum over all categories in the current pivot point
+
+    // the data region in which the cursor was last time
+    static uint previous;
 
     if ( !this->hasMouseTracking() )
        return ;
@@ -110,21 +127,27 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
             value = this->data()->cellVal(current->row, current->col).toDouble();
             if ( this->getAccountSeries() )
             {
-              current_category = current->row;
+              dataset = current->row;
               pivot_sum = value * 100.0 / this->data()->colSum(current->col);
             }
             else
             {
-              current_category = current->col;
+              dataset = current->col;
               pivot_sum = value * 100.0 / this->data()->rowSum(current->row);
             }
 
-            // now draw the tooltip
-            label->setText(QString("<h2>%1</h2><strong>%2</strong><br>(%3\%)")
-                .arg(this->params().legendText( current_category ))
-                .arg(value, 0, 'f', 2)
-                .arg(pivot_sum, 0, 'f', 2)
-                );
+            // if we enter a new data region
+            if ( !label->isVisible() || previous != dataset )
+            {
+                // set the tooltip text
+                label->setText(QString("<h2>%1</h2><strong>%2</strong><br>(%3\%)")
+                    .arg(this->params()->legendText( dataset ))
+                    .arg(value, 0, 'f', 2)
+                    .arg(pivot_sum, 0, 'f', 2)
+                    );
+
+                previous = dataset;
+            }
 
             translate.setX( -10 - label->width());
             translate.setY( 20);
@@ -144,8 +167,7 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
 
             // now move the label
             label->move( pos );
-            if ( !label->isVisible() )
-                label->show();
+            label->show();
 
             //
             // In a more abstract class, we would emit a dateMouseMove event:
@@ -161,9 +183,9 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
 void KReportChartView::setProperty(int row, int col, int id)
 {
 #ifdef HAVE_KDCHART_SETPROP
-  m_data.setProp(row, col, id);
+  this->data()->setProp(row, col, id);
 #else
-  m_data.cell(row, col).setPropertySet(id);
+  this->data()->cell(row, col).setPropertySet(id);
 #endif
 }
 

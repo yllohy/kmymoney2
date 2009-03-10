@@ -92,32 +92,32 @@ KBalanceChartDlg::KBalanceChartDlg(const MyMoneyAccount& account, QWidget* paren
 
   table.drawChart(*chartWidget);
 
-  chartWidget->params().setLineMarker(false);
-  chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
-  chartWidget->params().setLineWidth(2);
-  chartWidget->params().setDataColor(0, KGlobalSettings::textColor());
+  chartWidget->params()->setLineMarker(false);
+  chartWidget->params()->setLegendPosition(KDChartParams::NoLegend);
+  chartWidget->params()->setLineWidth(2);
+  chartWidget->params()->setDataColor(0, KGlobalSettings::textColor());
 
   // draw future values in a different line style
   KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
   propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-  int m_idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
+  int m_idPropFutureValue = chartWidget->params()->registerProperties(propSetFutureValue);
 
   KDChartPropertySet propSetLastValue("last value", m_idPropFutureValue);
   propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
   propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
   propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
 
-  int m_idPropLastValue = chartWidget->params().registerProperties(propSetLastValue);
+  int m_idPropLastValue = chartWidget->params()->registerProperties(propSetLastValue);
 
   KDChartPropertySet propSetMinBalance("min balance", m_idPropFutureValue);
   propSetMinBalance.setLineStyle(KDChartPropertySet::OwnID, Qt::NoPen);
   propSetMinBalance.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignRight);
-  int m_idPropMinBalance = chartWidget->params().registerProperties(propSetMinBalance);
+  int m_idPropMinBalance = chartWidget->params()->registerProperties(propSetMinBalance);
 
   KDChartPropertySet propSetMaxCredit("max credit", m_idPropMinBalance);
   propSetMaxCredit.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listNegativeValueColor());
   propSetMaxCredit.setExtraLinesStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-  int m_idPropMaxCredit = chartWidget->params().registerProperties(propSetMaxCredit);
+  int m_idPropMaxCredit = chartWidget->params()->registerProperties(propSetMaxCredit);
 
   KBalanceChartDlgLayout->addWidget(chartWidget, 10);
 

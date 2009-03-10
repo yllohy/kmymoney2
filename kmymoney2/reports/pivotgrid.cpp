@@ -129,6 +129,7 @@ PivotGridRowSet::PivotGridRowSet( unsigned _numcolumns )
   insert(eBudgetDiff, PivotGridRow(_numcolumns));
   insert(eForecast, PivotGridRow(_numcolumns));
   insert(eAverage, PivotGridRow(_numcolumns));
+  insert(ePrice, PivotGridRow(_numcolumns));
 }
 
 PivotGridRowSet PivotGrid::rowSet(QString id)

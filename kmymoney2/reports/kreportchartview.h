@@ -54,12 +54,11 @@ public:
   KReportChartView( QWidget* parent, const char* name );
   ~KReportChartView() {}
   static bool implemented(void) { return true; }
-  void setNewData( const KDChartTableData& newdata ) { m_data = newdata; }
-  KDChartParams& params(void) { return m_params; }
+  void setNewData( const KDChartTableData& newdata ) { this->setData(new KDChartTableData(newdata)); }
   QStringList& abscissaNames(void) { return m_abscissaNames; }
-  void refreshLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0); }
+  void refreshLabels(void) { this->params()->setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0); }
   void setProperty(int row, int col, int id);
-//   void setCircularLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosCircular,&m_abscissaNames,0); }
+//   void setCircularLabels(void) { this->params()->setAxisLabelStringParams( KDChartAxisParams::AxisPosCircular,&m_abscissaNames,0); }
 
   void setAccountSeries(bool accountSeries) {_accountSeries = accountSeries; }
   bool getAccountSeries(void) {return _accountSeries; }
@@ -68,8 +67,6 @@ protected:
   virtual void mouseMoveEvent( QMouseEvent* event );
 
 private:
-  KDChartParams m_params;
-  KDChartTableData m_data;
   QStringList m_abscissaNames;
   bool _accountSeries;
 

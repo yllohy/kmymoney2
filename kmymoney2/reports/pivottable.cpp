@@ -351,6 +351,12 @@ void PivotTable::init(void)
     calculateForecast();
 
   //
+  //Insert Price data
+  //
+  if(m_config_f.isIncludingPrice())
+    calculatePrices();
+
+  //
   // Collapse columns to match column type
   //
 
@@ -1013,6 +1019,13 @@ void PivotTable::convertToBaseCurrency( void )
             it_row.data()[eForecast][column] = PivotCell(forecastValue.convert(fraction));
           }
 
+          if(m_config_f.isIncludingPrice()) {
+            //calculate base value of price data
+            MyMoneyMoney oldPriceVal = it_row.data()[ePrice][column];
+            MyMoneyMoney priceValue = (oldPriceVal * conversionfactor).reduce();
+            it_row.data()[ePrice][column] = PivotCell(priceValue.convert(10000));
+          }
+
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[eActual][column].toDouble())));
 
           ++column;
@@ -1063,6 +1076,13 @@ void PivotTable::convertToDeepCurrency( void )
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
           //reduce to lowest fraction
           it_row.data()[eActual][column] = PivotCell(value.convert(fraction));
+
+          //convert price data
+          if(m_config_f.isIncludingPrice()) {
+            MyMoneyMoney oldPriceVal = it_row.data()[ePrice][column];
+            MyMoneyMoney priceValue = (oldPriceVal * conversionfactor).reduce();
+            it_row.data()[ePrice][column] = PivotCell(priceValue.convert(10000));
+          }
 
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[eActual][column].toDouble())));
 
@@ -1914,8 +1934,8 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 #if 1 // make this "#if 1" if you want to play with the axis settings
   // not sure if 0 is X and 1 is Y.
   KDChartAxisParams xAxisParams, yAxisParams;
-  KDChartAxisParams::deepCopy(xAxisParams, _view.params().axisParams(0));
-  KDChartAxisParams::deepCopy(yAxisParams, _view.params().axisParams(1));
+  KDChartAxisParams::deepCopy(xAxisParams, _view.params()->axisParams(0));
+  KDChartAxisParams::deepCopy(yAxisParams, _view.params()->axisParams(1));
 
   // modify axis settings here
   xAxisParams.setAxisLabelsFontMinSize(12);
@@ -1923,17 +1943,17 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   yAxisParams.setAxisLabelsFontMinSize(12);
   yAxisParams.setAxisLabelsFontRelSize(20);
 
-  _view.params().setAxisParams( 0, xAxisParams );
-  _view.params().setAxisParams( 1, yAxisParams );
+  _view.params()->setAxisParams( 0, xAxisParams );
+  _view.params()->setAxisParams( 1, yAxisParams );
 
 #endif
-  _view.params().setLegendFontRelSize(20);
-  _view.params().setLegendTitleFontRelSize(24);
-  _view.params().setLegendTitleText(i18n("Legend"));
+  _view.params()->setLegendFontRelSize(20);
+  _view.params()->setLegendTitleFontRelSize(24);
+  _view.params()->setLegendTitleText(i18n("Legend"));
 
-  _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
-  _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());
-  _view.params().setPrintDataValues(m_config_f.isChartDataLabels());
+  _view.params()->setAxisShowGrid(0,m_config_f.isChartGridLines());
+  _view.params()->setAxisShowGrid(1,m_config_f.isChartGridLines());
+  _view.params()->setPrintDataValues(m_config_f.isChartDataLabels());
 
   // whether to limit the chart to use series totals only.  Used for reports which only
   // show one dimension (pie).
@@ -1956,27 +1976,27 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   case MyMoneyReport::eChartNone:
   case MyMoneyReport::eChartEnd:
   case MyMoneyReport::eChartLine:
-    _view.params().setChartType( KDChartParams::Line );
-    _view.params().setAxisDatasets( 0,0 );
+    _view.params()->setChartType( KDChartParams::Line );
+    _view.params()->setAxisDatasets( 0,0 );
     break;
   case MyMoneyReport::eChartBar:
-    _view.params().setChartType( KDChartParams::Bar );
-    _view.params().setBarChartSubType( KDChartParams::BarNormal );
+    _view.params()->setChartType( KDChartParams::Bar );
+    _view.params()->setBarChartSubType( KDChartParams::BarNormal );
     break;
   case MyMoneyReport::eChartStackedBar:
-    _view.params().setChartType( KDChartParams::Bar );
-    _view.params().setBarChartSubType( KDChartParams::BarStacked );
+    _view.params()->setChartType( KDChartParams::Bar );
+    _view.params()->setBarChartSubType( KDChartParams::BarStacked );
     break;
   case MyMoneyReport::eChartPie:
-    _view.params().setChartType( KDChartParams::Pie );
+    _view.params()->setChartType( KDChartParams::Pie );
     // Charts should only be 3D if this adds any information
-    _view.params().setThreeDPies( false );
+    _view.params()->setThreeDPies( false );
     accountSeries = false;
     seriesTotals = true;
     break;
   case MyMoneyReport::eChartRing:
-    _view.params().setChartType( KDChartParams::Ring );
-    _view.params().setRelativeRingThickness( true );
+    _view.params()->setChartType( KDChartParams::Ring );
+    _view.params()->setRelativeRingThickness( true );
     accountSeries = false;
     break;
   }
@@ -2055,9 +2075,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
                   //only show the column type in the header if there is more than one type
                   if(m_rowTypeList.size() > 1) {
-                    _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_row.key().name() );
+                    _view.params()->setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_row.key().name() );
                   } else {
-                    _view.params().setLegendText( rowNum-1, it_row.key().name() );
+                    _view.params()->setLegendText( rowNum-1, it_row.key().name() );
                   }
                 }
               }
@@ -2092,9 +2112,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
               //only show the column type in the header if there is more than one type
               if(m_rowTypeList.size() > 1) {
-                _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_innergroup.key() );
+                _view.params()->setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_innergroup.key() );
               } else {
-                _view.params().setLegendText( rowNum-1, it_innergroup.key() );
+                _view.params()->setLegendText( rowNum-1, it_innergroup.key() );
               }
             }
           }
@@ -2121,9 +2141,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
             //only show the column type in the header if there is more than one type
             if(m_rowTypeList.size() > 1) {
-              _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_outergroup.key() );
+              _view.params()->setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + it_outergroup.key() );
             } else {
-              _view.params().setLegendText( rowNum-1, it_outergroup.key() );
+              _view.params()->setLegendText( rowNum-1, it_outergroup.key() );
             }
           }
         }
@@ -2141,9 +2161,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
             //only show the column type in the header if there is more than one type
             if(m_rowTypeList.size() > 1) {
-              _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
+              _view.params()->setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
             } else {
-              _view.params().setLegendText( rowNum-1, i18n("Total") );
+              _view.params()->setLegendText( rowNum-1, i18n("Total") );
             }
           }
         }
@@ -2163,9 +2183,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
           //only show the column type in the header if there is more than one type
           if(m_rowTypeList.size() > 1) {
-            _view.params().setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
+            _view.params()->setLegendText( rowNum-1, m_columnTypeHeaderList[i] + " - " + i18n("Total") );
           } else {
-            _view.params().setLegendText( rowNum-1, i18n("Total") );
+            _view.params()->setLegendText( rowNum-1, i18n("Total") );
           }
         }
       }
@@ -2176,7 +2196,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   _view.setNewData(data);
 
   // make sure to show only the required number of fractional digits on the labels of the graph
-  _view.params().setDataValuesCalc(0, MyMoneyMoney::denomToPrec(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction()));
+  _view.params()->setDataValuesCalc(0, MyMoneyMoney::denomToPrec(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction()));
   _view.refreshLabels();
 
 #if 0
@@ -2198,7 +2218,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     // Properties for line charts whose values are in the future.
     KDChartPropertySet propSetFutureValue("future value", KDChartParams::KDCHART_PROPSET_NORMAL_DATA);
     propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-    const int idPropFutureValue = _view.params().registerProperties(propSetFutureValue);
+    const int idPropFutureValue = _view.params()->registerProperties(propSetFutureValue);
 
     for(int col = futurecolumn; col < m_numColumns; ++col) {
       _view.setProperty(0, col, idPropFutureValue);
@@ -2387,7 +2407,9 @@ void PivotTable::loadRowTypeList()
   if( (m_config_f.isIncludingBudgetActuals()) ||
        ( !m_config_f.hasBudget()
        && !m_config_f.isIncludingForecast()
-       && !m_config_f.isIncludingMovingAverage()) ) {
+       && !m_config_f.isIncludingMovingAverage()
+       && !m_config_f.isIncludingPrice())
+     ) {
     m_rowTypeList.append(eActual);
     m_columnTypeHeaderList.append(i18n("Actual"));
   }
@@ -2405,6 +2427,11 @@ void PivotTable::loadRowTypeList()
   if(m_config_f.isIncludingMovingAverage()) {
     m_rowTypeList.append(eAverage);
     m_columnTypeHeaderList.append(i18n("Moving Average"));
+  }
+
+  if(m_config_f.isIncludingPrice()) {
+    m_rowTypeList.append(ePrice);
+    m_columnTypeHeaderList.append(i18n("Price"));
   }
 }
 
@@ -2515,6 +2542,31 @@ void PivotTable::calculateMovingAverage (void)
   }
 }
 
+void PivotTable::calculatePrices(void)
+{
+  //go through the data and add forecast
+  PivotGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    PivotOuterGroup::iterator it_innergroup = ( *it_outergroup ).begin();
+    while ( it_innergroup != ( *it_outergroup ).end() )
+    {
+      PivotInnerGroup::iterator it_row = ( *it_innergroup ).begin();
+      while ( it_row != ( *it_innergroup ).end() )
+      {
+        unsigned column = 1;
+        while ( column < m_numColumns ) {
+          //insert a unit of currency for each account
+          it_row.data() [ePrice][column] = MyMoneyMoney ( 1, 1 );
+          ++column;
+        }
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
 
 
 } // namespace
