@@ -375,9 +375,15 @@ void PivotTable::init(void)
   //
   // Calculate Moving Average
   //
-
   if ( m_config_f.isIncludingMovingAverage() )
     calculateMovingAverage();
+
+  //
+  // Calculate Budget Difference
+  //
+
+  if ( m_config_f.isIncludingBudgetActuals() )
+    calculateBudgetDiff();
 
   //
   // Convert all values to the deep currency
@@ -391,13 +397,6 @@ void PivotTable::init(void)
 
   if ( m_config_f.isConvertCurrency() )
     convertToBaseCurrency();
-
-  //
-  // Calculate Budget Difference
-  //
-
-  if ( m_config_f.isIncludingBudgetActuals() )
-    calculateBudgetDiff();
 
   //
   // Determine column headings
@@ -1005,28 +1004,19 @@ void PivotTable::convertToBaseCurrency( void )
           //get base price for that date
           MyMoneyMoney conversionfactor = it_row.key().baseCurrencyPrice(valuedate);
 
-          //calculate base value
-          MyMoneyMoney oldval = it_row.data()[eActual][column];
-          MyMoneyMoney value = (oldval * conversionfactor).reduce();
+          for(unsigned i = 0; i < m_rowTypeList.size(); ++i) {
+            if( m_rowTypeList[i] != eAverage ) {
+              //calculate base value
+              MyMoneyMoney oldval = it_row.data()[ m_rowTypeList[i] ][column];
+              MyMoneyMoney value = (oldval * conversionfactor).reduce();
 
-          //convert to lowest fraction
-          it_row.data()[eActual][column] = PivotCell(value.convert(fraction));
+              //convert to lowest fraction
+              it_row.data()[ m_rowTypeList[i] ][column] = PivotCell(value.convert(fraction));
 
-          if(m_config_f.isIncludingForecast()) {
-            //calculate base value of forecast
-            MyMoneyMoney oldForecastval = it_row.data()[eForecast][column];
-            MyMoneyMoney forecastValue = (oldForecastval * conversionfactor).reduce();
-            it_row.data()[eForecast][column] = PivotCell(forecastValue.convert(fraction));
+              DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[m_rowTypeList[i]][column].toDouble())));
+            }
           }
 
-          if(m_config_f.isIncludingPrice()) {
-            //calculate base value of price data
-            MyMoneyMoney oldPriceVal = it_row.data()[ePrice][column];
-            MyMoneyMoney priceValue = (oldPriceVal * conversionfactor).reduce();
-            it_row.data()[ePrice][column] = PivotCell(priceValue.convert(10000));
-          }
-
-          DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[eActual][column].toDouble())));
 
           ++column;
         }

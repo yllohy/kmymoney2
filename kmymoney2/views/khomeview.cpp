@@ -1293,6 +1293,7 @@ void KHomeView::showAssetsLiabilities(void)
           ReportAccount repAcc = ReportAccount((*asset_it).id());
           MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
           MyMoneyMoney baseValue = value * curPrice;
+          baseValue = baseValue.convert(10000);
           netAssets += baseValue;
         } else {
           netAssets += value;
@@ -1317,6 +1318,7 @@ void KHomeView::showAssetsLiabilities(void)
           ReportAccount repAcc = ReportAccount((*liabilities_it).id());
           MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
           MyMoneyMoney baseValue = value * curPrice;
+          baseValue = baseValue.convert(10000);
           netLiabilities += baseValue;
         } else {
           netLiabilities += value;
@@ -1594,6 +1596,7 @@ void KHomeView::showCashFlowSummary()
             if(repSplitAcc.currencyId() != file->baseCurrency().id()) {
               MyMoneyMoney curPrice = repSplitAcc.baseCurrencyPrice((*it_transaction).postDate());
               value = ((*it_split).shares() * MyMoneyMoney(-1, 1)) * curPrice;
+              value = value.convert(10000);
             } else {
               value = ((*it_split).shares() * MyMoneyMoney(-1, 1));
             }
@@ -1697,6 +1700,7 @@ void KHomeView::showCashFlowSummary()
           if(repSplitAcc.currencyId() != file->baseCurrency().id()) {
             MyMoneyMoney curPrice = repSplitAcc.baseCurrencyPrice(QDate::currentDate());
             value = value * curPrice;
+            value = value.convert(10000);
           }
 
           if(( repSplitAcc.isLiquidLiability()
@@ -1754,6 +1758,7 @@ void KHomeView::showCashFlowSummary()
             MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
             MyMoneyMoney baseValue = value * curPrice;
             liquidAssets += baseValue;
+            liquidAssets = liquidAssets.convert(10000);
           } else {
             liquidAssets += value;
           }
@@ -1770,6 +1775,7 @@ void KHomeView::showCashFlowSummary()
             MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
             MyMoneyMoney baseValue = value * curPrice;
             liquidLiabilities += baseValue;
+            liquidLiabilities = liquidLiabilities.convert(10000);
           } else {
             liquidLiabilities += value;
           }

@@ -1,4 +1,9 @@
 
+2009-03-11 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed overflow error in Total Rows of CashFlow Summary
+  * Fixed overflow error in Total Rows of Assets and Liabilities Summary
+  * Fixed currency conversion error in Budget reports
+
 2009-03-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch by Holger
     0001-Added-build-types-Debug-Debugfull-Profile.patch
