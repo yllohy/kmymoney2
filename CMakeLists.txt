@@ -161,23 +161,44 @@ INCLUDE(KMyMoneyMacros)
 
 ######################### Settings ##########################
 
+# If no build type is set, use "Release with Debug Info"
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE RelWithDebInfo)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
+  "Choose the type of build.
+Possible values are: 'Release' 'RelWithDebInfo' 'Debug' 'Debugfull' 'Profile'
+The default value is: 'RelWithDebInfo'" FORCE)
+
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE3_DEFINITIONS})
-# some definitions for the compiler
-ADD_DEFINITIONS(
-  -DHAVE_CONFIG_H  # tells the KMyMoney sources that a config.h is present
-  -fexceptions     # tells gcc to enable exception handling
-  -fPIC            # use position independent code
-  )
+
+# tell the KMyMoney sources that a config.h is present:
+ADD_DEFINITIONS( -DHAVE_CONFIG_H )
 
 # preprocessor definitions in case this is a debug build
-SET(COMPILE_DEFINITIONS_DEBUG ${COMPILE_DEFINITIONS_DEBUG} -DKMM_DEBUG )
+STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER)
+IF(${CMAKE_BUILD_TYPE_TOLOWER} MATCHES "^debug(full)?$|^profile$")
+  ADD_DEFINITIONS( -DKMM_DEBUG )
+ENDIF()
 
-### the following options help to ensure platform-independence
+# tells gcc to enable exception handling
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+# use position independent code
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+# be more pedantic about common symbols
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common")
+
+# Debug, Debugfull, Profile
+SET(CMAKE_CXX_FLAGS_DEBUG
+  "-g -O2 -fno-reorder-blocks -fno-schedule-insns -fno-inline")
+SET(CMAKE_CXX_FLAGS_DEBUGFULL
+  "-g3 -fno-inline")
+SET(CMAKE_CXX_FLAGS_PROFILE
+  "-g3 -fno-inline -ftest-coverage -fprofile-arcs")
+
 # be pedantic about undefined symbols when linking shared libraries
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-# be more pedantic about common symbols
-ADD_DEFINITIONS( -fno-common )
-
 
 OPTION(USE_LEAK_CHECK "Enable to compile with memory leak check support (deprecated)" OFF)
 if(USE_LEAK_CHECK)
@@ -328,7 +349,9 @@ Qt-Designer library support:             ${nice_USE_QT_DESIGNER}
 PDF document generation:                 ?
 
 CPPUNIT support:                         ${nice_HAVE_LIBCPPUNIT}
-        build tests:                     ${nice_KDE3_BUILD_TESTS}")
+        build tests:                     ${nice_KDE3_BUILD_TESTS}
+
+Build type: ${CMAKE_BUILD_TYPE}")
 
 if(USE_LEAK_CHECK)
   message("

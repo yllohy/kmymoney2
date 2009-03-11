@@ -57,15 +57,15 @@ For this, you can conveniently create a new out-of-source build directory:
 
 $ mkdir Debug
 $ cd Debug
-$ cmake -D CMAKE_BUILD_TYPE=Debug ..
+$ cmake -D CMAKE_BUILD_TYPE=Debugfull ..
 
 Instead of the last command, you could also call CMake without command
 line arguments and use the GUI to switch the build type.
 
 $ cmake ..
 $ ccmake .
-    and change the option CMAKE_BUILD_TYPE to 'Debug'.  Selecting an
-    option and pressing 'h' will show you its allowed values.
+    and change the option CMAKE_BUILD_TYPE to 'Debugfull'.  Selecting
+    an option and pressing 'h' will show you its allowed values.
 
 In any case, your choices are safely stored in the file CMakeCache.txt
 which will never be completely overwritten.
@@ -83,8 +83,9 @@ Quick-start 3: More options
     The default is ${KDE3PREFIX}, which is usually "/opt/kde3/".
 
 -D CMAKE_BUILD_TYPE=<type>
-    Choose the type of build, possible values are:
-    '' 'Debug' 'Release' 'RelWithDebInfo' 'MinSizeRel'.
+    Choose the type of build. Possible values are:
+      'Release' 'RelWithDebInfo' 'Debug' 'Debugfull' 'Profile'
+    The default value is: 'RelWithDebInfo'
 
 -D KDE3_BUILD_TESTS=ON
     To also build the unit tests. This requires CppUnit to be installed.

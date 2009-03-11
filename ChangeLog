@@ -1,4 +1,8 @@
 
+2009-03-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch by Holger
+    0001-Added-build-types-Debug-Debugfull-Profile.patch
+
 2009-03-09 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Investment Price Graph
   * Added patch by Holger: 
