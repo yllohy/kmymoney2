@@ -514,8 +514,8 @@ void MyMoneyDatabaseMgr::modifyAccount(const MyMoneyAccount& account, const bool
     // check if the new info is based on the old one.
     // this is the case, when the file and the id
     // as well as the type are equal.
-    if((*pos).parentAccountId() == account.parentAccountId()
-    && (*pos).accountType() == account.accountType()
+    if(((*pos).parentAccountId() == account.parentAccountId()
+    && (*pos).accountType() == account.accountType())
     || skipCheck == true) {
       // make sure that all the referenced objects exist
       if(!account.institutionId().isEmpty())
@@ -647,6 +647,9 @@ void MyMoneyDatabaseMgr::modifyTransaction(const MyMoneyTransaction& transaction
 
 void MyMoneyDatabaseMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
 {
+  if(account.accountType() == MyMoneyAccount::Stock && parent.accountType() != MyMoneyAccount::Investment)
+    throw new MYMONEYEXCEPTION("Cannot move a stock acocunt into a non-investment account");
+
   QStringList accountIdList;
   QMap<QString, MyMoneyAccount>::ConstIterator oldParent;
   QMap<QString, MyMoneyAccount>::ConstIterator newParent;
@@ -661,9 +664,6 @@ void MyMoneyDatabaseMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount
   if(!account.parentAccountId().isEmpty()) {
     accountIdList << account.parentAccountId();
   }
-
-  if(account.accountType() == MyMoneyAccount::Stock && parent.accountType() != MyMoneyAccount::Investment)
-    throw new MYMONEYEXCEPTION("Cannot move a stock acocunt into a non-investment account");
 
   startTransaction();
   QMap<QString, MyMoneyAccount> accountList = m_sql->fetchAccounts(accountIdList, true);
@@ -688,12 +688,6 @@ void MyMoneyDatabaseMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount
 
   account = (*childAccount);
   account.setParentAccountId(parent.id());
-
-#if 0
-  // make sure the type is the same as the new parent. This does not work for stock and investment
-  if(account.accountType() != MyMoneyAccount::Stock && account.accountType() != MyMoneyAccount::Investment)
-    (*childAccount).setAccountType((*newParent).accountType());
-#endif
 
   m_sql->modifyAccount(parent);
   m_sql->modifyAccount(account);

@@ -1,3 +1,7 @@
+2009-03-11 Fernando Vilas <fvilas@iname.com>
+  * Removed redundant QString ctor calls in db code
+  * Fixed several warnings in db code
+  * db now remembers online banking KVPs
 
 2009-03-11 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed overflow error in Total Rows of CashFlow Summary

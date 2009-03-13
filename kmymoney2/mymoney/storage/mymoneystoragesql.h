@@ -558,33 +558,33 @@ public:
   bool endCommitUnit (const QString& callingFunction);
   void cancelCommitUnit (const QString& callingFunction);
 
-  long long unsigned getRecCount(const QString& table) const;
-  long long unsigned getNextBudgetId() const;
-  long long unsigned getNextAccountId() const;
-  long long unsigned getNextInstitutionId() const;
-  long long unsigned getNextPayeeId() const;
-  long long unsigned getNextReportId() const;
-  long long unsigned getNextScheduleId() const;
-  long long unsigned getNextSecurityId() const;
-  long long unsigned getNextTransactionId() const;
+  long unsigned getRecCount(const QString& table) const;
+  long unsigned getNextBudgetId() const;
+  long unsigned getNextAccountId() const;
+  long unsigned getNextInstitutionId() const;
+  long unsigned getNextPayeeId() const;
+  long unsigned getNextReportId() const;
+  long unsigned getNextScheduleId() const;
+  long unsigned getNextSecurityId() const;
+  long unsigned getNextTransactionId() const;
 
-  long long unsigned incrementBudgetId();
-  long long unsigned incrementAccountId();
-  long long unsigned incrementInstitutionId();
-  long long unsigned incrementPayeeId();
-  long long unsigned incrementReportId();
-  long long unsigned incrementScheduleId();
-  long long unsigned incrementSecurityId();
-  long long unsigned incrementTransactionId();
+  long unsigned incrementBudgetId();
+  long unsigned incrementAccountId();
+  long unsigned incrementInstitutionId();
+  long unsigned incrementPayeeId();
+  long unsigned incrementReportId();
+  long unsigned incrementScheduleId();
+  long unsigned incrementSecurityId();
+  long unsigned incrementTransactionId();
 
-  void loadAccountId(const unsigned long long id);
-  void loadTransactionId(const unsigned long long id);
-  void loadPayeeId(const unsigned long long id);
-  void loadInstitutionId(const unsigned long long id);
-  void loadScheduleId(const unsigned long long id);
-  void loadSecurityId(const unsigned long long id);
-  void loadReportId(const unsigned long long id);
-  void loadBudgetId(const unsigned long long id);
+  void loadAccountId(const unsigned long& id);
+  void loadTransactionId(const unsigned long& id);
+  void loadPayeeId(const unsigned long& id);
+  void loadInstitutionId(const unsigned long& id);
+  void loadScheduleId(const unsigned long& id);
+  void loadSecurityId(const unsigned long& id);
+  void loadReportId(const unsigned long& id);
+  void loadBudgetId(const unsigned long& id);
 
 private:
   // a function to build a comprehensive error message
@@ -641,7 +641,7 @@ private:
   void deleteTransaction(const QString& id);
   void deleteSchedule(const QString& id);
   void deleteKeyValuePairs(const QString& kvpType, const QString& kvpId);
-  long long unsigned calcHighId (const long long unsigned, const QString&);
+  long unsigned calcHighId (const long unsigned&, const QString&);
 
   void setVersion (const QString& version);
 
@@ -697,27 +697,27 @@ private:
   // error message
   QString m_error;
   // record counts
-  long long unsigned m_institutions;
-  long long unsigned m_accounts;
-  long long unsigned m_payees;
-  long long unsigned m_transactions;
-  long long unsigned m_splits;
-  long long unsigned m_securities;
-  long long unsigned m_prices;
-  long long unsigned m_currencies;
-  long long unsigned m_schedules;
-  long long unsigned m_reports;
-  long long unsigned m_kvps;
-  long long unsigned m_budgets;
+  long unsigned m_institutions;
+  long unsigned m_accounts;
+  long unsigned m_payees;
+  long unsigned m_transactions;
+  long unsigned m_splits;
+  long unsigned m_securities;
+  long unsigned m_prices;
+  long unsigned m_currencies;
+  long unsigned m_schedules;
+  long unsigned m_reports;
+  long unsigned m_kvps;
+  long unsigned m_budgets;
   // next id to use (for future archive)
-  long long unsigned m_hiIdInstitutions;
-  long long unsigned m_hiIdPayees;
-  long long unsigned m_hiIdAccounts;
-  long long unsigned m_hiIdTransactions;
-  long long unsigned m_hiIdSchedules;
-  long long unsigned m_hiIdSecurities;
-  long long unsigned m_hiIdReports;
-  long long unsigned m_hiIdBudgets;
+  long unsigned m_hiIdInstitutions;
+  long unsigned m_hiIdPayees;
+  long unsigned m_hiIdAccounts;
+  long unsigned m_hiIdTransactions;
+  long unsigned m_hiIdSchedules;
+  long unsigned m_hiIdSecurities;
+  long unsigned m_hiIdReports;
+  long unsigned m_hiIdBudgets;
   // encrypt option - usage TBD
   QString m_encryptData;
 

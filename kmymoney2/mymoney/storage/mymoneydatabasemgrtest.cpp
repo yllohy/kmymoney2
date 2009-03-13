@@ -553,7 +553,9 @@ void MyMoneyDatabaseMgrTest::testReparentAccount() {
     CPPUNIT_ASSERT(m->account(ex1.id()).accountCount() == 1);
     CPPUNIT_ASSERT(ex3.parentAccountId() == STD_ACC_EXPENSE);
 
-    m->reparentAccount(ex3, ex1);
+    //for (int i = 0; i < 100; ++i) {
+      m->reparentAccount(ex3, ex1);
+    //}
     MyMoneyFile::instance()->preloadCache();
     CPPUNIT_ASSERT(m->expense().accountCount() == 2);
     CPPUNIT_ASSERT(m->account(ex1.id()).accountCount() == 2);
