@@ -255,7 +255,7 @@ protected:
     /**
      * This method inserts units to be used to display prices
      */
-    void calculatePrices(void);
+    void fillBasePriceUnit(ERowType rowType);
 
   /**
     * This method calculates moving average for a report

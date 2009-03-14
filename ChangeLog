@@ -1,3 +1,6 @@
+2009-03-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Investment Moving Average Price Graph
+
 2009-03-11 Fernando Vilas <fvilas@iname.com>
   * Removed redundant QString ctor calls in db code
   * Fixed several warnings in db code

@@ -124,6 +124,7 @@ public:
   bool isIncludingMovingAverage(void) const { return m_includeMovingAverage; }
   int movingAverageDays(void) const { return m_movingAverageDays; }
   bool isIncludingPrice(void) const { return m_includePrice; }
+  bool isIncludingAveragePrice(void) const { return m_includeAveragePrice; }
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -153,6 +154,7 @@ public:
   void setIncludingMovingAverage( bool _f ) { m_includeMovingAverage = _f; }
   void setMovingAverageDays( int _days ) { m_movingAverageDays = _days; }
   void setIncludingPrice( bool _f ) { m_includePrice = _f; }
+  void setIncludingAveragePrice( bool _f ) { m_includeAveragePrice = _f; }
 
   /**
     * Sets the budget used for this report
@@ -478,6 +480,10 @@ private:
    * Whether this report should include prices
    */
   bool m_includePrice;
+  /**
+   * Whether this report should include moving average prices
+   */
+  bool m_includeAveragePrice;
 
 
 

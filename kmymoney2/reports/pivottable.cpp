@@ -354,7 +354,15 @@ void PivotTable::init(void)
   //Insert Price data
   //
   if(m_config_f.isIncludingPrice())
-    calculatePrices();
+    fillBasePriceUnit(ePrice);
+
+  //
+  //Insert Average Price data
+  //
+  if(m_config_f.isIncludingAveragePrice()) {
+    fillBasePriceUnit(eActual);
+    calculateMovingAverage();
+  }
 
   //
   // Collapse columns to match column type
@@ -2389,19 +2397,20 @@ void PivotTable::calculateForecast(void)
 
 void PivotTable::loadRowTypeList()
 {
-  if (m_config_f.hasBudget()) {
-    m_rowTypeList.append(eBudget);
-    m_columnTypeHeaderList.append(i18n("Budget"));
-  }
-
   if( (m_config_f.isIncludingBudgetActuals()) ||
        ( !m_config_f.hasBudget()
        && !m_config_f.isIncludingForecast()
        && !m_config_f.isIncludingMovingAverage()
-       && !m_config_f.isIncludingPrice())
+       && !m_config_f.isIncludingPrice()
+       && !m_config_f.isIncludingAveragePrice())
      ) {
     m_rowTypeList.append(eActual);
     m_columnTypeHeaderList.append(i18n("Actual"));
+  }
+
+  if (m_config_f.hasBudget()) {
+    m_rowTypeList.append(eBudget);
+    m_columnTypeHeaderList.append(i18n("Budget"));
   }
 
   if(m_config_f.isIncludingBudgetActuals()) {
@@ -2417,6 +2426,11 @@ void PivotTable::loadRowTypeList()
   if(m_config_f.isIncludingMovingAverage()) {
     m_rowTypeList.append(eAverage);
     m_columnTypeHeaderList.append(i18n("Moving Average"));
+  }
+
+  if(m_config_f.isIncludingAveragePrice()) {
+    m_rowTypeList.append(eAverage);
+    m_columnTypeHeaderList.append(i18n("Moving Average Price"));
   }
 
   if(m_config_f.isIncludingPrice()) {
@@ -2481,12 +2495,12 @@ void PivotTable::calculateMovingAverage (void)
               }
               case MyMoneyReport::eBiMonths:
               {
-                averageStart = QDate(columnDate(column).year(), columnDate(column).month()-1, 1);
+                averageStart = QDate(columnDate(column).year(), columnDate(column).month(), 1).addMonths(-1);
                 break;
               }
               case MyMoneyReport::eQuarters:
               {
-                averageStart = QDate(columnDate(column).year(), columnDate(column).month()-2, 1);
+                averageStart = QDate(columnDate(column).year(), columnDate(column).month(), 1).addMonths(-1);
                 break;
               }
               case MyMoneyReport::eMonths:
@@ -2532,7 +2546,7 @@ void PivotTable::calculateMovingAverage (void)
   }
 }
 
-void PivotTable::calculatePrices(void)
+void PivotTable::fillBasePriceUnit(ERowType rowType)
 {
   //go through the data and add forecast
   PivotGrid::iterator it_outergroup = m_grid.begin();
@@ -2547,7 +2561,7 @@ void PivotTable::calculatePrices(void)
         unsigned column = 1;
         while ( column < m_numColumns ) {
           //insert a unit of currency for each account
-          it_row.data() [ePrice][column] = MyMoneyMoney ( 1, 1 );
+          it_row.data() [rowType][column] = MyMoneyMoney ( 1, 1 );
           ++column;
         }
         ++it_row;
