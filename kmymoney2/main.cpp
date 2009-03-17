@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
   KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney"),
     VERSION, description, KAboutData::License_GPL,
-    "(c) 2000-2006 The KMyMoney development team", feature,
+    "(c) 2000-2009 The KMyMoney development team", feature,
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
 
