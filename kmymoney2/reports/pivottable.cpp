@@ -926,15 +926,18 @@ void PivotTable::calculateBudgetMapping( void )
               value = value * MyMoneyMoney(m_config_f.columnType(), 1);
               while ( column < m_numColumns )
               {
-                MyMoneyMoney finalValue = value;
+                //only show budget values if the budget year and the column date match
+                if( budget.budgetStart().year() == columnDate(column).year() ) {
+                  MyMoneyMoney finalValue = value;
 
-                //convert to base currency if the category is in foreign currency
-                if ( m_config_f.isConvertCurrency() && splitAccount.isForeignCurrency()) {
-                  price = splitAccount.baseCurrencyPrice(columnDate(column));
-                  finalValue = value * price;
-                  finalValue = finalValue.convert(10000);
+                  //convert to base currency if the category is in foreign currency
+                  if ( m_config_f.isConvertCurrency() && splitAccount.isForeignCurrency()) {
+                    price = splitAccount.baseCurrencyPrice(columnDate(column));
+                    finalValue = value * price;
+                    finalValue = finalValue.convert(10000);
+                  }
+                  assignCell( outergroup, splitAccount, column, finalValue, true /*budget*/ );
                 }
-                assignCell( outergroup, splitAccount, column, finalValue, true /*budget*/ );
                 ++column;
               }
             }
@@ -955,10 +958,8 @@ void PivotTable::calculateBudgetMapping( void )
                   case MyMoneyReport::eQuarters:
                   case MyMoneyReport::eMonths:
                   {
-                    if((*it_period).startDate().month() >= m_beginDate.month()
-                        && (*it_period).startDate().month() <= m_endDate.month()
-                        && (*it_period).startDate().year() == columnDate(column).year()
-                        && (*it_period).startDate().month() <= columnDate(column).month()
+                    if((*it_period).startDate() >= m_beginDate.addDays(-m_beginDate.day() + 1)
+                        && (*it_period).startDate() <= m_endDate.addDays(m_endDate.daysInMonth() - m_endDate.day() )
                         && (*it_period).startDate() > (columnDate(column).addMonths(-m_config_f.columnType()))) {
                             value = (*it_period).amount() * reverse;
 
