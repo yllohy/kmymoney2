@@ -604,10 +604,8 @@ void QueryTable::constructTransactionTable(void)
             qA["rank"] = "0";
             qA["split"] = "";
 
-          }
-          else {
-
-            if ((splits.count() > 2) && use_summary) {
+          } else {
+              if ((splits.count() > 2) && use_summary) {
 
               // add the "summarized" split transaction
               // this is the sub-total of the split detail
@@ -623,6 +621,8 @@ void QueryTable::constructTransactionTable(void)
           }
 
           // track accts that will need opening and closing balances
+          //FIXME in some cases it will show the opening and closing 
+          //balances but no transactions if the splits are all filtered out -- asoliverez
           accts.insert (splitAcc.id(), splitAcc);
         }
 
@@ -668,14 +668,17 @@ void QueryTable::constructTransactionTable(void)
           //--- default case includes all transaction details
           else {
 
+            //this is when the splits are going to be shown as children of the main split
             if ((splits.count() > 2) && use_summary) {
               qA["value"] = "";
 
               //convert to lowest fraction
               qA["split"] = ((-(*it_split).shares()) * xr).convert(fraction).toString();
               qA["rank"] = "1";
-            }
-            else {
+            } else {
+              //this applies when the transaction has only 2 splits, or each split is going to be 
+              //shown separately, eg. transactions by category
+
               qA["split"] = "";
 
               //multiply by currency and convert to lowest fraction
@@ -700,13 +703,12 @@ void QueryTable::constructTransactionTable(void)
 
             if (use_transfers || (splitAcc.isIncomeExpense() && m_config.includes(splitAcc)))
             {
-              if(qA["rank"] == "1"
-                 && !transaction_text ) {
-                if( m_config.match( &(*it_split) )  ) {
+              //if it matches the text of the main split of the transaction or
+              //it matches this particular split, include it
+              //otherwise, skip it
+              if(transaction_text
+                 || m_config.match( &(*it_split) )) {
                   m_rows += qA;
-                }
-              } else {
-                m_rows += qA;
               }
             }
           }
@@ -743,11 +745,12 @@ void QueryTable::constructTransactionTable(void)
             //check the specific split against the filter for text and amount
             //TODO this should be done at the engine, but I have no clear idea how -- asoliverez
             if(m_config.match( &(*it_split) )
-              || transaction_text )
+              || transaction_text ) {
               m_rows += qS;
 
-            // track accts that will need opening and closing balances
-            accts.insert (splitAcc.id(), splitAcc);
+              // track accts that will need opening and closing balances
+              accts.insert (splitAcc.id(), splitAcc);
+            }
           }
         }
       }

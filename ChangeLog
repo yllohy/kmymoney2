@@ -1,3 +1,9 @@
+2009-03-16 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed text matching bug in transaction reports when splits are displayed
+    on its own, eg Transactions by Category reports
+  * Updated Spanish translation
+  * Updated Argentinian translation
+
 2009-03-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Investment Moving Average Price Graph
 
