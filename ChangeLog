@@ -1,3 +1,8 @@
+
+2009-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Also reload OFX bank information files during setup if their
+    size is less than 1024 bytes
+
 2009-03-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed month-by-month budget report when fiscal year starts in a month other than January
 

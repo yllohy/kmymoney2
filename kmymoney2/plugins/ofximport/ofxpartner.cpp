@@ -64,6 +64,13 @@ void setDirectory(const QString& dir)
   directory = dir;
 }
 
+bool needReload(const QFileInfo& i)
+{
+  return ((!i.isReadable())
+  || (i.lastModified().addDays(7) < QDateTime::currentDateTime())
+  || (i.size() < 1024));
+}
+
 void ValidateIndexCache(void)
 {
   // TODO (Ace) Check whether these files exist and are recent enough before getting them again
@@ -77,17 +84,17 @@ void ValidateIndexCache(void)
 
   fname = directory + kBankFilename;
   QFileInfo i(fname.path());
-  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+  if(needReload(i))
     post("T=1&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER), fname);
 
   fname = directory + kCcFilename;
   i = QFileInfo(fname.path());
-  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+  if(needReload(i))
     post("T=2&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER) ,fname);
 
   fname = directory + kInvFilename;
   i = QFileInfo(fname.path());
-  if(!i.isReadable() || i.lastModified().addDays(7) < QDateTime::currentDateTime())
+  if(needReload(i))
     post("T=3&S=*&R=1&O=0&TEST=0", attr, KURL("http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER), fname);
 }
 
