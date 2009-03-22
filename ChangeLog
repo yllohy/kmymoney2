@@ -1,4 +1,7 @@
 
+2009-03-22 Fernando Vilas <fvilas@iname.com>
+  * Fixed bug in transaction date filter for db
+
 2009-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Resolved some compiler warnings
 

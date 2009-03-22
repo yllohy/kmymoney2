@@ -2691,7 +2691,7 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
     connector = " and ";
   }
   if (start != QDate()) {
-    dateClause += QString("%1 (postDate > '%2')").arg(connector).arg(start.toString(Qt::ISODate));
+    dateClause += QString("%1 (postDate >= '%2')").arg(connector).arg(start.toString(Qt::ISODate));
   }
   // now get a list of transaction ids
   // if we have only a date filter, we need to build the list from the tx table
