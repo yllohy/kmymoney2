@@ -295,7 +295,7 @@ inline MyMoneyMoney::MyMoneyMoney(const double dAmount, const signed64 denom)
 {
   double adj = dAmount < 0 ? -0.5 : 0.5;
   m_denom = denom;
-  m_num = static_cast<signed64> (dAmount * m_denom + adj);
+  m_num = (signed64) (dAmount * (double)m_denom + adj);
 }
 
 #if HAVE_LONG_DOUBLE

@@ -1,4 +1,7 @@
 
+2009-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Resolved some compiler warnings
+
 2009-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Also reload OFX bank information files during setup if their
     size is less than 1024 bytes
