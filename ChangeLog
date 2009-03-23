@@ -1,4 +1,7 @@
 
+2009-03-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed balance problem with DB backend
+
 2009-03-22 Fernando Vilas <fvilas@iname.com>
   * Fixed bug in transaction date filter for db
 

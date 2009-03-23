@@ -2368,7 +2368,7 @@ const QMap<QString, MyMoneyMoney> MyMoneyStorageSql::fetchBalance(const QStringL
 
   QMap<QString, MyMoneyMoney> returnValue;
   MyMoneySqlQuery q(const_cast <MyMoneyStorageSql*> (this));
-  QString queryString = "SELECT action, sharesFormatted, accountId, postDate "
+  QString queryString = "SELECT action, shares, accountId, postDate "
                         "FROM kmmSplits WHERE txType = 'N' AND accountId in (";
 
   for (unsigned i = 0; i < idList.count(); ++i) {
