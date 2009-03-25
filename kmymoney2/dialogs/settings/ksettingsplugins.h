@@ -38,14 +38,10 @@ public:
     KSettingsPlugins(QWidget* parent = 0);
     ~KSettingsPlugins();
 
-    void initPlugins(int pluginsNumber);
-
 public slots:
-    void slotApplyPlugins();
-
-private:
-    class Private;
-    Private* const d;
+    void slotLoadPlugins();
+    void slotSavePlugins();
+    void slotDefaultsPlugins();
 };
 
 #endif // KSETTINGSPLUGINS_H

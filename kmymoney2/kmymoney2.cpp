@@ -1808,9 +1808,6 @@ void KMyMoney2App::slotSettings(void)
   KSettingsForecast* forecastPage = new KSettingsForecast();
   KSettingsPlugins* pluginsPage = new KSettingsPlugins();
 
-  KMyMoneyPlugin::PluginLoader::PluginList list = d->m_pluginLoader->pluginList();
-  pluginsPage->initPlugins(list.count());
-
   // ... and add them to the dialog
   dlg->addPage(generalPage, i18n("General"), "misc");
   dlg->addPage(registerPage, i18n("Register"), "ledger");
@@ -1824,7 +1821,8 @@ void KMyMoney2App::slotSettings(void)
   dlg->addPage(pluginsPage, i18n("Plugins"), "connect_no");
 
   connect(dlg, SIGNAL(settingsChanged()), this, SLOT(slotUpdateConfiguration()));
-  connect(dlg, SIGNAL(okClicked()), pluginsPage, SLOT(slotApplyPlugins()));
+  connect(dlg, SIGNAL(okClicked()), pluginsPage, SLOT(slotSavePlugins()));
+  connect(dlg, SIGNAL(defaultClicked()), pluginsPage, SLOT(slotDefaultsPlugins()));
 
   dlg->show();
 }
@@ -5748,47 +5746,51 @@ void KMyMoney2App::loadPlugins(void)
 {
   d->m_pluginLoader = new KMyMoneyPlugin::PluginLoader(this);
 
-  connect( d->m_pluginLoader, SIGNAL( replug() ), this, SLOT( slotPluginPlug() ) );
+  connect( d->m_pluginLoader, SIGNAL( plug(KPluginInfo*) ), this, SLOT( slotPluginPlug(KPluginInfo*) ) );
+  connect( d->m_pluginLoader, SIGNAL( unplug(KPluginInfo*) ), this, SLOT( slotPluginUnplug(KPluginInfo*) ) );
 
   d->m_pluginLoader->loadPlugins();
 }
 
-void KMyMoney2App::slotPluginPlug(void)
+void KMyMoney2App::slotPluginPlug(KPluginInfo* info)
 {
-  KMyMoneyPlugin::PluginLoader::PluginList list = d->m_pluginLoader->pluginList();
+  KMyMoneyPlugin::Plugin* plugin = d->m_pluginLoader->getPluginFromInfo(info);
 
-  for(KMyMoneyPlugin::PluginLoader::PluginList::Iterator it = list.begin() ; it != list.end() ; ++it) {
-    KMyMoneyPlugin::Plugin* plugin = (*it)->plugin();
+  // check for online plugin
+  KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
+  // check for importer plugin
+  KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
 
-    if (!plugin)
-      continue;
+  // plug the plugin
+  guiFactory()->addClient(plugin);
 
-    // check for online plugin
-    KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
-    // check for importer plugin
-    KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
+  if(op)
+    m_onlinePlugins[plugin->name()] = op;
 
-    if ((*it)->shouldLoad()) {
-      // plug the plugin
-      guiFactory()->addClient(plugin);
+  if(ip)
+    m_importerPlugins[plugin->name()] = ip;
 
-      if(op)
-        m_onlinePlugins[plugin->name()] = op;
+  slotUpdateActions();
+}
 
-      if(ip)
-        m_importerPlugins[plugin->name()] = ip;
+void KMyMoney2App::slotPluginUnplug(KPluginInfo* info)
+{
+  KMyMoneyPlugin::Plugin* plugin = d->m_pluginLoader->getPluginFromInfo(info);
 
-    } else {
-      // unplug the plugin
-      guiFactory()->removeClient(plugin);
+  // check for online plugin
+  KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
+  // check for importer plugin
+  KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
 
-      if(op)
-        m_onlinePlugins.erase(plugin->name());
+  // unplug the plugin
+  guiFactory()->removeClient(plugin);
 
-      if(ip)
-        m_importerPlugins.erase(plugin->name());
-    }
-  }
+  if(op)
+    m_onlinePlugins.erase(plugin->name());
+
+  if(ip)
+    m_importerPlugins.erase(plugin->name());
+
   slotUpdateActions();
 }
 

@@ -63,6 +63,7 @@ class IMyMoneyStorage;
 class KFindTransactionDlg;
 class TransactionEditor;
 class KEndingBalanceDlg;
+class KPluginInfo;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }
 
@@ -1019,10 +1020,15 @@ public slots:
   void slotInstitutionNew(MyMoneyInstitution& institution);
 
   /**
-    * Called whenever a plugins loaded state changes
+    * Called whenever a plugin is plugged in
     */
-  void slotPluginPlug(void);
-  
+  void slotPluginPlug(KPluginInfo*);
+
+  /**
+    * Called whenever a plugin is unplugged
+    */
+  void slotPluginUnplug(KPluginInfo*);
+
 private:
   // bool verifyImportedData(const MyMoneyAccount& account);
 

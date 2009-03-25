@@ -27,78 +27,46 @@
 
 #include <qwidget.h>
 #include <qscrollview.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kplugininfo.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/export.h>
 
+class KPluginSelector;
+
 namespace KMyMoneyPlugin
 {
   class Plugin;
-  class ConfigWidget;
 
   class KMYMONEY_EXPORT PluginLoader : public QObject
   {
     Q_OBJECT
   public:
-    class KMYMONEY_EXPORT Info
-    {
-    public:
-      Info( const QString& name, const QString& comment, const QString& library, bool shouldLoad );
-      ~Info();
-      const QString& name() const;
-
-      const QString& comment() const;
-
-      const QString& library() const;
-
-      Plugin* plugin() const;
-      void setPlugin(Plugin*);
-
-      bool shouldLoad() const;
-      void setShouldLoad(bool);
-
-    private:
-      struct Private;
-      Private* d;
-    };
-
     PluginLoader(QObject* parent);
     virtual ~PluginLoader();
-    void loadPlugins();
     static PluginLoader* instance();
-    ConfigWidget* configWidget(QWidget* parent);
 
-    typedef QValueList<Info*> PluginList;
-
-    const PluginList& pluginList();
-
-    void loadPlugin( Info* );
-
-  signals:
-    void plug(KMyMoneyPlugin::PluginLoader::Info*);
-    void unplug(KMyMoneyPlugin::PluginLoader::Info*);
-    void replug();
+    void loadPlugins();
+    Plugin* getPluginFromInfo(KPluginInfo*);
+    KPluginSelector* pluginSelectorWidget();
 
   private:
-    friend class ConfigWidget;
-    friend class PluginCheckBox;
+    void loadPlugin(KPluginInfo*);
 
-    struct Private;
-    Private* d;
-  };
+  signals:
+    void plug(KPluginInfo*);
+    void unplug(KPluginInfo*);
+    void configChanged(Plugin*);  // consfiguration of the plugin has changed not the enabled/disabled state
 
-  class KMYMONEY_EXPORT ConfigWidget : public QScrollView
-  {
-    Q_OBJECT
-  public:
-    ConfigWidget( QWidget* parent );
-    ~ConfigWidget();
-  public slots:
-    void apply();
+  private slots:
+    void changed();
+    void changedConfigOfPlugin( const QCString & );
+
   private:
     struct Private;
     Private* d;

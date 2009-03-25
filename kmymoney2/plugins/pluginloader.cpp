@@ -30,6 +30,8 @@
 #include <kdebug.h>
 #include <kdialog.h>
 #include <kconfig.h>
+#include <kpluginselector.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -41,78 +43,19 @@ namespace KMyMoneyPlugin {
 
 //---------------------------------------------------------------------
 //
-// PluginLoader::Info
-//
-//---------------------------------------------------------------------
-struct PluginLoader::Info::Private {
-  QString m_name;
-  QString m_comment;
-  QString m_library;
-  Plugin* m_plugin;
-  bool m_shouldLoad;
-};
-
-PluginLoader::Info::Info(const QString& name, const QString& comment, const QString& library, bool shouldLoad)
-{
-  d=new Private;
-  d->m_name=name;
-  d->m_comment=comment;
-  d->m_library=library;
-  d->m_plugin=0;
-  d->m_shouldLoad=shouldLoad;
-}
-
-PluginLoader::Info::~Info()
-{
-  delete d;
-}
-
-const QString& PluginLoader::Info::name() const
-{
-  return d->m_name;
-}
-
-const QString& PluginLoader::Info::comment() const
-{
-  return d->m_comment;
-}
-
-const QString& PluginLoader::Info::library() const
-{
-  return d->m_library;
-}
-
-Plugin* PluginLoader::Info::plugin() const
-{
-  return d->m_plugin;
-}
-
-void PluginLoader::Info::setPlugin(Plugin* plugin)
-{
-  d->m_plugin=plugin;
-}
-
-bool PluginLoader::Info::shouldLoad() const
-{
-  return d->m_shouldLoad;
-}
-
-void PluginLoader::Info::setShouldLoad(bool value)
-{
-  d->m_shouldLoad=value;
-}
-
-//---------------------------------------------------------------------
-//
 // PluginLoader
 //
 //---------------------------------------------------------------------
 static PluginLoader* s_instance = 0;
 
+typedef QMap<QString, Plugin*> PluginsMap;
+
 struct PluginLoader::Private
 {
-  QObject*   m_parent;
-  PluginList m_pluginList;
+  QObject*          m_parent;
+  KPluginInfo::List m_pluginList;
+  KPluginSelector*  m_pluginSelector;
+  PluginsMap        m_loadedPlugins;
 };
 
 PluginLoader::PluginLoader(QObject* parent)
@@ -120,31 +63,20 @@ PluginLoader::PluginLoader(QObject* parent)
   Q_ASSERT( s_instance == 0 );
   s_instance = this;
 
-  d=new Private;
+  d = new Private;
+
   d->m_parent = parent;
 
   KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
-  KConfig* config = KGlobal::config();
-  config->setGroup( QString("KMyMoneyPlugin/EnabledPlugin") );
+  d->m_pluginList = KPluginInfo::fromServices(offers);
 
-  KTrader::OfferList::ConstIterator iter;
-  for(iter = offers.begin(); iter != offers.end(); ++iter) {
+  d->m_pluginSelector = new KPluginSelector(NULL);
+  d->m_pluginSelector->setShowEmptyConfigPage(false);
+  d->m_pluginSelector->addPlugins(d->m_pluginList);
+  d->m_pluginSelector->load();
 
-    KService::Ptr service = *iter;
-    QString name    = service->name();
-    QString comment = service->comment();
-    QString library = service->library();
-
-    if (library.isEmpty() || name.isEmpty() ) {
-        kdWarning() << "KMyMoneyPlugin::PluginLoader: Plugin had an empty name or library file - this should not happen." << endl;
-        continue;
-    }
-
-    bool load = config->readBoolEntry( name, true );
-
-    Info* info = new Info( name, comment, library, load );
-    d->m_pluginList.append( info );
-  }
+  connect(d->m_pluginSelector, SIGNAL(changed(bool)), this, SLOT(changed()));
+  connect(d->m_pluginSelector, SIGNAL(configCommitted(const QCString &)), this, SLOT(changedConfigOfPlugin(const QCString &)));
 }
 
 PluginLoader::~PluginLoader()
@@ -154,43 +86,65 @@ PluginLoader::~PluginLoader()
 
 void PluginLoader::loadPlugins()
 {
-  for( PluginList::Iterator it = d->m_pluginList.begin(); it != d->m_pluginList.end(); ++it ) {
+  for( KPluginInfo::List::Iterator it = d->m_pluginList.begin(); it != d->m_pluginList.end(); ++it )
     loadPlugin( *it );
-  }
-  emit replug();
 }
 
-void PluginLoader::loadPlugin( Info* info )
+void PluginLoader::loadPlugin(KPluginInfo* info)
 {
-  if ( info->plugin() == 0 && info->shouldLoad() ) {
-    Plugin *plugin = 0;
-    int error;
-    plugin = KParts::ComponentFactory
-             ::createInstanceFromLibrary<Plugin>(info->library().local8Bit().data(),
-                                                 d->m_parent, info->name(), QStringList(), &error);
+  if (info->isPluginEnabled()) {
+    Plugin* plugin = getPluginFromInfo(info);
 
-    if (plugin)
-      kdDebug() << "KMyMoneyPlugin::PluginLoader: Loaded plugin " << plugin->name()<< endl;
-    else
-    {
-      kdWarning() << "KMyMoneyPlugin::PluginLoader:: createInstanceFromLibrary returned 0 for "
-                  << info->name()
-                  << " (" << info->library() << ")"
-                  << " with error number "
-                  << error << endl;
-      if (error == KParts::ComponentFactory::ErrNoLibrary)
-        kdWarning() << "KLibLoader says: "
-                    << KLibLoader::self()->lastErrorMessage() << endl;
+    if (!plugin) {
+      // the plugin is enabled but it is not loaded
+      KService::Ptr service = info->service();
+      int error = 0;
+      Plugin* plugin = KParts::ComponentFactory
+                ::createInstanceFromService<Plugin>(service, d->m_parent, info->name(), QStringList(), &error);
+      if (plugin) {
+        kdDebug() << "KMyMoneyPlugin::PluginLoader: Loaded plugin " << plugin->name() << endl;
+        d->m_loadedPlugins.insert(info->name(), plugin);
+        emit PluginLoader::instance()->plug(info);
+      }
+      else {
+        kdWarning() << "KMyMoneyPlugin::PluginLoader:: createInstanceFromService returned 0 for "
+                    << info->name()
+                    << " with error number "
+                    << error << endl;
+        if (error == KParts::ComponentFactory::ErrNoLibrary)
+          kdWarning() << "KLibLoader says: "
+                      << KLibLoader::self()->lastErrorMessage() << endl;
+      }
     }
-    info->setPlugin(plugin);
   }
-  if ( info->plugin() ) // Do not emit if we had trouble loading the plugin.
-    emit PluginLoader::instance()->plug( info );
+  else {
+    if (getPluginFromInfo(info) != NULL) {
+      // everybody interested should say goodbye to the plugin
+      emit PluginLoader::instance()->unplug(info);
+      d->m_loadedPlugins.erase(info->name());
+    }
+  }
 }
 
-const PluginLoader::PluginList& PluginLoader::pluginList()
+void PluginLoader::changed()
 {
-  return d->m_pluginList;
+  loadPlugins();
+}
+
+void PluginLoader::changedConfigOfPlugin(const QCString & name)
+{
+  PluginsMap::iterator itPlugin = d->m_loadedPlugins.find(QString(name));
+  if (itPlugin != d->m_loadedPlugins.end())
+    configChanged(*itPlugin);
+}
+
+Plugin* PluginLoader::getPluginFromInfo(KPluginInfo* info)
+{
+  PluginsMap::iterator itPlugin = d->m_loadedPlugins.find(info->name());
+  if (itPlugin != d->m_loadedPlugins.end())
+    return *itPlugin;
+  else
+    return NULL;
 }
 
 PluginLoader* PluginLoader::instance()
@@ -199,81 +153,9 @@ PluginLoader* PluginLoader::instance()
   return s_instance;
 }
 
-
-//---------------------------------------------------------------------
-//
-// ConfigWidget
-//
-//---------------------------------------------------------------------
-ConfigWidget* PluginLoader::configWidget( QWidget* parent )
+KPluginSelector* PluginLoader::pluginSelectorWidget()
 {
-  return new ConfigWidget( parent );
-}
-
-class PluginCheckBox :public QCheckBox
-{
-public:
-  PluginCheckBox( PluginLoader::Info* info, QWidget* parent )
-    : QCheckBox( QString("%1 (%2)").arg(info->name()).arg(info->comment()), parent ), info( info )
-    {
-      setChecked( info->shouldLoad() );
-    }
-  PluginLoader::Info* info;
-};
-
-struct ConfigWidget::Private
-{
-  QValueList< PluginCheckBox* > _boxes;
-};
-
-ConfigWidget::ConfigWidget( QWidget* parent )
-  :QScrollView( parent, "KMyMoneyPlugin::PluginLoader::ConfigWidget" )
-{
-  d=new Private;
-  QWidget* top = new QWidget( viewport() );
-  addChild( top );
-  setResizePolicy( AutoOneFit );
-
-  QVBoxLayout* lay = new QVBoxLayout( top, KDialog::marginHint(), KDialog::spacingHint() );
-
-  PluginLoader::PluginList list = PluginLoader::instance()->d->m_pluginList;
-  for( PluginLoader::PluginList::Iterator it = list.begin(); it != list.end(); ++it ) {
-    PluginCheckBox* cb = new PluginCheckBox( *it, top );
-    lay->addWidget( cb );
-    d->_boxes.append( cb );
-  }
-
-  lay->addStretch(10);
-}
-
-ConfigWidget::~ConfigWidget()
-{
-  delete d;
-}
-
-void ConfigWidget::apply()
-{
-  KConfig* config = KGlobal::config();
-  config->setGroup( QString( "KMyMoneyPlugin/EnabledPlugin" ) );
-  bool changes = false;
-
-  for( QValueList<PluginCheckBox*>::Iterator it = d->_boxes.begin(); it != d->_boxes.end(); ++it ) {
-    bool orig = (*it)->info->shouldLoad();
-    bool load = (*it)->isChecked();
-    if ( orig != load ) {
-      changes = true;
-      config->writeEntry( (*it)->info->name(), load );
-      (*it)->info->setShouldLoad(load);
-      if ( load ) {
-        PluginLoader::instance()->loadPlugin( (*it)->info);
-      }
-      else {
-        if ( (*it)->info->plugin() ) // Do not emit if we had trouble loading plugin.
-          emit PluginLoader::instance()->unplug( (*it)->info);
-      }
-    }
-  }
-  emit PluginLoader::instance()->replug();
+  return d->m_pluginSelector;
 }
 
 } // namespace

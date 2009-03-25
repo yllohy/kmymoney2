@@ -24,48 +24,43 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <klocale.h>
 #include <kdialog.h>
+#include <kpluginselector.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kmymoney2/plugins/pluginloader.h"
 #include "ksettingsplugins.h"
 
-class KSettingsPlugins::Private
-{
-public:
-  Private() : pluginsNumber(0), pluginConfig(0) {}
-
-  QLabel*                       pluginsNumber;
-  KMyMoneyPlugin::ConfigWidget* pluginConfig;
-};
-
 KSettingsPlugins::KSettingsPlugins(QWidget* parent)
-  : QWidget(parent), d(new Private)
+  : QWidget(parent)
 {
   QVBoxLayout *layout = new QVBoxLayout(this);
-  d->pluginsNumber    = new QLabel(this);
-  d->pluginConfig     = KMyMoneyPlugin::PluginLoader::instance()->configWidget(this);
-
-  layout->addWidget(d->pluginsNumber);
-  layout->addWidget(d->pluginConfig);
+  KMyMoneyPlugin::PluginLoader::instance()->pluginSelectorWidget()->reparent(this, QPoint());
+  layout->addWidget(KMyMoneyPlugin::PluginLoader::instance()->pluginSelectorWidget());
   layout->setSpacing(KDialog::spacingHint());
 }
 
 KSettingsPlugins::~KSettingsPlugins()
 {
-  delete d;
 }
 
-void KSettingsPlugins::initPlugins(int pluginsNumber)
+void KSettingsPlugins::slotLoadPlugins()
 {
-  d->pluginsNumber->setText(i18n("%1 plugin(s) found").arg(pluginsNumber));
+  KMyMoneyPlugin::PluginLoader::instance()->pluginSelectorWidget()->load();
 }
 
-void KSettingsPlugins::slotApplyPlugins()
+void KSettingsPlugins::slotSavePlugins()
 {
-  d->pluginConfig->apply();
+  KMyMoneyPlugin::PluginLoader::instance()->pluginSelectorWidget()->save();
+}
+
+void KSettingsPlugins::slotDefaultsPlugins()
+{
+  KMyMoneyPlugin::PluginLoader::instance()->pluginSelectorWidget()->defaults();
 }
 
 #include "ksettingsplugins.moc"
