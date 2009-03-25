@@ -327,10 +327,19 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   m_searchWidget->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
   KPayeesViewDeclLayout->insertWidget(0, m_searchWidget);
 
-  QSplitter* splitter = new QSplitter(this);
-  m_payeesList->reparent(splitter, QPoint(0,0), true);
-  m_tabWidget->reparent(splitter, QPoint(0, 0), true);
-  layout10->addWidget(splitter);
+  m_splitter = new QSplitter(this);
+  m_payeesList->reparent(m_splitter, QPoint(0,0), true);
+  m_tabWidget->reparent(m_splitter, QPoint(0, 0), true);
+  m_splitter->setResizeMode(m_tabWidget, QSplitter::Stretch);
+  m_splitter->setOpaqueResize();
+  layout10->addWidget(m_splitter);
+
+  // use the size settings of the last run (if any)
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  QValueList<int> sizes = config->readIntListEntry("KPayeesViewSplitterSize");
+  if(sizes.size() == 2)
+    m_splitter->setSizes(sizes);
 
   m_transactionView->setSorting(-1);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);
@@ -385,6 +394,10 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
 
 KPayeesView::~KPayeesView()
 {
+  // remember the splitter settings for startup
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KPayeesViewSplitterSize", m_splitter->sizes());
 }
 
 void KPayeesView::slotQueueUpdate(void)
