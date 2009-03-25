@@ -1,4 +1,7 @@
 
+2009-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch from Cristian Onet (payees_view.patch)
+
 2009-03-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed balance problem with DB backend
   * Updated .desktop files with Romanian entries from Cristian Onet

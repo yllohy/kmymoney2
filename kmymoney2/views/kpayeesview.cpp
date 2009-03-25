@@ -324,6 +324,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   // create the searchline widget
   // and insert it into the existing layout
   m_searchWidget = new KListViewSearchLineWidget(m_payeesList, this);
+  m_searchWidget->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
   KPayeesViewDeclLayout->insertWidget(0, m_searchWidget);
 
   QSplitter* splitter = new QSplitter(this);
