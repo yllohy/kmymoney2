@@ -1002,7 +1002,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
       MyMoneyReport::eMonths,
-      MyMoneyTransactionFilter::currentMonth,
+      MyMoneyTransactionFilter::today,
       false,
       i18n("Net Worth Today"),
       i18n("Default Report")
