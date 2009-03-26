@@ -1,17 +1,18 @@
-# translation of es_AR.po to Español (Argentina)
+# translation of es_AR.po to Español Argentina
 # This file is put in the public domain.
 #
 # Mvillarino <mvillarino@gmail.com>, 2005.
 # Alvaro Soliverez <asoliverez@ciudad.com.ar>, 2007.
 # Alvaro Soliverez <asoliverez@gmail.com>, 2007, 2008, 2009.
+# Sergio Minini <sergiom99@hotmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: es_AR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-03-16 00:28-0300\n"
-"Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
-"Language-Team: Español (Argentina) <es@li.org>\n"
+"PO-Revision-Date: 2009-03-25 23:48-0300\n"
+"Last-Translator: Sergio Minini <sergiom99@hotmail.com>\n"
+"Language-Team: Español Argentina <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1909,7 +1910,7 @@ msgstr ""
 
 #: mymoney/mymoneyfile.cpp:1616
 msgid "  * action marked as interest in split of transaction '%1'."
-msgstr "  * action marcada como interés en partida del asiento '%1'."
+msgstr "  * acción marcada como interés en partida del asiento '%1'."
 
 #: mymoney/mymoneyfile.cpp:1643
 msgid "  * Payee id updated in split of schedule '%1'."
@@ -9204,13 +9205,13 @@ msgstr ""
 "\n"
 "Este mecanismo sirve por si usted pierde su llave y no puede acceder a los "
 "datos. Activando esta opción, los desarrolladores de KMyMoney podrán "
-"descifrar los datos y devolveselos en un formato lejible. Se le advierte de "
-"que tendrá que responder unas preguntas detalladas acerca del contido de sus "
+"descifrar los datos y devolvérselos en un formato legible. Se le advierte de "
+"que tendrá que responder unas preguntas detalladas acerca del contenido de sus "
 "datos antes de poder enviarlos."
 
 #: dialogs/settings/rc.cpp:97
 msgid "Homepage Settings"
-msgstr "Configuración de la página de início"
+msgstr "Configuración de la página de inicio"
 
 #: dialogs/settings/rc.cpp:98
 msgid "Up"
@@ -9225,10 +9226,10 @@ msgid ""
 "Selected entries are shown on the home page of the application.<p>\n"
 "Use the buttons and checkboxes to customize the layout of the home page."
 msgstr ""
-"Las entradas seleccionadas se muestran en la página de início de la "
+"Las entradas seleccionadas se muestran en la página de inicio de la "
 "aplicación.<p>\n"
 "Emplee los botones y casillas para personalizar el aspecto de la página de "
-"início."
+"inicio."
 
 #: dialogs/settings/rc.cpp:101
 msgid "Homepage/Summary page font scaling"

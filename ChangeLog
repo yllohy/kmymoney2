@@ -2,6 +2,7 @@
 2009-03-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed Net Worth Today report to show current date's balance 
     instead of end of the month -- bug #2714063
+  * Updated Argentinian translation - Provided by Sergio Minini
 
 2009-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch from Cristian Onet (payees_view.patch)
