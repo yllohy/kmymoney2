@@ -2230,6 +2230,29 @@ bool MyMoneyFile::isTransfer(const MyMoneyTransaction& t) const
   return rc;
 }
 
+bool MyMoneyFile::referencesClosedAccount(const MyMoneyTransaction& t) const
+{
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  const QValueList<MyMoneySplit>& list = t.splits();
+  for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+    if(referencesClosedAccount(*it_s))
+      break;
+  }
+  return it_s != list.end();
+}
+
+bool MyMoneyFile::referencesClosedAccount(const MyMoneySplit& s) const
+{
+  if(s.accountId().isEmpty())
+    return false;
+
+  try {
+    return account(s.accountId()).isClosed();
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+  return false;
+}
 
 MyMoneyFileTransaction::MyMoneyFileTransaction() :
   m_isNested(MyMoneyFile::instance()->hasTransaction()),

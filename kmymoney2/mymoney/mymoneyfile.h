@@ -1314,6 +1314,17 @@ public:
   bool isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck = MyMoneyFileBitArray()) const;
 
   /**
+    * Returns true if any of the accounts referenced by the splits
+    * of transaction @a t is closed.
+    */
+  bool referencesClosedAccount(const MyMoneyTransaction& t) const;
+
+  /**
+    * Returns true if the accounts referenced by the split @a s is closed.
+    */
+  bool referencesClosedAccount(const MyMoneySplit& s) const;
+
+  /**
     * This method checks if the given check no &p no is used in
     * a transaction referencing account &p accId. If  @p accId is empty,
     * @p false is returned.
