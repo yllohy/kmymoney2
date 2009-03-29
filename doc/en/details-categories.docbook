@@ -14,7 +14,7 @@
 <title id="details.categories.title">Categories</title>
 
 <para>
-  The Categories screen provides a summary of all the existing categories transactions are filed under. The categories are split into income and expense, and a balance is displayed for each category.
+  The Categories screen provides a summary of all the existing categories under which transactions are filed. The categories are split into income and expense, and a balance is displayed for each category.
 </para>
 
 <para>
@@ -70,7 +70,7 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 <title>VAT Support</title>
 	
 <para>
- You can turn an expense/income account into a VAT 
+ You can turn an expense/income category into a VAT 
  category, which means that it receives all the splits that actually make 
  up the VAT payment towards the government. The percentage rate can be 
  entered.
@@ -86,17 +86,17 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 <para>
  Example: In Germany, there are three VAT percentages (0, 7 and 19%). So I 
  have a main category "VAT paid" and three subcategories, one for each 
- percentage rate. Next I have this on the income and the expense side so a 
- total of 8 categories.  For the goods I buy, I select one of the above 
- mentioned categories as the "VAT category assignment".
+ percentage rate. I create these on both the income and the expense sides so
+ that I have eight categories in total.  For the goods I buy, I select one 
+ of the above mentioned categories as the "VAT category assignment".
 </para>
  
 <para>
- When I buy goods, I enter them into a transaction. Let"s assume I have 
+ When I buy goods, I enter them into a transaction. Let's assume I have 
  selected the gross amount entry method, once I enter the category and 
- amount, KMyMoney will recognize that there"s a VAT assignment and 
- calculates the VAT part, creates a second split with the VAT account and 
- VAT amount and reduces the category amount.
+ amount, KMyMoney will recognize that there's a VAT assignment and 
+ calculate the VAT part, create a second split with the VAT account and 
+ VAT amount and reduce the category amount.
 </para>
  
 <para>
@@ -109,7 +109,7 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 <sect1 id="details.categories.delete">
 <title>Deleting categories</title>
 <para>
-	To delete a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.  Deleting is only possible if there are no transactions under that category. If a parent category is deleted, all the sub-categories are moved up one level.   
+	To delete a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.  Deleting is only possible if there are no transactions under that category. If you try to delete a parent category, a dialog explains that, if you delete the parent category, its sub-categories are moved up one level and asks if you want to delete them all at the same time.
 </para>
 
 </sect1>

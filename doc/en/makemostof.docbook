@@ -236,4 +236,50 @@ Anything you owe that is not a loan.
 </sect2>
 
 </sect1>
+
+<sect1 id="makingmostof.usefultips">
+<title>Useful Tips</title>
+
+<para>
+    Unless you keep you money under the floorboards, you probably make use of one or more institutions where you have accounts which may be in credit or debit. In order to familiarise yourself with the way &kappname; works, choose an account you want to track of with &kappname; and select File>New in order to set up an account file.
+</para>
+
+<para>
+    If you have used another personal finance manager, you may be able to import the data from it into &kappname;.
+</para>
+
+<para>
+    If you have some regular receipts into or outgoings from this account, go to Payee and enter the names of both the payers and the payees involved; then go to Schedule and fill in a New Schedule for each transaction. If you haven't entered the payee or payer, &kappname; will offer you the opportunity to do this in the middle of entering the schedule.
+</para>
+
+<para>
+    To add other new transactions go to Ledgers; you can add new payees and categories in the middle of a transaction or by going to Payees or Categories before entering the transaction.
+</para>
+
+<para>
+    You will probably find that the default Categories do not exactly match your needs; you can easily delete ones you know you are never going to need and add others that you need. But when you are entering a transaction, you only have to type a few letters of a category and &kappname; will offer you a drop down list of the matching categories from which to choose.
+</para>
+
+<para>
+    You can add different accounts managed by different institutions; the preferred one will show when you open &kappname; but you can quickly switch to any of the others.
+</para>
+
+<para>
+    When you make a payment, &kappname; will work out what the next cheque number should be; delete this if you are not making a cheque payment or edit it if the first cheque you enter is not cheque number 1.
+</para>
+
+<para>
+    Every so often you may get statements of your account from the institutions you use; you can reconcile your &kappname; accounts against these statements so that you have an accurate statement of the current state of your finances.
+</para>
+
+<para>
+    If you go to Reports, you will find several default reports; to customise these, open one similar to the sort you perfer and then select 'New' (not 'Copy'); you can then customise this to your needs and mark it as a preferred report if you wish.
+</para>
+
+<para>
+    Though &kappname; is not intended for use in a business context, if you are running a business on your own and so do not need payroll functions, you will probably find that &kappname; is sufficiently customisable to meet your needs particularly as it comes with budgeting and forecasting features and you can export your customised reports via CSV into other applications.
+</para>
+
+</sect1>
+
 </chapter>

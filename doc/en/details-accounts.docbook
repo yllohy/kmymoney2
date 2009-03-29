@@ -43,9 +43,9 @@
   transactions, and balance or value of each account.</para>
 
   <para>Income and Expense lists the categories that each transaction is filed
-  under and provides similar functionality as the Categories screen. The
+  under and provides similar functionality to the Categories screen. The
   options and features involving Income and Expense accounts are described in
-  detail in the upcoming Categories chapter. The rest of this chapter will
+  detail in the Categories chapter. The rest of this chapter will
   focus on Asset and Liability account functionality.</para>
 
   <sect1 id="details.accounts.create">
@@ -538,7 +538,7 @@
     after right clicking on the entry to show the popup menu select
     <guimenuitem>Delete</guimenuitem> from the popup menu.</para>
 
-    <para>If you are unable to delete account which looks like it has no
+    <para>If you are unable to delete an account which looks like it has no
     transactions in it, check your filter. See <menuchoice>
         <guimenu>Settings</guimenu>
 

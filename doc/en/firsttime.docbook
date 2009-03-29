@@ -22,7 +22,7 @@
 <title>Running &kappname; for the first time</title>
 
 <para>
-	After starting &kappname; and the application has fully loaded two windows will be opened.  The top most window, 'Tip of the Day' presents a method for the application to let you know about important or useful pieces of information.
+	Once &kappname; has fully loaded two windows will be opened. The top window, 'Tip of the Day' offers one of a series of important or useful pieces of information about the application.
 	<screenshot>
 	<screeninfo>Tip of the Day</screeninfo>
 	<mediaobject>
@@ -37,7 +37,7 @@
 </para>
 
 <para>
-It is highly recommended to quickly read through these tips by pressing on the <guibutton>Previous</guibutton> and <guibutton>Next</guibutton> buttons at the bottom of the window.
+You are recommended to quickly read through these tips by pressing on the <guibutton>Previous</guibutton> and <guibutton>Next</guibutton> buttons at the bottom of the window.
 </para>
 
 <para>
@@ -49,7 +49,7 @@ Once you have read the tips the window can be closed and will re-open each time 
 </para></note>
 
 <para>
-All tips have been extracted from the Frequency Asked Questions list (FAQ) that provides more detailed help and can be found on the project <ulink url="http://kmymoney2.sourceforge.net/faq.html">website</ulink> and in this manual.
+All tips have been extracted from the Frequently Asked Questions list (FAQ) that provides more detailed help and can be found on the project <ulink url="http://kmymoney2.sourceforge.net/faq.html">website</ulink> and in this manual.
 </para>
 
 <para>
@@ -240,6 +240,37 @@ The view selector consists of up to ten icons in the left side of the main windo
 				</inlinemediaobject>
 			</guiicon>
 			A collection of useful reports, providing alternate views of your financial data.
+		</para>
+	</listitem>
+        <listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="budgets_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Budgets View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Your budgets
+		</para>
+	</listitem>
+
+        <listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="forecast_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Forecast View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			This view provides a forecast of your accounts and categories
 		</para>
 	</listitem>
 
@@ -498,13 +529,13 @@ The backtrace is often the single most useful piece of information in solving cr
 </para>
 </formalpara>
 
-<formalpara><title>Try to reproduce it</title><para>Let us know if you were able to do so.  It's useful to know whether the bug only happened once and you couldn't get it to happen again; or whether it happens every time; or whether it happens sometimes but not others.</para>
+<formalpara><title>Try to reproduce it</title><para>Let us know if you were able to do so.  It's useful to know whether the bug only happened once and you couldn't get it to happen again or happens every time or happens sometimes but not others.</para>
 </formalpara>
 
-<formalpara><title>Include specific steps</title><para>This is a bad bug: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducible for me.&quot;</para>
+<formalpara><title>Include specific steps</title><para>This is a bad bug report: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug report is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducible for me.&quot;</para>
 </formalpara>
 
-<formalpara><title>Tell us what you expected to happen</title><para>In crashes this is obvious, but in more subtle bugs, sometimes you'll see a bug report that is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>
+<formalpara><title>Tell us what you expected to happen</title><para>In crashes this is obvious, but in more subtle bugs, sometimes you'll see a bug report where it is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>
 </formalpara>
 
 <formalpara><title>Consider running with debugging enabled</title><para>By compiling a version configured with --enable-debug=full you can ensure that the best possible backtraces are generated.  If you encounter a crash, run &kappname; again from within gdb, and reproduce the crash.  When it crashes, type &quot;bt&quot; to generate a backtrace.</para>
