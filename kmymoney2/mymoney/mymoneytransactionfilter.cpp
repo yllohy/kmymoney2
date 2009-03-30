@@ -398,27 +398,11 @@ bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
   filterSet.singleFilter.accountFilter =
   filterSet.singleFilter.categoryFilter = 0;
 
-  // in case of an inverted text match, we have to make sure that none of
-  // the splits matches
-  if(m_invertText && m_filterSet.singleFilter.textFilter) {
-    for(sp = matchingSplits.first(); sp != 0; sp = matchingSplits.next()) {
-      if(!matchText(sp))
-        return false;
-    }
-  }
-
   // check if we still have something to do
   if(filterSet.allFilter != 0) {
     for(sp = matchingSplits.first(); sp != 0;) {
-      // in case a split does not match the selected criteria, we simply remove it
-      // from the list of matching splits. In case of inverted text filtering
-      // we have already checked and don't need to do that here again
       MyMoneySplit* removeSplit = 0;
-      if(m_invertText) {
-        removeSplit = matchAmount(sp) ? 0 : sp;
-      } else {
-        removeSplit = (matchAmount(sp) && matchText(sp)) ? 0 : sp;
-      }
+      removeSplit = (matchAmount(sp) && matchText(sp)) ? 0 : sp;
 
       const MyMoneyAccount& acc = file->account(sp->accountId());
 
