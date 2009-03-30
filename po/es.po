@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-01 17:05+0100\n"
-"PO-Revision-Date: 2009-03-16 00:14-0300\n"
+"PO-Revision-Date: 2009-03-29 10:12-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -10185,7 +10185,7 @@ msgstr "Buscar asientos que contengan el siguiente texto"
 
 #: dialogs/rc.cpp:203
 msgid "Case sensitive"
-msgstr "Sensible a la caja"
+msgstr "Distinguir mayúsculas/minúsculas"
 
 #: dialogs/rc.cpp:204
 msgid "Treat text as regular expression"
