@@ -30,7 +30,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 </para>
 
 <para>
-  It allows for several key functions: viewing transactions, entering transactions, and editing or deleting existing transactions. Other functionality includes modifying account details, or reconciling the account. 
+  It allows for several key actions: viewing transactions, entering transactions, and editing or deleting existing transactions. Other functionality includes modifying account details, or reconciling the account. 
 </para>
   
 <para>
@@ -46,7 +46,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 	</screenshot>
 </para>
 
-  <para>The view consists of these components:
+  <para>The view has three elements:
 </para>
 
 <orderedlist numeration="upperalpha">
@@ -92,7 +92,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 	
 <para>
 	After you have entered some transactions they are displayed in the transaction list.  From here you can also  change transaction properties or even create new transactions directly in the list.
-	Using the Right Mouse Button on the header of the transaction list allows to change the sort order of the transactions.
+	Using the Right Mouse Button on the header of the transaction list allows you to change the sort order of the transactions.
 </para>
 </sect2>
 
@@ -100,10 +100,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 
 <sect1 id="details.ledger.transactions"><title>Entering Transactions</title>
 <para>
-Two methods of entering transactions into the ledger are available; using the transaction input form and entering the data directly into the transaction list.  The transaction form is displayed by default and this is the method we will discuss first.
-</para>
-<para>
-  To enter a transaction, first ensure that you have selected the correct account. To start entering a new transaction, double-clicking the empty line below the last transaction, or click the New button in the input area at the bottom of the screen. The fields in the input area then become available for entering information. 
+Two methods of entering transactions into the ledger are available; using the transaction input form and entering the data directly into the transaction list.  The transaction input form is displayed by default and this is the method we will discuss first.
 </para>
 <para>
 The fields in the input area match the information fields in the transactions list. Additional fields include the Memo field, for a more detailed description of the transaction and a Category selection. The Split button allows for the transaction to be split into multiple categories. 
@@ -111,7 +108,7 @@ The fields in the input area match the information fields in the transactions li
 </sect1>
 
 <sect1 id="details.ledger.transactionform">
-<title>Using the transaction form</title>
+<title>Using the transaction input form</title>
 
 <para>
 	<screenshot>
@@ -127,7 +124,7 @@ The fields in the input area match the information fields in the transactions li
 </para>
 	
 <para>
-The transaction input form at the bottom of the view is the interface for creating transactions.  Creating a transaction is as simple as choosing the transaction type, filling in the required information and then entering the transaction to the ledger.
+        The transaction input form at the bottom of the view is the interface for creating transactions.
 </para>
 
 <para>
@@ -135,37 +132,37 @@ The transaction input form at the bottom of the view is the interface for creati
 </para>
 
 <para>
-	Please note that the actual transaction method is not directly used by &kappname; but is purely for grouping/reporting purposes.
+	Please note that the actual transaction method is not used directly by &kappname; but is purely for grouping/reporting purposes.
 </para>
 
 <para>
-	If you are unsure what method to choose simply use Deposit for any money going into the account and Withdrawal for money coming out of the account.  The transaction methods and the differences between them are discussed in more detail within this manual.
+	If you are unsure which method to choose simply use Deposit for any money going into the account and Withdrawal for money coming out of the account.  The transaction methods and the differences between them are discussed in more detail elsewhere.
 </para>
 
 <para>
-Select the transaction method by clicking on one of the tabs.
+        Select the transaction method by clicking on one of the tabs.
 </para>
 
 <sect2>
-<title>Entering the required information</title>
+<title>The fields of a transaction</title>
 <para>
-	Enter the required information using the following notes on the available fields.  Note that many fields have 'Auto Completion' turned on.  That is the field will try and finish your input for you.  If you start typing &kappname; will offer alternatives matching the characters you have entered so far.  To select an entry click on it using the mouse or keyboard, or if your entry is not listed keep typing to add the new value.  The next time you type the value in, &kappname; will find it for you after the first few characters have been input.
+	Enter the information using the following notes on the available fields.  Note that many fields have 'Auto Completion' turned on.  That is, if you start typing, &kappname; will offer alternatives matching the characters you have entered so far.  To select an entry click on it using the mouse or keyboard, or if your entry is not listed keep typing to add the new value.  The next time you type the value in, &kappname; will find it for you after the first few characters have been input.
 </para>
 
 <sect3>
 <title>The Payee</title>
 <para>
-	The Payee is who the money came from/to.  If the payee is a new entry &kappname; will ask if you wish to add this to the Payees view.  Any other information related to a payee, such as the address details can be updated in this view later.
+	The Payee is who the money came from/to.  If the payee is a new entry &kappname; will ask if you wish to add this to the Payees view.  Any other information related to a payee or payer, such as address details can be updated in the Payees view later.
 </para>
 </sect3>
 
 <sect3>
 <title>The Category</title>
 <para>
-	The Category lets you associate this transaction with another account for accounting purposes and to let you create reports and or group certain transactions. Type the name of the category into the required field.  If you have entered the category and it does not exist then &kappname; will prompt you to create a new one.
+	The Category associates a transaction with an income or expense category for accounting and reporting purposes and enables you to group certain transactions. Type the name of the category into the required field.  If you have entered the category and it does not exist then &kappname; will prompt you to create a new one.
 </para>
 <para>
-	If this transaction is a multipart transaction, i.e you wish to associate the transaction with more than one category, &kappname; can let you do that.  An example transaction might be a cash machine withdrawal of 50 that you use 10 on food, 20 on beer and 20 as spare cash.  The transaction will therefore be assigned three categories, Food, Beer and Cash.  To assign these categories to the transaction click on the <guibutton>Split</guibutton> button.  This brings up the <link linkend="details.ledgers.split">Split Editor</link>. Enter the categories, creating any new ones as needed, and input the amount per category.  Click on <guibutton>OK</guibutton> to save the assignments.  Note that the category field in the transaction input form now displays <emphasis>Split transaction</emphasis>
+	If you wish to associate parts of the transaction with different categories, &kappname; can let you do that.  An example transaction might be a cash machine withdrawal of 50 of which you use 10 on food, 20 on beer and 20 as spare cash.  The transaction will therefore be assigned three categories, Food, Beer and Cash.  To assign these three parts to the three categories, Food, Beer and Cash, click on the <guibutton>Split</guibutton> button.  This brings up the <link linkend="details.ledgers.split">Split Editor</link>. Enter the categories, creating any new ones as needed, and input the amount per category.  Click on <guibutton>OK</guibutton> to save the assignments.  Note that the category field in the transaction input form now displays <emphasis>Split transaction</emphasis>
 </para>
 </sect3>
 
@@ -186,21 +183,54 @@ A one line memo can be entered if you wish to help you remember what the transac
 <sect3>
 <title>The Date</title>
 <para>
-	The transaction date can also be entered to specify when the transaction took place.  See the special &kappname; fields section for more information on the date input field and it can be used to make entering dates quicker and easier.
+	The transaction date can also be entered to specify when the transaction took place.  See the special &kappname; fields section for more information on how the date input field can be used to make entering dates quicker and easier.
 </para>
 </sect3>
 
 <sect3>
 <title>The Amount</title>
 <para>
-	Finally the transaction amount is entered into the required field.  Note that a simple calculator can be displayed by entering the % character into the field.
+	Finally enter the transaction amount into the required field.  Note that a simple calculator can be displayed by entering the % character into the field.
 </para>
 
 <para>
-	Enter the required information for the transaction and click on <guibutton>Enter</guibutton>.
+	When you are satisfied that all the fields have been filled in correctly, click on <guibutton>Enter</guibutton>. If you accidentally press or click on <guibutton>Enter</guibutton> before you have finished entering all the data, click on <guibutton>Edit</guibutton> to resume entering the data.
 </para>
 
 </sect3>
+</sect2>
+<sect2 id="details.ledger.transactionform.split"><title id="details.ledger.transactionform.split.title">Split Transactions</title>
+
+<para>
+  Split transactions allows you to divide up a transaction into multiple categories, representing, for example, the different items purchased with a single purchase at a store.
+</para> 
+
+<para>
+  To enter a split transaction, start a new transaction as normal, including entering the total amount. Instead of selecting a category, click the <guibutton>Split</guibutton> button. If you have selected a category, that becomes the first entry in the split editor screen.
+</para> 
+ 
+<para>
+  In the split editor screen, double-click an empty line to enter a new sub-transaction or press <keycombo action="simul">&Ctrl;&Insert;</keycombo>. Specify the category, add a memo, and enter the amount. To save this part of the split, press the green check mark under the category. To cancel, press the red cross.  
+</para> 
+ 
+<para>
+  After entering a split, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the splits, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
+</para> 
+
+<para>
+<screenshot>
+	<screeninfo>Split transactions</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="split_transaction.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Split transaction</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect2>
 </sect1>
 
@@ -265,19 +295,19 @@ Which method you use to enter transactions is up to you and is a matter of perso
 <sect1 id="details.ledgers.split"><title id="details.ledgers.split.title">Split Transactions</title>
 
 <para>
-  Split transactions allows you to divide up a transaction into multiple amounts and categories. For example, using a split transaction, you can divide a single purchase at a store into multiple categories for the different items purchased.  
+  Split transactions allows you to divide up a transaction into multiple categories, representing, for example, the different items purchased with a single purchase at a store.
 </para> 
 
 <para>
-  To enter a split transaction, start a new transaction as normal, including entering the total amount. Instead of selecting a category, click the split button. If you have selected a category, that becomes the first entry in the split editor screen. 
+  To enter a split transaction, start a new transaction as normal, including entering the total amount. Instead of selecting a category, click the <guibutton>Split</guibutton> button. If you have selected a category, that becomes the first entry in the split editor screen.
 </para> 
  
 <para>
-  In the split editor screen, double-click an empty line to enter a new sub-transaction or press <keycombo action="simul">&Ctrl;&Insert;</keycombo>. Specify the category, add a memo, and enter the amount. To save this sub-transaction, press the green check mark under the category. To cancel, press the red cross.  
+  In the split editor screen, double-click an empty line to enter a new sub-transaction or press <keycombo action="simul">&Ctrl;&Insert;</keycombo>. Specify the category, add a memo, and enter the amount. To save this part of the split, press the green check mark under the category. To cancel, press the red cross.  
 </para> 
  
 <para>
-  After entering a sub-transaction, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the sub-transactions, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
+  After entering a split, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the splits, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
 </para> 
 
 <para>
@@ -354,7 +384,7 @@ transactions should be on the statement.
 <para>
 When you <link linkend="details.reconcile"> reconcile your account </link>, 
 you actually mark the statements as cleared and check that 
-the difference of the sum of beginning balance and cleared transactions 
+the difference between the beginning balance and the cleared transactions 
 equals the ending balance of the statement. When this is the case, you can 
 'finish reconciling' which actually turns the state of all transactions in 
 (C) to (R).
@@ -387,13 +417,13 @@ least one split in state frozen it cannot be edited anymore.
   </listitem>
 
   <listitem>
-    <para>Show transaction form - toggle to hide the transaction input area the bottom of this screen. Transactions can still be entered directly into an empty line at the end of the transaction list, through an automatic compact entry area.</para>
+    <para>Show transaction form - toggle to hide the transaction input area at the bottom of this screen. Transactions can still be entered directly into an empty line at the end of the transaction list, through an automatic compact entry area.</para>
   </listitem>
 
   </itemizedlist>
 </para> 
 
-<para>These images show the what direct transaction entry looks like compared to the transaction form.</para>
+<para>These images show what direct transaction entry looks like compared to the transaction form.</para>
 <para>The transaction input form</para>
 
 <para>
