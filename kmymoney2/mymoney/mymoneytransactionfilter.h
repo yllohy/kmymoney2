@@ -498,6 +498,12 @@ public:
   bool textFilter(QRegExp& text) const;
 
   /**
+   * This method returns whether the text filter should return
+   * that DO NOT contain the text
+   */
+  bool isInvertingText(void) const {return m_invertText;};
+
+  /**
     * This method translates a plain-language date range into QDate
     * start & end
     *

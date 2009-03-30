@@ -122,6 +122,7 @@ void KFindTransactionDlg::slotReset(void)
   m_textEdit->setText(QString());
   m_regExp->setChecked(false);
   m_caseSensitive->setChecked(false);
+  m_textNegate->setCurrentItem(0);
 
   m_amountEdit->setEnabled(true);
   m_amountFromEdit->setEnabled(false);

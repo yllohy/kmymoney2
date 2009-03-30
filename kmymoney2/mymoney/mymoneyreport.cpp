@@ -391,6 +391,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
     f.setAttribute ( "pattern", textfilter.pattern() );
     f.setAttribute ( "casesensitive", textfilter.caseSensitive() );
     f.setAttribute ( "regex", !textfilter.wildcard() );
+    f.setAttribute ( "inverttext", m_invertText );
     e.appendChild ( f );
   }
 
@@ -673,7 +674,7 @@ bool MyMoneyReport::read ( const QDomElement& e )
       QDomElement c = child.toElement();
       if ( "TEXT" == c.tagName() && c.hasAttribute ( "pattern" ) )
       {
-        setTextFilter ( QRegExp ( c.attribute ( "pattern" ), c.attribute ( "casesensitive", "1" ).toUInt(), !c.attribute ( "regex", "1" ).toUInt() ) );
+        setTextFilter ( QRegExp ( c.attribute ( "pattern" ), c.attribute ( "casesensitive", "1" ).toUInt(), !c.attribute ( "regex", "1" ).toUInt() ), c.attribute ( "inverttext", "0" ).toUInt() );
       }
       if ( "TYPE" == c.tagName() && c.hasAttribute ( "type" ) )
       {
