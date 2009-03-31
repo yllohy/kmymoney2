@@ -706,8 +706,13 @@ void QueryTable::constructTransactionTable(void)
               //if it matches the text of the main split of the transaction or
               //it matches this particular split, include it
               //otherwise, skip it
-              if(transaction_text
-                 || m_config.match( &(*it_split) )) {
+              //if the filter is "does not contain" exclude the split if it does not match
+              //even it matches the whole split
+              if((m_config.isInvertingText() &&
+                 m_config.match( &(*it_split) ))
+                  || ( !m_config.isInvertingText()
+                 && (transaction_text
+                 || m_config.match( &(*it_split) )))) {
                   m_rows += qA;
               }
             }
@@ -744,8 +749,13 @@ void QueryTable::constructTransactionTable(void)
 
             //check the specific split against the filter for text and amount
             //TODO this should be done at the engine, but I have no clear idea how -- asoliverez
-            if(m_config.match( &(*it_split) )
-              || transaction_text ) {
+            //if the filter is "does not contain" exclude the split if it does not match
+              //even it matches the whole split
+            if((m_config.isInvertingText() &&
+                m_config.match( &(*it_split) ))
+                || ( !m_config.isInvertingText()
+                && (transaction_text
+                || m_config.match( &(*it_split) )))) {
               m_rows += qS;
 
               // track accts that will need opening and closing balances
