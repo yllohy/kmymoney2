@@ -20,7 +20,7 @@
 <sect2><title>Investments</title>
 <para>
 Investments are instruments for investing money that are traded on a market.
-Stocks, bonds, and mutual funds are the most common investments, so they're the ones supported most directly.
+Stocks, bonds, and mutual funds are the most common investments; so they're the ones supported most directly.
 Futures, commodities, options and more complex derivatives are also sometimes used, but &kappname; has no special functionality for them.  As long as they behave like a stock or a bond, they can be tracked easily.
 </para>
 </sect2>
@@ -75,7 +75,7 @@ When you create an Investment Account, you have the option of creating an associ
 </para>
 <para>
   To work with the new investment account, navigate to the <guibutton>Investments</guibutton> view, 
-  and choose the account you just created from the <guilabel>Select Account</guilabel> drop-down box.
+  and choose the account you have just created from the <guilabel>Select Account</guilabel> drop-down box.
 </para>
 </sect1>
             
@@ -107,7 +107,7 @@ When you create an Investment Account, you have the option of creating an associ
 <listitem><para>Trading Symbol.  The ticker symbol used to identify the investment on whatever market it trades.  &kappname; requires a trading symbol for all investments, however some investments do not have symbols.  In this case, you will need to make up a symbol for it.</para></listitem>
 <listitem><para>Fraction.  The degree of precision to which your holdings are measured.  For example, in the US most mutual funds measure holdings to three decimal places, so you would enter 1000 in this field.  Stocks are often measured to only whole units, so you could enter 1 for a stock like this.</para></listitem>
 <listitem><para>Trading market.  Where the stock trades.  This is an optional field which is provided for your convenience.  This information is not used anywhere else in &kappname;.</para></listitem>
-<listitem><para>Identification.  An optional field to enter in additional identification information you might like to keep track of.  Again, this information is not used anywhere else.</para></listitem>
+<listitem><para>Identification.  An optional field to enter additional identification information you might like to keep track of.  Again, this information is not used anywhere else.</para></listitem>
 <listitem><para>Trading currency: The underlying currency in which this investment trades on its market.</para></listitem>
 </itemizedlist>
 
@@ -122,7 +122,7 @@ The following items are set here:</para>
 
 <itemizedlist>
 <listitem><para>Use Finance::Quote.  This is an option for GnuCash users who are used to this style of quotes.  Most users can leave this unchecked.</para></listitem>
-<listitem><para>Online Source.  The online source you'd like to use for this particular investment.  The most common choice is &quot;Yahoo&quot;.  Try that first, and if the investment can not be found using this source, then experiment with the others.</para></listitem>
+<listitem><para>Online Source.  The online source you'd like to use for this particular investment.  The most common choice is &quot;Yahoo&quot;.  Try that first, and if the investment cannot be found using this source, then experiment with the others.</para></listitem>
 <listitem><para>Factor.  A multiplier that should be applied to quotes retrieved for this investment.  This is most commonly needed for UK stocks where the price quoted is in pence (1/100), and the stock is denominated in pounds.  In this case, enter 100 for the Factor.</para></listitem>
 
 </itemizedlist>
@@ -211,7 +211,7 @@ The symbol will be displayed when viewing it.
 <para>
 For buy, sell, and cash dividend transactions, the number of shares, the price, and the total amount of the transaction must be established.
 You can enter any two of these, and &kappname; will calculate the third.
-It's usually best to enter just just the total amount and the shares, because these are the known facts of the transaction.
+It's usually best to enter just the total amount and the shares, because these are the known facts of the transaction.
 The price can be calculated from these.
 </para>
 </sect2>
@@ -410,7 +410,7 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <para>
 	Note that the URL can also be a file: URL, which the quote fetcher takes to mean an executable script.  
 	It will pass any command-line arguments to it that you have specified, and feed the stdout to the page parser.
-	For example, you might have a script called getquote.sh that contained custom quote logic, taking the symbol as a single parameter.
+	For example, you might have a script called getquote.sh that contains custom quote logic, taking the symbol as a single parameter.
 	Your URL would be &quot;file:/path/to/getquote.sh %1&quot;.
 </para>
 <para>

@@ -18,13 +18,13 @@
 <title>Reconciliation</title>
 
 <sect1 id="details.reconcile.whatis">
-<title>What is reconciliation</title>
+<title>What is reconciliation?</title>
 <para>
-At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepancies are found then either you or the person who created the statement have made a mistake.
+Reconciliation involves matching the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement. If any discrepancies are found then either you or the person who created the statement have made a mistake.
 </para>
 
 <para>
-	To reconcile an account click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="reconcile.png"/></imageobject></inlinemediaobject> Reconcile Ledgers</guiicon> icon in the account selector, choose your account from the drop down list and then click on the <guibutton>Reconcile</guibutton> button.
+	To reconcile an account, choose your account from the drop down list and click on the<guiicon><inlinemediaobject><imageobject><imagedata fileref="reconcile.png"/></imageobject></inlinemediaobject> Reconcile Ledgers</guiicon> icon, select <menuchoice><guimenu>Accounts</guimenu> <guimenuitem>Reconcile...</guimenuitem></menuchoice> or use the key combination Ctl+Shift+R.
 </para>
 </sect1>
 

@@ -15,7 +15,7 @@
 
 <title>Currencies</title>
 <para>
-&kappname; supports the use of multiple currencies in different accounts. For example, you can setup a bank account in Euro, another in British Pounds and yet your credit card account is maintained in US Dollars.
+&kappname; supports the use of multiple currencies in different accounts. For example, you can set up a bank account in Euro, another in British Pounds and still have your credit card account in US Dollars.
 </para>
 
 <sect1 id="details.currencies.basecurrency">
@@ -48,13 +48,13 @@ If you create a new account you have the option to specify the currency in which
 </sect1>
 
 <sect1 id="details.currencies.transactions">
-<title>Entering transaction using different currencies</title>
+<title>Entering transactions using different currencies</title>
 <para>
-Whenever a transaction is entered that refers to more than one currency, the exchange rate editor pops up and allows you to enter an exchange rate. Initially, the current price available from the price data base will be used as exchange rate. See <link linkend="details.currencies.prices">Entering exchange rates for currencies</link> for more information on how to provide exchange rates manually and obtain online price information.
+Whenever a transaction is entered that refers to more than one currency, the exchange rate editor pops up and allows you to enter an exchange rate. Initially, the current price available from the price database will be used as exchange rate. See <link linkend="details.currencies.prices">Entering exchange rates for currencies</link> for more information on how to provide exchange rates manually and obtain online price information.
 </para>
 
 <para>
-Optionally, the exchange rate is saved in the price data base once entered by the user. 
+Optionally, the exchange rate is saved in the price database once entered by the user. 
 </para>
 </sect1>
 
@@ -81,15 +81,14 @@ The price database editor allows you to enter exchange rates between currencies 
 </para>
 
 <para>
-In &kappname; a &quot;Price&quot; is the price of one currency in terms of another.  
-For example, as I write this, the price of USD in EUR is 0.83.  
-That is, 1 USD costs 0.83 EUR.  
-In the price editor the first currency is the one being bought or sold, and the second one is the currency used to buy or sell it.
+In &kappname; a &quot;Price&quot; is the price of one currency in terms of a second currency.
+For example, as I write this, the price of 1 USD in terms of 1 EUR is 0.83; that is, 1 USD costs 0.83 EUR. 
+The first currency is the one being bought or sold, and the second one is the currency used to buy or sell it.
 </para>
 <para>
 When you press the <guibutton>New</guibutton> button, you get the New Price Entry dialog.  
-Enter the currency being bought or sold (USD in the example above) in the Security field.
-Enter the currency used to buy or sell it (EUR in the example above) in the Currency field.
+Enter the first currency (USD in the example above) in the Security field.
+Enter the second currency (EUR in the example above) in the Currency field.
 Enter the effective date of the price in the Date field.
 </para>
 
