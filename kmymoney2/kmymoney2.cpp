@@ -122,6 +122,9 @@
 #include "wizards/newaccountwizard/knewaccountwizard.h"
 #include "dialogs/kbalancewarning.h"
 
+#include "widgets/kmymoneycombo.h"
+#include "widgets/kmymoneycompletion.h"
+
 #include "views/kmymoneyview.h"
 
 #include "mymoney/mymoneyutils.h"
@@ -166,6 +169,7 @@ public:
   bool                          m_collectingStatements;
   QStringList                   m_statementResults;
   KMyMoneyPlugin::PluginLoader* m_pluginLoader;
+  QString                       m_lastPayeeEntered;
 };
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
@@ -4380,6 +4384,16 @@ void KMyMoney2App::slotTransactionsNew(void)
   if(kmymoney2->action("transaction_new")->isEnabled()) {
     if(myMoneyView->createNewTransaction()) {
       m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
+      KMyMoneyPayeeCombo* payeeEdit = dynamic_cast<KMyMoneyPayeeCombo*>(m_transactionEditor->haveWidget("payee"));
+      if(payeeEdit && !d->m_lastPayeeEntered.isEmpty()) {
+        // in case we entered a new transaction before and used a payee,
+        // we reuse it here. Save the text to the edit widget, select it
+        // so that hitting any character will start entering another payee
+        // and close the completion list
+        payeeEdit->setCurrentText(d->m_lastPayeeEntered);
+        payeeEdit->lineEdit()->selectAll();
+        payeeEdit->completion()->hide();
+      }
       if(m_transactionEditor) {
         connect(m_transactionEditor, SIGNAL(statusProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
         connect(m_transactionEditor, SIGNAL(statusMsg(const QString&)), this, SLOT(slotStatusMsg(const QString&)));
@@ -4396,6 +4410,8 @@ void KMyMoney2App::slotTransactionsEdit(void)
   // since we jump here via code, we have to make sure to react only
   // if the action is enabled
   if(kmymoney2->action("transaction_edit")->isEnabled()) {
+    // as soon as we edit a transaction, we don't remember the last payee entered
+    d->m_lastPayeeEntered = QString();
     m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
     slotUpdateActions();
   }
@@ -4415,6 +4431,8 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
   // since we jump here via code, we have to make sure to react only
   // if the action is enabled
   if(kmymoney2->action("transaction_editsplits")->isEnabled()) {
+    // as soon as we edit a transaction, we don't remember the last payee entered
+    d->m_lastPayeeEntered = QString();
     m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
     slotUpdateActions();
 
@@ -4460,8 +4478,13 @@ void KMyMoney2App::slotTransactionsEnter(void)
       QString accountId = m_selectedAccount.id();
       QString newId;
       connect(m_transactionEditor, SIGNAL(balanceWarning(QWidget*, const MyMoneyAccount&, const QString&)), d->m_balanceWarning, SLOT(slotShowMessage(QWidget*, const MyMoneyAccount&, const QString&)));
-      if(m_transactionEditor->enterTransactions(newId))
+      if(m_transactionEditor->enterTransactions(newId)) {
+        KMyMoneyPayeeCombo* payeeEdit = dynamic_cast<KMyMoneyPayeeCombo*>(m_transactionEditor->haveWidget("payee"));
+        if(payeeEdit && !newId.isEmpty()) {
+          d->m_lastPayeeEntered = payeeEdit->currentText();
+        }
         deleteTransactionEditor();
+      }
       if(!newId.isEmpty()) {
         myMoneyView->slotLedgerSelected(accountId, newId);
       }

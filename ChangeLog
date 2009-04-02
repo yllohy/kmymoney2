@@ -1,4 +1,7 @@
 
+2009-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Preset payee name with the previous one used for a new transaction
+
 2009-04-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Enable OFX plugin by default
 
