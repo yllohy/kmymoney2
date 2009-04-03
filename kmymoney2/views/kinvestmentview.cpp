@@ -37,14 +37,12 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/kmymoneyaccountcombo.h>
-#include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/kmymoneycurrencyselector.h>
 
 #include "../kmymoney2.h"
 
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
-// #include "kledgerviewinvestments.h"
 
 class KInvestmentView::Private
 {
@@ -159,7 +157,7 @@ void KInvestmentView::loadAccounts(void)
     }
   }
 
-  m_accountComboBox->loadList(MyMoneyAccount::Investment);
+  m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
   if(d->m_account.id().isEmpty()) {
     QStringList list = m_accountComboBox->accountList();
