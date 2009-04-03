@@ -1,4 +1,8 @@
 
+2009-03-31 Alvaro Soliverez <asoliverez@gmail.com>
+  * Show only investments accounts in the account selector 
+    of Investment View
+
 2009-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preset payee name with the previous one used for a new transaction
 

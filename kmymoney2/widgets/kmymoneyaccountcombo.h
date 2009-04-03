@@ -70,6 +70,7 @@ public:
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask);
   int loadList(const QValueList<int>& list);
+  int loadList(MyMoneyAccount::accountTypeE type);
 
   void setSelected(const QString& id);
   void setSelected(const MyMoneyAccount& acc);

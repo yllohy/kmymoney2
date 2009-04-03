@@ -134,6 +134,15 @@ int KMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
   return set.load(m_completion->selector());
 }
 
+int KMyMoneyAccountCombo::loadList(MyMoneyAccount::accountTypeE type)
+{
+  AccountSet set;
+
+  set.addAccountType(type);
+
+  return set.load(m_completion->selector());
+}
+
 void KMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
 {
   switch(k->key()) {
