@@ -93,8 +93,8 @@ QString OfxImporterPlugin::formatFilenameFilter(void) const
 
 bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 {
-  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
-  // (or 'OFC'!!)
+  // filename is considered an Ofx file if it contains
+  // the tag "<OFX>" or "<OFC>" in the first 20 lines.
   bool result = false;
 
   QFile f( filename );
@@ -102,12 +102,14 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
   {
     QTextStream ts( &f );
 
-    while ( !ts.atEnd() && !result )
+    int lineCount = 20;
+    while ( !ts.atEnd() && !result  && lineCount != 0)
     {
       QString line = ts.readLine();
       if ( line.contains("<OFX>",false)
         || line.contains("<OFC>",false) )
         result = true;
+      lineCount--;
     }
     f.close();
   }

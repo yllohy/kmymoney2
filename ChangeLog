@@ -1,4 +1,7 @@
 
+2009-04-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Speedup loading of large files when filename is passed on command line
+
 2009-04-03 Alvaro Soliverez <asoliverez@gmail.com>
   * Reverted previous commit because some accounts are not showing 
 

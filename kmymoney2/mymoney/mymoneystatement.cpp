@@ -219,7 +219,8 @@ bool MyMoneyStatement::read(const QDomElement& _e)
 
 bool MyMoneyStatement::isStatementFile(const QString& _filename)
 {
-  // filename is a statement file if it contains the tag "<KMYMONEY2-STATEMENT>" somewhere.
+  // filename is considered a statement file if it contains
+  // the tag "<KMYMONEY2-STATEMENT>" in the first 20 lines.
   bool result = false;
 
   QFile f( _filename );
@@ -227,10 +228,12 @@ bool MyMoneyStatement::isStatementFile(const QString& _filename)
   {
     QTextStream ts( &f );
 
-    while ( !ts.atEnd() && !result )
+    int lineCount = 20;
+    while ( !ts.atEnd() && !result && lineCount != 0) {
       if ( ts.readLine().contains("<KMYMONEY-STATEMENT>",false) )
         result = true;
-
+      --lineCount;
+    }
     f.close();
   }
 
