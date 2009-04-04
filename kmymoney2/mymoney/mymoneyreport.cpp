@@ -616,13 +616,26 @@ bool MyMoneyReport::read ( const QDomElement& e )
     if( m_includeMovingAverage )
       m_movingAverageDays = e.attribute ( "movingaveragedays", "1" ).toUInt();
 
-    i = kChartTypeText.findIndex ( e.attribute ( "charttype" ) );
-    if ( i != -1 )
-      m_chartType = static_cast<EChartType> ( i );
+    //only load chart data if it is a pivot table
+    if ( m_reportType == ePivotTable ) {
+      i = kChartTypeText.findIndex ( e.attribute ( "charttype" ) );
 
-    m_chartDataLabels = e.attribute ( "chartdatalabels", "1" ).toUInt();
-    m_chartGridLines = e.attribute ( "chartgridlines", "1" ).toUInt();
-    m_chartByDefault = e.attribute ( "chartbydefault", "0" ).toUInt();
+      if ( i != -1 )
+        m_chartType = static_cast<EChartType> ( i );
+
+      //if it is invalid, set to first type
+      if (m_chartType == eChartEnd)
+        m_chartType = eChartLine;
+
+      m_chartDataLabels = e.attribute ( "chartdatalabels", "1" ).toUInt();
+      m_chartGridLines = e.attribute ( "chartgridlines", "1" ).toUInt();
+      m_chartByDefault = e.attribute ( "chartbydefault", "0" ).toUInt();
+    } else {
+      m_chartType = static_cast<EChartType> ( 0 );
+      m_chartDataLabels = true;
+      m_chartGridLines = true;
+      m_chartByDefault = false;
+    }
 
     QString datelockstr = e.attribute ( "datelock", "userdefined" );
     // Handle the pivot 1.2/query 1.1 case where the values were saved as
