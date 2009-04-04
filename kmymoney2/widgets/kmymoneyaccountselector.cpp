@@ -403,17 +403,23 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
         ++count;
         //this will include an account if it matches the account type and
         //if it is still open or it has been set to show closed accounts
-        if(m_typeList.contains(acc.accountType())
+        if(includeAccount(acc)
         && (!isHidingClosedAccounts() || !acc.isClosed()) ) {
           QString tmpKey;
           tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
           QListViewItem* subItem = selector->newItem(item, acc.name(), tmpKey, acc.id());
-          if(acc.value("PreferredAccount") == "Yes") {
+          if(acc.value("PreferredAccount") == "Yes"
+             && m_typeList.contains(acc.accountType())) {
             selector->newItem(m_favorites, acc.name(), tmpKey, acc.id());
           }
           if(acc.accountList().count() > 0) {
             subItem->setOpen(true);
             count += loadSubAccounts(selector, subItem, tmpKey, acc.accountList());
+          }
+
+          //disable the item if it has been added only because a subaccount matches the type
+          if( !m_typeList.contains(acc.accountType()) ) {
+            subItem->setEnabled(false);
           }
         }
       }
@@ -491,23 +497,47 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
     if(acc.isInvest() && !KMyMoneyGlobalSettings::expertMode())
       continue;
 
-    if(m_typeList.contains(acc.accountType())
+    if(includeAccount(acc)
     && !acc.isClosed()) {
       QString tmpKey;
       tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
       ++count;
       ++m_count;
       QListViewItem* item = selector->newItem(parent, acc.name(), tmpKey, acc.id());
-      if(acc.value("PreferredAccount") == "Yes") {
+      if(acc.value("PreferredAccount") == "Yes"
+         && m_typeList.contains(acc.accountType())) {
         selector->newItem(m_favorites, acc.name(), tmpKey, acc.id());
       }
       if(acc.accountList().count() > 0) {
         item->setOpen(true);
         count += loadSubAccounts(selector, item, tmpKey, acc.accountList());
       }
+
+      //disable the item if it has been added only because a subaccount matches the type
+      if( !m_typeList.contains(acc.accountType()) ) {
+        item->setEnabled(false);
+      }
     }
   }
   return count;
+}
+
+bool AccountSet::includeAccount(const MyMoneyAccount& acc)
+{
+  if( m_typeList.contains(acc.accountType()) )
+    return true;
+
+  QStringList accounts = acc.accountList();
+
+  if(accounts.size() > 0) {
+    QStringList::ConstIterator it_acc;
+    for(it_acc = accounts.begin(); it_acc != accounts.end(); ++it_acc) {
+      MyMoneyAccount account = m_file->account(*it_acc);
+      if( includeAccount(account) )
+        return true;
+    }
+  }
+  return false;
 }
 
 

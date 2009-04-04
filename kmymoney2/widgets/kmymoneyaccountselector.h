@@ -175,6 +175,7 @@ public:
 
 protected:
   int loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem* parent, const QString& key, const QStringList& list);
+  bool includeAccount(const MyMoneyAccount& acc);
 
 private:
   int                                      m_count;

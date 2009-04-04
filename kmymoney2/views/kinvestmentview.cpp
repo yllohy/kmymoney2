@@ -157,7 +157,7 @@ void KInvestmentView::loadAccounts(void)
     }
   }
 
-  m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_accountComboBox->loadList(MyMoneyAccount::Investment);
 
   if(d->m_account.id().isEmpty()) {
     QStringList list = m_accountComboBox->accountList();
