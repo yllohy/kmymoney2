@@ -1,4 +1,7 @@
 
+2009-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated French translation from Patrick Petit
+
 2009-04-04 Alvaro Soliverez <asoliverez@gmail.com>
   * Handle invalid chart types of reports in a graceful manner
   * Show only investments accounts in the account selector 
