@@ -584,6 +584,17 @@ bool MyMoneyReport::read ( const QDomElement& e )
     m_name = e.attribute ( "name" );
     m_comment = e.attribute ( "comment", "Extremely old report" );
 
+    //set report type
+    if(!e.attribute ( "type" ).find ( "pivottable" )) {
+      m_reportType = MyMoneyReport::ePivotTable;
+    } else if(!e.attribute ( "type" ).find ( "querytable" )) {
+      m_reportType = MyMoneyReport::eQueryTable;
+    } else if(!e.attribute ( "type" ).find ( "infotable" )) {
+      m_reportType = MyMoneyReport::eInfoTable;
+    } else {
+      m_reportType = MyMoneyReport::eNoReport;
+    }
+
     // Removed the line that screened out loading reports that are called
     // "Default Report".  It's possible for the user to change the comment
     // to this, and we'd hate for it to break as a result.
