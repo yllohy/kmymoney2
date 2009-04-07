@@ -1,4 +1,7 @@
 
+2009-04-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved 'Update all accounts' functionality to require less user activity
+
 2009-04-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Initialize report type value when loading a custom report
 

@@ -138,12 +138,13 @@ namespace KMyMoneyPlugin {
      * This method is called by the framework when the user wants to update
      * a KMyMoney account with data from an online account. The KMyMoney account is identified
      * by @a acc. The online provider should read its data from acc.onlineBankingSettings().
-     * @a true is returned upon success.
+     * @a true is returned upon success. The plugin might consider to stack the requests
+     * in case @a moreAccounts is @p true. @a moreAccounts defaults to @p false.
      *
      * @retval true if account is updated
      * @retval false if account is not updated
      */
-    virtual bool updateAccount(const MyMoneyAccount& acc) = 0;
+    virtual bool updateAccount(const MyMoneyAccount& acc, bool moreAccounts = false) = 0;
   };
 
 /**

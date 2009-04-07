@@ -615,8 +615,10 @@ bool OfxImporterPlugin::mapAccount(const MyMoneyAccount& acc, MyMoneyKeyValueCon
   return rc;
 }
 
-bool OfxImporterPlugin::updateAccount(const MyMoneyAccount& acc)
+bool OfxImporterPlugin::updateAccount(const MyMoneyAccount& acc, bool moreAccounts)
 {
+  Q_UNUSED(moreAccounts);
+
   try {
     if(!acc.id().isEmpty()) {
       // Save the value of preferName to be used by ofxTransactionCallback

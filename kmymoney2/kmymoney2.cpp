@@ -5982,20 +5982,29 @@ void KMyMoney2App::slotAccountUpdateOnlineAll(void)
 {
   QValueList<MyMoneyAccount> accList;
   MyMoneyFile::instance()->accountList(accList);
-  QValueList<MyMoneyAccount>::const_iterator it_a;
-  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p = m_onlinePlugins.end();
+  QValueList<MyMoneyAccount>::iterator it_a;
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p;
   d->m_statementResults.clear();
   d->m_collectingStatements = true;
-  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
-    if ( !(*it_a).onlineBankingSettings().value("provider").isEmpty() ) {
-      // check if provider is available
-      it_p = m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider"));
-      if(it_p != m_onlinePlugins.end()) {
-        // plugin found, call it
-        (*it_p)->updateAccount(*it_a);
-      }
-    }
+
+  // remove all those from the list, that don't have a 'provider' or the
+  // provider is not currently present
+  for(it_a = accList.begin(); it_a != accList.end();) {
+    if ((*it_a).onlineBankingSettings().value("provider").isEmpty()
+    || m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider")) == m_onlinePlugins.end() ) {
+      it_a = accList.remove(it_a);
+    } else
+      ++it_a;
   }
+
+  // now work on the remaining list of accounts
+  int cnt = accList.count() - 1;
+  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
+    it_p = m_onlinePlugins.find((*it_a).onlineBankingSettings().value("provider"));
+    (*it_p)->updateAccount(*it_a, cnt != 0);
+    --cnt;
+  }
+
   d->m_collectingStatements = false;
   KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
 }
