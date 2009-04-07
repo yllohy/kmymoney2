@@ -1,4 +1,7 @@
 
+2009-04-07 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added line width option to charts
+
 2009-04-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved 'Update all accounts' functionality to require less user activity
 

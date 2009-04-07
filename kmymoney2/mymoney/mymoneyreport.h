@@ -113,6 +113,7 @@ public:
   bool isChartDataLabels(void) const { return m_chartDataLabels; }
   bool isChartGridLines(void) const { return m_chartGridLines; }
   bool isChartByDefault(void) const { return m_chartByDefault; }
+  uint chartLineWidth(void) const { return m_chartLineWidth; }
   bool isIncludingSchedules(void) const { return m_includeSchedules; }
   bool isColumnsAreDays(void) const { return m_columnsAreDays; }
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
@@ -144,6 +145,7 @@ public:
   void setChartDataLabels ( bool _f ) { m_chartDataLabels = _f; }
   void setChartGridLines ( bool _f ) { m_chartGridLines = _f; }
   void setChartByDefault ( bool _f ) { m_chartByDefault = _f; }
+  void setChartLineWidth ( uint _f ) { m_chartLineWidth = _f; }
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
@@ -438,6 +440,10 @@ private:
     * should be shown as a textual report)
     */
   bool m_chartByDefault;
+  /**
+   * Width of the chart lines
+   */
+  uint m_chartLineWidth;
   /**
     * Whether to include scheduled transactions
     */

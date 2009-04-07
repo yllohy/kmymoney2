@@ -43,7 +43,6 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
 
     KDChartParams* _params = new KDChartParams();
     _params->setChartType( KDChartParams::Line );
-    _params->setLineWidth( 2 );
     _params->setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0);
     _params->setDataSubduedColors();
 

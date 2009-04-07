@@ -259,6 +259,7 @@ void KReportConfigurationFilterDlg::slotSearch(void)
     m_currentState.setChartGridLines( m_tabChart->m_checkGridLines->isChecked() );
     m_currentState.setChartDataLabels( m_tabChart->m_checkValues->isChecked() );
     m_currentState.setChartByDefault( m_tabChart->m_checkShowChart->isChecked() );
+    m_currentState.setChartLineWidth( m_tabChart->m_lineWidth->value() );
   }
 
   // setup the date lock
@@ -469,6 +470,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tabChart->m_checkGridLines->setChecked(m_initialState.isChartGridLines());
     m_tabChart->m_checkValues->setChecked(m_initialState.isChartDataLabels());
     m_tabChart->m_checkShowChart->setChecked(m_initialState.isChartByDefault());
+    m_tabChart->m_lineWidth->setValue(m_initialState.chartLineWidth());
   }
 
   //

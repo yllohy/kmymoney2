@@ -70,6 +70,7 @@ MyMoneyReport::MyMoneyReport() :
     m_chartDataLabels ( true ),
     m_chartGridLines ( true ),
     m_chartByDefault ( false ),
+    m_chartLineWidth ( 2 ),
     m_includeSchedules ( false ),
     m_includeTransfers ( false ),
     m_includeBudgetActuals ( false ),
@@ -107,6 +108,7 @@ MyMoneyReport::MyMoneyReport ( ERowType _rt, unsigned _ct, dateOptionE _dl, bool
     m_chartDataLabels ( true ),
     m_chartGridLines ( true ),
     m_chartByDefault ( false ),
+    m_chartLineWidth ( 2 ),
     m_includeSchedules ( false ),
     m_includeTransfers ( false ),
     m_includeBudgetActuals ( false ),
@@ -348,6 +350,7 @@ void MyMoneyReport::write ( QDomElement& e, QDomDocument *doc, bool anonymous ) 
   e.setAttribute ( "chartdatalabels", m_chartDataLabels );
   e.setAttribute ( "chartgridlines", m_chartGridLines );
   e.setAttribute ( "chartbydefault", m_chartByDefault );
+  e.setAttribute ( "chartlinewidth", m_chartLineWidth );
 
   if ( m_reportType == ePivotTable )
   {
@@ -641,11 +644,13 @@ bool MyMoneyReport::read ( const QDomElement& e )
       m_chartDataLabels = e.attribute ( "chartdatalabels", "1" ).toUInt();
       m_chartGridLines = e.attribute ( "chartgridlines", "1" ).toUInt();
       m_chartByDefault = e.attribute ( "chartbydefault", "0" ).toUInt();
+      m_chartLineWidth = e.attribute ( "chartlinewidth", "2" ).toUInt();
     } else {
       m_chartType = static_cast<EChartType> ( 0 );
       m_chartDataLabels = true;
       m_chartGridLines = true;
       m_chartByDefault = false;
+      m_chartLineWidth = 1;
     }
 
     QString datelockstr = e.attribute ( "datelock", "userdefined" );

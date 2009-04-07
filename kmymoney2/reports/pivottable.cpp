@@ -1970,6 +1970,8 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   if( (m_config_f.isIncludingBudgetActuals()) || ( !showBudget && !showForecast) )
     showActual = true;
 
+  _view.params()->setLineWidth( m_config_f.chartLineWidth() );
+
   switch( m_config_f.chartType() )
   {
   case MyMoneyReport::eChartNone:
