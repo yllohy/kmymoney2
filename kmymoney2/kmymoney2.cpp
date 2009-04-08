@@ -4364,9 +4364,12 @@ void KMyMoney2App::doDeleteTransactions(void)
   int i = 0;
   slotStatusProgressBar(0, cnt);
   MyMoneyFileTransaction ft;
+  MyMoneyFile* file = MyMoneyFile::instance();
   try {
     for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-      MyMoneyFile::instance()->removeTransaction((*it_t).transaction());
+      // only remove those transactions that do not reference a closed account
+      if(!file->referencesClosedAccount((*it_t).transaction()))
+        file->removeTransaction((*it_t).transaction());
       slotStatusProgressBar(i++, 0);
     }
     ft.commit();
@@ -5132,11 +5135,28 @@ void KMyMoney2App::slotUpdateActions(void)
   if(w)
     w->setEnabled(false);
 
+  w = factory()->container("transaction_mark_menu", this);
+  if(w)
+    w->setEnabled(false);
+
+  w = factory()->container("transaction_context_mark_menu", this);
+  if(w)
+    w->setEnabled(false);
+
   // FIXME for now it's always on, but we should only allow it, if we
   //       can select at least a single transaction
   action("transaction_select_all")->setEnabled(true);
   if(!m_selectedTransactions.isEmpty()) {
-    action("transaction_delete")->setEnabled(m_selectedTransactions.count() != 0);
+    if(m_selectedTransactions.count() != 0) {
+      // enable 'delete transaction' only if at least one of the
+      // selected transactions does not reference a closed account
+      bool enable = false;
+      KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
+      for(it_t = m_selectedTransactions.begin(); (enable == false) && (it_t != m_selectedTransactions.end()); ++it_t) {
+        enable = !file->referencesClosedAccount((*it_t).transaction());
+      }
+      action("transaction_delete")->setEnabled(enable);
+    }
 
     if(!m_transactionEditor) {
       tooltip = i18n("Duplicate the current selected transactions");
@@ -5154,7 +5174,17 @@ void KMyMoney2App::slotUpdateActions(void)
       }
       action("transaction_edit")->setToolTip(tooltip);
 
-      w = factory()->container("transaction_move_menu", this);
+      if(!m_selectedAccount.isClosed()) {
+        w = factory()->container("transaction_move_menu", this);
+        if(w)
+          w->setEnabled(true);
+      }
+
+      w = factory()->container("transaction_mark_menu", this);
+      if(w)
+        w->setEnabled(true);
+
+      w = factory()->container("transaction_context_mark_menu", this);
       if(w)
         w->setEnabled(true);
 

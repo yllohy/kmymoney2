@@ -1,4 +1,8 @@
 
+2009-04-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bko #188328 (Delete ransaction option is not disabled in closed
+    accounts) with patch provided by Ian Neal
+
 2009-04-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Added line width option to charts
 
