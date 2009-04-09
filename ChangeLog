@@ -1,4 +1,7 @@
 
+2009-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed the generation of PDF versions of the documentation
+
 2009-04-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bko #188328 (Delete ransaction option is not disabled in closed
     accounts) with patch provided by Ian Neal

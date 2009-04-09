@@ -37,11 +37,7 @@ fi
 
 echo ""
 
-if test -z "${HAVE_DOCCONVERSIONTOOLS_TRUE}"; then
-	echo "PDF document generation:               yes"
-else
-	echo "PDF document generation:               no"
-fi
+echo "PDF document generation:               $enable_pdfdocs"
 
 echo ""
 

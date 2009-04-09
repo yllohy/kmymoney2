@@ -8,7 +8,7 @@ MOSTLYCLEANFILES = *.html *.pdf *.ps phb.docbook.tex online-phb.tar.bz2
 
 TARGETS = phb.html
 
-if HAVE_DOCCONVERSIONTOOLS
+if GENERATE_PDF
 PDF_TARGET = kmymoney-phb.pdf
 endif
 
@@ -49,7 +49,7 @@ clear-files:
 	fi
 
 
-if HAVE_DOCCONVERSIONTOOLS
+if GENERATE_PDF
 web: $(PDF_TARGET)
 	if test x`which splitup-kde-chunk-online`x != xx; then \
 		rm -rf phb common; \
@@ -78,26 +78,14 @@ web: $(PDF_TARGET)
 # if we're in a VPATH environment, we need to copy all files over
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
-phb.docbook.tex: $(DOCBOOK_FILES)
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES); do \
-			cp $(srcdir)/$$file .; \
-		done; \
-	fi
-	-jade -t tex -d $(DOCBOOK_DSL) -D `dirname $(KDE_XSL_STYLESHEET)` -D $(kde_libs_htmldir)/en/common phb.docbook
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES); do rm $$file; done;  \
-	fi
 
 kmymoney-phb.pdf: $(DOCBOOK_FILES)
 	$(MAKE) get-files
-	@dblatexbin@ -b pdftex --style kdestyle -o kmymoney-phb.pdf \
-		-P latex.output.revhistory=0  -P newtbl.use=1 \
-		-P imagedata.default.scale=pagebound \
-		-P literal.width.ignore=1 \
-		-I $(kde_libs_htmldir)/en \
-		-X \
-		phb.docbook
+	$(MEINPROC) --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-nochunk.xsl $(srcdir)/phb.docbook -o index.html
+	recode utf8..latin1 index.html
+	html2ps -o kmymoney-phb.ps -n index.html
+	ps2pdf kmymoney-phb.ps kmymoney-phb.pdf
+	rm index.html kmymoney-phb.ps
 	$(MAKE) clear-files
 endif
 
