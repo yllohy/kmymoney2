@@ -37,6 +37,7 @@ get-files:
 		if test x$(VPATH) != x.; then \
 			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
 				cp $(srcdir)/$$file .; \
+				chmod +w $$file; \
 			done; \
 		fi \
 	fi
@@ -44,7 +45,7 @@ get-files:
 clear-files:
 	if test -n "$(VPATH)" ; then \
 		if test x$(VPATH) != x.; then \
-			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do chmod +w $$file; rm $$file; done;  \
 		fi \
 	fi
 
