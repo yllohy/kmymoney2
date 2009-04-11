@@ -50,7 +50,7 @@
 #define TRACE(a) ::timetrace(a)
 
 //***************** THE CURRENT VERSION OF THE DATABASE LAYOUT ****************
-unsigned int MyMoneyDbDef::m_currentVersion = 4;
+unsigned int MyMoneyDbDef::m_currentVersion = 5;
 
 // subclass QSqlQuery for performance tracing
 
@@ -277,6 +277,10 @@ int MyMoneyStorageSql::upgradeDb() {
       ++m_majorVersion;
       break;
     case 4:
+      if ((rc = upgradeToV5()) != 0) return (1);
+      ++m_majorVersion;
+      break;
+    case 5:
       break;
     default:
       qFatal("Unknown version number in database - %d", m_majorVersion);
@@ -524,6 +528,89 @@ int MyMoneyStorageSql::upgradeToV4() {
   }
   endCommitUnit(__func__);
   return 0;
+}
+
+int MyMoneyStorageSql::upgradeToV5() {
+  DBG("*** Entering MyMoneyStorageSql::upgradeToV5");
+  startCommitUnit(__func__);
+  MyMoneySqlQuery q(this);
+  q.prepare ("ALTER TABLE kmmSplits ADD COLUMN " +
+      MyMoneyDbTextColumn("bankId").generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmSplits.bankId");
+    return (1);
+  }
+  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
+      MyMoneyDbTextColumn("notes", MyMoneyDbTextColumn::LONG).generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmPayees.notes");
+    return (1);
+  }
+  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
+      MyMoneyDbColumn("defaultAccountId", "varchar(32)").generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmPayees.defaultAccountId");
+    return (1);
+  }
+  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
+      MyMoneyDbIntColumn("matchData", MyMoneyDbIntColumn::TINY,
+                         false).generateDDL(m_dbType) + "DEFAULT 0;");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmPayees.matchData");
+    return (1);
+  }
+  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
+      MyMoneyDbColumn("matchIgnoreCase", "char(1)").generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmPayees.matchIgnoreCase");
+    return (1);
+  }
+  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
+      MyMoneyDbTextColumn("matchKeys").generateDDL(m_dbType) + ";");
+  if (!q.exec()) {
+    buildError (q, __func__, "Error adding kmmPayees.matchKeys");
+    return (1);
+ }
+  const MyMoneyDbTable& t = m_db.m_tables["kmmReportConfig"];
+  if (m_dbType != Sqlite3) {
+    q.prepare (t.dropPrimaryKeyString(m_dbType));
+    if (!q.exec()) {
+      buildError (q, __func__, "Error dropping Report table keys");
+      return (1);
+    }
+  } else {
+    if (!sqliteAlterTable(t))
+      return (1);
+  }
+  endCommitUnit(__func__);
+  return 0;
+}
+
+/* This function attempts to cater for limitations in the sqlite ALTER TABLE
+   statement. It should enable us to drop a primary key, and drop columns */
+bool MyMoneyStorageSql::sqliteAlterTable(const MyMoneyDbTable& t) {
+  DBG("*** Entering MyMoneyStorageSql::sqliteAlterTable");
+  QString tempTableName = t.name();
+  tempTableName.replace("kmm", "tmp");
+  QSqlQuery q(this);
+  q.prepare (QString("ALTER TABLE " + t.name() + " RENAME TO " + tempTableName + ";"));
+  if (!q.exec()) {
+    buildError (q, __func__, "Error renaming table");
+    return false;
+  }
+  createTable(t);
+  q.prepare (QString("INSERT INTO " + t.name() + " (" + t.columnList() +
+      ") SELECT " + t.columnList() + " FROM " + tempTableName + ";"));
+  if (!q.exec()) {
+    buildError (q, __func__, "Error inserting into new table");
+    return false;
+  }
+  q.prepare (QString("DROP TABLE " + tempTableName + ";"));
+  if (!q.exec()) {
+    buildError (q, __func__, "Error dropping old table");
+    return false;
+  }
+  return true;
 }
 
 long unsigned MyMoneyStorageSql::getRecCount (const QString& table) const {
@@ -933,6 +1020,15 @@ void MyMoneyStorageSql::writePayee(const MyMoneyPayee& p, MyMoneySqlQuery& q, bo
   q.bindValue(":addressZipcode", p.postcode());
   q.bindValue(":addressState", p.state());
   q.bindValue(":telephone", p.telephone());
+  q.bindValue(":notes", p.notes());
+  q.bindValue(":defaultAccountId", "" /*p.defaultAccountId()*/);
+  bool ignoreCase;
+  QString matchKeys;
+  MyMoneyPayee::payeeMatchType type = p.matchData(ignoreCase, matchKeys);
+  q.bindValue(":matchData", static_cast<unsigned int>(type));
+  if (ignoreCase) q.bindValue(":matchIgnoreCase", "Y");
+  else q.bindValue(":matchIgnoreCase", "N");
+  q.bindValue(":matchKeys", matchKeys);
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString ("writing Payee")));
   if (!isUserInfo) m_hiIdPayees = calcHighId(m_hiIdPayees, p.id());
 }
@@ -1337,6 +1433,7 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":accountId", split.accountId());
   q.bindValue(":checkNumber", split.number());
   q.bindValue(":postDate", m_txPostDate.toString(Qt::ISODate)); // FIXME: when Tom puts date into split object
+  q.bindValue(":bankId", split.bankID());
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Split")));
   deleteKeyValuePairs("SPLIT", txId + QString::number(splitId));
   writeKeyValuePairs("SPLIT", txId + QString::number(splitId), split.pairs());
@@ -2206,7 +2303,11 @@ const QMap<QString, MyMoneyPayee> MyMoneyStorageSql::fetchPayees (const QStringL
     MyMoneyDbTable::field_iterator ft = t.begin();
     int i = 0;
     QString pid;
+    QString boolChar;
     MyMoneyPayee payee;
+    unsigned int type;
+    bool ignoreCase;
+    QString matchKeys;
     while (ft != payeeEnd) {
       CASE(id) pid = GETCSTRING;
       else CASE(name) payee.setName(GETSTRING);
@@ -2217,8 +2318,14 @@ const QMap<QString, MyMoneyPayee> MyMoneyStorageSql::fetchPayees (const QStringL
       else CASE(addressZipcode) payee.setPostcode(GETSTRING);
       else CASE(addressState) payee.setState(GETSTRING);
       else CASE(telephone) payee.setTelephone(GETSTRING);
+      else CASE(notes) payee.setNotes(GETSTRING);
+      else CASE(defaultAccountId) /*payee.setDefaultAccountId(GETSTRING)*/;
+      else CASE(matchData) type = GETINT;
+      else CASE(matchIgnoreCase) ignoreCase = (GETSTRING == "Y");
+      else CASE(matchKeys) matchKeys = GETSTRING;
       ++ft; ++i;
     }
+    payee.setMatchData (static_cast<MyMoneyPayee::payeeMatchType>(type), ignoreCase, matchKeys);
     if (pid == "USER") {
       TRY
       m_storage->setUser(payee);
@@ -2737,6 +2844,7 @@ void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, co
     else if (fieldName == "accountId") s.setAccountId(GETCSTRING);
     else if (fieldName == "checkNumber") s.setNumber(GETSTRING);
     //else if (fieldName == "postDate") s.setPostDate(GETDATETIME); // FIXME - when Tom puts date into split object
+    else if (fieldName == "bankId") s.setBankID(GETSTRING);
     ++ft; ++i;
   }
 
@@ -3638,6 +3746,11 @@ void MyMoneyDbDef::Payees(void){
   fields.append(new MyMoneyDbTextColumn("addressZipcode"));
   fields.append(new MyMoneyDbTextColumn("addressState"));
   fields.append(new MyMoneyDbTextColumn("telephone"));
+  fields.append(new MyMoneyDbTextColumn("notes", MyMoneyDbTextColumn::LONG));
+  fields.append(new MyMoneyDbColumn("defaultAccountId", "varchar(32)"));
+  fields.append(new MyMoneyDbIntColumn("matchData", MyMoneyDbIntColumn::TINY, UNSIGNED));
+  fields.append(new MyMoneyDbColumn("matchIgnoreCase", "char(1)"));
+  fields.append(new MyMoneyDbTextColumn("matchKeys"));
   MyMoneyDbTable t("kmmPayees", fields);
   t.buildSQLStrings();
   m_tables[t.name()] = t;
@@ -3699,6 +3812,7 @@ void MyMoneyDbDef::Splits(void){
   fields.append(new MyMoneyDbColumn("accountId", "varchar(32)", false, NOTNULL));
   fields.append(new MyMoneyDbColumn("checkNumber", "varchar(32)"));
   fields.append(new MyMoneyDbDatetimeColumn("postDate"));
+  fields.append(new MyMoneyDbTextColumn("bankId"));
   MyMoneyDbTable t("kmmSplits", fields);
   QStringList list;
   list << "accountId" << "txType";
@@ -3805,7 +3919,7 @@ void MyMoneyDbDef::Currencies(void){
 
 void MyMoneyDbDef::Reports(void) {
   QValueList<KSharedPtr <MyMoneyDbColumn> > fields;
-  fields.append(new MyMoneyDbColumn("name", "varchar(255)", PRIMARYKEY, NOTNULL));
+  fields.append(new MyMoneyDbColumn("name", "varchar(255)", false, NOTNULL));
   fields.append(new MyMoneyDbTextColumn("XML", MyMoneyDbTextColumn::LONG));
   MyMoneyDbTable t("kmmReportConfig", fields);
   t.buildSQLStrings();
@@ -3870,13 +3984,7 @@ void MyMoneyDbTable::buildSQLStrings (void) {
   m_insertString = qs + ws + ");";
   // build a 'select all' string (select * is deprecated)
   // don't terminate with semicolon coz we may want a where or order clause
-  qs = "SELECT ";
-  ft = m_fields.begin();
-  while (ft != m_fields.end()) {
-    qs += QString("%1, ").arg((*ft)->name());
-    ++ft;
-  }
-  m_selectAllString = qs.left(qs.length() - 2) + " FROM " + name();
+  m_selectAllString = "SELECT " + columnList() + " FROM " + name();;
 
   // build an update string; key fields go in the where clause
   qs = "UPDATE " + name() + " SET ";
@@ -3900,6 +4008,16 @@ void MyMoneyDbTable::buildSQLStrings (void) {
   m_deleteString = qs + ";";
  }
 
+const QString MyMoneyDbTable::columnList() const {
+  field_iterator ft = m_fields.begin();
+  QString qs;
+  ft = m_fields.begin();
+  while (ft != m_fields.end()) {
+    qs += QString("%1, ").arg((*ft)->name());
+    ++ft;
+  }
+  return (qs.left(qs.length() - 2));
+}
 
 const QString MyMoneyDbTable::generateCreateSQL (databaseTypeE dbType) const {
   QString qs = QString("CREATE TABLE %1 (").arg(name());

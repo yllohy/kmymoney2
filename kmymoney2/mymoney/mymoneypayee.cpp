@@ -182,6 +182,14 @@ MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QStringLi
   return type;
 }
 
+MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QString& keyString) const
+{
+  QStringList keys;
+  payeeMatchType type = matchData(ignorecase, keys);
+  keyString = keys.join(";");
+  return type;
+}
+
 void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QStringList& keys)
 {
   m_matchingEnabled = (type != matchDisabled);

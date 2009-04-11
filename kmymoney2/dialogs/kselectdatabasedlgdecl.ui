@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>444</width>
+            <width>449</width>
             <height>640</height>
         </rect>
     </property>
@@ -44,7 +44,8 @@
                         <enum>NoFocus</enum>
                     </property>
                     <property name="text">
-                        <string>&lt;font color="#ff2727"&gt;This software is still in an experimental stage, and loss of data is possible. Please ensure that you have an alternative backup copy of your data before committing to database usage.&lt;/font&gt;</string>
+                        <string>&lt;font color="#ff2727"&gt;This software is still in an experimental stage, and there are still some known response time problems. Please be patient; we are working on them.
+As always, please make sure you have adequate backups of your data.&lt;/font&gt;</string>
                     </property>
                 </widget>
             </vbox>
@@ -147,7 +148,7 @@
                 <cstring>checkPreLoad</cstring>
             </property>
             <property name="text">
-                <string>Preload all data</string>
+                <string>Preload &amp;all data</string>
             </property>
         </widget>
         <widget class="QLayoutWidget">

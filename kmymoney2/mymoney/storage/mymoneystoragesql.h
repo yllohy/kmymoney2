@@ -293,7 +293,12 @@ class MyMoneyDbTable {
       * @return QString for the syntax to drop the primary key.
       */
     const QString dropPrimaryKeyString(databaseTypeE dbType) const;
-
+    /**
+      * This method returns a comma-separated list of all column names in the table
+      *
+      * @return QString column list.
+      */
+    const QString columnList() const;
     /**
       * This method returns the string for changing a column's definition.  It covers statements
       * like ALTER TABLE..CHANGE COLUMN, MODIFY COLUMN, etc.
@@ -677,6 +682,9 @@ private:
   int upgradeToV2();
   int upgradeToV3();
   int upgradeToV4();
+  int upgradeToV5();
+  bool sqliteAlterTable(const MyMoneyDbTable& t);
+
 //  long long unsigned getRecCount(const QString& table);
   int createTables();
   void createTable(const MyMoneyDbTable& t);
