@@ -173,9 +173,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const QDate&, const MyMoneyMoney&)));
 
   // Page 3
-  m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
+  m_scheduleViewFrame = addVBoxPage( i18n("Scheduled\ntransactions"), i18n("Bills & Reminders"),
     DesktopIcon("schedule", iconSize));
-  addTitleBar(m_scheduleViewFrame, i18n("Schedule"));
+  addTitleBar(m_scheduleViewFrame, i18n("Scheduled transactions"));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "ScheduledView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
   connect(m_scheduledView, SIGNAL(scheduleSelected(const MyMoneySchedule&)), kmymoney2, SLOT(slotSelectSchedule(const MyMoneySchedule&)));

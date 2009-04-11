@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="36" name="kmymoney2" >
+<kpartgui version="37" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -186,7 +186,7 @@
   <Action name="account_reopen" />
  </Menu>
  <Menu name="schedule_context_menu">
-  <title>Schedule options</title>
+  <title>Scheduled transactions options</title>
   <Action name="schedule_new" />
   <Action name="schedule_edit" />
   <Action name="schedule_delete" />

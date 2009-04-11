@@ -433,7 +433,7 @@ void KMyMoney2App::initActions(void)
 
   new KAction(i18n("Goto account"), "goto", 0, this, SLOT(slotTransactionGotoAccount()), actionCollection(), "transaction_goto_account");
   new KAction(i18n("Goto payee"), "goto", 0, this, SLOT(slotTransactionGotoPayee()), actionCollection(), "transaction_goto_payee");
-  new KAction(i18n("Create schedule..."), "bookmark_add", 0, this, SLOT(slotTransactionCreateSchedule()), actionCollection(), "transaction_create_schedule");
+  new KAction(i18n("Create scheduled transaction..."), "bookmark_add", 0, this, SLOT(slotTransactionCreateSchedule()), actionCollection(), "transaction_create_schedule");
   new KAction(i18n("Assign next number"), "", KShortcut("Ctrl+Shift+N"), this, SLOT(slotTransactionAssignNumber()), actionCollection(), "transaction_assign_number");
   new KAction(i18n("Combine transactions", "Combine"), "", 0, this, SLOT(slotTransactionCombine()), actionCollection(), "transaction_combine");
 
@@ -443,12 +443,12 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
   new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
 
-  new KAction(i18n("New schedule..."), "filenew", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
-  new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
-  new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
-  new KAction(i18n("Duplicate schedule"), "editcopy", 0, this, SLOT(slotScheduleDuplicate()), actionCollection(), "schedule_duplicate");
-  new KAction(i18n("Enter schedule..."), "key_enter", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
-  new KAction(i18n("Skip schedule..."), "player_fwd", 0, this, SLOT(slotScheduleSkip()), actionCollection(), "schedule_skip");
+  new KAction(i18n("New scheduled transaction..."), "filenew", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
+  new KAction(i18n("Edit scheduled transaction..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
+  new KAction(i18n("Delete scheduled transaction..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
+  new KAction(i18n("Duplicate scheduled transaction"), "editcopy", 0, this, SLOT(slotScheduleDuplicate()), actionCollection(), "schedule_duplicate");
+  new KAction(i18n("Enter next transaction..."), "key_enter", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
+  new KAction(i18n("Skip next transaction..."), "player_fwd", 0, this, SLOT(slotScheduleSkip()), actionCollection(), "schedule_skip");
 
   new KAction(i18n("New payee"), "filenew", 0, this, SLOT(slotPayeeNew()), actionCollection(), "payee_new");
   new KAction(i18n("Rename payee"), "edit", 0, this, SIGNAL(payeeRename()), actionCollection(), "payee_rename");
@@ -1816,7 +1816,7 @@ void KMyMoney2App::slotSettings(void)
   dlg->addPage(generalPage, i18n("General"), "misc");
   dlg->addPage(registerPage, i18n("Register"), "ledger");
   dlg->addPage(homePage, i18n("Home"), "home");
-  dlg->addPage(schedulesPage, i18n("Schedules"), "schedule");
+  dlg->addPage(schedulesPage, i18n("Scheduled\ntransactions"), "schedule");
   dlg->addPage(encryptionPage, i18n("Encryption"), "kgpg");
   dlg->addPage(colorsPage, i18n("Colors"), "colorscm");
   dlg->addPage(fontsPage, i18n("Fonts"), "font");
@@ -2638,13 +2638,13 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
         }
         ft.commit();
       } catch (MyMoneyException *e) {
-        KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+        KMessageBox::information(this, i18n("Unable to add scheduled transaction: "), e->what());
         delete e;
       }
     }
     catch (MyMoneyException *e)
     {
-      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+      KMessageBox::information(this, i18n("Unable to add scheduled transaction: "), e->what());
       delete e;
     }
   }
@@ -2745,7 +2745,7 @@ void KMyMoney2App::slotAccountDelete(void)
       }
       // now fix all schedules
       {
-        KMSTATUS(i18n("Adjusting schedules..."));
+        KMSTATUS(i18n("Adjusting scheduled transactions..."));
         QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
         QValueList<MyMoneySchedule>::iterator it_s;
 
@@ -3062,7 +3062,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
       // check if we have overdue schedules for this account
       QValueList<MyMoneySchedule> schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
       if(schedules.count() > 0) {
-        if(KMessageBox::questionYesNo(this, i18n("KMyMoney has detected some overdue schedules for this account. Do you want to enter those scheduled transactions now?"), i18n("Scheduled transactions found")) == KMessageBox::Yes) {
+        if(KMessageBox::questionYesNo(this, i18n("KMyMoney has detected some overdue scheduled transactions for this account. Do you want to enter those scheduled transactions now?"), i18n("Scheduled transactions found")) == KMessageBox::Yes) {
 
           QMap<QString, bool> skipMap;
           bool processedOne;
@@ -3445,7 +3445,7 @@ void KMyMoney2App::slotScheduleNew(const MyMoneyTransaction& _t, MyMoneySchedule
         ft.commit();
 
       } catch (MyMoneyException *e) {
-        KMessageBox::error(this, i18n("Unable to add schedule: %1").arg(e->what()), i18n("Add schedule"));
+        KMessageBox::error(this, i18n("Unable to add scheduled transaction: %1").arg(e->what()), i18n("Add scheduled transaction"));
         delete e;
       }
     }
@@ -3485,7 +3485,7 @@ void KMyMoney2App::slotScheduleEdit(void)
                   // than previous payment.  Date would be
                   // updated automatically so we probably
                   // want to clear it.  Let's ask the user.
-                  if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered a Schedule date of <b>%1</b>.  Because the schedule was last paid on <b>%2</b>, KMyMoney will automatically adjust the schedule date to the next date unless the last payment date is reset.  Do you want to reset the last payment date?").arg(KGlobal::locale()->formatDate(next, true)).arg(KGlobal::locale()->formatDate(last, true))+QString("</qt>"),i18n("Reset Last Payment Date" ), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::Yes) {
+                  if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered a scheduled transaction date of <b>%1</b>.  Because the scheduled transaction was last paid on <b>%2</b>, KMyMoney will automatically adjust the scheduled transaction date to the next date unless the last payment date is reset.  Do you want to reset the last payment date?").arg(KGlobal::locale()->formatDate(next, true)).arg(KGlobal::locale()->formatDate(last, true))+QString("</qt>"),i18n("Reset Last Payment Date" ), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::Yes) {
                     sched.setLastPayment( QDate() );
                   }
                 }
@@ -3495,7 +3495,7 @@ void KMyMoney2App::slotScheduleEdit(void)
                 deleteTransactionEditor();
                 ft.commit();
               } catch (MyMoneyException *e) {
-                KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+                KMessageBox::detailedSorry(this, i18n("Unable to modify scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
                 delete e;
               }
             }
@@ -3515,7 +3515,7 @@ void KMyMoney2App::slotScheduleEdit(void)
               MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
               ft.commit();
             } catch (MyMoneyException *e) {
-              KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+              KMessageBox::detailedSorry(this, i18n("Unable to modify scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
               delete e;
             }
           }
@@ -3527,7 +3527,7 @@ void KMyMoney2App::slotScheduleEdit(void)
       }
 
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      KMessageBox::detailedSorry(this, i18n("Unable to modify scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
       delete e;
     }
   }
@@ -3539,10 +3539,10 @@ void KMyMoney2App::slotScheduleDelete(void)
     MyMoneyFileTransaction ft;
     try {
       MyMoneySchedule sched = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
-      QString msg = QString("<p>")+i18n("Are you sure you want to delete the schedule <b>%1</b>?").arg(m_selectedSchedule.name());
+      QString msg = QString("<p>")+i18n("Are you sure you want to delete the scheduled transaction <b>%1</b>?").arg(m_selectedSchedule.name());
       if(sched.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
         msg += QString(" ");
-        msg += i18n("In case of loan payments it is currently not possible to recreate the schedule.");
+        msg += i18n("In case of loan payments it is currently not possible to recreate the scheduled transaction.");
       }
       if (KMessageBox::questionYesNo(this, msg) == KMessageBox::No)
         return;
@@ -3551,7 +3551,7 @@ void KMyMoney2App::slotScheduleDelete(void)
       ft.commit();
 
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, i18n("Unable to remove schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      KMessageBox::detailedSorry(this, i18n("Unable to remove scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
       delete e;
     }
   }
@@ -3565,7 +3565,7 @@ void KMyMoney2App::slotScheduleDuplicate(void)
     MyMoneySchedule sch = m_selectedSchedule;
     sch.clearId();
     sch.setLastPayment(QDate());
-    sch.setName(i18n("Copy of schedulename", "Copy of %1").arg(sch.name()));
+    sch.setName(i18n("Copy of scheduled transaction name", "Copy of %1").arg(sch.name()));
 
     MyMoneyFileTransaction ft;
     try {
@@ -3591,7 +3591,7 @@ void KMyMoney2App::slotScheduleSkip(void)
       if(!schedule.isFinished()) {
         if(schedule.occurence() != MyMoneySchedule::OCCUR_ONCE) {
           QDate next = schedule.nextDueDate();
-          if(!schedule.isFinished() && (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name(), KGlobal::locale()->formatDate(next, true))+QString("</qt>"))) == KMessageBox::Yes) {
+          if(!schedule.isFinished() && (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to skip the <b>%1</b> transaction scheduled for <b>%2</b>?").arg(schedule.name(), KGlobal::locale()->formatDate(next, true))+QString("</qt>"))) == KMessageBox::Yes) {
             MyMoneyFileTransaction ft;
             schedule.setLastPayment(next);
             schedule.setNextDueDate(schedule.nextPayment(next));
@@ -3601,7 +3601,7 @@ void KMyMoney2App::slotScheduleSkip(void)
         }
       }
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, QString("<qt>")+i18n("Unable to skip schedule <b>%1</b>.").arg(m_selectedSchedule.name())+QString("</qt>"), e->what());
+      KMessageBox::detailedSorry(this, QString("<qt>")+i18n("Unable to skip scheduled transaction <b>%1</b>.").arg(m_selectedSchedule.name())+QString("</qt>"), e->what());
       delete e;
     }
   }
@@ -3614,7 +3614,7 @@ void KMyMoney2App::slotScheduleEnter(void)
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
       enterSchedule(schedule);
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, i18n("Unknown schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      KMessageBox::detailedSorry(this, i18n("Unknown scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
       delete e;
     }
   }
@@ -3669,7 +3669,7 @@ KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySched
               }
             } else {
               if(autoEnter) {
-                if(KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later.")) == KMessageBox::No) {
+                if(KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this scheduled transaction from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later.")) == KMessageBox::No) {
                   // the user has choosen 'No' for the above question,
                   // we go back to the editor
                   continue;
@@ -3721,14 +3721,14 @@ KMyMoneyUtils::EnterScheduleResultCodeE KMyMoney2App::enterSchedule(MyMoneySched
               ft.commit();
             }
           } catch (MyMoneyException *e) {
-            KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+            KMessageBox::detailedSorry(this, i18n("Unable to enter scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
             delete e;
           }
           deleteTransactionEditor();
         }
       }
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      KMessageBox::detailedSorry(this, i18n("Unable to enter scheduled transaction '%1'").arg(m_selectedSchedule.name()), e->what());
       delete e;
     }
   }
@@ -3866,9 +3866,9 @@ void KMyMoney2App::slotPayeeDelete(void)
     if (!translist.isEmpty() || !used_schedules.isEmpty()) {
       // show error message if no payees remain
       if (remainingPayees.isEmpty()) {
-        KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
+        KMessageBox::sorry(this, i18n("At least one transaction/scheduled transaction is still referenced by a payee. "
           "Currently you have all payees selected. However, at least one payee must remain so "
-          "that the transactions/schedules can be reassigned."));
+          "that the transaction/scheduled transaction can be reassigned."));
         return;
       }
 
@@ -5599,7 +5599,7 @@ void KMyMoney2App::slotCheckSchedules(void)
 {
   if(KMyMoneyGlobalSettings::checkSchedule() == true) {
 
-    KMSTATUS(i18n("Checking for overdue schedules..."));
+    KMSTATUS(i18n("Checking for overdue scheduled transactions..."));
     MyMoneyFile *file = MyMoneyFile::instance();
     QDate checkDate = QDate::currentDate().addDays(KMyMoneyGlobalSettings::checkSchedulePreview());
 

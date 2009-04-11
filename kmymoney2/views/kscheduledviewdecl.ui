@@ -32,7 +32,7 @@
                         <cstring>m_qbuttonNew</cstring>
                     </property>
                     <property name="text">
-                        <string>New Schedule</string>
+                        <string>New Scheduled transaction...</string>
                     </property>
                 </widget>
                 <spacer>

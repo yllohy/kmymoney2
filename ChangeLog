@@ -1,3 +1,8 @@
+
+2009-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed 'Schedule' --> 'Scheduled transaction' (patch provided by
+    Peter Hargreaves)
+
 2009-04-11 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Update database structures to Version 5
     - add missing fields in Payee, Split
