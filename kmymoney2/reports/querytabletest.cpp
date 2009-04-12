@@ -467,7 +467,7 @@ void QueryTableTest::testInvestment(void)
       MyMoneyReport::eTopAccount,
       MyMoneyReport::eQCaction|MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
       MyMoneyTransactionFilter::userDefined,
-      false,
+      MyMoneyReport::eDetailAll,
       i18n("Investment Transactions"),
       i18n("Test Report")
     );
@@ -559,7 +559,7 @@ void QueryTableTest::testInvestment(void)
     MyMoneyReport::eAccountByTopAccount,
     MyMoneyReport::eQCperformance,
     MyMoneyTransactionFilter::userDefined,
-    false,
+    MyMoneyReport::eDetailAll,
     i18n("Investment Performance by Account"),
     i18n("Test Report")
   );

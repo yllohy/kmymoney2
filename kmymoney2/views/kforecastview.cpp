@@ -645,7 +645,7 @@ void KForecastView::loadChartView(void)
     MyMoneyReport::eAssetLiability,
     MyMoneyReport::eMonths,
     MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
-    false,
+    detailLevel[m_comboDetail->currentItem()],
     i18n("Networth Forecast"),
     i18n("Generated Report"));
 
@@ -659,8 +659,6 @@ void KForecastView::loadChartView(void)
   reportCfg.setConvertCurrency( true );
   reportCfg.setIncludingForecast( true );
   reportCfg.setDateFilter(QDate::currentDate(),QDate::currentDate().addDays(m_forecastDays->value()));
-
-  reportCfg.setDetailLevel(detailLevel[m_comboDetail->currentItem()]);
 
   reports::PivotTable table(reportCfg);
 

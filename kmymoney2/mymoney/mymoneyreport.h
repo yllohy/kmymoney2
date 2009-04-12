@@ -80,7 +80,7 @@ public:
 
 public:
   MyMoneyReport(void);
-  MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _ss, const QString& _name, const QString& _comment );
+  MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, EDetailLevel _ss, const QString& _name, const QString& _comment );
   MyMoneyReport(const QString& id, const MyMoneyReport& right);
 
   /**

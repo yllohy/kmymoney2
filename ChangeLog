@@ -1,5 +1,8 @@
 
 2009-04-11 Alvaro Soliverez <asoliverez@gmail.com>
+  * Changed MyMoneyReport to use EDetailLevel instead of bool
+
+2009-04-11 Alvaro Soliverez <asoliverez@gmail.com>
   * Cleaned up code in MyMoneyReport and related classes
 
 2009-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>

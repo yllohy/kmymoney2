@@ -3403,7 +3403,7 @@ void KMyMoney2App::slotAccountTransactionReport(void)
         MyMoneyReport::eAccount,
         MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory,
         MyMoneyTransactionFilter::yearToDate,
-        false,
+        MyMoneyReport::eDetailAll,
         i18n("%1 YTD Account Transactions").arg(m_selectedAccount.name()),
         i18n("Generated Report")
       );

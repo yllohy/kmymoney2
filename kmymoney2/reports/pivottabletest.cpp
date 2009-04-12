@@ -947,8 +947,11 @@ void PivotTableTest::testBudget(void)
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
 
-    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
-      false,"Yearly Budgeted vs. Actual","Default Report");
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,
+                         MyMoneyReport::eMonths,
+                         MyMoneyTransactionFilter::yearToDate,
+                         MyMoneyReport::eDetailTop,
+                         "Yearly Budgeted vs. Actual","Default Report");
     PivotTable table(report);
   }
 
@@ -956,8 +959,11 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
-    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
-      false,"Yearly Budgeted vs. Actual","Default Report");
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,
+                         MyMoneyReport::eMonths,
+                         MyMoneyTransactionFilter::yearToDate,
+                         MyMoneyReport::eDetailTop,
+                         "Yearly Budgeted vs. Actual","Default Report");
     PivotTable table(report);
   }
 
@@ -969,8 +975,11 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, true, 100.0 );
-    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
-      false,"Yearly Budgeted vs. Actual","Default Report");
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,
+                         MyMoneyReport::eMonths,
+                         MyMoneyTransactionFilter::yearToDate,
+                         MyMoneyReport::eDetailTop ,
+                         "Yearly Budgeted vs. Actual","Default Report");
     PivotTable table(report);
   }
 
@@ -983,8 +992,11 @@ void PivotTableTest::testBudget(void)
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
     budget += BudgetEntryHelper( QDate(2006,1,1), acChild, false, 100.0 );
     budget += BudgetEntryHelper( QDate(2006,1,1), acSecondChild, true, 100.0 );
-    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
-      false,"Yearly Budgeted vs. Actual","Default Report");
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,
+                         MyMoneyReport::eMonths,
+                         MyMoneyTransactionFilter::yearToDate,
+                         MyMoneyReport::eDetailTop,
+                         "Yearly Budgeted vs. Actual","Default Report");
     PivotTable table(report);
   }
 
@@ -997,8 +1009,11 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
-    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
-      false,"Yearly Budgeted vs. Actual","Default Report");
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,
+                         MyMoneyReport::eMonths,
+                         MyMoneyTransactionFilter::yearToDate,
+                         MyMoneyReport::eDetailTop,
+                         "Yearly Budgeted vs. Actual","Default Report");
     PivotTable table(report);
   }
 }

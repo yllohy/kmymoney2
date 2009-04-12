@@ -66,14 +66,13 @@ KBalanceChartDlg::KBalanceChartDlg(const MyMoneyAccount& account, QWidget* paren
                                           MyMoneyReport::eAssetLiability,
                                           MyMoneyReport::eMonths,
                                           MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
-                                          false,
+                                          MyMoneyReport::eDetailTotal,
                                           i18n("%1 Balance History").arg(account.name()),
                                                i18n("Generated Report")
                                          );
   reportCfg.setChartByDefault(true);
   reportCfg.setChartGridLines(false);
   reportCfg.setChartDataLabels(false);
-  reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
   reportCfg.setChartType(MyMoneyReport::eChartLine);
   reportCfg.setIncludingSchedules( true );
   if(account.accountType() == MyMoneyAccount::Investment) {

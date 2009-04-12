@@ -271,14 +271,13 @@ void KHomeView::showNetWorthGraph(void)
       MyMoneyReport::eAssetLiability,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
-      false,
+      MyMoneyReport::eDetailTotal,
       i18n("Networth Forecast"),
       i18n("Generated Report"));
 
   reportCfg.setChartByDefault(true);
   reportCfg.setChartGridLines(false);
   reportCfg.setChartDataLabels(false);
-  reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
   reportCfg.setChartType(MyMoneyReport::eChartLine);
   reportCfg.setIncludingSchedules( false );
   reportCfg.addAccountGroup(MyMoneyAccount::Asset);
@@ -1380,7 +1379,7 @@ void KHomeView::showBudget(void)
       MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::currentMonth,
-      true,
+      MyMoneyReport::eDetailAll,
       i18n("Monthly Budgeted vs. Actual"),
       i18n("Generated Report"));
 

@@ -90,10 +90,10 @@ MyMoneyReport::MyMoneyReport ( const QString& id, const MyMoneyReport& right ) :
   setId ( id );
 }
 
-MyMoneyReport::MyMoneyReport ( ERowType _rt, unsigned _ct, dateOptionE _dl, bool _ss, const QString& _name, const QString& _comment ) :
+MyMoneyReport::MyMoneyReport ( ERowType _rt, unsigned _ct, dateOptionE _dl, EDetailLevel _ss, const QString& _name, const QString& _comment ) :
     m_name ( _name ),
     m_comment ( _comment ),
-    m_detailLevel ( _ss ? eDetailAll : eDetailTop ),
+    m_detailLevel ( _ss ),
     m_convertCurrency ( true ),
     m_favorite ( false ),
     m_tax ( false ),
