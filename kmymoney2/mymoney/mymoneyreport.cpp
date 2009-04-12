@@ -603,14 +603,21 @@ bool MyMoneyReport::read ( const QDomElement& e )
     // to this, and we'd hate for it to break as a result.
     m_group = e.attribute ( "group" );
     m_id = e.attribute ( "id" );
+
+    //check for reports with older settings which didn't have the detail attribute
     if ( e.hasAttribute ( "detail" ) )
     {
       i = kDetailLevelText.findIndex ( e.attribute ( "detail", "all" ) );
       if ( i != -1 )
         m_detailLevel = static_cast<EDetailLevel> ( i );
+    } else if ( e.attribute ( "showsubaccounts", "0" ).toUInt() ) {
+      //set to show all accounts
+      m_detailLevel = eDetailAll;
+    } else {
+      //set to show the top level account instead
+      m_detailLevel = eDetailTop;
     }
-    else
-      setShowSubAccounts ( e.attribute ( "showsubaccounts", "0" ).toUInt() );
+
     m_convertCurrency = e.attribute ( "convertcurrency", "1" ).toUInt();
     m_favorite = e.attribute ( "favorite", "0" ).toUInt();
     m_tax = e.attribute ( "tax", "0" ).toUInt();

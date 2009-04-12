@@ -1434,7 +1434,7 @@ QString PivotTable::renderCSV( void ) const
       bool finishrow = true;
       QString finalRow;
       bool isUsed = false;
-      if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
+      if ( m_config_f.detailLevel() == MyMoneyReport::eDetailAll && ((*it_innergroup).size() > 1 ))
       {
         // Print the individual rows
         result += innergroupdata;
@@ -1755,7 +1755,7 @@ QString PivotTable::renderHTML( void ) const
           bool finishrow = true;
           QString finalRow;
           bool isUsed = false;
-          if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
+          if ( m_config_f.detailLevel() == MyMoneyReport::eDetailAll && ((*it_innergroup).size() > 1 ))
           {
             // Print the individual rows
             result += innergroupdata;
@@ -1787,7 +1787,7 @@ QString PivotTable::renderHTML( void ) const
             isUsed |= !rowname.isClosed();
             finalRow = QString("<tr class=\"row-%1\"%2><td class=\"left\" style=\"text-indent: %3.0em;\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
-              .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
+                .arg( m_config_f.detailLevel() == MyMoneyReport::eDetailAll ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
               .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency().id()));

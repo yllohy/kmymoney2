@@ -1,4 +1,7 @@
 
+2009-04-11 Alvaro Soliverez <asoliverez@gmail.com>
+  * Cleaned up code in MyMoneyReport and related classes
+
 2009-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed 'Schedule' --> 'Scheduled transaction' (patch provided by
     Peter Hargreaves)

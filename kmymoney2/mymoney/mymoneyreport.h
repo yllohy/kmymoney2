@@ -92,7 +92,6 @@ public:
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
-  bool isShowingSubAccounts(void) const { return (m_detailLevel==eDetailAll); }
   bool isShowingRowTotals(void) const { return (m_showRowTotals); }
   EReportType reportType(void) const { return m_reportType; }
   ERowType rowType(void) const { return m_rowType; }
@@ -129,7 +128,6 @@ public:
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
-  void setShowSubAccounts(bool _f) { m_detailLevel = _f?eDetailAll:eDetailTop; }
   void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
   void setRowType(ERowType _rt);
   void setColumnType(EColumnType _ct) { m_columnType = _ct; }

@@ -239,7 +239,7 @@ void PivotTableTest::testSubAccount()
   MyMoneyReport filter;
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
-  filter.setShowSubAccounts(true);
+  filter.setDetailLevel(MyMoneyReport::eDetailAll);
   filter.setName("Spending with Sub-Account");
   XMLandback(filter);
   PivotTable spending_f( filter );
@@ -422,7 +422,7 @@ void PivotTableTest::testMultipleCurrencies()
   MyMoneyReport filter;
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
-  filter.setShowSubAccounts(true);
+  filter.setDetailLevel(MyMoneyReport::eDetailAll);
   filter.setConvertCurrency(true);
   filter.setName("Multiple Currency Spending Rerport (with currency conversion)");
   XMLandback(filter);
@@ -445,7 +445,7 @@ void PivotTableTest::testMultipleCurrencies()
 
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
-  filter.setShowSubAccounts(true);
+  filter.setDetailLevel(MyMoneyReport::eDetailAll);
   filter.setName("Multiple Currency Spending Report (WITHOUT currency conversion)");
   XMLandback(filter);
   PivotTable spending_fnc( filter );
