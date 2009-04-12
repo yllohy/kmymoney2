@@ -147,6 +147,7 @@ public:
    * @param keys A list of keys themselves, if applicable
    */
   void setMatchData(payeeMatchType type, bool ignorecase, const QStringList& keys);
+
   /**
    * Get all match data in one call (overloaded version for database module)
    *
@@ -157,6 +158,7 @@ public:
    * @return the matching type (see payeeMatchType for details)
    */
   payeeMatchType matchData(bool& ignorecase, QString& keyString) const;
+
   /**
    * Set all match data in one call (overloaded version for database module)
    *
@@ -165,7 +167,10 @@ public:
    * @param keys A list of keys in single-string format, if applicable
    */
   void setMatchData(payeeMatchType type, bool ignorecase, const QString& keys)
-  {return setMatchData(type, ignorecase, QStringList::split(";", keys));};
+  {
+    setMatchData(type, ignorecase, QStringList::split(";", keys));
+  }
+
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
 
