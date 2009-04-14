@@ -222,15 +222,20 @@ void PivotTable::init(void)
         if ( nextpayment.isValid() )
         {
           // Add one transaction for each date
-          QValueList<QDate> paymentdates = (*it_schedule).paymentDates(nextpayment,configend);
-          QValueList<QDate>::const_iterator it_date = paymentdates.begin();
-          while ( it_date != paymentdates.end() )
+          QValueList<QDate> paymentDates = (*it_schedule).paymentDates(nextpayment,configend);
+          QValueList<QDate>::const_iterator it_date = paymentDates.begin();
+          while ( it_date != paymentDates.end() )
           {
-            tx.setPostDate(*it_date);
-
-            // ???? Does this violate an assumption that transactions are sorted
-            // by date?? (ace)
-            transactions += tx;
+            //if the payment occurs in the past, enter it tomorrow
+            if(QDate::currentDate() >= *it_date) {
+              tx.setPostDate(QDate::currentDate().addDays(1));
+            } else {
+              tx.setPostDate(*it_date);
+            }
+            if ( tx.postDate() <= configend
+               && tx.postDate() >= configbegin ) {
+              transactions += tx;
+            }
 
             DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg((*it_date).toString()));
 

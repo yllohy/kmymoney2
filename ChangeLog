@@ -1,4 +1,8 @@
 
+2009-04-13 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed overdue scheduled transactions in pivot to display
+    as happening tomorrow instead of the original date
+
 2009-04-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed return in void setMatchData() introduced two days ago
 
