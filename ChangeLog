@@ -1,4 +1,7 @@
 
+2009-04-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added documentation of new file wizard (screen shots still missing)
+
 2009-04-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed overdue scheduled transactions in pivot to display
     as happening tomorrow instead of the original date

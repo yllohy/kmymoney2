@@ -91,7 +91,7 @@ The menu and toolbars provide access to the features of &kappname; and allow you
 </para>
 
 <para>
-The view selector consists of up to ten icons in the left side of the main window, depending upon the software provided by your system.  By clicking on an icon, the view window on the right hand side is loaded with the appropriate view of your financial data.  Each view provides a unique representation of your financial situation and allows you to view or edit the information shown.
+The view selector consists of at least eleven icons in the left side of the main window, depending upon the software provided by your system.  More icons could be added by various plugins.  By clicking on an icon, the view window on the right hand side is loaded with the appropriate view of your financial data.  Each view provides a unique representation of your financial situation and allows you to view or edit the information shown.
 </para>
 
 <para>
@@ -286,7 +286,7 @@ The view selector consists of up to ten icons in the left side of the main windo
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Used by the online banking module to provide feedback on running processes.
+			Used by the online banking module to provide feedback on running processes.  This is a view provided by the KBanking plugin and may not be present on your system.
 		</para>
 	</listitem>
 </itemizedlist>
@@ -300,18 +300,18 @@ The view selector consists of up to ten icons in the left side of the main windo
 </para>
 
 <para>
-	&kappname; will then open the personal information dialog box asking for your name and address.
+	&kappname; will then open the <quote>New File Setup Wizard</quote> which will guide you through the process of creating the file.
 </para>
 	
 <para>
 	<screenshot>
-	<screeninfo>Personal Information Dialog</screeninfo>
+	<screeninfo>Personal Data Page</screeninfo>
 	<mediaobject>
 	<imageobject>
 	<imagedata fileref="newfile.png" format="PNG" />
 	</imageobject>
 	<textobject>
-	<phrase>Personal Information Dialog</phrase>
+	<phrase>Personal Data Page</phrase>
 	</textobject>
 	</mediaobject>
 	</screenshot>
@@ -322,14 +322,59 @@ Because all fields are optional, you can use &kappname; without entering any inf
 </para>
 
 <para>
-	Please enter your name and address or nothing and press <guibutton>OK</guibutton>.
+	Please enter your name and address or nothing and press <guibutton>Next</guibutton>.
 </para>
 
-<para>&kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day), select the appropriate symbol from the list provided.</para>
+<para>&kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day and which will be used for your reports), select the appropriate entry from the list provided and press <guibutton>Next</guibutton>.</para>
 
 <para>
-	Because this is a new file &kappname; will now import a set of default accounts with your interaction.  A message box is first shown reminding you that this step involves selecting the correct file to import into &kappname;.
+	<screenshot>
+	<screeninfo>Base currency selection Page</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile-2.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Base currency selection page</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
 </para>
+
+<para>
+The following page allows you to create an initial account. For the typical &kappname; user this is a checking account.
+</para>
+
+<para>
+	<screenshot>
+	<screeninfo>Checking account creation Page</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile-3.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Checking account creation page</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+Enter the name of the account and a possible reference number assigned by the institution managing the account.  Enter the opening date of the account and the opening balance of the account.  For example, you want to use &kappname; to manage all your finances as of 2008-01-01, then enter the balance of the account at the beginning of this date.  The number can possibly be obtained from a paper statement.
+Also enter the name and routing number of the institution, though this information is optional and only required for online banking purposes.
+</para>
+
+<para>
+In case you don't want to setup an initial account, please uncheck the checkbox 
+</para>
+<para>
+Once finished, press <guibutton>Next</guibutton> to proceed.
+</para>
+
+<para>
+	Because this is a new file &kappname; will now allow you to import a set of default accounts with your interaction.
+</para>
+<!--
 <para>
 	<screenshot>
 	<mediaobject>
@@ -363,14 +408,76 @@ Because all fields are optional, you can use &kappname; without entering any inf
 
 	Only one file needs to be selected and should match your country and or region.  If your country/region is not listed then please select the default_account_enC.dat file or Click on <guibutton>Cancel</guibutton> to not load any pre-defined accounts.  The enC file relates to the default country and region and is usually American.  Accounts can be renamed later if needed.
 </para>
+-->
 
 <para>
-	Choose the appropriate accounts file and click on <guibutton>OK</guibutton> to create the file.
+	<screenshot>
+	<screeninfo>Account template selection Page</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile-4.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account template selection page</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
 </para>
 
+
+<para>
+	Choose the appropriate country and account template(s). Multiple templates, even from multiple countries can be selected using a combination of <keycap>Ctrl</keycap> and <keycap>Shift</keycap> together with the left mouse button.  The account hierarchy to be setup will be shown in a preview part of the wizard. In case you cannot find a template that suits your needs, don't select a template.
+</para>
+<para>
+Once finished with the template selection press <guibutton>Next</guibutton> to proceed.
+</para>
+
+<para>
+The next page of the wizard allows you to setup user preferences. Press <guibutton>Next</guibutton> if you are done and want to proceed.
+</para>
+
+<para>
+	<screenshot>
+	<screeninfo>Preference Page</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile-5.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Preference page</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+
+<para>
+The last page of the wizard allows you to select the filename that will be used to store your financial data. An initial filename will be constructed out of your HOME directory and user name.
+</para>
+
+<para>
+	<screenshot>
+	<screeninfo>Filename selection Page</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile-6.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Filename selection page</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+Now you have collected all relevant information to create the file. Press <guibutton>Finish</guibutton> and &kappname; will create the file for you and open it.
+</para>
+
+<!--
 <para>
 After &kappname; has finished loading the default accounts your financial summary will be displayed.  As you have defined no accounts to hold your transactions this is currently empty.
 </para>
+-->
 </sect1>
 
 
