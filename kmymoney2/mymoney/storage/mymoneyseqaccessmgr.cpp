@@ -213,7 +213,7 @@ void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
 void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
 {
   QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
-  QValueList<MyMoneySplit>::ConstIterator it_s;
+  QMap<QString, MyMoneySchedule>::ConstIterator it_s;
   QMap<QString, MyMoneyPayee>::ConstIterator it_p;
 
   it_p = m_payeeList.find(payee.id());
@@ -224,16 +224,20 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
 
   // scan all transactions to check if the payee is still referenced
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    // scan all splits of this transaction
-    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
-      if((*it_s).payeeId() == payee.id())
-        throw new MYMONEYEXCEPTION("Cannot remove payee that is referenced");
+    if((*it_t).hasReferenceTo(payee.id())) {
+      throw new MYMONEYEXCEPTION(QString("Cannot remove payee that is still referenced to a %1").arg("transaction"));
     }
   }
 
-  removeReferences(payee.id());
+  // check referential integrity in schedules
+  for(it_s = m_scheduleList.begin(); it_s != m_scheduleList.end(); ++it_s) {
+    if((*it_s).hasReferenceTo(payee.id())) {
+      throw new MYMONEYEXCEPTION(QString("Cannot remove payee that is still referenced to a %1").arg("schedule"));
+    }
+  }
 
-  // FIXME: check referential integrity in schedules
+  // remove any reference to report and/or budget
+  removeReferences(payee.id());
 
   m_payeeList.remove((*it_p).id());
 }

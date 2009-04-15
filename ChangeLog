@@ -1,4 +1,8 @@
 
+2009-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net
+  * Fixed #2732207 (Unable to unmatch transaction matched by OFX import)
+    for plain file based version. DB code still needs to be fixed.
+
 2009-04-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added documentation of new file wizard (screen shots still missing)
 
