@@ -514,7 +514,14 @@ void KGlobalLedgerView::loadView(void)
     }
 
     // we need at least the balance for the account we currently show
-    actBalance[m_account.id()] = MyMoneyMoney(0,1);
+    actBalance[m_account.id()] = MyMoneyMoney();
+
+    if(m_account.accountType() == MyMoneyAccount::Investment) {
+      QValueList<QString>::const_iterator it_a;
+      for(it_a = m_account.accountList().begin(); it_a != m_account.accountList().end(); ++it_a) {
+            actBalance[*it_a] = MyMoneyMoney();
+          }
+    }
 
     // determine balances (actual, cleared). We do this by getting the actual
     // balance of all entered transactions from the engine and walk the list

@@ -1,3 +1,6 @@
+2009-04-15 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed balance display in ledger when all transactions of an
+    investment account are filtered. Patch provided by Thomas Baumgart
 
 2009-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net
   * Fixed #2732207 (Unable to unmatch transaction matched by OFX import)
