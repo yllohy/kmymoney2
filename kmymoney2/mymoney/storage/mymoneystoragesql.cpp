@@ -168,11 +168,13 @@ try {
           }
         }
       } else {
-        createTables();
-        if (clear) {
-          clean();
-        } else {
-          rc = isEmpty();
+        rc = createTables();
+        if (rc == 0) {
+          if (clear) {
+            clean();
+          } else {
+            rc = isEmpty();
+          }
         }
       }
       break;
