@@ -1,3 +1,6 @@
+2009-04-16 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Add missing error check on saveAsDatabase
+
 2009-04-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed balance display in ledger when all transactions of an
     investment account are filtered. Patch provided by Thomas Baumgart
