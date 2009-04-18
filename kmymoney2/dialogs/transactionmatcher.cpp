@@ -270,10 +270,6 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
     if((variation > 0) && (variation < 100)) {
       lower = lower - (lower.abs() * MyMoneyMoney(variation, 100));
       upper = upper + (upper.abs() * MyMoneyMoney(variation, 100));
-      qDebug("variation is %d", variation);
-      qDebug("lower is %s", lower.formatMoney("", 2).data());
-      qDebug("upper is %s", upper.formatMoney("", 2).data());
-      qDebug("shares is %s", (*it_s).shares().formatMoney("", 2).data());
     }
     // we only check for duplicates / matches if the sign
     // of the amount for this split is identical
