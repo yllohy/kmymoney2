@@ -1,3 +1,9 @@
+
+2009-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net
+  * For scheduled transactions with the estimate option turned on, an imported
+    transaction with an amount in the range of +/- 10% of the scheduled amount
+    will match
+
 2009-04-16 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Add missing error check on saveAsDatabase
 

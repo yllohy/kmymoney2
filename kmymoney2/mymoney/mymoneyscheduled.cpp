@@ -1056,27 +1056,34 @@ QString MyMoneySchedule::weekendOptionToString(MyMoneySchedule::weekendOptionE w
   return text;
 }
 
-#if 0
+// until we don't have the means to store the value
+// of the variation, we default to 10% in case this
+// scheduled transaction is marked 'not fixed'.
+//
+// ipwizard 2009-04-18
+
 int MyMoneySchedule::variation(void) const
 {
   int rc = 0;
   if(!isFixed()) {
+    rc = 10;
+#if 0
     QString var = value("kmm-variation");
-    if(var.isEmpty())
-      rc = 10;
-    else
+    if(!var.isEmpty())
       rc = var.toInt();
+#endif
   }
   return rc;
 }
 
 void MyMoneySchedule::setVariation(int var)
 {
+#if 0
   deletePair("kmm-variation");
   if(var != 0)
     setValue("kmm-variation", QString("%1").arg(var));
-}
 #endif
+}
 
 int MyMoneySchedule::eventsPerYear(MyMoneySchedule::occurenceE occurence)
 {

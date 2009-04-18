@@ -316,12 +316,12 @@ public:
 
 public slots:
   int slotEditSplits(void);
+  void slotUpdateAmount(const QString&);
 
 protected slots:
   void slotReloadEditWidgets(void);
   void slotUpdatePayment(const QString&);
   void slotUpdateDeposit(const QString&);
-  void slotUpdateAmount(const QString&);
   void slotUpdateCategory(const QString&);
   void slotUpdatePayee(const QString&);
   void slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection);

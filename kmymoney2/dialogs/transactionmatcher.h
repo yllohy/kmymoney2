@@ -134,7 +134,7 @@ public:
   void setMatchWindow(int days) { m_days = days; }
 
 private:
-  void checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch, autoMatchResultE& result) const;
+  void checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch, autoMatchResultE& result, int variation = 0) const;
 
 private:
   MyMoneyAccount            m_account;

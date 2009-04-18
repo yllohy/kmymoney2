@@ -47,6 +47,7 @@
 #include <kmymoney/mymoneystatement.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/transactioneditor.h>
+#include <kmymoney/kmymoneyedit.h>
 #include "../dialogs/kaccountselectdlg.h"
 #include "../dialogs/transactionmatcher.h"
 #include "../dialogs/kenterscheduledlg.h"
@@ -1101,6 +1102,33 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             TransactionEditor* editor = dlg.startEdit();
             if(editor) {
               MyMoneyTransaction torig;
+              // in case the amounts of the scheduled transaction and the
+              // imported transaction differ, we need to update the amount
+              // using the transaction editor.
+              if(matchedSplit.shares() != s1.shares() && !schedule.isFixed()) {
+                // for now this only works with regular transactions and not
+                // for investment transactions. As of this, we don't have
+                // scheduled investment transactions anyway.
+                StdTransactionEditor* se = dynamic_cast<StdTransactionEditor*>(editor);
+                if(se) {
+                  // the following call will update the amount field in the
+                  // editor and also adjust a possible VAT assignment. Make
+                  // sure to use only the absolute value of the amount, because
+                  // the editor keeps the sign in a different position (deposit,
+                  // withdrawal tab)
+                  kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(se->haveWidget("amount"));
+                  if(amount) {
+                    amount->setValue(s1.shares().abs());
+                    se->slotUpdateAmount(s1.shares().abs().toString());
+
+                    // we also need to update the matchedSplit variable to
+                    // have the modified share/value.
+                    matchedSplit.setShares(s1.shares());
+                    matchedSplit.setValue(s1.value());
+                  }
+                }
+              }
+
               editor->createTransaction(torig, dlg.transaction(), dlg.transaction().splits()[0], true);
               QString newId;
               if(editor->enterTransactions(newId, false, true)) {

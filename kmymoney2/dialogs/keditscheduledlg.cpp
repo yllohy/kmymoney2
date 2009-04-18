@@ -152,6 +152,10 @@ KEditScheduleDlg::KEditScheduleDlg(const MyMoneySchedule& schedule, QWidget *par
 
   // force the initial height to be as small as possible
   QTimer::singleShot(0, this, SLOT(slotSetupSize()));
+
+  // we just hide the variation field for now and enable the logic
+  // once we have a respective member in the MyMoneySchedule object
+  m_variation->hide();
 }
 
 KEditScheduleDlg::~KEditScheduleDlg()
@@ -248,6 +252,7 @@ TransactionEditor* KEditScheduleDlg::startEdit(void)
     // don't forget our three buttons and additional widgets
     d->m_tabOrderWidgets.append(m_weekendOptionEdit);
     d->m_tabOrderWidgets.append(m_estimateEdit);
+    d->m_tabOrderWidgets.append(m_variation);
     d->m_tabOrderWidgets.append(m_autoEnterEdit);
     d->m_tabOrderWidgets.append(m_endSeriesEdit);
     d->m_tabOrderWidgets.append(m_RemainingEdit);

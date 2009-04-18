@@ -257,7 +257,7 @@ void TransactionMatcher::accept(const MyMoneyTransaction& _t, const MyMoneySplit
   }
 }
 
-void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch, TransactionMatcher::autoMatchResultE& result) const
+void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const MyMoneyTransaction& ti, const MyMoneySplit& si, QPair<MyMoneyTransaction, MyMoneySplit>& lastMatch, TransactionMatcher::autoMatchResultE& result, int variation) const
 {
   Q_UNUSED(ti);
 
@@ -265,9 +265,19 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
   const QValueList<MyMoneySplit>& splits = tm.splits();
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+    MyMoneyMoney upper((*it_s).shares());
+    MyMoneyMoney lower(upper);
+    if((variation > 0) && (variation < 100)) {
+      lower = lower - (lower.abs() * MyMoneyMoney(variation, 100));
+      upper = upper + (upper.abs() * MyMoneyMoney(variation, 100));
+      qDebug("variation is %d", variation);
+      qDebug("lower is %s", lower.formatMoney("", 2).data());
+      qDebug("upper is %s", upper.formatMoney("", 2).data());
+      qDebug("shares is %s", (*it_s).shares().formatMoney("", 2).data());
+    }
     // we only check for duplicates / matches if the sign
     // of the amount for this split is identical
-    if((*it_s).shares() == si.shares()) {
+    if((si.shares() >= lower) && (si.shares() <= upper)) {
       // check for duplicate (we can only do that, if we have a bankID)
       if(!si.bankID().isEmpty()) {
         if((*it_s).bankID() == si.bankID()) {
@@ -283,7 +293,7 @@ void TransactionMatcher::checkTransaction(const MyMoneyTransaction& tm, const My
       }
       // check if this is the one that matches
       if((*it_s).accountId() == si.accountId()
-      && (*it_s).shares() == si.shares()
+      && (si.shares() >= lower) && (si.shares() <= upper)
       && !(*it_s).isMatched()) {
         if(tm.postDate() == ti.postDate()) {
           lastMatch = QPair<MyMoneyTransaction, MyMoneySplit>(tm, *it_s);
@@ -341,7 +351,7 @@ MyMoneyObject const * TransactionMatcher::findMatch(const MyMoneyTransaction& ti
          (nextDueDate >= ti.postDate().addDays(-m_days)
          && nextDueDate <= ti.postDate().addDays(m_days))) {
         MyMoneyTransaction st = KMyMoneyUtils::scheduledTransaction(*it_sch);
-        checkTransaction(st, ti, si, lastMatch, result);
+        checkTransaction(st, ti, si, lastMatch, result, (*it_sch).variation());
         if(result == matched || result == matchedExact) {
           sm = lastMatch.second;
           rc = new MyMoneySchedule(*it_sch);
