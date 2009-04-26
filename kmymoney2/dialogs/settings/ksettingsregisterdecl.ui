@@ -446,7 +446,7 @@ Selecting 0% will list all transactions.</string>
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Matching</string>
+                    <string>Import</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -484,6 +484,9 @@ Selecting 0% will list all transactions.</string>
                                 <property name="value">
                                     <number>4</number>
                                 </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Search for matching transactions within the range of the posting date of the imported transaction +/- the number of given days.</string>
+                                </property>
                             </widget>
                             <spacer>
                                 <property name="name">
@@ -504,6 +507,20 @@ Selecting 0% will list all transactions.</string>
                             </spacer>
                         </hbox>
                     </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_askForPayeeCategory</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Ask for a new payee's default category</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Whenever a new payee is detected during import of a statement, the user will be asked to assign a default category for this user when this option is selected.</string>
+                        </property>
+                    </widget>
                     <spacer>
                         <property name="name">
                             <cstring>spacer14</cstring>
@@ -517,7 +534,7 @@ Selecting 0% will list all transactions.</string>
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>31</height>
+                                <height>60</height>
                             </size>
                         </property>
                     </spacer>

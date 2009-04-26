@@ -38,6 +38,9 @@
 #include <kmessagebox.h>
 #include <kconfig.h>
 #include <kdebug.h>
+#include <kdialogbase.h>
+#include <qvbox.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -52,6 +55,7 @@
 #include "../dialogs/transactionmatcher.h"
 #include "../dialogs/kenterscheduledlg.h"
 #include "../kmymoney2.h"
+#include <kmymoney/kmymoneyaccountcombo.h>
 
 class MyMoneyStatementReader::Private
 {
@@ -183,6 +187,7 @@ MyMoneyStatementReader::MyMoneyStatementReader() :
   m_ft(0),
   m_progressCallback(0)
 {
+  m_askPayeeCategory = KMyMoneyGlobalSettings::askForPayeeCategory();
 }
 
 MyMoneyStatementReader::~MyMoneyStatementReader()
@@ -190,9 +195,14 @@ MyMoneyStatementReader::~MyMoneyStatementReader()
   delete d;
 }
 
-void MyMoneyStatementReader::setAutoCreatePayee(const bool create)
+void MyMoneyStatementReader::setAutoCreatePayee(bool create)
 {
   m_autoCreatePayee = create;
+}
+
+void MyMoneyStatementReader::setAskPayeeCategory(bool ask)
+{
+  m_askPayeeCategory = ask;
 }
 
 bool MyMoneyStatementReader::import(const MyMoneyStatement& s, QStringList& messages)
@@ -895,6 +905,47 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         // might distract the user.
         payee.setName(payeename);
         payee.setMatchData(MyMoneyPayee::matchName, true, QStringList());
+        if (m_askPayeeCategory) {
+          // We use a QGuardedPtr because the dialog may get deleted
+          // during exec() if the parent of the dialog gets deleted.
+          // In that case the guarded ptr will reset to 0.
+          QGuardedPtr<KDialogBase> dialog = new KDialogBase(
+              "Default Category for Payee",
+              KDialogBase::Yes | KDialogBase::No | KDialogBase::Cancel,
+              KDialogBase::Yes, KDialogBase::Cancel,
+              0, "questionYesNoCancel", true, true,
+              KGuiItem(i18n("Save Category")),
+              KGuiItem(i18n("No Category")),
+              KGuiItem(i18n("Abort")));
+          QVBox *topcontents = new QVBox (dialog);
+          topcontents->setSpacing(KDialog::spacingHint()*2);
+          topcontents->setMargin(KDialog::marginHint());
+
+          //add in caption? and account combo here
+          QLabel *label1 = new QLabel( topcontents);
+          label1->setText(i18n("Please select a default category for payee '%1':").arg(payee.name().data()));
+
+          QGuardedPtr<KMyMoneyAccountCombo> accountCombo = new KMyMoneyAccountCombo(topcontents);
+          dialog->setMainWidget(topcontents);
+
+          int result = dialog->exec();
+
+          QString accountId;
+          if (accountCombo && !accountCombo->selectedAccounts().isEmpty()) {
+            accountId = accountCombo->selectedAccounts().front();
+          }
+          if (dialog) {
+            delete dialog;
+          }
+          //if they hit yes instead of no, then grab setting of account combo
+          if (result == KDialogBase::Yes) {
+            payee.setDefaultAccountId(accountId);
+          }
+          else if (result != KDialogBase::No) {
+            //add cancel button? and throw exception like below
+            throw new MYMONEYEXCEPTION("USERABORT");
+          }
+        }
 
         try {
           file->addPayee(payee);
@@ -934,8 +985,18 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // transaction.  For now, we'll leave it unbalanced, and let the user
       // handle it.
       //
-
-      if(t_in.m_listSplits.isEmpty() && !d->m_skipCategoryMatching) {
+      const MyMoneyPayee& payeeObj = MyMoneyFile::instance()->payee(payeeid);
+      if (t_in.m_listSplits.isEmpty() && payeeObj.defaultAccountEnabled()) {
+        MyMoneySplit s;
+        s.setReconcileFlag(MyMoneySplit::Cleared);
+        s.clearId();
+        s.setBankID(QString());
+        s.setShares(-s1.shares());
+        s.setValue(-s1.value());
+        s.setAccountId(payeeObj.defaultAccountId());
+        t.addSplit(s);
+      }
+      else if (t_in.m_listSplits.isEmpty() && !d->m_skipCategoryMatching) {
         MyMoneyTransactionFilter filter(thisaccount.id());
         filter.addPayee(payeeid);
         QValueList<MyMoneyTransaction> list = file->transactionList(filter);

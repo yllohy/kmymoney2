@@ -1525,7 +1525,6 @@ void KMyMoney2App::slotQifImport(void)
       m_qifReader->setURL(dlg->filename());
 
       m_qifReader->setProfile(dlg->profile());
-      int c = dlg->m_typeComboBox->currentItem();
       m_qifReader->setCategoryMapping(dlg->m_typeComboBox->currentItem() == 0);
       m_qifReader->setProgressCallback(&progressCallback);
 

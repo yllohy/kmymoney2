@@ -82,7 +82,8 @@ public:
     * @param create flag if this feature should be turned on (@p true)
     *               or turned off (@p false)
     */
-  void setAutoCreatePayee(const bool create);
+  void setAutoCreatePayee(bool create);
+  void setAskPayeeCategory(bool ask);
 
   const MyMoneyAccount& account() const { return m_account; };
 
@@ -134,6 +135,7 @@ private:
   bool                    m_skipAccount;
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;
+  bool                    m_askPayeeCategory;
   MyMoneyFileTransaction* m_ft;
 
   void (*m_progressCallback)(int, int, const QString&);

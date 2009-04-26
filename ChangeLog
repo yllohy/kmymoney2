@@ -4,6 +4,7 @@
   * Added more output to configuration of sqlite support
   * Fixed some tips
   * Minor changes to the project handbook
+  * Added patch by Matt Blythe (payeeCategoryPatch.diff)
 
 2009-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * For scheduled transactions with the estimate option turned on, an imported

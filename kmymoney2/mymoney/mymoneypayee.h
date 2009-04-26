@@ -66,6 +66,9 @@ private:
    */
   QString m_matchKey;
 
+  // Category (account) matching fields
+  QString m_defaultAccountId;
+
   /**
     * This member keeps a reference to an external database
     * (e.g. kaddressbook). It is the responsability of the
@@ -166,9 +169,13 @@ public:
    * @param ignorecase Whether case should be ignored for the key/name match
    * @param keys A list of keys in single-string format, if applicable
    */
-  void setMatchData(payeeMatchType type, bool ignorecase, const QString& keys)
-  {
-    setMatchData(type, ignorecase, QStringList::split(";", keys));
+  void setMatchData(payeeMatchType type, bool ignorecase, const QString& keys);
+
+
+  bool defaultAccountEnabled() const { return !m_defaultAccountId.isEmpty(); }
+  const QString& defaultAccountId() const { return m_defaultAccountId; }
+  void setDefaultAccountId(const QString& id = QString()) {
+    m_defaultAccountId = id;
   }
 
   // Copy constructors

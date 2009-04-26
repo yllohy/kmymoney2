@@ -120,6 +120,7 @@ public:
     *               or turned off (@p false)
     */
   virtual void setAutoCreatePayee(const bool create)=0;
+  virtual void setAskPayeeCategory(const bool ask)=0;
   
   virtual const MyMoneyAccount& account() const { return m_account; };
   virtual void setProgressCallback(void(*callback)(int, int, const QString&)) { m_progressCallback = callback; }

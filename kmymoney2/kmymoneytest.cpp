@@ -57,6 +57,7 @@
 #include "mymoney/mymoneypricetest.h"
 #include "mymoney/mymoneyobjecttest.h"
 #include "mymoney/mymoneyforecasttest.h"
+#include "mymoney/mymoneypayeetest.h"
 
 #include "mymoney/storage/mymoneymaptest.h"
 
@@ -148,6 +149,7 @@ int main(int testargc, char** testargv)
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPriceTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPayeeTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PivotGridTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(QueryTableTest);

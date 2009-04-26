@@ -1023,7 +1023,7 @@ void MyMoneyStorageSql::writePayee(const MyMoneyPayee& p, MyMoneySqlQuery& q, bo
   q.bindValue(":addressState", p.state());
   q.bindValue(":telephone", p.telephone());
   q.bindValue(":notes", p.notes());
-  q.bindValue(":defaultAccountId", "" /*p.defaultAccountId()*/);
+  q.bindValue(":defaultAccountId", p.defaultAccountId());
   bool ignoreCase;
   QString matchKeys;
   MyMoneyPayee::payeeMatchType type = p.matchData(ignoreCase, matchKeys);
@@ -2321,7 +2321,7 @@ const QMap<QString, MyMoneyPayee> MyMoneyStorageSql::fetchPayees (const QStringL
       else CASE(addressState) payee.setState(GETSTRING);
       else CASE(telephone) payee.setTelephone(GETSTRING);
       else CASE(notes) payee.setNotes(GETSTRING);
-      else CASE(defaultAccountId) /*payee.setDefaultAccountId(GETSTRING)*/;
+      else CASE(defaultAccountId) payee.setDefaultAccountId(GETSTRING);
       else CASE(matchData) type = GETINT;
       else CASE(matchIgnoreCase) ignoreCase = (GETSTRING == "Y");
       else CASE(matchKeys) matchKeys = GETSTRING;

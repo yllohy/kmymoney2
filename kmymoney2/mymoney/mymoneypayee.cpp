@@ -65,8 +65,9 @@ MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
 MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
   MyMoneyObject(node)
 {
-  if("PAYEE" != node.tagName())
+  if ("PAYEE" != node.tagName()) {
     throw new MYMONEYEXCEPTION("Node was not PAYEE");
+  }
 
   m_name = node.attribute("name");
   m_reference = node.attribute("reference");
@@ -82,6 +83,10 @@ MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
 
   if(node.hasAttribute("notes")) {
     m_notes = node.attribute("notes");
+  }
+
+  if (node.hasAttribute("defaultaccountid")) {
+    m_defaultAccountId = node.attribute("defaultaccountid");
   }
 
   QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
@@ -122,7 +127,8 @@ bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
       (m_usingMatchKey == right.m_usingMatchKey) &&
       (m_matchKeyIgnoreCase == right.m_matchKeyIgnoreCase) &&
       ((m_matchKey.length() == 0 && right.m_matchKey.length() == 0) || m_matchKey == right.m_matchKey) &&
-      ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) );
+      ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) &&
+      ((m_defaultAccountId.length() == 0 && right.m_defaultAccountId.length() == 0) || m_defaultAccountId == right.m_defaultAccountId) );
 }
 
 void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
@@ -145,6 +151,10 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
     el.setAttribute("matchkey", m_matchKey);
   }
 
+  if (!m_defaultAccountId.isEmpty()) {
+    el.setAttribute("defaultaccountid", m_defaultAccountId);
+  }
+
   QDomElement address = document.createElement("ADDRESS");
   address.setAttribute("street", m_address);
   address.setAttribute("city", m_city);
@@ -159,10 +169,8 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
 
 bool MyMoneyPayee::hasReferenceTo(const QString& id) const
 {
-  Q_UNUSED(id);
+  return id == m_defaultAccountId;
 
-  // the payee does not reference any other object
-  return false;
 }
 
 MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QStringList& keys) const
@@ -205,4 +213,10 @@ void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QStr
     m_matchKeyIgnoreCase = ignorecase;
   }
 }
+
+void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QString& keys)
+{
+  setMatchData(type, ignorecase, QStringList::split(";", keys));
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:

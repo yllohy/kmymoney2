@@ -266,10 +266,14 @@
    <default>0</default>
   </entry>
  </group>
- <group name="Match options">
+ <group name="Import options">
   <entry name="matchInterval" type="Int">
    <label>Number of days (plus/minus) to search for matching transactions</label>
    <default>4</default>
+  </entry>
+  <entry name="askForPayeeCategory" type="Bool">
+   <label>During import, ask for a new payee's default category</label>
+   <default>false</default>
   </entry>
  </group>
  <group name="Schedule Options">

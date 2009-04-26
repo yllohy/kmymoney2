@@ -271,6 +271,8 @@ private slots:
 
   void slotActivateUpdate(void);
 
+  void slotChooseDefaultAccount(void);
+
 private:
   void readConfig(void);
 

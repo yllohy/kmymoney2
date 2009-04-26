@@ -525,6 +525,76 @@
                             </spacer>
                         </vbox>
                     </widget>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>TabPage2</cstring>
+                        </property>
+                        <attribute name="title">
+                            <string>Default Account</string>
+                        </attribute>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>checkEnableDefaultAccount</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Use the default account for
+new transactions with this payee</string>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>layout5</cstring>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>labelDefaultAccount</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Default category:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KMyMoneyAccountCombo" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>comboDefaultAccount</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="KPushButton" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>buttonSelectMyAccount</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Suggest a category</string>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer5</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>31</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
                 </widget>
             </hbox>
         </widget>
@@ -589,5 +659,8 @@
         </widget>
     </vbox>
 </widget>
+<includes>
+    <include location="local" impldecl="in declaration">../widgets/kmymoneyaccountcombo.h</include>
+</includes>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

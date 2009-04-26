@@ -40,6 +40,7 @@
 #include <qheader.h>
 #include <qbuttongroup.h>
 #include <qsplitter.h>
+#include <qmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -354,6 +355,10 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
 
   checkMatchIgnoreCase->setEnabled(false);
 
+  checkEnableDefaultAccount->setChecked(false);
+  labelDefaultAccount->setEnabled(false);
+  comboDefaultAccount->setEnabled(false);
+
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem updateButtenItem( i18n("Update"),
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
@@ -376,8 +381,12 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(radioKeyMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
   connect(checkMatchIgnoreCase, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
 
-  connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
-  connect(m_helpButton, SIGNAL(pressed()), this, SLOT(slotHelp()));
+  connect(checkEnableDefaultAccount, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
+  connect(comboDefaultAccount, SIGNAL(accountSelected(const QString&)), this, SLOT(slotPayeeDataChanged()));
+  connect(buttonSelectMyAccount, SIGNAL(clicked()), this, SLOT(slotChooseDefaultAccount()));
+
+  connect(m_updateButton, SIGNAL(clicked()), this, SLOT(slotUpdatePayee()));
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 
   connect(m_payeesList, SIGNAL(contextMenu(KListView*, QListViewItem*, const QPoint&)), this, SLOT(slotOpenContextMenu(KListView*, QListViewItem*, const QPoint&)));
 
@@ -413,6 +422,45 @@ void KPayeesView::slotActivateUpdate(void)
   --m_updatesQueued;
   if(m_updatesQueued == 0)
     slotSelectPayee();
+}
+
+void KPayeesView::slotChooseDefaultAccount(void)
+{
+    MyMoneyFile* file = MyMoneyFile::instance();
+    QMap<QString,int> account_count;
+
+  for (int i = 0; i < m_transactionPtrVector.size(); ++i) {
+    KMyMoneyTransaction* t = m_transactionPtrVector[i];
+    MyMoneySplit s = t->splitById(t->splitId());
+    const MyMoneyAccount& acc = file->account(s.accountId());
+
+    QString txt;
+    if (s.action() != MyMoneySplit::ActionAmortization
+        && acc.accountType() != MyMoneyAccount::AssetLoan
+        && !file->isTransfer(*t)
+        && t->splitCount() == 2) {
+      MyMoneySplit s0 = t->splitByAccount(s.accountId(), false);
+      if (account_count.contains(s0.accountId())) {
+        account_count[s0.accountId()]++;
+      }
+      else {
+        account_count[s0.accountId()] = 1;
+      }
+    }
+  }
+
+  QMapIterator<QString,int> most_frequent, iter;
+  most_frequent = account_count.end();
+  for (iter = account_count.begin(); iter != account_count.end(); iter++) {
+    if (iter.data() > most_frequent.data()) {
+      most_frequent = iter;
+    }
+  }
+
+  if (most_frequent != account_count.end()) {
+    checkEnableDefaultAccount->setChecked(true);
+    comboDefaultAccount->setSelected(most_frequent.key());
+  }
 }
 
 void KPayeesView::slotStartRename(void)
@@ -575,6 +623,10 @@ void KPayeesView::slotSelectPayee(void)
     matchKeyEditList->clear();
     matchKeyEditList->insertStringList(keys);
     checkMatchIgnoreCase->setChecked(ignorecase);
+
+    checkEnableDefaultAccount->setChecked(m_payee.defaultAccountEnabled());
+    comboDefaultAccount->setSelected(m_payee.defaultAccountId());
+
     slotPayeeDataChanged();
 
     showTransactions();
@@ -764,6 +816,25 @@ void KPayeesView::slotPayeeDataChanged(void)
         rc |= (keys != matchKeyEditList->items());
       }
     }
+
+    rc |= (checkEnableDefaultAccount->isChecked() != m_payee.defaultAccountEnabled());
+    if (checkEnableDefaultAccount->isChecked()) {
+      comboDefaultAccount->setEnabled(true);
+      labelDefaultAccount->setEnabled(true);
+      // this is only going to understand the first in the list of selected accounts
+      if (comboDefaultAccount->selectedAccounts().empty()) {
+        rc |= !m_payee.defaultAccountId().isEmpty();
+      }
+      else {
+        QString temp = comboDefaultAccount->selectedAccounts().front();
+        rc |= ( temp.isEmpty() != m_payee.defaultAccountId().isEmpty())
+              || (!m_payee.defaultAccountId().isEmpty() && temp != m_payee.defaultAccountId());
+      }
+    }
+    else {
+      comboDefaultAccount->setEnabled(false);
+      labelDefaultAccount->setEnabled(false);
+    }
   }
   m_updateButton->setEnabled(rc);
 }
@@ -781,6 +852,15 @@ void KPayeesView::slotUpdatePayee(void)
       m_payee.setEmail(emailEdit->text());
       m_payee.setNotes(notesEdit->text());
       m_payee.setMatchData(static_cast<MyMoneyPayee::payeeMatchType>(m_matchType->selectedId()), checkMatchIgnoreCase->isChecked(), matchKeyEditList->items());
+      m_payee.setDefaultAccountId();
+
+      if (checkEnableDefaultAccount->isChecked()) {
+        QString temp;
+        if (!comboDefaultAccount->selectedAccounts().empty()) {
+          temp = comboDefaultAccount->selectedAccounts().front();
+          m_payee.setDefaultAccountId(temp);
+        }
+      }
 
       MyMoneyFile::instance()->modifyPayee(m_payee);
       ft.commit();
@@ -806,6 +886,10 @@ void KPayeesView::readConfig(void)
 
   m_payeesList->setDefaultRenameAction(
            KMyMoneyGlobalSettings::focusChangeIsEnter() ? QListView::Accept : QListView::Reject);
+
+  //initialize the account list?
+  comboDefaultAccount->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability | MyMoneyAccount::Income | MyMoneyAccount::Expense));
+
 }
 
 void KPayeesView::show(void)
