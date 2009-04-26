@@ -31,6 +31,7 @@ web:
 		rm -rf online-manual common; \
 		mkdir online-manual; \
 		mkdir common; \
+		echo "Creating index.xml"; \
 		$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-chunk-online.xsl  $(srcdir)/index.docbook -o online-manual/index.xml; \
 		cd online-manual; \
 		splitup-kde-chunk-online; \
@@ -41,8 +42,22 @@ web:
 		done; \
 		make clear-files; \
 		cp $(kde_libs_htmldir)/$(KDE_LANG)/common/* common; \
-		tar -cjf online-manual.tar.bz2 common online-manual; \
-		rm -rf index.xml online-manual common; \
+	fi;
+
+web-upload: web
+	if test -e common; then \
+		echo "cd htdocs/common" > upload.batch; \
+		echo "rm *" >> upload.batch; \
+		echo lcd common >> upload.batch; \
+		echo "mput *" >> upload.batch; \
+		echo cd ../online-manual >> upload.batch; \
+		echo "rm *" >> upload.batch; \
+		echo lcd ../online-manual >> upload.batch; \
+		echo "mput *" >> upload.batch; \
+		echo "rm index.xml"; \
+                echo "Uploading manual files to web.sourceforge.net"; \
+		sftp -b upload.batch ipwizard,kmymoney2@web.sourceforge.net; \
+		rm -rf upload.batch; \
 	fi;
 
 # if we're in a VPATH environment, we need to copy all files over

@@ -1,5 +1,10 @@
 
-2009-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net
+2009-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed generation and upload of PHB and online manual
+  * Added more output to configuration of sqlite support
+  * Fixed some tips
+
+2009-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * For scheduled transactions with the estimate option turned on, an imported
     transaction with an amount in the range of +/- 10% of the scheduled amount
     will match

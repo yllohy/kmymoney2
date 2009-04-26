@@ -38,6 +38,10 @@ AC_DEFUN([AC_SQLITE3], [
     if test ! "lib${kdelibsuff}" = "lib"; then
       qtlib=".lib64"
     fi 
+    if test x$QTDIR = x; then
+      QTDIR=`dirname $MOC`
+      QTDIR=${QTDIR%/bin}
+    fi
     LIBSQLITE3=${QTDIR}/plugins/sqldrivers/libsqlite3${qtlib}.so
 
     # do the checks
@@ -74,13 +78,11 @@ AC_DEFUN([AC_SQLITE3], [
   fi
 
   if test $enable_sqlite3 = yes; then
-    if test x$QTDIR = x; then
-      QTDIR=`dirname $MOC`
-      QTDIR=${QTDIR%/bin}
-    fi
+    AC_MSG_CHECKING(if the environment variable QTDIR is set)
     if test x$QTDIR = x; then
       AC_MSG_ERROR(QTDIR not set)
     fi
+    AC_MSG_RESULT($QTDIR)
   fi
 
   if test $enable_sqlite3 = yes; then

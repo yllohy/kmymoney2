@@ -50,7 +50,6 @@ clear-files:
 	fi
 
 
-if GENERATE_PDF
 web: $(PDF_TARGET)
 	if test x`which splitup-kde-chunk-online`x != xx; then \
 		rm -rf phb common; \
@@ -70,16 +69,29 @@ web: $(PDF_TARGET)
 		if test ! -z "$(PDF_TARGET)"; then \
 			cp $(PDF_TARGET) phb; \
 		fi; \
-		sed -i s/help:/../g common/kde-default.css; \
-		chmod 664 phb/* common/*; \
-		tar -cjf online-phb.tar.bz2 common phb; \
-		rm -rf index.xml phb common; \
+	fi;
+
+web-upload: web
+	if test -e common; then \
+		echo "cd htdocs/common" > upload.batch; \
+		echo "rm *" >> upload.batch; \
+		echo lcd common >> upload.batch; \
+		echo "mput *" >> upload.batch; \
+		echo cd ../phb >> upload.batch; \
+		echo "rm *" >> upload.batch; \
+		echo lcd ../phb >> upload.batch; \
+		echo "mput *" >> upload.batch; \
+		echo "rm index.xml"; \
+		echo "Uploading prject handbook files to web.sourceforge.net"; \
+		sftp -b upload.batch ipwizard,kmymoney2@web.sourceforge.net; \
+		rm -rf upload.batch; \
 	fi;
 
 # if we're in a VPATH environment, we need to copy all files over
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
 
+if GENERATE_PDF
 kmymoney-phb.pdf: $(DOCBOOK_FILES)
 	$(MAKE) get-files
 	$(MEINPROC) --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-nochunk.xsl $(srcdir)/phb.docbook -o index.html
