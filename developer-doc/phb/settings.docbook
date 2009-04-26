@@ -18,12 +18,12 @@
 <itemizedlist>
 <listitem>
 <para>
-Create the view using designer, name it XxxDecl and store it in kmymoney2/dialogs/settings/xxxdecl.ui. See more information about naming the items further down
+Create the view using designer, name it XxxDecl and store it in <filename>kmymoney2/dialogs/settings/xxxdecl.ui</filename>. See more information about naming the items further down
 </para>
 </listitem>
 <listitem>
 <para>
-Create the class that contains the logic for the settings page, name it Xxx and store it in kmymoney2/dialogs/settings/xxx.[cpp|h].
+Create the class that contains the logic for the settings page, name it Xxx and store it in <filename>kmymoney2/dialogs/settings/xxx.[cpp|h]</filename>.
 </para>
 <para>
 Don't forget the Q_OBJECT macro at the beginning of the class declaration in the .h file and make the class a public derivative of XxxDecl 
@@ -31,22 +31,22 @@ Don't forget the Q_OBJECT macro at the beginning of the class declaration in the
 </listitem>
 <listitem>
 <para>
-Add the xxxdecl.ui and xxx.cpp filename to the libsettings_a_SOURCES label in kmymoney2/dialogs/settings/Makefile.am
+Add the xxxdecl.ui and xxx.cpp filename to the libsettings_a_SOURCES label in <filename>kmymoney2/dialogs/settings/Makefile.am</filename>
 </para>
 </listitem>
 <listitem>
 <para>
-Add the xxxdecl.ui filename to the EXTRA_DIST label in  kmymoney2/dialogs/settings/Makefile.am
+Add the xxxdecl.ui filename to the EXTRA_DIST label in <filename>kmymoney2/dialogs/settings/Makefile.am</filename>
 </para>
 </listitem>
 <listitem>
 <para>
-Add the xxxdecl.cpp and xxxdecl.h filename to the DISTCLEANFILES label in kmymoney2/dialogs/settings/Makefile.am
+Add the xxxdecl.cpp and xxxdecl.h filename to the DISTCLEANFILES label in <filename>kmymoney2/dialogs/settings/Makefile.am</filename>
 </para>
 </listitem>
 <listitem>
 <para>
-Add the xxx.h filename to the noinst_HEADERS label in kmymoney2/dialogs/settings/Makefile.am
+Add the xxx.h filename to the noinst_HEADERS label in <filename>kmymoney2/dialogs/settings/Makefile.am</filename>
 </para>
 </listitem>
 <listitem>
@@ -63,7 +63,7 @@ where you replace "text" with a short text that shows up under the icon in the s
 </listitem>
 <listitem>
 <para>
-Add xxx.h to the include in kmymoney2.cpp
+Make sure to include xxx.h in <filename>kmymoney/kmymoney2.cpp</filename>
 </para>
 </listitem>
 </itemizedlist>
@@ -73,22 +73,22 @@ Add xxx.h to the include in kmymoney2.cpp
 <title>How to add the setting items</title>
 
 <para>
-For auto-generation of setter/getter code of your options, you have to follow certain rules. For each setting item you need an entry in kmymoney2/kmymoney2.kcfg. This is an XML formatted file. The contents of the 'name' attribute will be used as method for the C++-code, eg. a name of "AutoSavePeriod" results in a setter and getter named
+For auto-generation of setter/getter code of your options, you have to follow certain rules. For each setting item you need an entry in <filename>kmymoney2/kmymoney2.kcfg</filename>. This is an XML formatted file. The contents of the 'name' attribute will be used as method for the C++-code, eg. a name of "AutoSavePeriod" for an integer parameter results in a setter and getter named
 </para>
 <screen>
-KMyMoneySettings::setAutoSaveFile(bool)
-KMyMoneySettings::autoSaveFile(void)
+void KMyMoneySettings::setAutoSavePeriod(int)
+int KMyMoneySettings::autoSavePeriod(void)
 </screen>
 <para>
 You should not access those functions directly from within your code but rather use the KMyMoneyGlobalSettings class which contains the same interface as KMyMoneySettings with some additional functionality.
 </para>
 
 <para>
-When you name the GUI widget that controls the setting for this parameter make sure to name it "kcfg_AutoSaveFile", that is "kcfg_" appended with the name used in kmymoney2.kcfg.
+When you name the GUI widget that controls the setting for this parameter make sure to name it "kcfg_AutoSavePeriod", that is "kcfg_" prepended with the name used in <filename>kmymoney2/kmymoney2.kcfg</filename>.
 </para>
 
 <para>
-That should be it.  
+That should be it.
 </para>
 </sect1>
 
@@ -96,7 +96,7 @@ That should be it.  
 <title>References</title>
 
 <para>
-A more complete - but generic version - can be found on <ulink url="http://techbase.kde.org/Development/Tutorials/Using_KConfig_XT">http://techbase.kde.org/Development/Tutorials/Using_KConfig_XT</ulink> . Currently, &app; does not use the CMakeLists.txt file but the above mentioned Makefile.am approach. You can safely skip the section about CMakeLists.txt.
+A more complete - but generic version - can be found on <ulink url="http://techbase.kde.org/Development/Tutorials/Using_KConfig_XT">http://techbase.kde.org/Development/Tutorials/Using_KConfig_XT</ulink> . Currently, &app; does not use the <filename>CMakeLists.txt</filename> file but the above mentioned <filename>Makefile.am</filename> approach. You can safely skip the section about CMakeLists.txt.
 </para>
 </sect1>
 
