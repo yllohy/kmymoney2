@@ -1,6 +1,8 @@
 
 2009-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More fixes to the online documentation generation
+  * Preserve access rights when saving a local file which was owned
+    by another user but we had group write access
 
 2009-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed generation and upload of PHB and online manual

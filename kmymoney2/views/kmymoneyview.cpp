@@ -1011,7 +1011,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
-  int mask = umask((~m_fmode) & 0x0777);
+  int mask = umask((~m_fmode) & 0777);
   bool blocked = MyMoneyFile::instance()->signalsBlocked();
   MyMoneyFile::instance()->blockSignals(true);
   MyMoneyFileTransaction ft;
@@ -1139,7 +1139,9 @@ bool KMyMoneyView::saveFile(const KURL& url, const QString& keyList)
       // create a new basic block here, so that the object qfile gets
       // deleted, before we reach the chown() call
       {
+        int mask = umask((~fmode) & 0777);
         KSaveFile qfile(filename, fmode);
+        umask(mask);
         if(qfile.status() == 0) {
           try {
             saveToLocalFile(qfile.file(), pWriter, plaintext, keyList);
