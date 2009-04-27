@@ -1,4 +1,7 @@
 
+2009-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More fixes to the online documentation generation
+
 2009-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed generation and upload of PHB and online manual
   * Added more output to configuration of sqlite support

@@ -26,7 +26,9 @@ preview: index.html
 show: preview
 	konqueror index.html
 
-web:
+web: online-manual/index.xml
+
+online-manual/index.xml: $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
 	if test x`which splitup-kde-chunk-online`x != xx; then \
 		rm -rf online-manual common; \
 		mkdir online-manual; \
@@ -44,7 +46,15 @@ web:
 		cp $(kde_libs_htmldir)/$(KDE_LANG)/common/* common; \
 	fi;
 
-web-upload: web
+sf-username:
+	@if test -z $(SF_USER); then \
+		echo "The environment variable SF_USER must be set to your"; \
+		echo "SourceForge username and you must have write access"; \
+		echo "to the project space before the upload will work."; \
+		exit 1; \
+	fi;
+
+web-upload: sf-username web ${PDF_TARGET}
 	if test -e common; then \
 		echo "cd htdocs/common" > upload.batch; \
 		echo "rm *" >> upload.batch; \
@@ -53,10 +63,15 @@ web-upload: web
 		echo cd ../online-manual >> upload.batch; \
 		echo "rm *" >> upload.batch; \
 		echo lcd ../online-manual >> upload.batch; \
-		echo "mput *" >> upload.batch; \
-		echo "rm index.xml"; \
+		echo "mput *.html" >> upload.batch; \
+		echo "mput *.png" >> upload.batch; \
+		if test "x$(PDF_TARGET)" != "x"; then \
+			echo "lcd .." >> upload.batch; \
+			echo "cd .." >> upload.batch; \
+			echo "put $(PDF_TARGET)" >> upload.batch; \
+		fi; \
                 echo "Uploading manual files to web.sourceforge.net"; \
-		sftp -b upload.batch ipwizard,kmymoney2@web.sourceforge.net; \
+		sftp -b upload.batch $(SF_USER),kmymoney2@web.sourceforge.net; \
 		rm -rf upload.batch; \
 	fi;
 

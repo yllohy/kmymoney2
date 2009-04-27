@@ -50,7 +50,9 @@ clear-files:
 	fi
 
 
-web: $(PDF_TARGET)
+web: phb/index.html
+
+phb/index.html: $(DOCBOOK_FILES)
 	if test x`which splitup-kde-chunk-online`x != xx; then \
 		rm -rf phb common; \
 		mkdir phb; \
@@ -71,7 +73,16 @@ web: $(PDF_TARGET)
 		fi; \
 	fi;
 
-web-upload: web
+sf-username:
+	@if test -z $(SF_USER); then \
+		echo "The environment variable SF_USER must be set to your"; \
+		echo "SourceForge username and you must have write access"; \
+		echo "to the project space before the upload will work."; \
+		exit 1; \
+	fi;
+
+
+web-upload: sf-username web
 	if test -e common; then \
 		echo "cd htdocs/common" > upload.batch; \
 		echo "rm *" >> upload.batch; \
@@ -83,7 +94,7 @@ web-upload: web
 		echo "mput *" >> upload.batch; \
 		echo "rm index.xml"; \
 		echo "Uploading prject handbook files to web.sourceforge.net"; \
-		sftp -b upload.batch ipwizard,kmymoney2@web.sourceforge.net; \
+		sftp -b upload.batch $(SF_USER),kmymoney2@web.sourceforge.net; \
 		rm -rf upload.batch; \
 	fi;
 
