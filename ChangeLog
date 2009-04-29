@@ -1,4 +1,7 @@
 
+2009-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Finnish translation from Mikael Kujanpaa
+
 2009-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More fixes to the online documentation generation
   * Preserve access rights when saving a local file which was owned
