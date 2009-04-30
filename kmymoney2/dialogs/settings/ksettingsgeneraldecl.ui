@@ -507,6 +507,14 @@
 You can use &lt;b&gt;View/Show all accounts&lt;/b&gt; to temporarily show hidden accounts in the views.</string>
                                 </property>
                             </widget>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>kcfg_ExpertMode</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Show equity accounts</string>
+                                </property>
+                            </widget>
                         </vbox>
                     </widget>
                     <widget class="QGroupBox">
