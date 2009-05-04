@@ -10,13 +10,14 @@ msgstr ""
 "Project-Id-Version: es_AR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-02 20:05+0200\n"
-"PO-Revision-Date: 2009-03-30 07:40-0300\n"
+"PO-Revision-Date: 2009-05-03 22:50-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
-"Language-Team: Español (Argentina) <es@li.org>\n"
+"Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: wizards/wizardpages/rc.cpp:1
 msgid ""
@@ -2075,9 +2076,8 @@ msgid "Every thirty days"
 msgstr "Cada treinta días"
 
 #: mymoney/mymoneyscheduled.cpp:971
-#, fuzzy
 msgid "Day"
-msgstr "Días"
+msgstr "Día"
 
 #: mymoney/mymoneyscheduled.cpp:973 reports/listtable.cpp:206
 #: widgets/kmymoneycalendar.cpp:123 widgets/rc.cpp:97
@@ -2085,9 +2085,8 @@ msgid "Week"
 msgstr "Semana"
 
 #: mymoney/mymoneyscheduled.cpp:975
-#, fuzzy
 msgid "Half-month"
-msgstr "Cada medio mes"
+msgstr "Medio mes"
 
 #: mymoney/mymoneyscheduled.cpp:977 reports/listtable.cpp:205
 #: widgets/kmymoneycalendar.cpp:124 widgets/rc.cpp:96
@@ -2419,9 +2418,8 @@ msgid "Goto payee"
 msgstr "Ir a pagador/beneficiario"
 
 #: kmymoney2.cpp:436
-#, fuzzy
 msgid "Create scheduled transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Introducir asiento planificado..."
 
 #: kmymoney2.cpp:437
 msgid "Assign next number"
@@ -2454,34 +2452,28 @@ msgid "Manual price update..."
 msgstr "Actualizar precio manualmente..."
 
 #: kmymoney2.cpp:446
-#, fuzzy
 msgid "New scheduled transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Nuevo asiento planificado..."
 
 #: kmymoney2.cpp:447
-#, fuzzy
 msgid "Edit scheduled transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Editar asiento planificado..."
 
 #: kmymoney2.cpp:448
-#, fuzzy
 msgid "Delete scheduled transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Borrar asiento planificado..."
 
 #: kmymoney2.cpp:449
-#, fuzzy
 msgid "Duplicate scheduled transaction"
-msgstr "Introduzca transacción planificada"
+msgstr "Duplicar asiento planificado"
 
 #: kmymoney2.cpp:450
-#, fuzzy
 msgid "Enter next transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Introducir próximo asiento..."
 
 #: kmymoney2.cpp:451
-#, fuzzy
 msgid "Skip next transaction..."
-msgstr "Saltear este asiento"
+msgstr "Saltear próximo asiento..."
 
 #: kmymoney2.cpp:453
 msgid "New payee"
@@ -2791,7 +2783,6 @@ msgid "Home"
 msgstr "Inicio"
 
 #: kmymoney2.cpp:1818 views/kmymoneyview.cpp:176
-#, fuzzy
 msgid ""
 "Scheduled\n"
 "transactions"
@@ -2991,18 +2982,16 @@ msgid "Unable to delete investment: %1"
 msgstr "No fue posible borrar la inversión: %1"
 
 #: kmymoney2.cpp:2640 kmymoney2.cpp:2646
-#, fuzzy
 msgid "Unable to add scheduled transaction: "
-msgstr "Incapaz de agregar asientos"
+msgstr "Incapaz de agregar asiento planificado:"
 
 #: kmymoney2.cpp:2722
 msgid "Adjusting transactions..."
 msgstr "Ajustando asientos..."
 
 #: kmymoney2.cpp:2747
-#, fuzzy
 msgid "Adjusting scheduled transactions..."
-msgstr "Ajustando asientos..."
+msgstr "Ajustando asientos planificados..."
 
 #: kmymoney2.cpp:2765
 msgid "Adjusting budgets..."
@@ -3075,12 +3064,12 @@ msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "Imposible modificar la cuenta <b>%1</b>. Causa: %2"
 
 #: kmymoney2.cpp:3064
-#, fuzzy
 msgid ""
 "KMyMoney has detected some overdue scheduled transactions for this account. "
 "Do you want to enter those scheduled transactions now?"
 msgstr ""
-"KMyMoney ha detectado planificaciones vencidas para esta cuenta. ¿Desea "
+"KMyMoney ha detectado asientos planificados vencidos para esta cuenta. "
+"¿Desea "
 "ingresar esos asientos planificados ahora?"
 
 #: kmymoney2.cpp:3064
@@ -3137,26 +3126,23 @@ msgstr "Reporte Generado"
 msgid "Transactions"
 msgstr "Asientos"
 
-#: kmymoney2.cpp:3447
-#, fuzzy, c-format
+#: kmymoney2.cpp:3447, c-format
 msgid "Unable to add scheduled transaction: %1"
-msgstr "Imposible añadir el asiento programado: %1"
+msgstr "Imposible añadir el asiento planificado: %1"
 
 #: kmymoney2.cpp:3447
-#, fuzzy
 msgid "Add scheduled transaction"
-msgstr "Introduzca transacción planificada"
+msgstr "Agregar asiento planificado"
 
 #: kmymoney2.cpp:3487
-#, fuzzy
 msgid ""
 "You have entered a scheduled transaction date of <b>%1</b>.  Because the "
 "scheduled transaction was last paid on <b>%2</b>, KMyMoney will "
 "automatically adjust the scheduled transaction date to the next date unless "
 "the last payment date is reset.  Do you want to reset the last payment date?"
 msgstr ""
-"Usted ha ingresado una fecha de programación <b>%1</b>. Debido a que la "
-"programación fue ingresada por última vez el <b>%2</b>, KMyMoney ajustará "
+"Usted ha ingresado una fecha de programación <b>%1</b>. Debido a que el "
+"asiento fue ingresado por última vez el <b>%2</b>, KMyMoney ajustará "
 "automáticamente la fecha de programación a la próxima fecha, a menos que se "
 "fije una nueva fecha de último pago. ¿Desea fijar una nueva fecha de último "
 "pago?"
@@ -3166,31 +3152,26 @@ msgid "Reset Last Payment Date"
 msgstr "Fijar Nueva Fecha de Último Pago"
 
 #: kmymoney2.cpp:3497 kmymoney2.cpp:3517 kmymoney2.cpp:3529
-#, fuzzy
 msgid "Unable to modify scheduled transaction '%1'"
-msgstr "Imposible modificar la programación: <b>%1</b>"
+msgstr "Imposible modificar el asiento planificado '%1'"
 
 #: kmymoney2.cpp:3541
-#, fuzzy
 msgid "Are you sure you want to delete the scheduled transaction <b>%1</b>?"
-msgstr "¿Está seguro que desea borrar el asiento programado <b>%1</b>?"
+msgstr "¿Está seguro que desea borrar el asiento planificado <b>%1</b>?"
 
 #: kmymoney2.cpp:3544
-#, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "scheduled transaction."
 msgstr ""
 "En el caso de pago de préstamos, actualmente no es posible recrear los "
-"asientos programados"
+"asientos planificados."
 
 #: kmymoney2.cpp:3553
-#, fuzzy
 msgid "Unable to remove scheduled transaction '%1'"
-msgstr "Imposible eliminar el asiento programado: <b>%1</b>"
+msgstr "Imposible eliminar el asiento planificado '%1'"
 
-#: kmymoney2.cpp:3567
-#, fuzzy, c-format
+#: kmymoney2.cpp:3567, c-format
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
@@ -3202,25 +3183,21 @@ msgstr ""
 "Imposible de duplicar el/los asiento(s): <b>%1</b>, arrojado(s) en %2:%3"
 
 #: kmymoney2.cpp:3593
-#, fuzzy
 msgid ""
 "Do you really want to skip the <b>%1</b> transaction scheduled for <b>%2</b>?"
 msgstr ""
-"¿Desea realmente saltear la ocurrencia de la programación <b>%1</b> en  <b>%"
-"2 </b>?"
+"¿Desea realmente saltear la ocurrencia de la planificación <b>%2</b> en  <b>"
+"%1 </b>?"
 
 #: kmymoney2.cpp:3603
-#, fuzzy
 msgid "Unable to skip scheduled transaction <b>%1</b>."
-msgstr "Imposible saltear la ocurrencia del asiento programado <b>%1</b>."
+msgstr "Imposible saltear la ocurrencia del asiento planificado <b>%1</b>."
 
 #: kmymoney2.cpp:3616
-#, fuzzy
 msgid "Unknown scheduled transaction '%1'"
-msgstr "Programación desconocida <b>%1</b>"
+msgstr "Planificación desconocida '%1'"
 
 #: kmymoney2.cpp:3671
-#, fuzzy
 msgid ""
 "Are you sure you wish to stop this scheduled transaction from being entered "
 "into the register?\n"
@@ -3235,9 +3212,8 @@ msgstr ""
 "asiente manualmente más tarde."
 
 #: kmymoney2.cpp:3723 kmymoney2.cpp:3730
-#, fuzzy
 msgid "Unable to enter scheduled transaction '%1'"
-msgstr "Introduzca transacción planificada"
+msgstr "Imposible ingresar asiento planificado '%1'"
 
 #: kmymoney2.cpp:3741 kmymoney2.cpp:3781
 msgid "New Payee"
@@ -3269,13 +3245,12 @@ msgid "Remove Payee"
 msgstr "Eliminar Beneficiario"
 
 #: kmymoney2.cpp:3868
-#, fuzzy
 msgid ""
 "At least one transaction/scheduled transaction is still referenced by a "
 "payee. Currently you have all payees selected. However, at least one payee "
 "must remain so that the transaction/scheduled transaction can be reassigned."
 msgstr ""
-"Al menos un asiento o programación todavía hace referencia a este pagador. "
+"Al menos un asiento o planificación todavía hace referencia a este pagador. "
 "Actualmente tiene seleccionados todos los pagadores. Sin embargo, al menos "
 "un pagador debe permanecer para que los asientos/programaciones puedan ser "
 "reasignados."
@@ -3506,9 +3481,8 @@ msgid "Consistency check result"
 msgstr "Resultados de la comprobación de consistencia"
 
 #: kmymoney2.cpp:5601
-#, fuzzy
 msgid "Checking for overdue scheduled transactions..."
-msgstr "Comprobando asientos programados vencidos..."
+msgstr "Comprobando asientos planificados vencidos..."
 
 #: kmymoney2.cpp:5738
 msgid ""
@@ -4087,14 +4061,12 @@ msgstr ""
 "\"%1\"."
 
 #: converter/mymoneystatementreader.cpp:917
-#, fuzzy
 msgid "Save Category"
-msgstr "Categoría"
+msgstr "Guardar Categoría"
 
 #: converter/mymoneystatementreader.cpp:918
-#, fuzzy
 msgid "No Category"
-msgstr "Categoría superior"
+msgstr "Sin Categoría"
 
 #: converter/mymoneystatementreader.cpp:919 dialogs/rc.cpp:4
 msgid "Abort"
@@ -4103,6 +4075,7 @@ msgstr "Abortar"
 #: converter/mymoneystatementreader.cpp:926
 msgid "Please select a default category for payee '%1':"
 msgstr ""
+"Por favor seleccione una categoría predeterminada para el pagador '%1':"
 
 #: converter/mymoneystatementreader.cpp:958
 msgid "Unable to add payee/receiver"
@@ -4715,7 +4688,6 @@ msgstr ""
 "y con el menú \"Más...\" en el formulario de asentar transacciones?\n"
 
 #: _tips.cpp:68
-#, fuzzy
 msgid ""
 "<p>...that you can switch to the payee of a transaction\n"
 "by selecting the context menu on a transaction in the ledger\n"
@@ -4723,7 +4695,7 @@ msgid ""
 msgstr ""
 "<p>...que puede cambiar al beneficiario de un asiento\n"
 "mediante el menu contextual en un asiento en el libro mayor\n"
-"y con el menú \"Más...\" en el formulario de asentar asientos?\n"
+"o en el menú de asientos?\n"
 
 #: _tips.cpp:75
 msgid ""
@@ -5080,9 +5052,8 @@ msgid "Moving Average"
 msgstr "Promedio Móvil"
 
 #: reports/pivottable.cpp:2441
-#, fuzzy
 msgid "Moving Average Price"
-msgstr "Promedio Móvil"
+msgstr "Precio Promedio Móvil"
 
 #: reports/objectinfotable.cpp:214 reports/querytable.cpp:693
 #: reports/querytable.cpp:736 reports/querytable.cpp:1356
@@ -5336,9 +5307,8 @@ msgid "Investment options"
 msgstr "Opciones de Inversión"
 
 #: rc.cpp:16
-#, fuzzy
 msgid "Scheduled transactions options"
-msgstr "Se han encontrado asientos planificados"
+msgstr "Opciones de asientos planificados"
 
 #: rc.cpp:17
 msgid "Transaction options"
@@ -5471,7 +5441,7 @@ msgstr "Mostrar la barra de título en cada vista"
 
 #: rc.cpp:52
 msgid "Start string matches for e.g. payees at start of string"
-msgstr ""
+msgstr "Coincidencias de texto inicial, por ej. pagadores al inicio del texto"
 
 #: rc.cpp:53
 msgid "Order of items on homepage"
@@ -5607,6 +5577,7 @@ msgstr "Número de días (más/menos) para buscar asientos coincidentes"
 #: rc.cpp:87
 msgid "During import, ask for a new payee's default category"
 msgstr ""
+"Al importar, preguntar por la categoría predeterminada de un nuevo pagador"
 
 #: rc.cpp:88
 msgid "Method to calculate forecast"
@@ -6000,14 +5971,12 @@ msgid "Investment Worth Graph"
 msgstr "Gráfico de Valor de Inversiones"
 
 #: views/kreportsview.cpp:1221
-#, fuzzy
 msgid "Investment Price Graph"
-msgstr "Gráfico de Valor de Inversiones"
+msgstr "Gráfico de Precio de Inversiones"
 
 #: views/kreportsview.cpp:1238
-#, fuzzy
 msgid "Investment Moving Average Price Graph"
-msgstr "Promedio Móvil de Inversiones"
+msgstr "Gráfico de Precio Promedio Móvil de Inversiones"
 
 #: views/kreportsview.cpp:1256
 msgid "Investment Moving Average"
@@ -6112,9 +6081,8 @@ msgid "Bills & Reminders"
 msgstr "Recibos y Recordatorios"
 
 #: views/kmymoneyview.cpp:178
-#, fuzzy
 msgid "Scheduled transactions"
-msgstr "Asientos Planificados"
+msgstr "Asientos planificados"
 
 #: dialogs/knewaccountdlg.cpp:98 dialogs/rc.cpp:193 views/kmymoneyview.cpp:188
 #: views/kmymoneyview.cpp:190 widgets/rc.cpp:91
@@ -7394,31 +7362,28 @@ msgid "Ignore Case"
 msgstr "Ignorar mayúsculas/minúsculas"
 
 #: views/rc.cpp:80
-#, fuzzy
 msgid "Default Account"
-msgstr "Seleccionar Cuenta"
+msgstr "Cuenta Predeterminada"
 
 #: views/rc.cpp:81
-#, fuzzy
 msgid ""
 "Use the default account for\n"
 "new transactions with this payee"
-msgstr "Utilice esto para ingresar el asiento en el registro"
+msgstr ""
+"Utilizar la cuenta predeterminada\n"
+"para nuevos asientos con este pagador"
 
 #: views/rc.cpp:82
-#, fuzzy
 msgid "Default category:"
-msgstr "Crear categoría"
+msgstr "Categoría predeterminada:"
 
 #: views/rc.cpp:83
-#, fuzzy
 msgid "Suggest a category"
-msgstr "Sólo la categoría"
+msgstr "Sugerir una categoría"
 
 #: views/rc.cpp:85
-#, fuzzy
 msgid "New Scheduled transaction..."
-msgstr "Introduzca transacción planificada"
+msgstr "Nuevo asiento planificado..."
 
 #: views/rc.cpp:86
 msgid "Filter Accounts"
@@ -9248,9 +9213,8 @@ msgstr ""
 "temporariamente todas las cuentas en las vistas."
 
 #: dialogs/settings/rc.cpp:76
-#, fuzzy
 msgid "Show equity accounts"
-msgstr "Cuentas de acciones"
+msgstr "Mostrar cuentas de patrimonio"
 
 #: dialogs/rc.cpp:332 dialogs/settings/rc.cpp:77 widgets/rc.cpp:160
 msgid "Schedules"
@@ -9485,7 +9449,7 @@ msgstr "Formato de la fecha"
 
 #: dialogs/settings/rc.cpp:122
 msgid "Skip HTML stripping"
-msgstr ""
+msgstr "Saltear descarte de HTML"
 
 #: dialogs/settings/rc.cpp:123
 msgid ""
@@ -9503,6 +9467,22 @@ msgid ""
 "</ul>\n"
 "</p>"
 msgstr ""
+"<p>Para un procesamiento más fácil de los datos devueltos por la fuente "
+"online, KMyMoney "
+"generalmente descarte las partes no utilizadas antes de procesarlos con las "
+"expresiones"
+"regulares. Si la coincidencia de los campos depende de esos elementos, "
+"entonces utilice esta"
+"opción para desactivar el descarte.</p>\n"
+"\n"
+"<p>Los siguientes elementos generalmente son eliminados por el descarte:\n"
+"\n"
+"<ul>\n"
+"<li>Categorías de HTML tales como <b>&lt;tag&gt;</b></li>\n"
+"<li>& caracteres codificados tales como <b>&amp;nbsp;</b></li>\n"
+"<li>espacios en blanco duplicados</li>\n"
+"</ul>\n"
+"</p>"
 
 #: dialogs/settings/rc.cpp:127
 msgid "Register settings"
@@ -9582,13 +9562,16 @@ msgstr "Utilizar Enter para moverse entre los campos"
 
 #: dialogs/settings/rc.cpp:147
 msgid "Match names from start"
-msgstr ""
+msgstr "Los nombres deben coincidir desde el inicio"
 
 #: dialogs/settings/rc.cpp:148
 msgid ""
 "Mark this option, if you always want to match names e.g. for payees from the "
 "start. If unset, any substring is matched."
 msgstr ""
+"Marque esta opción si quiere que los nombres siempre coincidan desde el "
+"inicio. Si no está marcada, busca la coincidencia de cualquier subcadena de "
+"texto."
 
 #: dialogs/settings/rc.cpp:149
 msgid "Default reconciliation state"
@@ -9681,10 +9664,12 @@ msgid ""
 "Search for matching transactions within the range of the posting date of the "
 "imported transaction +/- the number of given days."
 msgstr ""
+"Buscar asientos coincidentes dentro del rango de la fecha de ingreso del "
+"asiento importado +/- el número de días dados."
 
 #: dialogs/settings/rc.cpp:166
 msgid "Ask for a new payee's default category"
-msgstr ""
+msgstr "Preguntar por la categoría predeterminada de un nuevo pagador"
 
 #: dialogs/settings/rc.cpp:167
 msgid ""
@@ -9692,6 +9677,9 @@ msgid ""
 "be asked to assign a default category for this user when this option is "
 "selected."
 msgstr ""
+"Cuando se selecciona esta opción, si se detecta un nuevo pagador durante la "
+"importación de un resumen, se le preguntará al usuario la categoría "
+"predeterminada a asignar"
 
 #: dialogs/settings/rc.cpp:168
 msgid "Schedule Settings"
@@ -10165,9 +10153,8 @@ msgid "Price History"
 msgstr "Historial de Precios"
 
 #: dialogs/rc.cpp:97
-#, fuzzy
 msgid "Edit Scheduled transaction"
-msgstr "Introduzca transacción planificada"
+msgstr "Editar asiento planificación"
 
 #: dialogs/rc.cpp:98
 msgid "Schedule name:"
@@ -10179,7 +10166,7 @@ msgstr "Frecuencia:"
 
 #: dialogs/rc.cpp:100
 msgid "Number of selected periods between entries"
-msgstr ""
+msgstr "Número de periodos seleccionados entre entradas"
 
 #: dialogs/rc.cpp:101
 msgid "Payment information"
@@ -10529,14 +10516,12 @@ msgid "Text"
 msgstr "Texto"
 
 #: dialogs/rc.cpp:203
-#, fuzzy
 msgid "Contains"
-msgstr "Préstamos"
+msgstr "Contiene"
 
 #: dialogs/rc.cpp:204
-#, fuzzy
 msgid "Does not contain"
-msgstr "No hacer nada"
+msgstr "No contiene"
 
 #: dialogs/rc.cpp:205
 msgid "Treat text as regular expression"
@@ -10663,9 +10648,8 @@ msgid "&Reset"
 msgstr "&Reiniciar"
 
 #: dialogs/rc.cpp:258
-#, fuzzy
 msgid "&Find"
-msgstr "&Finalizar"
+msgstr "&Buscar"
 
 #: dialogs/rc.cpp:259
 msgid "GnuCash Import Options"
@@ -11877,7 +11861,6 @@ msgid "CAUTION!"
 msgstr "PRECAUCIÓN!"
 
 #: dialogs/rc.cpp:737
-#, fuzzy
 msgid ""
 "<font color=\"#ff2727\">This software is still in an experimental stage, and "
 "there are still some known response time problems. Please be patient; we are "
@@ -11885,8 +11868,10 @@ msgid ""
 "As always, please make sure you have adequate backups of your data.</font>"
 msgstr ""
 "<font color=\"#ff2727\">Esta aplicación está todavía en una etapa "
-"experimental y es posible perder datos. Por favor asegúrese de tener un "
-"resguardo alternativo de sus datos antes de utilizar la base de datos.</font>"
+"experimental y tiene todavía problemas en el tiempo de respuesta. Por favor "
+"sea "
+"paciente. Estamos trabajando en resolverlos. "
+"Como siempre, asegúrese de tener un resguardo adecuado de sus datos.</font>"
 
 #: dialogs/rc.cpp:738
 msgid "Database Type"
@@ -11905,9 +11890,8 @@ msgid "User Name"
 msgstr "Nombre de Usuario"
 
 #: dialogs/rc.cpp:743
-#, fuzzy
 msgid "Preload &all data"
-msgstr "Precargar todos los datos"
+msgstr "Prec&argar todos los datos"
 
 #: dialogs/rc.cpp:745
 msgid "&Generate SQL"
@@ -12716,9 +12700,8 @@ msgstr ""
 "utilizarse este valor para los presupuestos mensuales?"
 
 #: widgets/kmymoneybriefschedule.cpp:62
-#, fuzzy
 msgid "Use this button to skip this transaction"
-msgstr "Use este botón para ingresar este asiento"
+msgstr "Use este botón para saltear este asiento"
 
 #: widgets/kmymoneybriefschedule.cpp:67
 msgid "Record this transaction into the register"
@@ -13475,14 +13458,11 @@ msgstr ""
 
 #: widgets/rc.cpp:143
 msgid "Line width"
-msgstr ""
+msgstr "Ancho de línea"
 
 #: widgets/rc.cpp:144
-#, fuzzy
 msgid "<p>Select what width should be used to draw the line on the chart</p>"
-msgstr ""
-"<p>Elija esta opción para mostrar las líneas de grilla horizontales y "
-"verticales en el gráfico.</p>"
+msgstr "<p>Elija el ancho utilizado para dibujar las líneas en el gráfico</p>"
 
 #: widgets/rc.cpp:145
 msgid "ReportControl"
