@@ -223,7 +223,8 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 GroupMarker::GroupMarker(Register *parent, const QString& txt) :
   RegisterItem(parent),
   m_txt(txt),
-  m_drawCounter(parent->drawCounter()-1)   // make sure we get painted the first time around
+  m_drawCounter(parent->drawCounter()-1),   // make sure we get painted the first time around
+  m_showDate(false)
 {
   int h;
   if(m_parent) {
@@ -322,6 +323,26 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
 
   // now it's time to draw the background
   painter->drawPixmap(cellRect, *m_bg);
+
+  // translate back
+  painter->translate(-r.x(), -r.y());
+
+  // in case we need to show the date, we just paint it in col 1
+  if(m_showDate) {
+    r.setX(m_parent->columnPos(1));
+    r.setWidth(m_parent->columnWidth(1));
+    painter->translate(r.x(), r.y());
+
+    cellRect.setX(0);
+    cellRect.setY(0);
+    cellRect.setWidth(m_parent->columnWidth(1));
+    cellRect.setHeight(m_parent->rowHeight(row + m_startRow));
+
+    font.setBold(false);
+    painter->setFont(font);
+    painter->drawText(cellRect, Qt::AlignVCenter | Qt::AlignCenter, KGlobal::locale()->formatDate(sortPostDate(), true));
+  }
+
   painter->restore();
 }
 
@@ -342,6 +363,7 @@ StatementGroupMarker::StatementGroupMarker(Register* parent, CashFlowDirection d
   FancyDateGroupMarker(parent, date, txt),
   m_dir(dir)
 {
+  m_showDate = true;
 }
 
 FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :

@@ -142,6 +142,7 @@ protected:
 protected:
   QString                  m_txt;
   unsigned int             m_drawCounter;
+  bool                     m_showDate;
 
   static QPixmap*          m_bg;
   static int               m_bgRefCnt;
