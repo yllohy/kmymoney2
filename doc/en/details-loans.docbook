@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <chapter id="details.loans">
 
 <chapterinfo>
@@ -117,7 +118,7 @@ Optionally, a loan can be associated with a particular institution. If you are b
 If you would like to make an extra principal repayment, you can do so.  Simply <link linkend="details.ledger.transactions">enter a transaction</link> using the ledgers.  This extra repayment of principal will be taken into account for the interest calculation that happens for the next periodic payment. 
 </para>
 
-<para>Examples of extra principal payments are (but are not necessarily limited to): 
+<para>Examples of extra principal payments include (but are not necessarily limited to): 
 
 <itemizedlist>
 <listitem><para>Contributing an extra $50 a month</para></listitem>
