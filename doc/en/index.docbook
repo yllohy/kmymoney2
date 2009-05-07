@@ -13,6 +13,7 @@
 	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
+	<!ENTITY details-loans SYSTEM "details-loans.docbook">
 	<!ENTITY details-budgets SYSTEM "details-budgets.docbook">
 	<!ENTITY details-forecast SYSTEM "details-forecast.docbook">
 	<!ENTITY details-categories SYSTEM "details-categories.docbook">
@@ -21,13 +22,12 @@
 	<!ENTITY details-ledgers SYSTEM "details-ledgers.docbook">
 	<!ENTITY details-investments SYSTEM "details-investments.docbook">
 	<!ENTITY details-currencies SYSTEM "details-currencies.docbook">
-	<!ENTITY details-reconciliation SYSTEM "details-reconciliation.docbook">
-	<!ENTITY details-reports SYSTEM "details-reports.docbook">
 	<!ENTITY details-impexp SYSTEM "details-impexp.docbook">
-	<!ENTITY details-loans SYSTEM "details-loans.docbook">
+	<!ENTITY details-reconciliation SYSTEM "details-reconciliation.docbook">
+	<!ENTITY details-search SYSTEM "details-search.docbook">
+	<!ENTITY details-reports SYSTEM "details-reports.docbook">
 	<!ENTITY details-settings SYSTEM "details-settings.docbook">
 	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
-	<!ENTITY details-search SYSTEM "details-search.docbook">
 	<!ENTITY details-formats SYSTEM "details-formats.docbook">
 	<!ENTITY details-database SYSTEM "details-database.docbook">
 	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">

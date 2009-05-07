@@ -8,8 +8,8 @@
 <affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-06-01</date>
-<releaseinfo>0.7</releaseinfo>
+<date>2009-05-05</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Importing and Export</title>
@@ -102,9 +102,8 @@ amended after the import is complete.
 <para>
 &kappname; uses the term Category to denote an account of an Income or
 Expense type. Unlike GnuCash, these are not considered as 'ledger'
-accounts and entry of transactions directly is not currently
-supported, all postings being made by splits (see below) from transactions entered 
-in other account types.
+accounts and eentry of transactions directly into categories is not supported; 
+allocations are made during transaction entry into other account types.
 </para>
 </sect4>
 
@@ -482,7 +481,7 @@ the following sections:
 </para>
 
 <para>
-If you want &kappname; to automatically enter new payees check the appropriate option otherwise &kappname; will prompt you each time a new payee is found.
+	If you want &kappname; to automatically enter new payees check the appropriate option otherwise &kappname; will prompt you each time a new payee is found.
 </para>
 
 <para>
@@ -543,7 +542,7 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 </para>
 
 <para>
-Some of your transactions may be flashing red in the ledger.  
+	Some of your transactions may be flashing red in the ledger.  
 	This is because they need to be assigned a category.  
 	The importer was not able to automatically assign a category based on your past transaction history.
 </para>

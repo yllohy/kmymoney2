@@ -7,7 +7,7 @@
 <affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-08-04</date>
+<date>2009-05-05</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -66,6 +66,13 @@
 
 </sect2>
 
+<sect2><title>Cash Flow</title>
+
+<para>
+	The cash flow report is similar to a Transaction report, but it displays all cash-flow related transactions.
+</para>
+</sect2>
+
 <sect2><title>Investments</title>
 
 <para>
@@ -89,6 +96,29 @@
 <para>
 	The tax reports are just like the Transactions report, with the addition that only Tax categories are included.  
 	This allows you to flag certain categories as being tax-related, and then get one big report at the end of the year to see them all in one place
+</para>
+</sect2>
+
+<sect2><title>Budgeting</title>
+
+<para>
+	The budgeting reports are similar to net worth reports, but the reports can display the budget for a given year, or
+	even compare it to the actual income and expenses.
+</para>
+</sect2>
+
+<sect2><title>Forecast</title>
+
+<para>
+	The forecast reports are just like Net Worth, but they use the information to display forecast information.  
+	You can display the information at various levels and for the timeframe of your choosing.
+</para>
+</sect2>
+
+<sect2><title>General Information</title>
+
+<para>
+	These reports display non-transaction information about schedules, accounts, and loans.
 </para>
 </sect2>
 
@@ -126,12 +156,15 @@
 </para>
 
 	<itemizedlist>
-	<listitem><para>Save:  Reports can be saved in HTML or CSV format.</para></listitem>
-	<listitem><para>Copy:  They can be copied to the clipboard to paste them in another application, like a spreadsheet, for further analysis.</para></listitem>
-	<listitem><para>Print:  You can print them to your favorite printer.</para></listitem>
-	<listitem><para>Delete:  Customized reports can be deleted.  The default reports that ship with KMyMoney cannot be deleted.</para></listitem>
+	<listitem><para>Chart:  Only present if the report is capable of displaying a chart. Clicking this option toggles
+	between the report and the chart.</para></listitem>
+	<listitem><para>Configure:  Change the properties of this report. You can customize the report to your liking and
+	save it for future use.</para></listitem>
 	<listitem><para>New:  Create a new customized report based on the selected report.</para></listitem>
-	<listitem><para>Configure:  Change the properties of this report.</para></listitem>
+	<listitem><para>Copy:  They can be copied to the clipboard to paste them in another application, like a spreadsheet, for further analysis.</para></listitem>
+	<listitem><para>Export:  Reports can be saved in HTML or CSV format.</para></listitem>
+	<listitem><para>Delete:  Customized reports can be deleted.  The default reports that ship with KMyMoney cannot be deleted.</para></listitem>
+	<listitem><para>Close:  Close the current report.</para></listitem>
 	</itemizedlist>
 </sect1>
 
@@ -142,17 +175,11 @@
 <sect2><title>Working with custom reports</title>
 
 <para>
-	Any of the default reports which ship with the program can be customized to your liking.
-	This can be done with an easy-to-use dialog.  
-  No special programming knowledge is required.
-	Customizing allows you to select a subset of accounts, for example, or change the date period of the report, or choose only a single payee, etc.
-	The possibilities are nearly endless.
-	When you customize a default report, it creates a new report.  
-	Initially it is named the same as the old report with &quot;Custom&quot; added to the end.
-	You can change the name to whatever you want.  
-	You can even name your custom reports the same as a default report, or the same as another custom report.
-	There are no limits in this area.  
-	You can always use the Comment field to further distinguish reports.
+	You can configure the default reports or create your own from them by selecting 'New' and then configuring
+	the new report. When you select 'Configure' you will be presented with the Report Tab. Initially, it is named
+	the same as the old report with &quot;Custom&quot; added to the end. You can change the name to whatever you want.
+	You can even name your custom reports the same as a default report, or the same as another custom report. Also, you
+	can always use the Comment field to further distinguish reports.
 </para>
 </sect2>
 
@@ -228,7 +255,7 @@ This tab presents different configuration options depending on the style of repo
 
 <sect2><title>Chart Tab</title>
 
-<para>This tab allows you to configure how the report should look when it is displayed as a chart.  
+<para>This tab allows you to configure what the report should look like when it is displayed as a chart.  
 See the <link linkend="details.reports.charts">Graphs &amp; Charts</link> section for more explanation of the charting functions.</para>
 
 <para>@Rob: Screenshot of chart tab</para>
@@ -238,6 +265,7 @@ See the <link linkend="details.reports.charts">Graphs &amp; Charts</link> sectio
 <listitem><para>Show grid lines: Whether to print horizontal and vertical grid lines on the chart.</para></listitem>
 <listitem><para>Draw values on chart: Whether to print the data values on the chart itself for chosen data points.</para></listitem>
 <listitem><para>Show chart by default: Whether this report should first be displayed as a chart when it's opened.</para></listitem>
+<listitem><para>Line width: The width of data lines on the chart.</para></listitem>
 </itemizedlist>
 
 </sect2>
