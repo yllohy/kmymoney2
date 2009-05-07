@@ -1,3 +1,7 @@
+
+2009-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1910270 (GNUCash Import Options large in PDF docs)
+
 2009-05-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated user documentation - submitted by John Hudson
 
