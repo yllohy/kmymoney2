@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
 <chapter id="details.loans">
 
 <chapterinfo>
@@ -41,7 +40,7 @@ The amount that is lent out is called the &quot;loan amount&quot; or &quot;princ
 
 <formalpara><title>Repayments</title>
 <para>
-The repayment of the principal to the lender is generally not done as a lump sum. Instead, a series of repayments each representing a portion of the principal are made. Such repayments are sometimes known as &quot;amortization payments&quot; and in &kappname; &quot;Amortization&quot; is deﬁned as the act of paying off a loan in installments.
+The repayment of the principal to the lender is generally not done as a lump sum. Instead, a series of repayments each representing a portion of the principal are made. Such repayments are sometimes known as &quot;amortization payments&quot; and in &kappname; &quot;Amortization&quot; is defined as the act of paying off a loan in installments.
 </para>
 </formalpara>
 
@@ -59,7 +58,7 @@ For the privilege of being able to use the money, the borrower will pay the lend
 
 <formalpara><title>Periodical Repayments</title>
 <para>
-Since these repayments are generally made on some sort of scheduled basis, such as weekly, monthly, quarterly or yearly, they are referred to as &quot;periodical repayments&quot;. The sum of all periodical repayments plus the ﬁnal repayment will add up to the loan principal plus the interest.
+Since these repayments are generally made on some sort of scheduled basis, such as weekly, monthly, quarterly or yearly, they are referred to as &quot;periodical repayments&quot;. The sum of all periodical repayments plus the final repayment will add up to the loan principal plus the interest.
 </para>
 </formalpara>
 
