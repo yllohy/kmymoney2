@@ -1,6 +1,7 @@
 
 2009-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation from Cristian Onet
+  * Fixed precision problem in transaction editor
 
 2009-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1910270 (GNUCash Import Options large in PDF docs)

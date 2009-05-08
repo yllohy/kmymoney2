@@ -777,18 +777,22 @@ void StdTransactionEditor::createEditWidgets(void)
   kMyMoneyEdit* value = new kMyMoneyEdit;
   m_editWidgets["amount"] = value;
   value->setResetButtonVisible(false);
+  const int prec = MyMoneyMoney::denomToPrec(m_account.fraction());
+  value->setPrecision(prec);
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
 
   value = new kMyMoneyEdit;
   m_editWidgets["payment"] = value;
   value->setResetButtonVisible(false);
+  value->setPrecision(prec);
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdatePayment(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
 
   value = new kMyMoneyEdit;
   m_editWidgets["deposit"] = value;
   value->setResetButtonVisible(false);
+  value->setPrecision(prec);
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateDeposit(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
 
