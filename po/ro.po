@@ -1,17 +1,18 @@
 # translation of ro.po to Română
 #
 # Cristian Onet <onet.cristian@gmail.com>, 2008, 2009.
+# Cristian Oneţ <onet.cristian@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "POT-Creation-Date: 2009-05-02 20:05+0200\n"
-"PO-Revision-Date: 2009-02-01 22:01+0200\n"
-"Last-Translator: Cristian Onet <onet.cristian@gmail.com>\n"
-"Language-Team: Română <KMyMoney2-i18n@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2009-05-08 07:20+0300\n"
+"Last-Translator: Cristian Oneţ <onet.cristian@gmail.com>\n"
+"Language-Team: Romanian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
 "Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
@@ -2088,9 +2089,8 @@ msgid "Every thirty days"
 msgstr "La fiecare treizeci de zile"
 
 #: mymoney/mymoneyscheduled.cpp:971
-#, fuzzy
 msgid "Day"
-msgstr "Zile"
+msgstr "Zi"
 
 #: mymoney/mymoneyscheduled.cpp:973 reports/listtable.cpp:206
 #: widgets/kmymoneycalendar.cpp:123 widgets/rc.cpp:97
@@ -2098,9 +2098,8 @@ msgid "Week"
 msgstr "Săptămână"
 
 #: mymoney/mymoneyscheduled.cpp:975
-#, fuzzy
 msgid "Half-month"
-msgstr "La fiecare jumătate de lună"
+msgstr "Jumătate de lună"
 
 #: mymoney/mymoneyscheduled.cpp:977 reports/listtable.cpp:205
 #: widgets/kmymoneycalendar.cpp:124 widgets/rc.cpp:96
@@ -2432,9 +2431,8 @@ msgid "Goto payee"
 msgstr "Du-te la beneficiar/plătitor"
 
 #: kmymoney2.cpp:436
-#, fuzzy
 msgid "Create scheduled transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Creează o tranzacţie programată"
 
 #: kmymoney2.cpp:437
 msgid "Assign next number"
@@ -2467,34 +2465,28 @@ msgid "Manual price update..."
 msgstr "Actualizează preţul manual..."
 
 #: kmymoney2.cpp:446
-#, fuzzy
 msgid "New scheduled transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Tranzacţie programată nouă"
 
 #: kmymoney2.cpp:447
-#, fuzzy
 msgid "Edit scheduled transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Modifică tranzacţia programată"
 
 #: kmymoney2.cpp:448
-#, fuzzy
 msgid "Delete scheduled transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Șterge tranzacţia programată"
 
 #: kmymoney2.cpp:449
-#, fuzzy
 msgid "Duplicate scheduled transaction"
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Creează un duplicat al tranzacţiei programate"
 
 #: kmymoney2.cpp:450
-#, fuzzy
 msgid "Enter next transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Introdu tranzacţia următoare"
 
 #: kmymoney2.cpp:451
-#, fuzzy
 msgid "Skip next transaction..."
-msgstr "Omite această tranzacţie"
+msgstr "Omite tranzacţia următoare"
 
 #: kmymoney2.cpp:453
 msgid "New payee"
@@ -2807,11 +2799,10 @@ msgid "Home"
 msgstr "Prima pagină"
 
 #: kmymoney2.cpp:1818 views/kmymoneyview.cpp:176
-#, fuzzy
 msgid ""
 "Scheduled\n"
 "transactions"
-msgstr "Tranzacţii programate"
+msgstr "Tranzacţii\n programate"
 
 #: kmymoney2.cpp:1819
 msgid "Encryption"
@@ -3007,18 +2998,16 @@ msgid "Unable to delete investment: %1"
 msgstr "Nu s-a putut şterge investiţia: %1"
 
 #: kmymoney2.cpp:2640 kmymoney2.cpp:2646
-#, fuzzy
 msgid "Unable to add scheduled transaction: "
-msgstr "Nu s-au putut adăuga tranzacţii"
+msgstr "Nu s-a putut adăuga tranzacţia programată:"
 
 #: kmymoney2.cpp:2722
 msgid "Adjusting transactions..."
 msgstr "Se ajustează tranzacţii..."
 
 #: kmymoney2.cpp:2747
-#, fuzzy
 msgid "Adjusting scheduled transactions..."
-msgstr "Se ajustează tranzacţii..."
+msgstr "Se ajustează tranzacţiile programate..."
 
 #: kmymoney2.cpp:2765
 msgid "Adjusting budgets..."
@@ -3091,12 +3080,11 @@ msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "Nu s-a putut modifica contul '%1'. Motivul: %2"
 
 #: kmymoney2.cpp:3064
-#, fuzzy
 msgid ""
 "KMyMoney has detected some overdue scheduled transactions for this account. "
 "Do you want to enter those scheduled transactions now?"
 msgstr ""
-"KMyMoney a detectat existenţa unor transferuri programate întărziate pentru "
+"KMyMoney a detectat existenţa unor tranzacții programate întârziate pentru "
 "acest cont. Doriţi să introduceţi acele tranzacţii acum?"
 
 #: kmymoney2.cpp:3064
@@ -3152,28 +3140,26 @@ msgstr "Raport generat"
 msgid "Transactions"
 msgstr "Tranzacţii"
 
-#: kmymoney2.cpp:3447
-#, fuzzy, c-format
+#: kmymoney2.cpp:3447, c-format
 msgid "Unable to add scheduled transaction: %1"
-msgstr "Nu s-a putut adăuga transferul programat: %1"
+msgstr "Nu s-a putut adăuga tranzacția programată: %1"
 
 #: kmymoney2.cpp:3447
-#, fuzzy
 msgid "Add scheduled transaction"
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Adăugați o tranzacţie programată"
 
 #: kmymoney2.cpp:3487
-#, fuzzy
 msgid ""
 "You have entered a scheduled transaction date of <b>%1</b>.  Because the "
 "scheduled transaction was last paid on <b>%2</b>, KMyMoney will "
 "automatically adjust the scheduled transaction date to the next date unless "
 "the last payment date is reset.  Do you want to reset the last payment date?"
 msgstr ""
-"Aţi introdus data <b>%1</b> ca dată a transferului programat. Deoarece "
-"transferul programat a fost efectuat ultima dată la <b>%2</b>, KMyMoney va "
-"actualiza automat data transferului programat la următoarea dată scadentă în "
-"cazul în care ultima dată a transferului nu este reactualizată. Doriţi să "
+"Aţi introdus data <b>%1</b> ca dată a tranzacției programate. Deoarece "
+"transzacția programată a fost efectuată ultima dată la <b>%2</b>, KMyMoney "
+"va "
+"actualiza automat data tranzacției programate la următoarea dată scadentă în "
+"cazul în care ultima dată a tranzacției nu este reactualizată. Doriţi să "
 "reactualizaţi data ultimului transfer?"
 
 #: kmymoney2.cpp:3487
@@ -3181,59 +3167,51 @@ msgid "Reset Last Payment Date"
 msgstr "Resetează ultima dată de plată"
 
 #: kmymoney2.cpp:3497 kmymoney2.cpp:3517 kmymoney2.cpp:3529
-#, fuzzy
 msgid "Unable to modify scheduled transaction '%1'"
-msgstr "Nu s-a putut modifica plata programată '%1'"
+msgstr "Nu s-a putut modifica tranzacția programată '%1'"
 
 #: kmymoney2.cpp:3541
-#, fuzzy
 msgid "Are you sure you want to delete the scheduled transaction <b>%1</b>?"
-msgstr "Sunteţi siguri că doriţi să ştergeţi plata programată <b>%1</b>?"
+msgstr "Sunteţi siguri că doriţi să ştergeţi tranzacția programată <b>%1</b>?"
 
 #: kmymoney2.cpp:3544
-#, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "scheduled transaction."
 msgstr ""
-"În cazul plăţilor pentru împrumuturi nu este posibilă recreerea programului."
+"În cazul plăţilor pentru împrumuturi, în acest moment, nu este posibilă "
+"recreerea programului."
 
 #: kmymoney2.cpp:3553
-#, fuzzy
 msgid "Unable to remove scheduled transaction '%1'"
-msgstr "Programarea '%1' nu a putut fi ştearsă"
+msgstr "Tranzacția programată '%1' nu a putut fi ştearsă"
 
-#: kmymoney2.cpp:3567
-#, fuzzy, c-format
+#: kmymoney2.cpp:3567, c-format
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
-msgstr "Copie a programării %1"
+msgstr "Copie a tranzacției programate %1"
 
 #: kmymoney2.cpp:3579 kmymoney2.cpp:4350
 msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
 msgstr "Nu s-a(u) putut duplica tranzacţia(iile): %1, excepţie în %2:%3"
 
 #: kmymoney2.cpp:3593
-#, fuzzy
 msgid ""
 "Do you really want to skip the <b>%1</b> transaction scheduled for <b>%2</b>?"
 msgstr ""
-"Doriţi într-adevăr să omiteţi tranzacţia aparţinând programului <b>%1</b> în "
+"Doriţi într-adevăr să omiteţi tranzacţia programată <b>%1</b> în "
 "data de <b>%2</b>?"
 
 #: kmymoney2.cpp:3603
-#, fuzzy
 msgid "Unable to skip scheduled transaction <b>%1</b>."
-msgstr "Nu s-a putut omite tranzacţia din palta programată <b>%1</b>."
+msgstr "Nu s-a putut omite tranzacţia programată <b>%1</b>."
 
 #: kmymoney2.cpp:3616
-#, fuzzy
 msgid "Unknown scheduled transaction '%1'"
-msgstr "Program necunoscut '%1'"
+msgstr "Tranzacție programată necunoscută '%1'"
 
 #: kmymoney2.cpp:3671
-#, fuzzy
 msgid ""
 "Are you sure you wish to stop this scheduled transaction from being entered "
 "into the register?\n"
@@ -3241,16 +3219,16 @@ msgid ""
 "KMyMoney will prompt you again next time it starts unless you manually enter "
 "it later."
 msgstr ""
-"Sunteţi siguri că doriţi să opriţi înregistrarea acestei plăţi programate în "
+"Sunteţi siguri că doriţi să opriţi înregistrarea acestei tranzacții "
+"programate în "
 "registru?\n"
 "\n"
-"KMyMoney vă va întreba din nou la următoarea pornire în cazul în care nu îl "
+"KMyMoney vă va întreba din nou la următoarea pornire în cazul în care nu o "
 "veţi introduce manual mai târziu."
 
 #: kmymoney2.cpp:3723 kmymoney2.cpp:3730
-#, fuzzy
 msgid "Unable to enter scheduled transaction '%1'"
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Nu s-a putut introduce tranzacţia programată '%1'"
 
 #: kmymoney2.cpp:3741 kmymoney2.cpp:3781
 msgid "New Payee"
@@ -3281,15 +3259,14 @@ msgid "Remove Payee"
 msgstr "Şterge beneficiar/plătitor"
 
 #: kmymoney2.cpp:3868
-#, fuzzy
 msgid ""
 "At least one transaction/scheduled transaction is still referenced by a "
 "payee. Currently you have all payees selected. However, at least one payee "
 "must remain so that the transaction/scheduled transaction can be reassigned."
 msgstr ""
-"Cel puţin o tranzacţie/plată programată este referită de către un "
+"Cel puţin o tranzacţie programată este referită de către un "
 "beneficiar. În acest moment toţi beneficiarii sunt marcaţi. Dar cel puţin un "
-"beneficiar trebuie să rămână astfel încât tranzacţiile/ plăţile programate "
+"beneficiar trebuie să rămână astfel încât tranzacţiile programate "
 "să poate fi reasignate."
 
 #: kmymoney2.cpp:3923
@@ -3519,9 +3496,8 @@ msgid "Consistency check result"
 msgstr "Rezultatul verificării consistenţei"
 
 #: kmymoney2.cpp:5601
-#, fuzzy
 msgid "Checking for overdue scheduled transactions..."
-msgstr "Se verifică existenţa unor plăţi programate restante..."
+msgstr "Se verifică existenţa unor tranzacții programate restante..."
 
 #: kmymoney2.cpp:5738
 msgid ""
@@ -4101,14 +4077,12 @@ msgstr ""
 "următoare ce se referă la \"%1\" vor fi şterse."
 
 #: converter/mymoneystatementreader.cpp:917
-#, fuzzy
 msgid "Save Category"
-msgstr "Categoria"
+msgstr "Salvează categoria"
 
 #: converter/mymoneystatementreader.cpp:918
-#, fuzzy
 msgid "No Category"
-msgstr "Categoria rădăcină"
+msgstr "Fără categorie"
 
 #: converter/mymoneystatementreader.cpp:919 dialogs/rc.cpp:4
 msgid "Abort"
@@ -4116,7 +4090,7 @@ msgstr "Renunţă"
 
 #: converter/mymoneystatementreader.cpp:926
 msgid "Please select a default category for payee '%1':"
-msgstr ""
+msgstr "Alegeți categoria implicită pentru beneficiarul/plătitorul '%1':"
 
 #: converter/mymoneystatementreader.cpp:958
 msgid "Unable to add payee/receiver"
@@ -4732,7 +4706,6 @@ msgstr ""
 "sau meniul \"Mai mult...\" în formularul tranzacţiei?\n"
 
 #: _tips.cpp:68
-#, fuzzy
 msgid ""
 "<p>...that you can switch to the payee of a transaction\n"
 "by selecting the context menu on a transaction in the ledger\n"
@@ -4740,7 +4713,7 @@ msgid ""
 msgstr ""
 "<p>...puteţi ajunge la beneficiarul/plătitorul tranzacţiei\n"
 "selectând meniul contextual al tranzacţiei în registru\n"
-"sau meniul \"Mai mult...\" în formularul tranzacţiei?\n"
+"sau în formularul tranzacţiei?\n"
 
 #: _tips.cpp:75
 msgid ""
@@ -5099,9 +5072,8 @@ msgid "Moving Average"
 msgstr "Media glisantă"
 
 #: reports/pivottable.cpp:2441
-#, fuzzy
 msgid "Moving Average Price"
-msgstr "Media glisantă"
+msgstr "Prețul mediu glisant"
 
 #: reports/objectinfotable.cpp:214 reports/querytable.cpp:693
 #: reports/querytable.cpp:736 reports/querytable.cpp:1356
@@ -5356,9 +5328,8 @@ msgid "Investment options"
 msgstr "Opţiuni investiţie"
 
 #: rc.cpp:16
-#, fuzzy
 msgid "Scheduled transactions options"
-msgstr "Au fost găsite tranzacţii programate"
+msgstr "Opțiuni tranzacţii programate"
 
 #: rc.cpp:17
 msgid "Transaction options"
@@ -5501,6 +5472,8 @@ msgstr "Arată bara de titlu în fiecare ecran"
 #: rc.cpp:52
 msgid "Start string matches for e.g. payees at start of string"
 msgstr ""
+"Începe asocierea șirurilor de la început de exemplu pentru "
+"beneficiari/plătitori de la începutul numelui."
 
 #: rc.cpp:53
 msgid "Order of items on homepage"
@@ -5636,6 +5609,8 @@ msgstr ""
 #: rc.cpp:87
 msgid "During import, ask for a new payee's default category"
 msgstr ""
+"În cursul operației de import întreabă care este categoria împlicită a "
+"beneficiarului/plătitorului"
 
 #: rc.cpp:88
 msgid "Method to calculate forecast"
@@ -6029,14 +6004,12 @@ msgid "Investment Worth Graph"
 msgstr "Graficul valorii de investiţii"
 
 #: views/kreportsview.cpp:1221
-#, fuzzy
 msgid "Investment Price Graph"
-msgstr "Graficul valorii de investiţii"
+msgstr "Graficul prețului investiţiei"
 
 #: views/kreportsview.cpp:1238
-#, fuzzy
 msgid "Investment Moving Average Price Graph"
-msgstr "Media glisantă a investiţiei"
+msgstr "Graficul mediei glisante a prețului investiţiei"
 
 #: views/kreportsview.cpp:1256
 msgid "Investment Moving Average"
@@ -6142,7 +6115,6 @@ msgid "Bills & Reminders"
 msgstr "Facturi şi memoratori"
 
 #: views/kmymoneyview.cpp:178
-#, fuzzy
 msgid "Scheduled transactions"
 msgstr "Tranzacţii programate"
 
@@ -7425,31 +7397,27 @@ msgid "Ignore Case"
 msgstr "Ignoră diferenţa dintre majuscule şi minuscule"
 
 #: views/rc.cpp:80
-#, fuzzy
 msgid "Default Account"
-msgstr "Alegeţi un cont"
+msgstr "Cont implicit"
 
 #: views/rc.cpp:81
-#, fuzzy
 msgid ""
 "Use the default account for\n"
 "new transactions with this payee"
-msgstr "Folosiţi aceasta pentru a introduce tranzacţia în registru."
+msgstr ""
+"Folosiţi contul implicit pentru\n tranzacții noi cu acest beneficiar/plătitor"
 
 #: views/rc.cpp:82
-#, fuzzy
 msgid "Default category:"
-msgstr "Creează o categorie"
+msgstr "Categorie implicită"
 
 #: views/rc.cpp:83
-#, fuzzy
 msgid "Suggest a category"
-msgstr "Doar categoria"
+msgstr "Sugerează o categorie"
 
 #: views/rc.cpp:85
-#, fuzzy
 msgid "New Scheduled transaction..."
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Tranzacţie programată nouă"
 
 #: views/rc.cpp:86
 msgid "Filter Accounts"
@@ -9291,9 +9259,8 @@ msgstr ""
 "temporar conturrile ascunse în toate modurile de vizualizare."
 
 #: dialogs/settings/rc.cpp:76
-#, fuzzy
 msgid "Show equity accounts"
-msgstr "Conturi de capital"
+msgstr "Afișează conturi de capital"
 
 #: dialogs/rc.cpp:332 dialogs/settings/rc.cpp:77 widgets/rc.cpp:160
 msgid "Schedules"
@@ -9534,7 +9501,7 @@ msgstr "Format dată"
 
 #: dialogs/settings/rc.cpp:122
 msgid "Skip HTML stripping"
-msgstr ""
+msgstr "Omite curățirea marcajelor HTML"
 
 #: dialogs/settings/rc.cpp:123
 msgid ""
@@ -9552,6 +9519,20 @@ msgid ""
 "</ul>\n"
 "</p>"
 msgstr ""
+"<p>Pentru o procesare mai ușoară a datelor obținute de la sursa online "
+"KMyMoney curăță marcajele HTML înainte de a prelucra datele cu o expresie "
+"regulată. Dacă găsirea câmpurilor cu ajutorul expresiei regulate se bazează "
+"be acele marcaje atunci folosiți această opțiune pentru a dezactiva "
+"curățirea marcajelor HTML</p>\n"
+"\n"
+"<p>Următoarele marcaje sunt de obicei șterse:\n"
+"\n"
+"<ul>\n"
+"<li>marcaje HTML ca <b>&lt;tag&gt;</b></li>\n"
+"<li>caractere codate cu & ca <b>&amp;nbsp;</b></li>\n"
+"<li>spații multiple</li>\n"
+"</ul>\n"
+"</p>"
 
 #: dialogs/settings/rc.cpp:127
 msgid "Register settings"
@@ -9632,13 +9613,16 @@ msgstr "Folosiţi Enter pentru a muta între câmpuri"
 
 #: dialogs/settings/rc.cpp:147
 msgid "Match names from start"
-msgstr ""
+msgstr "Asociază numele de la început"
 
 #: dialogs/settings/rc.cpp:148
 msgid ""
 "Mark this option, if you always want to match names e.g. for payees from the "
 "start. If unset, any substring is matched."
 msgstr ""
+"Folosiți această opțiune dacă doriți ca asocierea numelui de exemplu pentru "
+"beneficiari/plătitori să se facă de la începutul șiruluii. Dacă nu este "
+"aleasă opțiunea orice subșir poate fi asociat."
 
 #: dialogs/settings/rc.cpp:149
 msgid "Default reconciliation state"
@@ -9731,10 +9715,13 @@ msgid ""
 "Search for matching transactions within the range of the posting date of the "
 "imported transaction +/- the number of given days."
 msgstr ""
+"Căutați tranzacții potrivite în intervalul de timp al datei publicării "
+"tranzacției importate dat de +/- numărul de zile date."
 
 #: dialogs/settings/rc.cpp:166
 msgid "Ask for a new payee's default category"
 msgstr ""
+"Întreabă care este categoria împlicită pentru un beneficiar/plătitor nou."
 
 #: dialogs/settings/rc.cpp:167
 msgid ""
@@ -9742,6 +9729,9 @@ msgid ""
 "be asked to assign a default category for this user when this option is "
 "selected."
 msgstr ""
+"De fiecare dată când un bebeficiar/plătitor nou va fi găsit în timpul "
+"operației de import utilizatorul va fi rugat să aleagă o categorie împlicită "
+"pentru acel bebeficiar/plătitor dacă această opțiune este activă."
 
 #: dialogs/settings/rc.cpp:168
 msgid "Schedule Settings"
@@ -10220,9 +10210,8 @@ msgid "Price History"
 msgstr "Istoricul preţului"
 
 #: dialogs/rc.cpp:97
-#, fuzzy
 msgid "Edit Scheduled transaction"
-msgstr "Introduceţi tranzacţia programată"
+msgstr "Modifică tranzacţia programată"
 
 #: dialogs/rc.cpp:98
 msgid "Schedule name:"
@@ -10234,7 +10223,7 @@ msgstr "Frecvenţă:"
 
 #: dialogs/rc.cpp:100
 msgid "Number of selected periods between entries"
-msgstr ""
+msgstr "Numărul de perioade alese între intrări"
 
 #: dialogs/rc.cpp:101
 msgid "Payment information"
@@ -10587,14 +10576,12 @@ msgid "Text"
 msgstr "Text"
 
 #: dialogs/rc.cpp:203
-#, fuzzy
 msgid "Contains"
-msgstr "Debite"
+msgstr "Conține"
 
 #: dialogs/rc.cpp:204
-#, fuzzy
 msgid "Does not contain"
-msgstr "Nu face nimic"
+msgstr "Nu conține"
 
 #: dialogs/rc.cpp:205
 msgid "Treat text as regular expression"
@@ -10721,9 +10708,8 @@ msgid "&Reset"
 msgstr "&Resetează"
 
 #: dialogs/rc.cpp:258
-#, fuzzy
 msgid "&Find"
-msgstr "&Termină"
+msgstr "&Caută"
 
 #: dialogs/rc.cpp:259
 msgid "GnuCash Import Options"
@@ -11951,17 +11937,16 @@ msgid "CAUTION!"
 msgstr "ATENŢIE!"
 
 #: dialogs/rc.cpp:737
-#, fuzzy
 msgid ""
 "<font color=\"#ff2727\">This software is still in an experimental stage, and "
 "there are still some known response time problems. Please be patient; we are "
 "working on them.\n"
 "As always, please make sure you have adequate backups of your data.</font>"
 msgstr ""
-"<font color=\"#ff2727\">Această funcţionalitate este încă în stare "
-"experimentală şi este posibilă pierderea unor date. Vă rog să vă asiguraţi "
-"că aveţi o copie de siguranţă a datelor dumneavoastră înainte de a începe "
-"folosirea functionalităţii de salvare în baza de date.</font>"
+"<font color=\"#ff2727\">Această aplicație este încă în stare experimentală "
+"şi există anumite probleme de timp de răspuns cunoscute. Vă rugăm să aveți "
+"răbdare, lucrăm la rezolvarea lor.\n Ca de obicei, vă rugăm să vă asiguraţi "
+"că aveţi o copie de siguranţă a datelor dumneavoastră.</font>"
 
 #: dialogs/rc.cpp:738
 msgid "Database Type"
@@ -11980,9 +11965,8 @@ msgid "User Name"
 msgstr "Numele utilizatorului"
 
 #: dialogs/rc.cpp:743
-#, fuzzy
 msgid "Preload &all data"
-msgstr "Preîncarcă toate datele"
+msgstr "Preîncarcă &toate datele"
 
 #: dialogs/rc.cpp:745
 msgid "&Generate SQL"
@@ -12802,10 +12786,8 @@ msgstr ""
 "pentru a calcula bugetele lunare?"
 
 #: widgets/kmymoneybriefschedule.cpp:62
-#, fuzzy
 msgid "Use this button to skip this transaction"
-msgstr ""
-"Foloseşte acest buton pentru a înregistra această tranzacţie în registru"
+msgstr "Foloseşte acest buton pentru a omite această tranzacţie"
 
 #: widgets/kmymoneybriefschedule.cpp:67
 msgid "Record this transaction into the register"
@@ -13568,14 +13550,12 @@ msgstr ""
 
 #: widgets/rc.cpp:143
 msgid "Line width"
-msgstr ""
+msgstr "Grosimea liniei"
 
 #: widgets/rc.cpp:144
-#, fuzzy
 msgid "<p>Select what width should be used to draw the line on the chart</p>"
 msgstr ""
-"<p>Alegeţi această opţiune pentru a afişa linii orizontale şi verticale de "
-"marcaj pe grafic.</p>"
+"<p>Alegeţi grosimea liniei cu ajutorul căruia se desenează graficul.</p>"
 
 #: widgets/rc.cpp:145
 msgid "ReportControl"
