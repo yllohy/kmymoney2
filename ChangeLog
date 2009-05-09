@@ -1,10 +1,11 @@
+
+2009-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Galician translation from Marce Villarino
+
 2009-05-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
-  * Fix 2779291
+  * Fixed #2779291
     - Correct precision in formatted fields
     - Fix potential upgrade problem
-
-2009-05-07 Alvaro Soliverez <asoliverez@gmail.com>
-  * Updated user documentation - submitted by John Hudson
 
 2009-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Romanian translation from Cristian Onet
