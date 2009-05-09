@@ -442,14 +442,19 @@ void KGlobalLedgerView::loadView(void)
 
     // create dummy entries for the scheduled transactions if sorted by postdate
     int period = KMyMoneyGlobalSettings::schedulePreview();
-    if(m_register->primarySortKey() == KMyMoneyRegister::PostDateSort && !isReconciliationAccount() && period > 0) {
+    if(m_register->primarySortKey() == KMyMoneyRegister::PostDateSort) {
+      // show scheduled transactions which have a scheduled postdate
+      // within the next 'period' days. In reconciliation mode, the
+      // period starts on the statement date.
       QDate endDate = QDate::currentDate().addDays(period);
+      if(isReconciliationAccount())
+        endDate = reconciliationDate.addDays(period);
       QValueList<MyMoneySchedule> scheduleList = MyMoneyFile::instance()->scheduleList(m_account.id());
       while(scheduleList.count() > 0){
         MyMoneySchedule& s = scheduleList.first();
         for(;;) {
           if(s.isFinished() || s.nextDueDate() > endDate) {
-            break;;
+            break;
           }
 
           MyMoneyTransaction t(s.id(), KMyMoneyUtils::scheduledTransaction(s));

@@ -1,6 +1,8 @@
 
 2009-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Galician translation from Marce Villarino
+  * Show scheduled transactions during reconciliation and don't show the
+    initial dialog for overdue scheduled transactions anymore
 
 2009-05-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fixed #2779291

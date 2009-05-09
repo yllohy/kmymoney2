@@ -3058,6 +3058,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
     // check if we can reconcile this account
     // it make's sense for asset and liability accounts
     try {
+#if 0
       // check if we have overdue schedules for this account
       QValueList<MyMoneySchedule> schedules = file->scheduleList(m_selectedAccount.id(), MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY, QDate(), QDate(), true);
       if(schedules.count() > 0) {
@@ -3086,6 +3087,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
           } while(processedOne);
         }
       }
+#endif
 
       account = file->account(m_selectedAccount.id());
       // get rid of previous run.
