@@ -109,8 +109,8 @@ public:
   ~_CheckMemoryEntry() {}
 
   void * pointer(void) const { return m_p; };
-  const int line(void) const { return m_line; };
-  const size_t size(void) const { return m_size; };
+  int line(void) const { return m_line; };
+  size_t size(void) const { return m_size; };
   const char* file(void) const { return m_file; };
 
 private:

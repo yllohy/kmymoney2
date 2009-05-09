@@ -45,7 +45,7 @@
 #define CATCH } catch (MyMoneyException *e) {
 #define PASS } catch (MyMoneyException *e) { throw; }
 #define ECATCH }
-#define DBG(a)  // qDebug(a)
+#define DBG(a) // qDebug(a)
 //#define TRACE(a) qDebug(a)
 #define TRACE(a) ::timetrace(a)
 

@@ -96,7 +96,7 @@ void MyMoneyDatabaseMgrTest::testCreateDb() {
                      //"QSQLITE3&mode=single";
                      //"QMYSQL3&mode=single";
                      + *it + "&mode=single";
-    MyMoneyStorageSql *sql = m->connectToDatabase(m_url);
+    KSharedPtr <MyMoneyStorageSql> sql = m->connectToDatabase(m_url);
     CPPUNIT_ASSERT(0 != sql);
     //qDebug("Database driver is %s", sql->driverName().ascii());
     // Clear the database, so there is a fresh start on each run.
@@ -116,7 +116,7 @@ void MyMoneyDatabaseMgrTest::testAttachDb() {
     testCreateDb();
     if (m_canOpen) {
       MyMoneyFile::instance()->detachStorage();
-      MyMoneyStorageSql *sql = m->connectToDatabase(m_url);
+      KSharedPtr <MyMoneyStorageSql> sql = m->connectToDatabase(m_url);
       CPPUNIT_ASSERT(sql);
       int openStatus = sql->open(m_url, IO_ReadWrite);
       CPPUNIT_ASSERT(0 == openStatus);
@@ -1473,6 +1473,9 @@ void MyMoneyDatabaseMgrTest::testAddSchedule() {
     return;
   }
 
+  // put some accounts in the db, so the tests don't break
+  testReparentAccount();
+
   try {
     CPPUNIT_ASSERT(m->scheduleList().count() == 0);
     MyMoneyTransaction t1;
@@ -1517,6 +1520,34 @@ void MyMoneyDatabaseMgrTest::testAddSchedule() {
   } catch(MyMoneyException *e) {
     delete e;
   }
+
+  // now try with a bad account, so this should cause an exception
+  // TODO: enable this check without corrupting other tests
+//  try {
+//    MyMoneyTransaction t1;
+//    MyMoneySplit s1, s2;
+//    s1.setAccountId("Abadaccount1");
+//    t1.addSplit(s1);
+//    s2.setAccountId("Abadaccount2");
+//    t1.addSplit(s2);
+//    MyMoneySchedule schedule("Sched-Name",
+//           MyMoneySchedule::TYPE_DEPOSIT,
+//           MyMoneySchedule::OCCUR_DAILY, 1,
+//           MyMoneySchedule::STYPE_MANUALDEPOSIT,
+//           QDate(),
+//           QDate(),
+//           true,
+//           false);
+//    t1.setPostDate(QDate(2003,7,10));
+//    schedule.setTransaction(t1);
+
+//    m->addSchedule(schedule);
+//    CPPUNIT_FAIL("Exception expected, but not thrown");
+//  } catch(MyMoneyException *e) {
+//    delete e;
+//    // Exception caught as expected.
+//  }
+
 }
 
 void MyMoneyDatabaseMgrTest::testSchedule() {
@@ -1616,10 +1647,12 @@ void MyMoneyDatabaseMgrTest::testScheduleList() {
     return;
   }
 
+  // put some accounts in the db, so the tests don't break
+  testReparentAccount();
+
   QDate  testDate = QDate::currentDate();
   QDate  notOverdue = testDate.addDays(2);
   QDate  overdue = testDate.addDays(-2);
-
 
   MyMoneyTransaction t1;
   MyMoneySplit s1, s2;

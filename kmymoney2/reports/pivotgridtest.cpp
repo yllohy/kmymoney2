@@ -37,12 +37,14 @@
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
 */
+
+#include "pivotgridtest.h"
+
+#include "reportstestcommon.h"
+
 #define private public
 #include "../reports/pivotgrid.h"
 #undef private
-
-#include "reportstestcommon.h"
-#include "pivotgridtest.h"
 
 using namespace reports;
 using namespace test;

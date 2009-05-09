@@ -110,7 +110,7 @@ MyMoneySeqAccessMgr const * MyMoneySeqAccessMgr::duplicate(void)
   /**
  * This method is used to get a SQL reader for subsequent database access
    */
-MyMoneyStorageSql *MyMoneySeqAccessMgr::connectToDatabase
+KSharedPtr <MyMoneyStorageSql> MyMoneySeqAccessMgr::connectToDatabase
       (const KURL& /*url*/) {
   return 0;
 }

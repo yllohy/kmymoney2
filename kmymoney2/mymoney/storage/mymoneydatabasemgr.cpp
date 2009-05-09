@@ -1147,9 +1147,11 @@ void MyMoneyDatabaseMgr::addSchedule(MyMoneySchedule& sched)
   sched.validate(false);
 
   if (m_sql) {
+    startTransaction();
     sched = MyMoneySchedule (nextScheduleID(), sched);
 
     m_sql->addSchedule(sched);
+    commitTransaction();
   }
 }
 
@@ -1625,8 +1627,12 @@ bool MyMoneyDatabaseMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFil
   return rc;
 }
 
-void MyMoneyDatabaseMgr::close(void)
-{ if (m_sql != 0) m_sql->close(true); }
+void MyMoneyDatabaseMgr::close(void) {
+  if (m_sql != 0) {
+    m_sql->close(true);
+    m_sql = 0;
+  }
+}
 
 void MyMoneyDatabaseMgr::startTransaction(void)
 { if (m_sql) m_sql->startCommitUnit ("databasetransaction"); }
@@ -1644,7 +1650,7 @@ void MyMoneyDatabaseMgr::rollbackTransaction(void)
 void MyMoneyDatabaseMgr::setCreationDate(const QDate& val)
 { m_creationDate = val; }
 
-MyMoneyStorageSql *MyMoneyDatabaseMgr::connectToDatabase(const KURL& url) {
+KSharedPtr <MyMoneyStorageSql> MyMoneyDatabaseMgr::connectToDatabase(const KURL& url) {
   m_sql = new MyMoneyStorageSql (this, url);
   return m_sql;
 }

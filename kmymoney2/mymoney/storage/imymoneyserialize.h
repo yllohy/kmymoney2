@@ -71,7 +71,7 @@ public:
   /**
    * This method is used to get a SQL reader for subsequent database access
    */
-  virtual MyMoneyStorageSql *connectToDatabase
+  virtual KSharedPtr <MyMoneyStorageSql> connectToDatabase
       (const KURL& url) = 0;
   /**
     * This method is used when a database file is open, and the data is to

@@ -800,7 +800,7 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
     pDBMgr = new MyMoneyDatabaseMgr;
     pStorage = dynamic_cast<IMyMoneySerialize*> (pDBMgr);
   }
-  MyMoneyStorageSql* reader = pStorage->connectToDatabase (url);
+  KSharedPtr <MyMoneyStorageSql> reader = pStorage->connectToDatabase (url);
   KURL dbURL (url);
   bool retry = true;
   while (retry) {

@@ -1,3 +1,9 @@
+2009-05-09 Fernando Vilas <fvilas@iname.com>
+  * Updated schedule test cases to pass after Tony's patch
+  * Fixed a few warnings about const on primitive return types
+  * Made MMStorageSql inherit from KShared
+  * Changed the include order on reports test and pivottable test to make
+    tests compile on Slackware
 
 2009-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Galician translation from Marce Villarino

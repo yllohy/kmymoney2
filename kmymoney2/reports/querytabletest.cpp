@@ -26,8 +26,8 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-#include "reportstestcommon.h"
 #include "querytabletest.h"
+#include "reportstestcommon.h"
 
 #define private public
 #include "querytable.h"
