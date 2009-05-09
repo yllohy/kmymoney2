@@ -235,7 +235,7 @@ bool KMyMoneyAccountTreeBase::acceptDrag(QDropEvent* event) const
 {
   bool rc;
 
-  if(rc = (acceptDrops() && event->source() == viewport())) {
+  if((rc = (acceptDrops()) && (event->source() == viewport()))) {
     rc = false;
     KMyMoneyAccountTreeBaseItem* to = dynamic_cast<KMyMoneyAccountTreeBaseItem*>(itemAt( contentsToViewport(event->pos()) ));
     QString fromId(event->encodedData("text/plain"));
