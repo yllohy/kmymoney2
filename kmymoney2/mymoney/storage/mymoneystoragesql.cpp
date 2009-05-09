@@ -248,6 +248,7 @@ int MyMoneyStorageSql::createDatabase (const KURL& url) {
   return (0);
 }
 
+
 int MyMoneyStorageSql::upgradeDb() {
   DBG("*** Entering MyMoneyStorageSql::upgradeDb");
   //signalProgress(0, 1, QObject::tr("Upgrading database..."));
@@ -289,6 +290,7 @@ int MyMoneyStorageSql::upgradeDb() {
     }
   }
   // write updated version to DB
+  setVersion(QString("%1.%2").arg(m_majorVersion).arg(m_minorVersion));
   q.prepare (QString("UPDATE kmmFileInfo SET version=%1.%2").arg(m_majorVersion).arg(m_minorVersion));
   if (!q.exec()) {
     buildError (q, __func__, "Error updating db version");
@@ -296,6 +298,46 @@ int MyMoneyStorageSql::upgradeDb() {
   }
   //signalProgress(-1,-1);
   return (0);
+}
+// SF bug 2779291
+// check whether a column appears in a table already; if not, add it
+bool MyMoneyStorageSql::addColumn
+    (const MyMoneyDbTable& t, const MyMoneyDbColumn& c,
+                 const QString& after){
+  if ((m_dbType == Sqlite3) && (!after.isEmpty()))
+    qFatal("sqlite doesn't support 'AFTER'; use sqliteAlterTable");
+  if (record(t.name()).contains(c.name()))
+    return (true);
+  QSqlQuery q(this);
+  QString afterString = ";";
+  if (!after.isEmpty())
+    afterString = QString("AFTER %1;").arg(after);
+  q.prepare("ALTER TABLE " + t.name() + " ADD COLUMN " +
+                     c.generateDDL(m_dbType) + afterString);
+  if (!q.exec()) {
+    buildError (q, __func__,
+      QString("Error adding column %1 to table %2").arg(c.name()).arg(t.name()));
+    return (false);
+  }
+  return (true);
+}
+
+// analogous to above
+bool MyMoneyStorageSql::dropColumn
+    (const MyMoneyDbTable& t, const MyMoneyDbColumn& c){
+  if (m_dbType == Sqlite3)
+    qFatal("sqlite doesn't support 'DROP COLUMN'; use sqliteAlterTable");
+  if (!record(t.name()).contains(c.name()))
+    return (true);
+  QSqlQuery q(this);
+  q.prepare("ALTER TABLE " + t.name() + " DROP COLUMN "
+      + c.name() + ";");
+  if (!q.exec()) {
+    buildError (q, __func__,
+      QString("Error dropping column %1 from table %2").arg(c.name()).arg(t.name()));
+    return (false);
+  }
+  return (true);
 }
 
 int MyMoneyStorageSql::upgradeToV1() {
@@ -317,12 +359,9 @@ int MyMoneyStorageSql::upgradeToV1() {
     return (1);
   }
   // change kmmSplits add postDate datetime
-  q.prepare ("ALTER TABLE kmmSplits ADD COLUMN " +
-      MyMoneyDbDatetimeColumn("postDate").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmSplits.postDate");
+  if (!addColumn(m_db.m_tables["kmmSplits"],
+            MyMoneyDbDatetimeColumn("postDate")))
     return (1);
-  }
   // initialize it to same value as transaction (do it the long way round)
   q.prepare ("SELECT id, postDate FROM kmmTransactions WHERE txType = 'N';");
   if (!q.exec()) {
@@ -377,40 +416,25 @@ int MyMoneyStorageSql::upgradeToV1() {
     return (1);
   }
   // change kmmFileInfo add budgets unsigned bigint after kvps
-  q.prepare ("ALTER TABLE kmmFileInfo ADD COLUMN " +
-      MyMoneyDbIntColumn("budgets", MyMoneyDbIntColumn::BIG, false).generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmFileInfo.budgets");
+  if (!addColumn(m_db.m_tables["kmmFileInfo"],
+            MyMoneyDbIntColumn("budgets", MyMoneyDbIntColumn::BIG, false)))
     return (1);
-  }
   // change kmmFileInfo add hiBudgetId unsigned bigint after hiReportId
-  q.prepare ("ALTER TABLE kmmFileInfo ADD COLUMN " +
-      MyMoneyDbIntColumn("hiBudgetId", MyMoneyDbIntColumn::BIG, false).generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmFileInfo.hiBudgetId");
+  if (!addColumn(m_db.m_tables["kmmFileInfo"],
+            MyMoneyDbIntColumn("hiBudgetId", MyMoneyDbIntColumn::BIG, false)))
     return (1);
-  }
       // change kmmFileInfo add logonUser
-  q.prepare ("ALTER TABLE kmmFileInfo ADD COLUMN " +
-      MyMoneyDbColumn("logonUser", "varchar(255)", false).generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmFileInfo.logonUser");
+  if (!addColumn(m_db.m_tables["kmmFileInfo"],
+            MyMoneyDbColumn("logonUser", "varchar(255)", false)))
     return (1);
-  }
       // change kmmFileInfo add logonAt datetime
-  q.prepare ("ALTER TABLE kmmFileInfo ADD COLUMN " +
-      MyMoneyDbDatetimeColumn("logonAt", false).generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmFileInfo.logonAt");
+  if (!addColumn(m_db.m_tables["kmmFileInfo"],
+    MyMoneyDbDatetimeColumn("logonAt", false)))
     return (1);
-  }
       // change kmmAccounts add transactionCount unsigned bigint as last field
-  q.prepare ("ALTER TABLE kmmAccounts ADD COLUMN " +
-      MyMoneyDbIntColumn("transactionCount", MyMoneyDbIntColumn::BIG, false).generateDDL(m_dbType) + " NOT NULL DEFAULT 0;");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmAccounts.transactionCount");
+  if (!addColumn(m_db.m_tables["kmmAccounts"],
+    MyMoneyDbIntColumn("transactionCount", MyMoneyDbIntColumn::BIG, false)))
     return (1);
-  }
   // calculate the transaction counts. the application logic defines an account's tx count
   // in such a way as to count multiple splits in a tx which reference the same account as one.
   // this is the only way I can think of to do this which will work in sqlite too.
@@ -481,18 +505,12 @@ int MyMoneyStorageSql::upgradeToV2() {
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // change kmmSplits add price fields
-  q.prepare ("ALTER TABLE kmmSplits ADD COLUMN " +
-      MyMoneyDbTextColumn("price").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmSplits.price");
+  if (!addColumn(m_db.m_tables["kmmSplits"],
+    MyMoneyDbTextColumn("price")))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmSplits ADD COLUMN " +
-      MyMoneyDbTextColumn("priceFormatted").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmSplits.priceFormatted");
+  if (!addColumn(m_db.m_tables["kmmSplits"],
+    MyMoneyDbTextColumn("priceFormatted")))
     return (1);
-  }
   endCommitUnit(__func__);
   return (0);
 }
@@ -505,8 +523,9 @@ int MyMoneyStorageSql::upgradeToV3() {
   MyMoneySqlQuery q(this);
   // The default value is given here to populate the column.
   q.prepare ("ALTER TABLE kmmSchedules ADD COLUMN " +
-      MyMoneyDbIntColumn("occurenceMultiplier", MyMoneyDbIntColumn::SMALL, false,
-        false, true).generateDDL(m_dbType) + " DEFAULT 0;");
+      MyMoneyDbIntColumn("occurenceMultiplier",
+        MyMoneyDbIntColumn::SMALL, false, false, true)
+        .generateDDL(m_dbType) + " DEFAULT 0;");
   if (!q.exec()) {
     buildError (q, __func__, "Error adding kmmSchedules.occurenceMultiplier");
     return (1);
@@ -536,43 +555,25 @@ int MyMoneyStorageSql::upgradeToV5() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV5");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
-  q.prepare ("ALTER TABLE kmmSplits ADD COLUMN " +
-      MyMoneyDbTextColumn("bankId").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmSplits.bankId");
+  if (!addColumn(m_db.m_tables["kmmSplits"],
+            MyMoneyDbTextColumn("bankId")))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
-      MyMoneyDbTextColumn("notes", MyMoneyDbTextColumn::LONG).generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmPayees.notes");
+  if (!addColumn(m_db.m_tables["kmmPayees"],
+            MyMoneyDbTextColumn("notes", MyMoneyDbTextColumn::LONG)))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
-      MyMoneyDbColumn("defaultAccountId", "varchar(32)").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmPayees.defaultAccountId");
+  if (!addColumn(m_db.m_tables["kmmPayees"],
+            MyMoneyDbColumn("defaultAccountId", "varchar(32)")))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
-      MyMoneyDbIntColumn("matchData", MyMoneyDbIntColumn::TINY,
-                         false).generateDDL(m_dbType) + "DEFAULT 0;");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmPayees.matchData");
+  if (!addColumn(m_db.m_tables["kmmPayees"],
+    MyMoneyDbIntColumn("matchData", MyMoneyDbIntColumn::TINY,
+                         false)))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
-      MyMoneyDbColumn("matchIgnoreCase", "char(1)").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmPayees.matchIgnoreCase");
+  if (!addColumn(m_db.m_tables["kmmPayees"],
+     MyMoneyDbColumn("matchIgnoreCase", "char(1)")))
     return (1);
-  }
-  q.prepare ("ALTER TABLE kmmPayees ADD COLUMN " +
-      MyMoneyDbTextColumn("matchKeys").generateDDL(m_dbType) + ";");
-  if (!q.exec()) {
-    buildError (q, __func__, "Error adding kmmPayees.matchKeys");
+  if (!addColumn(m_db.m_tables["kmmPayees"],
+            MyMoneyDbTextColumn("matchKeys")))
     return (1);
- }
   const MyMoneyDbTable& t = m_db.m_tables["kmmReportConfig"];
   if (m_dbType != Sqlite3) {
     q.prepare (t.dropPrimaryKeyString(m_dbType));
@@ -1205,11 +1206,13 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery&
   TRY
     MyMoneyMoney bal = m_storagePtr->balance(acc.id(), QDate());
     q.bindValue(":balance", bal.toString());
-    q.bindValue(":balanceFormatted", bal.formatMoney("", 2));
+    q.bindValue(":balanceFormatted",
+                bal.formatMoney("", -1, false));
   CATCH
     delete e;
     q.bindValue(":balance", acc.balance().toString());
-    q.bindValue(":balanceFormatted", acc.balance().formatMoney("", 2));
+    q.bindValue(":balanceFormatted",
+                acc.balance().formatMoney("", -1, false));
   ECATCH
 
   q.bindValue(":transactionCount", Q_ULLONG(m_transactionCountMap[acc.id()]));
@@ -1420,13 +1423,22 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":action", split.action());
   q.bindValue(":reconcileFlag", split.reconcileFlag());
   q.bindValue(":value", split.value().toString());
-  q.bindValue(":valueFormatted", split.value().formatMoney("", -1, false).replace(QChar(','), QChar('.')));
+  q.bindValue(":valueFormatted", split.value()
+      .formatMoney("", -1, false)
+        .replace(QChar(','), QChar('.')));
   q.bindValue(":shares", split.shares().toString());
-  q.bindValue(":sharesFormatted", split.shares().formatMoney("", -1, false).replace(QChar(','), QChar('.')));
+  MyMoneyAccount acc = m_storagePtr->account(split.accountId());
+  MyMoneySecurity sec = m_storagePtr->security(acc.currencyId());
+  q.bindValue(":sharesFormatted",
+              split.shares().
+                  formatMoney("", MyMoneyMoney::denomToPrec(sec.smallestAccountFraction()), false).
+                  replace(QChar(','), QChar('.')));
   MyMoneyMoney price = split.actualPrice();
   if (!price.isZero()) {
     q.bindValue(":price", price.toString());
-    q.bindValue(":priceFormatted", price.formatMoney("", -1, false).replace(QChar(','), QChar('.')));
+    q.bindValue(":priceFormatted", price.formatMoney
+        ("", KMyMoneySettings::pricePrecision(), false)
+            .replace(QChar(','), QChar('.')));
   } else {
     q.bindValue(":price", QString());
     q.bindValue(":priceFormatted", QString());
@@ -1729,7 +1741,8 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
   q.bindValue(":toId", p.to());
   q.bindValue(":priceDate", p.date().toString(Qt::ISODate));
   q.bindValue(":price", p.rate(QString()).toString());
-  q.bindValue(":priceFormatted", p.rate(QString()).formatMoney("", 2));
+  q.bindValue(":priceFormatted",
+    p.rate(QString()).formatMoney("", KMyMoneySettings::pricePrecision()));
   q.bindValue(":priceSource", p.source());
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("writing Price")));
 

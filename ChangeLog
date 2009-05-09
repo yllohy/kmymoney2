@@ -1,3 +1,8 @@
+2009-05-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Fix 2779291
+    - Correct precision in formatted fields
+    - Fix potential upgrade problem
+
 2009-05-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated user documentation - submitted by John Hudson
 

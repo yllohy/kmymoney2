@@ -684,6 +684,9 @@ private:
   int upgradeToV4();
   int upgradeToV5();
   bool sqliteAlterTable(const MyMoneyDbTable& t);
+  bool addColumn(const MyMoneyDbTable& t, const MyMoneyDbColumn& c,
+                 const QString& after = QString());
+  bool dropColumn(const MyMoneyDbTable& t, const MyMoneyDbColumn& c);
 
 //  long long unsigned getRecCount(const QString& table);
   int createTables();
