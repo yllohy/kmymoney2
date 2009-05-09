@@ -2,8 +2,8 @@
 <sect2 id="reference.widgets.datepicker">
 <title>Date entry widget</title>
 <para>
-Whenever &kappname; needs information about a specific date, eg. the posting date of a transaction of the opening date of an account,
-it presents the user the <emphasis>date entry widget</emphasis>. This widget consists of three fields and a button. The fields present
+Whenever &kappname; needs information about a specific date, eg. the posting date of a transaction or the opening date of an account,
+it offers the user the <emphasis>date entry widget</emphasis>. This widget consists of three fields and a button. The fields present
 the <emphasis>day</emphasis>, the <emphasis>month</emphasis> and the <emphasis>year</emphasis> separated by the respective date separator
 characters depending on your locale settings. The button - if pressed - opens the datepicker widget.
 </para>
@@ -30,7 +30,7 @@ Month and year boundaries are considered and incremented/decremented if necessar
 date.
 </para>
 <para>
-The date can also be changed using the mouse. Clicking into the <emphasis>day</emphasis>, <emphasis>month</emphasis>
+The date can also be changed using the mouse. Clicking on the <emphasis>day</emphasis>, <emphasis>month</emphasis>
 or <emphasis>year</emphasis> field selects the field. The value can then be incremented/decremented using the arrow buttons on
 the right of the widget. They act exactly as the up/down key.
 </para>
@@ -57,7 +57,7 @@ The combo box allows the user to select a specific week and continue to pick a d
 The value entry widget consists of a text field (that accepts digits, thousands separators, and decimal symbols) as well as a button to
 the right. Use the digits to enter the value. Separate the fractional part by entering the decimal separator for your locale. If you
 click on the button to the right or press a key representing a numeric operation (eg. +,-,/,* or %) a little calculator will pop up
-and allows you to calculate the final value.
+and allow you to calculate the final value.
 </para>
 
 <para>
@@ -83,9 +83,9 @@ your keyboard.
 <sect2 id="reference.widgets.payee">
 <title>Payee/Payer entry</title>
 <para>
-When you are requested to select a payee/payer for a transaction, you can start entering the name by pressing keys on your keyboard.
+When you are requested to enter a payee/payer for a transaction, you can start entering the name by pressing keys on your keyboard.
 As long as matching entries exist in the list of payees/payers maintained by &kappname; they will be presented in a box beneath or above
-the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires to
+the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires you to
 select the entry by pressing the RETURN key.
 </para>
 
@@ -112,9 +112,9 @@ If you do not wish to do so, then the field will be blanked. Otherwise, the reco
 <sect2 id="reference.widgets.category">
 <title>Category/account entry</title>
 <para>
-When you are request to enter the name of a category or account, you can start entering the name by pressing keys on your keyboard.
+When you are requested to enter the name of a category or account, you can start entering the name by pressing keys on your keyboard.
 As long as matching entries exist in the list of categories/accounts known to &kappname; they will be presented in a box beneath or above
-the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires to
+the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires you to
 select the entry by pressing the RETURN key.
 </para>
 

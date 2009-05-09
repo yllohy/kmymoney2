@@ -17,7 +17,7 @@
   <sect1 id="details.forecast.define">
     <title>What is a Forecast?</title>
 
-    <para>In &kappname;, a Forecast is prediction of the balances of Accounts during a specified future period of time.</para>
+    <para>In &kappname;, a Forecast is a prediction of the balances of Accounts during a specified future period of time.</para>
 
     <para>Forecasts can be predicted using one of two methods.</para>
 

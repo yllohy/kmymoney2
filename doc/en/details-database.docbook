@@ -7,12 +7,12 @@
   <affiliation><address><email></email></address></affiliation>
   </author>
   </authorgroup>
-  <date>2009-01-07</date>
+  <date>2009-05-08</date>
   <releaseinfo>0.9</releaseinfo>
   </chapterinfo>
-  <title>Database Usage</title>
+  <title>Database</title>
 <sect1 id="details.database.usage">
-<title>Database usage</title>
+<title>Caution when using the database</title>
 <para>
 <caution>
 <para>
@@ -21,7 +21,7 @@ At the time of writing, the software described in this chapter is still in an ex
 </caution>
 </para>
 <sect2><title>Introduction</title>
-  <para>As of release 1.0, &kappname; allows you to hold your data in a relational database. One of the advantages of using this industry-standard format is that it may allow you to view your data using one of the graphic front ends such as OpenOffice.org<trademark class="copyright"/>, perhaps in some format that &kappname; currently doesn't provide. Also, a little knowledge of SQL (Structured Query Language, the language used world-wide to access relational databases) should enable you more easily to extract data to feed into some external program, as for example a budgeting application.</para>
+  <para>As of release 1.0, &kappname; allows you to hold your data in a relational database. One of the advantages of using this industry-standard format is that it may allow you to view your data using one of the graphic front ends such as OpenOffice.org<trademark class="copyright"/>, perhaps in some format that &kappname; currently doesn't provide. Also, a little knowledge of SQL (Structured Query Language, the language used world-wide to access relational databases) should enable you more easily to export data to an external program, for example, a budgeting application.</para>
   <para/>
 </sect2>
 
@@ -43,7 +43,7 @@ At the time of writing, the software described in this chapter is still in an ex
 
 <sect2><title>Administration</title>
   <para/>
-  <para>Looking after databases is a little more complex than dealing with regular files. Each system has different methods for performing those necessary administrative tasks such as initial creation, assigning permissions to various users, producing backups etc. Describing these is outside the scope of this manual, but all of the supported products provide comprehensive reference documentation, and a quick search of the web will point you at many tutorials on the subject.</para>
+  <para>Looking after databases is a little more complex than dealing with regular files. Each system has different methods for performing those necessary administrative tasks such as creating databases, assigning permissions to various users, producing backups etc. Describing these is outside the scope of this manual, but all of the supported products provide comprehensive reference documentation, and a quick search of the web will point you at many tutorials on the subject.</para>
   <para/>
 
 <sect3><title>Creating the database</title>
@@ -61,7 +61,7 @@ At the time of writing, the software described in this chapter is still in an ex
 </sect3>
 </sect2>
 
-<sect2 id="details.database.selectdatabase"><title>Initial usage</title>
+<sect2 id="details.database.selectdatabase"><title>Initialisation</title>
   <para/>
   <para>Using &kappname;, open or import an existing data file, or create a new one. Then select 'Save as Database' from the File menu. This will present the following dialog:</para>
   <para/>
@@ -271,7 +271,7 @@ This box lists all Qt SQL drivers installed on your system. Select the driver fo
 
 <sect2><title>Encryption</title>
   <para/>
-  <para>Encryption of data on your database is not currently supported.</para>
+  <para>Encryption of data in your database is not currently supported.</para>
   <para/>
 </sect2>
 </sect1>
