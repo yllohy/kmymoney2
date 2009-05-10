@@ -1,3 +1,6 @@
+2009-05-10 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Don't delete all customized reports from database!
+
 2009-05-09 Fernando Vilas <fvilas@iname.com>
   * Updated schedule test cases to pass after Tony's patch
   * Fixed a few warnings about const on primitive return types

@@ -1927,7 +1927,7 @@ void MyMoneyStorageSql::removeReport(const MyMoneyReport& rep) {
   DBG("*** Entering MyMoneyStorageSql::removeReport");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
-  q.prepare (m_db.m_tables["kmmReportConfig"].deleteString());
+  q.prepare("DELETE FROM kmmReportConfig WHERE name = :name");
   q.bindValue(":name", rep.name());
   if (!q.exec()) throw new MYMONEYEXCEPTION(buildError (q, __func__, QString("deleting Report")));
   --m_reports;
