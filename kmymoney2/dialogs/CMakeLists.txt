@@ -62,13 +62,18 @@ SET(dialogs_UI
 
 # The handling of these ui files depends
 # on libkmymoney.so (the widgets library)
-KMM_ADD_UI_FILES(libdialogs_a_SOURCES ${dialogs_UI} DEPENDS kmymoney)
+KMM_ADD_UI_FILES(dialogs_ui_srcs ${dialogs_UI} DEPENDS kmymoney)
 
-ADD_LIBRARY(dialogs STATIC ${libdialogs_a_SOURCES})
+# in order to use add_dependencies, we need to add this custom target
+# for all generated header files.
+# (see http://www.vtk.org/Wiki/CMake_FAQ#How_can_I_add_a_dependency_to_a_source_file_which_is_generated_in_a_subdirectory.3F )
+ADD_CUSTOM_TARGET(generate_dialogs_ui_srcs DEPENDS ${dialogs_ui_srcs})
+
+ADD_LIBRARY(dialogs STATIC ${libdialogs_a_SOURCES} ${dialogs_ui_srcs})
 
 # Must build widgets/kmymoneyreportconfigtab1decl.h from .ui
 # before kreportconfigurationfilterdlg.cpp can be compiled.
-ADD_DEPENDENCIES(dialogs widgets)
+ADD_DEPENDENCIES(dialogs generate_widgets_ui_srcs)
 
 ########### install files ###############
 

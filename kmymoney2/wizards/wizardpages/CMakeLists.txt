@@ -15,7 +15,12 @@ KDE3_AUTOMOC(${libwizardpages_a_SOURCES})
 
 # The handling of these ui files depends
 # on libkmymoney.so (the widgets library)
-KMM_ADD_UI_FILES(libwizardpages_a_SOURCES ${libwizardpages_a_UI}
+KMM_ADD_UI_FILES(wizardpages_ui_srcs ${libwizardpages_a_UI}
   DEPENDS kmymoney)
+# in order to use add_dependencies, we need to add this custom target
+# for all generated header files.
+ADD_CUSTOM_TARGET(generate_wizardpages_ui_srcs DEPENDS
+  ${wizardpages_ui_srcs})
 
-ADD_LIBRARY(wizardpages STATIC ${libwizardpages_a_SOURCES})
+ADD_LIBRARY(wizardpages STATIC
+  ${libwizardpages_a_SOURCES} ${wizardpages_ui_srcs})

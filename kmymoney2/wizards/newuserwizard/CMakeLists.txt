@@ -20,4 +20,4 @@ KDE3_AUTOMOC(${libnewuserwizard_a_SOURCES})
 KDE3_ADD_MOC_FILES(libnewuserwizard_a_SOURCES knewuserwizard_p.h)
 
 ADD_LIBRARY(newuserwizard STATIC ${libnewuserwizard_a_SOURCES})
-ADD_DEPENDENCIES(newuserwizard wizardpages)
+ADD_DEPENDENCIES(newuserwizard generate_wizardpages_ui_srcs)

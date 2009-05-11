@@ -49,7 +49,6 @@ SET(_uncritial_common_sources
   kmymoneyaccounttree.cpp
   kmymoneyaccounttreeforecast.cpp
   kmymoneycalculator.cpp
-  kmymoneycategory.cpp
   kmymoneychecklistitem.cpp
   kmymoneycombo.cpp
   kmymoneycompletion.cpp
@@ -75,6 +74,7 @@ SET (_critial_common_sources
   kmymoneyaccountcombo.cpp
   kmymoneyaccountcompletion.cpp
   kmymoneyaccounttreebase.cpp
+  kmymoneycategory.cpp
   kmymoneyselector.cpp
   register.cpp
   )
@@ -85,7 +85,16 @@ KDE3_ADD_MOC_FILES(_uncritial_common_sources kmymoneywizard_p.h)
 SET (kmymoney_base_UI
   kbudgetvaluesdecl.ui transactionsortoption.ui kaccounttemplateselectordecl.ui
   )
-KDE3_ADD_UI_FILES(_uncritial_common_sources ${kmymoney_base_UI})
+KDE3_ADD_UI_FILES(kmymoney_base_ui_srcs ${kmymoney_base_UI})
+SET(_uncritial_common_sources ${_uncritial_common_sources}
+  ${kmymoney_base_ui_srcs})
+
+# in order to use add_dependencies, we need to add this custom target
+# for all generated header files.
+# (see http://www.vtk.org/Wiki/CMake_FAQ#How_can_I_add_a_dependency_to_a_source_file_which_is_generated_in_a_subdirectory.3F )
+ADD_CUSTOM_TARGET(generate_base_ui_srcs DEPENDS
+  ${kmymoney_base_ui_srcs})
+
 KMM_KDE3_ADD_KCFG_FILES(_uncritial_common_sources ${KMyMoney2_SOURCE_DIR}
   ${KMyMoney2_SOURCE_DIR}/kmymoneysettings.kcfgc)
 
@@ -97,8 +106,10 @@ ADD_LIBRARY(kmymoney_base STATIC ${_uncritial_common_sources})
 # but it is needed for uic and QtDesigner
 
 ADD_LIBRARY(kmymoney SHARED
- ${_critial_common_sources} ${_uncritial_common_sources} kmmwidgets.cpp)
-TARGET_LINK_LIBRARIES(kmymoney kmm_mymoney kdeui)
+ ${_critial_common_sources}
+ # ${_uncritial_common_sources}
+ kmmwidgets.cpp)
+TARGET_LINK_LIBRARIES(kmymoney kmymoney_base kmm_mymoney kdeui)
 
 # Build directly with INSTALL_RPATH.
 # This avoids relinking (and rerunning uic) on 'make install'
@@ -143,17 +154,19 @@ SET(libwidgets_a_UI
   kmymoneyonlinequoteconfigdecl.ui kmymoneygpgconfigdecl.ui 
   )
 
-# this one is important: uic DEPENDS on libkmymoney.so. If uic does
-# not find libkmymoney.so, gcc will fail compiling
-# kmymoneyreportconfigtab2decl.cpp and throw errors like
-# "invalid use of undefined type `struct KMyMoneyGeneralCombo'"
-KMM_ADD_UI_FILES(libwidgets_a_SOURCES ${libwidgets_a_UI}
-  DEPENDS kmymoney)
+# using uic on the above UI files DEPENDS on libkmymoney.so. If uic
+# does not find libkmymoney.so, gcc will fail compiling
+# kmymoneyreportconfigtab2decl.cpp and throw errors like "invalid use
+# of undefined type `struct KMyMoneyGeneralCombo'"
+KMM_ADD_UI_FILES(widgets_ui_srcs ${libwidgets_a_UI} DEPENDS kmymoney)
+ADD_CUSTOM_TARGET(generate_widgets_ui_srcs DEPENDS ${widgets_ui_srcs})
 
-ADD_LIBRARY(widgets STATIC ${libwidgets_a_SOURCES})
+ADD_LIBRARY(widgets STATIC
+  ${libwidgets_a_SOURCES}
+  ${widgets_ui_srcs}
+  #  ${_uncritial_common_sources}
+  )
 TARGET_LINK_LIBRARIES(widgets kmymoney_base)
-SET_TARGET_PROPERTIES(widgets PROPERTIES
-  LINK_FLAGS "-Wl,--undefined")
 
 ########### install files ###############
 

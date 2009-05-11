@@ -43,9 +43,8 @@ KMM_ADD_UI_FILES(libviews_a_SOURCES ${libviews_a_UI} DEPENDS kmymoney)
 
 ADD_LIBRARY(views STATIC ${libviews_a_SOURCES})
 
-# Must build knewbudgetdlgdecl.h from knewbudgetdlgdecl.ui
-# before budgetview.cpp can be compiled.
-ADD_DEPENDENCIES(views dialogs)
+ADD_DEPENDENCIES(views generate_dialogs_ui_srcs generate_base_ui_srcs
+  generate_widgets_ui_srcs)
 
 ########### install files ###############
 

@@ -38,24 +38,24 @@ TARGET_LINK_LIBRARIES(kmymoney_common
 
 # must build kmymoney/transactionsortoption.h
 # from transactionsortoption.ui first
-ADD_DEPENDENCIES(kmymoney_common kmymoney_base)
+ADD_DEPENDENCIES(kmymoney_common generate_base_ui_srcs)
 
-SET( kmymoney_common_LIBS
-  ${QT_AND_KDECORE_LIBS} kmymoney_common views reports newuserwizard
-  newaccountwizard wizardpages dialogs settings widgets converter
-  kmm_storage kmm_mymoney kgpgfile interfaces kmm_plugin dialogs
-  kmm_kdchart khtml kdeui kabc)
+SET( kmymoney_link_LIBS
+  ${QT_AND_KDECORE_LIBS} views reports kmymoney_common
+  newuserwizard newaccountwizard wizardpages dialogs settings widgets
+  converter kmm_storage kmm_mymoney kgpgfile interfaces kmm_plugin
+  dialogs kmm_kdchart khtml kdeui kabc )
 
 ########### kmymoney2 executable ###############
 
-SET( kmymoney2_SRCS main.cpp kmymoney2.cpp )#${kmymoney_common_SRCS} )
+SET( kmymoney2_SRCS main.cpp kmymoney2.cpp )
 
 KDE3_ADD_DCOP_SKELS( kmymoney2_SRCS kmymoney2.h )
 KDE3_ADD_DCOP_STUBS( kmymoney2_SRCS kmymoney2.h )
 KDE3_AUTOMOC( ${kmymoney2_SRCS} )
 
 KDE3_ADD_EXECUTABLE( kmymoney2 ${kmymoney2_SRCS} )
-TARGET_LINK_LIBRARIES( kmymoney2 ${kmymoney_common_LIBS} )
+TARGET_LINK_LIBRARIES( kmymoney2 ${kmymoney_link_LIBS} )
 
 ########### kmymoneytest executable ###############
 
@@ -84,7 +84,7 @@ IF( KDE3_BUILD_TESTS )
 
   KDE3_ADD_EXECUTABLE( kmymoneytest ${kmymoneytest_SRCS} )
   TARGET_LINK_LIBRARIES( kmymoneytest
-    ${kmymoney_common_LIBS} ${CPPUNIT_LIBRARY})
+  ${kmymoney_link_LIBS} ${CPPUNIT_LIBRARY} )
 
   ##################
   # The Actual Testing using CTest
