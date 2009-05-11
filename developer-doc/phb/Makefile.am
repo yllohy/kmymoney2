@@ -53,13 +53,13 @@ clear-files:
 web: phb/index.html
 
 phb/index.html: $(DOCBOOK_FILES)
-	if test x`which splitup-kde-chunk-online`x != xx; then \
+	if test -x $(abs_top_srcdir)/contrib/splitup-kde-chunk-online; then \
 		rm -rf phb common; \
 		mkdir phb; \
 		mkdir common; \
 		$(MEINPROC) --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-chunk-online.xsl  $(srcdir)/phb.docbook -o phb/index.xml; \
 		cd phb; \
-		splitup-kde-chunk-online; \
+		$(abs_top_srcdir)/contrib/splitup-kde-chunk-online; \
 		rm index.xml; \
 		cd ..; \
 		make get-files; \

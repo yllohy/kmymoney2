@@ -29,14 +29,14 @@ show: preview
 web: online-manual/index.xml
 
 online-manual/index.xml: $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
-	if test x`which splitup-kde-chunk-online`x != xx; then \
+	if test -x $(abs_top_srcdir)/contrib/splitup-kde-chunk-online; then \
 		rm -rf online-manual common; \
 		mkdir online-manual; \
 		mkdir common; \
 		echo "Creating index.xml"; \
 		$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-chunk-online.xsl  $(srcdir)/index.docbook -o online-manual/index.xml; \
 		cd online-manual; \
-		splitup-kde-chunk-online; \
+		$(abs_top_srcdir)/contrib/splitup-kde-chunk-online; \
 		cd ..; \
 		make get-files; \
 		for file in $(SCREENSHOT_FILES); do \
