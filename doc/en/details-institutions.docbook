@@ -8,8 +8,8 @@
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-07-09</date>
-<releaseinfo>0.8</releaseinfo>
+<date>05/05/2009</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title id="details.institutions.title">Institutions</title>
@@ -19,7 +19,7 @@
 </para>
 
 <para>
-  The Institutions screen also shows the value of each account and the total number of transactions in each account. 
+  The Institutions screen also shows the value of each account. 
 </para>
 
 <para>

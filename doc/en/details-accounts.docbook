@@ -25,9 +25,9 @@
       </author>
     </authorgroup>
 
-    <date>2005-06-01</date>
+    <date>05/05/2009</date>
 
-    <releaseinfo>0.7</releaseinfo>
+    <releaseinfo>0.9</releaseinfo>
   </chapterinfo>
   
   <title id="details.accounts.title">Accounts</title>
@@ -39,8 +39,8 @@
 
   <para>There are two ways to view the accounts: List or Icon view. In Icon
   view, the different Asset and Liability accounts are shown with icons
-  indicating the account type. List view shows the name, number of
-  transactions, and balance or value of each account.</para>
+  indicating the account type. List view shows the name and balance or value
+  of each account.</para>
 
   <para>Income and Expense lists the categories that each transaction is filed
   under and provides similar functionality to the Categories screen. The
@@ -55,7 +55,7 @@
     you will need to create a <link linkend="firsttime-3">new file</link>.
     </emphasis></para>
     <para>
-	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png" format="PNG"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
+	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New account...</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png" format="PNG"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
     </para>
 
     <para>Alternatively, to create an account using the accounts view click on the Accounts
@@ -495,21 +495,21 @@
           <imagedata fileref="ledgers_view.png" />
         </imageobject>
       </inlinemediaobject>Ledgers</guiicon> icon in the view selector and
-    select the account in the drop down list at the top of the view.</para>
+    select the account in the drop down list at the top of the view. Alternatively,
+    in the <guiicon>Accounts</guiicon> view, either double-click the account entry
+    or right click and select <guimenuitem>Open ledger</guimenuitem>.</para>
   </sect1>
 
   <sect1 id="details.accounts.edit">
-    <title id="details.accounts.edit.title">Editing Account
-    Information</title>
+    <title id="details.accounts.edit.title">Editing Account Information</title>
 
     <para>To edit a particular account, right-click that account and choose
-    <guimenuitem>Edit</guimenuitem>. A details window will pop-up. This window
-    allows you to change the name and start date of the account, associated
-    banking institution, and the parent account. Changing the parent account
-    is also possible in the main Accounts screen, by dragging the account and
-    dropping it on a different parent account. In this window, you can also
-    create a new banking institution and associate the account with that
-    institution.</para>
+    <guimenuitem>Edit account...</guimenuitem>. A details window will pop-up.
+    This window allows you to change the name and start date of the account,
+    associated banking institution, and the parent account. Changing the parent
+    account is also possible in the main Accounts screen, by dragging the account
+    and dropping it on a different parent account. In this window, you can also
+    create a new banking institution and associate the account with that institution.</para>
 
     <para><screenshot>
         <screeninfo>Edit an account</screeninfo>
@@ -536,15 +536,15 @@
     <para>To delete an account, first remove all the transactions from that
     account in the ledger. Next, find the account in the accounts view and
     after right clicking on the entry to show the popup menu select
-    <guimenuitem>Delete</guimenuitem> from the popup menu.</para>
+    <guimenuitem>Delete account...</guimenuitem> from the popup menu.</para>
 
     <para>If you are unable to delete an account which looks like it has no
     transactions in it, check your filter. See <menuchoice>
         <guimenu>Settings</guimenu>
 
-        <guimenuitem>Configure</guimenuitem>
+        <guimenuitem>Configure KMyMoney</guimenuitem>
 
-        <guimenuitem>Register</guimenuitem>
+        <guimenuitem>General</guimenuitem>
 
         <guimenuitem>Filter</guimenuitem>
       </menuchoice>. Clear all filters. Set the start date to 1.1.1900 or

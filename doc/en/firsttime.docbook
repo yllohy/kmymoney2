@@ -12,8 +12,8 @@
 	</affiliation>
 </author>
 </authorgroup>
-<date>2005-07-09</date>
-<releaseinfo>0.8</releaseinfo>
+<date>05/05/2009</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Using &kappname; for the first time</title>
@@ -510,7 +510,7 @@ A full description of creating accounts can be found in the <link linkend="detai
 </para>
 
 <para>
-	Now that one or more accounts exist in &kappname; your account summary is shown in the Home view.  You can create transactions manually in the <link linkend="details.ledgers">Ledger</link> view, or set up automatic transactions through the <link linkend="details.schedules">Schedule</link> view.
+	Now that one or more accounts exist in &kappname; your account summary is shown in the Home view.  You can create transactions manually in the <link linkend="details.ledgers">Ledgers</link> view, or set up automatic transactions through the <link linkend="details.schedules">Schedule</link> view.
 </para>
 
 </sect1>
@@ -559,7 +559,7 @@ A full description of this topic can be found in the <link linkend="details.impe
 </para>
 
 <para>
-	The search dialog can be opened from the toolbar using the <guiicon><inlinemediaobject><imageobject><imagedata fileref="transaction_find.png"/></imageobject></inlinemediaobject>Find</guiicon> icon or by selecting <guimenuitem>Find Transaction</guimenuitem> from the <guimenu>Account</guimenu> menu.
+	The search dialog can be opened from the toolbar using the <guiicon><inlinemediaobject><imageobject><imagedata fileref="transaction_find.png"/></imageobject></inlinemediaobject>Find</guiicon> icon or by selecting <guimenuitem>Find Transaction</guimenuitem> from the <guimenu>Edit</guimenu> menu.
 </para>
 
 <para>
@@ -576,7 +576,7 @@ At some point you will want to reconcile the transactions you have entered with 
 </para>
 
 <para>
-To reconcile an account click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="reconcile.png"/></imageobject></inlinemediaobject> Reconcile Ledgers</guiicon> icon in the account selector, choose your account from the drop down list and then click on the <guibutton>Reconcile</guibutton> button.
+To reconcile an account, first select the account, either from <guiicon>Accounts</guiicon> view or from <guiicon>Ledgers</guiicon> view. Then, either click on the <guiicon>Reconcile</guiicon> icon on the Toolbar, or select <guimenuitem>Reconcile</guimenuitem> from the <guimenu>Account</guimenu> menu.
 </para>
 
 <para>
@@ -588,7 +588,7 @@ A full description of this topic can be found in the <link linkend="details.reco
 <sect1 id="firsttime-backup">
 <title>Backing up</title>
 <para>
-Now that you have created some accounts and entered transactions its a good idea to perform a backup.  Because the file used by &kappname; is a standard Unix file you can just copy the file to another location to back it up or use the dialog provided by &kappname;.  Using the dialog is the preferred method because if &kappname; ever starts using other file formats, such as SQL, then it would be much harder to copy the file manually.
+Now that you have created some accounts and entered transactions it's a good idea to perform a backup.  Because the file used by &kappname; is a standard Unix file you can just copy the file to another location to back it up or use the dialog provided by &kappname;.  Using the dialog is the preferred method because if &kappname; ever starts using other file formats, such as SQL, then it would be much harder to copy the file manually.
 </para>
 
 <para>

@@ -11,14 +11,14 @@
 	</affiliation>
 </author>
 </authorgroup>
-<date>2006-05-30</date>
-<releaseinfo>0.8</releaseinfo>
+<date>05/05/2009</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Making the most of &kappname;</title>
 
 <para>
-    You could go ahead, click some buttons and fill in some data. After a time, you could decide you have done it wrong and start again, even if you did read the documentation on each part of &kappname;.
+    Whilst you could go ahead, clicking some buttons and filling in some data, after a time, you could decide you have done it wrong and start again, even if you did read the documentation on each part of &kappname;.
 </para>
 <para>
     You will get a more effective system if you spend a little time planning how you are going to use &kappname;, so follow the steps given here.
@@ -265,7 +265,7 @@ Anything you owe that is not a loan.
 </para>
 
 <para>
-    When you make a payment, &kappname; will work out what the next cheque number should be; delete this if you are not making a cheque payment or edit it if the first cheque you enter is not cheque number 1.
+    When you make a payment, &kappname; will work out what the next cheque number should be; delete this if you are not making a cheque payment or edit it if the first cheque you enter is not cheque number 1. Alternatively, it is possible to switch off auto-increment of cheque numbers.
 </para>
 
 <para>
