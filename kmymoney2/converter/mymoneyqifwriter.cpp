@@ -186,8 +186,11 @@ void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransa
       break;
   }
 
-  if(split.memo().length() > 0)
-    s << "M" << split.memo() << endl;
+  if(split.memo().length() > 0) {
+    QString m = split.memo();
+    m.replace('\n', "\\n");
+    s << "M" << m << endl;
+  }
 
   s << "T" << m_qifProfile.value('T', split.value()) << endl;
 
@@ -239,8 +242,11 @@ void MyMoneyQifWriter::writeSplitEntry(QTextStream& s, const MyMoneySplit& split
   }
   s << endl;
 
-  if(split.memo().length() > 0)
-    s << "E" << split.memo() << endl;
+  if(split.memo().length() > 0) {
+    QString m = split.memo();
+    m.replace('\n', "\\n");
+    s << "E" << m << endl;
+  }
 
   s << "$" << m_qifProfile.value('$', -split.value()) << endl;
 }

@@ -2,6 +2,7 @@
 2009-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't reuse memo of older transaction for imported ones when assigning
     categories based on payee
+  * Fixed #2652046 (QIF-Export adds line breaks)
 
 2009-05-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed bug in budget reports for foreign categories
