@@ -1039,6 +1039,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
               {
                 s.setShares(-s1.shares());
                 s.setValue(-s1.value());
+                s.setMemo(s1.memo());
               }
               t.addSplit(s);
             }
