@@ -2,6 +2,7 @@
 2009-05-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Strip leading and trailing white space characters when doing auto
     completion of payees, accounts, categories, etc. (patch by Ian Neal)
+  * Updated Brazilian translation by Marcus Gama
 
 2009-05-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added account icon overlay for accounts mapped to online banking
