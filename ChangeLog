@@ -1,6 +1,7 @@
 
 2009-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch by Cristian Onet to support UTF-8 characters in plugin names
+  * Allow QIF date entries that contain two consecutive delimiter characters
 
 2009-05-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation by Bert Keuter
