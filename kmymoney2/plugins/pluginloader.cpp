@@ -100,7 +100,7 @@ void PluginLoader::loadPlugin(KPluginInfo* info)
       KService::Ptr service = info->service();
       int error = 0;
       Plugin* plugin = KParts::ComponentFactory
-                ::createInstanceFromService<Plugin>(service, d->m_parent, info->name(), QStringList(), &error);
+                ::createInstanceFromService<Plugin>(service, d->m_parent, info->name().utf8(), QStringList(), &error);
       if (plugin) {
         kdDebug() << "KMyMoneyPlugin::PluginLoader: Loaded plugin " << plugin->name() << endl;
         d->m_loadedPlugins.insert(info->name(), plugin);
