@@ -1,4 +1,9 @@
 
+2009-05-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated documentation on QIF import
+  * Removed unused UI parts of QIF profile editor
+  * Resized the QIF import dialog
+
 2009-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch by Cristian Onet to support UTF-8 characters in plugin names
   * Allow QIF date entries that contain two consecutive delimiter characters

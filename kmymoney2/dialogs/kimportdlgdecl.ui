@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>619</width>
-            <height>378</height>
+            <width>476</width>
+            <height>303</height>
         </rect>
     </property>
     <property name="caption">
@@ -240,5 +240,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

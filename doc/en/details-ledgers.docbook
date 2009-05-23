@@ -164,12 +164,17 @@ The fields in the input area match the information fields in the transactions li
 <para>
 	If you wish to associate parts of the transaction with different categories, &kappname; can let you do that.  An example transaction might be a cash machine withdrawal of 50 of which you use 10 on food, 20 on beer and 20 as spare cash.  The transaction will therefore be assigned three categories, Food, Beer and Cash.  To assign these three parts to the three categories, Food, Beer and Cash, click on the <guibutton>Split</guibutton> button.  This brings up the <link linkend="details.ledgers.split">Split Editor</link>. Enter the categories, creating any new ones as needed, and input the amount per category.  Click on <guibutton>OK</guibutton> to save the assignments.  Note that the category field in the transaction input form now displays <emphasis>Split transaction</emphasis>
 </para>
+
+<para>
+See the special <link linkend="reference.widgets">&kappname; fields section</link> for more information on how to use this field.
+</para>
+
 </sect3>
 
 <sect3>
 <title>The Memo</title>
 <para>
-A one line memo can be entered if you wish to help you remember what the transaction was for.
+A multi line memo can be entered if you wish to help you remember what the transaction was for.
 </para>
 </sect3>
 
@@ -183,14 +188,14 @@ A one line memo can be entered if you wish to help you remember what the transac
 <sect3>
 <title>The Date</title>
 <para>
-	The transaction date can also be entered to specify when the transaction took place.  See the special &kappname; fields section for more information on how the date input field can be used to make entering dates quicker and easier.
+	The transaction date can also be entered to specify when the transaction took place.  See the special <link linkend="reference.widgets">&kappname; fields section</link> for more information on how the date input field can be used to make entering dates quicker and easier.
 </para>
 </sect3>
 
 <sect3>
 <title>The Amount</title>
 <para>
-	Finally enter the transaction amount into the required field.  Note that a simple calculator can be displayed by entering the % character into the field.
+	Finally enter the transaction amount into the required field.  Note that a simple calculator can be displayed by entering the % character into the field or by entering a formula as in <emphasis>12 + 3</emphasis>. When entering the plus sign, the calculator will be opened.
 </para>
 
 <para>
@@ -259,7 +264,7 @@ A one line memo can be entered if you wish to help you remember what the transac
 </para>
 
 <para>
-	This is performed by selecting <guimenu>Settings</guimenu><guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and selecting the <guiicon><inlinemediaobject><imageobject><imagedata fileref="register.png"></imagedata></imageobject></inlinemediaobject>Register</guiicon> icon from the list on left.  The option to uncheck is labeled <guilabel>Show transaction form</guilabel>.  When finished click on <guibutton>OK</guibutton> to be ready to directly enter transactions.
+	This is performed by selecting <guimenu>Settings</guimenu> <guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and selecting the <guiicon><inlinemediaobject><imageobject><imagedata fileref="register.png"></imagedata></imageobject></inlinemediaobject>Register</guiicon> icon from the list on the left.  The option to uncheck is labeled <guilabel>Show transaction form</guilabel>.  When finished click on <guibutton>OK</guibutton> to be ready to directly enter transactions.
 </para>
 
 <sect2>
@@ -270,6 +275,10 @@ A one line memo can be entered if you wish to help you remember what the transac
 
 <para>
 	To move through the fields press the <keycap>Tab</keycap> key and when done press <keycap>Enter</keycap> to save the changes or <keycap>Esc</keycap> to cancel.
+</para>
+
+<para>
+	In case the option <guilabel>Use Enter to move between fields</guilabel> is selected, the <keycap>Enter</keycap> moves to the next field just as the <keycap>TAB</keycap> key except for the last entry field where it stores the data.
 </para>
 
 <para>
@@ -347,8 +356,7 @@ Next, right-click on the other transaction to be matched.  Choose <guimenuitem>M
 </para>
 
 <para>
-In the future, matching will be made more automatic.
-The importer will automatically match transactions which look like the same, and give you the option to un-match them.
+During import of online statements - either directly or by importing a downloaded file - &kappname; performs matching as best as it can based on the name of the payee and the amount of the transaction. In case of an invalid match, a matched transaction can be un-matched.
 </para>
 <note><para>
 The matching interface will not allow you to match two transactions which have both been imported.

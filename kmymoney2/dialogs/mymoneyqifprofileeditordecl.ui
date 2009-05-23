@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>MyMoneyQifProfileEditorDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -780,7 +780,10 @@
                         <cstring>m_helpButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Help</string>
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>11</number>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -796,7 +799,10 @@
                         <cstring>m_deleteButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Delete</string>
+                        <string>&amp;Delete</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>22</number>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -829,7 +835,10 @@
                         <cstring>m_resetButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Reset</string>
+                        <string>&amp;Reset</string>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>21</number>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -837,10 +846,7 @@
                         <cstring>m_okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>OK</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
+                        <string>&amp;OK</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -848,19 +854,22 @@
                     <property name="default">
                         <bool>true</bool>
                     </property>
+                    <property name="stdItem" stdset="0">
+                        <number>1</number>
+                    </property>
                 </widget>
                 <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_cancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
+                        <string>&amp;Cancel</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
+                    </property>
+                    <property name="stdItem" stdset="0">
+                        <number>2</number>
                     </property>
                 </widget>
             </hbox>

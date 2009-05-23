@@ -22,6 +22,7 @@
 #include <qlistbox.h>
 #include <qlistview.h>
 #include <qcheckbox.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -81,16 +82,14 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   m_isAccepted(false),
   m_selectedAmountType(0)
 {
+  // we don't need the date and amounts tab anymore, so we just hide them for now
+  profileTabs->removePage( tabMoney );
+  profileTabs->removePage( tabDate );
+
   loadWidgets();
   loadProfileListFromConfig();
 
   // load button icons
-  m_resetButton->setGuiItem(KStdGuiItem::reset());
-  m_cancelButton->setGuiItem(KStdGuiItem::cancel());
-  m_okButton->setGuiItem(KStdGuiItem::ok());
-  m_deleteButton->setGuiItem(KStdGuiItem::del());
-  m_helpButton->setGuiItem(KStdGuiItem::help());
-
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem newButtenItem( i18n( "&New" ),
                       QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
@@ -139,6 +138,8 @@ MyMoneyQifProfileEditor::~MyMoneyQifProfileEditor()
   } else {
     slotReset();
   }
+  delete tabMoney;
+  delete tabDate;
 }
 
 void MyMoneyQifProfileEditor::loadWidgets(void)
