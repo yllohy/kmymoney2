@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-02 20:05+0200\n"
-"PO-Revision-Date: 2009-04-04 15:07+0200\n"
+"PO-Revision-Date: 2009-05-10 14:55+0200\n"
 "Last-Translator: Patrick PETIT <patrick.petit17@orange.fr>\n"
-"Language-Team: French <kde-i18n-doc@lists.kde.org>\n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2086,9 +2086,8 @@ msgid "Every thirty days"
 msgstr "Tous les 30 jours"
 
 #: mymoney/mymoneyscheduled.cpp:971
-#, fuzzy
 msgid "Day"
-msgstr "Jours"
+msgstr "Jour"
 
 #: mymoney/mymoneyscheduled.cpp:973 reports/listtable.cpp:206
 #: widgets/kmymoneycalendar.cpp:123 widgets/rc.cpp:97
@@ -2096,9 +2095,8 @@ msgid "Week"
 msgstr "Semaine"
 
 #: mymoney/mymoneyscheduled.cpp:975
-#, fuzzy
 msgid "Half-month"
-msgstr "Tous les quinze jours"
+msgstr "Demi-mois"
 
 #: mymoney/mymoneyscheduled.cpp:977 reports/listtable.cpp:205
 #: widgets/kmymoneycalendar.cpp:124 widgets/rc.cpp:96
@@ -2107,7 +2105,7 @@ msgstr "Mois"
 
 #: dialogs/rc.cpp:400 mymoney/mymoneyscheduled.cpp:979 views/rc.cpp:14
 msgid "Year"
-msgstr "Années"
+msgstr "Année"
 
 #: mymoney/mymoneyscheduled.cpp:989
 msgid "Bill"
@@ -2430,9 +2428,8 @@ msgid "Goto payee"
 msgstr "Aller au tiers"
 
 #: kmymoney2.cpp:436
-#, fuzzy
 msgid "Create scheduled transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Créer une opération avec des échéances"
 
 #: kmymoney2.cpp:437
 msgid "Assign next number"
@@ -2465,34 +2462,28 @@ msgid "Manual price update..."
 msgstr "Mise à jour du cours manuellement ..."
 
 #: kmymoney2.cpp:446
-#, fuzzy
 msgid "New scheduled transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Nouvelle échéance ..."
 
 #: kmymoney2.cpp:447
-#, fuzzy
 msgid "Edit scheduled transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Editer une opération avec des échéances ..."
 
 #: kmymoney2.cpp:448
-#, fuzzy
 msgid "Delete scheduled transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Supprimer une opération avec des échéances ..."
 
 #: kmymoney2.cpp:449
-#, fuzzy
 msgid "Duplicate scheduled transaction"
-msgstr "Saisir une opération avec des échéances"
+msgstr "Dupliquer une opération avec des échéances"
 
 #: kmymoney2.cpp:450
-#, fuzzy
 msgid "Enter next transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Saisir l'échéance ..."
 
 #: kmymoney2.cpp:451
-#, fuzzy
 msgid "Skip next transaction..."
-msgstr "Sauter cette opération"
+msgstr "Sauter l'échéance ..."
 
 #: kmymoney2.cpp:453
 msgid "New payee"
@@ -2807,11 +2798,10 @@ msgid "Home"
 msgstr "Accueil"
 
 #: kmymoney2.cpp:1818 views/kmymoneyview.cpp:176
-#, fuzzy
 msgid ""
 "Scheduled\n"
 "transactions"
-msgstr "Opérations avec échéance"
+msgstr "Echéances"
 
 #: kmymoney2.cpp:1819
 msgid "Encryption"
@@ -3008,18 +2998,16 @@ msgid "Unable to delete investment: %1"
 msgstr "Impossible de supprimer l'investissement : %1"
 
 #: kmymoney2.cpp:2640 kmymoney2.cpp:2646
-#, fuzzy
 msgid "Unable to add scheduled transaction: "
-msgstr "Impossible d'ajouter les opérations"
+msgstr "Impossible d'ajouter une échéance :"
 
 #: kmymoney2.cpp:2722
 msgid "Adjusting transactions..."
 msgstr "Ajustement des opérations ..."
 
 #: kmymoney2.cpp:2747
-#, fuzzy
 msgid "Adjusting scheduled transactions..."
-msgstr "Ajustement des opérations ..."
+msgstr "Ajustement des opérations avec échéances ..."
 
 #: kmymoney2.cpp:2765
 msgid "Adjusting budgets..."
@@ -3094,7 +3082,6 @@ msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "Impossible de modifier le compte '%1'. Cause: %2"
 
 #: kmymoney2.cpp:3064
-#, fuzzy
 msgid ""
 "KMyMoney has detected some overdue scheduled transactions for this account. "
 "Do you want to enter those scheduled transactions now?"
@@ -3158,18 +3145,15 @@ msgstr "Générer le rapport"
 msgid "Transactions"
 msgstr "Opérations"
 
-#: kmymoney2.cpp:3447
-#, fuzzy, c-format
+#: kmymoney2.cpp:3447, c-format
 msgid "Unable to add scheduled transaction: %1"
 msgstr "Impossible d'ajouter l'échéance : %1"
 
 #: kmymoney2.cpp:3447
-#, fuzzy
 msgid "Add scheduled transaction"
-msgstr "Saisir une opération avec des échéances"
+msgstr "Ajouter une opération avec des échéances"
 
 #: kmymoney2.cpp:3487
-#, fuzzy
 msgid ""
 "You have entered a scheduled transaction date of <b>%1</b>.  Because the "
 "scheduled transaction was last paid on <b>%2</b>, KMyMoney will "
@@ -3186,17 +3170,14 @@ msgid "Reset Last Payment Date"
 msgstr "Remise à zéro de la date du dernier paiement"
 
 #: kmymoney2.cpp:3497 kmymoney2.cpp:3517 kmymoney2.cpp:3529
-#, fuzzy
 msgid "Unable to modify scheduled transaction '%1'"
 msgstr "Impossible de modifier l'échéance '%1'"
 
 #: kmymoney2.cpp:3541
-#, fuzzy
 msgid "Are you sure you want to delete the scheduled transaction <b>%1</b>?"
 msgstr "Êtes-vous sûr de vouloir supprimer l'échéance <b>%1</b> ?"
 
 #: kmymoney2.cpp:3544
-#, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "scheduled transaction."
@@ -3205,12 +3186,10 @@ msgstr ""
 "recréer les échéances."
 
 #: kmymoney2.cpp:3553
-#, fuzzy
 msgid "Unable to remove scheduled transaction '%1'"
 msgstr "Impossible de supprimer l'échéance '%1'"
 
-#: kmymoney2.cpp:3567
-#, fuzzy, c-format
+#: kmymoney2.cpp:3567, c-format
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
@@ -3221,7 +3200,6 @@ msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
 msgstr "Impossible de dupliquer l(es) opération(s) : %1, vers %2:%3"
 
 #: kmymoney2.cpp:3593
-#, fuzzy
 msgid ""
 "Do you really want to skip the <b>%1</b> transaction scheduled for <b>%2</b>?"
 msgstr ""
@@ -3229,17 +3207,14 @@ msgstr ""
 "b> ?"
 
 #: kmymoney2.cpp:3603
-#, fuzzy
 msgid "Unable to skip scheduled transaction <b>%1</b>."
 msgstr "Impossible de sauter l'échéance <b>%1</b>."
 
 #: kmymoney2.cpp:3616
-#, fuzzy
 msgid "Unknown scheduled transaction '%1'"
 msgstr "Échéance inconnue'%1'"
 
 #: kmymoney2.cpp:3671
-#, fuzzy
 msgid ""
 "Are you sure you wish to stop this scheduled transaction from being entered "
 "into the register?\n"
@@ -3254,9 +3229,8 @@ msgstr ""
 "vous ne l'ayez manuellement saisie après."
 
 #: kmymoney2.cpp:3723 kmymoney2.cpp:3730
-#, fuzzy
 msgid "Unable to enter scheduled transaction '%1'"
-msgstr "Saisir une opération avec des échéances"
+msgstr "Impossible de saisir l'échéance '%1'"
 
 #: kmymoney2.cpp:3741 kmymoney2.cpp:3781
 msgid "New Payee"
@@ -3287,7 +3261,6 @@ msgid "Remove Payee"
 msgstr "Supprimer le Tiers"
 
 #: kmymoney2.cpp:3868
-#, fuzzy
 msgid ""
 "At least one transaction/scheduled transaction is still referenced by a "
 "payee. Currently you have all payees selected. However, at least one payee "
@@ -3527,7 +3500,6 @@ msgid "Consistency check result"
 msgstr "Résultat de la vérification d'intégrité"
 
 #: kmymoney2.cpp:5601
-#, fuzzy
 msgid "Checking for overdue scheduled transactions..."
 msgstr "Vérification des échéances en retard ..."
 
@@ -4150,14 +4122,12 @@ msgstr ""
 "référence à \"%1\" seront supprimées."
 
 #: converter/mymoneystatementreader.cpp:917
-#, fuzzy
 msgid "Save Category"
-msgstr "Catégorie"
+msgstr "Suver la catégorie"
 
 #: converter/mymoneystatementreader.cpp:918
-#, fuzzy
 msgid "No Category"
-msgstr "Catégorie Principale"
+msgstr "Pas de catégorie"
 
 #: converter/mymoneystatementreader.cpp:919 dialogs/rc.cpp:4
 msgid "Abort"
@@ -4165,7 +4135,7 @@ msgstr "Abandonner"
 
 #: converter/mymoneystatementreader.cpp:926
 msgid "Please select a default category for payee '%1':"
-msgstr ""
+msgstr "Veuillez sélectionner une catégorie par défaut pour le tiers '%1' :"
 
 #: converter/mymoneystatementreader.cpp:958
 msgid "Unable to add payee/receiver"
@@ -4781,15 +4751,14 @@ msgstr ""
 "menu \"Plus ...\" du formulaire de l'opération ?\n"
 
 #: _tips.cpp:68
-#, fuzzy
 msgid ""
 "<p>...that you can switch to the payee of a transaction\n"
 "by selecting the context menu on a transaction in the ledger\n"
 "or in the transaction menu?\n"
 msgstr ""
-"<p>... vous pouvez aller vers les détails du tiers d'une opération en "
-"utilisant le menu contextuel sur cette opération dans le registre, ou avec "
-"le menu \"Plus ...\" du formulaire de l'opération ?\n"
+"<p>... que vous pouvez changer le tiers d'une opération\n"
+"en utilisant le menu contextuel sur cette opération dans le registre\n"
+"ou dans le menu Opération ?\n"
 
 #: _tips.cpp:75
 msgid ""
@@ -5152,9 +5121,8 @@ msgid "Moving Average"
 msgstr "Moyenne glissante"
 
 #: reports/pivottable.cpp:2441
-#, fuzzy
 msgid "Moving Average Price"
-msgstr "Moyenne glissante"
+msgstr "Moyenne glissante du prix"
 
 #: reports/objectinfotable.cpp:214 reports/querytable.cpp:693
 #: reports/querytable.cpp:736 reports/querytable.cpp:1356
@@ -5409,9 +5377,8 @@ msgid "Investment options"
 msgstr "Options d'investissement"
 
 #: rc.cpp:16
-#, fuzzy
 msgid "Scheduled transactions options"
-msgstr "Opérations avec échéance trouvées"
+msgstr "Options des échéances"
 
 #: rc.cpp:17
 msgid "Transaction options"
@@ -5549,6 +5516,8 @@ msgstr "Afficher la barre de titre dans chaque vue"
 #: rc.cpp:52
 msgid "Start string matches for e.g. payees at start of string"
 msgstr ""
+"Démarre la correspondance des chaines de caractères par exemple pour les "
+"tiers au début de la chaîne"
 
 #: rc.cpp:53
 msgid "Order of items on homepage"
@@ -5688,6 +5657,7 @@ msgstr ""
 #: rc.cpp:87
 msgid "During import, ask for a new payee's default category"
 msgstr ""
+"Pendant l'importation, demande pour un nouveau tiers la catégorie par défaut"
 
 #: rc.cpp:88
 msgid "Method to calculate forecast"
@@ -6085,14 +6055,12 @@ msgid "Investment Worth Graph"
 msgstr "Graphique des valeurs d'investissement"
 
 #: views/kreportsview.cpp:1221
-#, fuzzy
 msgid "Investment Price Graph"
-msgstr "Graphique des valeurs d'investissement"
+msgstr "Graphique de la valeur d'investissement"
 
 #: views/kreportsview.cpp:1238
-#, fuzzy
 msgid "Investment Moving Average Price Graph"
-msgstr "Moyenne glissante pour l'investissement"
+msgstr "Graphique de la moyenne glissante du prix de l'investissement"
 
 #: views/kreportsview.cpp:1256
 msgid "Investment Moving Average"
@@ -6116,11 +6084,11 @@ msgstr "Opérations de taxes par Tiers"
 
 #: views/kreportsview.cpp:1312
 msgid "Tax Transactions by Category Last Fiscal Year"
-msgstr "Opérations de taxes par Catégorie l'année fiscale précédente"
+msgstr "Opérations de taxes par Catégorie pour l'année fiscale précédente"
 
 #: views/kreportsview.cpp:1321
 msgid "Tax Transactions by Payee Last Fiscal Year"
-msgstr "Opérations de taxes par Tiers l'année fiscale précédente"
+msgstr "Opérations de taxes par Tiers pour l'année fiscale précédente"
 
 #: views/kreportsview.cpp:1328
 msgid "Budgeting"
@@ -6197,9 +6165,8 @@ msgid "Bills & Reminders"
 msgstr "Factures et rappels"
 
 #: views/kmymoneyview.cpp:178
-#, fuzzy
 msgid "Scheduled transactions"
-msgstr "Opérations avec échéance"
+msgstr "Echéances"
 
 #: dialogs/knewaccountdlg.cpp:98 dialogs/rc.cpp:193 views/kmymoneyview.cpp:188
 #: views/kmymoneyview.cpp:190 widgets/rc.cpp:91
@@ -7486,31 +7453,28 @@ msgid "Ignore Case"
 msgstr "Ignorer la casse"
 
 #: views/rc.cpp:80
-#, fuzzy
 msgid "Default Account"
-msgstr "Sélectionner le Compte"
+msgstr "Compte par défaut"
 
 #: views/rc.cpp:81
-#, fuzzy
 msgid ""
 "Use the default account for\n"
 "new transactions with this payee"
-msgstr "Utiliser ceci pour saisir une opération dans le registre."
+msgstr ""
+"Utiliser le compte par défaut pour\n"
+"les nouvelles opérations avec ce tiers"
 
 #: views/rc.cpp:82
-#, fuzzy
 msgid "Default category:"
-msgstr "Créer une catégorie"
+msgstr "Catégorie par défaut :"
 
 #: views/rc.cpp:83
-#, fuzzy
 msgid "Suggest a category"
-msgstr "Juste la catégorie"
+msgstr "Suggérer une catégorie"
 
 #: views/rc.cpp:85
-#, fuzzy
 msgid "New Scheduled transaction..."
-msgstr "Saisir une opération avec des échéances"
+msgstr "Nouvelle opération avec des échéances"
 
 #: views/rc.cpp:86
 msgid "Filter Accounts"
@@ -9363,9 +9327,8 @@ msgstr ""
 "temporairement dans les comptes cachés dans les fenêtres."
 
 #: dialogs/settings/rc.cpp:76
-#, fuzzy
 msgid "Show equity accounts"
-msgstr "Comptes d'actions"
+msgstr "Montrer les comptes d'actions"
 
 #: dialogs/rc.cpp:332 dialogs/settings/rc.cpp:77 widgets/rc.cpp:160
 msgid "Schedules"
@@ -9606,7 +9569,7 @@ msgstr "Format de Date"
 
 #: dialogs/settings/rc.cpp:122
 msgid "Skip HTML stripping"
-msgstr ""
+msgstr "Sauter les suppressions HTML"
 
 #: dialogs/settings/rc.cpp:123
 msgid ""
@@ -9624,6 +9587,20 @@ msgid ""
 "</ul>\n"
 "</p>"
 msgstr ""
+"<p>Pour un traitement plus facile des données fournies par la source en "
+"ligne, KMyMoney supprime généralement des parties non utiles afin qu'elles "
+"ne soient pas traitées par les expressions régulières. Si des champs "
+"correspondent à ces éléments, alors utilisez cette option les supprimer.</p>"
+"\n"
+"\n"
+"<p>Les éléments suivants sont habituellement supprimés :\n"
+"\n"
+"<ul>\n"
+"<li>balises HTML comme <b>&lt;tag&gt;</b></li>\n"
+"<li>& caractères encodés comme <b>&amp;nbsp;</b></li>\n"
+"<li>espace dupliqué</li>\n"
+"</ul>\n"
+"</p>"
 
 #: dialogs/settings/rc.cpp:127
 msgid "Register settings"
@@ -9663,7 +9640,7 @@ msgstr ""
 
 #: dialogs/settings/rc.cpp:136
 msgid "Show header for the previous and current fiscal year"
-msgstr "Afficher l'en-tête pour l'exercice précédent et courante"
+msgstr "Afficher l'en-tête pour l'exercice précédent et courant"
 
 #: dialogs/settings/rc.cpp:137
 msgid "Sorting"
@@ -9703,13 +9680,16 @@ msgstr "Utiliser la touche Entrée pour vous déplacer dans les champs"
 
 #: dialogs/settings/rc.cpp:147
 msgid "Match names from start"
-msgstr ""
+msgstr "Rechercher la correspondance des noms depuis le début"
 
 #: dialogs/settings/rc.cpp:148
 msgid ""
 "Mark this option, if you always want to match names e.g. for payees from the "
 "start. If unset, any substring is matched."
 msgstr ""
+"Cochez cette option, si vous voulez toujours la correspondance des noms, par "
+"exemple pour les tiers, depuis le début. Si décoché, toutes les sous-chaînes "
+"correspondront."
 
 #: dialogs/settings/rc.cpp:149
 msgid "Default reconciliation state"
@@ -9804,10 +9784,12 @@ msgid ""
 "Search for matching transactions within the range of the posting date of the "
 "imported transaction +/- the number of given days."
 msgstr ""
+"Rechercher les opérations correspondantes dans l'intervalle de date sur +/- "
+"de nombre fourni de jours pour l'opération importée."
 
 #: dialogs/settings/rc.cpp:166
 msgid "Ask for a new payee's default category"
-msgstr ""
+msgstr "Demander pour un nouveau tiers la catégorie par défaut"
 
 #: dialogs/settings/rc.cpp:167
 msgid ""
@@ -9815,6 +9797,9 @@ msgid ""
 "be asked to assign a default category for this user when this option is "
 "selected."
 msgstr ""
+"Quand un nouveau tiers est détecté pendant l'importation d'un relevé, il "
+"sera demandé à l'utilisateur de définir une catégorie par défaut pour ce "
+"tiers quand l'option est sélectionnée."
 
 #: dialogs/settings/rc.cpp:168
 msgid "Schedule Settings"
@@ -10294,9 +10279,8 @@ msgid "Price History"
 msgstr "Historique du cours"
 
 #: dialogs/rc.cpp:97
-#, fuzzy
 msgid "Edit Scheduled transaction"
-msgstr "Saisir une opération avec des échéances"
+msgstr "Editer une opération avec des échéances"
 
 #: dialogs/rc.cpp:98
 msgid "Schedule name:"
@@ -10308,7 +10292,7 @@ msgstr "Fréquence :"
 
 #: dialogs/rc.cpp:100
 msgid "Number of selected periods between entries"
-msgstr ""
+msgstr "Nombre de périodes entre les saisies"
 
 #: dialogs/rc.cpp:101
 msgid "Payment information"
@@ -10659,14 +10643,12 @@ msgid "Text"
 msgstr "Texte"
 
 #: dialogs/rc.cpp:203
-#, fuzzy
 msgid "Contains"
-msgstr "Prêts"
+msgstr "Contient"
 
 #: dialogs/rc.cpp:204
-#, fuzzy
 msgid "Does not contain"
-msgstr "Ne rien faire"
+msgstr "Ne contient pas"
 
 #: dialogs/rc.cpp:205
 msgid "Treat text as regular expression"
@@ -10793,9 +10775,8 @@ msgid "&Reset"
 msgstr "&Remise à zéro"
 
 #: dialogs/rc.cpp:258
-#, fuzzy
 msgid "&Find"
-msgstr "&Terminer"
+msgstr "&Trouver"
 
 #: dialogs/rc.cpp:259
 msgid "GnuCash Import Options"
@@ -12016,7 +11997,6 @@ msgid "CAUTION!"
 msgstr "ATTENTION!"
 
 #: dialogs/rc.cpp:737
-#, fuzzy
 msgid ""
 "<font color=\"#ff2727\">This software is still in an experimental stage, and "
 "there are still some known response time problems. Please be patient; we are "
@@ -12024,9 +12004,10 @@ msgid ""
 "As always, please make sure you have adequate backups of your data.</font>"
 msgstr ""
 "<font color=\"#ff2727\">Ce logiciel est encore dans un état expérimental et "
-"des pertes de données sont possibles. Merci de vous assurer que vous avez "
-"une copie de sauvegarde de vos données avant de basculer vers l'utilisation "
-"de la base de données.</font>"
+"il ya encore quelques problèmes de temps de réponse connue. Merci d'être "
+"patient, nous y travaillons.\n"
+"Comme toujours, veuillez vous assurer que vous avez une copie de sauvegarde "
+"de vos données.</font>"
 
 #: dialogs/rc.cpp:738
 msgid "Database Type"
@@ -12045,9 +12026,8 @@ msgid "User Name"
 msgstr "Nom Utilisateur"
 
 #: dialogs/rc.cpp:743
-#, fuzzy
 msgid "Preload &all data"
-msgstr "Pré-charger toutes les données"
+msgstr "Pré-ch&arger toutes les données"
 
 #: dialogs/rc.cpp:745
 msgid "&Generate SQL"
@@ -12865,9 +12845,8 @@ msgstr ""
 "elle être utilisée pour définir les budgets mensuels ?"
 
 #: widgets/kmymoneybriefschedule.cpp:62
-#, fuzzy
 msgid "Use this button to skip this transaction"
-msgstr "Utilisez ce bouton pour enregistrer cette opération"
+msgstr "Utilisez ce bouton pour sauter cette opération"
 
 #: widgets/kmymoneybriefschedule.cpp:67
 msgid "Record this transaction into the register"
@@ -13631,14 +13610,13 @@ msgstr ""
 
 #: widgets/rc.cpp:143
 msgid "Line width"
-msgstr ""
+msgstr "Largeur de ligne"
 
 #: widgets/rc.cpp:144
-#, fuzzy
 msgid "<p>Select what width should be used to draw the line on the chart</p>"
 msgstr ""
-"<p>Sélectionnez cette option pour afficher les lignes horizontales et "
-"verticales sur le diagramme.</p>"
+"<p>Sélectionnez quelle largeur sera utilisée pour dessiner les lignes le "
+"diagramme.</p>"
 
 #: widgets/rc.cpp:145
 msgid "ReportControl"

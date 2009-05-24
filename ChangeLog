@@ -1,4 +1,8 @@
 
+2009-05-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated French translation by Patrick Petit
+  * Updated Dutch translation by Bert Keuter
+
 2009-05-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated documentation on QIF import
   * Removed unused UI parts of QIF profile editor
