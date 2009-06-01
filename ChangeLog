@@ -1,4 +1,7 @@
 
+2009-06-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use ILS as the id for the New Israeli Shekel
+
 2009-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with wrong balance after modifying the balance of an account
     during reconciliation and then postponing the reconciliation
