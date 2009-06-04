@@ -24,7 +24,28 @@
 #include <qguardedptr.h>
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <ksplashscreen.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
+
+class KStartupSplash : public KSplashScreen
+{
+  Q_OBJECT
+  public:
+    KStartupSplash(const QPixmap &pixmap, WFlags f = 0);
+    ~KStartupSplash();
+    void message( const QString &message, int alignment = AlignLeft, const QColor &color = black);
+
+  protected:
+    void drawContents(QPainter *p);
+
+  private:
+    class Private;
+    Private *d;
+};
 
 // Simple class that just shows a picture
 class KStartupLogo : public QObject

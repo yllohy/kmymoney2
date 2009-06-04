@@ -22,6 +22,7 @@
 #include <qapplication.h>
 #include <qpixmap.h>
 #include <qframe.h>
+#include <qpainter.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -31,15 +32,48 @@
 #include <kstandarddirs.h>
 #include <kapplication.h>
 
-#if KDE_IS_VERSION(3,2,0)
-#include <ksplashscreen.h>
-#endif
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kstartuplogo.h"
 #include "kmymoneyglobalsettings.h"
+
+class KStartupSplash::Private
+{
+  public:
+    QString message;
+    QColor color;
+    int align;
+};
+
+KStartupSplash::KStartupSplash(const QPixmap &pixmap, WFlags f) :
+  KSplashScreen(pixmap, f),
+  d(new Private)
+{
+}
+
+KStartupSplash::~KStartupSplash()
+{
+  delete d;
+}
+
+void KStartupSplash::message( const QString &message, int alignment, const QColor &color)
+{
+  d->message = message;
+  d->align = alignment;
+  d->color = color;
+  // the next line causes the base class signal management to happen
+  // and also forces a repaint
+  KSplashScreen::clear();
+}
+
+void KStartupSplash::drawContents( QPainter *painter )
+{
+  painter->setPen( d->color );
+  QRect r = rect();
+  r.setRect( r.x() + 15, r.y() + r.height() - 28, r.width() - 20, 20 );
+  painter->drawText( r, d->align, d->message);
+}
 
 KStartupLogo::KStartupLogo() :
   QObject(0, 0),
@@ -50,24 +84,23 @@ KStartupLogo::KStartupLogo() :
     return;
 
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
-  QPixmap pm(filename);
+  QPixmap splashPixmap(filename);
 
-  if(!pm.isNull()) {
-#if KDE_IS_VERSION(3,2,0)
-    KSplashScreen* splash = new KSplashScreen(pm);
-    splash->setFixedSize(pm.size());
+  if(!splashPixmap.isNull()) {
+    QPixmap backGround(splashPixmap);
+    backGround.fill(KGlobalSettings::highlightColor());
+    bitBlt ( &backGround, 0, 0, &splashPixmap, 0, 0, splashPixmap.width(), splashPixmap.height(), Qt::CopyROP );
 
-#else
-    QFrame* splash = new QFrame(0, 0, QFrame::WStyle_NoBorder | QFrame::WStyle_StaysOnTop | QFrame::WStyle_Tool | QFrame::WWinOwnDC | QFrame::WStyle_Customize);
-    splash->setBackgroundPixmap(pm);
-    splash->setFrameShape( QFrame::StyledPanel );
-    splash->setFrameShadow( QFrame::Raised );
-    splash->setLineWidth( 2 );
-    splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm.width()/2), (QApplication::desktop()->height()/2)-(pm.height()/2), pm.width(), pm.height() ) );
+    KStartupSplash* splash = new KStartupSplash(backGround);
+    splash->setFixedSize(backGround.size());
 
-#endif
+    // FIXME: I added the 'Loading file...' message here, because this was the only
+    // existing string we have and I did not want to change the strings. We should
+    // change that in the future.
+    splash->message(i18n("Loading file..."), AlignLeft, white);
 
     splash->show();
+    splash->repaint();
     m_splash = splash;
   }
 }
