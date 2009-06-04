@@ -320,7 +320,7 @@ void KHomeView::showNetWorthGraph(void)
   if(width() < chartWidget->width()) {
     int nh;
     nh = (width()*chartWidget->height() ) / chartWidget->width();
-    chartWidget->resize(width()-60, nh);
+    chartWidget->resize(width()-80, nh);
   }
 
   QPixmap pm(chartWidget->width(), chartWidget->height());
