@@ -7,7 +7,7 @@
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
 </author>
 </authorgroup>
-<date>05/05/2009</date>
+<date>2009-06-04</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -30,7 +30,7 @@
 <sect1 id="details.categories.create">
 <title>Creating categories</title>
 <para>
-	To create a new category select a parent in the tree and right click to bring up the popup menu.  Once open select the <guimenuitem>New Category</guimenuitem> option.  This will open the account details dialog with the parent account selected.
+	To create a new category, either select <guimenu>Category</guimenu> <guimenuitem>New category</guimenuitem> in the menu, or in the Categories view, select a parent in the tree, right click and select the <guimenuitem>New Category</guimenuitem> option. Either way will open the Create new categories wizard. Enter the new category name, then in the Hierarchy tab, ensure the required parent account is selected. Finally, the Tax tab enables VAT support
 </para>
 
 <para>
@@ -52,7 +52,7 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 <sect1 id="details.categories.edit"><title id="details.categories.edit.title">Editing a Category</title>
 
 <para>
-  To edit a category, right-click on a category name, and choose "Edit". A  window comes up, with two tabs, "General" and "Tax". The General tab  allows you to edit the name of the category and change its parent category. Changing the parent category is also possible from the main category page by dragging the category to a different parent. The Tax tab enables automatic VAT assignment. 
+  To edit a category, right-click on a category name, and choose <guimenuitem>Edit category</guimenuitem>. A window comes up, with three tabs, General, Hierarchy and Tax. The General tab allows you to edit the name of the category and the Hierarchy tab enables changing its parent category. Changing the parent category is also possible from the main category page by dragging the category to a different parent. The Tax tab enables automatic VAT assignment. 
 </para>
 
 </sect1>
@@ -109,7 +109,7 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 <sect1 id="details.categories.delete">
 <title>Deleting categories</title>
 <para>
-	To delete a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.  Deleting is only possible if there are no transactions under that category. If you try to delete a parent category, a dialog explains that, if you delete the parent category, its sub-categories are moved up one level and asks if you want to delete them all at the same time.
+	To delete a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.  If there are any dependent items, a popup will allow these to be moved to another parent category. If you try to delete a parent category, a dialog allows the choice of either having the sub-categories moved up one level or alternatively having them all deleted at the same time.
 </para>
 
 </sect1>

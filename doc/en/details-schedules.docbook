@@ -19,7 +19,7 @@
 	</affiliation>
 </author>
 </authorgroup>
-<date>05/05/2009</date>
+<date>2009-06-04</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -38,7 +38,7 @@
 	Because you know these payments are regularly made to you, a Schedule can be created to record information about the payment and even create the transaction for you when pay day arrives.
 </para>
 <para>
-	Other types of schedule can also be recorded to reflect money coming in and out of your account.  Common expenses such as utility bills or money transfers can be recorded with schedules along with loan repayments.
+	Other types of schedule can also be recorded to reflect money coming in and out of your account.  Common expenses such as utility bills or money transfers can be recorded with schedules along with loan repayments. Scheduling a payment can also provide a useful reminder that you need to make a payment.
 </para>
 
 <para>
@@ -57,8 +57,8 @@ There are four different types of schedule at the moment:
 <itemizedlist>
 	<listitem><para>Bills</para></listitem>
 	<listitem><para>Deposits</para></listitem>
-	<listitem><para>Transfers</para></listitem>
 	<listitem><para>Loans</para></listitem>
+	<listitem><para>Transfers</para></listitem>
 </itemizedlist>
 
 <sect2>
@@ -76,13 +76,6 @@ There are four different types of schedule at the moment:
 </sect2>
 
 <sect2>
-<title>Transfers</title>
-<para>
-	A Transfer Schedule is used to create a schedule for money coming out of one account and into another.  A typical example is a credit card payment.
-</para>
-</sect2>
-
-<sect2>
 <title>Loans</title>
 <para>	
 	A Loan Schedule is a special type of schedule and is created when dealing with <link linkend="details.loans">Loan</link> accounts.
@@ -90,6 +83,13 @@ There are four different types of schedule at the moment:
 
 <para>
 	Open the schedule view by clicking on the  <guiicon>Schedule <inlinemediaobject><imageobject><imagedata fileref="schedule.png"/></imageobject></inlinemediaobject></guiicon> icon in the view selector.
+</para>
+</sect2>
+
+<sect2>
+<title>Transfers</title>
+<para>
+	A Transfer Schedule is used to create a schedule for money coming out of one account and into another.  A typical example is a credit card payment.
 </para>
 </sect2>
 </sect1>

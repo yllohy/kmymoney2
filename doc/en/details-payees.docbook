@@ -13,7 +13,7 @@
 <affiliation><address><email>acejones@users.sf.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>05/05/2009</date>
+<date>2009-06-04</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -23,7 +23,7 @@
 </para>
 
 <para>
-  The Payees screen allows for updating personal information associated with a particular payee or payer and viewing the transaction history.  
+  The Payees screen allows for viewing the transactions for the selected payee, updating personal information associated with a particular payee or payer, and specifying transaction matching criteria.
 </para>
 
 <para>
@@ -44,19 +44,19 @@
 
 <sect2><title>Adding a Payee or Payer</title>
 <para>
-  To add a payee or payer, right-click on any payee name and choose "New payee". This creates a new payee called 'New Payee.' Double-click on this payee to enter the name of the new payee or payer. 
+  To add a payee or payer, right-click on any payee name and choose <guimenuitem>New payee</guimenuitem>. This creates a new payee called 'New Payee'. Right-click on this payee and select <guimenuitem>Rename payee</guimenuitem> to enter the name of the new payee or payer.
 </para>
 </sect2>
 
 <sect2><title>Renaming a Payee or Payer</title>
 <para>
-  To rename a payee or payer, simply double-click on the name and the name becomes editable. Changing the name will affect the name in all transaction entries.
+  To rename a payee or payer, simply right-click on the name, select <guimenuitem>Rename payee</guimenuitem> and the name becomes editable. Changing the name will affect the name in all the transactions in which it appears.
 </para>
 </sect2>
 
 <sect2><title>Deleting a Payee or Payer</title>
 <para>
-  To remove a payee or payer, right-click the name and select "Delete payee". You will not be able to delete a payee or payer unless all the transactions associated with that particular payee or payer have been removed.
+  To remove a payee or payer, right-click the name and select <guimenuitem>Delete payee</guimenuitem>. You will be presented with a dialog to allow reassignment of transactions to a different payee, and also a check box to enable a deleted name to be added to the new payee's matching list.
 </para>
 </sect2>
 
@@ -65,7 +65,7 @@
 <sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Personal Information</title>
 
 <para>
-  To view and edit the personal information associated with a particular payee, select the payee from the list and select the Personal Information tab in the detail area. To modify this information, edit the detail area directly and press the Update button when finished.   
+  To view and edit the personal information associated with a particular payee, select the payee from the list and select the Address tab. To modify this information, edit the detail area directly and press the Update button when finished.   
 </para>
 
 <para>
@@ -99,7 +99,7 @@ The transaction matching feature is for you!
 
 <sect3><title>Setting up</title>
 <para>
-From the Payee Personal Information tab, you can set the Transaction Matching Settings.  You have 3 major options:
+From the Matching tab, you can set the Transaction Matching Settings. You have 3 major options:
 </para>
 
 <itemizedlist>

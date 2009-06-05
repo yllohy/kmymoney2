@@ -16,7 +16,7 @@
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
 </author>
 </authorgroup>
-<date>05/05/2009</date>
+<date>2009-06-04</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -52,7 +52,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 <orderedlist numeration="upperalpha">
 	<listitem><para>The account drop down list</para></listitem>
 	<listitem><para>The transaction list</para></listitem>
-	<listitem><para>The transaction input form</para></listitem>
+	<listitem><para>The transaction input form, which may or may not appear, depending upon your configuration.</para></listitem>
 </orderedlist>
 
 <sect2>
@@ -91,7 +91,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 </para>
 	
 <para>
-	After you have entered some transactions they are displayed in the transaction list.  From here you can also  change transaction properties or even create new transactions directly in the list.
+	After you have entered a transaction, it is displayed in the transaction list.  From here you can also  change transaction properties or even create new transactions directly in the list.
 	Using the Right Mouse Button on the header of the transaction list allows you to change the sort order of the transactions.
 </para>
 </sect2>
@@ -195,7 +195,7 @@ A multi line memo can be entered if you wish to help you remember what the trans
 <sect3>
 <title>The Amount</title>
 <para>
-	Finally enter the transaction amount into the required field.  Note that a simple calculator can be displayed by entering the % character into the field or by entering a formula as in <emphasis>12 + 3</emphasis>. When entering the plus sign, the calculator will be opened.
+	Finally enter the transaction amount into the required field. Note that a simple calculator can be displayed, either by clicking the icon to the right of the amount field, or by entering the % character into the field, or by entering a formula as in <emphasis>12 + 3</emphasis>. When entering the plus sign, the calculator will be opened.
 </para>
 
 <para>
@@ -270,7 +270,7 @@ A multi line memo can be entered if you wish to help you remember what the trans
 <sect2>
 <title>Starting the edit</title>
 <para>	
-	To enter a transaction into the register you can now either double click on the entry or press <keycombo action="simul">&Ctrl;&Insert;</keycombo> when the transaction is highlighted.  The <keycap>Up</keycap> and <keycap>Down</keycap> arrow keys let you navigate through the list.  After pressing <keycap>Enter</keycap> or double clicking on an entry, the transaction list displays the fields required to enter the transaction and waits for input.
+	To enter a new transaction into the register you can now either click on an empty entry or press <keycombo action="simul">&Ctrl;&Insert;</keycombo>, or click <guibutton>New</guibutton> at the foot of the window. The <keycap>Up</keycap> and <keycap>Down</keycap> arrow keys let you navigate through the list.  After pressing <keycap>Enter</keycap> or double clicking on an entry, the transaction list displays the fields required to enter the transaction and waits for input.
 </para>
 
 <para>
@@ -297,7 +297,7 @@ Which method you use to enter transactions is up to you and is a matter of perso
 <sect1 id="details.ledger.delete">
 <title>Deleting transactions</title>
 <para>
-	To delete the transaction select it in the list view and right click on the entry selecting <guimenuitem>Delete</guimenuitem> from the popup menu when it appears or press the <keycap>Delete</keycap> button on the keyboard.
+	To delete a transaction select it in the list view and right click on the entry, selecting <guimenuitem>Delete</guimenuitem> from the popup menu when it appears, or click <guibutton>Delete</guibutton> on the transaction form.
 </para>
 </sect1>
 
@@ -316,7 +316,7 @@ Which method you use to enter transactions is up to you and is a matter of perso
 </para> 
  
 <para>
-  After entering a split, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the splits, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
+  After entering a split, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the splits, press the <guibutton>OK</guibutton> button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
 </para> 
 
 <para>
@@ -338,21 +338,17 @@ Which method you use to enter transactions is up to you and is a matter of perso
 <sect1 id="details.ledgers.match"><title id="details.ledgers.match.title">Matching Transactions</title>
 
 <para>
-When importing transactions via OFX or HBCI, those transactions will sometimes already be in your register.
-If you simply delete the imported transaction, you will find that the next time you import your transactions, the deleted transaction shows up again.
+Generally, when importing transactions, either via QIF, OFX or HBCI, KMyMoney will attempt automatically to match them against existing transactions. To allow for differences in the dates, there is a default setting of 4 days, which may be changed in the settings - Register/Import. Any so matched will be highlighted in green. On completion of the import, you should review these and either accept or unmatch them.
+</para>
+
+<para>
+If you should find that an imported transaction was not automatically matched with an existing transaction when it should have matched, then it is possible to match them manually. However, with OFX or HBCI, it is as well not just to delete the imported transaction, because you will find that the next time you import your transactions, the deleted transaction shows up again.
 This is because modern import formats like OFX and HBCI use a &quot;Transaction ID&quot; to identify transactions.
 When you deleted the imported transaction, the transaction ID went with it, so the importer has no way to know this transaction was already imported.
 </para> 
 
 <para>
-The solution is to tell &kappname; that the transactions are the same, using the manual matching interface.  
-This allows you to match an imported transaction with a hand-entered (non-imported) transaction.
-</para>
-<para>
-To do so, right-click on one of the transactions to be matched.  Choose <guimenuitem>Match Transactions...</guimenuitem> from the context menu.  This flags the selected transaction, and changes the background color to a nice pale green.
-</para>
-<para>
-Next, right-click on the other transaction to be matched.  Choose <guimenuitem>Match with this Transaction</guimenuitem>.  This will match the two transactions together.  The values of both transactions must be the same for the match to work.
+The solution is to tell &kappname; that the transactions are the same, using the manual matching interface. This allows you to match an imported transaction with a hand-entered (non-imported) transaction. To do so, right-click on one of the transactions to be matched, then left click on the other while pressing the Ctrl key, then select <guimenuitem>Match</guimenuitem> from the context menu. This changes the background color to a nice pale green. This will match and combine the two transactions together. The values of both transactions must be the same for the match to work. If you are happy with the result, right click it again, then select <guibutton>Accept</guibutton>.
 </para>
 
 <para>
@@ -368,8 +364,8 @@ Likewise, it won't allow matching between two transactions which have both been 
 <sect1 id="details.ledgers.cleared"><title>Understanding the Cleared State</title>
 
 <para>
-A transaction can have three states: non-reconciled (N), cleared (C) and 
-reconciled (R). When you enter a transaction, it has state (N). Once the 
+A transaction can have three states: non-reconciled, cleared (C) and 
+reconciled (R). When you enter a transaction, it has state non-reconciled. Once the 
 the bank posts the transaction, the user can clear it and thus transform 
 it to state (C). When you receive a statement from the bank, all cleared 
 transactions should be on the statement. 
@@ -469,7 +465,7 @@ least one split in state frozen it cannot be edited anymore.
 <sect1 id="details.ledgers.other"><title id="details.ledgers.other.title">Other Functionality</title>
 
 <para>
-  Additional options are available from the Transaction Options menu, accessed either by right-clicking a transaction in the list or pressing the More button in the bottom input area. 
+  Additional options are available from the <guimenu>Transaction Options</guimenu> menu, accessed by right-clicking a transaction in the list.
 </para>
 
 <para>
