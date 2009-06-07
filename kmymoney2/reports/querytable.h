@@ -116,7 +116,7 @@ class CashFlowList: public QValueList<CashFlowListItem>
     double calculateXIRR ( void ) const;
 
   protected:
-    const CashFlowListItem& mostRecent(void) const;
+    CashFlowListItem mostRecent(void) const;
 
   private:
         /**

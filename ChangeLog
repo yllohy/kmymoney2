@@ -1,4 +1,7 @@
 
+2009-06-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a return reference to temporary problem
+
 2009-06-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated user documentation - submitted by Allan Anderson
 

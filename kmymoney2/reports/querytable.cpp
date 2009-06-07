@@ -78,7 +78,7 @@ MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 //
 // ****************************************************************************
 
-const CashFlowListItem& CashFlowList::mostRecent(void) const
+CashFlowListItem CashFlowList::mostRecent(void) const
 {
   CashFlowList dupe( *this );
   qHeapSort( dupe );
