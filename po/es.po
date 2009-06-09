@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-02 20:05+0200\n"
-"PO-Revision-Date: 2009-05-03 22:48-0300\n"
+"PO-Revision-Date: 2009-06-09 10:05-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -668,7 +668,7 @@ msgstr "Ocurrencia"
 #: widgets/rc.cpp:19 widgets/rc.cpp:74
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1676
 msgid "Monthly"
-msgstr "Mensualmente"
+msgstr "Mensual"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1677
 msgid "Paid from"
@@ -2025,7 +2025,7 @@ msgstr "Trimestral"
 #: mymoney/mymoneyscheduled.cpp:899 mymoney/mymoneyscheduled.cpp:1291
 #: mymoney/mymoneyscheduletest.cpp:1347 widgets/rc.cpp:76
 msgid "Quarterly"
-msgstr "Trimestralmente"
+msgstr "Trimestral"
 
 #: mymoney/mymoneyscheduled.cpp:901 mymoney/mymoneyscheduled.cpp:950
 #: mymoney/mymoneyscheduled.cpp:1293 mymoney/mymoneyscheduletest.cpp:1348
@@ -2035,7 +2035,7 @@ msgstr "Cuatrimestral"
 #: mymoney/mymoneyscheduled.cpp:903 mymoney/mymoneyscheduled.cpp:951
 #: mymoney/mymoneyscheduled.cpp:1295 mymoney/mymoneyscheduletest.cpp:1349
 msgid "Twice yearly"
-msgstr "Bianualmente"
+msgstr "Semestral"
 
 #: mymoney/mymoneyscheduled.cpp:905 mymoney/mymoneyscheduled.cpp:957
 #: mymoney/mymoneyscheduled.cpp:1297 mymoney/mymoneyscheduletest.cpp:1350
@@ -13236,7 +13236,7 @@ msgstr "Columnas"
 
 #: widgets/rc.cpp:75
 msgid "Bi-Monthly"
-msgstr "Mensualmente"
+msgstr "Bimestral"
 
 #: widgets/rc.cpp:78
 msgid "<p>Choose how large of a time period each column should encompass</p>"
