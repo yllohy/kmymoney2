@@ -1,4 +1,7 @@
 
+2009-06-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed budget reports when displaying monthly or yearly in non-monthly columns
+
 2009-06-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a return reference to temporary problem
   * Added patch from Gary Duzan to improve autoconf detection
