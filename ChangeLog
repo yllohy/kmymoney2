@@ -1,4 +1,7 @@
 
+2009-06-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem of initial precision being 0 in new schedules
+
 2009-06-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation by Bert Keuter
 
