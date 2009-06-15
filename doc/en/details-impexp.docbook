@@ -843,7 +843,7 @@ At the end of the import &kappname; shows a statement import statistics window.
 	The first step is to configure each account you wish to download statements for.
 	Go to the Accounts view, right click on the account you wish to configure, and choose &quot;Map to online account...&quot;. In case more than one online banking plugin is installed on your system you will be asked which one to use. For the internal OFX method select KMyMoney OFX.
   A list of banks will be downloaded from the internet and a wizard will guide you through choosing a bank, entering your username and password, and selecting an account.
-	Should you find that your bank is not listed, then it may still be possible to use the manual option. You bank may be able to provide the required parameters, or you may have to do some research to find them.
+	Should you find that your bank is not listed, then it may still be possible to use the manual option. Your bank may be able to provide the required parameters, or you may have to do some research to find them.
 </para>
 <para>
 	Once you have an account set up with online banking, go to the ledger for that account.
