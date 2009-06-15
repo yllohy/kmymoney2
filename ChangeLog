@@ -1,4 +1,7 @@
 
+2009-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added 'Year To Month' budget vs. actual standard report
+
 2009-06-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated user documentation - submitted by Allan Anderson
   * Fixed typo in reconciliation ending balance dialog
