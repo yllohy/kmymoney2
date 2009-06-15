@@ -702,7 +702,7 @@ All information you have entered into this wizard will be shown and all transact
                     <cstring>kActiveLabel1</cstring>
                 </property>
                 <property name="text">
-                    <string>If necessary, enter information about interest or charges here. KMyMoney will create transactions and cleares them directly for you.</string>
+                    <string>If necessary, enter information about interest or charges here. KMyMoney will create transactions and clear them directly for you.</string>
                 </property>
             </widget>
             <widget class="Line">

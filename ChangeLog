@@ -1,4 +1,8 @@
 
+2009-06-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Updated user documentation - submitted by Allan Anderson
+  * Fixed typo in reconciliation ending balance dialog
+
 2009-06-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem of initial precision being 0 in new schedules
 

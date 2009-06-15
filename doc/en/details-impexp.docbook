@@ -8,7 +8,7 @@
 <affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>05/05/2009</date>
+<date>2009-06-14</date>
 <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
@@ -102,7 +102,7 @@ amended after the import is complete.
 <para>
 &kappname; uses the term Category to denote an account of an Income or
 Expense type. Unlike GnuCash, these are not considered as 'ledger'
-accounts and eentry of transactions directly into categories is not supported; 
+accounts and entry of transactions directly into categories is not supported; 
 allocations are made during transaction entry into other account types.
 </para>
 </sect4>
@@ -534,7 +534,7 @@ At the end of the import &kappname; shows a statement import statistics window.
 </para>
 
 <para>
-  The next step is to verify the imported data and accept it. This is a general process and also applies to imports from other sources. It is outlined a separate section of this document.
+  The next step is to verify the imported data and accept it. This is a general process and also applies to imports from other sources. It is outlined in a separate section of this document.
 </para>
 
 <note>
@@ -720,9 +720,9 @@ At the end of the import &kappname; shows a statement import statistics window.
 </sect2>
 </sect1>
 
-<sect1 id="details.impexp.qifexp">
-					<title>QIF Exporter</title>
+<sect1 id="details.impexp.qifexp"><title>QIF Exporter</title>
 <para>
+  At the moment, QIF Exporter does not handle export of investments.
   To export one of your accounts to a QIF file, choose the <guimenuitem>Export</guimenuitem> <guimenuitem>QIF</guimenuitem> from the <guimenu>File</guimenu> menu.
   You will be prompted for which single account to export, what file to export it to, and what QIF Profile to use.
 </para>
@@ -817,6 +817,7 @@ At the end of the import &kappname; shows a statement import statistics window.
 	Your browser should ask you what program you would like to use to open the program.  
 	Point your browser to &kappname;.  
 	It will then import the downloaded OFX file into the &kappname; file you most recently had open.
+	You can also change the file associations of your desktop environment, and have &kappname; open the OFX file automatically for you.
 </para>
 <para>
 	If you need to import the OFX file into some other &kappname; file, load up that file in &kappname; first, and then visit your bank.
@@ -842,11 +843,12 @@ At the end of the import &kappname; shows a statement import statistics window.
 	The first step is to configure each account you wish to download statements for.
 	Go to the Accounts view, right click on the account you wish to configure, and choose &quot;Map to online account...&quot;. In case more than one online banking plugin is installed on your system you will be asked which one to use. For the internal OFX method select KMyMoney OFX.
   A list of banks will be downloaded from the internet and a wizard will guide you through choosing a bank, entering your username and password, and selecting an account.
+	Should you find that your bank is not listed, then it may still be possible to use the manual option. You bank may be able to provide the required parameters, or you may have to do some research to find them.
 </para>
 <para>
 	Once you have an account set up with online banking, go to the ledger for that account.
 	Then from the &quot;Account&quot; menu, choose &quot;Update account...&quot;.
-	This will connect to you bank, and download a statement for the last 60 days.
+	This will connect to your bank, and download a statement for the last 60 days.
 </para>
 </sect2>
 
