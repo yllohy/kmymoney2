@@ -119,3 +119,56 @@ CREATE
  END
 //
 delimiter ;
+
+delimiter //
+DROP FUNCTION IF EXISTS payeeName//
+CREATE
+ FUNCTION payeeName(payeeId VARCHAR(32))
+ RETURNS MEDIUMTEXT
+  BEGIN
+  /* Returns payee name from id, with NULL test */
+   DECLARE result MEDIUMTEXT;
+     IF payeeId IS NULL THEN SET result = 'Empty Payee';
+     ELSE SELECT name FROM kmmPayees WHERE id = payeeId INTO result;
+     END IF;
+   RETURN result;
+  END
+//
+delimiter ;
+
+delimiter //
+DROP FUNCTION IF EXISTS categoryName//
+CREATE
+ FUNCTION categoryName(categoryId VARCHAR(32))
+ RETURNS MEDIUMTEXT
+  BEGIN
+  /* Returns fully qualified category name from its id */
+   DECLARE result MEDIUMTEXT;
+   DECLARE thisName MEDIUMTEXT;
+   DECLARE parent VARCHAR(32);
+     IF categoryId IS NULL THEN RETURN 'Empty Category';
+     END IF;
+   SELECT accountName from kmmAccounts WHERE id = categoryId INTO result;
+   SELECT parentId from kmmAccounts WHERE id = categoryId INTO parent;
+   WHILE parent IS NOT NULL DO
+     SELECT accountName from kmmAccounts WHERE id = parent INTO thisName;
+     SET result = CONCAT(thisName, ':', result);
+     SELECT parentId from kmmAccounts WHERE id = parent INTO parent;
+   END WHILE;
+   RETURN result;
+  END
+//
+delimiter ;
+
+/* some useful functions re tax */
+DROP VIEW IF EXISTS taxCats;
+CREATE VIEW taxCats AS SELECT kvpId AS accountId FROM kmmKeyValuePairs WHERE kvpKey = 'Tax' AND kvpData = 'Yes';
+DROP VIEW IF EXISTS taxSplits;
+CREATE VIEW taxSplits AS SELECT accountId, payeeId, postDate, CAST(toDecimal(value) AS decimal(12,2)) AS Amount FROM kmmSplits WHERE txType = 'N' AND accountId IN (SELECT * FROM taxCats);
+
+
+/* Sample: generate a tax report for UK yesr 08-09.
+   Sorted by payee within Category */
+DROP VIEW IF EXISTS taxReport;
+CREATE VIEW taxReport AS SELECT categoryName(accountId) AS Account, payeeName(payeeId) As Payee, DATE_FORMAT(postDate, '%d/%m/%y') As Date, ABS(Amount) AS Amount FROM taxSplits WHERE postDate > "2008-04-05" and postDate < "2009-04-06" ORDER BY 1, 2, 3;
+
