@@ -271,6 +271,16 @@ bool Transaction::paintRegisterCellSetup(QPainter* painter, int& row, int& col, 
   if(m_erronous && m_parent->markErronousTransactions()) {
     painter->setPen(KMyMoneyGlobalSettings::listErronousTransactionColor());
   }
+
+  // do we need to switch to the negative balance color?
+  if(col == BalanceColumn) {
+    MyMoneyMoney bal(m_balance);
+    bool showNegative = bal.isNegative();
+    if(m_account.accountGroup() == MyMoneyAccount::Liability && !bal.isZero() )
+      showNegative = !showNegative;
+    if(showNegative)
+      painter->setPen(KMyMoneyGlobalSettings::listNegativeValueColor());
+  }
   return true;
 }
 

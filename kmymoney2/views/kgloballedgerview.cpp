@@ -735,6 +735,13 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QString, MyMoneyMoney>& act
     if(m_account.accountType() != MyMoneyAccount::Investment) {
       m_centerSummaryLabel->setText(i18n("Cleared: %1").arg(clearedBalance[m_account.id()].formatMoney("", d->m_precision)));
       m_rightSummaryLabel->setText(i18n("Balance: %1").arg(actBalance[m_account.id()].formatMoney("", d->m_precision)));
+      m_rightSummaryLabel->setPaletteForegroundColor(m_leftSummaryLabel->paletteForegroundColor());
+      bool showNegative = actBalance[m_account.id()].isNegative();
+      if(m_account.accountGroup() == MyMoneyAccount::Liability && !actBalance[m_account.id()].isZero())
+        showNegative = !showNegative;
+      if(showNegative) {
+        m_rightSummaryLabel->setPaletteForegroundColor(KMyMoneyGlobalSettings::listNegativeValueColor());
+      }
     } else {
       m_centerSummaryLabel->hide();
       MyMoneyMoney balance;

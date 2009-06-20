@@ -1,4 +1,8 @@
 
+2009-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use the configured color setting for negative values in the balance column
+    of the ledger view
+
 2009-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Year To Month' budget vs. actual standard report
 
