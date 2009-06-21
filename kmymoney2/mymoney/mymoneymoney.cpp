@@ -143,13 +143,14 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
   // b) _decimalSeparator
   // c) negative indicator
   QString validChars = QString("\\d%1").arg(QChar(decimalSeparator()));
-  QString negChars("-");
+  // we need to escape the minus sign here, because later on it will be
+  // part of "\d,-()" and that does not work. It needs to be "\d,\-()"
+  // And we need two of them, because we're in C
+  QString negChars("\\-");
   if(_negativeMonetarySignPosition == ParensAround) {
-    // FIXME: If we want to allow '-' as well as '()' for negative entry
-    //        we would have to replase '=' with '+=' in the next line
-    //        Also, the logic in kMyMoneyEdit::theTextChanged has to be
-    //        adjusted to allow both methods at the same time.
-    negChars = "()";
+    // Since we want to allow '-' as well as '()' for negative entry
+    // we just add the parens here.
+    negChars += "()";
   }
   validChars += negChars;
   // qDebug("0: '%s'", validChars.data());
@@ -164,7 +165,7 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     isNegative = true;
     res.remove(negCharSet);
   }
-  // qDebug("2: '%s'", res.data());
+  // qDebug("2: '%s' %s", res.data(), isNegative ? "(-)" : "");
   int pos;
 
   // qDebug("3: '%s'", res.data());

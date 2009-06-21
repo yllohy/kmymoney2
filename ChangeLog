@@ -3,6 +3,8 @@
   * Added support for automake 1.11
   * Added --with-qmake option to configure
   * Ignore bankid for OFX in case it's empty
+  * Allow a dash as negative input even if parens around is selected as
+    negative display mode
 
 2009-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use the configured color setting for negative values in the balance column

@@ -336,7 +336,7 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
     QValidator::State state =  m_edit->validator()->validate( l_text, i);
     if(state == QValidator::Intermediate) {
       if(l_text.length() == 1) {
-        if(l_text != d && l_text != nsign && l_text != psign)
+        if(l_text != d && l_text != nsign && l_text != psign && l_text != "-")
           state = QValidator::Invalid;
       }
     }
