@@ -499,7 +499,7 @@ For more details, please refer to to the <link linkend="details.investments.onli
 
 </sect1>
 
-<sect1 id="details.settings.plugins"><title id="details.settings.plugins.title">Fonts</title>
+<sect1 id="details.settings.plugins"><title id="details.settings.plugins.title">Plugins</title>
 
 <para>
    These options allow you to modify the plugin options. Here you can enable or disable the &kappname; plugins you have installed.

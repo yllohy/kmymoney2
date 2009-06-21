@@ -5,6 +5,7 @@
   * Ignore bankid for OFX in case it's empty
   * Allow a dash as negative input even if parens around is selected as
     negative display mode
+  * Fixed section heading in documentation
 
 2009-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use the configured color setting for negative values in the balance column
