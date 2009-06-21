@@ -83,13 +83,17 @@ AC_DEFUN([AC_SQLITE3], [
       AC_MSG_ERROR(QTDIR not set)
     fi
     AC_MSG_RESULT($QTDIR)
+    ac_qmake=${QTDIR}/bin/qmake
+    AC_ARG_WITH(qmake,
+        AC_HELP_STRING([--with-qmake=PATH],[which version of QMake to use ]),
+        [  ac_qmake="$withval" ])
   fi
 
   if test $enable_sqlite3 = yes; then
     rm -rf qt-sqlite3-0.2
     gunzip -c `dirname -- ${0}`/23011-qt-sqlite3-0.2.tar.gz | tar -xf -
     cd qt-sqlite3-0.2
-    ${QTDIR}/bin/qmake QMAKE=${QTDIR}/bin/qmake
+    ${ac_qmake} QMAKE=${ac_qmake}
     SQLITE3=qt-sqlite3-0.2
     sed -i s/^install:.*$// Makefile
     sed -i s/^uninstall:.*$// Makefile
