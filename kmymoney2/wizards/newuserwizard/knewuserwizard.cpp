@@ -330,6 +330,9 @@ FilePage::FilePage(Wizard* wizard, const char* name) :
   KUser user;
   m_dataFileEdit->setShowLocalProtocol(false);
   m_dataFileEdit->setURL(QString("%1/%2.kmy").arg(QDir::homeDirPath(), user.loginName()));
+
+  // allow selection of non-existing files
+  m_dataFileEdit->setMode(KFile::File);
 }
 
 bool FilePage::isComplete(void) const

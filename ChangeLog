@@ -1,4 +1,8 @@
 
+2009-06-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow to select a non-existant file in the selection dialog of
+    the new file wizard
+
 2009-06-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for automake 1.11
   * Added --with-qmake option to configure
