@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
-"POT-Creation-Date: 2009-05-02 20:05+0200\n"
+"POT-Creation-Date: 2009-06-25 19:04+0200\n"
 "PO-Revision-Date: 2009-04-07 20:07+0300\n"
 "Last-Translator: Mikael Kujanpää <mikael.kujanpaa@iki.fi>\n"
 "Language-Team: \n"
@@ -125,16 +125,16 @@ msgstr "Rahalaitos"
 #: dialogs/investactivities.cpp:198 dialogs/investactivities.cpp:286
 #: dialogs/investactivities.cpp:367 dialogs/kfindtransactiondlg.cpp:181
 #: dialogs/rc.cpp:139 dialogs/rc.cpp:192 dialogs/rc.cpp:207
-#: dialogs/transactioneditor.cpp:719 reports/listtable.cpp:201
-#: reports/pivottable.cpp:1341 reports/pivottable.cpp:1591
+#: dialogs/transactioneditor.cpp:734 reports/listtable.cpp:201
+#: reports/pivottable.cpp:1336 reports/pivottable.cpp:1586
 #: views/kforecastview.cpp:393 views/kgloballedgerview.cpp:175
 #: views/khomeview.cpp:418 views/khomeview.cpp:491 views/khomeview.cpp:525
 #: views/khomeview.cpp:764 views/khomeview.cpp:967 views/khomeview.cpp:1437
 #: views/kscheduledview.cpp:71 views/rc.cpp:17 views/rc.cpp:44
 #: widgets/kmymoneyaccounttreebase.cpp:58
 #: widgets/kmymoneyaccounttreeforecast.cpp:41 widgets/rc.cpp:109
-#: widgets/register.cpp:544 widgets/transaction.cpp:968
-#: widgets/transaction.cpp:1525
+#: widgets/register.cpp:566 widgets/transaction.cpp:978
+#: widgets/transaction.cpp:1535
 #: wizards/newaccountwizard/knewaccountwizard.cpp:84
 msgid "Account"
 msgstr "Tili"
@@ -145,7 +145,7 @@ msgstr "Kaupanvälittäjä"
 
 #: dialogs/kfindtransactiondlg.cpp:225 dialogs/rc.cpp:70 dialogs/rc.cpp:104
 #: dialogs/rc.cpp:159 dialogs/rc.cpp:223 dialogs/rc.cpp:246 dialogs/rc.cpp:751
-#: dialogs/settings/rc.cpp:109 widgets/rc.cpp:35 widgets/register.cpp:546
+#: dialogs/settings/rc.cpp:109 widgets/rc.cpp:35 widgets/register.cpp:568
 #: wizards/newaccountwizard/knewaccountwizard.cpp:86
 msgid "Details"
 msgstr "Selite"
@@ -159,7 +159,7 @@ msgstr "Maksut"
 
 #: dialogs/investactivities.cpp:195 dialogs/investactivities.cpp:283
 #: dialogs/investactivities.cpp:422 dialogs/investtransactioneditor.cpp:217
-#: reports/listtable.cpp:221 widgets/transaction.cpp:1555
+#: reports/listtable.cpp:221 widgets/transaction.cpp:1565
 #: wizards/newaccountwizard/knewaccountwizard.cpp:88
 msgid "Fees"
 msgstr "Palkkiot"
@@ -209,7 +209,7 @@ msgstr "Lyhennyserä"
 #: dialogs/investactivities.cpp:366 dialogs/investactivities.cpp:423
 #: dialogs/investtransactioneditor.cpp:227 dialogs/rc.cpp:135
 #: dialogs/rc.cpp:152 dialogs/rc.cpp:544 reports/listtable.cpp:222
-#: widgets/transaction.cpp:1587
+#: widgets/transaction.cpp:1597
 #: wizards/newaccountwizard/knewaccountwizard.cpp:302
 msgid "Interest"
 msgstr "Korko"
@@ -220,42 +220,42 @@ msgstr "Korko"
 msgid "User"
 msgstr "Käyttäjä"
 
-#: kmymoneyutils.cpp:64 mymoney/mymoneyaccount.cpp:708
+#: kmymoneyutils.cpp:64 mymoney/mymoneyaccount.cpp:711
 #: reports/querytabletest.cpp:422
 #: wizards/newaccountwizard/knewaccountwizard.cpp:451
 msgid "Checking"
 msgstr "Tarkistaa"
 
-#: kmymoneyutils.cpp:66 mymoney/mymoneyaccount.cpp:711
+#: kmymoneyutils.cpp:66 mymoney/mymoneyaccount.cpp:714
 #: wizards/newaccountwizard/knewaccountwizard.cpp:452
 msgid "Savings"
 msgstr "säästöt"
 
-#: kmymoneyutils.cpp:68 mymoney/mymoneyaccount.cpp:714
+#: kmymoneyutils.cpp:68 mymoney/mymoneyaccount.cpp:717
 #: reports/querytabletest.cpp:423
 #: wizards/newaccountwizard/knewaccountwizard.cpp:453
 msgid "Credit Card"
 msgstr "luottokortit"
 
-#: kmymoneyutils.cpp:70 mymoney/mymoneyaccount.cpp:717
+#: kmymoneyutils.cpp:70 mymoney/mymoneyaccount.cpp:720
 #: wizards/newaccountwizard/knewaccountwizard.cpp:454
 msgid "Cash"
 msgstr "käteiset"
 
-#: kmymoneyutils.cpp:72 mymoney/mymoneyaccount.cpp:720
+#: kmymoneyutils.cpp:72 mymoney/mymoneyaccount.cpp:723
 #: wizards/newaccountwizard/knewaccountwizard.cpp:455
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1604
 msgid "Loan"
 msgstr "lainat"
 
-#: kmymoneyutils.cpp:76 mymoney/mymoneyaccount.cpp:726
+#: kmymoneyutils.cpp:76 mymoney/mymoneyaccount.cpp:729
 #: wizards/newaccountwizard/knewaccountwizard.cpp:456
 msgid "Investment"
 msgstr "sijoitukset"
 
 #: converter/mymoneytemplate.cpp:178 converter/mymoneytemplate.cpp:179
 #: dialogs/knewaccountdlg.cpp:1014 kmymoneyutils.cpp:80
-#: mymoney/mymoneyaccount.cpp:732 views/kaccountsview.cpp:352
+#: mymoney/mymoneyaccount.cpp:735 views/kaccountsview.cpp:352
 #: views/kmymoneyview.cpp:765 widgets/kmymoneyaccountselector.cpp:177
 #: widgets/kmymoneyaccountselector.cpp:356
 #: wizards/newaccountwizard/knewaccountwizard.cpp:457
@@ -264,7 +264,7 @@ msgstr "varallisuus"
 
 #: converter/mymoneytemplate.cpp:182 converter/mymoneytemplate.cpp:183
 #: dialogs/knewaccountdlg.cpp:1016 kmymoneyutils.cpp:82
-#: mymoney/mymoneyaccount.cpp:735 views/kaccountsview.cpp:356
+#: mymoney/mymoneyaccount.cpp:738 views/kaccountsview.cpp:356
 #: views/kmymoneyview.cpp:766 widgets/kmymoneyaccountselector.cpp:178
 #: widgets/kmymoneyaccountselector.cpp:363
 #: wizards/newaccountwizard/knewaccountwizard.cpp:458
@@ -272,7 +272,7 @@ msgid "Liability"
 msgstr "velat ja lainat"
 
 #: converter/mymoneytemplate.cpp:194 converter/mymoneytemplate.cpp:195
-#: kmymoneyutils.cpp:94 mymoney/mymoneyaccount.cpp:753
+#: kmymoneyutils.cpp:94 mymoney/mymoneyaccount.cpp:756
 #: views/kaccountsview.cpp:369 views/kmymoneyview.cpp:769
 #: widgets/kmymoneyaccountselector.cpp:181
 #: widgets/kmymoneyaccountselector.cpp:390
@@ -558,7 +558,7 @@ msgstr "Tyyppi"
 
 #: dialogs/kcurrencyeditdlg.cpp:62 dialogs/rc.cpp:56 dialogs/rc.cpp:59
 #: dialogs/rc.cpp:75 dialogs/rc.cpp:727 dialogs/rc.cpp:792
-#: kmymoneyutils.cpp:84 kmymoneyutils.cpp:111 mymoney/mymoneyaccount.cpp:738
+#: kmymoneyutils.cpp:84 kmymoneyutils.cpp:111 mymoney/mymoneyaccount.cpp:741
 #: mymoney/mymoneysecurity.cpp:169 reports/listtable.cpp:233
 #: widgets/kmymoneypriceview.cpp:127
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1607
@@ -583,9 +583,9 @@ msgstr "Korkoprosentti"
 msgid "Opening balance"
 msgstr "Alkusaldo"
 
-#: dialogs/keditscheduledlg.cpp:507 dialogs/transactioneditor.cpp:769
-#: dialogs/transactioneditor.cpp:833 plugins/ofximport/dialogs/rc.cpp:22
-#: widgets/rc.cpp:111 widgets/register.cpp:59 widgets/transaction.cpp:988
+#: dialogs/keditscheduledlg.cpp:507 dialogs/transactioneditor.cpp:784
+#: dialogs/transactioneditor.cpp:848 plugins/ofximport/dialogs/rc.cpp:22
+#: widgets/rc.cpp:111 widgets/register.cpp:59 widgets/transaction.cpp:998
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1618
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1632
 msgid "Number"
@@ -697,8 +697,8 @@ msgstr "Maksun saaja"
 #: dialogs/kmymoneysplittable.cpp:80 dialogs/rc.cpp:51 dialogs/rc.cpp:212
 #: reports/listtable.cpp:197 views/khomeview.cpp:421 views/khomeview.cpp:494
 #: views/khomeview.cpp:528 views/kscheduledview.cpp:73 views/rc.cpp:63
-#: widgets/register.cpp:58 widgets/transaction.cpp:1045
-#: widgets/transaction.cpp:1568 widgets/transaction.cpp:1600
+#: widgets/register.cpp:58 widgets/transaction.cpp:1055
+#: widgets/transaction.cpp:1578 widgets/transaction.cpp:1610
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1679
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1685
 msgid "Amount"
@@ -730,7 +730,7 @@ msgid "Item"
 msgstr "laina-aika"
 
 #: dialogs/rc.cpp:110 dialogs/rc.cpp:165 dialogs/rc.cpp:252 dialogs/rc.cpp:757
-#: dialogs/rc.cpp:818 views/kinvestmentview.cpp:74 widgets/register.cpp:552
+#: dialogs/rc.cpp:818 views/kinvestmentview.cpp:74 widgets/register.cpp:574
 #: wizards/newaccountwizard/rc.cpp:3
 msgid "Value"
 msgstr "Arvo"
@@ -1660,7 +1660,7 @@ msgstr ""
 "Valitse<b>KMyMoneyn asetukset</b> -valinta <b>Asetukset</b> -valikosta."
 
 #: dialogs/rc.cpp:83 dialogs/rc.cpp:411 dialogs/rc.cpp:435
-#: kmymoneyutils.cpp:92 kmymoneyutils.cpp:105 mymoney/mymoneyaccount.cpp:750
+#: kmymoneyutils.cpp:92 kmymoneyutils.cpp:105 mymoney/mymoneyaccount.cpp:753
 #: mymoney/mymoneysecurity.cpp:160
 msgid "Stock"
 msgstr "Arvopaperit"
@@ -1680,11 +1680,11 @@ msgstr "Velkakirja"
 msgid "None"
 msgstr "Ei mitään"
 
-#: dialogs/rc.cpp:46 kmymoneyutils.cpp:402 mymoney/mymoneyaccount.cpp:756
+#: dialogs/rc.cpp:46 kmymoneyutils.cpp:402 mymoney/mymoneyaccount.cpp:759
 #: mymoney/mymoneyscheduled.cpp:1002 mymoney/mymoneysecurity.cpp:175
 #: views/kforecastview.cpp:174 widgets/register.cpp:54
-#: widgets/register.cpp:463 widgets/transaction.cpp:698
-#: widgets/transaction.cpp:1449
+#: widgets/register.cpp:485 widgets/transaction.cpp:708
+#: widgets/transaction.cpp:1459
 msgid "Unknown"
 msgstr "Tuntematon"
 
@@ -1790,36 +1790,36 @@ msgid ""
 "Brokerage"
 msgstr "Kaupanvälitys"
 
-#: kmymoneyutils.cpp:74 mymoney/mymoneyaccount.cpp:723
+#: kmymoneyutils.cpp:74 mymoney/mymoneyaccount.cpp:726
 msgid "Certificate of Deposit"
 msgstr "Talletustodistus"
 
-#: kmymoneyutils.cpp:78 mymoney/mymoneyaccount.cpp:729
+#: kmymoneyutils.cpp:78 mymoney/mymoneyaccount.cpp:732
 msgid "Money Market"
 msgstr "Rahamarkkinat"
 
 #: converter/mymoneytemplate.cpp:186 converter/mymoneytemplate.cpp:187
 #: dialogs/knewaccountdlg.cpp:1018 kmymoneyutils.cpp:86
-#: mymoney/mymoneyaccount.cpp:741 views/kaccountsview.cpp:360
+#: mymoney/mymoneyaccount.cpp:744 views/kaccountsview.cpp:360
 #: views/kbudgetview.cpp:372 views/kcategoriesview.cpp:178
 #: views/khomeview.cpp:1813 views/kmymoneyview.cpp:767
 #: widgets/kmymoneyaccountselector.cpp:68
 #: widgets/kmymoneyaccountselector.cpp:179
-#: widgets/kmymoneyaccountselector.cpp:370 widgets/register.cpp:806
+#: widgets/kmymoneyaccountselector.cpp:370 widgets/register.cpp:828
 msgid "Income"
 msgstr "tulot"
 
 #: converter/mymoneytemplate.cpp:190 converter/mymoneytemplate.cpp:191
 #: dialogs/knewaccountdlg.cpp:1020 kmymoneyutils.cpp:88
-#: mymoney/mymoneyaccount.cpp:744 views/kaccountsview.cpp:364
+#: mymoney/mymoneyaccount.cpp:747 views/kaccountsview.cpp:364
 #: views/kbudgetview.cpp:378 views/kcategoriesview.cpp:182
 #: views/kmymoneyview.cpp:768 widgets/kmymoneyaccountselector.cpp:72
 #: widgets/kmymoneyaccountselector.cpp:180
-#: widgets/kmymoneyaccountselector.cpp:380 widgets/register.cpp:807
+#: widgets/kmymoneyaccountselector.cpp:380 widgets/register.cpp:829
 msgid "Expense"
 msgstr "menot"
 
-#: kmymoneyutils.cpp:90 mymoney/mymoneyaccount.cpp:747
+#: kmymoneyutils.cpp:90 mymoney/mymoneyaccount.cpp:750
 msgid "Investment Loan"
 msgstr "Sijoitustili"
 
@@ -2078,7 +2078,7 @@ msgstr "Lasku"
 
 #: dialogs/rc.cpp:107 dialogs/rc.cpp:162 dialogs/rc.cpp:249 dialogs/rc.cpp:754
 #: mymoney/mymoneyscheduled.cpp:992 widgets/kmymoneycombo.cpp:420
-#: widgets/register.cpp:549
+#: widgets/register.cpp:571
 msgid "Deposit"
 msgstr "Pano"
 
@@ -2354,7 +2354,7 @@ msgid ""
 "Duplicate"
 msgstr "Kahdenna"
 
-#: kmymoney2.cpp:425 kmymoney2.cpp:4824 kmymoney2.cpp:5105
+#: kmymoney2.cpp:425 kmymoney2.cpp:4826 kmymoney2.cpp:5107
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
@@ -2396,11 +2396,11 @@ msgid ""
 "Select all"
 msgstr "Valitse kaikki"
 
-#: kmymoney2.cpp:434 kmymoney2.cpp:5495
+#: kmymoney2.cpp:434 kmymoney2.cpp:5497
 msgid "Goto account"
 msgstr "Siirry tiliin"
 
-#: kmymoney2.cpp:435 kmymoney2.cpp:5493
+#: kmymoney2.cpp:435 kmymoney2.cpp:5495
 msgid "Goto payee"
 msgstr "Siirry maksun saajaan / vastaanottajaan"
 
@@ -2508,15 +2508,15 @@ msgid ""
 "Forecast"
 msgstr "Ennuste"
 
-#: kmymoney2.cpp:467 kmymoney2.cpp:3988 kmymoney2.cpp:3991 kmymoney2.cpp:3997
+#: kmymoney2.cpp:467 kmymoney2.cpp:3990 kmymoney2.cpp:3993 kmymoney2.cpp:3999
 msgid "New currency"
 msgstr "Uusi valuutta"
 
-#: kmymoney2.cpp:468 kmymoney2.cpp:4019 kmymoney2.cpp:4024
+#: kmymoney2.cpp:468 kmymoney2.cpp:4021 kmymoney2.cpp:4026
 msgid "Rename currency"
 msgstr "Nimeä valuutta uudelleen"
 
-#: kmymoney2.cpp:469 kmymoney2.cpp:4037
+#: kmymoney2.cpp:469 kmymoney2.cpp:4039
 msgid "Delete currency"
 msgstr "Poista valuutta"
 
@@ -2556,7 +2556,7 @@ msgstr ""
 msgid "Open File..."
 msgstr "Avaa tiedosto..."
 
-#: kmymoney2.cpp:925
+#: kmymoney2.cpp:925 kstartuplogo.cpp:100
 msgid "Loading file..."
 msgstr "Tiedostoa ladataan..."
 
@@ -2692,12 +2692,12 @@ msgstr "Tallenna nimellä..."
 msgid "Importing file..."
 msgstr "Tuodaan tiedostoa..."
 
-#: kmymoney2.cpp:1552 kmymoney2.cpp:6038 kmymoney2.cpp:6060
+#: kmymoney2.cpp:1552 kmymoney2.cpp:6040 kmymoney2.cpp:6062
 #, fuzzy
 msgid "The statements have been processed with the following results:"
 msgstr "Tiliote on käsitelty seuraavin tuloksin:"
 
-#: kmymoney2.cpp:1552 kmymoney2.cpp:1754 kmymoney2.cpp:6038 kmymoney2.cpp:6060
+#: kmymoney2.cpp:1552 kmymoney2.cpp:1754 kmymoney2.cpp:6040 kmymoney2.cpp:6062
 #, fuzzy
 msgid "Statement stats"
 msgstr "Tiliotetteen tilastot"
@@ -2800,8 +2800,8 @@ msgstr "Värit"
 msgid "Online Quotes"
 msgstr "Online-noteeraukset"
 
-#: kmymoney2.cpp:1823 reports/pivottable.cpp:2431 views/kmymoneyview.cpp:251
-#: views/kmymoneyview.cpp:253 views/kreportsview.cpp:1400 views/rc.cpp:41
+#: kmymoney2.cpp:1823 reports/pivottable.cpp:2426 views/kmymoneyview.cpp:251
+#: views/kmymoneyview.cpp:253 views/kreportsview.cpp:1415 views/rc.cpp:41
 msgid "Forecast"
 msgstr "Ennusteet"
 
@@ -3062,7 +3062,7 @@ msgstr "Muokkaa kategoriaa '%1'"
 msgid "Unable to modify account '%1'. Cause: %2"
 msgstr "Tiliä '%1' ei voitu muokata. Syy: %2"
 
-#: kmymoney2.cpp:3064
+#: kmymoney2.cpp:3065
 #, fuzzy
 msgid ""
 "KMyMoney has detected some overdue scheduled transactions for this account. "
@@ -3071,11 +3071,11 @@ msgstr ""
 "Ohjelma on löytänyt myöhästyneitä tapahtumia tälle tilille. Haluatko syöttää "
 "nuo tapahtumat nyt?"
 
-#: kmymoney2.cpp:3064
+#: kmymoney2.cpp:3065
 msgid "Scheduled transactions found"
 msgstr "Ajoitettuja tapahtumia löytyi"
 
-#: kmymoney2.cpp:3161
+#: kmymoney2.cpp:3163
 msgid ""
 "You are about to finish the reconciliation of this account with a difference "
 "between your bank statement and the transactions marked as cleared.\n"
@@ -3085,11 +3085,11 @@ msgstr ""
 "varmistettujen tapahtumien välillä on eroavaisuuksia.\n"
 "Haluatko varmasti yhteensovittaa?"
 
-#: kmymoney2.cpp:3163
+#: kmymoney2.cpp:3165
 msgid "Confirm end of reconciliation"
 msgstr "Vahvista yhteensovituksen päättäminen"
 
-#: kmymoney2.cpp:3337
+#: kmymoney2.cpp:3339
 msgid ""
 "You have closed this account. It remains in the system because you have "
 "transactions which still refer to it, but is not shown in the views. You can "
@@ -3102,42 +3102,42 @@ msgstr ""
 "kaikki tilit</b> tai poistamalla valinnan <b>Älä nöytä suljettuja tilejä</b> "
 "-asetuksen."
 
-#: kmymoney2.cpp:3377
+#: kmymoney2.cpp:3379
 msgid "<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3"
 msgstr "<b>%1</b> ei voida siirtää rahalaitokseen <b>%2</b>. Syy: %3"
 
-#: kmymoney2.cpp:3391
+#: kmymoney2.cpp:3393
 msgid "<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3"
 msgstr "<b>%1</b>ei voida siirtää tänne <b>%2</b>. Syy: %3"
 
-#: kmymoney2.cpp:3406
+#: kmymoney2.cpp:3408
 #, fuzzy
 msgid "%1 YTD Account Transactions"
 msgstr "%1 YTD -tilin tapahtumat"
 
-#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3407
+#: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3409
 #: views/kforecastview.cpp:650 views/khomeview.cpp:276
 #: views/khomeview.cpp:1384 views/kreportsview.cpp:619
 #, fuzzy
 msgid "Generated Report"
 msgstr "Automaattisesti luotu raportti"
 
-#: dialogs/rc.cpp:324 dialogs/settings/rc.cpp:80 kmymoney2.cpp:3409
+#: dialogs/rc.cpp:324 dialogs/settings/rc.cpp:80 kmymoney2.cpp:3411
 #: views/kreportsview.cpp:1062 views/rc.cpp:58 views/rc.cpp:59
 msgid "Transactions"
 msgstr "Tapahtumat"
 
-#: kmymoney2.cpp:3447
+#: kmymoney2.cpp:3449
 #, fuzzy, c-format
 msgid "Unable to add scheduled transaction: %1"
 msgstr "Ajoitettua tapahtumaa ei voitu lisätä: %1"
 
-#: kmymoney2.cpp:3447
+#: kmymoney2.cpp:3449
 #, fuzzy
 msgid "Add scheduled transaction"
 msgstr "Kirjaa ajoitettu tapahtuma"
 
-#: kmymoney2.cpp:3487
+#: kmymoney2.cpp:3489
 #, fuzzy
 msgid ""
 "You have entered a scheduled transaction date of <b>%1</b>.  Because the "
@@ -3150,21 +3150,21 @@ msgstr ""
 "tapahtumaa seuraavalle päivälle riippumatta siitä onko viimeinen maksupäivä "
 "palautettu. Haluatko palauttaa viimeisen maksupäivän?"
 
-#: kmymoney2.cpp:3487
+#: kmymoney2.cpp:3489
 msgid "Reset Last Payment Date"
 msgstr "Palauta viimeinen maksupäivä"
 
-#: kmymoney2.cpp:3497 kmymoney2.cpp:3517 kmymoney2.cpp:3529
+#: kmymoney2.cpp:3499 kmymoney2.cpp:3519 kmymoney2.cpp:3531
 #, fuzzy
 msgid "Unable to modify scheduled transaction '%1'"
 msgstr "Ajoitetun tapahtuman '%1' tietoja ei voitu muuttaa"
 
-#: kmymoney2.cpp:3541
+#: kmymoney2.cpp:3543
 #, fuzzy
 msgid "Are you sure you want to delete the scheduled transaction <b>%1</b>?"
 msgstr "Haluatko varmasti poistaa ajoitetun tapahtuman <b>%1</b>?"
 
-#: kmymoney2.cpp:3544
+#: kmymoney2.cpp:3546
 #, fuzzy
 msgid ""
 "In case of loan payments it is currently not possible to recreate the "
@@ -3173,40 +3173,40 @@ msgstr ""
 "Lainan maksutapahtumien ajoitettujen tapahtumien uudelleenluonti ei ole "
 "tällä hetkellä mahdollista"
 
-#: kmymoney2.cpp:3553
+#: kmymoney2.cpp:3555
 #, fuzzy
 msgid "Unable to remove scheduled transaction '%1'"
 msgstr "Ajoitettua tapahtumaa '%1' ei voitu poistaa"
 
-#: kmymoney2.cpp:3567
+#: kmymoney2.cpp:3569
 #, fuzzy, c-format
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
 msgstr " %1 :n kopio"
 
-#: kmymoney2.cpp:3579 kmymoney2.cpp:4350
+#: kmymoney2.cpp:3581 kmymoney2.cpp:4352
 msgid "Unable to duplicate transaction(s): %1, thrown in %2:%3"
 msgstr "Ajoitettua tapahtuaa ei voitu kahdentaa: %1, kohdasta %2:%3"
 
-#: kmymoney2.cpp:3593
+#: kmymoney2.cpp:3595
 #, fuzzy
 msgid ""
 "Do you really want to skip the <b>%1</b> transaction scheduled for <b>%2</b>?"
 msgstr ""
 "Haluatko varmasti jättää väliin ajoitetun tapahtuman <b>%1</b> <b>%2</b>?"
 
-#: kmymoney2.cpp:3603
+#: kmymoney2.cpp:3605
 #, fuzzy
 msgid "Unable to skip scheduled transaction <b>%1</b>."
 msgstr "Ajoitettua tapahtumaa <b>%1</b> ei voitu ohittaa."
 
-#: kmymoney2.cpp:3616
+#: kmymoney2.cpp:3618
 #, fuzzy
 msgid "Unknown scheduled transaction '%1'"
 msgstr "Tuntematon ajoitettu tapahtuma '%1'"
 
-#: kmymoney2.cpp:3671
+#: kmymoney2.cpp:3673
 #, fuzzy
 msgid ""
 "Are you sure you wish to stop this scheduled transaction from being entered "
@@ -3220,40 +3220,40 @@ msgstr ""
 "Ohjelma tulee kysymään tätä seuraavalla käynnistyskerralla, jos et kirjaa "
 "tapahtumaa käsin myöhemmin."
 
-#: kmymoney2.cpp:3723 kmymoney2.cpp:3730
+#: kmymoney2.cpp:3725 kmymoney2.cpp:3732
 #, fuzzy
 msgid "Unable to enter scheduled transaction '%1'"
 msgstr "Kirjaa ajoitettu tapahtuma"
 
-#: kmymoney2.cpp:3741 kmymoney2.cpp:3781
+#: kmymoney2.cpp:3743 kmymoney2.cpp:3783
 msgid "New Payee"
 msgstr "Uusi maksunsaaja"
 
-#: kmymoney2.cpp:3743
+#: kmymoney2.cpp:3745
 msgid "Do you want to add <b>%1</b> as payer/receiver ?"
 msgstr "Haluatko lisätä <b>%1</b> maksajaksi tai maksunsaajaksi?"
 
-#: converter/mymoneystatementreader.cpp:892 kmymoney2.cpp:3745
+#: converter/mymoneystatementreader.cpp:892 kmymoney2.cpp:3747
 msgid "New payee/receiver"
 msgstr "Uusi maksaja / maksunsaaja"
 
-#: kmymoney2.cpp:3771
+#: kmymoney2.cpp:3773
 msgid "Unable to add payee"
 msgstr "Maksunsaajaa ei voitu lisätä"
 
-#: kmymoney2.cpp:3824
+#: kmymoney2.cpp:3826
 msgid "Do you really want to remove the payee <b>%1</b>?"
 msgstr "Poistetaanko maksunsaaja <b>%1</b>?"
 
-#: kmymoney2.cpp:3826
+#: kmymoney2.cpp:3828
 msgid "Do you really want to remove all selected payees?"
 msgstr "Poistetaanko kaikki valitut maksunsaajat?"
 
-#: kmymoney2.cpp:3828
+#: kmymoney2.cpp:3830
 msgid "Remove Payee"
 msgstr "Poista maksunsaaja"
 
-#: kmymoney2.cpp:3868
+#: kmymoney2.cpp:3870
 #, fuzzy
 msgid ""
 "At least one transaction/scheduled transaction is still referenced by a "
@@ -3265,96 +3265,96 @@ msgstr ""
 "maksunsaaja täytyy jäädä jotta tapahtuma / ajoitettu tapahtuma voidaan "
 "uudelleen asettaa."
 
-#: kmymoney2.cpp:3923
+#: kmymoney2.cpp:3925
 msgid "Unable to reassign payee of transaction/split"
 msgstr "Tapahtuman / jaottelun maksun saajaa ei voitu uudelleen asettaa"
 
-#: converter/mymoneyqifreader.cpp:525 converter/mymoneystatementreader.cpp:959
-#: kmymoney2.cpp:3924 kmymoney2.cpp:3981 views/kbudgetview.cpp:636
+#: converter/mymoneyqifreader.cpp:534 converter/mymoneystatementreader.cpp:959
+#: kmymoney2.cpp:3926 kmymoney2.cpp:3983 views/kbudgetview.cpp:636
 #: views/kbudgetview.cpp:737 views/kbudgetview.cpp:751
 #: views/kpayeesview.cpp:519 views/kpayeesview.cpp:870
 #, fuzzy
 msgid "thrown in"
 msgstr "kaupanpäälle annettu"
 
-#: kmymoney2.cpp:3980
+#: kmymoney2.cpp:3982
 #, fuzzy
 msgid "Unable to remove payee(s)"
 msgstr "Maksunsaajaa ei voitu poistaa"
 
-#: kmymoney2.cpp:3988
+#: kmymoney2.cpp:3990
 msgid "Enter ISO 4217 code for the new currency"
 msgstr "Syötä ISO 4217 -koodi uutta valuttaa varten"
 
-#: kmymoney2.cpp:3997
+#: kmymoney2.cpp:3999
 #, c-format
 msgid "Cannot create new currency. %1"
 msgstr "Ei voitu luoda uutta valuuttaa. %1"
 
-#: kmymoney2.cpp:4019 kmymoney2.cpp:4024
+#: kmymoney2.cpp:4021 kmymoney2.cpp:4026
 #, c-format
 msgid "Cannot rename currency. %1"
 msgstr "Valuuttaa ei voitu uudelleennimetä. %1"
 
-#: kmymoney2.cpp:4037
+#: kmymoney2.cpp:4039
 msgid "Cannot delete currency %1. %2"
 msgstr "Valuuttaa %1 ei voitu poistaa. %2"
 
-#: kmymoney2.cpp:4052 views/kmymoneyview.cpp:1275
+#: kmymoney2.cpp:4054 views/kmymoneyview.cpp:1275
 msgid "Cannot set %1 as base currency: %2"
 msgstr "Ei voitu asettaa oletusvaluutaksi %1: %2"
 
-#: kmymoney2.cpp:4052 views/kmymoneyview.cpp:1275
+#: kmymoney2.cpp:4054 views/kmymoneyview.cpp:1275
 msgid "Set base currency"
 msgstr "Aseta oletusvaluutaksi."
 
-#: kmymoney2.cpp:4063
+#: kmymoney2.cpp:4065
 #, c-format
 msgid "Budget %1"
 msgstr "Budjetti %1"
 
-#: kmymoney2.cpp:4073
+#: kmymoney2.cpp:4075
 msgid "Budget %1 (%2)"
 msgstr "Budjetti %1 (%2)"
 
-#: kmymoney2.cpp:4088 kmymoney2.cpp:4137
+#: kmymoney2.cpp:4090 kmymoney2.cpp:4139
 msgid "Unable to add budget: %1, thrown in %2:%3"
 msgstr "Ei voida lisätä budjettia: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4103
+#: kmymoney2.cpp:4105
 msgid "Do you really want to remove the budget <b>%1</b>?"
 msgstr "Haluatko varmasti poistaa budjetin <b>%1</b>?"
 
-#: kmymoney2.cpp:4105
+#: kmymoney2.cpp:4107
 msgid "Do you really want to remove all selected budgets?"
 msgstr "Haluatko varmasti poistaa valitut budjetit?"
 
-#: kmymoney2.cpp:4107
+#: kmymoney2.cpp:4109
 msgid "Remove Budget"
 msgstr "Poista budjetti"
 
-#: kmymoney2.cpp:4120
+#: kmymoney2.cpp:4122
 msgid "Unable to remove budget: %1, thrown in %2:%3"
 msgstr "Ei voitu poistaa budjettia: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4132 views/kreportsview.cpp:659
+#: kmymoney2.cpp:4134 views/kreportsview.cpp:659
 #, c-format
 msgid "Copy of %1"
 msgstr "Kopio %1:sta"
 
-#: kmymoney2.cpp:4162
+#: kmymoney2.cpp:4164
 msgid "Select year"
 msgstr "Valitse vuosi"
 
-#: kmymoney2.cpp:4162
+#: kmymoney2.cpp:4164
 msgid "Budget year"
 msgstr "Budjettivuosi"
 
-#: kmymoney2.cpp:4174 kmymoney2.cpp:4212 kmymoney2.cpp:4272
+#: kmymoney2.cpp:4176 kmymoney2.cpp:4214 kmymoney2.cpp:4274
 msgid "Unable to modify budget: %1, thrown in %2:%3"
 msgstr "Ei voitu muuttaa budjettia: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4190 kmymoney2.cpp:4248
+#: kmymoney2.cpp:4192 kmymoney2.cpp:4250
 msgid ""
 "The current budget already contains data. Continuing will replace all "
 "current values of this budget."
@@ -3362,7 +3362,7 @@ msgstr ""
 "Nykyinen budjetti sisältää jo tietoa. Jatkaminen korvaa uudesta budjetista "
 "kaikki nykyiset budjetin arvot."
 
-#: kmymoney2.cpp:4220
+#: kmymoney2.cpp:4222
 msgid ""
 "Please be aware that changes made in the following dialog affect all KDE "
 "applications not only KMyMoney."
@@ -3370,7 +3370,7 @@ msgstr ""
 "Tiedoksi, että kaikki tehtävät muutokset seuraavassa osiossa vaikuttavat "
 "kaikkiin KDE-ohjelmiin, ei pelkästään KMyMoney:hin."
 
-#: kmymoney2.cpp:4290
+#: kmymoney2.cpp:4292
 msgid ""
 "At least one split of the selected transactions has been reconciled. Do you "
 "wish to delete the transactions anyway?"
@@ -3378,39 +3378,39 @@ msgstr ""
 "Ainakin yksi jaoteltu osa tästä tapahtumasta on yhteensovitettu. Haluatko "
 "siitä huolimatta jatkaa ja poistaa tapahtumat?"
 
-#: kmymoney2.cpp:4293 views/kgloballedgerview.cpp:1031
+#: kmymoney2.cpp:4295 views/kgloballedgerview.cpp:1043
 msgid "Transaction already reconciled"
 msgstr "Tapahtuma on jo yhteensovitettu"
 
-#: kmymoney2.cpp:4299
+#: kmymoney2.cpp:4301
 msgid "Do you really want to delete the selected transaction?"
 msgstr "Haluatko varmasti poistaa valitut tapahtumat?"
 
-#: kmymoney2.cpp:4301
+#: kmymoney2.cpp:4303
 msgid "Do you really want to delete all %1 selected transactions?"
 msgstr "Haluatko varmasti poistaa kaikki %1 valittua tapahtumaa?"
 
-#: kmymoney2.cpp:4303
+#: kmymoney2.cpp:4305
 msgid "Delete transaction"
 msgstr "Poista tapahtuma"
 
-#: kmymoney2.cpp:4304
+#: kmymoney2.cpp:4306
 msgid "Deleting transactions"
 msgstr "Poistaa tapahtumia"
 
-#: kmymoney2.cpp:4319
+#: kmymoney2.cpp:4321
 msgid "Duplicating transactions"
 msgstr "Kahdentaa tapahtumia"
 
-#: kmymoney2.cpp:4376
+#: kmymoney2.cpp:4378
 msgid "Unable to delete transaction(s): %1, thrown in %2:%3"
 msgstr "Tapahtumaa ei voitu poistaa: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4450 kmymoney2.cpp:4620
+#: kmymoney2.cpp:4452 kmymoney2.cpp:4622
 msgid "Unable to modify transaction: %1, thrown in %2:%3"
 msgstr "Ei voitu muokata tapahtumaa: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4512
+#: kmymoney2.cpp:4514
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3425,11 +3425,11 @@ msgstr ""
 "joka automaattisesti tallentaa tapahtuman, esimerkiksi silloin kun valitset "
 "toisen tapahtuman."
 
-#: kmymoney2.cpp:4512 kmymoney2.cpp:4515
+#: kmymoney2.cpp:4514 kmymoney2.cpp:4517
 msgid "Cancel transaction edit"
 msgstr "Peruuta tapahtuman muokkaus"
 
-#: kmymoney2.cpp:4515
+#: kmymoney2.cpp:4517
 msgid ""
 "Do you really want to cancel editing this transaction without saving it?<p>- "
 "<b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the "
@@ -3442,74 +3442,74 @@ msgstr ""
 "myös valita asetuksen, joka automaattisesti tallentaa tapahtuman, "
 "esimerkiksi silloin kun valitset toisen tapahtuman."
 
-#: kmymoney2.cpp:4665
+#: kmymoney2.cpp:4667
 msgid "Unable to accept transaction: %1, thrown in %2:%3"
 msgstr "Tapahtumaa ei voitu hyväksyä: %1, kohdassa %2:%3"
 
-#: kmymoney2.cpp:4844
+#: kmymoney2.cpp:4846
 msgid "Unable to unmatch the selected transactions"
 msgstr "Valituista tapahtumista ei voitu poistaa sovitusta"
 
-#: kmymoney2.cpp:4883
+#: kmymoney2.cpp:4885
 msgid "No manually entered transaction selected for matching"
 msgstr "Käsin syötettyä tapahtumaa ei ole valittuna täsmäämistä varten"
 
-#: kmymoney2.cpp:4885
+#: kmymoney2.cpp:4887
 msgid "No imported transaction selected for matching"
 msgstr "Sovitukseen ei ole valittu tuotuja tapahtumia"
 
-#: kmymoney2.cpp:4893
+#: kmymoney2.cpp:4895
 msgid "Unable to match the selected transactions"
 msgstr "Valittuja tapahtumia ei voitu sovittaa"
 
-#: kmymoney2.cpp:5095
+#: kmymoney2.cpp:5097
 msgid "Create a new transaction"
 msgstr "Luo uusi tapahtuma"
 
-#: kmymoney2.cpp:5161
+#: kmymoney2.cpp:5163
 msgid "Duplicate the current selected transactions"
 msgstr "Kahdenna nykyiset valitut tapahtumat"
 
-#: kmymoney2.cpp:5221
+#: kmymoney2.cpp:5223
 #, fuzzy
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
 msgstr "Sovita"
 
-#: kmymoney2.cpp:5449 kmymoney2.cpp:5471
+#: kmymoney2.cpp:5451 kmymoney2.cpp:5473
 msgid "Goto '%1'"
 msgstr "Siirry '%1'"
 
-#: kmymoney2.cpp:5580
+#: kmymoney2.cpp:5582
 msgid "Running consistency check..."
 msgstr "Ajetaan yhtenäisyystarkistus..."
 
-#: kmymoney2.cpp:5588
+#: kmymoney2.cpp:5590
 #, c-format
 msgid "Consistency check failed: %1"
 msgstr "Yhtenäisyystarkistus epäonnistui: %1"
 
-#: kmymoney2.cpp:5592
+#: kmymoney2.cpp:5594
 msgid "Consistency check result"
 msgstr "Yhtenäisyystarkistuksen tulokset"
 
-#: kmymoney2.cpp:5601
+#: kmymoney2.cpp:5603
 #, fuzzy
 msgid "Checking for overdue scheduled transactions..."
 msgstr "Tarkistaa erääntyneitä ajoitettuja tapahtumia..."
 
-#: kmymoney2.cpp:5738
+#: kmymoney2.cpp:5740
 msgid ""
 "You must first select a KMyMoney file before you can import a statement."
 msgstr ""
 "Jotta tiliote voidaan tuoda, täytyy KMyMoney-tiedosto olla valittuna ensin."
 
-#: kmymoney2.cpp:5744
+#: kmymoney2.cpp:5746
 msgid "Importing a statement via Web Connect"
 msgstr "Tuodaan tiliotetietoja Web-liittymän kautta"
 
-#: kmymoney2.cpp:5757
+#: kmymoney2.cpp:5759
 msgid ""
 "Unable to import %1 using %2 plugin.  The plugin returned the following "
 "error: %3"
@@ -3517,28 +3517,28 @@ msgstr ""
 "Ei voitu tuoda %2-liitännäistä käyttäen %1:a. Liitännäinen palautti "
 "seuraavan virheen: %3"
 
-#: kmymoney2.cpp:5757 plugins/ofximport/ofximporterplugin.cpp:646
+#: kmymoney2.cpp:5759 plugins/ofximport/ofximporterplugin.cpp:646
 msgid "Importing error"
 msgstr "Tuontivirhe"
 
-#: kmymoney2.cpp:5778
+#: kmymoney2.cpp:5780
 msgid "All messages have been enabled."
 msgstr "Kaikki viestit on otettu käyttöön."
 
-#: kmymoney2.cpp:5778
+#: kmymoney2.cpp:5780
 msgid "All messages"
 msgstr "Kaikki viestit"
 
-#: kmymoney2.cpp:5853
+#: kmymoney2.cpp:5855
 msgid "Auto saving..."
 msgstr "Automaattitallennus..."
 
-#: kmymoney2.cpp:5911
+#: kmymoney2.cpp:5913
 #, fuzzy
 msgid "Unable to setup online parameters for account ''%1'"
 msgstr "Ei voitu asettaa online-parametreja tilille ''%1'"
 
-#: kmymoney2.cpp:5926
+#: kmymoney2.cpp:5928
 msgid ""
 "Do you really want to remove the mapping of account <b>%1</b> to an online "
 "account? Depending on the details of the online banking method used, this "
@@ -3547,21 +3547,21 @@ msgstr ""
 "Haluatko varmasti poistaa liitoksen tililtä <b>%1</b> online-tilille? Online-"
 "pankista riippuen, tätä tapahtumaa ei voida palauttaa."
 
-#: kmymoney2.cpp:5926
+#: kmymoney2.cpp:5928
 msgid "Remove mapping to online account"
 msgstr "Poista liitos online-tiliin"
 
-#: kmymoney2.cpp:5937
+#: kmymoney2.cpp:5939
 #, c-format
 msgid "Unable to unmap account from online account: %1"
 msgstr "Ei voitu poistaa liitosta tilille online-tililtä: %1"
 
-#: kmymoney2.cpp:5954
+#: kmymoney2.cpp:5956
 #, fuzzy
 msgid " (Brokerage)"
 msgstr "%1 (Maksunvälittäjä)"
 
-#: kmymoney2.cpp:5955
+#: kmymoney2.cpp:5957
 msgid ""
 "You try to map a brokerage account to an online account. This is usually not "
 "advisable. In general, the investment account should be mapped to the online "
@@ -3572,26 +3572,26 @@ msgstr ""
 "ottaen suositeltavaa, vaan olisi parempi liittää sijoitustili online-"
 "tiliksi. Liittäminen voidaan keskeyttää peruuta-painikkeella."
 
-#: kmymoney2.cpp:5955
+#: kmymoney2.cpp:5957
 #, fuzzy
 msgid "Mapping brokerage account"
 msgstr "Välityspalkkiotili"
 
-#: kmymoney2.cpp:5962
+#: kmymoney2.cpp:5964
 msgid "Select online banking plugin"
 msgstr "Valitse online-pankki -liitännäinen"
 
-#: kmymoney2.cpp:6003
+#: kmymoney2.cpp:6005
 #, c-format
 msgid "Unable to map account to online account: %1"
 msgstr "Tiliä ei voida liittää online-tiliin: %1"
 
-#: converter/mymoneyqifreader.cpp:398 converter/mymoneytemplate.cpp:73
+#: converter/mymoneyqifreader.cpp:407 converter/mymoneytemplate.cpp:73
 #: views/kmymoneyview.cpp:590
 msgid "Error while loading file '%1'!"
 msgstr "Tiedostoa %1 avattaessa tapahtui virhe!"
 
-#: converter/mymoneyqifreader.cpp:400 converter/mymoneyqifreader.cpp:955
+#: converter/mymoneyqifreader.cpp:409 converter/mymoneyqifreader.cpp:965
 #: converter/mymoneytemplate.cpp:75 views/kmymoneyview.cpp:592
 msgid "File access error"
 msgstr "Tiedoston avausvirhe"
@@ -3677,155 +3677,155 @@ msgstr "Päivämäärä löytyi: %1"
 msgid "Unable to update price for %1"
 msgstr "Hintoja ei voitu päivittää %1:lle"
 
-#: converter/mymoneyqifreader.cpp:161
+#: converter/mymoneyqifreader.cpp:170
 #, fuzzy
 msgid ""
 "_: Category name\n"
 "Reinvested dividend"
 msgstr "Uudelleensijoitettu osinko"
 
-#: converter/mymoneyqifreader.cpp:164
+#: converter/mymoneyqifreader.cpp:173
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (long term)"
 msgstr "Uudelleensijoitettu osinko (pitkäaikainen)"
 
-#: converter/mymoneyqifreader.cpp:167
+#: converter/mymoneyqifreader.cpp:176
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (short term)"
 msgstr "Uudelleensijoitettu osinko (lyhytaikainen)"
 
-#: converter/mymoneyqifreader.cpp:170
+#: converter/mymoneyqifreader.cpp:179
 msgid ""
 "_: Category name\n"
 "Dividend"
 msgstr "Osinko"
 
-#: converter/mymoneyqifreader.cpp:173
+#: converter/mymoneyqifreader.cpp:182
 msgid ""
 "_: Category name\n"
 "Interest"
 msgstr "Korko"
 
-#: converter/mymoneyqifreader.cpp:176
+#: converter/mymoneyqifreader.cpp:185
 msgid ""
 "_: Category name\n"
 "Capital Gain (short term)"
 msgstr "Pääomavoitto (lyhytaikainen)"
 
-#: converter/mymoneyqifreader.cpp:179
+#: converter/mymoneyqifreader.cpp:188
 msgid ""
 "_: Category name\n"
 "Capital Gain (mid term)"
 msgstr "Pääomavoitto (keskipitkä)"
 
-#: converter/mymoneyqifreader.cpp:182
+#: converter/mymoneyqifreader.cpp:191
 msgid ""
 "_: Category name\n"
 "Capital Gain (long term)"
 msgstr "Pääomavoitto (pitkäaikainen)"
 
-#: converter/mymoneyqifreader.cpp:185
+#: converter/mymoneyqifreader.cpp:194
 msgid ""
 "_: Category name\n"
 "Returned capital"
 msgstr "Palautunut pääoma"
 
-#: converter/mymoneyqifreader.cpp:188
+#: converter/mymoneyqifreader.cpp:197
 msgid ""
 "_: Category name\n"
 "Miscellaneous income"
 msgstr "Sekalaiset tulot"
 
-#: converter/mymoneyqifreader.cpp:191
+#: converter/mymoneyqifreader.cpp:200
 msgid ""
 "_: Category name\n"
 "Miscellaneous expense"
 msgstr "Sekalaiset menot"
 
-#: converter/mymoneyqifreader.cpp:194
+#: converter/mymoneyqifreader.cpp:203
 msgid ""
 "_: Category name\n"
 "Investment fees"
 msgstr "Sijoitusmaksut"
 
-#: converter/mymoneyqifreader.cpp:196
+#: converter/mymoneyqifreader.cpp:205
 #, c-format
 msgid "Unknown QIF type %1"
 msgstr "Tuntematon QIF -tyyppi %1"
 
-#: converter/mymoneyqifreader.cpp:346
+#: converter/mymoneyqifreader.cpp:355
 #, fuzzy
 msgid "Date format selection"
 msgstr "Päivämäärämuodon valinta"
 
-#: converter/mymoneyqifreader.cpp:346
+#: converter/mymoneyqifreader.cpp:355
 msgid "Pick the date format that suits your input file"
 msgstr "Valitse päivämäärämuoto joka sopii sisäänluettavaan tiedostoon"
 
-#: converter/mymoneyqifreader.cpp:357
+#: converter/mymoneyqifreader.cpp:366
 #, fuzzy
 msgid "Importing QIF ..."
 msgstr "Tuodaan QIF-tiedosto..."
 
-#: converter/mymoneyqifreader.cpp:433
+#: converter/mymoneyqifreader.cpp:442
 #, fuzzy
 msgid "Reading QIF ..."
 msgstr "Luetaan QIF..."
 
-#: converter/mymoneyqifreader.cpp:498
+#: converter/mymoneyqifreader.cpp:507
 msgid "Adding transactions"
 msgstr "Lisätään tapahtumat"
 
-#: converter/mymoneyqifreader.cpp:498
+#: converter/mymoneyqifreader.cpp:507
 msgid "Now adding the transactions to your ledger..."
 msgstr "Lisätään tapahtumat kirjanpitoosi..."
 
-#: converter/mymoneyqifreader.cpp:524
+#: converter/mymoneyqifreader.cpp:533
 msgid "Unable to add transactions"
 msgstr "Tapahtumaa ei voitu lisätä:"
 
-#: converter/mymoneyqifreader.cpp:558
+#: converter/mymoneyqifreader.cpp:567
 #, fuzzy
 msgid ""
 "_: QIF tag for liability account\n"
 "Oth L"
 msgstr "Oth L"
 
-#: converter/mymoneyqifreader.cpp:563
+#: converter/mymoneyqifreader.cpp:572
 #, fuzzy
 msgid ""
 "_: QIF tag for category\n"
 "Cat"
 msgstr "Cat"
 
-#: converter/mymoneyqifreader.cpp:566
+#: converter/mymoneyqifreader.cpp:575
 msgid ""
 "_: QIF tag for security\n"
 "Security"
 msgstr "Arvopaperi"
 
-#: converter/mymoneyqifreader.cpp:569
+#: converter/mymoneyqifreader.cpp:578
 #, fuzzy
 msgid ""
 "_: QIF tag for investment account\n"
 "Invst"
 msgstr "Invst"
 
-#: converter/mymoneyqifreader.cpp:572
+#: converter/mymoneyqifreader.cpp:581
 msgid ""
 "_: QIF tag for prices\n"
 "Prices"
 msgstr "Hinnat"
 
-#: converter/mymoneyqifreader.cpp:590
+#: converter/mymoneyqifreader.cpp:599
 msgid ""
 "_: QIF tag for a class\n"
 "Class"
 msgstr "Luokka"
 
-#: converter/mymoneyqifreader.cpp:743 converter/mymoneyqifreader.cpp:2191
+#: converter/mymoneyqifreader.cpp:753 converter/mymoneyqifreader.cpp:2203
 msgid ""
 "The %1 account currently has an opening balance of %2. This QIF file reports "
 "an opening balance of %3. Would you like to overwrite the current balance "
@@ -3834,21 +3834,21 @@ msgstr ""
 "Tilillä %1 on avaussaldo %2. QIF-tiedosto kertoo avaussaldoksi %3. Haluatko "
 "ylikirjoittaa nykyisen avaussaldon QIF-tiedostosta?"
 
-#: converter/mymoneyqifreader.cpp:744 converter/mymoneyqifreader.cpp:2192
+#: converter/mymoneyqifreader.cpp:754 converter/mymoneyqifreader.cpp:2204
 msgid "Overwrite opening balance"
 msgstr "Ylikirjoita avaussaldo"
 
-#: converter/mymoneyqifreader.cpp:869 converter/mymoneyqifreader.cpp:880
-#: converter/mymoneyqifreader.cpp:904
+#: converter/mymoneyqifreader.cpp:879 converter/mymoneyqifreader.cpp:890
+#: converter/mymoneyqifreader.cpp:914
 msgid "Autogenerated by QIF importer"
 msgstr "Automaattisesti generoitu QIF-tuojalla"
 
-#: converter/mymoneyqifreader.cpp:897
+#: converter/mymoneyqifreader.cpp:907
 #, fuzzy
 msgid "QIF imported, no account name supplied"
 msgstr "QIF tuotu, tilinimeä ei annettu"
 
-#: converter/mymoneyqifreader.cpp:930
+#: converter/mymoneyqifreader.cpp:940
 msgid ""
 "KMyMoney has imported a second opening balance transaction into account <b>%"
 "1</b> which differs from the one found already on file. Please correct this "
@@ -3858,16 +3858,16 @@ msgstr ""
 "aikaisemmasta tiedoston avaussaldosta. Korjaa tämä käsin kun tuonti on saatu "
 "valmiiksi."
 
-#: converter/mymoneyqifreader.cpp:930
+#: converter/mymoneyqifreader.cpp:940
 #, fuzzy
 msgid "Opening balance problem"
 msgstr "Avaussaldo-ongelma"
 
-#: converter/mymoneyqifreader.cpp:953
+#: converter/mymoneyqifreader.cpp:963
 msgid "Error while creating opening balance transaction"
 msgstr "Virhe luotaessa avaussaldotapahtumaa"
 
-#: converter/mymoneyqifreader.cpp:1019 converter/mymoneyqifreader.cpp:1265
+#: converter/mymoneyqifreader.cpp:1029 converter/mymoneyqifreader.cpp:1276
 msgid ""
 "The date entry \"%1\" read from the file cannot be interpreted through the "
 "current date profile setting of \"%2\".\n"
@@ -3883,17 +3883,17 @@ msgstr ""
 "Valitsemalla \"Peruuta\" tuontioperaatio keskeytetään. Tuonti voidaan "
 "uudelleenkäynnistää ja valita toinen QIF-profiili tai luoda uusi."
 
-#: converter/mymoneyqifreader.cpp:1025 converter/mymoneyqifreader.cpp:1271
+#: converter/mymoneyqifreader.cpp:1035 converter/mymoneyqifreader.cpp:1282
 msgid "Invalid date format"
 msgstr "Väärä päivämäärämuoto"
 
-#: converter/mymoneyqifreader.cpp:1386
+#: converter/mymoneyqifreader.cpp:1398
 #: converter/mymoneystatementreader.cpp:589
 #: converter/mymoneystatementreader.cpp:592
 msgid "Statement Importer"
 msgstr "Tiliotteen tuoja"
 
-#: converter/mymoneyqifreader.cpp:1401
+#: converter/mymoneyqifreader.cpp:1413
 #: converter/mymoneystatementreader.cpp:644
 msgid ""
 "This investment account does not contain the \"%1\" security.  Transactions "
@@ -3902,65 +3902,65 @@ msgstr ""
 "Tämä sijoitustili ei sisällä '%1'-arvopaperia. Tähän arvopaperiin liittyvät "
 "tapahtumat ohitetaan."
 
-#: converter/mymoneyqifreader.cpp:1403
+#: converter/mymoneyqifreader.cpp:1415
 #: converter/mymoneystatementreader.cpp:612
 #: converter/mymoneystatementreader.cpp:644
 msgid "Security not found"
 msgstr "Arvopaperia ei löydy"
 
-#: converter/mymoneyqifreader.cpp:2009
+#: converter/mymoneyqifreader.cpp:2021
 #, fuzzy
 msgid "%1 (Investment)"
 msgstr "%1 (Sijoitus)"
 
-#: converter/mymoneyqifreader.cpp:2010
+#: converter/mymoneyqifreader.cpp:2022
 #, fuzzy
 msgid "Autogenerated by QIF importer from type Mutual account entry"
 msgstr ""
 "Automaattisesti luotu QIF-tuojalla Mutual-tyyppisestä tilitapahtumasta."
 
-#: converter/mymoneyqifreader.cpp:2073 converter/mymoneyqifreader.cpp:2216
+#: converter/mymoneyqifreader.cpp:2085 converter/mymoneyqifreader.cpp:2228
 msgid "account"
 msgstr "tili"
 
-#: converter/mymoneyqifreader.cpp:2074
+#: converter/mymoneyqifreader.cpp:2086
 #, fuzzy
 msgid "al"
 msgstr "al"
 
-#: converter/mymoneyqifreader.cpp:2081
+#: converter/mymoneyqifreader.cpp:2093
 msgid "category"
 msgstr "kategoria"
 
-#: converter/mymoneyqifreader.cpp:2082
+#: converter/mymoneyqifreader.cpp:2094
 #, fuzzy
 msgid "ei"
 msgstr "ei"
 
-#: converter/mymoneyqifreader.cpp:2083
+#: converter/mymoneyqifreader.cpp:2095
 msgid "Category selection"
 msgstr "Kategorian valinta"
 
-#: converter/mymoneyqifreader.cpp:2098
+#: converter/mymoneyqifreader.cpp:2110
 msgid "Account \"%1\" disappeared: "
 msgstr "Tili \"%1\" hävinnyt: "
 
-#: converter/mymoneyqifreader.cpp:2119
+#: converter/mymoneyqifreader.cpp:2131
 msgid "The %1 '%2' does not exist. Do you want to create it?"
 msgstr "%1 '%2' ei ole olemassa. Haluatko luoda sen?"
 
-#: converter/mymoneyqifreader.cpp:2128
+#: converter/mymoneyqifreader.cpp:2140
 #, c-format
 msgid "Select %1"
 msgstr "Valitse %1"
 
-#: converter/mymoneyqifreader.cpp:2130
+#: converter/mymoneyqifreader.cpp:2142
 msgid ""
 "The %1 <b>%2</b> currently exists. Do you want to import transactions to "
 "this account?"
 msgstr "%1 <b>%2</b> on olemassa. Haluatko tuoda tapahtumat tälle tilille?"
 
-#: converter/mymoneyqifreader.cpp:2135
+#: converter/mymoneyqifreader.cpp:2147
 msgid ""
 "The %1 <b>%2</b> currently does not exist. You can create a new %3 by "
 "pressing the <b>Create</b> button or select another %4 manually from the "
@@ -3969,12 +3969,12 @@ msgstr ""
 "%1 <b>%2</b> ei ole olemassa. Voit luoda uuden %3 valitsemalla <b>Luo uusi</"
 "b> tai valitsemalla vaihtoehtoisesti %4 käsin valintalaatikosta."
 
-#: converter/mymoneyqifreader.cpp:2142
+#: converter/mymoneyqifreader.cpp:2154
 #, fuzzy, c-format
 msgid "Import transactions to %1"
 msgstr "Tuo tapahtumat tilille %1"
 
-#: converter/mymoneyqifreader.cpp:2143
+#: converter/mymoneyqifreader.cpp:2155
 msgid ""
 "No %1 information has been found in the selected QIF file. Please select an "
 "account using the selection box in the dialog or create a new %2 by pressing "
@@ -3983,11 +3983,11 @@ msgstr ""
 "%1 tietoa ei löytynyt QIF -tiedostosta. Valitse tili käyttäen "
 "valintalaatikkoa ikkunassa, tai luo uusi %2 valitsemalla <b>Luo uusi</b>"
 
-#: converter/mymoneyqifreader.cpp:2217
+#: converter/mymoneyqifreader.cpp:2229
 msgid "You must select or create an account."
 msgstr "Tili täytyy valita tai luoda."
 
-#: converter/mymoneyqifreader.cpp:2219
+#: converter/mymoneyqifreader.cpp:2231
 msgid "You must select or create a category."
 msgstr "Kategoria täytyy valita tai luoda."
 
@@ -4113,7 +4113,7 @@ msgstr ""
 msgid "Unable to add payee/receiver"
 msgstr "Ei voitu lisätä maksajaa / maksun saajaa"
 
-#: converter/mymoneystatementreader.cpp:1161
+#: converter/mymoneystatementreader.cpp:1162
 msgid ""
 "KMyMoney has found a scheduled transaction named <b>%1</b> which matches an "
 "imported transaction. Do you want KMyMoney to enter this schedule now so "
@@ -4123,41 +4123,41 @@ msgstr ""
 "tapahtumaan. Haluatko että ajoitettu tapahtuma kirjataan jotta tapahtuma on "
 "yhteensovitettavissa? "
 
-#: converter/mymoneystatementreader.cpp:1161
+#: converter/mymoneystatementreader.cpp:1162
 msgid "Schedule found"
 msgstr "Ajoitettu tapahtuma löytyi"
 
-#: converter/mymoneystatementreader.cpp:1218
+#: converter/mymoneystatementreader.cpp:1219
 msgid "Problem adding or matching imported transaction with id '%1': %2"
 msgstr ""
 "Ongelma lisäyksessä tai tuodun tapahtuman sovittamisessa, tapahtumatunniste "
 "'%1': %2"
 
-#: converter/mymoneystatementreader.cpp:1267
+#: converter/mymoneystatementreader.cpp:1268
 msgid ""
 "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr "<b>Tiliote ladattu seuraavalle tilille:</b><br><br>"
 
-#: converter/mymoneystatementreader.cpp:1268
+#: converter/mymoneystatementreader.cpp:1269
 #, c-format
 msgid " - Account Name: %1"
 msgstr " - Tilin nimi: %1"
 
-#: converter/mymoneystatementreader.cpp:1269
+#: converter/mymoneystatementreader.cpp:1270
 #, fuzzy, c-format
 msgid " - Account Type: %1"
 msgstr " - Tilin tyyppi: %1"
 
-#: converter/mymoneystatementreader.cpp:1270
+#: converter/mymoneystatementreader.cpp:1271
 #, c-format
 msgid " - Account Number: %1"
 msgstr " - Tilinumero: %1"
 
-#: converter/mymoneystatementreader.cpp:1278
+#: converter/mymoneystatementreader.cpp:1279
 msgid "Do you want to import transactions to this account?"
 msgstr "Haluatko tuoda tapahtumat tälle tilille?"
 
-#: converter/mymoneystatementreader.cpp:1280
+#: converter/mymoneystatementreader.cpp:1281
 msgid ""
 "KMyMoney cannot determine which of your accounts to use.  You can create a "
 "new account by pressing the <b>Create</b> button or select another one "
@@ -4166,7 +4166,7 @@ msgstr ""
 "Ohjelma ei voi päättää mitä tiliä käyttää. Voit luoda uuden tilin "
 "valitsemalla <b>Luo uusi</b> tai valitsemalla jonkin valintalaatikosta käsin."
 
-#: converter/mymoneystatementreader.cpp:1286
+#: converter/mymoneystatementreader.cpp:1287
 msgid ""
 "No account information has been found in the selected statement file. Please "
 "select an account using the selection box in the dialog or create a new "
@@ -4175,11 +4175,11 @@ msgstr ""
 "Tilitietoa ei löydetty valitusta tiliotteesta. Valitse tili käyttämällä "
 "valintalaatikkoa ikkunassa, tai luo uusi tili valitsemalla <b>Luo uusi</b> "
 
-#: converter/mymoneystatementreader.cpp:1293
+#: converter/mymoneystatementreader.cpp:1294
 msgid "Import transactions"
 msgstr "Tuo tapahtumat"
 
-#: converter/mymoneystatementreader.cpp:1329
+#: converter/mymoneystatementreader.cpp:1330
 msgid ""
 "You must select an account, create a new one, or press the <b>Abort</b> "
 "button."
@@ -4562,7 +4562,7 @@ msgstr "Ennuste (historiaperustainen)"
 msgid "Assets and Liabilities"
 msgstr "Varat ja velat"
 
-#: kmymoneyutils.cpp:199 reports/pivottable.cpp:2421 views/khomeview.cpp:1393
+#: kmymoneyutils.cpp:199 reports/pivottable.cpp:2416 views/khomeview.cpp:1393
 #: widgets/rc.cpp:70
 msgid "Budget"
 msgstr "Budjetti"
@@ -4576,25 +4576,25 @@ msgstr "Käteisvirta"
 msgid "Unable to load schedule details"
 msgstr "Ajoitetun tapahtuman tietoja ei voitu ladata"
 
-#: kmymoneyutils.cpp:390 widgets/register.cpp:451
+#: kmymoneyutils.cpp:390 widgets/register.cpp:473
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
 msgstr "Ei yhteensovitettu"
 
-#: kmymoneyutils.cpp:393 widgets/register.cpp:454
+#: kmymoneyutils.cpp:393 widgets/register.cpp:476
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
 msgstr "Varmistettu"
 
-#: kmymoneyutils.cpp:396 widgets/register.cpp:457
+#: kmymoneyutils.cpp:396 widgets/register.cpp:479
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
 msgstr "Yhteensovitettu"
 
-#: kmymoneyutils.cpp:399 widgets/register.cpp:460
+#: kmymoneyutils.cpp:399 widgets/register.cpp:482
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
@@ -4793,36 +4793,36 @@ msgstr ""
 "<p>Toiminnon tarjoaa: Jose Jorge</p>\n"
 
 #: reports/listtable.cpp:159 reports/listtable.cpp:163
-#: reports/pivottable.cpp:1569
+#: reports/pivottable.cpp:1564
 msgid ""
 "_: Report date range\n"
 "%1 through %2"
 msgstr "%1 - %2"
 
-#: reports/listtable.cpp:171 reports/pivottable.cpp:1576
+#: reports/listtable.cpp:171 reports/pivottable.cpp:1571
 #, c-format
 msgid "All currencies converted to %1"
 msgstr "Raportissa käytetty valuutta on %1"
 
-#: reports/listtable.cpp:172 reports/pivottable.cpp:1333
+#: reports/listtable.cpp:172 reports/pivottable.cpp:1328
 msgid "All currencies converted to %1\n"
 msgstr "Kaikki valuutat on muutettu %1:ksi\n"
 
-#: reports/listtable.cpp:176 reports/pivottable.cpp:1578
+#: reports/listtable.cpp:176 reports/pivottable.cpp:1573
 msgid "All values shown in %1 unless otherwise noted"
 msgstr "Valuuttayksikkönä on %1, ellei toisin mainita."
 
-#: reports/listtable.cpp:177 reports/pivottable.cpp:1335
+#: reports/listtable.cpp:177 reports/pivottable.cpp:1330
 msgid "All values shown in %1 unless otherwise noted\n"
 msgstr "Valuuttayksikkönä on %1, ellei toisin mainita\n"
 
 #: dialogs/kequitypriceupdatedlg.cpp:73 dialogs/kfindtransactiondlg.cpp:188
 #: dialogs/rc.cpp:53 dialogs/rc.cpp:63 dialogs/rc.cpp:208 dialogs/rc.cpp:805
-#: dialogs/settings/rc.cpp:111 dialogs/transactioneditor.cpp:829
+#: dialogs/settings/rc.cpp:111 dialogs/transactioneditor.cpp:844
 #: reports/listtable.cpp:196 views/khomeview.cpp:412 views/khomeview.cpp:485
 #: views/khomeview.cpp:519 views/rc.cpp:61 widgets/kmymoneypriceview.cpp:128
-#: widgets/rc.cpp:36 widgets/register.cpp:543 widgets/transaction.cpp:1017
-#: widgets/transaction.cpp:1474
+#: widgets/rc.cpp:36 widgets/register.cpp:565 widgets/transaction.cpp:1027
+#: widgets/transaction.cpp:1484
 msgid "Date"
 msgstr "Päivämäärä"
 
@@ -4832,19 +4832,19 @@ msgstr "Nro"
 
 #: dialogs/kfindtransactiondlg.cpp:204 dialogs/kmymoneysplittable.cpp:78
 #: dialogs/kmymoneysplittable.cpp:831 dialogs/rc.cpp:217
-#: dialogs/transactioneditor.cpp:816 dialogs/transactioneditor.cpp:1357
-#: dialogs/transactioneditor.cpp:1365 dialogs/transactioneditor.cpp:1379
-#: dialogs/transactioneditor.cpp:1432 dialogs/transactioneditor.cpp:1439
-#: dialogs/transactioneditor.cpp:1487 reports/listtable.cpp:200
+#: dialogs/transactioneditor.cpp:831 dialogs/transactioneditor.cpp:1374
+#: dialogs/transactioneditor.cpp:1382 dialogs/transactioneditor.cpp:1396
+#: dialogs/transactioneditor.cpp:1449 dialogs/transactioneditor.cpp:1456
+#: dialogs/transactioneditor.cpp:1504 reports/listtable.cpp:200
 #: views/kcategoriesview.cpp:76 views/rc.cpp:62 widgets/rc.cpp:115
-#: widgets/register.cpp:62 widgets/transaction.cpp:838
-#: widgets/transaction.cpp:896
+#: widgets/register.cpp:62 widgets/transaction.cpp:848
+#: widgets/transaction.cpp:906
 msgid "Category"
 msgstr "Kategoria"
 
 #: dialogs/kmymoneysplittable.cpp:79 dialogs/kmymoneysplittable.cpp:837
-#: reports/listtable.cpp:202 widgets/rc.cpp:101 widgets/transaction.cpp:1032
-#: widgets/transaction.cpp:1618
+#: reports/listtable.cpp:202 widgets/rc.cpp:101 widgets/transaction.cpp:1042
+#: widgets/transaction.cpp:1628
 msgid "Memo"
 msgstr "Selite"
 
@@ -4868,7 +4868,7 @@ msgstr "Toiminto"
 #: dialogs/investactivities.cpp:199 dialogs/investactivities.cpp:287
 #: dialogs/investactivities.cpp:424 dialogs/investactivities.cpp:504
 #: dialogs/investactivities.cpp:544 dialogs/investtransactioneditor.cpp:241
-#: reports/listtable.cpp:209 widgets/rc.cpp:103 widgets/transaction.cpp:1503
+#: reports/listtable.cpp:209 widgets/rc.cpp:103 widgets/transaction.cpp:1513
 msgid "Shares"
 msgstr "Osakkeet"
 
@@ -4879,9 +4879,9 @@ msgstr "Osakkeet"
 #: dialogs/kequitypriceupdatedlg.cpp:72 dialogs/rc.cpp:109 dialogs/rc.cpp:164
 #: dialogs/rc.cpp:251 dialogs/rc.cpp:756 dialogs/rc.cpp:827
 #: dialogs/settings/rc.cpp:117 reports/listtable.cpp:210
-#: reports/listtable.cpp:211 reports/pivottable.cpp:2446
+#: reports/listtable.cpp:211 reports/pivottable.cpp:2441
 #: views/kinvestmentview.cpp:80 widgets/kmymoneypriceview.cpp:129
-#: widgets/rc.cpp:43 widgets/rc.cpp:105 widgets/register.cpp:551
+#: widgets/rc.cpp:43 widgets/rc.cpp:105 widgets/register.cpp:573
 msgid "Price"
 msgstr "Hinta"
 
@@ -4925,13 +4925,13 @@ msgstr "Sijoituksen tuotto (ROI)"
 
 #: dialogs/rc.cpp:106 dialogs/rc.cpp:161 dialogs/rc.cpp:248 dialogs/rc.cpp:505
 #: dialogs/rc.cpp:570 dialogs/rc.cpp:667 dialogs/rc.cpp:753
-#: reports/listtable.cpp:223 widgets/register.cpp:548
+#: reports/listtable.cpp:223 widgets/register.cpp:570
 msgid "Payment"
 msgstr "Maksu"
 
 #: dialogs/rc.cpp:111 dialogs/rc.cpp:166 dialogs/rc.cpp:253 dialogs/rc.cpp:709
 #: dialogs/rc.cpp:758 reports/listtable.cpp:224 widgets/rc.cpp:119
-#: widgets/register.cpp:553
+#: widgets/register.cpp:575
 msgid "Balance"
 msgstr "Saldo"
 
@@ -5004,11 +5004,11 @@ msgstr "Tämän hetken saldo"
 #: dialogs/investactivities.cpp:368 dialogs/investactivities.cpp:426
 #: dialogs/rc.cpp:327 reports/listtable.cpp:360 reports/listtable.cpp:364
 #: reports/listtable.cpp:556 reports/listtable.cpp:558
-#: reports/pivottable.cpp:1348 reports/pivottable.cpp:1450
-#: reports/pivottable.cpp:1510 reports/pivottable.cpp:1603
-#: reports/pivottable.cpp:1773 reports/pivottable.cpp:1850
-#: reports/pivottable.cpp:2170 reports/pivottable.cpp:2172
-#: reports/pivottable.cpp:2192 reports/pivottable.cpp:2194
+#: reports/pivottable.cpp:1343 reports/pivottable.cpp:1445
+#: reports/pivottable.cpp:1505 reports/pivottable.cpp:1598
+#: reports/pivottable.cpp:1768 reports/pivottable.cpp:1845
+#: reports/pivottable.cpp:2165 reports/pivottable.cpp:2167
+#: reports/pivottable.cpp:2187 reports/pivottable.cpp:2189
 #: reports/querytabletest.cpp:134 reports/querytabletest.cpp:135
 #: reports/querytabletest.cpp:136 reports/querytabletest.cpp:137
 #: reports/querytabletest.cpp:162 reports/querytabletest.cpp:163
@@ -5019,7 +5019,7 @@ msgstr "Tämän hetken saldo"
 #: reports/querytabletest.cpp:276 reports/querytabletest.cpp:277
 #: reports/querytabletest.cpp:366 reports/querytabletest.cpp:422
 #: reports/querytabletest.cpp:423 views/kforecastview.cpp:568 views/rc.cpp:18
-#: widgets/kmymoneyaccounttreeforecast.cpp:139 widgets/transaction.cpp:1633
+#: widgets/kmymoneyaccounttreeforecast.cpp:139 widgets/transaction.cpp:1643
 msgid "Total"
 msgstr "Yhteensä"
 
@@ -5045,7 +5045,7 @@ msgid "Calculated"
 msgstr "Laskettu"
 
 #: reports/listtable.cpp:572 reports/listtable.cpp:574
-#: reports/pivottable.cpp:1535 reports/pivottable.cpp:1891
+#: reports/pivottable.cpp:1530 reports/pivottable.cpp:1886
 #: reports/querytabletest.cpp:138 reports/querytabletest.cpp:165
 #: reports/querytabletest.cpp:199 reports/querytabletest.cpp:225
 #: reports/querytabletest.cpp:253 reports/querytabletest.cpp:278
@@ -5061,26 +5061,26 @@ msgstr "Kokonaissumma"
 msgid "Transfers"
 msgstr "Tilisiirrot"
 
-#: reports/pivottable.cpp:1956
+#: reports/pivottable.cpp:1951
 #, fuzzy
 msgid "Legend"
 msgstr "Tapahtumat"
 
-#: reports/pivottable.cpp:2416 views/khomeview.cpp:1406
+#: reports/pivottable.cpp:2411 views/khomeview.cpp:1406
 #: views/khomeview.cpp:1443
 msgid "Actual"
 msgstr "Toteutunut"
 
-#: reports/pivottable.cpp:2426 views/khomeview.cpp:1409
+#: reports/pivottable.cpp:2421 views/khomeview.cpp:1409
 #: views/khomeview.cpp:1446
 msgid "Difference"
 msgstr "Erotus"
 
-#: reports/pivottable.cpp:2436
+#: reports/pivottable.cpp:2431
 msgid "Moving Average"
 msgstr "Liikkuva keskiarvo"
 
-#: reports/pivottable.cpp:2441
+#: reports/pivottable.cpp:2436
 #, fuzzy
 msgid "Moving Average Price"
 msgstr "Liikkuva keskiarvo"
@@ -5703,7 +5703,7 @@ msgid "Loss: "
 msgstr "Tappio: "
 
 #: dialogs/settings/ksettingsonlinequotes.cpp:54
-#: dialogs/transactioneditor.cpp:590 views/kpayeesview.cpp:365
+#: dialogs/transactioneditor.cpp:605 views/kpayeesview.cpp:365
 #: widgets/kmymoneyonlinequoteconfig.cpp:54
 msgid "Accepts the entered data and stores it"
 msgstr "Hyväksyy syötetyt tiedot ja tallentaa ne"
@@ -5735,7 +5735,7 @@ msgstr "<b>%1</b> on muuttunut. Haluatko tallentaa muutokset?"
 msgid "Save changes"
 msgstr "Tallenna muutokset"
 
-#: views/kgloballedgerview.cpp:732 views/kpayeesview.cpp:662
+#: views/kgloballedgerview.cpp:737 views/kpayeesview.cpp:662
 #: views/kpayeesview.cpp:753
 #, c-format
 msgid "Balance: %1"
@@ -5759,8 +5759,8 @@ msgstr "Lainan maksu %1:ltä"
 #: dialogs/kconfirmmanualenterdlg.cpp:123
 #: dialogs/kconfirmmanualenterdlg.cpp:133 views/kpayeesview.cpp:745
 #: widgets/kmymoneycategory.cpp:160 widgets/kmymoneycategory.cpp:166
-#: widgets/transaction.cpp:841 widgets/transaction.cpp:1387
-#: widgets/transaction.cpp:1401
+#: widgets/transaction.cpp:851 widgets/transaction.cpp:1397
+#: widgets/transaction.cpp:1411
 msgid ""
 "_: Split transaction (category replacement)\n"
 "Split transaction"
@@ -5863,12 +5863,13 @@ msgstr "Vie nimellä"
 #: views/kreportsview.cpp:1273 views/kreportsview.cpp:1295
 #: views/kreportsview.cpp:1304 views/kreportsview.cpp:1313
 #: views/kreportsview.cpp:1322 views/kreportsview.cpp:1336
-#: views/kreportsview.cpp:1347 views/kreportsview.cpp:1357
-#: views/kreportsview.cpp:1368 views/kreportsview.cpp:1378
-#: views/kreportsview.cpp:1389 views/kreportsview.cpp:1408
-#: views/kreportsview.cpp:1417 views/kreportsview.cpp:1429
-#: views/kreportsview.cpp:1448 views/kreportsview.cpp:1457
-#: views/kreportsview.cpp:1466 views/kreportsview.cpp:1475
+#: views/kreportsview.cpp:1347 views/kreportsview.cpp:1362
+#: views/kreportsview.cpp:1372 views/kreportsview.cpp:1383
+#: views/kreportsview.cpp:1393 views/kreportsview.cpp:1404
+#: views/kreportsview.cpp:1423 views/kreportsview.cpp:1432
+#: views/kreportsview.cpp:1444 views/kreportsview.cpp:1463
+#: views/kreportsview.cpp:1472 views/kreportsview.cpp:1481
+#: views/kreportsview.cpp:1490
 msgid "Default Report"
 msgstr "Oletusraportti"
 
@@ -6074,60 +6075,65 @@ msgstr "Budjetointi"
 msgid "Budgeted vs. Actual This Year"
 msgstr "Budjetoitu vs. toteutunut tämän vuoden tilanne"
 
-#: views/khomeview.cpp:1383 views/kreportsview.cpp:1346
+#: views/kreportsview.cpp:1346
+#, fuzzy
+msgid "Budgeted vs. Actual This Year (YTM)"
+msgstr "Budjetoitu vs. toteutunut tämän vuoden tilanne"
+
+#: views/khomeview.cpp:1383 views/kreportsview.cpp:1361
 msgid "Monthly Budgeted vs. Actual"
 msgstr "Kuukausittain budjetoitu vs. toteutunut"
 
-#: views/kreportsview.cpp:1356
+#: views/kreportsview.cpp:1371
 msgid "Yearly Budgeted vs. Actual"
 msgstr "Vuosittain budjetoitu vs. toteutunut"
 
-#: views/kreportsview.cpp:1367
+#: views/kreportsview.cpp:1382
 msgid "Monthly Budget"
 msgstr "Kuukausibudjetti"
 
-#: views/kreportsview.cpp:1377
+#: views/kreportsview.cpp:1392
 msgid "Yearly Budget"
 msgstr "Vuosibudjetti"
 
-#: views/kreportsview.cpp:1388
+#: views/kreportsview.cpp:1403
 msgid "Yearly Budgeted vs Actual Graph"
 msgstr "Vuosittain budjetoitu vs. todellinen -kaavio"
 
-#: views/kreportsview.cpp:1407
+#: views/kreportsview.cpp:1422
 #, fuzzy
 msgid "Forecast By Month"
 msgstr "Ennustus kuukauden mukaan"
 
-#: views/kreportsview.cpp:1416
+#: views/kreportsview.cpp:1431
 msgid "Forecast Next Quarter"
 msgstr "Ennuste vuosineljänneksittäin"
 
-#: views/kreportsview.cpp:1428
+#: views/kreportsview.cpp:1443
 msgid "Net Worth Forecast Graph"
 msgstr "Nettovarallisuuden ennustekaavio"
 
 #: dialogs/rc.cpp:126 dialogs/rc.cpp:128 dialogs/rc.cpp:466
-#: views/kreportsview.cpp:1440
+#: views/kreportsview.cpp:1455
 msgid "General Information"
 msgstr "Yleiset tiedot"
 
-#: views/kreportsview.cpp:1447
+#: views/kreportsview.cpp:1462
 #, fuzzy
 msgid "Schedule Information"
 msgstr "Ajoitetun tapahtuman tiedot"
 
-#: views/kreportsview.cpp:1456
+#: views/kreportsview.cpp:1471
 #, fuzzy
 msgid "Schedule Summary Information"
 msgstr "Ajoitetun tapahtuman yhteenvetotiedot"
 
-#: views/kreportsview.cpp:1465
+#: views/kreportsview.cpp:1480
 #, fuzzy
 msgid "Account Information"
 msgstr "Tilitiedot"
 
-#: views/kreportsview.cpp:1474
+#: views/kreportsview.cpp:1489
 #, fuzzy
 msgid "Loan Information"
 msgstr "Lainatiedot"
@@ -7113,7 +7119,7 @@ msgid "Net Worth: "
 msgstr "Nettovarallisuus:"
 
 #: dialogs/rc.cpp:108 dialogs/rc.cpp:163 dialogs/rc.cpp:250 dialogs/rc.cpp:755
-#: dialogs/rc.cpp:830 views/kinvestmentview.cpp:77 widgets/register.cpp:550
+#: dialogs/rc.cpp:830 views/kinvestmentview.cpp:77 widgets/register.cpp:572
 msgid "Quantity"
 msgstr "Määrä"
 
@@ -7373,7 +7379,7 @@ msgid ""
 msgstr ""
 "Yhteenveto tilin pääomista, näytetään omistukset ja niiden uusin hinta."
 
-#: views/rc.cpp:60 widgets/register.cpp:542
+#: views/rc.cpp:60 widgets/register.cpp:564
 #, fuzzy
 msgid "No."
 msgstr "Nro."
@@ -7532,62 +7538,62 @@ msgstr "Virhe suoritettaessa kohdetta"
 msgid "Unable to filter account"
 msgstr "Tiliä ei voitu suodattaa"
 
-#: views/kgloballedgerview.cpp:503
+#: views/kgloballedgerview.cpp:508
 msgid "Statement Details"
 msgstr "Tiliotteen tiedot"
 
-#: views/kgloballedgerview.cpp:507
+#: views/kgloballedgerview.cpp:512
 msgid "Statement Deposit Details"
 msgstr "Tiliotteen talletusten tiedot"
 
-#: views/kgloballedgerview.cpp:508
+#: views/kgloballedgerview.cpp:513
 msgid "Statement Payment Details"
 msgstr "Tiliotteen maksujen tiedot"
 
-#: views/kgloballedgerview.cpp:637
+#: views/kgloballedgerview.cpp:642
 #, fuzzy
 msgid "%1 deposits (%3), %2 payments (%4)"
 msgstr "%1 talletusta (%3), %2 maksua (%4)"
 
-#: views/kgloballedgerview.cpp:644
+#: views/kgloballedgerview.cpp:649
 #, fuzzy
 msgid "%1 payments (%2)"
 msgstr "%1 maksua (%2)"
 
-#: views/kgloballedgerview.cpp:648
+#: views/kgloballedgerview.cpp:653
 #, fuzzy
 msgid "%1 deposits (%2)"
 msgstr "%1 talletusta (%2)"
 
-#: views/kgloballedgerview.cpp:716
+#: views/kgloballedgerview.cpp:721
 #, c-format
 msgid "Statement: %1"
 msgstr "Tiliote: %1"
 
-#: views/kgloballedgerview.cpp:717 views/kgloballedgerview.cpp:731
+#: views/kgloballedgerview.cpp:722 views/kgloballedgerview.cpp:736
 #, c-format
 msgid "Cleared: %1"
 msgstr "Varmistettu: %1"
 
-#: views/kgloballedgerview.cpp:718
+#: views/kgloballedgerview.cpp:723
 #, c-format
 msgid "Difference: %1"
 msgstr "Erotus: %1"
 
-#: views/kgloballedgerview.cpp:725
+#: views/kgloballedgerview.cpp:730
 #, c-format
 msgid "Last reconciled: %1"
 msgstr "Viimeksi yhteensovitettu: %1"
 
-#: views/kgloballedgerview.cpp:727
+#: views/kgloballedgerview.cpp:732
 msgid "Never reconciled"
 msgstr "Ei aiemmin yhteensovitettu"
 
-#: views/kgloballedgerview.cpp:760
+#: views/kgloballedgerview.cpp:772
 msgid "Investment value: %1%2"
 msgstr "Sijoitusten arvo: %1%2"
 
-#: views/kgloballedgerview.cpp:1028
+#: views/kgloballedgerview.cpp:1040
 msgid ""
 "At least one split of the selected transactions has been reconciled. Do you "
 "wish to continue to edit the transactions anyway?"
@@ -7595,7 +7601,7 @@ msgstr ""
 "Vähintään yksi jaottelu valituista tapahtumista on yhteensovitettu. Haluatko "
 "varmasti jatkaa tapahtumien muokkaamista?"
 
-#: views/kgloballedgerview.cpp:1039
+#: views/kgloballedgerview.cpp:1051
 msgid ""
 "At least one split of the selected transactions has been frozen. Editing the "
 "transactions is therefore prohibited."
@@ -7603,11 +7609,11 @@ msgstr ""
 "Vähintään yksi jaottelu valituista tapahtumista on jäädytetty. Tapahtumien "
 "muokkaaminen on siten estetty."
 
-#: views/kgloballedgerview.cpp:1041
+#: views/kgloballedgerview.cpp:1053
 msgid "Transaction already frozen"
 msgstr "Tapahtuma on jo jäädytetty."
 
-#: views/kgloballedgerview.cpp:1046
+#: views/kgloballedgerview.cpp:1058
 msgid ""
 "At least one split of the selected transaction references an account that "
 "has been closed. Editing the transactions is therefore prohibited."
@@ -7615,45 +7621,45 @@ msgstr ""
 "Vähintään yksi jaottelu valituista tapahtumista viittaa tiliin joka on jo "
 "suljettu. Tapahtumien muokkaaminen on siten estetty."
 
-#: views/kgloballedgerview.cpp:1048
+#: views/kgloballedgerview.cpp:1060
 msgid "Account closed"
 msgstr "Tili suljettu"
 
-#: views/kgloballedgerview.cpp:1337
+#: views/kgloballedgerview.cpp:1349
 msgid "Cannot create transactions when no account is selected."
 msgstr "Tapahtumia ei voi luoda jos tiliä ei ole valittu."
 
-#: views/kgloballedgerview.cpp:1342
+#: views/kgloballedgerview.cpp:1354
 #, fuzzy
 msgid "Cannot create transactions in the context of a category."
 msgstr "Tapahtumia ei voi luoda kategorian kontekstiin."
 
-#: views/kgloballedgerview.cpp:1346
+#: views/kgloballedgerview.cpp:1358
 msgid "Cannot create transactions in a closed account."
 msgstr "Suljettuun tiliin ei voi luoda tapahtumia."
 
-#: views/kgloballedgerview.cpp:1358
+#: views/kgloballedgerview.cpp:1370
 msgid "Cannot process transaction with focus if it is not selected."
 msgstr "Kohdisttetua tapahtumaa ei voida käsitellä jos se ei ole valittu."
 
-#: views/kgloballedgerview.cpp:1388
+#: views/kgloballedgerview.cpp:1400
 msgid "Cannot edit transactions with frozen splits."
 msgstr "Tapahtumaa jossa on jäädytettyjä jaotteluja ei voida muokata."
 
-#: views/kgloballedgerview.cpp:1399
+#: views/kgloballedgerview.cpp:1411
 msgid "Cannot edit transactions in the context of a category."
 msgstr "Tapahtumia ei voida muokata kategorian kontekstissa."
 
-#: views/kgloballedgerview.cpp:1418
+#: views/kgloballedgerview.cpp:1430
 msgid ""
 "Cannot edit investment transactions and non-investment transactions together."
 msgstr "Sijoitustapahtumia ja ei-sijoitustapahtumia ei voida muokata yhdessä."
 
-#: views/kgloballedgerview.cpp:1426
+#: views/kgloballedgerview.cpp:1438
 msgid "Cannot edit multiple split transactions at once."
 msgstr "Ei voida muokata useita jaoteltuja tapahtumia yhdellä kertaa."
 
-#: views/kgloballedgerview.cpp:1436
+#: views/kgloballedgerview.cpp:1448
 msgid "Cannot edit investment transactions in the context of this account."
 msgstr "Sijoitustapahtumia ei voida muokata tämän tilin yhteydessä."
 
@@ -8021,25 +8027,25 @@ msgstr "Sopivia tilejä ei löytynyt tästä pankista."
 msgid "Please choose an account"
 msgstr "Valitse tili"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:381
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:386
 msgid "Server message: %1\n"
 msgstr "Palvelimen viesti: %1\n"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:394
 msgid "Your bank returned warnings when signing on"
 msgstr "Pankki palautti varoituksen sisäänkirjautumisen yhteydessä"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:389
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:394
 #, c-format
 msgid "WARNING %1"
 msgstr "VAROITUS %1"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:397
 #, fuzzy
 msgid "Error signing onto your bank"
 msgstr "Virhe sisäänkirjautumisessa"
 
-#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:392
+#: plugins/ofximport/dialogs/konlinebankingsetupwizard.cpp:397
 #, c-format
 msgid "ERROR %1"
 msgstr "VIRHE %1"
@@ -8301,7 +8307,7 @@ msgstr "Rivit / sarakkeet"
 #: dialogs/investtransactioneditor.cpp:579 dialogs/rc.cpp:103
 #: dialogs/rc.cpp:158 dialogs/rc.cpp:245 dialogs/rc.cpp:750 dialogs/rc.cpp:794
 #: widgets/kmymoneyaccountselector.cpp:182 widgets/register.cpp:64
-#: widgets/register.cpp:545 widgets/transaction.cpp:1490
+#: widgets/register.cpp:567 widgets/transaction.cpp:1500
 msgid "Security"
 msgstr "Arvopaperi"
 
@@ -8431,7 +8437,7 @@ msgstr "Poista arvopaperi"
 msgid "Remove this price item from the file"
 msgstr "Poista tämä hintatieto tiedostosta"
 
-#: dialogs/kmymoneypricedlg.cpp:66 dialogs/mymoneyqifprofileeditor.cpp:95
+#: dialogs/kmymoneypricedlg.cpp:66 dialogs/mymoneyqifprofileeditor.cpp:94
 msgid "&New"
 msgstr "&Uusi"
 
@@ -8577,7 +8583,7 @@ msgstr ""
 "Vastaanotettiin hinta %1:lle (tunniste %2), mutta valuuttaa ei ole "
 "määritelty. Keskeytetään päivitys."
 
-#: dialogs/transactioneditor.cpp:207
+#: dialogs/transactioneditor.cpp:222
 msgid ""
 "The number <b>%1</b> has already been used in account <b>%2</b>. Do you want "
 "to replace it with the next available number?"
@@ -8585,11 +8591,11 @@ msgstr ""
 "Numero <b>%1</b> on jo käytössä tilillä <b>%2</b>. Haluatko korvata sen "
 "seuraavalla käytettävissä olevalla numerolla?"
 
-#: dialogs/transactioneditor.cpp:207
+#: dialogs/transactioneditor.cpp:222
 msgid "Duplicate number"
 msgstr "Käytössä oleva numero"
 
-#: dialogs/transactioneditor.cpp:288
+#: dialogs/transactioneditor.cpp:303
 msgid ""
 "This transaction has more than two splits and is based on a different "
 "currency (%1). Using this account to modify the transaction is currently not "
@@ -8600,7 +8606,7 @@ msgstr ""
 "ole tällä hetkellä täysin tuettua, joten sen käyttäminen voi johtaa "
 "virheellisiin tuloksiin."
 
-#: dialogs/transactioneditor.cpp:290
+#: dialogs/transactioneditor.cpp:305
 #, fuzzy
 msgid ""
 "KMyMoney was not able to find a more appropriate account to edit this "
@@ -8611,7 +8617,7 @@ msgstr ""
 "muokkaaminen on sallitua siitä huolimatta. Jos et halua muokata tapahtumaa, "
 "keskeytä seuraavan muokkaaminen."
 
-#: dialogs/transactioneditor.cpp:292
+#: dialogs/transactioneditor.cpp:307
 #, fuzzy
 msgid ""
 "Using e.g. <b>%1</b> to edit this transaction is a better choice. "
@@ -8623,7 +8629,7 @@ msgstr ""
 "muokkaaminen on silti sallittua. Jos haluat käyttää ehdotettua tiliä sen "
 "sijaan, peruuta tämän muokkaaminen ja vaihda näkymä ehdotettuun tiliin."
 
-#: dialogs/transactioneditor.cpp:395
+#: dialogs/transactioneditor.cpp:410
 msgid ""
 "This transaction has more than two splits and is originally based on a "
 "different currency (%1). Using this account to modify the transaction may "
@@ -8633,7 +8639,7 @@ msgstr ""
 "eri valuuttaan (%1). Tämän tilin käyttäminen tapahtuman muokkaamiseen voi "
 "johtaa pyöristysvirheisiin. Jatketaanko?"
 
-#: dialogs/transactioneditor.cpp:397
+#: dialogs/transactioneditor.cpp:412
 msgid ""
 "At least one of the selected transactions has more than two splits and is "
 "originally based on a different currency (%1). Using this account to modify "
@@ -8643,32 +8649,32 @@ msgstr ""
 "ne perustuvat eri valuuttoihin (%1). Tämän tilin käyttäminen tapahtuminen "
 "muokkaamiseen voi johtaa pyöristysvirheisiin. Jatketaanko?"
 
-#: dialogs/transactioneditor.cpp:542
+#: dialogs/transactioneditor.cpp:557
 #, fuzzy
 msgid "Storing transactions"
 msgstr "Tapahtuminen tallennus"
 
-#: dialogs/transactioneditor.cpp:588 widgets/kmymoneybriefschedule.cpp:65
+#: dialogs/transactioneditor.cpp:603 widgets/kmymoneybriefschedule.cpp:65
 msgid "&Enter"
 msgstr "&Syötä"
 
-#: dialogs/transactioneditor.cpp:591
+#: dialogs/transactioneditor.cpp:606
 msgid "Use this to enter the transaction into the ledger."
 msgstr "Käytä tätä syöttääksesi tapahtuma tapahtumiin."
 
-#: dialogs/transactioneditor.cpp:592
+#: dialogs/transactioneditor.cpp:607
 msgid "&Schedule"
 msgstr "&Ajoitettu tapahtuma"
 
-#: dialogs/transactioneditor.cpp:594
+#: dialogs/transactioneditor.cpp:609
 msgid "Accepts the entered data and stores it as schedule"
 msgstr "Hyväksyy syötetyt tiedot ja tallentaa ne ajoitetuksi tapahtumaksi"
 
-#: dialogs/transactioneditor.cpp:595
+#: dialogs/transactioneditor.cpp:610
 msgid "Use this to schedule the transaction for later entry into the ledger."
 msgstr "Käytä tätä ajoittaaksesi tapahtuma myöhemmäksi kohdaksi tapahtumiin."
 
-#: dialogs/transactioneditor.cpp:597
+#: dialogs/transactioneditor.cpp:612
 msgid ""
 "The transaction you are about to enter has a post date in the future.<br/"
 "><br/>Do you want to enter it in the ledger or add it to the schedules?"
@@ -8676,23 +8682,23 @@ msgstr ""
 "Syöttämäsi tapahtuman päivämäärä on tulevaisuudessa.<br/><br/>Kirjataanko se "
 "tapahtumiin vai tehdäänkö siitä ajoitettu tapahtuma?"
 
-#: dialogs/transactioneditor.cpp:597
+#: dialogs/transactioneditor.cpp:612
 msgid ""
 "_: Dialog caption for 'Enter or schedule' dialog\n"
 "Enter or schedule?"
 msgstr "Kirjaa vai tee ajoitettu tapahtuma?"
 
-#: dialogs/transactioneditor.cpp:656
+#: dialogs/transactioneditor.cpp:671
 msgid ""
 "The balance of account <b>%1</b> dropped below the warning balance of %2."
 msgstr "Tilin <b>%1</b> saldo on tipahtanut alle varoitusrajan %2."
 
-#: dialogs/transactioneditor.cpp:662
+#: dialogs/transactioneditor.cpp:677
 msgid ""
 "The balance of account <b>%1</b> dropped below the minimum balance of %2."
 msgstr "Tilin <b>%1</b> saldo on tipahtanut alle minimirajan %2."
 
-#: dialogs/transactioneditor.cpp:668
+#: dialogs/transactioneditor.cpp:683
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit warning "
 "limit of %2."
@@ -8700,37 +8706,37 @@ msgstr ""
 "Tilin <b>%1</b> saldo on on tipahtanut alle varoitettavan maksimiluottorajan "
 "%2."
 
-#: dialogs/transactioneditor.cpp:674
+#: dialogs/transactioneditor.cpp:689
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit limit of %"
 "2."
 msgstr "Tilin <b>%1</b> saldo on tipahtanut alle maksimiluottorajan %2."
 
-#: dialogs/transactioneditor.cpp:725
+#: dialogs/transactioneditor.cpp:740
 msgid "Payer/Receiver"
 msgstr "Maksun saaja / vastaanottaja"
 
-#: dialogs/transactioneditor.cpp:733
+#: dialogs/transactioneditor.cpp:748
 msgid "Category/Account"
 msgstr "Kategoria / tili"
 
-#: dialogs/transactioneditor.cpp:963 dialogs/transactioneditor.cpp:999
-#: dialogs/transactioneditor.cpp:1361 dialogs/transactioneditor.cpp:1382
-#: dialogs/transactioneditor.cpp:1405 dialogs/transactioneditor.cpp:1426
-#: dialogs/transactioneditor.cpp:1488 dialogs/transactioneditor.cpp:1492
-#: widgets/transaction.cpp:892
+#: dialogs/transactioneditor.cpp:980 dialogs/transactioneditor.cpp:1016
+#: dialogs/transactioneditor.cpp:1378 dialogs/transactioneditor.cpp:1399
+#: dialogs/transactioneditor.cpp:1422 dialogs/transactioneditor.cpp:1443
+#: dialogs/transactioneditor.cpp:1505 dialogs/transactioneditor.cpp:1509
+#: widgets/transaction.cpp:902
 #, fuzzy
 msgid "Transfer from"
 msgstr "Siirrä"
 
-#: dialogs/transactioneditor.cpp:965 dialogs/transactioneditor.cpp:1001
-#: dialogs/transactioneditor.cpp:1384 dialogs/transactioneditor.cpp:1428
-#: dialogs/transactioneditor.cpp:1489 widgets/transaction.cpp:892
+#: dialogs/transactioneditor.cpp:982 dialogs/transactioneditor.cpp:1018
+#: dialogs/transactioneditor.cpp:1401 dialogs/transactioneditor.cpp:1445
+#: dialogs/transactioneditor.cpp:1506 widgets/transaction.cpp:902
 #, fuzzy
 msgid "Transfer to"
 msgstr "Siirrä"
 
-#: dialogs/transactioneditor.cpp:1242
+#: dialogs/transactioneditor.cpp:1259
 #, fuzzy
 msgid "Select autofill transaction"
 msgstr "Valitse täytä automaattisesti -tapahtuma"
@@ -8873,7 +8879,7 @@ msgid "%1 (Brokerage)"
 msgstr "%1 (Maksunvälittäjä)"
 
 #: dialogs/investactivities.cpp:200 dialogs/investactivities.cpp:288
-#: dialogs/investactivities.cpp:425 widgets/transaction.cpp:1538
+#: dialogs/investactivities.cpp:425 widgets/transaction.cpp:1548
 msgid "Price/share"
 msgstr "Hinta / osake"
 
@@ -8932,7 +8938,7 @@ msgid "&New..."
 msgstr "&Uusi..."
 
 #: dialogs/kexportdlg.cpp:79 dialogs/kimportdlg.cpp:80
-#: dialogs/mymoneyqifprofileeditor.cpp:97
+#: dialogs/mymoneyqifprofileeditor.cpp:96
 msgid "Create a new profile"
 msgstr "Luo uusi profiili"
 
@@ -9886,29 +9892,29 @@ msgid ""
 "to continue?"
 msgstr "Tapahtuman jaottelua ollaan poistamassa. Jatketaanko?"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:98
+#: dialogs/mymoneyqifprofileeditor.cpp:97
 msgid "Use this to create a new QIF import/export profile"
 msgstr "Käytä tätä uuden QIF tuonti- tai vientiprofiilin luontiin"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:147
-#: dialogs/mymoneyqifprofileeditor.cpp:402 dialogs/rc.cpp:797
+#: dialogs/mymoneyqifprofileeditor.cpp:148
+#: dialogs/mymoneyqifprofileeditor.cpp:403 dialogs/rc.cpp:797
 msgid "QIF Profile Editor"
 msgstr "QIF -profiilimuokkain"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:149
+#: dialogs/mymoneyqifprofileeditor.cpp:150
 msgid "QIF Profile Selector"
 msgstr "QIF -profiilivalitsin"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:235
+#: dialogs/mymoneyqifprofileeditor.cpp:236
 msgid "The default QIF profile"
 msgstr "QIF -oletusprofiili"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:403
-#: dialogs/mymoneyqifprofileeditor.cpp:416
+#: dialogs/mymoneyqifprofileeditor.cpp:404
+#: dialogs/mymoneyqifprofileeditor.cpp:417
 msgid "Enter new profile name"
 msgstr "Syötä profiilin nimi"
 
-#: dialogs/mymoneyqifprofileeditor.cpp:435
+#: dialogs/mymoneyqifprofileeditor.cpp:436
 msgid "Do you really want to delete profile '%1'?"
 msgstr "Poistetaanko profiili '%1' varmasti?"
 
@@ -10284,7 +10290,7 @@ msgid "Payment information"
 msgstr "Maksutiedot"
 
 #: dialogs/rc.cpp:105 dialogs/rc.cpp:160 dialogs/rc.cpp:247 dialogs/rc.cpp:752
-#: widgets/register.cpp:547
+#: widgets/register.cpp:569
 msgid "C"
 msgstr "C"
 
@@ -10466,9 +10472,10 @@ msgid "Interest / Charges"
 msgstr "Korot / Veloitukset"
 
 #: dialogs/rc.cpp:150
+#, fuzzy
 msgid ""
 "If necessary, enter information about interest or charges here. KMyMoney "
-"will create transactions and cleares them directly for you."
+"will create transactions and clear them directly for you."
 msgstr ""
 "Syötä tarvittaessa tieto koroista ja veloituksista tähän. Ohjelma luo "
 "tapahtumat ja varmistaa ne automaattisesti."
@@ -10746,7 +10753,7 @@ msgstr "Tulos"
 msgid "F"
 msgstr "F"
 
-#: dialogs/rc.cpp:257
+#: dialogs/rc.cpp:257 dialogs/rc.cpp:844
 msgid "&Reset"
 msgstr "&Palauta"
 
@@ -11870,8 +11877,8 @@ msgstr "PluginDlg"
 msgid "PlugIn"
 msgstr "Liitännäinen"
 
-#: dialogs/rc.cpp:698 widgets/transaction.cpp:1061
-#: widgets/transaction.cpp:1648
+#: dialogs/rc.cpp:698 widgets/transaction.cpp:1071
+#: widgets/transaction.cpp:1658
 msgid "Status"
 msgstr "Tila"
 
@@ -12234,10 +12241,6 @@ msgstr "Sisääntulosuodattimen sijainti"
 #: dialogs/rc.cpp:843
 msgid "Rename"
 msgstr "Uudelleennimeä"
-
-#: dialogs/rc.cpp:844
-msgid "Reset"
-msgstr "Tyhjennä"
 
 #: dialogs/kselecttransactionsdlg.cpp:44
 msgid "Select Transaction"
@@ -12671,71 +12674,71 @@ msgstr "Online-hinnan päivitys..."
 msgid "From"
 msgstr "Mistä"
 
-#: widgets/transaction.cpp:658
+#: widgets/transaction.cpp:668
 msgid "Transaction is missing a category assignment."
 msgstr "Tapahtumalle ei ole määritelty kategoriaa."
 
-#: widgets/transaction.cpp:661
+#: widgets/transaction.cpp:671
 msgid "The transaction has a missing assignment of <b>%1</b>."
 msgstr "Tapahtumalla on puuttuva määrittely <b>%1</b>."
 
-#: widgets/transaction.cpp:864
+#: widgets/transaction.cpp:874
 msgid "Sell"
 msgstr "Myy"
 
-#: widgets/transaction.cpp:866
+#: widgets/transaction.cpp:876
 msgid "Buy"
 msgstr "Osta"
 
-#: widgets/kmymoneycombo.cpp:520 widgets/transaction.cpp:869
-#: widgets/transaction.cpp:1437
+#: widgets/kmymoneycombo.cpp:520 widgets/transaction.cpp:879
+#: widgets/transaction.cpp:1447
 msgid "Dividend"
 msgstr "Osinko"
 
-#: widgets/kmymoneycombo.cpp:518 widgets/transaction.cpp:871
-#: widgets/transaction.cpp:1443
+#: widgets/kmymoneycombo.cpp:518 widgets/transaction.cpp:881
+#: widgets/transaction.cpp:1453
 msgid "Yield"
 msgstr "Tuotto"
 
-#: widgets/transaction.cpp:876 widgets/transaction.cpp:1463
+#: widgets/transaction.cpp:886 widgets/transaction.cpp:1473
 msgid "Activity"
 msgstr "Aktivisuus"
 
-#: widgets/transaction.cpp:877
+#: widgets/transaction.cpp:887
 msgid "Investment transaction"
 msgstr "Sijoitustapahtuma"
 
-#: widgets/transaction.cpp:1011 widgets/transaction.cpp:1104
-#: widgets/transaction.cpp:1155
+#: widgets/transaction.cpp:1021 widgets/transaction.cpp:1114
+#: widgets/transaction.cpp:1165
 msgid "*** UNASSIGNED ***"
 msgstr "*** MÄÄRITTELEMÄTÖN ***"
 
-#: widgets/kmymoneycombo.cpp:517 widgets/transaction.cpp:1425
+#: widgets/kmymoneycombo.cpp:517 widgets/transaction.cpp:1435
 msgid "Add shares"
 msgstr "Lisää osakkeita"
 
-#: widgets/kmymoneycombo.cpp:516 widgets/transaction.cpp:1428
+#: widgets/kmymoneycombo.cpp:516 widgets/transaction.cpp:1438
 msgid "Remove shares"
 msgstr "Poista osakkkeita"
 
-#: widgets/kmymoneycombo.cpp:522 widgets/transaction.cpp:1431
+#: widgets/kmymoneycombo.cpp:522 widgets/transaction.cpp:1441
 msgid "Buy shares"
 msgstr "Osta osakkeita"
 
-#: widgets/kmymoneycombo.cpp:521 widgets/transaction.cpp:1434
+#: widgets/kmymoneycombo.cpp:521 widgets/transaction.cpp:1444
 msgid "Sell shares"
 msgstr "Myy osakkeita"
 
-#: widgets/transaction.cpp:1440
+#: widgets/transaction.cpp:1450
 msgid "Reinvest Dividend"
 msgstr "Uudelleensijoita osinko"
 
-#: widgets/kmymoneycombo.cpp:515 widgets/transaction.cpp:1446
+#: widgets/kmymoneycombo.cpp:515 widgets/transaction.cpp:1456
 #, fuzzy
 msgid "Split shares"
 msgstr "Osakkeiden tuplaus"
 
-#: widgets/transaction.cpp:1505
+#: widgets/transaction.cpp:1515
 msgid "Ratio"
 msgstr "Suhde"
 
@@ -12869,144 +12872,144 @@ msgstr "Kirjausten järjestys"
 msgid "Reconcile state"
 msgstr "Yhteensovittamisen tila"
 
-#: widgets/register.cpp:418
+#: widgets/register.cpp:440
 msgid ""
 "_: Deposits onto account\n"
 "Deposits"
 msgstr "Talletukset"
 
-#: widgets/register.cpp:420
+#: widgets/register.cpp:442
 msgid ""
 "_: Payments towards credit card\n"
 "Payments"
 msgstr "Maksut"
 
-#: widgets/register.cpp:424
+#: widgets/register.cpp:446
 msgid ""
 "_: Payments made from account\n"
 "Payments"
 msgstr "Maksut"
 
-#: widgets/register.cpp:426
+#: widgets/register.cpp:448
 msgid ""
 "_: Payments made with credit card\n"
 "Charges"
 msgstr "Veloitukset"
 
-#: widgets/register.cpp:714
+#: widgets/register.cpp:736
 msgid ""
 "_: Payment made from account\n"
 "Payment"
 msgstr "Maksu"
 
-#: widgets/register.cpp:715
+#: widgets/register.cpp:737
 msgid ""
 "_: Deposit into account\n"
 "Deposit"
 msgstr "Talletus"
 
-#: widgets/register.cpp:791
+#: widgets/register.cpp:813
 msgid ""
 "_: Payment made with credit card\n"
 "Charge"
 msgstr "Veloitus"
 
-#: widgets/register.cpp:792
+#: widgets/register.cpp:814
 msgid ""
 "_: Payment towards credit card\n"
 "Payment"
 msgstr "Maksu"
 
-#: widgets/register.cpp:796 widgets/register.cpp:802
+#: widgets/register.cpp:818 widgets/register.cpp:824
 msgid ""
 "_: Decrease of asset/liability value\n"
 "Decrease"
 msgstr "Vähentää"
 
-#: widgets/register.cpp:797 widgets/register.cpp:801
+#: widgets/register.cpp:819 widgets/register.cpp:823
 msgid ""
 "_: Increase of asset/liability value\n"
 "Increase"
 msgstr "Lisää"
 
-#: widgets/register.cpp:2258
+#: widgets/register.cpp:2280
 msgid "Prior transactions possibly filtered"
 msgstr "Aikaisemmat tapahtumat on mahdollisesti suodatettu"
 
-#: widgets/register.cpp:2262
+#: widgets/register.cpp:2284
 msgid "Last reconciliation"
 msgstr "Viimeksi yhteensovitettu"
 
-#: widgets/register.cpp:2269
+#: widgets/register.cpp:2291
 #, c-format
 msgid "Online Statement Balance: %1"
 msgstr "Online-tiliotteen saldo: %1"
 
-#: widgets/register.cpp:2273
+#: widgets/register.cpp:2295
 msgid "This year"
 msgstr "Tämä vuosi"
 
-#: widgets/kmymoneycombo.cpp:674 widgets/register.cpp:2274
+#: widgets/kmymoneycombo.cpp:674 widgets/register.cpp:2296
 msgid "Last month"
 msgstr "Viime kuukausi"
 
-#: widgets/register.cpp:2275
+#: widgets/register.cpp:2297
 msgid "This month"
 msgstr "Tämä kuukausi"
 
-#: widgets/register.cpp:2276
+#: widgets/register.cpp:2298
 msgid "Last week"
 msgstr "Viime viikko"
 
-#: widgets/register.cpp:2277
+#: widgets/register.cpp:2299
 msgid "This week"
 msgstr "Tämä viikko"
 
-#: widgets/register.cpp:2278
+#: widgets/register.cpp:2300
 msgid "Yesterday"
 msgstr "Eilen"
 
-#: widgets/kmymoneycombo.cpp:666 widgets/register.cpp:2279
+#: widgets/kmymoneycombo.cpp:666 widgets/register.cpp:2301
 msgid "Today"
 msgstr "Tänään"
 
-#: widgets/register.cpp:2280 widgets/register.cpp:2285
+#: widgets/register.cpp:2302 widgets/register.cpp:2307
 msgid "Future transactions"
 msgstr "Tulevat tapahtumat"
 
-#: widgets/register.cpp:2281
+#: widgets/register.cpp:2303
 msgid "Next week"
 msgstr "Ensi viikko"
 
-#: widgets/kmymoneycalendar.cpp:131 widgets/register.cpp:2282
+#: widgets/kmymoneycalendar.cpp:131 widgets/register.cpp:2304
 msgid "Next month"
 msgstr "Ensi kuukausi"
 
-#: widgets/kmymoneycombo.cpp:670 widgets/register.cpp:2293
+#: widgets/kmymoneycombo.cpp:670 widgets/register.cpp:2315
 msgid "Current fiscal year"
 msgstr "Kuluva tilivuosi"
 
-#: widgets/register.cpp:2294
+#: widgets/register.cpp:2316
 msgid "Previous fiscal year"
 msgstr "Edellinen tilivuosi"
 
-#: widgets/register.cpp:2295
+#: widgets/register.cpp:2317
 msgid "Next fiscal year"
 msgstr "Seuraava tilivuosi"
 
-#: widgets/register.cpp:2327
+#: widgets/register.cpp:2349
 msgid ""
 "_: Unknown payee\n"
 "Unknown"
 msgstr "Tuntematon"
 
-#: widgets/register.cpp:2346
+#: widgets/register.cpp:2368
 msgid ""
 "_: Unknown category\n"
 "Unknown"
 msgstr "Tuntematon"
 
-#: widgets/register.cpp:2365
+#: widgets/register.cpp:2387
 msgid ""
 "_: Unknown security\n"
 "Unknown"
@@ -13784,6 +13787,9 @@ msgstr "Viimeiset 3 kuukautta ja seuraavat 3 kuukautta"
 #: widgets/kmymoneycombo.cpp:691
 msgid "User defined"
 msgstr "Käyttäjän määrittämä"
+
+#~ msgid "Reset"
+#~ msgstr "Tyhjennä"
 
 #~ msgid "No plugins loaded"
 #~ msgstr "Liitännäisiä ei ole ladattu"

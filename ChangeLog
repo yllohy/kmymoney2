@@ -1,4 +1,7 @@
 
+2009-06-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Regenerated POT file and merged translations
+
 2009-06-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow to select a non-existant file in the selection dialog of
     the new file wizard
