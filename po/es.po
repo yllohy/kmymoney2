@@ -9,13 +9,13 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-06-09 10:05-0300\n"
+"PO-Revision-Date: 2009-06-26 07:44-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.3\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: wizards/wizardpages/rc.cpp:1
@@ -6002,7 +6002,6 @@ msgid "Budgeted vs. Actual This Year"
 msgstr "Presupuesto vs Real Este Año"
 
 #: views/kreportsview.cpp:1346
-#, fuzzy
 msgid "Budgeted vs. Actual This Year (YTM)"
 msgstr "Presupuesto vs Real Este Año"
 
@@ -10345,13 +10344,12 @@ msgid "Interest / Charges"
 msgstr "Intereses / Cargos"
 
 #: dialogs/rc.cpp:150
-#, fuzzy
 msgid ""
 "If necessary, enter information about interest or charges here. KMyMoney "
 "will create transactions and clear them directly for you."
 msgstr ""
 "Si es necesario, introduzca información acerca de intereses o cargos aquí. "
-"KMyMoney creará asientos y reconciliaciones directamente para usted"
+"KMyMoney creará asientos y los librará directamente para usted"
 
 #: dialogs/rc.cpp:153
 msgid "Charges"
