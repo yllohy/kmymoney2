@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-05-08 07:20+0300\n"
+"PO-Revision-Date: 2009-06-25 20:43+0300\n"
 "Last-Translator: Cristian Oneţ <onet.cristian@gmail.com>\n"
 "Language-Team: Romanian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -6052,9 +6052,9 @@ msgid "Budgeted vs. Actual This Year"
 msgstr "Bugetat vs. actual pentru acest an"
 
 #: views/kreportsview.cpp:1346
-#, fuzzy
 msgid "Budgeted vs. Actual This Year (YTM)"
-msgstr "Bugetat vs. actual pentru acest an"
+msgstr ""
+"Bugetat vs. actual pentru acest an (considerând randamentul la maturitate)"
 
 #: views/khomeview.cpp:1383 views/kreportsview.cpp:1361
 msgid "Monthly Budgeted vs. Actual"
@@ -10429,7 +10429,6 @@ msgid "Interest / Charges"
 msgstr "Dobânda / Comisioane"
 
 #: dialogs/rc.cpp:150
-#, fuzzy
 msgid ""
 "If necessary, enter information about interest or charges here. KMyMoney "
 "will create transactions and clear them directly for you."
@@ -10460,7 +10459,7 @@ msgstr "Tip:"
 
 #: dialogs/rc.cpp:168
 msgid "Enter"
-msgstr "Intră"
+msgstr "Introdu"
 
 #: dialogs/rc.cpp:169
 msgid ""
