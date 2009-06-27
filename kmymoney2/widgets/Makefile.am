@@ -59,7 +59,7 @@ noinst_LTLIBRARIES = libkmymoney.la
 
 kmmwidgets.cpp:	$(srcdir)/kmymoney.widgets
 	chmod +x makekdewidgets
-	./makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney $(srcdir)/kmymoney.widgets
+	./makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney $(abs_srcdir)/kmymoney.widgets
 
 # make sure to compile the Qt designer version w/o the memory leak checker
 # also we need a copy of the mymoneymoney.lo file which has been compiled
@@ -77,7 +77,7 @@ install-exec-local: libkmymoney.la
 	$(INSTALL_PROGRAM) .libs/libkmymoney.so $(DESTDIR)$(qt_libraries)/../plugins/designer
 	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/$(PICS_DIR)
 	for file in $(WIDGET_PNGS); do \
-	  $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(kde_datadir)/$(PICS_DIR); \
+	  $(INSTALL_DATA) $(abs_srcdir)/$$file $(DESTDIR)$(kde_datadir)/$(PICS_DIR); \
 	done
 
 uninstall-local:
