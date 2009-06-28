@@ -318,14 +318,20 @@ The view selector consists of at least eleven icons in the left side of the main
 </para>
 
 <para>
-Because all fields are optional, you can use &kappname; without entering any information now.  Any information entered here is used only to personalize your file.  In the future, it may be used in some reports and for online banking. If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
+  Since all fields are optional, you can use &kappname; without entering any information now.  Any information entered here is used only to personalize your file.  In the future, it may be used in some reports and for online banking. If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
 </para>
 
 <para>
-	Please enter your name and address or nothing and press <guibutton>Next</guibutton>.
+  Please enter your name and address or nothing and press <guibutton>Next</guibutton>.
 </para>
 
-<para>&kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day and which will be used for your reports), select the appropriate entry from the list provided and press <guibutton>Next</guibutton>.</para>
+<para>
+  In case you have an address for yourself stored in the KAddressbook, the button <guibutton>Load from Addressbook</guibutton> is enabled and pressing it imports all information into &kappname;.
+</para>
+
+<para>
+  &kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day and which will be used for your reports), select the appropriate entry from the list provided and press <guibutton>Next</guibutton>. A default will be selected from &kappname; based upon your locale settings.
+</para>
 
 <para>
 	<screenshot>
@@ -360,55 +366,16 @@ The following page allows you to create an initial account. For the typical &kap
 </para>
 
 <para>
-Enter the name of the account and a possible reference number assigned by the institution managing the account.  Enter the opening date of the account and the opening balance of the account.  For example, you want to use &kappname; to manage all your finances as of 2008-01-01, then enter the balance of the account at the beginning of this date.  The number can possibly be obtained from a paper statement.
-Also enter the name and routing number of the institution, though this information is optional and only required for online banking purposes.
+  Enter the name of the account and a possible reference number assigned by the institution managing the account.  Enter the opening date of the account and the opening balance of the account.  For example, you want to use &kappname; to manage all your finances as of 2008-01-01, then enter the balance of the account at the beginning of this date.  The number can possibly be obtained from a paper statement.
+  Also enter the name and routing number of the institution, though this information is optional and only required for online banking purposes.
 </para>
 
 <para>
-In case you don't want to setup an initial account, please uncheck the checkbox 
+  In case you don't want to setup an initial account, please uncheck the checkbox 
 </para>
 <para>
-Once finished, press <guibutton>Next</guibutton> to proceed.
+  Once finished, press <guibutton>Next</guibutton> to proceed.
 </para>
-
-<para>
-	Because this is a new file &kappname; will now allow you to import a set of default accounts with your interaction.
-</para>
-<!--
-<para>
-	<screenshot>
-	<mediaobject>
-	<imageobject>
-	<imagedata fileref="default_prompt.png" format="PNG" />
-	</imageobject>
-	<textobject>
-	<phrase>Prompt</phrase>
-	</textobject>
-	</mediaobject>
-	</screenshot>
-</para>
-
-<para>
-	Please read the message and click on <guibutton>OK</guibutton>.
-</para>
-
-<para>
-	Next &kappname; shows the standard KDE File Open dialog box allowing you to select the appropriate file for your country/region.  This window should list various language-dependent directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
-
-	<screenshot>
-	<mediaobject>
-	<imageobject>
-	<imagedata fileref="kmt.png" format="PNG" />
-	</imageobject>
-	<textobject>
-	<phrase>Account Templates</phrase>
-	</textobject>
-	</mediaobject>
-	</screenshot>
-
-	Only one file needs to be selected and should match your country and or region.  If your country/region is not listed then please select the default_account_enC.dat file or Click on <guibutton>Cancel</guibutton> to not load any pre-defined accounts.  The enC file relates to the default country and region and is usually American.  Accounts can be renamed later if needed.
-</para>
--->
 
 <para>
 	<screenshot>
@@ -426,7 +393,7 @@ Once finished, press <guibutton>Next</guibutton> to proceed.
 
 
 <para>
-	Choose the appropriate country and account template(s). Multiple templates, even from multiple countries can be selected using a combination of <keycap>Ctrl</keycap> and <keycap>Shift</keycap> together with the left mouse button.  The account hierarchy to be setup will be shown in a preview part of the wizard. In case you cannot find a template that suits your needs, don't select a template.
+Choose the appropriate country and account template(s). Multiple templates, even from multiple countries can be selected using a combination of <keycap>Ctrl</keycap> and <keycap>Shift</keycap> together with the left mouse button.  The account hierarchy to be setup will be shown in a preview part of the wizard. In case you cannot find a template that suits your needs, don't select a template.
 </para>
 <para>
 Once finished with the template selection press <guibutton>Next</guibutton> to proceed.
@@ -452,7 +419,7 @@ The next page of the wizard allows you to setup user preferences. Press <guibutt
 
 
 <para>
-The last page of the wizard allows you to select the filename that will be used to store your financial data. An initial filename will be constructed out of your HOME directory and user name.
+The last page of the wizard allows you to select the filename that will be used to store your financial data. An initial filename will be constructed out of your HOME directory and user name. In case the file exists, a warning will be displayed which reminds you to select a name of a non-existing file.
 </para>
 
 <para>

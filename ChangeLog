@@ -1,4 +1,9 @@
 
+2009-06-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added some missing screenshots
+  * Updated some screenshots
+  * Updated new file wizard documentation
+
 2009-06-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Brazilian translation by Marcus Gama
   * Fixed icon sizes so that lintian.debian.org won't complain anymore
