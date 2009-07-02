@@ -1739,6 +1739,8 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   QStringList messages;
   result = m_smtReader->import(s, messages);
 
+  bool transactionAdded = m_smtReader->anyTransactionAdded();
+
   // get rid of the statement reader and tell everyone else
   // about the destruction by setting the pointer to zero
   delete m_smtReader;
@@ -1752,7 +1754,7 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
 
   if(!d->m_collectingStatements)
     KMessageBox::informationList(this, i18n("The statement has been processed with the following results:"), messages, i18n("Statement stats"));
-  else
+  else if(transactionAdded)
     d->m_statementResults += messages;
 
   return result;
@@ -6037,7 +6039,8 @@ void KMyMoney2App::slotAccountUpdateOnlineAll(void)
   }
 
   d->m_collectingStatements = false;
-  KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
+  if(!d->m_statementResults.isEmpty())
+    KMessageBox::informationList(this, i18n("The statements have been processed with the following results:"), d->m_statementResults, i18n("Statement stats"));
 }
 
 void KMyMoney2App::slotAccountUpdateOnline(void)
