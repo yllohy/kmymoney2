@@ -1,4 +1,7 @@
 
+2009-07-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #2785787 (No Keyboard for 'OK' for 'Confirm Manual Enter' window)
+
 2009-07-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Skip statement import statistics if no transactions have been imported
     for the 'Update all accounts' function

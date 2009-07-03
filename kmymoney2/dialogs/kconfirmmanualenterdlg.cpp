@@ -42,11 +42,13 @@ KConfirmManualEnterDlg::KConfirmManualEnterDlg(const MyMoneySchedule& schedule, 
   buttonOk->setGuiItem(KStdGuiItem::ok());
   buttonCancel->setGuiItem(KStdGuiItem::cancel());
   m_onceRadio->setChecked(true);
+  m_onceRadio->setFocus();
 
   if(schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
     m_setRadio->setEnabled(false);
     m_discardRadio->setEnabled(false);
   }
+  
 }
 
 void KConfirmManualEnterDlg::loadTransactions(const MyMoneyTransaction& to, const MyMoneyTransaction& tn)
