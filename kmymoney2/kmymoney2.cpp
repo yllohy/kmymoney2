@@ -4404,6 +4404,7 @@ void KMyMoney2App::slotTransactionsNew(void)
         connect(m_transactionEditor, SIGNAL(statusProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
         connect(m_transactionEditor, SIGNAL(statusMsg(const QString&)), this, SLOT(slotStatusMsg(const QString&)));
         connect(m_transactionEditor, SIGNAL(scheduleTransaction(const MyMoneyTransaction&, MyMoneySchedule::occurenceE)), this, SLOT(slotScheduleNew(const MyMoneyTransaction&, MyMoneySchedule::occurenceE)));
+        connect(m_transactionEditor, SIGNAL(transactionDataSufficient(bool)), this, SLOT(slotUpdateActions()));
       }
       slotUpdateActions();
     }
@@ -4419,6 +4420,7 @@ void KMyMoney2App::slotTransactionsEdit(void)
     // as soon as we edit a transaction, we don't remember the last payee entered
     d->m_lastPayeeEntered = QString();
     m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
+    connect(m_transactionEditor, SIGNAL(transactionDataSufficient(bool)), this, SLOT(slotUpdateActions()));
     slotUpdateActions();
   }
 }

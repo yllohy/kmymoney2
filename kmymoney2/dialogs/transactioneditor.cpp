@@ -788,6 +788,7 @@ void StdTransactionEditor::createEditWidgets(void)
   }
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;
+  connect(m_editWidgets["postdate"], SIGNAL(dateChanged(const QDate&)), this, SLOT(slotUpdateButtonState()));
 
   kMyMoneyEdit* value = new kMyMoneyEdit;
   m_editWidgets["amount"] = value;
@@ -1707,6 +1708,11 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
 bool StdTransactionEditor::isComplete(void) const
 {
   QMap<QString, QWidget*>::const_iterator it_w;
+  kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
+  if(postDate->date().isValid() && postDate->date() < m_account.openingDate()) {
+    return false;
+  }
+
   for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
     KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(*it_w);
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(*it_w);

@@ -198,6 +198,7 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(activity, SIGNAL(activitySelected(MyMoneySplit::investTransactionTypeE)), this, SLOT(slotUpdateButtonState()));
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;
+  connect(m_editWidgets["postdate"], SIGNAL(dateChanged(const QDate&)), this, SLOT(slotUpdateButtonState()));
 
   KMyMoneySecurity* security = new KMyMoneySecurity;
   security->setHint(i18n("Security"));
