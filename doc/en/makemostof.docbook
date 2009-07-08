@@ -31,7 +31,7 @@
     Imagine your money as balls, or beans, and to stop them rolling around you keep them in a box, or pot. Accounting, or Book Keeping, is the process of counting the beans in the pot, or several pots.
 </para>
 <para>
-    You have some money, in the pot marked <quote>Cash</quote>. You buy some goods, so you take some beans out of the cash pot and place them into another pot marked <quote>Supplier</quote>. The supplier gives you some goods in exchange for the cash, so you take the beans out of the  pot marked <quote>Supplier</quote> and put them in the pot marked <quote>Goods</quote>.
+    You have some money in the pot marked <quote>Cash</quote>. You buy some goods, so you take some beans out of the cash pot and place them into another pot marked <quote>Supplier</quote>. The supplier gives you some goods in exchange for the cash, so you take the beans out of the  pot marked <quote>Supplier</quote> and put them in the pot marked <quote>Goods</quote>.
 </para>
 <para>
     The goods have a value (the price you paid) so you still have the same amount of beans, some representing cash and some representing goods.
@@ -56,7 +56,7 @@
     Any pots that cannot be valued are <quote>Income</quote> or <quote>Expense</quote>, such as an unpaid phone bill that would be an expense as we have already made the calls. Although these do not have a value, it is useful to monitor how much is in each.
 </para>
 <para>
-    In some cases a supplier is a Liability, in others it is an Expense. This is something we need to consider and decide for each case. Similarly, you may set up a loan as a Liability, particularly if you transfer the money into your bank account, but it could be an expense if it was to buy some furniture.
+    In some cases a supplier is a <quote>Liability</quote>, in others it is an <quote>Expense</quote>. This is something we need to consider and decide for each case. Similarly, you may set up a loan as a Liability, particularly if you transfer the money into your bank account, but it could be an Expense if it was to buy some furniture.
 </para>
 <para>
     Consider how you want to analyze your income and expenses. This will decide how you set them up.
@@ -70,7 +70,7 @@
 <title>Defining the accounts (business records)</title>
 
 <para>
-    This is similar to setting up for personal use, but needs to follow legal guidelines. You should be aware of what these are.
+    This is similar to setting up for personal use, but needs to follow legal guidelines. We do not discuss them here, but you should be aware of what these are.
 </para>
 </sect2>
 </sect1>
@@ -102,7 +102,7 @@
 <term>Checking</term>
 <listitem>
 <para>
-Standard bank trading account.
+Standard bank checking account.
 </para>
 </listitem>
 </varlistentry>
@@ -129,7 +129,7 @@ Money in your hand or wallet.
 <term>Loan</term>
 <listitem>
 <para>
-Loans made by you, etc.
+Loans you make to someone else.
 </para>
 </listitem>
 </varlistentry>
@@ -138,7 +138,7 @@ Loans made by you, etc.
 <term>Investment</term>
 <listitem>
 <para>
-Investments made.
+Money you invest.
 </para>
 </listitem>
 </varlistentry>
@@ -186,7 +186,7 @@ Loans made to you, mortgages, etc.
 <term>Liability</term>
 <listitem>
 <para>
-Anything you owe that is not a loan.
+Anything else you owe that is not a loan.
 </para>
 </listitem>
 </varlistentry>
