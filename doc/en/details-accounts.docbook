@@ -33,20 +33,23 @@
   <title id="details.accounts.title">Accounts</title>
 
   <para>The Accounts screen provides a summary of all the accounts. There are
-  four different account categories: Asset, Liability, Income and Expense.
+  four different account categories: Asset, Liability, Income, and Expense.
   Typical asset accounts include bank accounts, cash, and investments, while
   typical liability accounts include credit cards and loans.</para>
 
-  <para>There are two ways to view the accounts: List or Icon view. In Icon
-  view, the different Asset and Liability accounts are shown with icons
+  <para>There are two ways to view the accounts: List or Icon view, which may
+  be selected by clicking on the appropriate tab at the top of the view. In
+  Icon view, the different Asset and Liability accounts are shown with icons
   indicating the account type. List view shows the name and balance or value
   of each account.</para>
 
-  <para>Income and Expense lists the categories that each transaction is filed
-  under and provides similar functionality to the Categories screen. The
-  options and features involving Income and Expense accounts are described in
-  detail in the Categories chapter. The rest of this chapter will
-  focus on Asset and Liability account functionality.</para>
+  <para>In the list view, Income and Expense list the categories that each
+  transaction is filed under and provides similar functionality to the
+  Categories screen. The options and features involving Income and Expense
+  accounts are described in detail in
+  the <link linkend="details.categories">Categories</link> chapter. The rest
+  of this chapter will focus on Asset and Liability account
+  functionality.</para>
 
   <sect1 id="details.accounts.create">
     <title>Creating an Account</title>
@@ -58,15 +61,15 @@
 	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New account...</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png" format="PNG"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
     </para>
 
-    <para>Alternatively, to create an account using the accounts view click on the Accounts
+    <para>Alternatively, to create an account using the accounts view, click on the Accounts
     icon in the view selector and then right click on the Asset tree icon in
-    the right hand view and select <guimenuitem>New account</guimenuitem> from
+    the right hand view and select <guimenuitem>New account...</guimenuitem> from
     the popup menu. The Asset tree holds all of your accounts that are an
     asset. Assets, and all the other account types, are discussed in more
     detail later in this manual.</para>
 
     <sect2>
-      <title>The institution (Bank) name</title>
+      <title>The Institution (Bank) name</title>
 
       <para><screenshot>
           <mediaobject>
@@ -90,8 +93,8 @@
       create a new institution by clicking on the New Institution
       button.</para>
 
-      <para>This will bring up the following dialog in which to enter your
-      account number and the bank's <ulink
+      <para>This will bring up the following dialog in which to enter the bank's
+      routing number and the bank's <ulink
       url="http://www.investordictionary.com/definition/international+bank+account+number.aspx">IBAN</ulink>
       number. These fields may be left blank and filled in at a later time;
       they are only required for online banking. To proceed to the next step
@@ -114,7 +117,7 @@
       all other fields are optional.</para>
 
       <para>As with the personal information dialog, this data is not
-      currently used by &kappname; but will be required by future releases for
+      currently used by &kappname;, but will be required by future releases for
       certain features. Once you have entered the name click on
       <guibutton>OK</guibutton> to select the institution or click on
       <guibutton>Cancel</guibutton> to not use an institution for this
@@ -145,7 +148,7 @@
       <para>First, enter a name for the account. This name will be used to
       identify it.</para>
 
-      <para>Select the type of account from one of the types available from
+      <para>Next, select the type of account from one of the types available from
       the drop down list:</para>
 
       <variablelist>
@@ -177,8 +180,8 @@
           <term>Cash</term>
 
           <listitem>
-            <para>A general purpose account typically used for accounts not
-            held at a bank.</para>
+            <para>A general purpose account, typically used for accounts not
+            held at a bank, such as the cash in your wallet.</para>
           </listitem>
         </varlistentry>
 
@@ -186,7 +189,7 @@
           <term>Loan</term>
 
           <listitem>
-            <para>An account to manage a loan for money either borrowed or lent.  With a Loan account &kappname; automatically calculates interest payments to help you track the remaining principal on the loan.</para>
+            <para>An account to manage a loan for money either borrowed or lent.  With a Loan account &kappname; automatically calculates interest payments to help you track the remaining principal on the loan.  Loans with no interest might use the plain Asset or Liability type below, depending on whether the money is lent or  borrowed.</para>
           </listitem>
         </varlistentry>
 
@@ -194,14 +197,14 @@
           <term>Investment</term>
 
           <listitem>
-            <para>An account to manage an investment such as stocks and investment funds.</para>
+            <para>An account to manage an investment such as stocks or investment funds.</para>
           </listitem>
 	</varlistentry>
         <varlistentry>
           <term>Asset</term>
 
           <listitem>
-            <para>An account to manage an asset.</para>
+            <para>An account to manage an asset that does not fit in one of the above types.</para>
           </listitem>
         </varlistentry>
 
@@ -209,7 +212,7 @@
           <term>Liability</term>
 
           <listitem>
-            <para>An account to manage a liability such as money you borrowed or a future expense.</para>
+            <para>An account to manage a liability such as money you borrowed or a future expense.  If interest needs to be calculated, you might be better using the Loan type above.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -258,7 +261,7 @@
 
     <sect2>
       <title>Investment Accounts</title>
-      <para>For Investment account you have the option to create an associated Brokerage account.  For more information see <link linkend="details.investments">Investments</link></para>
+      <para>For Investment accounts, you have the option to create an associated Brokerage account.  For more information see <link linkend="details.investments">Investments</link></para>
 
         <para><screenshot>
             <mediaobject>
@@ -525,7 +528,7 @@
         </mediaobject>
       </screenshot></para>
 
-    <para>Alternatively the account details can be changed through the <link
+    <para>Alternatively, the account details can be changed through the <link
     linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account
     Details</guibutton> button in the command frame.</para>
   </sect1>
@@ -551,7 +554,7 @@
     so.</para>
 
     <para>There may be transactions in your ledger that are not shown, for
-    example if you have inadvertently typed in the wrong year when making an
+    example, if you have inadvertently typed in the wrong year when making an
     entry so that an entry remains outside the opening date of &kappname;. This
     appears beneath the ledger page as remaining funds.</para>
   </sect1>
