@@ -1,7 +1,12 @@
 
+2009-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added documentation patches from Jack Ostroff
+    (firsttime.diff, details-institution.patch)
+
 2009-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show empty online update statistics
-  * Added documentation patches from  Jack Ostroff
+  * Added documentation patches from Jack Ostroff
+    (makemostof.diff, whatsnew.diff)
   * Fixed generation of PDF (now includes new screen shots)
 
 2009-07-05 Thomas Baumgart <ipwizard@users.sourceforge.net>

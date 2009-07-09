@@ -41,7 +41,7 @@ You are recommended to quickly read through these tips by pressing on the <guibu
 </para>
 
 <para>
-Once you have read the tips the window can be closed and will re-open each time &kappname; is started.  To stop this default behavior uncheck the appropriate option on the Tip of the Day window.
+Once you have read the tips the window can be closed; it will re-open each time &kappname; is started.  To stop this default behavior, uncheck the appropriate option on the Tip of the Day window.
 </para>
 
 <note><para>
@@ -86,7 +86,7 @@ The &kappname; main window consists of four major parts
 
 
 
-<para>	
+<para>
 The menu and toolbars provide access to the features of &kappname; and allow you to <link linkend="firsttime-3">Create</link> files or configure how &kappname; operates.
 </para>
 
@@ -97,7 +97,7 @@ The view selector consists of at least eleven icons in the left side of the main
 <para>
 	The view selector contains the following icons
 </para>
-	
+
 <itemizedlist>
 	<listitem>
 		<para>
@@ -111,7 +111,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			A configurable overview of your current financial situation (or an introduction page when no data exists).
+			Home: A configurable overview of your current financial situation (or an introduction page when no data file is open).
 		</para>
 	</listitem>
 
@@ -127,7 +127,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All of your institutions and accounts displayed in a hierarchy.
+			Institutions: All of your institutions and accounts displayed in a hierarchy.
 		</para>
 	</listitem>
 
@@ -143,7 +143,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All of your accounts displayed in a hierarchy.
+			Accounts: All of your accounts displayed in a hierarchy.
 		</para>
 	</listitem>
 
@@ -159,7 +159,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Your recurring bills and deposits.
+			Schedule: Your recurring bills and deposits.
 		</para>
 	</listitem>
 
@@ -175,7 +175,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Special accounts that provide a means for you to group associated transactions.
+			Categories: Special accounts that provide a means for you to group associated transactions.
 		</para>
 	</listitem>
 
@@ -191,7 +191,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All Payees used by &kappname;.
+			Payees: All Payees used by &kappname;.
 		</para>
 	</listitem>
 
@@ -207,7 +207,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Your account transactions.
+			Ledgers: Your account transactions.
 		</para>
 	</listitem>
 
@@ -223,7 +223,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Your portfolio summary.
+			Investments: Your portfolio summary.
 		</para>
 	</listitem>
 
@@ -239,7 +239,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			A collection of useful reports, providing alternate views of your financial data.
+			Reports: A collection of useful reports, providing alternate views of your financial data.
 		</para>
 	</listitem>
         <listitem>
@@ -254,7 +254,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			Your budgets
+			Budgets: bYour budgets
 		</para>
 	</listitem>
 
@@ -270,7 +270,7 @@ The view selector consists of at least eleven icons in the left side of the main
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			This view provides a forecast of your accounts and categories
+			Forecast: This view provides a forecast of your accounts and categories
 		</para>
 	</listitem>
 
@@ -290,10 +290,14 @@ The view selector consists of at least eleven icons in the left side of the main
 		</para>
 	</listitem>
 </itemizedlist>
-</sect1>	
+</sect1>
 
 <sect1 id="firsttime-3">
 <title>Creating a new file</title>
+
+<para>
+	&kappname; keeps all the data about your finances in a file.  As was stated in <link linkend="makingmostof.basicaccounting.personalaccounts">Defining the accounts (personal records)</link>, you can keep more than one set of accounts, but the data for each will be kept in a separate file, and &kappname; can only have one file open at a time.  See the chapter on <link linkend="details.formats">File Formats</link> for more details about &kappname;'s data files.
+</para>
 
 <para>
 	To create a new file you can either select <menuchoice><guimenu>File</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <inlinemediaobject><imageobject><imagedata fileref="new.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject> icon from the toolbar.
@@ -302,7 +306,7 @@ The view selector consists of at least eleven icons in the left side of the main
 <para>
 	&kappname; will then open the <quote>New File Setup Wizard</quote> which will guide you through the process of creating the file.
 </para>
-	
+
 <para>
 	<screenshot>
 	<screeninfo>Personal Data Page</screeninfo>
@@ -330,7 +334,7 @@ The view selector consists of at least eleven icons in the left side of the main
 </para>
 
 <para>
-  &kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day and which will be used for your reports), select the appropriate entry from the list provided and press <guibutton>Next</guibutton>. A default will be selected from &kappname; based upon your locale settings.
+  &kappname; supports multiple currencies.  To set your base currency (the currency you use day to day and which will be used for your reports), select the appropriate entry from the list provided and press <guibutton>Next</guibutton>. A default will be selected from &kappname; based upon your locale settings.
 </para>
 
 <para>
@@ -371,7 +375,7 @@ The following page allows you to create an initial account. For the typical &kap
 </para>
 
 <para>
-  In case you don't want to setup an initial account, please uncheck the checkbox 
+  In case you don't want to setup an initial account, please uncheck the checkbox
 </para>
 <para>
   Once finished, press <guibutton>Next</guibutton> to proceed.
@@ -437,7 +441,7 @@ The last page of the wizard allows you to select the filename that will be used 
 </para>
 
 <para>
-Now you have collected all relevant information to create the file. Press <guibutton>Finish</guibutton> and &kappname; will create the file for you and open it.
+Now you have entered all relevant information to create the file. Press <guibutton>Finish</guibutton> and &kappname; will create the file for you and open it.
 </para>
 
 <!--
@@ -457,7 +461,7 @@ You can create an account in one of two ways both of which are described here:
 
 <variablelist>
 	<varlistentry><term>Using the menu</term><listitem><para>To create an account using the menu select <menuchoice><guimenu>Accounts</guimenu><guimenuitem>Add new account</guimenuitem></menuchoice>.</para></listitem></varlistentry>
-		
+
 	<varlistentry><term>Using the Accounts view</term><listitem><para>To create an account using the accounts view click on the Accounts icon in the view selector and then right click on the Asset tree icon in the right hand view and select <guimenuitem>New account</guimenuitem> from the popup menu.  The Asset tree holds all of your accounts that are an asset.  Assets, and all the other account types, are discussed in more detail later in this manual.</para></listitem></varlistentry>
 </variablelist>
 
@@ -477,7 +481,7 @@ A full description of creating accounts can be found in the <link linkend="detai
 </para>
 
 <para>
-	Now that one or more accounts exist in &kappname; your account summary is shown in the Home view.  You can create transactions manually in the <link linkend="details.ledgers">Ledgers</link> view, or set up automatic transactions through the <link linkend="details.schedules">Schedule</link> view.
+	Now that one or more accounts exist in &kappname;, your account summary is shown in the Home view.  You can create transactions manually in the <link linkend="details.ledgers">Ledgers</link> view, or set up automatic transactions through the <link linkend="details.schedules">Schedule</link> view.
 </para>
 
 </sect1>
@@ -485,14 +489,20 @@ A full description of creating accounts can be found in the <link linkend="detai
 <sect1 id="firsttime.schedules">
 <title>Schedules</title>
 <para>
-	A <link linkend="details.schedules">Schedule</link> is a transaction that occurs one or more times over a certain period of time.  Sometimes called recurring transactions a typical example is your pay check that you receive every month or week.  Rather than have to enter the transaction details each time you get paid, you can instruct &kappname; to create a schedule that will enter a transaction for you when you get paid.
+	Sometimes called a recurring transaction, a <link linkend="details.schedules">Schedule</link> is a transaction that occurs one or more times over a certain period of time.  A typical example is your pay check that you receive every month or week.  Rather than have to enter the transaction details each time you get paid, you can instruct &kappname; to create a schedule that will enter a transaction for you when you get paid.
+</para>
+<para>
+	To maintain <link linkend="details.schedules">schedules</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="schedule_view.png"/></imageobject></inlinemediaobject>Schedules</guiicon> icon in the view selector.
 </para>
 </sect1>
 
 <sect1 id="firsttime.categories">
 <title>Categories</title>
-<para>	
+<para>
 	To maintain <link linkend="details.categories">categories</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="categories_view.png"/></imageobject></inlinemediaobject>Categories</guiicon> icon in the view selector.
+</para>
+<para>
+A full description of this topic can be found in the <link linkend="details.categories">Categories</link> section.
 </para>
 </sect1>
 
@@ -510,7 +520,7 @@ A full description of this topic can be found in the <link linkend="details.paye
 <sect1 id="firsttime-import">
 <title>Quicken Interchange Format (QIF) Import</title>
 <para>
-If you currently use a financial manager application &kappname; can then import an account's transactions as long as they are in the Quicken Interchange Format (QIF).  Most financial programs can export this format and the different applications methods of exporting QIF is not discussed here for brevity.
+If you currently use a financial manager application, &kappname; can import an account's transactions as long as they are in the Quicken Interchange Format (QIF).  Most financial programs can export this format and the different applications methods of exporting QIF is not discussed here for brevity.
 </para>
 
 <para>
@@ -539,7 +549,7 @@ A full description of this topic can be found in the <link linkend="details.sear
 <title>Reconciliation</title>
 
 <para>
-At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepancies are found then either you or the person who created the statement have made a mistake.
+At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement, or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepancies are found then either you or the person who created the statement have made a mistake.
 </para>
 
 <para>
@@ -609,7 +619,7 @@ The backtrace is often the single most useful piece of information in solving cr
 <formalpara><title>Include specific steps</title><para>This is a bad bug report: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug report is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducible for me.&quot;</para>
 </formalpara>
 
-<formalpara><title>Tell us what you expected to happen</title><para>In crashes this is obvious, but in more subtle bugs, sometimes you'll see a bug report where it is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>
+<formalpara><title>Tell us what you expected to happen</title><para>In some cases, this is obvious, but in more subtle bugs, sometimes you'll see a bug report where it is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>
 </formalpara>
 
 <formalpara><title>Consider running with debugging enabled</title><para>By compiling a version configured with --enable-debug=full you can ensure that the best possible backtraces are generated.  If you encounter a crash, run &kappname; again from within gdb, and reproduce the crash.  When it crashes, type &quot;bt&quot; to generate a backtrace.</para>
