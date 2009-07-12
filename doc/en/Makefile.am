@@ -26,6 +26,9 @@ preview: index.html
 show: preview
 	konqueror index.html
 
+show-local-web: web
+	konqueror online-manual/index.html
+
 web: online-manual/index.xml
 
 online-manual/index.xml: $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
