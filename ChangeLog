@@ -1,4 +1,8 @@
 
+2009-07-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added documentation patches from Jack Ostroff
+    (details-categories.diff, details-payees.diff, doc-en-Makefile.am.diff)
+
 2009-07-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't use invalid transaction object for the list of selected transactions
 

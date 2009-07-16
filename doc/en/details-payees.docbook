@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.payees">
 
 <chapterinfo>
@@ -56,14 +57,15 @@
 
 <sect2><title>Deleting a Payee or Payer</title>
 <para>
-  To remove a payee or payer, right-click the name and select <guimenuitem>Delete payee</guimenuitem>. You will be presented with a dialog to allow reassignment of transactions to a different payee, and also a check box to enable a deleted name to be added to the new payee's matching list.
+  To remove a payee or payer, right-click the name and select <guimenuitem>Delete payee</guimenuitem>. If the payee has any transactions, you will be presented with a dialog that allows you to reassign them to a different payee, and also a check box to enable a deleted name to be added to the new payee's matching list.
 </para>
 </sect2>
 
 </sect1>
 
-<sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Personal Information</title>
+<sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Additional Payee Details</title>
 
+<sect2><title>Personal Information</title>
 <para>
   To view and edit the personal information associated with a particular payee, select the payee from the list and select the Address tab. To modify this information, edit the detail area directly and press the Update button when finished.   
 </para>
@@ -82,12 +84,16 @@
 </screenshot>
 </para>
 
+</sect2>
 <sect2><title>Transaction Matching Settings</title>
 
 <sect3><title>Overview</title>
+
 <para>
-&kappname; has the ability to automatically assign the proper payee to imported transactions.
-This can be handy when importing transactions from your bank when the payee name has extra unnecessary characters, or worse if the payee names change.
+ &kappname; has the ability to automatically assign the proper payee to imported
+ transactions.  This can be handy when importing transactions from your bank,
+ when the payee name has extra unnecessary characters, or worse, if the payee
+ names change.
 </para>
 
 <para>
@@ -95,9 +101,25 @@ For example, let's say your monthly mortgage payment comes in from your bank lik
 You would really like both of those transactions to be assigned simply to your payee &quot;SunTrust&quot;.
 The transaction matching feature is for you!
 </para>
+
+<para>
+<screenshot>
+	<screeninfo>The payee matching tab</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="payee_match.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Payee matching details</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect3>
 
 <sect3><title>Setting up</title>
+
 <para>
 From the Matching tab, you can set the Transaction Matching Settings. You have 3 major options:
 </para>
@@ -105,7 +127,7 @@ From the Matching tab, you can set the Transaction Matching Settings. You have 3
 <itemizedlist>
 	<listitem><para>No Matching.  Disables the feature for this payee.  This is the default setting for all payees.</para></listitem>
 	<listitem><para>Match on Payee Name.  Enables the feature, and uses the payee name itself as the Match Key</para></listitem>
-	<listitem><para>Match on Key.  Enables the feature, and allows you to enter in a Match Key of your choosing.</para></listitem>
+	<listitem><para>Match on Key.  Enables the feature, and allows you to enter one or more Match Keys of your choosing.  In general, entering a plain string will work perfectly.  However, the match keys are actually regular expressions, so it is possible to match on more complicated patterns.</para></listitem>
 </itemizedlist>
 
 <para>You can also choose whether you want to ignore the case of the Match Key.  If you choose this option, the Match Key &quot;SunTrust&quot; would match &quot;SUNTRUST BANK&quot; or &quot;SunTrust Bank&quot;</para>
