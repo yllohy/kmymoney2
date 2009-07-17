@@ -49,7 +49,7 @@
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>5</hsizetype>
-                            <vsizetype>3</vsizetype>
+                            <vsizetype>5</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>5</verstretch>
                         </sizepolicy>
@@ -408,7 +408,7 @@
         <container>0</container>
         <sizepolicy>
             <hordata>5</hordata>
-            <verdata>5</verdata>
+            <verdata>3</verdata>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>

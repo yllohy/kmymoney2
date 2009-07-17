@@ -594,7 +594,10 @@ void kMyMoneySplitTable::updateTransactionTableSize(void)
 {
   // get current size of transactions table
   int rowHeight = cellGeometry(0, 0).height();
-  int tableHeight = height();
+
+  // add half a row to the height to avoid unnecessary toggling when
+  // changing the number of rows
+  int tableHeight = (height() + rowHeight/2);
   int splitCount = m_transaction.splits().count()-1;
 
   if(splitCount < 0)
