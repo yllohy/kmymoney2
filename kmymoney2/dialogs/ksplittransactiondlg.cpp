@@ -270,6 +270,7 @@ void KSplitTransactionDlg::reject()
 
 void KSplitTransactionDlg::slotClearAllSplits(void)
 {
+  transactionsTable->slotEndEdit();
   int answer;
   answer = KMessageBox::warningContinueCancel (this,
      i18n("You are about to delete all splits of this transaction. "
@@ -295,6 +296,8 @@ void KSplitTransactionDlg::slotClearAllSplits(void)
 
 void KSplitTransactionDlg::slotClearUnusedSplits(void)
 {
+  transactionsTable->slotEndEdit();
+
   QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -315,6 +318,8 @@ void KSplitTransactionDlg::slotClearUnusedSplits(void)
 
 void KSplitTransactionDlg::slotMergeSplits(void)
 {
+  transactionsTable->slotEndEdit();
+
   QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -353,6 +358,8 @@ void KSplitTransactionDlg::slotMergeSplits(void)
 
 void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
 {
+  transactionsTable->slotCancelEdit();
+
   m_transaction = t;
   QValueList<MyMoneySplit> list = transactionsTable->getSplits(m_transaction);
   QValueList<MyMoneySplit>::ConstIterator it;
