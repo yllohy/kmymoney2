@@ -1,4 +1,7 @@
 
+2009-07-20 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed transaction by account reports when displaying in multiple currencies
+
 2009-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added some fixes to solve #2558627 (Account entry widget mess about splits)
 
