@@ -1,4 +1,8 @@
 
+2009-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added documentation patches from Jack Ostroff
+    (details-schedules.docbook.diff)
+
 2009-07-20 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed transaction by account reports when displaying in multiple currencies
 
