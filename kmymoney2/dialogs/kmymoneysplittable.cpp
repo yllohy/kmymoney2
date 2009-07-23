@@ -546,6 +546,7 @@ void kMyMoneySplitTable::slotUpdateData(const MyMoneyTransaction& t)
 
   // fill the part that is used by transactions
   QValueList<MyMoneySplit>::Iterator it;
+  kMyMoneyEdit* valfield = new kMyMoneyEdit();
   for(it = list.begin(); it != list.end(); ++it) {
     QString colText;
     MyMoneyMoney value = (*it).value();
@@ -566,10 +567,8 @@ void kMyMoneySplitTable::slotUpdateData(const MyMoneyTransaction& t)
       amountTxt = QString();
 
     unsigned width = fontMetrics().width(amountTxt);
-    kMyMoneyEdit* valfield = new kMyMoneyEdit();
     valfield->setMinimumWidth(width);
     width = valfield->minimumSizeHint().width();
-    delete valfield;
 
     if(width > m_amountWidth)
       m_amountWidth = width;
@@ -580,6 +579,7 @@ void kMyMoneySplitTable::slotUpdateData(const MyMoneyTransaction& t)
 
     rowCount++;
   }
+  delete valfield;
 
   // now clean out the remainder of the table
   while(rowCount < static_cast<unsigned long> (numRows())) {

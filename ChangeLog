@@ -1,4 +1,7 @@
 
+2009-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #2786436 (Too much delay for data entry in a many-rows split)
+
 2009-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added documentation patches from Jack Ostroff
     (details-schedules.docbook.diff)
