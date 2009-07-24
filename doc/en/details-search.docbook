@@ -119,7 +119,9 @@ This tab allows you to specify the accounts that should be searched.
 Accounts are displayed in a tree format. Accounts that are marked for search are indicated with a check box. If you 
 click the <guibutton>All</guibutton> button, all accounts marked for searching. If you click the 
 <guibutton>None</guibutton> button, no accounts will be marked for searching. Individual accounts 
-can be marked or unmarked by clicking on the box next to the account name.
+can be marked or unmarked by clicking on the box next to the account name using
+the left mouse button. A complete hierarchy of accounts can be marked or unmarked
+by clicking on the box using the right mouse button.
 </para>
 
 </sect2>
@@ -208,8 +210,10 @@ be unmarked and expense categories will be marked.
 </para>
 
 <para>
-Individual accounts can be marked or unmarked by clicking on the box next to 
-the account name.
+Individual categories can be marked or unmarked by clicking on the box next to 
+the account name using
+the left mouse button. A complete hierarchy of categories can be marked or unmarked
+by clicking on the box using the right mouse button.
 </para>
 </sect2>
 
