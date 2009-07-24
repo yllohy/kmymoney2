@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="credits">
 <title>Credits</title>
 
@@ -8,7 +9,7 @@
 <itemizedlist>
 <listitem><formalpara><title>Michael Edwardes &lt;mte@users.sourceforge.net&gt;</title><para>  Original idea, much intial source code. Project admin.</para></formalpara></listitem>
 </itemizedlist>
-            
+
 </sect1>
 <sect1 id="credits.active">
 
@@ -21,11 +22,10 @@
 <listitem><formalpara><title>Alvaro Soliverez &lt;asoliverez@users.sourceforge.net&gt;</title><para>  Forecast. Reports.</para></formalpara></listitem>
 <listitem><formalpara><title>Fernando Vilas &lt;fvilas@users.sourceforge.net&gt;</title><para>  Database support</para></formalpara></listitem>
 </itemizedlist>
-            
+
 </sect1>
 <sect1 id="credits.past">
-
-            <title>Developers of Previous Versions</title>
+<title>Developers of Previous Versions</title>
 
 <itemizedlist>
 <listitem><formalpara><title>Ace Jones &lt;acejones@users.sourceforge.net&gt;</title><para>  Reports. OFX Import. Online Quotes. Documentation editor.</para></formalpara></listitem>
@@ -36,16 +36,19 @@
 
 </sect1>
 <sect1 id="credits.special">
+<title>Special Thanks</title>
 
-            <title>Special Thanks</title>
 <itemizedlist>
 <listitem><formalpara><title>Javier Campos Morales &lt;javi_c@users.sourceforge.net&gt;</title><para>  Developer &amp; Artist</para></formalpara></listitem>
 <listitem><formalpara><title>Laurent Montel &lt;montel@kde.org&gt;</title><para>  Patches</para></formalpara></listitem>
 <listitem><formalpara><title>Roger Lum &lt;rogerlum@gmail.com&gt;</title><para>  Documentation</para></formalpara></listitem>
 <listitem><formalpara><title>Darin Strait &lt;darin.strait@ashdar-partners.com&gt;</title><para>  Documentation</para></formalpara></listitem>
-<listitem><formalpara><title>Cristian Onet &lt;onet.cristian@gmail.com&gt;</title><para>  Patches and Plugins</para></formalpara></listitem>
+<listitem><formalpara><title>Cristian Oneţ &lt;onet.cristian@gmail.com&gt;</title><para>  Patches and Plugins</para></formalpara></listitem>
 <listitem><formalpara><title>Allan Anderson &lt;aganderson@ukonline.co.uk&gt;</title><para>  Patches</para></formalpara></listitem>
 <listitem><formalpara><title>Colin Wright &lt;cdwright@gwi.net&gt;</title><para>  Patches and Documentation</para></formalpara></listitem>
+
+<listitem><formalpara><title>Jack Ostroff &lt;ostroffjh@users.sourceforge.net&gt;</title><para>  Documentation</para></formalpara></listitem>
+
 </itemizedlist>
 
 </sect1>
