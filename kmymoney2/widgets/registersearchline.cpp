@@ -274,7 +274,6 @@ RegisterSearchLine* RegisterSearchLineWidget::createSearchLine(Register* reg)
 
 void RegisterSearchLineWidget::createWidgets(void)
 {
-  positionInToolBar();
   if(!d->clearButton) {
     d->clearButton = new QToolButton(this);
     QIconSet icon = SmallIconSet(QApplication::reverseLayout() ? "clear_left" : "locationbar_erase");
@@ -294,40 +293,9 @@ void RegisterSearchLineWidget::createWidgets(void)
   connect(d->clearButton, SIGNAL(clicked()), d->searchLine, SLOT(reset()));
 }
 
-
 RegisterSearchLine* RegisterSearchLineWidget::searchLine(void) const
 {
   return d->searchLine;
-}
-
-void RegisterSearchLineWidget::positionInToolBar(void)
-{
-  KToolBar *toolBar = dynamic_cast<KToolBar *>(parent());
-
-  if(toolBar) {
-
-    // Here we have The Big Ugly.  Figure out how many widgets are in the
-    // and do a hack-ish iteration over them to find this widget so that we
-    // can insert the clear button before it.
-
-    int widgetCount = toolBar->count();
-
-    for(int index = 0; index < widgetCount; index++) {
-      int id = toolBar->idAt(index);
-      if(toolBar->getWidget(id) == this) {
-        toolBar->setItemAutoSized(id);
-        if(!d->clearButton) {
-          QString icon = QApplication::reverseLayout() ? "clear_left" : "locationbar_erase";
-          d->clearButton = new KToolBarButton(icon, 2005, toolBar);
-        }
-        toolBar->insertWidget(2005, d->clearButton->width(), d->clearButton, index+1);
-        break;
-      }
-    }
-  }
-
-  if(d->searchLine)
-    d->searchLine->show();
 }
 
 #include "registersearchline.moc"

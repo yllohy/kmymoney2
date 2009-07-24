@@ -2,6 +2,8 @@
 2009-07-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added documentation patches from Jack Ostroff
     (credits.docbook.diff, details-ledgers.docbook.diff)
+  * Added patch provided by Cristian Onet
+    (code_cleanup_in_register_search_line.patch)
 
 2009-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #2786436 (Too much delay for data entry in a many-rows split)

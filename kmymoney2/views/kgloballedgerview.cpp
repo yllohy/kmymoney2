@@ -195,6 +195,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // insert search line widget
 
   d->m_registerSearchLine = new KMyMoneyRegister::RegisterSearchLineWidget(m_register, m_toolbar);
+  m_toolbar->setStretchableWidget(d->m_registerSearchLine);
 
   // create the summary frame
   m_summaryFrame = new QFrame(this);
