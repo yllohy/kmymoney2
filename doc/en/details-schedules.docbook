@@ -154,7 +154,7 @@ A new dialog window is now shown, prompting for the schedule and transaction dat
 <sect2>
 <title>Filling in the fields</title>
 <para>
-	Enter the name and the date of the next occurrence of this schedule into their respective fields.  The name is how the schedule will be shown in the list view.  Select the frequency from the <guibutton>Frequency</guibutton> drop down list.  If the amount varies transaction to transaction make sure to check the <guilabel>Estimate</guilabel> checkbox and you will be prompted for the correct amount when it is entered into the ledger.  Fill in all the transaction fields as you would normally with the ledger view.
+	Enter the name and the date of the next occurrence of this schedule into their respective fields.  The name is how the schedule will be shown in the list view.  Specify how often the schedule should occur, using the Frequency field and drop down list. For example "every 6 weeks" or "every 3 months".  If the amount varies transaction to transaction make sure to check the <guilabel>Estimate</guilabel> checkbox and you will be prompted for the correct amount when it is entered into the ledger.  Fill in all the transaction fields as you would normally with the ledger view.
 </para>
 </sect2>
 
