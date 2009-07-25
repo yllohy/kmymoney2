@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.search">
 
 <chapterinfo>
@@ -91,8 +92,11 @@ If you check the <guilabel>Case Sensitive</guilabel> box, the search will be cas
 </para>
 
 <para>
-If you check the <guilabel>Treat Text as regular expression</guilabel> box, the text will be treated as a 
-regular expresssion.  For details on how to craft a regular expression, visit the Qt documentation at doc.trolltech.com, and look for the QRegExp class.
+  If you check the <guilabel>Treat Text as regular expression</guilabel> box,
+  the text will be treated as a regular expresssion.  For details on how to craft
+  a regular expression, visit the Qt documentation about the
+  <ulink url="http://doc.qtsoftware.com/3.3/qregexp.html#1">QRegExp class</ulink>
+  at http://doc.qtsoftware.com/3.3/qregexp.html#1.
 </para>
 
 </sect2>

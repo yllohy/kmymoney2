@@ -27,13 +27,13 @@ At the time of writing, the software described in this chapter is still in an ex
 
 <sect2><title>Preparation</title>
   <para/>
-  <para>To access the database, &kappname; uses the SQL module supplied by Trolltech<trademark class="registered"/> as part of their Qt<trademark class="registered"/> programming system. This module supports a number of different database systems through a collection of drivers. Among the more popular open-source systems for which drivers are available are MySQL<trademark class="registered"/>, SQLite and PostgreSQL The module also supports the 'heavier', more industrial, systems such as Oracle<trademark class="registered"/> and IBM DB2<trademark class="registered"/></para>
+  <para>To access the database, &kappname; uses the SQL module supplied by Qt Software<trademark class="registered"/> as part of their Qt<trademark class="registered"/> programming system. This module supports a number of different database systems through a collection of drivers. Among the more popular open-source systems for which drivers are available are MySQL<trademark class="registered"/>, SQLite and PostgreSQL The module also supports the 'heavier', more industrial, systems such as Oracle<trademark class="registered"/> and IBM DB2<trademark class="registered"/></para>
   <para/>
   <para>With the exception of SQLite, these systems use a client/server model, where the 'client' software sits on 'your' machine, whilst the server lives on the same machine as the database itself, which may be elsewhere on a network. Of course, in the normal scenario for a personal finance application such as &kappname;, 'your' machine acts as both client and server. Your first task therefore, having decided which database system you wish to use, is to install the client, and most probably server, software.</para>
   <para/>
   <para>(SQLite does not operate on a client/server model; each database is held in a regular file, local or remote, accessed using the normal methods supplied by the underlying operating system. In this case, therefore, there is only one software package to install. Also, some of the following information, particularly that related to administration, may not apply to SQLite.)</para>
   <para/>
-  <para>In addition to the database software itself, you must also install the corresponding Qt<trademark class="registered"/> driver module. Most distributions will include driver modules for the more popular databases. Otherwise, check with the <ulink url="http://www.trolltech.com">Trolltech web site </ulink> and search for 'SQL drivers'</para>
+  <para>In addition to the database software itself, you must also install the corresponding Qt<trademark class="registered"/> driver module. Most distributions will include driver modules for the more popular databases. Otherwise, check with the <ulink url="http://www.qtsoftware.com">Qt software web site </ulink> and search for 'SQL drivers'</para>
   <para/>
   <para>
   NOTE: Due to the limitations in prior releases, only version 3 of SQLite is supported. Unfortunately, the release of the Qt<trademark class="registered"/> toolkit used by &kappname; does not provide a driver for this version. However, an unofficial, extensively tested, driver is available; if you wish to use SQLite, ask on &devlist; for further information.
@@ -68,7 +68,7 @@ At the time of writing, the software described in this chapter is still in an ex
 
 <sect3><title>Database Type</title>
 <para>
-This box lists all Qt SQL drivers installed on your system. Select the driver for your database type. If the one you want is not in the list, you need to install the appropriate driver. See your distro documentation, or visit the <ulink url="http://www.trolltech.com/" type="">Trolltech web site</ulink> and search for 'SQL drivers'.
+This box lists all Qt SQL drivers installed on your system. Select the driver for your database type. If the one you want is not in the list, you need to install the appropriate driver. See your distro documentation, or visit the <ulink url="http://www.qtsoftware.com/" type="">Qt software web site</ulink> and search for 'SQL drivers'.
 </para>
 </sect3>
 <sect3><title>Database name</title>

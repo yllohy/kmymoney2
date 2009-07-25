@@ -574,9 +574,11 @@
 <para>
   The page parser looks for a symbol, a date, and a price.  Regular expressions
   tell it how to extract those items from the page.  Please review the
-  documentation for the QRegExp class at http://doc.trolltech.com for the exact
-  makeup of the regular expressions.  There should be exactly one capture
-  expression, surrounded by parentheses, in each regexp.  The date format
+  documentation for the
+  <ulink url="http://doc.qtsoftware.com/3.3/qregexp.html#1">QRegExp class</ulink>
+  at http://doc.qtsoftware.com/3.3/qregexp.html#1
+  for the exact makeup of the regular expressions.  There should be exactly one
+  capture expression, surrounded by parentheses, in each regexp.  The date format
   further tells the date parser the order of year, month, and day.  This date
   format should always be in the form "%x %x %x". where x is y, m, or d.  The
   date parser is very smart.  &quot;%m %d %y&quot; will parse &quot;December
