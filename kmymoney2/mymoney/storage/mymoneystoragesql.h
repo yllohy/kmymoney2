@@ -112,6 +112,7 @@ class MyMoneyDbDrivers {
       **/
     const QMap<QString, QString> driverMap() const {return (m_driverMap);};
     databaseTypeE driverToType (const QString& driver) const;
+    bool isTested (databaseTypeE dbType) const;
   private:
     QMap<QString, QString> m_driverMap;
 };
@@ -683,6 +684,7 @@ private:
   int upgradeToV3();
   int upgradeToV4();
   int upgradeToV5();
+  int upgradeToV6();
   bool sqliteAlterTable(const MyMoneyDbTable& t);
   bool addColumn(const MyMoneyDbTable& t, const MyMoneyDbColumn& c,
                  const QString& after = QString());
@@ -698,8 +700,7 @@ private:
   databaseTypeE m_dbType;
 
   MyMoneyDbDef m_db;
-  unsigned int m_majorVersion;
-  unsigned int m_minorVersion;
+  unsigned int m_dbVersion;
   IMyMoneySerialize *m_storage;
   IMyMoneyStorage *m_storagePtr;
   // input options
@@ -791,5 +792,7 @@ private:
   //Disable copying
   MyMoneyStorageSql (const MyMoneyStorageSql& rhs);
   MyMoneyStorageSql& operator= (const MyMoneyStorageSql& rhs);
+  //
+  bool m_newDatabase;
 };
 #endif // MYMONEYSTORAGESQL_H

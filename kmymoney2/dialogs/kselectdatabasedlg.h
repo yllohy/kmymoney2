@@ -55,6 +55,7 @@ public slots:
   void slotHelp();
   void slotGenerateSQL();
 private:
+  void setError();
   int m_mode;
   MyMoneyDbDrivers m_map;
   kMandatoryFieldGroup* m_requiredFields;

@@ -1018,6 +1018,8 @@ private:
     */
   const QString nextBudgetID(void);
 
+  void removeReferences(const QString& id);
+
   static const int INSTITUTION_ID_SIZE = 6;
   static const int ACCOUNT_ID_SIZE = 6;
   static const int TRANSACTION_ID_SIZE = 18;
