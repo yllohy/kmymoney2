@@ -1,31 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.currencies">
 <chapterinfo>
-<authorgroup>
-<author>
-<firstname>Thomas</firstname>
-<surname>Baumgart</surname>
-<affiliation><address>
-<email>ipwizard@users.sourceforge.net</email>
-</address></affiliation>
-</author>
-</authorgroup>
-<date>05/05/2009</date>
-<releaseinfo>0.9</releaseinfo>
+  <authorgroup>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Baumgart</surname>
+      <affiliation>
+        <address><email>ipwizard@users.sourceforge.net</email></address>
+      </affiliation>
+    </author>
+  </authorgroup>
+  <date>05/05/2009</date>
+  <releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Currencies</title>
 <para>
-&kappname; supports the use of multiple currencies in different accounts. For example, you can set up a bank account in Euro, another in British Pounds and still have your credit card account in US Dollars.
+&kappname; supports the use of multiple currencies in different accounts. For example, you can set up a bank account in Euro, another in British Pounds, and still have your credit card account in US Dollars.
 </para>
 
 <sect1 id="details.currencies.basecurrency">
 <title>Base currency</title>
 <para>
-Once you create a &kappname; file you will be asked for the base currency. The base currency is the one that all income and expense categories use and that the reports will be based on. Usually, the base currency is the currency you use in your country. Once selected, the base currency cannot be changed. If not otherwise selected, new accounts will use this currency as the default.
+Once you create a &kappname; file you will be asked for the base currency. The base currency is the one that all income and expense categories use and that reports will be based on. Usually, the base currency is the currency you use in your country. Once selected, the base currency cannot be changed. If not otherwise selected, new accounts will use this currency as the default.
 </para>
 
 <para>
-<screenshot>
+	<screenshot>
 	<screeninfo>The select currency dialog</screeninfo>
 	<mediaobject>
 	<imageobject>
@@ -35,7 +36,7 @@ Once you create a &kappname; file you will be asked for the base currency. The b
 	<phrase>select currency</phrase>
 	</textobject>
 	</mediaobject>
-</screenshot>
+	</screenshot>
 </para>
 
 </sect1>
@@ -60,7 +61,8 @@ Optionally, the exchange rate is saved in the price database once entered by the
 
 <sect1 id="details.currencies.prices">
 <title>Exchange rates for currencies</title>
-<sect2><title>Entering prices manually</title>
+<sect2>
+<title>Entering prices manually</title>
 <para>
 The price database editor allows you to enter exchange rates between currencies or prices for investments.  You can pull it up using the <menuchoice>
 <guimenu>Tools</guimenu>
@@ -85,6 +87,7 @@ In &kappname; a &quot;Price&quot; is the price of one currency in terms of a sec
 For example, as I write this, the price of 1 USD in terms of 1 EUR is 0.83; that is, 1 USD costs 0.83 EUR. 
 The first currency is the one being bought or sold, and the second one is the currency used to buy or sell it.
 </para>
+
 <para>
 When you press the <guibutton>New</guibutton> button, you get the New Price Entry dialog.  
 Enter the first currency (USD in the example above) in the Security field.
@@ -107,7 +110,8 @@ Enter the effective date of the price in the Date field.
 
 </sect2>
 
-<sect2><title>Online currency updates</title>
+<sect2>
+<title>Online currency updates</title>
 <para>
 &kappname; will fetch currency conversions from the web.  
 Once you have entered a single price for a pair of currencies, the online quote feature will always list 
