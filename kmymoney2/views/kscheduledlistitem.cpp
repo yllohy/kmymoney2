@@ -212,7 +212,7 @@ int KScheduledListItem::compare(QListViewItem* i, int col, bool ascending) const
       break;
 
     case 4:   // date
-      rc = item->m_schedule.nextDueDate().daysTo(m_schedule.nextDueDate());
+      rc = item->m_schedule.adjustedNextDueDate().daysTo(m_schedule.adjustedNextDueDate());
       break;
 
     case 5:   // occurence
