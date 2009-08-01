@@ -1,4 +1,7 @@
 
+2009-08-01 Alvaro Soliverez <asoliverez@gmail.com>
+  * Reverted a change in KGlobalLedgerView to fix an infinite loop
+
 2009-07-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed Schedule and GlobalLedgerView Views to use adjustedNextDate for
     schedules instead of nextDate - patches submitted by Ian Neal
