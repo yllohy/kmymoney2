@@ -454,7 +454,7 @@ void KGlobalLedgerView::loadView(void)
       while(scheduleList.count() > 0){
         MyMoneySchedule& s = scheduleList.first();
         for(;;) {
-          if(s.isFinished() || s.nextDueDate() > endDate) {
+          if(s.isFinished() || s.adjustedNextDueDate() > endDate) {
             break;
           }
 
