@@ -23,7 +23,7 @@
 <para>
   Reconciliation is the process of matching the transactions you have entered
   into &kappname; with the transactions listed for that account by the
-  instatution.  This is most commonly done with the list of transactions in a
+  institution.  This is most commonly done with the list of transactions in a
   statement, be it a bank statement, credit card statement, loan statement, or
   any other statement. It can also be done against an on-line listing of the
   account, although this is less common.  If any discrepancies are found, then
@@ -95,7 +95,7 @@
 <para>
   If the statement reconciliation is on a bank account or any account with
   interest and/or charges fees, then enter these values in the appropriate
-  fields.  A category can be assigned for for each of these amounts.
+  fields.  A category can be assigned for each of these amounts.
 </para>
 
 <para>
@@ -175,7 +175,7 @@
 <para>
   To postpone the reconciliation to a later time, click on
   the <guibutton>Postpone</guibutton> button.  Any edits you have made to any
-  transactions, such as marking them cleared, can be still be saved before you
+  transactions, such as marking them cleared, can still be saved before you
   exit &kappname;, but you will have to run the reconciliation wizard again in
   order to reconcile the account.  If you exit &kappname; before clicking either
   <guibutton>Finish</guibutton> or <guibutton>Postpone</guibutton>, it has the

@@ -248,7 +248,7 @@ menu items.
 <title>Currencies</title>
 <para>
   &kappname; has built-in support for all foreign 
-  <link linkend="details.currencies">currency </link>types.  &kappname; also
+  <link linkend="details.currencies">currency</link> types.  &kappname; also
   requires that the user specify a base currency, this being the default
   currency for new accounts. The importer will attempt to determine the most
   likely base currency, though this choice may be rejected in favour of an
@@ -379,7 +379,7 @@ menu items.
 <title>Reports</title>
 <para>
   &kappname; provides a comprehensive selection of configurable reports,
-  described in more detail in <link linkend="details.reports"> Reports. </link>
+  described in more detail in <link linkend="details.reports">Reports.</link>
   These will not necessarily, however, match precisely those reports available
   in GnuCash.
 </para>

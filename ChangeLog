@@ -1,4 +1,9 @@
 
+2009-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't count empty lines in OFX file when verifying the format
+  * Fixed a few typos in the documentation
+  * Don't reverse operation when entering a scheduled transfer transaction
+
 2009-08-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Reverted a change in KGlobalLedgerView to fix an infinite loop
 
@@ -13,11 +18,11 @@
     (details-imp-exp.docbook)
 
 2009-07-30 Tony Bloomfield <gandalf1189@users.sourceforge.net>
-  - Use transaction-safe engine for Mysql
-  - Put out a warning message for untested database drivers
-  - Fix nonsense when no Qt SQL drivers installed
-  - Internal changes to database layout (version 6)
-  - Fix SF #2732207 - Unable to unmatch transaction matched by OFX import
+  * Use transaction-safe engine for Mysql
+  * Put out a warning message for untested database drivers
+  * Fix nonsense when no Qt SQL drivers installed
+  * Internal changes to database layout (version 6)
+  * Fix SF #2732207 - Unable to unmatch transaction matched by OFX import
 
 2009-07-29 Alvaro Soliverez <asoliverez@gmail.com>
   * Added documentation patches from Jack Ostroff

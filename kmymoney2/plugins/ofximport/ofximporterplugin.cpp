@@ -94,7 +94,8 @@ QString OfxImporterPlugin::formatFilenameFilter(void) const
 bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 {
   // filename is considered an Ofx file if it contains
-  // the tag "<OFX>" or "<OFC>" in the first 20 lines.
+  // the tag "<OFX>" or "<OFC>" in the first 20 lines
+  // which contain some data.
   bool result = false;
 
   QFile f( filename );
@@ -105,11 +106,14 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
     int lineCount = 20;
     while ( !ts.atEnd() && !result  && lineCount != 0)
     {
-      QString line = ts.readLine();
+      // get a line of data and remove all unnecessary whitepace chars
+      QString line = ts.readLine().simplifyWhiteSpace();
       if ( line.contains("<OFX>",false)
         || line.contains("<OFC>",false) )
         result = true;
-      lineCount--;
+      // count only lines that contains some non white space chars
+      if(!line.isEmpty())
+        lineCount--;
     }
     f.close();
   }
