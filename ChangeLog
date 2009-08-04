@@ -1,4 +1,9 @@
 
+2009-08-03 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added documentation patches from Jack Ostroff
+    (details-budgets.docbook details-forecast.docbook
+    details-loans.docbook details-settings.docbook)
+
 2009-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't count empty lines in OFX file when verifying the format
   * Fixed a few typos in the documentation
