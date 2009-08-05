@@ -1449,10 +1449,13 @@ void StdTransactionEditor::slotUpdateCategory(const QString& id)
           tabbar->tab(KMyMoneyRegister::ActionDeposit)->setEnabled(false);
           tabbar->tab(KMyMoneyRegister::ActionWithdrawal)->setEnabled(false);
         }
-        if(val.isNegative())
-          categoryLabel->setText(i18n("Transfer from"));
-        else
-          categoryLabel->setText(i18n("Transfer to"));
+        // only change the label if an amount is already filled in
+        if(!val.isZero()) {
+          if(val.isNegative())
+            categoryLabel->setText(i18n("Transfer from"));
+          else
+            categoryLabel->setText(i18n("Transfer to"));
+        }
       } else {
         if(tabbar)
           tabbar->tab(KMyMoneyRegister::ActionTransfer)->setEnabled(false);
