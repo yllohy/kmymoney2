@@ -1,4 +1,10 @@
 
+2009-08-07 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added documentation patches from Jack Ostroff
+    (details-database.docbook details-formats.docbook
+    details-search.docbook details-widgets.docbook
+    reference.docbook introduction.docbook)
+
 2009-08-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with the label for transfers in the transaction form
 
