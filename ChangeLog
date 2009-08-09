@@ -1,4 +1,8 @@
 
+2009-08-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added documentation patches from Jack Ostroff
+    (details-accounts.docbook details-institutions.docbook)
+
 2009-08-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Added documentation patches from Jack Ostroff
     (details-database.docbook details-formats.docbook
