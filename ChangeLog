@@ -1,5 +1,5 @@
 2009-08-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
-  * Fix KDE #2834361 - ENTER key accepts select database dialog
+  * Fix #2834361 - ENTER key accepts select database dialog
 
 2009-08-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Internal improvements to database module
