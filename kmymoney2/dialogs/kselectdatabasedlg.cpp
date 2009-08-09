@@ -84,10 +84,15 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     connect (buttonSQL, SIGNAL(clicked()), this, SLOT(slotGenerateSQL()));
     connect (buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
     checkPreLoad->setChecked(false);
-    buttonOK->setEnabled(true);
     buttonSQL->setEnabled(true);
   }
   connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
+  // ensure a driver gets selected; pre-select if only one
+  listDrivers->clearSelection();
+  if (listDrivers->count() == 1) {
+    listDrivers->setSelected(0, true);
+    slotDriverSelected(listDrivers->item(0));
+  }
 }
 
 KSelectDatabaseDlg::KSelectDatabaseDlg(KURL openURL, QWidget *parent, const char *name)
@@ -130,7 +135,7 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(KURL openURL, QWidget *parent, const char
     m_requiredFields->add(textPassword);
     m_requiredFields->setOkButton(buttonOK);
 
-    connect (buttonOK, SIGNAL(clicked()), this, SLOT(slotOKPressed()));
+    connect (buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
     checkPreLoad->setChecked(false);
   }
   connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
