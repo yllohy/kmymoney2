@@ -686,9 +686,16 @@ private:
   int upgradeToV5();
   int upgradeToV6();
   bool sqliteAlterTable(const MyMoneyDbTable& t);
-  bool addColumn(const MyMoneyDbTable& t, const MyMoneyDbColumn& c,
+  bool addColumn(const MyMoneyDbTable& t,
+                 const MyMoneyDbColumn& c,
                  const QString& after = QString());
-  bool dropColumn(const MyMoneyDbTable& t, const MyMoneyDbColumn& c);
+  bool addColumn(const QString& table,
+                 const QString& column,
+                 const QString& after = QString());
+  bool dropColumn(const MyMoneyDbTable& t,
+                  const QString& c);
+  bool dropColumn(const QString& table,
+                  const QString& column);
 
 //  long long unsigned getRecCount(const QString& table);
   int createTables();

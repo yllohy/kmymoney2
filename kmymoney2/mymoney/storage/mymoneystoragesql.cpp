@@ -346,6 +346,22 @@ int MyMoneyStorageSql::upgradeDb() {
 // SF bug 2779291
 // check whether a column appears in a table already; if not, add it
 bool MyMoneyStorageSql::addColumn
+    (const QString& table, const QString& col,
+                 const QString& after)
+{
+  MyMoneyDbTable t = m_db.m_tables[table];
+  MyMoneyDbTable::field_iterator ft;
+  const MyMoneyDbColumn* c;
+  for (ft = t.begin(); ft != t.end(); ++ft) {
+    c = (*ft);
+    if (c->name() == col)
+      break;
+  }
+  if (ft == t.end()) qFatal("addColumn - get it right");
+  return (addColumn(t, *c, after));
+}
+
+bool MyMoneyStorageSql::addColumn
     (const MyMoneyDbTable& t, const MyMoneyDbColumn& c,
                  const QString& after){
   if ((m_dbType == Sqlite3) && (!after.isEmpty()))
@@ -368,17 +384,23 @@ bool MyMoneyStorageSql::addColumn
 
 // analogous to above
 bool MyMoneyStorageSql::dropColumn
-    (const MyMoneyDbTable& t, const MyMoneyDbColumn& c){
+    (const QString& table, const QString& col)
+{
+  return (dropColumn(m_db.m_tables[table], col));
+}
+
+bool MyMoneyStorageSql::dropColumn
+    (const MyMoneyDbTable& t, const QString& col){
   if (m_dbType == Sqlite3)
     qFatal("sqlite doesn't support 'DROP COLUMN'; use sqliteAlterTable");
-  if (!record(t.name()).contains(c.name()))
+  if (!record(t.name()).contains(col))
     return (true);
   QSqlQuery q(this);
   q.prepare("ALTER TABLE " + t.name() + " DROP COLUMN "
-      + c.name() + ";");
+      + col + ";");
   if (!q.exec()) {
     buildError (q, __func__,
-      QString("Error dropping column %1 from table %2").arg(c.name()).arg(t.name()));
+      QString("Error dropping column %1 from table %2").arg(col).arg(t.name()));
     return (false);
   }
   return (true);
@@ -638,8 +660,7 @@ int MyMoneyStorageSql::upgradeToV6() {
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // add separate fix level in file info
-  if (!addColumn(m_db.m_tables["kmmFileInfo"],
-    MyMoneyDbIntColumn("fixLevel", MyMoneyDbIntColumn::MEDIUM, false)))
+  if (!addColumn("kmmFileInfo", "fixLevel"))
     return (1);
   // upgrade Mysql to InnoDB transaction-safe engine
   if (m_dbType == Mysql) {
@@ -652,8 +673,7 @@ int MyMoneyStorageSql::upgradeToV6() {
     }
   }
   // add unique id to reports table
-  if (!addColumn(m_db.m_tables["kmmReportConfig"],
-       (MyMoneyDbColumn("id", "varchar(32)", false))))
+  if (!addColumn("kmmReportConfig", "id"))
     return(1);
   // read and write reports to get ids inserted
   readFileInfo();
@@ -2842,18 +2862,19 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
   if (txFilterActive) accountsOnlyFilter = false;
 
   QString whereClause = "";
-  QString subClauseconnector = " where ";
+  QString subClauseconnector = " where txType = 'N' and ";
   // payees
   QStringList payees;
   //filter.payees(payees);
   if (filter.payees(payees)) {
     accountsOnlyFilter = false;
-    QString itemConnector = "(";
+    QString itemConnector = "payeeId in (";
     QString payeesClause = "";
     QStringList::const_iterator it;
     for (it = payees.begin(); it != payees.end(); ++it) {
-      payeesClause.append(QString("%1 payeeId = '%2'").arg(itemConnector).arg(*it));
-      itemConnector = " or ";
+      payeesClause.append(QString("%1'%2'")
+          .arg(itemConnector).arg(*it));
+      itemConnector = ", ";
     }
     if (!payeesClause.isEmpty())     {
       whereClause += subClauseconnector + payeesClause + ")";
@@ -2865,13 +2886,14 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
   // accounts and categories
   if (!accounts.isEmpty()) {
     splitFilterActive = true;
-    QString itemConnector = " txType = 'N' and (";
+    QString itemConnector = "accountId in (";
     QString accountsClause = "";
     QStringList::const_iterator it;
     for (it = accounts.begin(); it != accounts.end(); ++it) {
 //      if (m_accountsLoaded.find(*it) == m_accountsLoaded.end()) {
-        accountsClause.append(QString("%1 accountId = '%2'").arg(itemConnector).arg(*it));
-        itemConnector = " or ";
+        accountsClause.append(QString("%1 '%2'")
+            .arg(itemConnector).arg(*it));
+        itemConnector = ", ";
         //if (accountsOnlyFilter) m_accountsLoaded.append(*it); // a bit premature...
 //      }
     }
@@ -2888,7 +2910,8 @@ const QMap<QString, MyMoneyTransaction> MyMoneyStorageSql::fetchTransactions (co
     QString itemConnector = " reconcileFlag IN (";
     QString statesClause = "";
     for (QValueList<int>::ConstIterator it = splitStates.begin(); it != splitStates.end(); ++it) {
-      statesClause.append(QString(" %1 '%2'").arg(itemConnector)
+      statesClause.append(QString(" %1 '%2'")
+          .arg(itemConnector)
           .arg(splitState(MyMoneyTransactionFilter::stateOptionE(*it))));
       itemConnector = ",";
     }
