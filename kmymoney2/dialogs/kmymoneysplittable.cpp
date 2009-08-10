@@ -687,6 +687,10 @@ void kMyMoneySplitTable::slotEndEditKeyboard(void)
 
 void kMyMoneySplitTable::endEdit(bool keyBoardDriven)
 {
+  // Don't proceed, if we're not in edit mode
+  if(!m_editCategory)
+    return;
+
   MyMoneyFile* file = MyMoneyFile::instance();
 
   MYMONEYTRACER(tracer);

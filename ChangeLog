@@ -1,3 +1,8 @@
+
+2009-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a crash when using the 'clear all' feature in the split editor
+    and not being in the edit mode
+
 2009-08-09 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix #2834361 - ENTER key accepts select database dialog
 
