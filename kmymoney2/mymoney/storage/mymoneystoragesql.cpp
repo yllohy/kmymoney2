@@ -673,7 +673,8 @@ int MyMoneyStorageSql::upgradeToV6() {
     }
   }
   // add unique id to reports table
-  if (!addColumn("kmmReportConfig", "id"))
+  if (!addColumn(m_db.m_tables["kmmReportConfig"],
+       MyMoneyDbColumn("id", "varchar(32)")))
     return(1);
   // read and write reports to get ids inserted
   readFileInfo();

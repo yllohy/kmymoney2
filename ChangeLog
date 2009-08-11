@@ -1,3 +1,5 @@
+2009-08-11 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Fix last commit (caused test suite failure)
 
 2009-08-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Unify icon loading for accounts
