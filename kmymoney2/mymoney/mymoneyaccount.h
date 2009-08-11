@@ -517,14 +517,10 @@ public:
   QString brokerageName(void) const;
 
   /**
-   * @return a pixmap using IconDesktop for the account type
+   * @param size is a hint for the size of the icon
+   * @return a pixmap using DesktopIcon for the account type
    */
-  QPixmap accountPixmap(bool reconcileFlag = false) const;
-
-  /**
-   * @return a 22x22 pixmap for the account group type
-   */
-  QPixmap accountGroupPixmap(bool reconcileFlag = false) const;
+  QPixmap accountPixmap(bool reconcileFlag = false, int size = 0) const;
 
   /**
    * This method is used to convert the internal representation of
