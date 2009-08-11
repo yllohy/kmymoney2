@@ -384,32 +384,6 @@ void MyMoneySchedule::validate(bool id_check) const
 
 QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 {
-#if 0
-  QDate paymentDate(m_lastPayment);
-
-  // if there never was a payment, then the next payment date must
-  // be identical to the start date of the payments.
-
-  if(!paymentDate.isValid()) {
-    paymentDate = m_startDate;
-
-    // if the reference date is invalid, then that's what we're looking for
-    if(!refDate.isValid())
-    {
-      if (m_recordedPayments.contains(paymentDate))
-        return QDate();
-
-      return paymentDate;
-
-    } else {
-      // if the first payment date is past the given ref date,
-      // then that's what we're looking for
-      if(paymentDate > refDate)
-        return paymentDate;
-    }
-  }
-#endif
-
   // if the enddate is valid and it is before the reference date,
   // then there will be no more payments.
   if(m_endDate.isValid() && m_endDate < refDate) {
@@ -428,9 +402,8 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
           return QDate();
         // if the only payment should have been prior to the reference date,
         // then don't show it
-        if(nextDueDate() < refDate)
+        if(paymentDate < refDate)
           return QDate();
-        paymentDate = nextDueDate();
         break;
 
       case OCCUR_DAILY:
@@ -453,7 +426,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
            paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
         }
         while (paymentDate <= refDate);
-       break;
+        break;
 
       case OCCUR_MONTHLY:
         do {
@@ -582,7 +555,6 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
   return theDates;
 }
 
-
 bool MyMoneySchedule::operator <(const MyMoneySchedule& right) const
 {
   return nextDueDate() < right.nextDueDate();
@@ -698,62 +670,10 @@ bool MyMoneySchedule::isOverdue() const
   if (isFinished())
     return false;
 
-  if(nextDueDate() >= QDate::currentDate())
+  if(adjustedNextDueDate() >= QDate::currentDate())
     return false;
 
   return true;
-
-#if 0
-  bool bOverdue = true;
-
-  // Check the payment dates first
-  QValueList<QDate> datesBeforeToday = paymentDates(m_startDate, QDate::currentDate().addDays(-1));
-  if (datesBeforeToday.count() == 0)
-  {
-    bOverdue = false;
-  }
-  else if (datesBeforeToday.count() == 1)
-  {
-    if (nextPayment(m_lastPayment).isValid() &&
-        (nextPayment(m_lastPayment) >= QDate::currentDate()))
-      bOverdue = false;
-  }
-  else
-  {
-    // Check the dates
-    // Remove all dates before m_lastPayment
-    QValueList<QDate> delList;
-    QValueList<QDate>::ConstIterator it;
-
-    for (it=datesBeforeToday.begin(); it!=datesBeforeToday.end(); ++it)
-    {
-      if (*it <= m_lastPayment)
-        delList.append(*it);
-    }
-    for (it=delList.begin(); it!=delList.end(); ++it)
-    {
-      datesBeforeToday.remove(*it);
-    }
-
-    // Remove nextPayment (lastPayments returns it?)
-    if (datesBeforeToday.contains(nextPayment(m_lastPayment)))
-      datesBeforeToday.remove(nextPayment(m_lastPayment));
-
-    for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
-    {
-      if (datesBeforeToday.contains(*it))
-        datesBeforeToday.remove(*it);
-    }
-
-    if (datesBeforeToday.contains(m_lastPayment))
-      datesBeforeToday.remove(m_lastPayment);
-
-    // Now finally check
-    if (datesBeforeToday.count() == 0)
-      bOverdue = false;
-  }
-  return bOverdue;
-#endif
 }
 
 bool MyMoneySchedule::isFinished() const

@@ -459,12 +459,13 @@ void KGlobalLedgerView::loadView(void)
           }
 
           MyMoneyTransaction t(s.id(), KMyMoneyUtils::scheduledTransaction(s));
-          t.setPostDate(s.adjustedNextDueDate());
           // if the transaction is scheduled and overdue, it can't
           // certainly be posted in the past. So we take todays date
           // as the alternative
           if(s.isOverdue())
             t.setPostDate(QDate::currentDate());
+          else
+            t.setPostDate(s.adjustedNextDueDate());
           const QValueList<MyMoneySplit>& splits = t.splits();
           QValueList<MyMoneySplit>::const_iterator it_s;
           for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
@@ -473,7 +474,10 @@ void KGlobalLedgerView::loadView(void)
             }
           }
           // keep track of this payment locally (not in the engine)
-          s.setLastPayment(t.postDate());
+          if(s.isOverdue())
+            s.setLastPayment(QDate::currentDate());
+          else
+            s.setLastPayment(s.nextDueDate());
 
           // if this is a one time schedule, we can bail out here as we're done
           if(s.occurence() == MyMoneySchedule::OCCUR_ONCE)
