@@ -1,11 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="introduction">
+<chapterinfo>
+  <date>2009-08-05</date>
+  <releaseinfo>1.0</releaseinfo>
+</chapterinfo>
+
 <title>Introduction</title>
 
 <sect1 id="what-is-kmymoney">
 <title>What is &kappname;?</title>
 
 <para>
-  Put simply, &kappname; is a personal finance manager for KDE.  It enables
+  Put simply, &kappname; is a personal finance manager for &kde;.  It enables
   users of open source operating systems to keep careful track of their personal
   finances by providing a broad array of financial features and tools.
 </para>

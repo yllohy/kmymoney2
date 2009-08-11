@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.institutions">
 <chapterinfo>
   <authorgroup>
@@ -10,7 +11,7 @@
     </author>
   </authorgroup>
   <date>2009-05-05</date>
-  <releaseinfo>0.9</releaseinfo>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title id="details.institutions.title">Institutions</title>

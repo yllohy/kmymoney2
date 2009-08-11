@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <sect2 id="reference.widgets.datepicker">
 <title>Date entry widget</title>
 
@@ -78,8 +77,8 @@
   thousands separators, and decimal symbols) as well as a button to the
   right. Use the digits to enter the value. Separate the fractional part by
   entering the decimal separator for your locale. If you click on the button to
-  the right or press a key representing a numeric operation (eg. +,-,/,* or %) a
-  little calculator will pop up and allow you to calculate the final value.
+  the right or press a key representing a numeric operation (e.g., +,-,/,* or %)
+  a little calculator will pop up and allow you to calculate the final value.
 </para>
 
 <para>

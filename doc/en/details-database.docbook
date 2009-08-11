@@ -10,8 +10,8 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>05/08/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-08-05</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 <title>Database</title>
 
@@ -43,15 +43,13 @@
 <sect2><title>Preparation</title>
 
 <para>
-  To access the database, &kappname; uses the SQL module supplied by Qt
-  Software<trademark class="registered"/> as part of their
-  Qt<trademark class="registered"/> programming system. This module supports a
+  To access the database, &kappname; uses the SQL module supplied by &Qt;
+  Software as part of their &Qt; programming system. This module supports a
   number of different database systems through a collection of drivers. Among
   the more popular open-source systems for which drivers are available are
   MySQL<trademark class="registered"/>, SQLite, and PostgreSQL. The module also
-  supports the 'heavier', more industrial, systems such as
-  Oracle<trademark class="registered"/> and IBM
-  DB2<trademark class="registered"/>.
+  supports the 'heavier', more industrial, systems such as Oracle<trademark
+  class="registered"/> and IBM DB2<trademark class="registered"/>.
 </para>
 
 <para>
@@ -66,10 +64,10 @@
   
 <para>
   In addition to the database software itself, you must also install the
-  corresponding Qt<trademark class="registered"/> driver module. Most operating
-  system distributions will include driver modules for the more popular
-  databases. Otherwise, check with the <ulink url="http://www.qtsoftware.com">Qt
-  software web site</ulink> and search for 'SQL drivers'
+  corresponding &Qt; driver module. Most distributions will include driver
+  modules for the more popular databases. Otherwise, check with the <ulink
+  url="http://www.qtsoftware.com">&Qt; software web site</ulink> and search for
+  'SQL drivers'
 </para>
 
 <note>
@@ -83,11 +81,10 @@
 
   <para>
     Due to limitations in prior releases, only version 3 of SQLite is
-    supported. Unfortunately, the release of the Qt<trademark
-    class="registered"/> toolkit used by &kappname; does not provide a driver
-    for this version. However, an unofficial, extensively tested, driver is
-    available; if you wish to use SQLite, ask on &devlist; for further
-    information.
+    supported. Unfortunately, the release of the &Qt; toolkit used by &kappname;
+    does not provide a driver for this version. However, an unofficial,
+    extensively tested, driver is available; if you wish to use SQLite, ask on
+    &devlist; for further information.
   </para>
 </note>  
 </sect2>
@@ -99,7 +96,7 @@
   Looking after databases is a little more complex than dealing with regular
   files. Each system has different methods for performing those necessary
   administrative tasks such as creating databases, assigning permissions to
-  various users, producing backups, etc. Describing these tasks is outside the
+  various users, producing backups, &etc;. Describing these tasks is outside the
   scope of this manual, but all of the supported products provide comprehensive
   reference documentation, and a quick search of the web will point you at many
   tutorials on the subject.
@@ -171,10 +168,10 @@
 <title>Database Type</title>
 
 <para>
-  This box lists all Qt SQL drivers installed on your system. Select the driver
-  for your database type. If the one you want is not in the list, you need to
-  install the appropriate driver. See your distribution documentation, or visit
-  the <ulink url="http://www.qtsoftware.com/" type="">Qt software web
+  This box lists all &Qt; SQL drivers installed on your system. Select the
+  driver for your database type. If the one you want is not in the list, you
+  need to install the appropriate driver. See your distribution documentation,
+  or visit the <ulink url="http://www.qtsoftware.com/" type="">&Qt; software web
   site</ulink> and search for 'SQL drivers'.
 </para>
 </sect3>
@@ -445,7 +442,7 @@
   Most database systems allow you to store commonly used queries and procedures,
   and in some cases, these may be held as tables or other objects within your
   database itself. As you will have guessed from the above, all the tables used
-  by &kappname; begin with the lower-case letters 'kmm'. This standard will be
+  by &kappname; begin with the lowercase letters 'kmm'. This standard will be
   maintained, and only tables beginning with these letters will be
   updated. Thus, provided you avoid these in the naming of your queries etc.,
   you should not experience any problems.

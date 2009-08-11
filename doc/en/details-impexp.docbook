@@ -10,11 +10,12 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>30/07/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-07-30</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title>Importing and Export</title>
+
 <sect1 id="details.impexp.gnucash">
 <sect1info>
   <author>
@@ -25,15 +26,18 @@
     </affiliation>
   </author>
 </sect1info>
+
 <title>GnuCash Importer</title>
 
 <sect2>
 <title>GnuCash Files</title>
 
 <para>
-  The &kappname; GnuCash importer handles direct reading of standard (XML) files
-  as produced by GnuCash versions 1.8 and 2.0. The following are not supported:
+  The &kappname; GnuCash importer handles direct reading of standard (&XML;)
+  files as produced by GnuCash versions 1.8 and 2.0. The following are not
+  supported:
 </para>
+
 <itemizedlist>
   <listitem><para>import of database (Postgres) data</para></listitem>
   <listitem><para>import of 'multi-book' files</para></listitem>
@@ -44,27 +48,21 @@
 </itemizedlist>
 
 <para>
-The import will probably only work correctly if presented with a
-valid file. It is recommended that the GnuCash 'Check &amp; Repair All'
-function (in the Actions menu) be run before attempting to import.
+  The import will probably only work correctly if presented with a valid
+  file. It is recommended that the GnuCash 'Check &amp; Repair All' function (in
+  the Actions menu) be run before attempting to import.
 </para>
 
 <para>
-Files can be opened by specifying the file name on the command
-line (<command>kmymoney &lt;filepath&gt;</command>), or by means of the &kappname; 
-<menuchoice>
-  <shortcut>
-    <keycombo><keysym>Ctrl-O</keysym></keycombo>
-  </shortcut>
-  <guimenu>File</guimenu>
-  <guimenuitem>Open</guimenuitem>
-</menuchoice>
-or
-<menuchoice>
-  <guimenu>File</guimenu>
-  <guimenuitem>Import</guimenuitem>
-</menuchoice>
-menu items.
+  Files can be opened by specifying the file name on the command line
+  (<command>kmymoney &lt;filepath&gt;</command>), or by means of the &kappname;
+  <menuchoice>
+    <shortcut><keycombo><keysym>Ctrl-O</keysym></keycombo></shortcut>
+    <guimenu>File</guimenu><guimenuitem>Open</guimenuitem>
+  </menuchoice> or
+  <menuchoice>
+    <guimenu>File</guimenu><guimenuitem>Import</guimenuitem>
+  </menuchoice> menu items.
 </para>
 
 <para>
@@ -78,8 +76,10 @@ menu items.
 
 <sect2>
 <title>Similarities, Differences, and Terminology</title>
+
 <sect3>
 <title>Small Business Usage</title>
+
 <para>
   It should be noted that &kappname; is a <emphasis>personal</emphasis> finance
   manager, and as such, does not directly support any of the business features
@@ -91,38 +91,42 @@ menu items.
 
 <sect3>
 <title>Accounts</title>
+
 <sect4>
 <title>Account types</title>
+
 <para>
   For both products, the highest level of structure in the file is the
   account. &kappname; supports 5 main types of account: Asset, Liability,
   Income, Expense and Equity, each of which may have various subtypes, e.g.,
-  Checking, Credit Card, etc.  &kappname; includes a 'standard' account for each
-  of these five types, and all other accounts are held subordinate to one of
-  these. &kappname; enforces more consistency (or less flexibility, depending on
-  your point of view) between account types than does GnuCash, and the importer
-  will correct any inconsistencies it detects. This may result in a slightly
-  different account structure, though this can, within reason, be amended after
-  the import is complete.
+  Checking, Credit Card, &etc;.  &kappname; includes a 'standard' account for
+  each of these five types, and all other accounts are held subordinate to one
+  of these. &kappname; enforces more consistency (or less flexibility, depending
+  on your point of view) between account types than does GnuCash, and the
+  importer will correct any inconsistencies it detects. This may result in a
+  slightly different account structure, though this can, within reason, be
+  amended after the import is complete.
 </para>
 </sect4>
 
 <sect4>
 <title>Categories</title>
+
 <para>
   &kappname; uses the term Category to denote an account of an Income or Expense
   type. Unlike GnuCash, these are not considered as 'ledger' accounts, and entry
-  of transactions directly into categories is not supported; allocations are
-  made during transaction entry into other account types.
+  of transactions folder into categories is not supported; allocations are made
+  during transaction entry into other account types.
 </para>
 </sect4>
 
 <sect4>
 <title>Structure and Placeholders</title>
+
 <para>
   GnuCash supports the use of Placeholder accounts. In effect, these are just
   read-only accounts into which no transactions can be entered, but which
-  function in an analogous fashion to folders in a directory structure, as a
+  function in an analogous fashion to folders in a folder structure, as a
   holder for other accounts. Though &kappname; does not support this feature as
   such, it does provide a parent/child account relationship, so the importer
   simulates placeholders by creating empty accounts.
@@ -132,8 +136,7 @@ menu items.
 <sect4>
 <title>Account Type map</title>
 
-<table frame='all'>
-<title>Equivalence of GnuCash and &kappname; account types</title>
+<informaltable frame='all'>
 <tgroup cols='2' align='left' colsep='1' rowsep='1'>
 <thead>
   <row>
@@ -191,14 +194,16 @@ menu items.
   </row>
 </tbody>
 </tgroup>
-</table>
+</informaltable>
 </sect4>
 </sect3>
 
 <sect3>
 <title>Transactions and Splits</title>
+
 <sect4>
 <title>Balanced transactions</title>
+
 <para>
   As with GnuCash, data is entered in the form of transactions, each generally
   consisting of 2 or more split entries. In fact, valid GnuCash transactions
@@ -212,6 +217,7 @@ menu items.
 
 <sect4>
 <title>Payees</title>
+
 <para>
   &kappname; prefers that all transactions have a Payee (a generic term that
   encompasses both payees and payers), and unlike GnuCash, a list of these
@@ -222,6 +228,7 @@ menu items.
 
 <sect4>
 <title>Transfers</title>
+
 <para>
   &kappname; uses the term Transfer to describe a transaction which does not
   involve a Category, but only transfers money between Asset and/or Liability
@@ -231,6 +238,7 @@ menu items.
 
 <sect4>
 <title>Reconcile</title>
+
 <para>
   &kappname; provides an account reconciliation function similar to that of
   GnuCash, and the corresponding transaction status will be imported.
@@ -240,12 +248,15 @@ menu items.
 
 <sect3>
 <title>Commodities</title>
+
 <para>
   GnuCash uses the term Commodity to cover both currencies and non-currency
   assets. These are treated separately in &kappname;.
 </para>
+
 <sect4>
 <title>Currencies</title>
+
 <para>
   &kappname; has built-in support for all foreign 
   <link linkend="details.currencies">currency</link> types.  &kappname; also
@@ -254,6 +265,7 @@ menu items.
   likely base currency, though this choice may be rejected in favour of an
   alternative.
 </para>
+
 <para>
   (NOTE: &kappname; does not currently support accounts denominated in 'defunct'
   currencies (except those replaced by the Euro). At present, it will be
@@ -264,6 +276,7 @@ menu items.
 
 <sect4 id="gncsecurities">
 <title>Securities and Investments</title>
+
 <para>
   Non-currency assets (normally stocks and bonds) are called Securities by
   &kappname;, and represent the main difference between the two products, in
@@ -274,14 +287,24 @@ menu items.
   structure on it, so the importer is unable to detect it and perform an
   automatic conversion. Three options are therefore made available:
 </para>
+
 <itemizedlist>
-  <listitem><para>Create a separate Investment account for each security, with
-    the same name as the security</para></listitem>
-  <listitem><para>Create a single Investment account which will act as 'parent'
-    for all security accounts</para></listitem>
-  <listitem><para>Create several Investment accounts, and assign securities to
-    them as directed by the user.</para></listitem>
+  <listitem>
+    <para>Create a separate Investment account for each security, with the same
+    name as the security</para>
+  </listitem>
+
+  <listitem>
+    <para>Create a single Investment account which will act as 'parent' for all
+    security accounts</para>
+  </listitem>
+
+  <listitem>
+    <para>Create several Investment accounts, and assign securities to them as
+    directed by the user.</para>
+  </listitem>
 </itemizedlist>
+
 <para>
   It depends entirely on user requirements which of these options is relevant in
   each situation, and in some cases, manual restructuring of accounts after
@@ -291,6 +314,7 @@ menu items.
 
 <sect4>
 <title>Prices and currency rates</title>
+
 <para>
   Security prices and currency exchange rates as displayed in the GnuCash Price
   Editor will be imported. In addition, price and rate entries will be generated
@@ -300,6 +324,7 @@ menu items.
 
 <sect4 id="details.impexp.gncquotes">
 <title>Online Quotes</title>
+
 <para>
   For obtaining online price and currency rate quotations, GnuCash uses a
   package called Finance::Quote. Recent versions of &kappname; contain support
@@ -308,6 +333,7 @@ menu items.
   used by &kappname; which is covered in more detail in
   <link linkend="details.investments.onlinequotes">online quotes</link>.
 </para>
+
 <para>
   If you choose to do so, the following dialog will allow selection of a
   'native' &kappname; price source, or a user-defined source, for each account
@@ -317,6 +343,7 @@ menu items.
   import process.  Future currency rate updates will not use Finance::Quote, and
   will always use the native retrieval method.
 </para>
+
 <para>
 	<screenshot>
 	<mediaobject>
@@ -331,6 +358,7 @@ menu items.
 
 <sect3 id="gncschedules">
 <title>Scheduled Transactions</title>
+
 <para>
   &kappname; does not retain the separation made in GnuCash between template
   transactions and their frequency of occurrence. Transaction data will be
@@ -340,6 +368,7 @@ menu items.
 
 <sect4>
 <title>Schedule types</title>
+
 <para>
   &kappname; classifies all schedules as one of three types, Bills, Deposits, or
   Transfers. Since GnuCash does not make such a distinction, the importer
@@ -351,6 +380,7 @@ menu items.
 
 <sect4>
 <title>Suspect Schedules</title>
+
 <para>
   Some features of GnuCash scheduled transactions are not available in
   &kappname;, so the importer tries in each case to reach a reasonable
@@ -358,14 +388,23 @@ menu items.
   suspect, and the user will be given the option of editing them directly during
   the import process. Examples of situations which may cause this are:
 </para>
+
 <itemizedlist>
-  <listitem><para>some frequency intervals supported in GnuCash are not
-    currently available in &kappname;</para></listitem>
-  <listitem><para>&kappname; does not support the use of formulae and variables
-    in amount fields</para></listitem>
-  <listitem><para>complex cases which have not yet been identified for
-    import.</para></listitem>
+  <listitem>
+    <para>some frequency intervals supported in GnuCash are not currently
+    available in &kappname;</para>
+  </listitem>
+
+  <listitem>
+    <para>&kappname; does not support the use of formulae and variables in
+    amount fields</para>
+  </listitem>
+
+  <listitem>
+    <para>complex cases which have not yet been identified for import.</para>
+  </listitem>
 </itemizedlist>
+
 <para>
   Despite best efforts, it is possible that, due to the many options involved, a
   scheduled transaction may cause a fatal error within &kappname;.  If this sort
@@ -377,6 +416,7 @@ menu items.
 
 <sect3>
 <title>Reports</title>
+
 <para>
   &kappname; provides a comprehensive selection of configurable reports,
   described in more detail in <link linkend="details.reports">Reports.</link>
@@ -388,6 +428,7 @@ menu items.
 
 <sect2>
 <title>Selecting Importer Options</title>
+
 <para id="details.impexp.gncoptions">
 	<screenshot>
 	<mediaobject>
@@ -400,25 +441,36 @@ menu items.
 
 <sect3>
 <title>Investment Handling</title>
-<para>See <link linkend="gncsecurities">"Securities and Investments"</link> above.</para>
+
+<para>
+  See <link linkend="gncsecurities">"Securities and Investments"</link> above.
+</para>
 </sect3>
 
 <sect3>
 <title>Online Quotes</title>
+
 <para>
   Turn this off if you wish to use the native method for future online price
   quotes.
 </para>
-<para>See <link linkend="details.impexp.gncquotes">"Online Quotes"</link> above.</para>
+
+<para>
+  See <link linkend="details.impexp.gncquotes">"Online Quotes"</link> above.
+</para>
 </sect3>
 
 <sect3>
 <title>Scheduled Transactions</title>
-<para>See <link linkend="gncschedules">"Scheduled Transactions"</link> above.</para>
+
+<para>
+  See <link linkend="gncschedules">"Scheduled Transactions"</link> above.
+</para>
 </sect3>
 
 <sect3>
 <title>Decoding Options</title>
+
 <para>
   If your native language is written in letters or symbols which are different
   from those used in the 'Latin' languages (i.e., generally Western European),
@@ -437,6 +489,7 @@ menu items.
 
 <sect3>
 <title>Transaction Notes option</title>
+
 <para>
   Under some usage conditions, non-split GnuCash transactions may contain
   residual, often incorrect, memo data which is not normally visible to the
@@ -445,10 +498,11 @@ menu items.
   describing the real purpose of the transaction. If this option is selected,
   these notes, if present, will be used to override the extraneous memo data.
 </para>
-
 </sect3>
+
 <sect3>
 <title>Debug Options</title>
+
 <para>
   These need only be used in the event of import problems.  If you have such
   problems, you should also report them to the &kappname; developer list
@@ -461,16 +515,26 @@ menu items.
 
 <sect2>
 <title>Import Report</title>
+
 <para>
   At the end of processing, the importer produces a report showing the number of
   different entities processed, and any errors or anomalies encountered. This
   report will be displayed on screen, and may be saved to a file for later
   review. A full report may contain the following sections:
 </para>
+
 <itemizedlist>
-  <listitem><para>Record counts</para></listitem>
-  <listitem><para>Inconsistencies in account types and actions taken</para></listitem>
-  <listitem><para>Details of suspect schedules</para></listitem>
+  <listitem>
+    <para>Record counts</para>
+  </listitem>
+
+  <listitem>
+    <para>Inconsistencies in account types and actions taken</para>
+  </listitem>
+
+  <listitem>
+    <para>Details of suspect schedules</para>
+  </listitem>
 </itemizedlist>
 
 <para>
@@ -482,7 +546,6 @@ menu items.
 	</mediaobject>
 	</screenshot>
 </para>
-
 </sect2>
 </sect1>
 
@@ -496,10 +559,12 @@ menu items.
     </affiliation>
   </author>
 </sect1info>
+
 <title>QIF Importer</title>
 
 <sect2>
 <title>QIF format considered harmful</title>
+
 <para>
   Generally speaking, the QIF format should be avoided wherever possible.  It is
   a poor choice for transporting financial data.  Among other things, QIF suffers
@@ -507,15 +572,22 @@ menu items.
 </para>
 
 <itemizedlist>
-  <listitem><para>Lack of standardized format: Different versions of the same
-    program will impart different meanings to the same
-    element.</para></listitem>
-  <listitem><para>Lack of transaction identifier: Because there is no ID number
+  <listitem>
+    <para>Lack of standardized format: Different versions of the same program
+    will impart different meanings to the same element.</para>
+  </listitem>
+
+  <listitem>
+    <para>Lack of transaction identifier: Because there is no ID number
     associated with each transaction, matching duplicate transactions is
-    haphazard at best.</para></listitem>
-  <listitem><para>Lack of expressiveness:  The grammar is really simple, and
-    cannot portray the depth of financial information found in today's financial
-    environment.</para></listitem>
+    haphazard at best.</para>
+  </listitem>
+
+  <listitem>
+    <para>Lack of expressiveness: The grammar is really simple, and cannot
+    portray the depth of financial information found in today's financial
+    environment.</para>
+  </listitem>
 </itemizedlist>
 
 <para>
@@ -544,8 +616,9 @@ menu items.
 	</screenshot>
 </para>
 
-<para> The resulting dialog prompts for the QIF filename allowing you to locate
-  the file by clicking on the <guibutton>Browse</guibutton> button.
+<para>
+  The resulting dialog prompts for the QIF filename allowing you to locate the
+  file by clicking on the <guibutton>Browse</guibutton> button.
 </para>
 
 <para>
@@ -588,7 +661,8 @@ menu items.
 </para>
 
 <para>
-  At the end of the import, &kappname; shows a statement import statistics window.
+  At the end of the import, &kappname; shows a statement import statistics
+  window.
 </para>
 
 <para>
@@ -624,7 +698,6 @@ menu items.
   may be different in your environment.
 </para>
 </note>
-
 </sect2>
 
 <!--
@@ -670,14 +743,15 @@ menu items.
 </sect2>
 -->
 
-<sect2 id="details.impexp.qifimp.profile"><title>Setting up a QIF profile</title>
+<sect2 id="details.impexp.qifimp.profile">
+<title>Setting up a QIF profile</title>
 
 <para>
   Because there is no universally standard format for a QIF file, different
   vendors have taken liberties with the format, and introduced their own
   nuances.  The QIF Profile allows &kappname; to know about the peculiarities of
   your file.  To edit an existing QIF Profile, or to create a new one, press the
-  &quot;New&quot; button on the QIF Import dialog, near the profile selector.
+  <quote>New</quote> button on the QIF Import dialog, near the profile selector.
 </para>
 
 <para>
@@ -762,7 +836,8 @@ menu items.
 </para>
 </sect2>
 
-<sect2><title>Writing an import filter</title>
+<sect2>
+<title>Writing an import filter</title>
 
 <para>
   Sometimes you may have data in a custom format, like comma-separated-values
@@ -772,12 +847,14 @@ menu items.
   output.  This can be a shell script, a perl script, a compiled program written
   in C/C++, or anything else you can dream of, as long as the system can run it.
 </para>
+
 <para>
   To use it, edit your favorite QIF Profile, and select the Filter tab.  Enter
   the location of your filter program where prompted.  Then, whenever you do a
   QIF import using this profile, the file you select for importing will be run
   through your filter first.
 </para>
+
 <para>
   A common problem is to convert a list of comma-separated-values into a QIF
   file.  This is a textbook case for the awk tool.  Create a script called
@@ -871,7 +948,7 @@ menu items.
   &kappname; will import OFX files painlessly.  However, this functionality is
   not built into the core program.  You must obtain and install the OFX Importer
   Plugin.  Once that is installed, the command to import OFX files will
-  automatically show up under the &quot;File | Import&quot; menu.
+  automatically show up under the <quote>File | Import</quote> menu.
 </para>
 <para>
   Note that many prepackaged versions of &kappname; were built with the OFX
@@ -923,10 +1000,10 @@ menu items.
 </para>
 
 <para>
-  Please note that this section describes the &quot;native&quot; OFX importer.
-  OFX files may also be imported using the AqBanking Importer Plugin if you have
-  installed that.  Note that the two importers do behave slightly differently,
-  and they are written and supported by two different developers.
+  Please note that this section describes the <quote>native</quote> OFX
+  importer.  OFX files may also be imported using the AqBanking Importer Plugin
+  if you have installed that.  Note that the two importers do behave slightly
+  differently, and they are written and supported by two different developers.
 </para>
 </sect2>
 
@@ -984,10 +1061,10 @@ menu items.
 <para>
   The first step is to configure each account for which you wish to download
   statements. Go to the Accounts view, right click on the account you wish to
-  configure, and choose &quot;Map to online account...&quot;. In case more than
-  one online banking plugin is installed on your system you will be asked which
-  one to use. For the internal OFX method select KMyMoney OFX.  A list of banks
-  will be downloaded from the internet and a wizard will guide you through
+  configure, and choose <quote>Map to online account...</quote>. In case more
+  than one online banking plugin is installed on your system you will be asked
+  which one to use. For the internal OFX method select KMyMoney OFX.  A list of
+  banks will be downloaded from the Internet and a wizard will guide you through
   choosing a bank, entering your username and password, and selecting an
   account.  Should you find that your bank is not listed, then it may still be
   possible to use the manual option. Your bank may be able to provide the
@@ -996,8 +1073,8 @@ menu items.
 
 <para>
   Once you have an account set up with online banking, go to the ledger for that
-  account.  Then from the &quot;Account&quot; menu, choose &quot;Update
-  account...&quot;.  This will connect to your bank, and download a statement
+  account.  Then from the <quote>Account</quote> menu, choose <quote>Update
+  account...</quote>.  This will connect to your bank, and download a statement
   for the last 60 days.
 </para>
 </sect2>

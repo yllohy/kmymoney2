@@ -11,7 +11,7 @@
     </author>
   </authorgroup>
   <date>2009-06-14</date>
-  <releaseinfo>0.9</releaseinfo>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title>Investments</title>
@@ -49,7 +49,7 @@
   Investment Accounts hold a collection of investments.  An Investment account
   contains transactions, such as buys and sells, of those investments.  All
   transactions in an Investment account must relate to a specific investment.
-  There is no separate &quot;cash balance&quot; in an investment account.  For
+  There is no separate <quote>cash balance</quote> in an investment account.  For
   that, you need a Brokerage Account.
 </para>
 </sect2>
@@ -58,7 +58,7 @@
 <title>Brokerage Accounts</title>
 <para>
   An investment account often has an associated Brokerage Account.  This is also
-  sometimes referred to as a &quot;Cash Account&quot;.  Investment accounts
+  sometimes referred to as a <quote>Cash Account</quote>.  Investment accounts
   cannot contain cash transactions, like a transfer from your bank.  When a
   stock is sold, the proceeds are typically placed in the Brokerage Account.
 </para>
@@ -80,7 +80,7 @@
   to hold your investments. Choose <menuchoice><guimenu>Account</guimenu>
   <guimenuitem>New account...</guimenuitem></menuchoice> to begin the process of
   adding a new account.  Create an account as usual, making sure to choose
-  &quot;Investment&quot; as the type of account.
+  <quote>Investment</quote> as the type of account.
 </para>
 
 <para>
@@ -128,7 +128,7 @@
   </para></listitem>
 
   <listitem><para> Full name.  The friendly, readable name of the investment
-    you're creating, e.g., &quot;Advanced Micro Devices, Inc.&quot; This name is
+    you're creating, e.g., <quote>Advanced Micro Devices, Inc.</quote> This name is
     also referred to as the security.
   </para></listitem>
 
@@ -163,7 +163,7 @@
   symbol used by your quote source.  Yahoo covers most of the world's markets,
   and requires a suffix on the end of symbols outside the US.  For example,
   Rubicon Limited on the New Zealand market should be entered as
-  &quot;RBC.NZ&quot;.
+  <quote>RBC.NZ</quote>.
 </para>
 
 <para>
@@ -173,21 +173,30 @@
 </para>
 
 <itemizedlist>
-  <listitem><para>Use Finance::Quote.  This is an option for GnuCash users who
-    are used to this style of quotes.  Most users can leave this unchecked.
-  </para></listitem>
+  <listitem>
+    <para>
+      Use Finance::Quote.  This is an option for GnuCash users who are used to
+      this style of quotes.  Most users can leave this unchecked.
+    </para>
+  </listitem>
 
-  <listitem><para> Online Source.  The online source you'd like to use for this
-    particular investment.  The most common choice is &quot;Yahoo&quot;.  Try
-    that first, and if the investment cannot be found using this source, then
-    experiment with the others.
-  </para></listitem>
+  <listitem>
+    <para>
+      Online Source.  The online source you'd like to use for this particular
+      investment.  The most common choice is <quote>Yahoo</quote>.  Try that
+      first, and if the investment cannot be found using this source, then
+      experiment with the others.
+    </para>
+  </listitem>
 
-  <listitem><para>Factor.  A multiplier that should be applied to quotes
-    retrieved for this investment.  This is most commonly needed for UK stocks
-    where the price quoted is in pence (1/100), and the stock is denominated in
-    pounds.  In this case, enter 0,01 for the Factor.
-  </para></listitem>
+  <listitem>
+    <para>
+      Factor.  A multiplier that should be applied to quotes retrieved for this
+      investment.  This is most commonly needed for UK stocks where the price
+      quoted is in pence (1/100), and the stock is denominated in pounds.  In
+      this case, enter 0,01 for the Factor.
+    </para>
+  </listitem>
 </itemizedlist>
 </sect2>
 </sect1>
@@ -248,30 +257,44 @@
 </para>
 
 <itemizedlist>
-  <listitem><para>Buy/Sell.  Use to record purchases or sales of individual
-    investments.  This action requires an account to transfer the funds from/to.
-  </para></listitem>
+  <listitem>
+    <para>
+      Buy/Sell.  Use to record purchases or sales of individual investments.
+      This action requires an account to transfer the funds from/to.
+    </para>
+  </listitem>
 
-  <listitem><para>Dividend/Yield.  Also known as a &quot;Cash Dividend&quot;,
-    this action is used for when you receive an interest or dividend
-    disbursement from your investment. This action requires an account to
-    transfer the funds from/to.
-  </para></listitem>
+  <listitem>
+    <para>
+      Dividend/Yield.  Also known as a <quote>Cash Dividend</quote>, this action
+      is used for when you receive an interest or dividend disbursement from
+      your investment. This action requires an account to transfer the funds
+      from/to.
+    </para>
+  </listitem>
 
-  <listitem><para>Reinvest Dividend.  This is a dividend where the proceeds are
-    re-invested back into the investment.
-  </para></listitem>
+  <listitem>
+    <para>
+      Reinvest Dividend.  This is a dividend where the proceeds are re-invested
+      back into the investment.
+    </para>
+  </listitem>
 
-  <listitem><para>Add/Remove Shares.  A simple increase or decrease in your
-    balance.  This should be used very rarely, because it's uncommon for shares
-    to just show up in your account (or disappear) unless it's a purchase or a
-    sale.
-  </para></listitem>
+  <listitem>
+    <para>
+      Add/Remove Shares.  A simple increase or decrease in your balance.  This
+      should be used very rarely, because it's uncommon for shares to just show
+      up in your account (or disappear) unless it's a purchase or a sale.
+    </para>
+  </listitem>
 
-  <listitem><para>Split Shares.  Used when the stock is split.  Enter the ratio
-    of the split in the &quot;Split Ratio&quot; field.  For example, in a 3:2
-    split, enter 1.5
-  </para></listitem>
+  <listitem>
+    <para>
+      Split Shares.  Used when the stock is split.  Enter the ratio of the split
+      in the <quote>Split Ratio</quote> field.  For example, in a 3:2 split,
+      enter 1.5
+    </para>
+  </listitem>
 </itemizedlist>
 </sect2>
 
@@ -446,7 +469,7 @@
 
 <para>
   To find the trading symbol for a security supported by Yahoo, use the
-  &quot;Symbol Lookup&quot; feature at http://finance.yahoo.com.
+  <quote>Symbol Lookup</quote> feature at http://finance.yahoo.com.
 </para>
 </sect3>
 
@@ -455,9 +478,9 @@
 
 <para>
   In order to get online price quotes, you first have to enable it for each
-  investment or currency you want updated, by setting a &quot;Online Quote
-  Source&quot;.  This is the name of the service from which the quote should be
-  fetched.  KMyMoney ships with several sources to choose from.  Yahoo is the
+  investment or currency you want updated, by setting a <quote>Online Quote
+  Source</quote>.  This is the name of the service from which the quote should
+  be fetched.  KMyMoney ships with several sources to choose from.  Yahoo is the
   recommended default source, and should work for most investments and all
   currencies.
 </para>
@@ -568,22 +591,22 @@
   you have specified, and feed the stdout to the page parser.  For example, you
   might have a script called getquote.sh that contains custom quote logic,
   taking the symbol as a single parameter.  Your URL would be
-  &quot;file:/path/to/getquote.sh %1&quot;.
+  <quote>file:/path/to/getquote.sh %1</quote>.
 </para>
 
 <para>
   The page parser looks for a symbol, a date, and a price.  Regular expressions
   tell it how to extract those items from the page.  Please review the
-  documentation for the
-  <ulink url="http://doc.qtsoftware.com/3.3/qregexp.html#1">QRegExp class</ulink>
-  at http://doc.qtsoftware.com/3.3/qregexp.html#1
-  for the exact makeup of the regular expressions.  There should be exactly one
-  capture expression, surrounded by parentheses, in each regexp.  The date format
-  further tells the date parser the order of year, month, and day.  This date
-  format should always be in the form "%x %x %x". where x is y, m, or d.  The
-  date parser is very smart.  &quot;%m %d %y&quot; will parse &quot;December
-  31st, 2005&quot; as easily as &quot;12/31/05&quot;.  Two digit years are
-  interpreted as being in the range of 1950-2049.
+  documentation for the <ulink
+  url="http://doc.qtsoftware.com/3.3/qregexp.html#1">QRegExp class</ulink> at
+  http://doc.qtsoftware.com/3.3/qregexp.html#1 for the exact makeup of the
+  regular expressions.  There should be exactly one capture expression,
+  surrounded by parentheses, in each regexp.  The date format further tells the
+  date parser the order of year, month, and day.  This date format should always
+  be in the form "%x %x %x". where x is y, m, or d.  The date parser is very
+  smart.  <quote>%m %d %y</quote> will parse <quote>December 31st, 2005</quote>
+  as easily as <quote>12/31/05</quote>.  Two digit years are interpreted as
+  being in the range of 1950-2049.
 </para>
 </sect3>
 </sect2>

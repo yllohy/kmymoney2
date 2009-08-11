@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.formats">
 <chapterinfo>
   <authorgroup>
@@ -9,8 +10,8 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>08/05/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-05-08</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title>File Formats</title>
@@ -18,8 +19,8 @@
 <para>
   This chapter describes the formats in which &kappname; stores its data in
   permanent form on the user's storage device. In general, &kappname; stores its
-  information in form of an XML document. Depending on the actual format, this
-  XML document will be written
+  information in form of an &XML; document. Depending on the actual format, this
+  &XML; document will be written
 
 <itemizedlist>
   <listitem><para>as a <link linkend="details.formats.plain">plain text
@@ -125,7 +126,7 @@
 <para>
   On the encryption page of the settings dialog, there is a field where you can
   enter the key-id of the key that should be used for encryption and
-  decryption. You can use either the key-id, the e-mail address associated with
+  decryption. You can use either the key-id, the email address associated with
   this key, or any other valid GPG key identification as the value for this
   field. When you enter the key-id, &kappname; will check its validity and 
   display a green LED icon in the dialog if a key is found.
@@ -157,7 +158,7 @@
   Under normal circumstances, you will open/save/close your file as usual. In
   the abnormal case of loss of your key, you have the chance to contact one of
   the developers who has access to the &kappname; recover key and request help
-  to recover your data. You may contact the developers via e-mail to the
+  to recover your data. You may contact the developers via email to the
   &kappname; developer mailing list at &devlist;.
 </para>
 </sect2>

@@ -1,6 +1,7 @@
 
 2009-08-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Unify icon loading for accounts
+  * Added documentation updates from Jack Ostroff
 
 2009-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a crash when using the 'clear all' feature in the split editor

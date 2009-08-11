@@ -10,11 +10,12 @@
       </affiliation>
     </author>
   </authorgroup>
-<date>03/08/2009</date>
-<releaseinfo>0.9</releaseinfo>
+<date>2009-08-03</date>
+<releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title>Loans</title>
+
 <sect1 id="details.loans.general">
 <title>Understanding Loans</title>
 
@@ -46,15 +47,15 @@
 
 <formalpara><title>Loan Principal</title>
 <para>
-  The amount that is lent out is called the &quot;loan amount&quot; or
-  &quot;principal&quot;.
+  The amount that is lent out is called the <quote>loan amount</quote> or
+  <quote>principal</quote>.
 </para>
 </formalpara>
 
 <formalpara><title>Term</title>
 <para>
-  The period of a loan is called its &quot;term&quot; of the loan. At the end of
-  the term, the entirety of the principal will have been returned to the
+  The period of a loan is called its <quote>term</quote> of the loan. At the end
+  of the term, the entirety of the principal will have been returned to the
   borrower. Terms are generally expressed in weeks, months, or years. A term can
   also be expressed by the number of payments. For example, a one year loan with
   weekly repayments could be described as a one year loan or a loan with 52
@@ -66,25 +67,25 @@
 <para>
   The repayment of the principal to the lender is generally not done as a lump
   sum. Instead, a series of repayments are made, each representing a portion of
-  the principal. Such repayments are sometimes known as &quot;amortization
-  payments&quot; and in &kappname; &quot;Amortization&quot; is defined as the
-  act of paying off a loan in installments.
+  the principal. Such repayments are sometimes known as <quote>amortization
+  payments</quote> and in &kappname; <quote>Amortization</quote> is defined as
+  the act of paying off a loan in installments.
 </para>
 </formalpara>
 
 <formalpara><title>Payment Frequency</title>
 <para>
-  The frequency of installments is referred to as &quot;Payment Frequency&quot;
-  in &kappname;. Examples of period might be weekly, bi-weekly, monthly,
-  quarterly, or yearly. In the US, periodic payments are most commonly made
-  every month, therefore the loan's period is one month.
+  The frequency of installments is referred to as <quote>Payment
+  Frequency</quote> in &kappname;. Examples of period might be weekly,
+  bi-weekly, monthly, quarterly, or yearly. In the US, periodic payments are
+  most commonly made every month, therefore the loan's period is one month.
 </para>
 </formalpara>
 
 <formalpara><title>Interest Rate</title>
 <para>
   For the privilege of being able to use the money, the borrower will pay the
-  lender a fee called the &quot;interest&quot;, normally expressed as a
+  lender a fee called the <quote>interest</quote>, normally expressed as a
   percentage of the amount of the principal over a defined period.  Interest
   rates can be fixed, where the interest rate does not change over the lifetime
   of the loan, or variable, where the interest rate can change over
@@ -96,23 +97,32 @@
 <para>
   Since these repayments are generally made on some sort of scheduled basis,
   such as weekly, monthly, quarterly, or yearly, they are referred to as
-  &quot;periodic repayments&quot;. The sum of all periodic repayments plus the
-  final repayment will add up to the loan principal plus the interest.
+  <quote>periodic repayments</quote>. The sum of all periodic repayments plus
+  the final repayment will add up to the loan principal plus the interest.
 </para>
 </formalpara>
 
 <formalpara><title>Fees</title>
 <para>
   There may be other fees besides interest that are required to be paid with
-  every installment. These are called &quot;recurring fees&quot;. Examples of
+  every installment. These are called <quote>recurring fees</quote>. Examples of
   recurring fees include (but are not necessarily limited to):
+
+<!--would prefer itemized list not in para, but formalpara requires para-->
 <itemizedlist>
-<listitem><para>&quot;Impound&quot; or &quot;escrow&quot; account
-  payments. (Payments of this sort are commonly used to hold funds to pay annual
-  or bi-annual property taxes.)</para></listitem>
-<listitem><para>Mortgage insurance</para></listitem>
-<listitem><para>Disability insurance</para></listitem>
-<listitem><para>Loan account maintenance fees</para></listitem>
+  <listitem>
+    <para>
+      <quote>Impound</quote> or <quote>escrow</quote> account
+      payments. (Payments of this sort are commonly used to hold funds to pay
+      annual or bi-annual property taxes.)
+    </para>
+  </listitem>
+
+  <listitem><para>Mortgage insurance</para></listitem>
+
+  <listitem><para>Disability insurance</para></listitem>
+
+  <listitem><para>Loan account maintenance fees</para></listitem>
 </itemizedlist>
 </para>
 </formalpara>
@@ -148,7 +158,7 @@
 </para>
 
 <para>
-  A &quot;loan schedule&quot; is a chart or table that shows the date that a
+  A <quote>loan schedule</quote> is a chart or table that shows the date that a
   repayment should be made and the amount of each periodic repayment.  Often,
   these schedules break the periodic payment down into its constituent parts:
   the principal repayment, the interest payment, and the recurring fees payment.
@@ -188,17 +198,26 @@
 <para>
   Examples of extra principal payments include (but are not necessarily limited
   to):
+</para>
 
 <itemizedlist>
-<listitem><para>Contributing an extra $50 a month</para></listitem>
-<listitem><para>Doubling the periodic principal repayment for every period. (The
-  principal repayment can be found for any particular period by referring to the
-  loan schedule.)</para></listitem>
-<listitem><para>Making a 13th principal repayment every year. (This assumes a
-  loan that is repaid in monthly installments.)</para></listitem>
-</itemizedlist>
+  <listitem><para>Contributing an extra $50 a month</para></listitem>
 
-</para>
+  <listitem>
+    <para>
+      Doubling the periodic principal repayment for every period. (The principal
+      repayment can be found for any particular period by referring to the loan
+      schedule.)
+    </para>
+  </listitem>
+
+  <listitem>
+    <para>
+      Making a 13th principal repayment every year. (This assumes a loan that is
+      repaid in monthly installments.)
+    </para>
+  </listitem>
+</itemizedlist>
 
 <para>
   Note: If you are doubling the principal repaid with every periodic payment,
@@ -206,8 +225,6 @@
   allow there to be an accurate value for the required principal repayment with
   each installment.
 </para>
-
 </sect1>
-
 </chapter>
 

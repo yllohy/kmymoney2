@@ -11,8 +11,8 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>28/07/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-07-28</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 
 <title>Reconciliation</title>
@@ -31,12 +31,11 @@
 </para>
 
 <para>
-  To reconcile an account, choose your account from the dropdown list and click
-  on the 
-  <guiicon><inlinemediaobject>
-  <imageobject><imagedata fileref="reconcile.png"/></imageobject>
-  </inlinemediaobject>Reconcile</guiicon> icon,
-  select <menuchoice><guimenu>Account</guimenu>
+  To reconcile an account, choose your account from the drop down box and click
+  on the <guiicon><inlinemediaobject> <imageobject><imagedata
+  fileref="reconcile.png"/></imageobject>
+  </inlinemediaobject>Reconcile</guiicon> icon, select
+  <menuchoice><guimenu>Account</guimenu>
   <guimenuitem>Reconcile...</guimenuitem></menuchoice> or use the key
   combination Ctl+Shift+R.
 </para>

@@ -18,8 +18,8 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>2009-05-05</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-08-10</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
   
 <title id="details.accounts.title">Accounts</title>
@@ -681,12 +681,6 @@
           </textobject>
         </mediaobject>
   </screenshot>
-</para>
-
-<para>
-  Alternatively, the account details can be changed through the <link
-  linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account
-  Details</guibutton> button in the command frame.
 </para>
 </sect1>
 

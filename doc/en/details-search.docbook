@@ -10,8 +10,8 @@
       </affiliation>
     </author>
   </authorgroup>
-  <date>05/08/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-08-05</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 <title>Search Transactions</title>
 
@@ -61,12 +61,10 @@
 <title>Search Criteria</title>
 
 <para>
-  There are several sub-tabs under the main <quote>Criteria</quote>
-  tab, each of which allows you to specify different types of search
-  criteria.  Below the area for specifying the criteria, &kappname;
-  lists each of the different types of criteria that are currently
-  specified for the search.
-
+  There are several sub-tabs under the main <quote>Criteria</quote> tab, each of
+  which allows you to specify different types of search criteria.  Below the
+  area for specifying the criteria, &kappname; lists each of the different types
+  of criteria that are currently specified for the search.
 </para>
 
 <sect2 id="details.search.text">
@@ -95,10 +93,12 @@
 <para>
 <itemizedlist>
   <listitem>
-    <para>&quot;Best&quot; will find &quot;Best Cakes, Inc.&quot;</para>
+    <para><quote>Best</quote> will find <quote>Best Cakes, Inc.</quote></para>
   </listitem>
   <listitem>
-    <para>&quot;est&quot; will also find &quot;Best Cakes, Inc.&quot;</para>
+    <para>
+      <quote>est</quote> will also find <quote>Best Cakes, Inc.</quote>
+    </para>
   </listitem>
 </itemizedlist>
 </para>
@@ -112,14 +112,14 @@
 
 <para>
   If you check the <guilabel>Case Sensitive</guilabel> box, the search will be
-  case sensitive.  For example, &quot;best&quot; would not find &quot;Best
-  Cakes, Inc.&quot; if this option is set.
+  case sensitive.  For example, <quote>best</quote> would not find <quote>Best
+  Cakes, Inc.</quote> if this option is set.
 </para>
 
 <para>
   If you check the <guilabel>Treat Text as regular expression</guilabel> box,
   the text will be treated as a regular expresssion.  For details on how to
-  craft a regular expression, visit the Qt documentation about the
+  craft a regular expression, visit the &Qt; documentation about the
   <ulink url="http://doc.qtsoftware.com/3.3/qregexp.html#1">QRegExp
   class</ulink>.
 </para>
@@ -174,12 +174,12 @@
 </para>
 
 <para>
-  The &quot;Range&quot; control provides a convenient way to set the From and To
-  controls.  The From and To controls can be manipulated individually. Dates can
-  be entered manually. The controls will prevent you from entering non-existing
-  dates. Date values can also be changed by clicking on the up and down arrows
-  when a particular part of a date is highlighted.  Clicking on the small
-  calendar icon will bring up a calendar to easily select dates.
+  The <quote>Range</quote> control provides a convenient way to set the From and
+  To controls.  The From and To controls can be manipulated individually. Dates
+  can be entered manually. The controls will prevent you from entering
+  non-existing dates. Date values can also be changed by clicking on the up and
+  down arrows when a particular part of a date is highlighted.  Clicking on the
+  small calendar icon will bring up a calendar to easily select dates.
 </para>
 </sect2>
 

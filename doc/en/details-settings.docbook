@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <chapter id="details.settings">
 <chapterinfo>
   <authorgroup>
@@ -9,8 +10,8 @@
 	</affiliation>
     </author>
   </authorgroup>
-  <date>03/08/2009</date>
-  <releaseinfo>0.9</releaseinfo>
+  <date>2009-08-03</date>
+  <releaseinfo>1.0</releaseinfo>
 </chapterinfo>
 <title id="details.settings.title">&kappname; Settings</title>
 
@@ -89,7 +90,7 @@
   </varlistentry>
 
   <varlistentry>
-    <term><guilabel>Show title bar on each page</guilabel></term>
+    <term><guilabel>Show titlebar on each page</guilabel></term>
     <listitem>
       <para>Whether the title of the current view should be displayed on each
       page.</para>
@@ -191,8 +192,8 @@
   <varlistentry>
     <term><guilabel>Always show a No. field</guilabel></term>
     <listitem>
-      <para>Always have the number (&quot;No.&quot;) field when entering or
-        editing a transaction.</para>
+      <para>Always have the number (<quote>No.</quote>) field when entering or
+      editing a transaction.</para>
     </listitem>
   </varlistentry>
 
@@ -248,7 +249,7 @@
     <term><guilabel>Insert transaction type into No. field for new
       transactions</guilabel></term>
     <listitem>
-      <para>Automatically place the type of the transaction, e.g. Deposit,
+      <para>Automatically place the type of the transaction, e.g., Deposit,
         Withdrawal, etc., in the No. field.</para>
     </listitem>
   </varlistentry>
@@ -520,7 +521,7 @@
   <varlistentry>
     <term><guilabel>Your key</guilabel></term>
     <listitem>
-      <para>Enter the e-mail address or the hexadecimal key id to use for data
+      <para>Enter the email address or the hexadecimal key id to use for data
         encryption.</para>
     </listitem>
   </varlistentry>

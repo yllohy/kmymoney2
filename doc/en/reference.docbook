@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="reference">
+<chapterinfo>
+  <date>2009-08-10</date>
+  <releaseinfo>1.0</releaseinfo>
+</chapterinfo>
+
 <title>Reference</title>
 
 <sect1 id="reference.menus">
@@ -641,20 +646,24 @@
 
   <varlistentry>
     <term><menuchoice>
-      <guimenu>Transaction</guimenu><guimenuitem>Accept</guimenuitem>
+      <guimenu>Transaction</guimenu><guimenuitem>Unatch</guimenuitem>
     </menuchoice></term>
     <listitem>
-      <para><action>Accepts a proposed merge of imported
-        transactions.</action></para>
+      <para>
+        <action>Unmatches a transactions that &kappname; has proposed
+        as a match of imported transactions.</action> Note that this
+        menu choice is only present if a matched transaction exists.
+      </para>
     </listitem>
   </varlistentry>
 
   <varlistentry>
     <term><menuchoice>
-      <guimenu>Transaction</guimenu><guimenuitem>Combine</guimenuitem>
+      <guimenu>Transaction</guimenu><guimenuitem>Accept</guimenuitem>
     </menuchoice></term>
     <listitem>
-      <para><action>Merges the selected transactions.</action></para>
+      <para><action>Accepts a proposed merge of imported
+        transactions.</action></para>
     </listitem>
   </varlistentry>
 
@@ -785,7 +794,7 @@
   <varlistentry>
     <term><menuchoice>
       <guimenu>Settings</guimenu>
-        <guimenuitem>KDE Language Settings...</guimenuitem>
+        <guimenuitem>&kde; Language Settings...</guimenuitem>
     </menuchoice></term>
     <listitem>
       <para><action>Allows to change many locale based settings.</action></para>
@@ -895,10 +904,10 @@
 
   <varlistentry>
     <term><menuchoice>
-      <guimenu>Help</guimenu><guimenuitem>About KDE</guimenuitem>
+      <guimenu>Help</guimenu><guimenuitem>About &kde;</guimenuitem>
     </menuchoice></term>
     <listitem>
-      <para><action>Shows KDE information.</action></para>
+      <para><action>Shows &kde; information.</action></para>
     </listitem>
   </varlistentry>
 </variablelist>

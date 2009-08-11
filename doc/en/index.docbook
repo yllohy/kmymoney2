@@ -3,7 +3,7 @@
   <!-- Define an entity for your application if it is not part of KDE
        CVS -->
   <!ENTITY kmyapplication "<application>KMyMoney</application>">
-  <!ENTITY kappname "KMyMoney;"><!-- replace kmyapplication here
+  <!ENTITY kappname "KMyMoney"><!-- replace kmyapplication here
                                             do *not* replace kappname-->
   <!ENTITY package "kde-module"><!-- kdebase, kdeadmin, etc.  Leave
                                      this unchanged if your
