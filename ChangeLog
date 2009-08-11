@@ -8,6 +8,8 @@
     as per http://www.linkedin.com/e/vaq/5932767/1531497/-1/view_disc/
   * Added patches provided by Ian Neal (ledgerview_overdue.diff,
     homeview_payments.diff)
+  * Don't remove payee from scheduled transaction if a split points to
+    another asset/liability account
 
 2009-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a crash when using the 'clear all' feature in the split editor

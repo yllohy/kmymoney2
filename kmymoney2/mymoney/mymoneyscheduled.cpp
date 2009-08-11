@@ -206,8 +206,13 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool
         continue;
 
       if(!(*it_s).payeeId().isEmpty()) {
-        s.setPayeeId(QString());
-        t.modifySplit(s);
+        // but only if the split references an income/expense category
+        MyMoneyFile* file = MyMoneyFile::instance();
+        MyMoneyAccount acc = file->account(s.accountId());
+        if(acc.isIncomeExpense()) {
+          s.setPayeeId(QString());
+          t.modifySplit(s);
+        }
       }
     }
   }
@@ -1140,7 +1145,7 @@ QDate MyMoneySchedule::addHalfMonths( QDate date, int mult ) const
           dm = newdate.daysInMonth();
           if ( d == 14 )
             newdate = newdate.addDays(( dm < 30 ) ? dm - d : 15);
-          else if ( d == 15 ) 
+          else if ( d == 15 )
             newdate = newdate.addDays(dm - d);
           else if ( d == dm )
             newdate = newdate.addDays(15 - d).addMonths(1);
@@ -1169,10 +1174,10 @@ QDate MyMoneySchedule::addHalfMonths( QDate date, int mult ) const
         newdate = newdate.addMonths(-1);
         dm = newdate.daysInMonth();
         newdate = newdate.addDays(( dm < 30 ) ? dm - d : 15 );
-      } 
+      }
     }
   return newdate;
-} 
+}
 
 MyMoneySchedule::occurenceE MyMoneySchedule::stringToOccurence(const QString& text)
 {
