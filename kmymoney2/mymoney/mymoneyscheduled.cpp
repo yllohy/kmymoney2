@@ -208,10 +208,14 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool
       if(!(*it_s).payeeId().isEmpty()) {
         // but only if the split references an income/expense category
         MyMoneyFile* file = MyMoneyFile::instance();
-        MyMoneyAccount acc = file->account(s.accountId());
-        if(acc.isIncomeExpense()) {
-          s.setPayeeId(QString());
-          t.modifySplit(s);
+        // some unit tests don't have a storage attached, so we
+        // simply skip the test
+        if(file->storageAttached()) {
+          MyMoneyAccount acc = file->account(s.accountId());
+          if(acc.isIncomeExpense()) {
+            s.setPayeeId(QString());
+            t.modifySplit(s);
+          }
         }
       }
     }
