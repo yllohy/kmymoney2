@@ -1,3 +1,8 @@
+
+2009-08-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Use same icon for stock, money market and certificate of
+    deposit accounts as for investments
+
 2009-08-11 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix last commit (caused test suite failure)
 

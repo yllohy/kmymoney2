@@ -626,6 +626,9 @@ QPixmap MyMoneyAccount::accountPixmap(bool reconcileFlag, int size) const
       break;
 
     case MyMoneyAccount::Investment:
+    case MyMoneyAccount::Stock:
+    case MyMoneyAccount::MoneyMarket:
+    case MyMoneyAccount::CertificateDep:
       icon = "account-types_investments";
       break;
 
