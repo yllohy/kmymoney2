@@ -1,4 +1,7 @@
 
+2009-08-12 Alvaro Soliverez <asoliverez@gmail.com>
+  * Updated Whats new page preparing for version 1.0
+
 2009-08-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch from Ian Neal to support correct fraction in balance column
     of ledger (investment_balance.diff)
