@@ -1,5 +1,9 @@
 
-2009-08-08 Alvaro Soliverez <asoliverez@gmail.com>
+2009-08-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch from Ian Neal to support correct fraction in balance column
+    of ledger (investment_balance.diff)
+
+2009-08-11 Alvaro Soliverez <asoliverez@gmail.com>
   * Use same icon for stock, money market and certificate of
     deposit accounts as for investments
 
