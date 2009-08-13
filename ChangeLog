@@ -1,10 +1,11 @@
 
-2009-08-12 Alvaro Soliverez <asoliverez@gmail.com>
+2009-08-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Added to what's new page changes since version 0.8.9
   * Updated Romanian what's new page from Cristian Onet
 
 2009-08-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated what's new page to the layout required for 1.0
+  * Fixed problem when entering a multiple transactions for the same payee
 
 2009-08-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Whats new page preparing for version 1.0
