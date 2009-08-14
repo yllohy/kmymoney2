@@ -242,8 +242,8 @@ void KAccountsView::loadIconView(void)
 
   // parse list and add all asset and liability accounts
   QMap<QString, MyMoneyAccount>::const_iterator it;
-  QPoint loc;
   for(it = accountMap.begin(); it != accountMap.end(); ++it) {
+    QPoint loc;
     if((*it).isClosed() && !showClosedAccounts)
       continue;
     const QString& pos = (*it).value("kmm-iconpos");
