@@ -57,7 +57,7 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
   m_searchWidget = new KListViewSearchLineWidget(m_accountTree, m_accountTree->parentWidget());
   QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(m_accountTree->parentWidget()->layout());
   if(layout) {
-    layout->insertWidget(2, m_searchWidget);
+    layout->insertWidget(0, m_searchWidget);
   }
 
   // setup icons for collapse and expand button

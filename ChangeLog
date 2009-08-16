@@ -1,6 +1,7 @@
 
 2009-08-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed display of fee and interest value in investment transaction form
+  * Show search tool on top of categories view
 
 2009-08-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated what's new documentation
