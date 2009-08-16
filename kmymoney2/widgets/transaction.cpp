@@ -1581,7 +1581,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveFees()) {
             if((fieldEditable = !m_feeCategory.isEmpty()) == true) {
-              txt = m_feeAmount.abs().formatMoney(m_account.fraction());
+              txt = m_feeAmount.abs().formatMoney(m_currency);
             }
           }
           break;
@@ -1613,7 +1613,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveInterest()) {
             if((fieldEditable = !m_interestCategory.isEmpty()) == true) {
-              txt = m_interestAmount.abs().formatMoney(m_account.fraction());
+              txt = m_interestAmount.abs().formatMoney(m_currency);
             }
           }
           break;
