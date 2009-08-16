@@ -1,4 +1,7 @@
 
+2009-08-16 Alvaro Soliverez <asoliverez@gmail.com>
+  * Force reordering of account icons when there is a new account
+
 2009-08-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed display of fee and interest value in investment transaction form
   * Show search tool on top of categories view
