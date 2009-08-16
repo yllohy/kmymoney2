@@ -24,8 +24,11 @@
   
 <title id="details.accounts.title">Accounts</title>
 
+<sect1 id="details.accounts.view">
+<title>The Accounts View</title>
+
 <para>
-  The Accounts screen provides a summary of all the accounts. There are four
+  The Accounts View provides a summary of all the accounts. There are four
   different account categories: Asset, Liability, Income, and Expense.  Typical
   asset accounts include bank accounts, cash, and investments, while typical
   liability accounts include credit cards and loans.
@@ -33,20 +36,32 @@
 
 <para>
   There are two ways to view the accounts: List or Icon view, which may be
-  selected by clicking on the appropriate tab at the top of the view. In Icon
-  view, the different Asset and Liability accounts are shown with icons
-  indicating the account type. List view shows the name and balance or value of
-  each account.
+  selected by clicking on the appropriate tab at the top of the view.
 </para>
 
 <para>
-  In the list view, Income and Expense list the categories that each transaction
-  is filed under and provides similar functionality to the Categories
+  In the List view, the accounts are grouped under four headings: Asset,
+  Liability, Income, and Expense. List view shows the name and balance or value
+  of each account.  Income and Expense list the categories that each transaction
+  is filed under, and provide similar functionality to the Categories
   screen. The options and features involving Income and Expense accounts are
   described in detail in the <link
   linkend="details.categories">Categories</link> chapter. The rest of this
   chapter will focus on Asset and Liability account functionality.
 </para>
+
+<para>
+  In the Icon view, the Asset and Liability accounts are shown with icons
+  indicating the account type.  &kappname; initially places the icons
+  alphabetically, but you can move the icons to any position you want, just by
+  dragging the icon with the mouse.  Note, however, that just moving an icon
+  does not currently trigger &kappname; to think that any data has been changed.
+  This means that you need to make some other change, such as editing an account
+  or a transaction and saying OK (even without actually changing any data) so
+  &kappname; allows you to save the file.  The saved file will include the new
+  icon positions.
+</para>
+</sect1>
 
 <sect1 id="details.accounts.create">
 <title>Creating an Account</title>
@@ -639,7 +654,7 @@
 </sect2>
 </sect1>
 
-<sect1 id="details.accounts.view">
+<sect1 id="details.accounts.viewing">
 <title>Opening / viewing accounts</title>
 
 <para>
