@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-08-14 22:25+0100\n"
-"Last-Translator: Vincenzo Reale <smart2128@baslug.org>\n"
+"PO-Revision-Date: 2009-08-17 08:39+0100\n"
+"Last-Translator: Sandro Bonazzola <sandro.bonazzola@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: wizards/wizardpages/rc.cpp:1
 msgid "Select groups of accounts that correspond to the ways that you will use KMyMoney. Each group you select will cause several accounts and categories to be created. Select the groups that are relevant to you. You can always create additional accounts manually later."
-msgstr ""
+msgstr "Selezionare i gruppi di conto che corrispondono ai modi in cui userai KMyMoney. Ogni gruppo che selezioni causerà la creazione di diversi conti e categorie. Seleziona i gruppi che sono rilevanti per te. È sempre possibile creare conti aggiuntivi manualmente più tardi."
 
 #: wizards/wizardpages/rc.cpp:2
 msgid "<p>KMyMoney supports multiple currencies, nevertheless one of them will be used as your base currency. The base currency is used as default for new accounts and reports. Please select the base currency from the following list."
@@ -833,15 +833,14 @@ msgid "The opening balance is the balance of the account when you start using it
 msgstr "Il bilancio di apertura è il saldo del conto al momento di iniziare a gestirlo con KMyMoney. Per i nuovi conti di solito questo è 0, ma per i conti esistenti questo può variare. Consultare l'estratto conto per capire questo valore. Il bilancio di apertura deve essere fornito nella valuta del conto come selezionato con il pulsante della valuta."
 
 #: wizards/newaccountwizard/rc.cpp:10
-#, fuzzy
 msgid ""
 "The opening date would be the date of the last statement. In case you want to keep track of transactions prior to this date, enter the ending balance and statement date of a prior statement and add all following transactions into KMyMoney.\n"
 "<br>\n"
 "<i>Note</i>: If you do not know the exact amount of the opening balance, enter an estimate. You can change this value later before you reconcile this account for the first time."
 msgstr ""
-"Inserisci il bilancio finale del tuo ultimo estratto conto. Nel caso in cui tu voglia tener traccia delle transazioni precedenti a questa data, inserisci il bilancio finale di un estratto precedente e aggiungi tutte le transazioni che seguono.\n"
+"La data di apertura dovrebbe essere la data del tuo ultimo estratto conto. Nel caso in cui tu voglia tener traccia delle transazioni precedenti a questa data, inserisci il bilancio finale, la data dell'estratto conto precedente ed aggiungi le transazioni seguenti in KMyMoney.\n"
 "<br>\n"
-"Nota: se vuoi mantenere questo conto dalla data d'apertura inserisci 0. Se non conosci l'esatto ammontare del conto, inserisci una stima. Puoi cambiare questo valore in seguito prima di riconciliare il conto."
+"<i>Nota</i>: Se non conosci l'esatto ammontare del conto, inserisci una stima. Puoi cambiare questo valore in seguito prima di riconciliare il conto."
 
 #: dialogs/rc.cpp:52
 #: dialogs/rc.cpp:54
@@ -876,7 +875,7 @@ msgstr "Tipo di conto"
 
 #: wizards/newaccountwizard/rc.cpp:13
 msgid "For foreign currencies an initial conversion rate needs to be provided. This should be the price of the foreign currency in the base currency on the opening date of the account."
-msgstr ""
+msgstr "Per le valute estere deve essere fornito un tasso di conversione iniziale. Questo dovrebbe essere il prezzo della valuta estera nella valuta di base alla data di apertura del conto."
 
 #: wizards/newaccountwizard/rc.cpp:14
 msgid "Account name"
@@ -962,6 +961,11 @@ msgid ""
 "\n"
 "<b>Uncheck</b> it if you don't use this account for active stock brokerage. You should also uncheck it if this account is not maintained by a bank or broker."
 msgstr ""
+"Questo conto investimenti ha un conto di intermediazione?<p>\n"
+"\n"
+"<b>Attiva</b> la casella di controllo se questo conto investimenti ha un conto associato per il denaro che non è investito.<br>\n"
+"\n"
+"<b>Disattivala</b> se non si utilizza questo conto per l'intermediazione attiva di titoli. Si dovrebbe anche disattivare la casella se questo conto non è gestito da una banca o intermediario."
 
 #: wizards/newaccountwizard/rc.cpp:23
 msgid "Create brokerage account"
@@ -1306,7 +1310,7 @@ msgstr "Il primo pagamento avviene il"
 
 #: wizards/newaccountwizard/rc.cpp:108
 msgid "For credit card accounts you can create a monthly schedule which will automatically remind you about the payment. Please fill in the details about this payment here."
-msgstr ""
+msgstr "Per conti carta di credito è possibile creare una pianificazione mensile che ricorderà automaticamente il pagamento. Si prega di compilare tutti i dettagli su questo pagamento."
 
 #: wizards/newaccountwizard/rc.cpp:109
 msgid "Yes, remind me when the payment is due"
@@ -1403,7 +1407,7 @@ msgstr "Coordinate bancarie"
 
 #: wizards/newuserwizard/rc.cpp:7
 msgid "In general the institution that issued the account also issued a number for it. Enter it here. If uncertain, you can modify this entry later."
-msgstr ""
+msgstr "In generale, l'istituto che ha aperto il conto anche rilasciato un numero di conto. Inseriscilo qui. Se incerto, è possibile modificare questa voce in seguito."
 
 #: wizards/newuserwizard/rc.cpp:8
 msgid "Enter a descriptive name that will be used by KMyMoney to identify your checking account."
@@ -2137,14 +2141,12 @@ msgid "Show balance chart..."
 msgstr "Mostra rendiconto..."
 
 #: kmymoney2.cpp:366
-#, fuzzy
 msgid "Map to online account"
-msgstr "Impossibile filtrare il conto"
+msgstr "Mappa su un conto online"
 
 #: kmymoney2.cpp:367
-#, fuzzy
 msgid "Unmap account"
-msgstr "Conto del prestito"
+msgstr "Rimuovi mappa conto"
 
 #: dialogs/settings/rc.cpp:126
 #: kmymoney2.cpp:368
@@ -2613,9 +2615,8 @@ msgstr ""
 #: kmymoney2.cpp:1754
 #: kmymoney2.cpp:6040
 #: kmymoney2.cpp:6062
-#, fuzzy
 msgid "Statement stats"
-msgstr "Dettagli estratto conto"
+msgstr "Statistiche estratto conto"
 
 #: kmymoney2.cpp:1602
 msgid "You cannot import GnuCash data into an existing file. Do you wish to save this file?"
@@ -3389,9 +3390,8 @@ msgid "Do you really want to remove the mapping of account <b>%1</b> to an onlin
 msgstr ""
 
 #: kmymoney2.cpp:5928
-#, fuzzy
 msgid "Remove mapping to online account"
-msgstr "Impossibile filtrare il conto"
+msgstr "Rimuovere la mappatura sul conto online"
 
 #: kmymoney2.cpp:5939
 #, fuzzy, c-format
@@ -3804,9 +3804,8 @@ msgid "Importing statement without transactions"
 msgstr "Importa un estratto conto per il conto %1"
 
 #: converter/mymoneystatementreader.cpp:385
-#, fuzzy
 msgid "  Statement balance is not contained in statement."
-msgstr "Saldo iniziale di questo estratto conto:"
+msgstr " Il bilancio dell'estratto conto non è contenuto nell'estratto conto."
 
 #: converter/mymoneystatementreader.cpp:387
 msgid "  Statement balance on %1 is reported to be %2"
@@ -3841,9 +3840,9 @@ msgid "    %1 created"
 msgstr "    %1 creato"
 
 #: converter/mymoneystatementreader.cpp:483
-#, fuzzy, c-format
+#, c-format
 msgid "Error creating security record: %1"
-msgstr "Errore durante la connessione alla banca: %1"
+msgstr ""
 
 #: converter/mymoneystatementreader.cpp:612
 #, fuzzy
@@ -7350,14 +7349,12 @@ msgid "Statement Details"
 msgstr "Dettagli estratto conto"
 
 #: views/kgloballedgerview.cpp:512
-#, fuzzy
 msgid "Statement Deposit Details"
-msgstr "Importatore di estratti conto"
+msgstr "Dettagli depositi estratto conto"
 
 #: views/kgloballedgerview.cpp:513
-#, fuzzy
 msgid "Statement Payment Details"
-msgstr "Data estratto conto:"
+msgstr "Dettagli pagamenti estratto conto"
 
 #: views/kgloballedgerview.cpp:642
 msgid "%1 deposits (%3), %2 payments (%4)"
@@ -7674,23 +7671,20 @@ msgid "Scheduled Expenses"
 msgstr "Uscite pianificate"
 
 #: views/khomeview.cpp:1850
-#, fuzzy
 msgid "Liquid Assets and Liabilities"
-msgstr "Attività e passività"
+msgstr "Attività e passività liquide"
 
 #: views/khomeview.cpp:1855
 msgid "Liquid Assets"
 msgstr "Liquidità"
 
 #: views/khomeview.cpp:1858
-#, fuzzy
 msgid "Transfers to Liquid Liabilities"
-msgstr "Attività e passività"
+msgstr "Trasferisce a passività liquide"
 
 #: views/khomeview.cpp:1861
-#, fuzzy
 msgid "Liquid Liabilities"
-msgstr "Totale passività"
+msgstr "Passività liquide"
 
 #: views/khomeview.cpp:1864
 msgid "Other Transfers"
@@ -7705,9 +7699,8 @@ msgid "Expected Liquid Assets"
 msgstr "Liquidità attesa"
 
 #: views/khomeview.cpp:1917
-#, fuzzy
 msgid "Expected Liquid Liabilities"
-msgstr "Attività e passività"
+msgstr "Passività liquide attese"
 
 #: views/khomeview.cpp:1920
 msgid "Expected Profit/Loss"
@@ -8003,7 +7996,7 @@ msgstr "Il nome deriva da"
 
 #: plugins/ofximport/dialogs/rc.cpp:44
 msgid "P&AYEEID"
-msgstr ""
+msgstr "IDBENEFICI&ARIO"
 
 #: plugins/ofximport/dialogs/rc.cpp:45
 msgid "&NAME"
@@ -8011,7 +8004,7 @@ msgstr "&NOME"
 
 #: plugins/ofximport/dialogs/rc.cpp:46
 msgid "field if both are present in download"
-msgstr ""
+msgstr "campo se entrambi presenti in download"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
 msgid "Quicken Windows 2003"
@@ -9261,7 +9254,7 @@ msgstr "Completamento automatico"
 
 #: dialogs/settings/rc.cpp:155
 msgid "No Autofill"
-msgstr ""
+msgstr "No auto riempimento"
 
 #: dialogs/settings/rc.cpp:156
 msgid "Don't do autofill of transaction data at all."
@@ -9290,7 +9283,7 @@ msgstr "percento."
 
 #: dialogs/settings/rc.cpp:161
 msgid "with previously most often used transaction for the payee"
-msgstr ""
+msgstr "con la precedente transazione più utilizzata per il beneficiario"
 
 #: dialogs/settings/rc.cpp:162
 msgid "The data of the last transaction assigned to the category used most often for this payee is autofilled into the transaction editor."
@@ -9775,7 +9768,7 @@ msgstr "Frequenza:"
 
 #: dialogs/rc.cpp:100
 msgid "Number of selected periods between entries"
-msgstr ""
+msgstr "Numero di periodi selezionati tra inserimenti"
 
 #: dialogs/rc.cpp:101
 msgid "Payment information"

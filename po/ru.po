@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ru_new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-08-14 22:00+0400\n"
+"PO-Revision-Date: 2009-08-17 19:39+0400\n"
 "Last-Translator: Andrey Cherepanov <skull@kde.ru>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
@@ -284,19 +284,20 @@ msgid ""
 "date. If you requested an online quote it might be provided for a different "
 "date."
 msgstr ""
+"Убедитесь, что вы ввели курс на дату создания. Если вы будете обновлять курс "
+"из онлайновых источников, то указанной даты в этих источниках может не быть."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:555
-#, fuzzy
 msgid "Check date"
-msgstr "Выписать чек"
+msgstr "Проверка даты"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:562
 msgid "1 %1 equals %2"
-msgstr ""
+msgstr "1 %1 = %2"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:577
 msgid "Conversion rate is not positive"
-msgstr ""
+msgstr "Указан неверный курс"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:583
 msgid "No account name supplied"
@@ -558,9 +559,8 @@ msgstr "Дата создания"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1610
 #: wizards/newaccountwizard/rc.cpp:9
-#, fuzzy
 msgid "Conversion rate"
-msgstr "Процентная ставка"
+msgstr "Курс"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1613
 #: wizards/newaccountwizard/rc.cpp:15 wizards/newuserwizard/rc.cpp:13
@@ -740,6 +740,10 @@ msgid ""
 "this value. The opening balance is to be provided in the currency of the "
 "account as selected with the currency button."
 msgstr ""
+"Остаток на начало означает остаток на счету в момент, когда вы начали "
+"учитывать его в программе. Для новых счетов это, как правило, 0. Для "
+"существующих счетов остаток может быть другим. Проверьте выписку по счёту для "
+"того, чтобы узнать остаток. Остаток должен быть указан в валюте счёта."
 
 #: wizards/newaccountwizard/rc.cpp:10
 msgid ""
@@ -781,6 +785,9 @@ msgid ""
 "should be the price of the foreign currency in the base currency on the "
 "opening date of the account."
 msgstr ""
+"Для иностранных валют необходимо указать курс на дату создания счёта. Курсом "
+"является цена иностранной денежной единицы в базовой валюте на дату создания "
+"счёта."
 
 #: wizards/newaccountwizard/rc.cpp:14
 msgid "Account name"
@@ -1557,6 +1564,13 @@ msgid ""
 "<li>the filename is not currently used in this directory.</li>\n"
 "</ul>"
 msgstr ""
+"Выбранный файл существует или папка расположения файла не существует. "
+"Проверьте:\n"
+"\n"
+"<ul>\n"
+"<li>папка размещения файла существует;</li>\n"
+"<li>файла с указанным именем нет в этой папке.</li>\n"
+"</ul>"
 
 #: wizards/newuserwizard/rc.cpp:20
 msgid ""
@@ -1940,7 +1954,7 @@ msgstr "Проверка закончена. Исправлено: %1, оста�
 #: mymoney/mymoneyscheduled.cpp:969 mymoney/mymoneyscheduled.cpp:1265
 #: mymoney/mymoneyscheduletest.cpp:1336
 msgid "Once"
-msgstr "один раз"
+msgstr "Один раз"
 
 #: mymoney/mymoneyscheduled.cpp:875 mymoney/mymoneyscheduled.cpp:924
 #: mymoney/mymoneyscheduled.cpp:1267 mymoney/mymoneyscheduletest.cpp:1337
@@ -2018,7 +2032,7 @@ msgstr "через год"
 #: mymoney/mymoneyscheduled.cpp:870 mymoney/mymoneyscheduled.cpp:913
 #: mymoney/mymoneyscheduled.cpp:966
 msgid "Any"
-msgstr "один раз"
+msgstr "Один раз"
 
 #: mymoney/mymoneyscheduled.cpp:885 mymoney/mymoneyscheduled.cpp:933
 #: mymoney/mymoneyscheduled.cpp:1277
@@ -2171,7 +2185,7 @@ msgstr "Сверить..."
 msgid ""
 "_: Finish reconciliation\n"
 "Finish"
-msgstr "Закончить"
+msgstr "Завершить сверку"
 
 #: kmymoney2.cpp:357
 msgid ""
@@ -2326,7 +2340,7 @@ msgstr "Дублировать"
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
-msgstr "Связана"
+msgstr "Связать"
 
 #: kmymoney2.cpp:426
 msgid ""
@@ -2737,9 +2751,7 @@ msgstr "Сводка"
 msgid ""
 "Scheduled\n"
 "transactions"
-msgstr ""
-"Планируемые\n"
-"операции"
+msgstr "Платежи"
 
 #: kmymoney2.cpp:1819
 msgid "Encryption"
@@ -3390,7 +3402,7 @@ msgstr "Дублировать операцию"
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
-msgstr "Связана"
+msgstr "Отменить привязку"
 
 #: kmymoney2.cpp:5451 kmymoney2.cpp:5473
 msgid "Goto '%1'"
@@ -3476,6 +3488,10 @@ msgid ""
 "account. Please cancel if you intended to map the investment account, "
 "continue otherwise"
 msgstr ""
+"Вы пытаетесь привязать счёт комиссии брокеру к онлайновому счёту. Это не "
+"рекомендуется делать. Обычно к онлайновому счёту привязывается инвестиционный "
+"счёт. Отмените, если намереваетесь привязать инвестиционный счёт, или "
+"продолжите."
 
 #: kmymoney2.cpp:5957
 msgid "Mapping brokerage account"
@@ -3746,6 +3762,9 @@ msgid ""
 "1</b> which differs from the one found already on file. Please correct this "
 "manually once the import is done."
 msgstr ""
+"Была импортирована вторая операция открытия баланса на счёт <b>%1</b>, "
+"который отличается от счёта, найденного в файле. Исправьте операцию вручную "
+"после окончания импорта."
 
 #: converter/mymoneyqifreader.cpp:940
 msgid "Opening balance problem"
@@ -4441,25 +4460,25 @@ msgstr "Невозможно получить данные для платежа
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
-msgstr "Не сверено"
+msgstr "Не сверенные"
 
 #: kmymoneyutils.cpp:393 widgets/register.cpp:476
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
-msgstr "Проверено"
+msgstr "Проверенные"
 
 #: kmymoneyutils.cpp:396 widgets/register.cpp:479
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
-msgstr "Сверено"
+msgstr "Сверенные"
 
 #: kmymoneyutils.cpp:399 widgets/register.cpp:482
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
-msgstr "Заморожено"
+msgstr "Заблокированные"
 
 #: kmymoneyutils.cpp:410
 msgid ""
@@ -4807,11 +4826,11 @@ msgstr "С даты"
 
 #: reports/listtable.cpp:234
 msgid "Balance Early Warning"
-msgstr "Предупреждение по балансу"
+msgstr "Предупреждение по остатку"
 
 #: reports/listtable.cpp:235
 msgid "Balance Max Limit"
-msgstr "Лимит по балансу"
+msgstr "Лимит по остатку"
 
 #: reports/listtable.cpp:236
 msgid "Credit Early Warning"
@@ -5320,11 +5339,11 @@ msgstr "Запускать мастер заведения владельца п
 
 #: rc.cpp:51
 msgid "Show title bar on each view"
-msgstr ""
+msgstr "Показывать заголовок раздела"
 
 #: rc.cpp:52
 msgid "Start string matches for e.g. payees at start of string"
-msgstr ""
+msgstr "Поиск совпадения с начала слова"
 
 #: rc.cpp:53
 msgid "Order of items on homepage"
@@ -5340,7 +5359,7 @@ msgstr "Запоминать размер шрифта при выходе из 
 
 #: rc.cpp:56
 msgid "Show account limit information on the Homepage"
-msgstr ""
+msgstr "Показывать в сводке информацию о лимитах"
 
 #: rc.cpp:58
 msgid "Hide closed accounts"
@@ -5453,7 +5472,7 @@ msgstr "Период в днях (до и после) для поиска свя
 
 #: rc.cpp:87
 msgid "During import, ask for a new payee's default category"
-msgstr ""
+msgstr "При импорте спрашивать о статье по умолчанию для получателя"
 
 #: rc.cpp:88
 msgid "Method to calculate forecast"
@@ -5485,37 +5504,35 @@ msgstr "Игнорировать дату начала при получении
 
 #: rc.cpp:95
 msgid "Include future transaction when using Schedule Forecast"
-msgstr ""
+msgstr "Включать будущие операции в прогноз платежей"
 
 #: rc.cpp:96
-#, fuzzy
 msgid "Include scheduled transactions when using Schedule Forecast"
-msgstr "Включить операции по графикам платежей"
+msgstr "Включать запланированные операции в прогноз платежей"
 
 #: rc.cpp:97
 msgid "additional names for cash account"
-msgstr ""
+msgstr "дополнительные названия для счёта учёта наличных"
 
 #: rc.cpp:98
 msgid "additional names for checking account"
-msgstr ""
+msgstr "дополнительные названия для счёта пластиковой карты"
 
 #: rc.cpp:99
 msgid "additional names for credit card account"
-msgstr ""
+msgstr "дополнительные названия для счёта кредитной карты"
 
 #: rc.cpp:100
-#, fuzzy
 msgid "additional names for asset account"
-msgstr "Создать активный счёт"
+msgstr "дополнительные названия для счёта активов"
 
 #: rc.cpp:101
 msgid "additional names for opening balance payee"
-msgstr ""
+msgstr "дополнительные названия для получателя"
 
 #: rc.cpp:102
 msgid "additional names for invoice accounts"
-msgstr ""
+msgstr "дополнительные названия для счетов учёта счетов-фактур"
 
 #: rc.cpp:103 widgets/rc.cpp:161 widgets/rc.cpp:163
 msgid "..."
@@ -5849,24 +5866,20 @@ msgid "Investment Worth Graph"
 msgstr "График стоимости инвестиций"
 
 #: views/kreportsview.cpp:1221
-#, fuzzy
 msgid "Investment Price Graph"
 msgstr "График стоимости инвестиций"
 
 #: views/kreportsview.cpp:1238
-#, fuzzy
 msgid "Investment Moving Average Price Graph"
-msgstr "График стоимости инвестиций"
+msgstr "График скользящей средней стоимости инвестиций"
 
 #: views/kreportsview.cpp:1256
-#, fuzzy
 msgid "Investment Moving Average"
-msgstr "Взвешенная скользящая средняя"
+msgstr "Скользящая средняя стоимости инвестиций"
 
 #: views/kreportsview.cpp:1272
-#, fuzzy
 msgid "Investment Moving Average vs Actual"
-msgstr "Взвешенная скользящая средняя"
+msgstr "График скользящей средней и реальной стоимости инвестиций"
 
 #: views/kreportsview.cpp:1287
 msgid "Taxes"
@@ -5970,7 +5983,7 @@ msgstr "Счета и напоминания"
 
 #: views/kmymoneyview.cpp:178
 msgid "Scheduled transactions"
-msgstr "Планируемые операции"
+msgstr "Платежи"
 
 #: dialogs/knewaccountdlg.cpp:98 dialogs/rc.cpp:193 views/kmymoneyview.cpp:188
 #: views/kmymoneyview.cpp:190 widgets/rc.cpp:91
@@ -7088,9 +7101,8 @@ msgid "Totals"
 msgstr "Итоги"
 
 #: views/rc.cpp:34
-#, fuzzy
 msgid "<p>Choose what level of detail to show on the chart.</p>"
-msgstr "<p>Тип счетов или статей, которые будут показаны в строках отчёта.</p>"
+msgstr "<p>Какой уровень детализации должен быть показан на диаграмме.</p>"
 
 #: views/rc.cpp:35
 msgid "Current Forecast Method:"
@@ -7114,7 +7126,7 @@ msgstr "Взвешенная скользящая средняя"
 
 #: dialogs/settings/rc.cpp:35 views/rc.cpp:40
 msgid "Linear Regression"
-msgstr ""
+msgstr "Регрессионный анализ"
 
 #: dialogs/keditloanwizard.cpp:315 dialogs/rc.cpp:628 dialogs/rc.cpp:647
 #: views/rc.cpp:43
@@ -7243,20 +7255,18 @@ msgid "Default Account"
 msgstr "Счёт по умолчанию"
 
 #: views/rc.cpp:81
-#, fuzzy
 msgid ""
 "Use the default account for\n"
 "new transactions with this payee"
-msgstr "Сохранить операцию в журнале"
+msgstr "Использовать счёт по умолчанию для новых операций с этим получателем."
 
 #: views/rc.cpp:82
 msgid "Default category:"
 msgstr "Статья по умолчанию:"
 
 #: views/rc.cpp:83
-#, fuzzy
 msgid "Suggest a category"
-msgstr "Только одну статью"
+msgstr "Назначить статью"
 
 #: views/rc.cpp:85
 msgid "New Scheduled transaction..."
@@ -7527,7 +7537,7 @@ msgstr "Страница приветствия"
 
 #: views/khomeview.cpp:409
 msgid "Overdue payments"
-msgstr "Просроченные выплаты"
+msgstr "Просроченные платежи"
 
 #: views/khomeview.cpp:424 views/khomeview.cpp:497 views/khomeview.cpp:531
 msgid "Balance after"
@@ -7587,6 +7597,9 @@ msgid ""
 "status, you need to create at least one account. Until then, KMyMoney shows "
 "the welcome page instead."
 msgstr ""
+"Перед тем, как получить сводное финансовое состояние, вам необходимо создать "
+"хотя бы один счёт. До тех пор пока счёт не создан, будет показываться "
+"страница приветствия."
 
 #: views/khomeview.cpp:1258
 msgid "Assets and Liabilities Summary"
@@ -7609,9 +7622,8 @@ msgid "Total Liabilities"
 msgstr "Всего пассивов"
 
 #: views/khomeview.cpp:1399
-#, fuzzy
 msgid "Current Month Summary"
-msgstr "текущий месяц"
+msgstr "Текущий месяц"
 
 #: views/khomeview.cpp:1403 views/khomeview.cpp:1440
 msgid "Budgeted"
@@ -7885,9 +7897,8 @@ msgid "Username"
 msgstr "Имя пользователя"
 
 #: plugins/ofximport/dialogs/rc.cpp:17 plugins/ofximport/dialogs/rc.cpp:36
-#, fuzzy
 msgid "Header Version"
-msgstr "Шрифт заголовков столбцов"
+msgstr "Версия"
 
 #: plugins/ofximport/dialogs/rc.cpp:18 plugins/ofximport/dialogs/rc.cpp:37
 msgid "Identify as"
@@ -7956,14 +7967,12 @@ msgid "OFX Details"
 msgstr "Подробности OFX:"
 
 #: plugins/ofximport/dialogs/rc.cpp:38
-#, fuzzy
 msgid "Start date of import"
-msgstr "Дата начала выплат"
+msgstr "Импорт с даты"
 
 #: plugins/ofximport/dialogs/rc.cpp:39
-#, fuzzy
 msgid "To&day minus"
-msgstr "Сегодняшние платежи"
+msgstr "С сегодня &минус"
 
 #: plugins/ofximport/dialogs/rc.cpp:40
 msgid "days"
@@ -7974,13 +7983,12 @@ msgid "Last &update"
 msgstr "Последнее &обновление"
 
 #: plugins/ofximport/dialogs/rc.cpp:42
-#, fuzzy
 msgid "Pi&ck date"
-msgstr "Дата ввода"
+msgstr "&Дата"
 
 #: plugins/ofximport/dialogs/rc.cpp:43
 msgid "Name is derived from"
-msgstr ""
+msgstr "Название получено из"
 
 #: plugins/ofximport/dialogs/rc.cpp:44
 msgid "P&AYEEID"
@@ -7992,7 +8000,7 @@ msgstr "&NAME"
 
 #: plugins/ofximport/dialogs/rc.cpp:46
 msgid "field if both are present in download"
-msgstr ""
+msgstr "значение указанного поля, если есть оба значения"
 
 #: plugins/ofximport/dialogs/mymoneyofxconnector.cpp:81
 msgid "Quicken Windows 2003"
@@ -8558,7 +8566,7 @@ msgstr ""
 
 #: dialogs/kselectdatabasedlg.cpp:100
 msgid "Qt SQL driver %1 is no longer installed on your system"
-msgstr ""
+msgstr "Драйвер Qt SQL %1 больше не установлен в системе"
 
 #: dialogs/kselectdatabasedlg.cpp:107
 msgid "Qt SQL driver %1 is not suported"
@@ -8727,6 +8735,11 @@ msgid ""
 "Once confident with the result, feel free to delete the old file and rename "
 "the encrypted one to the old name."
 msgstr ""
+"Вы включили шифрование GPG. Это означает, что новые файлы будут сохраняться в "
+"зашифрованном виде. Существующие файлы не шифруются автоматически. Для "
+"шифрования существующих файлов используйте пункт меню <b>Файл &gt; Сохранить "
+"как...</b> для сохранения файла под другим именем. После этого откройте этот "
+"файл. Если всё открывается, удалите старый файл и переименуйте новый файл."
 
 #: dialogs/settings/ksettingsgpg.cpp:180
 msgid "GPG encryption activated"
@@ -8845,14 +8858,12 @@ msgid "Forecast Method"
 msgstr "Метод прогнозирования"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled and Future Transactions"
-msgstr "Планируемые операции"
+msgstr "По графикам платежей"
 
 #: dialogs/settings/rc.cpp:29
-#, fuzzy
 msgid "History-based"
-msgstr "Основанный на прошлых данных"
+msgstr "Ретроспективный анализ"
 
 #: dialogs/settings/rc.cpp:30
 msgid "History-based settings"
@@ -9001,7 +9012,7 @@ msgstr "Большие (64 пикселя)"
 
 #: dialogs/settings/rc.cpp:69
 msgid "Show title bar on each page"
-msgstr ""
+msgstr "Показывать заголовок раздела"
 
 #: dialogs/rc.cpp:835 dialogs/settings/rc.cpp:70
 msgid "Filter"
@@ -9043,9 +9054,8 @@ msgstr ""
 "временно включить показ закрытых счетов."
 
 #: dialogs/settings/rc.cpp:76
-#, fuzzy
 msgid "Show equity accounts"
-msgstr "Инвестиционные счёта"
+msgstr "Показывать активные счета"
 
 #: dialogs/rc.cpp:332 dialogs/settings/rc.cpp:77 widgets/rc.cpp:160
 msgid "Schedules"
@@ -9077,7 +9087,6 @@ msgid "GPG encryption settings"
 msgstr "Параметры шифрования GPG"
 
 #: dialogs/settings/rc.cpp:85
-#, fuzzy
 msgid ""
 "This page allows you to set the parameters for encrypted file storage of "
 "your <b>KMyMoney</b> data based on <b>GPG</b>.<p>\n"
@@ -9219,14 +9228,12 @@ msgstr ""
 "мыши"
 
 #: dialogs/settings/rc.cpp:105
-#, fuzzy
 msgid "Information display"
-msgstr "Кредиты"
+msgstr "Показ сведений"
 
 #: dialogs/settings/rc.cpp:106
-#, fuzzy
 msgid "Show Account Limit Information"
-msgstr "Сведения о счёте"
+msgstr "Показывать лимиты счетов"
 
 #: dialogs/settings/rc.cpp:110 widgets/rc.cpp:47
 msgid ""
@@ -9278,7 +9285,7 @@ msgstr "Формат дат"
 
 #: dialogs/settings/rc.cpp:122
 msgid "Skip HTML stripping"
-msgstr ""
+msgstr "Не удалять фрагменты HTML"
 
 #: dialogs/settings/rc.cpp:123
 msgid ""
@@ -9296,6 +9303,18 @@ msgid ""
 "</ul>\n"
 "</p>"
 msgstr ""
+"<p>При обработке данных из онлайновых источников некоторые части удаляются "
+"посредством регулярных выражений. Если вам необходимы данные из удалённых "
+"фрагментов, включите этот флажок.</p>\n"
+"\n"
+"<p>Следующие фрагменты удаляются по умолчанию:\n"
+"\n"
+"<ul>\n"
+"<li>Теги HTML, такие как <b>&lt;tag&gt;</b></li>\n"
+"<li>Коды символов в виде b>&amp;nbsp;</b></li>\n"
+"<li>Повторяющиеся пробелы и знаки табуляции</li>\n"
+"</ul>\n"
+"</p>"
 
 #: dialogs/settings/rc.cpp:127
 msgid "Register settings"
@@ -9316,12 +9335,10 @@ msgstr ""
 "будут показаны дополнительные данные об этой операции."
 
 #: dialogs/settings/rc.cpp:133
-#, fuzzy
 msgid "Always show a No. field"
 msgstr "Показывать &номер операции"
 
 #: dialogs/settings/rc.cpp:134
-#, fuzzy
 msgid "Show group header between transactions"
 msgstr "Показывать разделитель &групп операций"
 
@@ -9366,9 +9383,8 @@ msgstr ""
 "переключает режим сортировки <i>по возрастанию</i> и <i>по убыванию</i>."
 
 #: dialogs/settings/rc.cpp:142
-#, fuzzy
 msgid "Data entry"
-msgstr "Ввод &данных"
+msgstr "Ввод данных"
 
 #: dialogs/settings/rc.cpp:146
 msgid "Use Enter to move between fields"
@@ -9376,13 +9392,17 @@ msgstr "Перемещение между полями клавишей Enter"
 
 #: dialogs/settings/rc.cpp:147
 msgid "Match names from start"
-msgstr ""
+msgstr "Поиск вхождений с начала строки"
 
 #: dialogs/settings/rc.cpp:148
 msgid ""
 "Mark this option, if you always want to match names e.g. for payees from the "
 "start. If unset, any substring is matched."
 msgstr ""
+"При включении этого параметра при вводе текста будет осуществлён поиск "
+"получателя, названия статьи или другой сущности с начала текста. Если этот "
+"параметр выключен, поиск будет вестись по подстроке в любом месте имени или "
+"названия."
 
 #: dialogs/settings/rc.cpp:149
 msgid "Default reconciliation state"
@@ -9406,21 +9426,19 @@ msgstr "Состояние по умолчанию для операций, вв
 
 #: dialogs/settings/rc.cpp:154
 msgid "Autofill"
-msgstr ""
+msgstr "Автозаполнение"
 
 #: dialogs/settings/rc.cpp:155
 msgid "No Autofill"
-msgstr ""
+msgstr "Без автозаполнения"
 
 #: dialogs/settings/rc.cpp:156
-#, fuzzy
 msgid "Don't do autofill of transaction data at all."
-msgstr "Заполнить форму ввода данными предыдущей операции "
+msgstr "Не заполнять форму ввода данными предыдущей операции "
 
 #: dialogs/settings/rc.cpp:157
-#, fuzzy
 msgid "Same transaction if amount differs less than"
-msgstr "процентов"
+msgstr "Операции одинаковы, если их суммы отличаются не более, чем на"
 
 #: dialogs/settings/rc.cpp:158
 msgid ""
@@ -9431,6 +9449,12 @@ msgid ""
 "\n"
 "Selecting 0% will list all transactions."
 msgstr ""
+"Выбор всех операций с указанным получателем. Далее эти операции считаются "
+"одинаковыми, если используют одну и ту же статью и их сумма различается не "
+"более чем на указанное количество процентов. Пользователю показывается список "
+"найденных «одинаковых» операций.\n"
+"\n"
+"При указании 0% показываются все операции."
 
 #: dialogs/settings/rc.cpp:159
 msgid ""
@@ -9450,13 +9474,15 @@ msgstr "процентов"
 
 #: dialogs/settings/rc.cpp:161
 msgid "with previously most often used transaction for the payee"
-msgstr ""
+msgstr "наиболее часто используемые операции с этим получателем"
 
 #: dialogs/settings/rc.cpp:162
 msgid ""
 "The data of the last transaction assigned to the category used most often "
 "for this payee is autofilled into the transaction editor."
 msgstr ""
+"Данные операции будут использовать статью, наиболее часто используемую для "
+"указанного получателя."
 
 #: dialogs/settings/rc.cpp:164
 msgid "Match transactions within days"
@@ -9466,11 +9492,11 @@ msgstr "Максимальный период между связанными о
 msgid ""
 "Search for matching transactions within the range of the posting date of the "
 "imported transaction +/- the number of given days."
-msgstr ""
+msgstr "Период в днях (до и после) для поиска связанных операций."
 
 #: dialogs/settings/rc.cpp:166
 msgid "Ask for a new payee's default category"
-msgstr ""
+msgstr "Запрос статьи по умолчанию для нового получателя"
 
 #: dialogs/settings/rc.cpp:167
 msgid ""
@@ -9478,6 +9504,8 @@ msgid ""
 "be asked to assign a default category for this user when this option is "
 "selected."
 msgstr ""
+"При обнаружении нового получателя при импорте выписки появится диалог выбора "
+"статьи по умолчанию для этого получателя."
 
 #: dialogs/settings/rc.cpp:168
 msgid "Schedule Settings"
@@ -9942,9 +9970,8 @@ msgid "Price History"
 msgstr "Изменение курса"
 
 #: dialogs/rc.cpp:97
-#, fuzzy
 msgid "Edit Scheduled transaction"
-msgstr "Создать запланированную операцию"
+msgstr "Изменить запланированную операцию"
 
 #: dialogs/rc.cpp:98
 msgid "Schedule name:"
@@ -9956,7 +9983,7 @@ msgstr "Периодичность:"
 
 #: dialogs/rc.cpp:100
 msgid "Number of selected periods between entries"
-msgstr ""
+msgstr "Количество выбранных периодов между платежами"
 
 #: dialogs/rc.cpp:101
 msgid "Payment information"
@@ -10174,13 +10201,14 @@ msgstr "Сохранить"
 msgid ""
 "Enter the transaction and advance the next due date of this schedule to the "
 "next payment date."
-msgstr ""
+msgstr "Ввести операцию и перейдите на следующую запланированную дату платежа."
 
 #: dialogs/rc.cpp:171
 msgid ""
 "Do not enter the transaction but advance the next due date of this schedule "
 "to the next payment date."
 msgstr ""
+"Не вводить операцию и перейдите на следующую запланированную дату платежа."
 
 #: dialogs/rc.cpp:172
 msgid "Ignore"
@@ -10190,11 +10218,11 @@ msgstr "Игнорировать"
 msgid ""
 "Do not enter or skip payments for this schedule but continue with the next "
 "schedule."
-msgstr ""
+msgstr "Игнорировать платежи по этому графику и перейти к другому графику."
 
 #: dialogs/rc.cpp:175
 msgid "Cancel processing of schedule entry."
-msgstr ""
+msgstr "Отменить работу с графиком платежей."
 
 #: dialogs/rc.cpp:176
 msgid "Update Stock and Currency Prices"
@@ -10452,7 +10480,7 @@ msgstr "Используйте модуль Finance::Quote для получен
 
 #: dialogs/rc.cpp:267
 msgid "Scheduled Transactions"
-msgstr "Планируемые операции"
+msgstr "Платежи"
 
 #: dialogs/rc.cpp:268
 msgid "Drop suspect scheduled transactions"
@@ -10467,14 +10495,12 @@ msgid "Decode using"
 msgstr "Кодировка"
 
 #: dialogs/rc.cpp:271
-#, fuzzy
 msgid "Transaction Notes option"
-msgstr "Операция"
+msgstr "Примечание к операции"
 
 #: dialogs/rc.cpp:272
-#, fuzzy
 msgid "Use transaction notes on non-split transactions"
-msgstr "Показывать тип операции в поле номера для новых операций"
+msgstr "Использовать примечания к неразделённым операциям"
 
 #: dialogs/rc.cpp:273
 msgid "Debug Options"
@@ -10563,6 +10589,9 @@ msgid ""
 "turned off in case of <b>Historic data</b>. Use the latter if you import "
 "files from other Personal Finance Management software."
 msgstr ""
+"При выборе <b>Банковская выписка</b> будет включен автоматический поиск "
+"связанных операций по статье. Используйте его при импорте данных ил другого "
+"программ учёта личных финансов."
 
 #: dialogs/rc.cpp:296
 msgid "Source of QIF"
@@ -11722,6 +11751,8 @@ msgid ""
 "keep them as a single split, press this button. The amount for identical "
 "categories will be added and stored in a single split for that category."
 msgstr ""
+"Если обнаружено несколько разделённых операций с одинаковой статьёй, при "
+"нажатии на эту кнопку они будут объединены в одну операцию с общей суммой."
 
 #: dialogs/rc.cpp:786
 msgid "Clear &Zero"
@@ -11906,7 +11937,7 @@ msgstr "Этот мастер позволит вам изменить инфо�
 msgid ""
 "The selected symbol is already on file. Do you want to reuse the existing "
 "security?"
-msgstr ""
+msgstr "Выбранный код уже есть в файле. Использовать эту ценную бумагу?"
 
 #: dialogs/knewinvestmentwizard.cpp:186
 msgid "Security found"
@@ -12270,7 +12301,7 @@ msgstr "Обновление курсов..."
 #: widgets/kmymoneycombo.cpp:472 widgets/transaction.cpp:164
 #: widgets/transaction.cpp:166
 msgid "From"
-msgstr "Отправитель"
+msgstr "Получатель"
 
 #: widgets/transaction.cpp:668
 msgid "Transaction is missing a category assignment."
@@ -12530,10 +12561,9 @@ msgstr "Сначала по операциям, попавшим в фильтр
 msgid "Last reconciliation"
 msgstr "Последняя сверка"
 
-#: widgets/register.cpp:2291
-#, fuzzy, c-format
+#: widgets/register.cpp:2291, c-format
 msgid "Online Statement Balance: %1"
-msgstr "Выписка: %1"
+msgstr "Остаток онлайновой выписки: %1"
 
 #: widgets/register.cpp:2295
 msgid "This year"
@@ -12812,12 +12842,10 @@ msgid "Period"
 msgstr "Периодичность"
 
 #: widgets/rc.cpp:21
-#, fuzzy
 msgid "Individual"
-msgstr "е&диноразово"
+msgstr "единоразово"
 
 #: widgets/rc.cpp:23
-#, fuzzy
 msgid ""
 "This page allows you to set the parameters for encrypted file storage of "
 "your <b>KMyMoney</b> data based on <b>GPG</b>.<p>\n"
@@ -12978,9 +13006,8 @@ msgid "Show totals column"
 msgstr "Показывать итоговый столбец"
 
 #: widgets/rc.cpp:84
-#, fuzzy
 msgid "Average days"
-msgstr "Среднее"
+msgstr "Среднее количество дней"
 
 #: widgets/rc.cpp:85
 msgid "Include scheduled transactions"
