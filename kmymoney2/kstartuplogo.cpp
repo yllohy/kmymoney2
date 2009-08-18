@@ -97,7 +97,7 @@ KStartupLogo::KStartupLogo() :
     // FIXME: I added the 'Loading file...' message here, because this was the only
     // existing string we have and I did not want to change the strings. We should
     // change that in the future.
-    splash->message(i18n("Loading file..."), AlignLeft, white);
+    splash->message(i18n("Loading..."), AlignLeft, white);
 
     splash->show();
     splash->repaint();

@@ -1,0 +1,1 @@
+SUBDIRS =  16x16 48x48 32x32 128x128 scalable 64x64 22x22
