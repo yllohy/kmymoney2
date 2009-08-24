@@ -210,7 +210,9 @@ void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction, bool
         MyMoneyFile* file = MyMoneyFile::instance();
         // some unit tests don't have a storage attached, so we
         // simply skip the test
-        if(file->storageAttached()) {
+        // Don't check for accounts with an id of 'Phony-ID' which is used
+        // internally for non-existing accounts (during creation of accounts)
+        if(file->storageAttached() && s.accountId() != QString("Phony-ID")) {
           MyMoneyAccount acc = file->account(s.accountId());
           if(acc.isIncomeExpense()) {
             s.setPayeeId(QString());
