@@ -1,7 +1,7 @@
 
 LOCAL_DIR=kmymoney2/icons/hicolor/22x22/actions
 
-FILES = bank.png categories.png pay_edit.png transaction_export.png transaction_find.png transaction_import.png reconcile.png backup.png close_window.png delete.png personal_data.png transaction.png view_info.png account_add.png account_open.png account.png account-types_asset.png account-types_liability.png account-types_expense.png account-types_income.png institution_add.png unreconciled.png account-types_closed.png hide_categories.png hide_reconciled.png update_prices.png account-types_reconcile.png attention.png account-types_online.png
+FILES = bank.png categories.png pay_edit.png transaction_export.png transaction_find.png transaction_import.png reconcile.png backup.png close_window.png delete.png personal_data.png transaction.png view_info.png account_add.png account_open.png ledger.png account-types_asset.png account-types_liability.png account-types_expense.png account-types_income.png institution_add.png unreconciled.png account-types_closed.png hide_categories.png hide_reconciled.png update_prices.png account-types_reconcile.png attention.png account-types_online.png
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/$(LOCAL_DIR)

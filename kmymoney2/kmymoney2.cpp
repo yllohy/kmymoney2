@@ -352,7 +352,7 @@ void KMyMoney2App::initActions(void)
   // *****************
   new KAction(i18n("New account..."), "account_add", 0, this, SLOT(slotAccountNew()), actionCollection(), "account_new");
   // note : action "category_new" is included in this menu but defined below
-  new KAction(i18n("Open ledger"), "account", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
+  new KAction(i18n("Open ledger"), "ledger", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
   new KAction(i18n("Reconcile..."), "reconcile", KShortcut("Ctrl+Shift+R"), this, SLOT(slotAccountReconcileStart()), actionCollection(), "account_reconcile");
   new KAction(i18n("Finish reconciliation", "Finish"), "player_end", 0, this, SLOT(slotAccountReconcileFinish()), actionCollection(), "account_reconcile_finish");
   new KAction(i18n("Postpone reconciliation", "Postpone"), "player_pause", 0, this, SLOT(slotAccountReconcilePostpone()), actionCollection(), "account_reconcile_postpone");
