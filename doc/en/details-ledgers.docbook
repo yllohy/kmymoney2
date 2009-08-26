@@ -295,7 +295,7 @@
   Finally, enter the transaction amount into the required field. Note that a
   simple calculator can be displayed, either by clicking the icon to the right
   of the amount field, or by entering the % character into the field, or by
-  entering a formula,, as in <emphasis>12 + 3</emphasis>. When entering the plus
+  entering a formula, as in <emphasis>12 + 3</emphasis>. When entering the plus
   sign, the calculator will be opened.
 </para>
 
@@ -340,7 +340,7 @@
   This is performed by selecting <guimenu>Settings</guimenu>
   <guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and
   selecting the <guiicon><inlinemediaobject><imageobject><imagedata
-  fileref="ledgers_view.png"></imagedata></imageobject></inlinemediaobject>
+  fileref="ledgers_view.png"/></imageobject></inlinemediaobject>
   Register</guiicon> icon from the list on the left. The option to uncheck is
   labeled <guilabel>Show transaction form</guilabel>. When finished click on
   <guibutton>OK</guibutton> to be ready to directly enter transactions.
@@ -518,7 +518,7 @@
 <para>
   A transaction can have one of three states: non-reconciled, cleared (C), and
   reconciled (R). When you enter a transaction, it has state
-  non-reconciled. Once the the bank posts the transaction, the user can clear it
+  non-reconciled. Once the bank posts the transaction, the user can clear it
   and thus transform it to state (C). When you receive a statement from the
   bank, all cleared transactions should be on the statement.
 </para>
