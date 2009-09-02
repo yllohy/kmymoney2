@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ru_new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-08-17 19:39+0400\n"
+"PO-Revision-Date: 2009-09-02 12:44+0400\n"
 "Last-Translator: Andrey Cherepanov <skull@kde.ru>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
@@ -7106,7 +7106,7 @@ msgstr "<p>Какой уровень детализации должен быт�
 
 #: views/rc.cpp:35
 msgid "Current Forecast Method:"
-msgstr "Выбранный метод прогнозирования:"
+msgstr "Метод:"
 
 #: views/rc.cpp:36
 msgid "method"
@@ -12479,7 +12479,7 @@ msgstr "Задержка, дней: %1 (выплат: %2)."
 
 #: widgets/register.cpp:55
 msgid "Post date"
-msgstr "Дата ввода"
+msgstr "Дата"
 
 #: widgets/register.cpp:56
 msgid "Date entered"
@@ -12555,7 +12555,7 @@ msgstr "Увеличение стоимости"
 
 #: widgets/register.cpp:2280
 msgid "Prior transactions possibly filtered"
-msgstr "Сначала по операциям, попавшим в фильтр"
+msgstr "Операции (возможно отфильтрованные)"
 
 #: widgets/register.cpp:2284
 msgid "Last reconciliation"
@@ -12571,7 +12571,7 @@ msgstr "Текущий год"
 
 #: widgets/kmymoneycombo.cpp:674 widgets/register.cpp:2296
 msgid "Last month"
-msgstr "Последний месяц"
+msgstr "Прошлый месяц"
 
 #: widgets/register.cpp:2297
 msgid "This month"
@@ -12579,7 +12579,7 @@ msgstr "Текущий месяц"
 
 #: widgets/register.cpp:2298
 msgid "Last week"
-msgstr "Последняя неделя"
+msgstr "Прошлая неделя"
 
 #: widgets/register.cpp:2299
 msgid "This week"
@@ -13190,7 +13190,7 @@ msgstr ""
 
 #: widgets/rc.cpp:143
 msgid "Line width"
-msgstr "&Толщина"
+msgstr "Толщина"
 
 #: widgets/rc.cpp:144
 msgid "<p>Select what width should be used to draw the line on the chart</p>"
@@ -13290,103 +13290,103 @@ msgstr "Реинвестирование дохода"
 
 #: widgets/kmymoneycombo.cpp:664
 msgid "All dates"
-msgstr "все даты"
+msgstr "Все даты"
 
 #: widgets/kmymoneycombo.cpp:665
 msgid "As of today"
-msgstr "до сегодня"
+msgstr "До сегодня"
 
 #: widgets/kmymoneycombo.cpp:667
 msgid "Current month"
-msgstr "текущий месяц"
+msgstr "Текущий месяц"
 
 #: widgets/kmymoneycombo.cpp:668
 msgid "Current quarter"
-msgstr "текущий квартал"
+msgstr "Текущий квартал"
 
 #: widgets/kmymoneycombo.cpp:669
 msgid "Current year"
-msgstr "текущий год"
+msgstr "Текущий год"
 
 #: widgets/kmymoneycombo.cpp:671
 msgid "Month to date"
-msgstr "с начала месяца"
+msgstr "С начала месяца"
 
 #: widgets/kmymoneycombo.cpp:672
 msgid "Year to date"
-msgstr "с начала года"
+msgstr "С начала года"
 
 #: widgets/kmymoneycombo.cpp:673
 msgid "Year to month"
-msgstr "с начала года до начала месяца"
+msgstr "С начала года до начала месяца"
 
 #: widgets/kmymoneycombo.cpp:675
 msgid "Last year"
-msgstr "прошлый год"
+msgstr "Прошлый год"
 
 #: widgets/kmymoneycombo.cpp:676
 msgid "Last fiscal year"
-msgstr "последний год"
+msgstr "Прошлый финансовый год"
 
 #: widgets/kmymoneycombo.cpp:677
 msgid "Last 7 days"
-msgstr "последние 7 дней"
+msgstr "Последние 7 дней"
 
 #: widgets/kmymoneycombo.cpp:678
 msgid "Last 30 days"
-msgstr "последние 30 дней"
+msgstr "Последние 30 дней"
 
 #: widgets/kmymoneycombo.cpp:679
 msgid "Last 3 months"
-msgstr "последние 3 месяца"
+msgstr "Последние 3 месяца"
 
 #: widgets/kmymoneycombo.cpp:680
 msgid "Last quarter"
-msgstr "последний квартал"
+msgstr "Прошлый квартал"
 
 #: widgets/kmymoneycombo.cpp:681
 msgid "Last 6 months"
-msgstr "последние 6 месяцев"
+msgstr "Последние 6 месяцев"
 
 #: widgets/kmymoneycombo.cpp:682
 msgid "Last 11 months"
-msgstr "последние 11 месяцев"
+msgstr "Последние 11 месяцев"
 
 #: widgets/kmymoneycombo.cpp:683
 msgid "Last 12 months"
-msgstr "последние 12 месяцев"
+msgstr "Последние 12 месяцев"
 
 #: widgets/kmymoneycombo.cpp:684
 msgid "Next 7 days"
-msgstr "следующие 7 дней"
+msgstr "Следующие 7 дней"
 
 #: widgets/kmymoneycombo.cpp:685
 msgid "Next 30 days"
-msgstr "следующие 30 дней"
+msgstr "Следующие 30 дней"
 
 #: widgets/kmymoneycombo.cpp:686
 msgid "Next 3 months"
-msgstr "следующие 3 месяца"
+msgstr "Следующие 3 месяца"
 
 #: widgets/kmymoneycombo.cpp:687
 msgid "Next quarter"
-msgstr "следующий квартал"
+msgstr "Следующий квартал"
 
 #: widgets/kmymoneycombo.cpp:688
 msgid "Next 6 months"
-msgstr "следующие 6 месяцев"
+msgstr "Следующие 6 месяцев"
 
 #: widgets/kmymoneycombo.cpp:689
 msgid "Next 12 months"
-msgstr "следующие 12 месяцев"
+msgstr "Следующие 12 месяцев"
 
 #: widgets/kmymoneycombo.cpp:690
 msgid "Last 3 months to next 3 months"
-msgstr "последние 3 месяца и следующие 3 месяца"
+msgstr "Последние 3 месяца и следующие 3 месяца"
 
 #: widgets/kmymoneycombo.cpp:691
 msgid "User defined"
-msgstr "определяется пользователем"
+msgstr "Определяется пользователем"
 
 #~ msgid "No plugins loaded"
 #~ msgstr "Нет загруженных модулей"
