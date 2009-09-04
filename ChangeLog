@@ -1,3 +1,5 @@
+2009-09-04 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  *  Fix potential loop in Gnc importer
 
 2009-09-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Russian translation by Andrey Cherepanov
