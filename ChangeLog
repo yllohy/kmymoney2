@@ -2,6 +2,7 @@
 2009-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>a
   * Added patch provided by Tony Bloomfield (movetx) to allow moving investment
     transactions
+  * Applied patch #2842587 (fix Yahoo UK stock quotes)
 
 2009-09-04 Tony Bloomfield <gandalf1189@users.sourceforge.net>
   * Fix potential loop in Gnc importer
