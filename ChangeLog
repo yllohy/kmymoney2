@@ -1,5 +1,10 @@
+
+2009-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>a
+  * Added patch provided by Tony Bloomfield (movetx) to allow moving investment
+    transactions
+
 2009-09-04 Tony Bloomfield <gandalf1189@users.sourceforge.net>
-  *  Fix potential loop in Gnc importer
+  * Fix potential loop in Gnc importer
 
 2009-09-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Russian translation by Andrey Cherepanov
