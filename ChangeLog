@@ -1,5 +1,8 @@
 
-2009-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>a
+2009-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Initial try to fix bko #205254
+
+2009-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Tony Bloomfield (movetx) to allow moving investment
     transactions
   * Applied patch #2842587 (fix Yahoo UK stock quotes)
