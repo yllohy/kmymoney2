@@ -1,4 +1,7 @@
 
+2009-09-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed sizing of forecast chart
+
 2009-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Initial try to fix bko #205254
 
