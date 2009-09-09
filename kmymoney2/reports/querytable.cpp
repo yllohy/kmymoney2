@@ -385,6 +385,9 @@ void QueryTable::constructTransactionTable(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  //make sure we have all subaccounts of investment accounts
+  includeInvestmentSubAccounts();
+
   MyMoneyReport report(m_config);
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
@@ -1084,6 +1087,9 @@ void QueryTable::constructAccountTable(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  //make sure we have all subaccounts of investment accounts
+  includeInvestmentSubAccounts();
+
   QValueList<MyMoneyAccount> accounts;
   file->accountList(accounts);
   QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
@@ -1175,6 +1181,9 @@ void QueryTable::constructAccountTable(void)
 void QueryTable::constructSplitsTable(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
+
+  //make sure we have all subaccounts of investment accounts
+  includeInvestmentSubAccounts();
 
   MyMoneyReport report(m_config);
   report.setReportAllSplits(false);
@@ -1504,8 +1513,6 @@ void QueryTable::constructSplitsTable(void)
     m_rows += qA;
   }
 }
-
-
 
 }
 // vim:cin:si:ai:et:ts=2:sw=2:

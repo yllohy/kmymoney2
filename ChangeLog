@@ -1,6 +1,8 @@
 
 2009-09-08 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed sizing of forecast chart
+  * Select all subaccounts of an investment in reports when not
+    in expert mode - #2853193
 
 2009-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Initial try to fix bko #205254

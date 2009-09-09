@@ -232,6 +232,9 @@ void ObjectInfoTable::constructAccountTable ( void )
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  //make sure we have all subaccounts of investment accounts
+  includeInvestmentSubAccounts();
+
   QValueList<MyMoneyAccount> accounts;
   file->accountList(accounts);
   QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
