@@ -7178,7 +7178,7 @@ msgstr "Ungenutze Budget-Kategorien ausblenden"
 
 #: views/rc.cpp:16
 msgid "Assignments"
-msgstr "Anlagen"
+msgstr "Zuweisung"
 
 #: views/rc.cpp:19
 msgid "Include subaccounts"
@@ -12560,7 +12560,7 @@ msgstr "Von"
 
 #: widgets/transaction.cpp:668
 msgid "Transaction is missing a category assignment."
-msgstr "Dieser Buchung wurde keine Kategorie zugewiesenen."
+msgstr "Dieser Buchung wurde keine Kategorie zugewiesen."
 
 #: widgets/transaction.cpp:671
 msgid "The transaction has a missing assignment of <b>%1</b>."
