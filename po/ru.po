@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ru_new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-09-02 12:44+0400\n"
+"PO-Revision-Date: 2009-09-16 19:08+0400\n"
 "Last-Translator: Andrey Cherepanov <skull@kde.ru>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
@@ -666,13 +666,13 @@ msgstr "ежемесячно"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1677
 msgid "Paid from"
-msgstr "Дата начала"
+msgstr "Со счёта"
 
 #: widgets/kmymoneycombo.cpp:473 widgets/transaction.cpp:164
 #: widgets/transaction.cpp:166
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1678
 msgid "Pay to"
-msgstr "Дата окончания"
+msgstr "Получатель"
 
 #: dialogs/investactivities.cpp:197 dialogs/investactivities.cpp:285
 #: dialogs/investactivities.cpp:365 dialogs/kfindtransactiondlg.cpp:197
@@ -12301,7 +12301,7 @@ msgstr "Обновление курсов..."
 #: widgets/kmymoneycombo.cpp:472 widgets/transaction.cpp:164
 #: widgets/transaction.cpp:166
 msgid "From"
-msgstr "Получатель"
+msgstr "Отправитель"
 
 #: widgets/transaction.cpp:668
 msgid "Transaction is missing a category assignment."
