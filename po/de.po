@@ -6017,19 +6017,19 @@ msgstr "Budgetierung"
 
 #: views/kreportsview.cpp:1335
 msgid "Budgeted vs. Actual This Year"
-msgstr "Budget und Ist im aktuellen Jahr"
+msgstr "Budget und Ist bis heute"
 
 #: views/kreportsview.cpp:1346
 msgid "Budgeted vs. Actual This Year (YTM)"
-msgstr "Budget und Ist im aktuellen Jahr (volle Monate)"
+msgstr "Budget und Ist bis zum letzten Monatsende"
 
 #: views/khomeview.cpp:1383 views/kreportsview.cpp:1361
 msgid "Monthly Budgeted vs. Actual"
-msgstr "Monatlich Budgetiert und Ist"
+msgstr "Budget und Ist lfd. Monat"
 
 #: views/kreportsview.cpp:1371
 msgid "Yearly Budgeted vs. Actual"
-msgstr "Jährlich budgetiert über Ist"
+msgstr "Budget und Ist lfd. Jahr"
 
 #: views/kreportsview.cpp:1382
 msgid "Monthly Budget"
@@ -6041,11 +6041,11 @@ msgstr "Jährliches Budget"
 
 #: views/kreportsview.cpp:1403
 msgid "Yearly Budgeted vs Actual Graph"
-msgstr "Jährlich Budgetiert und Ist"
+msgstr "Budget und Ist lfd. Jahr (Graph)"
 
 #: views/kreportsview.cpp:1422
 msgid "Forecast By Month"
-msgstr "Vorhersage-nach Monaten"
+msgstr "Vorhersage nach Monaten"
 
 #: views/kreportsview.cpp:1431
 msgid "Forecast Next Quarter"
