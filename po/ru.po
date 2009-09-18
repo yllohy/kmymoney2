@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: ru_new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-09-16 19:08+0400\n"
+"PO-Revision-Date: 2009-09-18 12:50+0400\n"
 "Last-Translator: Andrey Cherepanov <skull@kde.ru>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: wizards/wizardpages/rc.cpp:1
 msgid ""
@@ -472,7 +472,8 @@ msgid "Calculation successful"
 msgstr "Расчёт завершён"
 
 #: dialogs/knewloanwizard.cpp:846
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1129, c-format
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1129
+#, c-format
 msgid ""
 "_n: one month\n"
 "%n months"
@@ -482,7 +483,8 @@ msgstr ""
 "%n месяцев"
 
 #: dialogs/knewloanwizard.cpp:850
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1133, c-format
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1133
+#, c-format
 msgid ""
 "_n: one year\n"
 "%n years"
@@ -492,7 +494,8 @@ msgstr ""
 "%n лет"
 
 #: dialogs/knewloanwizard.cpp:854
-#: wizards/newaccountwizard/knewaccountwizard.cpp:1137, c-format
+#: wizards/newaccountwizard/knewaccountwizard.cpp:1137
+#, c-format
 msgid ""
 "_n: one payment\n"
 "%n payments"
@@ -521,8 +524,10 @@ msgid "Create a new asset account"
 msgstr "Создать активный счёт"
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1384
-msgid "If the asset account does not yet exist, press this button to create it."
-msgstr "Если активный счёт не существует, нажмите эту кнопку чтобы создать его."
+msgid ""
+"If the asset account does not yet exist, press this button to create it."
+msgstr ""
+"Если активный счёт не существует, нажмите эту кнопку чтобы создать его."
 
 #: wizards/newaccountwizard/knewaccountwizard.cpp:1596
 msgid "Account information"
@@ -742,8 +747,8 @@ msgid ""
 msgstr ""
 "Остаток на начало означает остаток на счету в момент, когда вы начали "
 "учитывать его в программе. Для новых счетов это, как правило, 0. Для "
-"существующих счетов остаток может быть другим. Проверьте выписку по счёту для "
-"того, чтобы узнать остаток. Остаток должен быть указан в валюте счёта."
+"существующих счетов остаток может быть другим. Проверьте выписку по счёту "
+"для того, чтобы узнать остаток. Остаток должен быть указан в валюте счёта."
 
 #: wizards/newaccountwizard/rc.cpp:10
 msgid ""
@@ -1306,7 +1311,8 @@ msgid "Refinance existing loan"
 msgstr "Рефинансирование кредита"
 
 #: wizards/newaccountwizard/rc.cpp:97
-msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
+msgid ""
+"Check this if you are refinancing a loan that already exists in KMyMoney"
 msgstr ""
 "Установите флажок если новый кредит является рефинансированием кредита, уже "
 "заведённого в KMyMoney"
@@ -2866,7 +2872,8 @@ msgstr "Удалить учреждение <b>%1</b> ?"
 msgid "Unable to delete institution: %1"
 msgstr "Невозможно удалить учреждение: %1"
 
-#: kmymoney2.cpp:2268, c-format
+#: kmymoney2.cpp:2268
+#, c-format
 msgid "Unable to find account: %1"
 msgstr "Невозможно найти счёт: %1"
 
@@ -3082,7 +3089,8 @@ msgstr "Отчёт"
 msgid "Transactions"
 msgstr "Операции"
 
-#: kmymoney2.cpp:3449, c-format
+#: kmymoney2.cpp:3449
+#, c-format
 msgid "Unable to add scheduled transaction: %1"
 msgstr "Невозможно добавить запланированную операцию: %1"
 
@@ -3123,7 +3131,8 @@ msgstr "Невозможно изменить график платежей по
 msgid "Unable to remove scheduled transaction '%1'"
 msgstr "Невозможно удалить график платежей «%1»"
 
-#: kmymoney2.cpp:3569, c-format
+#: kmymoney2.cpp:3569
+#, c-format
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
@@ -3426,7 +3435,8 @@ msgid "Checking for overdue scheduled transactions..."
 msgstr "Проверка просроченных платежей..."
 
 #: kmymoney2.cpp:5740
-msgid "You must first select a KMyMoney file before you can import a statement."
+msgid ""
+"You must first select a KMyMoney file before you can import a statement."
 msgstr "Вы должны выбрать файл KMyMoney для импорта выписки."
 
 #: kmymoney2.cpp:5746
@@ -3489,9 +3499,9 @@ msgid ""
 "continue otherwise"
 msgstr ""
 "Вы пытаетесь привязать счёт комиссии брокеру к онлайновому счёту. Это не "
-"рекомендуется делать. Обычно к онлайновому счёту привязывается инвестиционный "
-"счёт. Отмените, если намереваетесь привязать инвестиционный счёт, или "
-"продолжите."
+"рекомендуется делать. Обычно к онлайновому счёту привязывается "
+"инвестиционный счёт. Отмените, если намереваетесь привязать инвестиционный "
+"счёт, или продолжите."
 
 #: kmymoney2.cpp:5957
 msgid "Mapping brokerage account"
@@ -3666,7 +3676,8 @@ msgid ""
 "Investment fees"
 msgstr "Комиссия брокеру"
 
-#: converter/mymoneyqifreader.cpp:205, c-format
+#: converter/mymoneyqifreader.cpp:205
+#, c-format
 msgid "Unknown QIF type %1"
 msgstr "Неизвестный тип QIF %1"
 
@@ -4030,15 +4041,18 @@ msgid ""
 "<b>You have downloaded a statement for the following account:</b><br><br>"
 msgstr "<b>Вы загрузили выписку для следующего счёта:</b><br><br>"
 
-#: converter/mymoneystatementreader.cpp:1269, c-format
+#: converter/mymoneystatementreader.cpp:1269
+#, c-format
 msgid " - Account Name: %1"
 msgstr " - Название: %1"
 
-#: converter/mymoneystatementreader.cpp:1270, c-format
+#: converter/mymoneystatementreader.cpp:1270
+#, c-format
 msgid " - Account Type: %1"
 msgstr " - Тип: %1"
 
-#: converter/mymoneystatementreader.cpp:1271, c-format
+#: converter/mymoneystatementreader.cpp:1271
+#, c-format
 msgid " - Account Number: %1"
 msgstr " - Номер: %1"
 
@@ -8524,7 +8538,8 @@ msgstr ""
 "Изменен счет перевода.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменен на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
-msgid "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
+msgid ""
+"Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
 msgstr ""
 "Изменена статья.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменена на <b>%2</b><p>"
 
@@ -8540,7 +8555,8 @@ msgstr ""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:166
 msgid "Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr "Изменена сумма.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменена на <b>%2</b><p>"
+msgstr ""
+"Изменена сумма.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменена на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:175
 msgid ""
@@ -8735,8 +8751,8 @@ msgid ""
 "Once confident with the result, feel free to delete the old file and rename "
 "the encrypted one to the old name."
 msgstr ""
-"Вы включили шифрование GPG. Это означает, что новые файлы будут сохраняться в "
-"зашифрованном виде. Существующие файлы не шифруются автоматически. Для "
+"Вы включили шифрование GPG. Это означает, что новые файлы будут сохраняться "
+"в зашифрованном виде. Существующие файлы не шифруются автоматически. Для "
 "шифрования существующих файлов используйте пункт меню <b>Файл &gt; Сохранить "
 "как...</b> для сохранения файла под другим именем. После этого откройте этот "
 "файл. Если всё открывается, удалите старый файл и переименуйте новый файл."
@@ -9451,8 +9467,8 @@ msgid ""
 msgstr ""
 "Выбор всех операций с указанным получателем. Далее эти операции считаются "
 "одинаковыми, если используют одну и ту же статью и их сумма различается не "
-"более чем на указанное количество процентов. Пользователю показывается список "
-"найденных «одинаковых» операций.\n"
+"более чем на указанное количество процентов. Пользователю показывается "
+"список найденных «одинаковых» операций.\n"
 "\n"
 "При указании 0% показываются все операции."
 
@@ -11697,7 +11713,8 @@ msgstr "Что сделать?"
 msgid "Continue to edit splits"
 msgstr "&Вернуться к изменению разделов"
 
-#: dialogs/rc.cpp:771, c-format
+#: dialogs/rc.cpp:771
+#, c-format
 msgid "Change total amount of transaction to %1."
 msgstr "&Установить общую сумму операции в %1."
 
@@ -12561,7 +12578,8 @@ msgstr "Операции (возможно отфильтрованные)"
 msgid "Last reconciliation"
 msgstr "Последняя сверка"
 
-#: widgets/register.cpp:2291, c-format
+#: widgets/register.cpp:2291
+#, c-format
 msgid "Online Statement Balance: %1"
 msgstr "Остаток онлайновой выписки: %1"
 
