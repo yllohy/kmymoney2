@@ -587,7 +587,8 @@ void KMyMoney2App::readOptions(void)
   if(p)
     p->loadEntries(config,"Recent Files");
 
-  QSize size=config->readSizeEntry("Geometry");
+  QSize defaultSize(800, 600);
+  QSize size=config->readSizeEntry("Geometry", &defaultSize);
   if(!size.isEmpty())
   {
     resize(size);
