@@ -350,6 +350,12 @@
    <default>Rechnung</default>
   </entry>
  </group>
+ <group name="Account View Settings">
+  <entry name="showAccountsExpanded" type="Bool">
+   <label>Show accounts view expanded when loaded</label>
+   <default>false</default>
+  </entry>
+ </group>
 </kcfg>
 <!-- 
   <entry name="" type="">

@@ -153,6 +153,7 @@ protected slots:
   void slotSelectIcon(QIconViewItem* item);
   void slotOpenContext(QIconViewItem* item);
   void slotOpenObject(QIconViewItem* item);
+  void slotExpandCollapse(void);
 
 signals:
   /**

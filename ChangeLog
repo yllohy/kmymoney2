@@ -1,6 +1,7 @@
 
 2009-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force initial size to be 800x600
+  * Make expand/collapse state of account and category view persistent
 
 2009-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Russian translation by Andrey Cherepanov

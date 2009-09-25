@@ -82,12 +82,21 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
-
+  connect(m_collapseButton, SIGNAL(clicked()), this, SLOT(slotExpandCollapse()));
+  connect(m_expandButton, SIGNAL(clicked()), this, SLOT(slotExpandCollapse()));
 }
 
 KCategoriesView::~KCategoriesView()
 {
 }
+
+void KCategoriesView::slotExpandCollapse(void)
+{
+  if(sender()) {
+    KMyMoneyGlobalSettings::setShowAccountsExpanded(sender() == m_expandButton);
+  }
+}
+
 
 void KCategoriesView::show(void)
 {
@@ -209,6 +218,10 @@ void KCategoriesView::loadAccounts(void)
   // turn updates back on
   m_accountTree->setUpdatesEnabled(true);
   m_accountTree->repaintContents();
+
+  // and in case we need to show things expanded, we'll do so
+  if(KMyMoneyGlobalSettings::showAccountsExpanded())
+    m_accountTree->slotExpandAll();
 
   // update the hint if categories are hidden
   m_hiddenCategories->setShown(haveUnusedCategories);

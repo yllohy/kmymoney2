@@ -90,6 +90,7 @@ protected:
 
 protected slots:
   void slotUpdateProfit(void);
+  void slotExpandCollapse(void);
 
 private:
   /**
