@@ -1,4 +1,8 @@
 
+2009-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed 'combine transaction' feature from menus. It is not implemented
+    so we should not show it to the user.
+
 2009-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force initial size to be 800x600
   * Make expand/collapse state of account and category view persistent
