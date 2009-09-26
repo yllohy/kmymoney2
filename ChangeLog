@@ -3,6 +3,7 @@
   * Removed 'combine transaction' feature from menus. It is not implemented
     so we should not show it to the user.
   * Fixed #2867234 (Don't take status field when creating schedule from ledger)
+  * Fixed a problem when no file was opened during program start
 
 2009-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force initial size to be 800x600

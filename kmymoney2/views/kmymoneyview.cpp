@@ -253,10 +253,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   addTitleBar(m_forecastViewFrame, i18n("Forecast"));
   m_forecastView = new KForecastView(m_forecastViewFrame, "ForecastView");
 
-
-  // construct an empty file
-  newFile();
-
   // get rid of the title text
   QWidget* widget = dynamic_cast<QWidget*>(child("KJanusWidgetTitleLabel", "QLabel"));
   if(widget)
