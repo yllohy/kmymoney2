@@ -1,4 +1,7 @@
 
+2009-09-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improve QIF importer to simply skip unknown sections
+
 2009-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed 'combine transaction' feature from menus. It is not implemented
     so we should not show it to the user.
