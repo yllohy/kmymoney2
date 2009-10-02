@@ -1,4 +1,7 @@
 
+2009-03-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added some parenthesis to an if-statement to avoid confusion
+
 2009-09-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improve QIF importer to simply skip unknown sections
 

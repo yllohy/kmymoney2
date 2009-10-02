@@ -1721,7 +1721,7 @@ bool StdTransactionEditor::isComplete(void) const
 {
   QMap<QString, QWidget*>::const_iterator it_w;
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
-  if(postDate->date().isValid() && postDate->date() < m_account.openingDate()) {
+  if(postDate->date().isValid() && (postDate->date() < m_account.openingDate())) {
     return false;
   }
 
