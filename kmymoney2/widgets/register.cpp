@@ -2160,11 +2160,13 @@ void Register::scrollPage(int key, ButtonState state)
 
   if(item->isSelectable()) {
     handleItemChange(oldFocusItem, state & Qt::ShiftButton, state & Qt::ControlButton);
+    // tell the world about the changes in selection
+    SelectedTransactions list(this);
+    emit selectionChanged(list);
   }
 
   if(m_focusItem && !m_focusItem->isSelected() && m_selectionMode == Single)
     selectItem(item);
-
 }
 
 void Register::keyPressEvent(QKeyEvent* ev)

@@ -736,6 +736,24 @@ StdTransactionEditor::~StdTransactionEditor()
   }
 }
 
+bool StdTransactionEditor::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = TransactionEditor::eventFilter(o, e);
+
+#if 0
+  // this is sofar dead code here, as the focus out event for Comboboxes
+  // never comes along here. I don't know why (ipwizard - 2009-10-03)
+  if((e->type() == QEvent::FocusOut)
+  && (haveWidget("payee") == dynamic_cast<QWidget*>(o))) {
+    // loosing the focus on the payee widget?
+    qDebug("Loosing focus on payee");
+    KMyMoneyPayeeCombo* p = dynamic_cast<KMyMoneyPayeeCombo*>(haveWidget("payee"));
+    if(!p->selectedItem().isEmpty())
+      slotUpdatePayee(p->selectedItem());
+  }
+#endif
+  return rc;
+}
 
 void StdTransactionEditor::createEditWidgets(void)
 {
@@ -1125,19 +1143,27 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 void StdTransactionEditor::slotUpdatePayee(const QString& payeeId)
 {
   // we have a new payee assigned to this transaction.
+  // retrieve some information about the state of the category widget
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  QStringList list;
+  category->selectedItems(list);
+
+  // If payee has associated default account (category), set that now if
+  // category is not filled
+  const MyMoneyPayee& payeeObj = MyMoneyFile::instance()->payee(payeeId);
+  if (payeeObj.defaultAccountEnabled() && list.isEmpty()) {
+    KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+    category->slotItemSelected(payeeObj.defaultAccountId());
+    return;
+  }
+
   // in case there is no category assigned, no value entered and no
   // memo available, we search for the last transaction of this payee
   // in the account.
   if(m_transaction.id().isEmpty()
   && m_splits.count() == 0
-  && KMyMoneyGlobalSettings::autoFillTransaction() != 0) {
-    // check if category is empty
-    KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-    QStringList list;
-    category->selectedItems(list);
-    if(!list.isEmpty())
-      return;
-
+  && KMyMoneyGlobalSettings::autoFillTransaction() != 0
+  && list.isEmpty()) {
     // check if memo is empty
     KTextEdit* memo = dynamic_cast<KTextEdit*>(m_editWidgets["memo"]);
     if(memo && !memo->text().isEmpty())
@@ -1173,13 +1199,6 @@ void StdTransactionEditor::slotUpdatePayee(const QString& payeeId)
 
     // if we got here, we have to autofill
     autoFill(payeeId);
-  }
-
-  // If payee has associated default account (category), set that now.
-  const MyMoneyPayee& payeeObj = MyMoneyFile::instance()->payee(payeeId);
-  if (payeeObj.defaultAccountEnabled()) {
-    KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-    category->slotItemSelected(payeeObj.defaultAccountId());
   }
 }
 

@@ -301,6 +301,8 @@ public:
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;
 
+  bool eventFilter(QObject* o, QEvent* e);
+
   /**
     * This method creates a transaction based on the contents of the current widgets,
     * the splits in m_split in single selection mode or an existing transaction/split
