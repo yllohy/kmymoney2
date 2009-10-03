@@ -3,6 +3,7 @@
   * Added documentation patch from Markus Drexelius
   * Give the per-payee category higher precedence for autofill
   * Fixed #2871995 (Ledger: keyboard navigation)
+  * Released 1.0.2
 
 2009-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added some parenthesis to an if-statement to avoid confusion
