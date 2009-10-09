@@ -1,4 +1,7 @@
 
+2009-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use account opening date for initial interest rate of loans
+
 2009-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added documentation patch from Markus Drexelius
   * Give the per-payee category higher precedence for autofill

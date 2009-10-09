@@ -158,7 +158,7 @@ const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
     if(!moneyBorrowed())
       m_account.setAccountType(MyMoneyAccount::AssetLoan);
     m_account.setLoanAmount(m_loanDetailsPage->m_loanAmount->value());
-    m_account.setInterestRate(m_loanSchedulePage->firstPaymentDueDate(), m_loanDetailsPage->m_interestRate->value());
+    m_account.setInterestRate(m_account.openingDate(), m_loanDetailsPage->m_interestRate->value());
     m_account.setInterestCalculation(m_loanDetailsPage->m_paymentDue->currentItem() == 0 ? MyMoneyAccountLoan::paymentReceived : MyMoneyAccountLoan::paymentDue);
     m_account.setFixedInterestRate(m_generalLoanInfoPage->m_interestType->currentItem() == 0);
     m_account.setFinalPayment(m_loanDetailsPage->m_balloonAmount->value());
