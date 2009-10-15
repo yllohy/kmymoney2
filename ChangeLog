@@ -1,4 +1,7 @@
 
+2009-10-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch by Holger (0001-percentages-in-chart-label.patch)
+
 2009-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use account opening date for initial interest rate of loans
 

@@ -106,46 +106,66 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
 {
     QPoint translate, pos; // some movement helpers
     uint dataset;          // the current dataset (eg. category)
+    uint datasets;         // the total number of datasets
     double value;          // the value of the region
     double pivot_sum;      // the sum over all categories in the current pivot point
 
     // the data region in which the cursor was last time
     static uint previous;
 
+    // if mouse tracking is disabled, don't show any tooltip
     if ( !this->hasMouseTracking() )
-       return ;
+        return ;
 
-    // find the data region under the current mouse location
+    // find the data region below the current mouse location
+    // ..by going through every data region and checking whether it
+    //   contains the mouse pointer
     KDChartDataRegion* current = 0;
     QPtrListIterator < KDChartDataRegion > it( *(this->dataRegions()) );
     while ( ( current = it.current() ) ) {
         ++it;
         if ( current->contains( event->pos() ) )
         {
-            // we found the data region
+            // we found the data region that contains the mouse
             value = this->data()->cellVal(current->row, current->col).toDouble();
+
+            // get the dataset that the region corresponds to
             if ( this->getAccountSeries() )
             {
               dataset = current->row;
+              datasets= this->data()->rows();
               pivot_sum = value * 100.0 / this->data()->colSum(current->col);
             }
             else
             {
               dataset = current->col;
+              datasets= this->data()->cols();
               pivot_sum = value * 100.0 / this->data()->rowSum(current->row);
             }
 
-            // if we enter a new data region
+            // if we entered a new data region or the label was invisible
             if ( !label->isVisible() || previous != dataset )
             {
+              // if there is more than one dataset, show percentage
+              if(datasets > 1)
+              {
                 // set the tooltip text
                 label->setText(QString("<h2>%1</h2><strong>%2</strong><br>(%3\%)")
                     .arg(this->params()->legendText( dataset ))
                     .arg(value, 0, 'f', 2)
                     .arg(pivot_sum, 0, 'f', 2)
                     );
+              }
+              else // if there is only one dataset, don't show percentage
+              {
+                // set the tooltip text
+                label->setText(QString("<h2>%1</h2><strong>%2</strong>")
+                    .arg(this->params()->legendText( dataset ))
+                    .arg(value, 0, 'f', 2)
+                    );
+              }
 
-                previous = dataset;
+              previous = dataset;
             }
 
             translate.setX( -10 - label->width());
@@ -154,7 +174,7 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
             // display the label near the cursor
             pos = event->pos() + translate;
 
-            // but don't let the label move outside the visible area
+            // but don't let the label leave the visible area
             if( pos.x() < 0 )
                 pos.setX(0);
             if( pos.y() < 0 )
@@ -164,18 +184,17 @@ void KReportChartView::mouseMoveEvent( QMouseEvent* event )
             if( pos.y() + label->height() > this->height() )
                 pos.setY( this->height() - label->height() );
 
-            // now move the label
+            // now set the label position and show the label
             label->move( pos );
             label->show();
 
-            //
             // In a more abstract class, we would emit a dateMouseMove event:
             //emit this->dataMouseMove( event->pos(), current->row, current->col );
 
             return ;
         }
     }
-    // mouse cursor not found in any data region
+    // if the cursor was not found in any data region, hide the label
     label->hide();
 }
 
