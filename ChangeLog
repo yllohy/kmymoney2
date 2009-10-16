@@ -1,4 +1,7 @@
 
+2009-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show accounts without transactions associated on the home page
+
 2009-10-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch by Holger (0001-percentages-in-chart-label.patch)
 

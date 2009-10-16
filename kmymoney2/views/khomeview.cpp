@@ -84,8 +84,33 @@
 
 using namespace reports;
 
+class KHomeView::Private
+{
+  public:
+    Private() {}
+    void addNameIndex(QMap<QString, MyMoneyAccount> &idx, const MyMoneyAccount& account);
+};
+
+void KHomeView::Private::addNameIndex(QMap<QString, MyMoneyAccount> &idx, const MyMoneyAccount& account)
+{
+  QString key = account.name();
+
+  if(idx[key].id().isEmpty()) {
+    idx[key] = account;
+    //take care of accounts with duplicate names
+  } else if(idx[key].id() != account.id()) {
+    key = account.name() + "[%1]";
+    int dup = 2;
+    while(!idx[key.arg(dup)].id().isEmpty()
+            && idx[key.arg(dup)].id() != account.id())
+      ++dup;
+    idx[key.arg(dup)] = account;
+  }
+}
+
 KHomeView::KHomeView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Home")),
+  d(new Private),
   m_showAllSchedules(false),
   m_needReload(true)
 {
@@ -110,6 +135,7 @@ KHomeView::~KHomeView()
     //kdDebug() << "Storing font size: " << m_part->zoomFactor() << endl;
     KMyMoneyGlobalSettings::self()->writeConfig();
   }
+  delete d;
 }
 
 void KHomeView::slotLoadView(void)
@@ -738,18 +764,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
 
     // if we still point to the same account we keep it in the list and move on ;-)
     if(prevIt == it) {
-      QString key = (*it).name();
-      if(nameIdx[key].id().isEmpty()) {
-        nameIdx[key] = *it;
-
-      } else if(nameIdx[key].id() != (*it).id()) {
-        key = (*it).name() + "[%1]";
-        int dup = 2;
-        while(!nameIdx[key.arg(dup)].id().isEmpty()
-        && nameIdx[key.arg(dup)].id() != (*it).id())
-          ++dup;
-        nameIdx[key.arg(dup)] = *it;
-      }
+      d->addNameIndex(nameIdx, *it);
       ++it;
     }
   }
@@ -926,37 +941,25 @@ void KHomeView::showForecast(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accList;
 
-  //if forecast has not been executed yet, do it.
+  // if forecast has not been executed yet, do it.
   if(!m_forecast.isForecastDone())
     doForecast();
 
   accList = m_forecast.accountList();
 
-  //add it to a map to have it ordered by name
+  // add it to a map to have it ordered by name
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
-  for ( ; accList_t != accList.end(); ++accList_t )
-  {
-    QString key = (*accList_t).name();
-    if(nameIdx[key].id().isEmpty()) {
-      nameIdx[key] = *accList_t;
-            //take care of accounts with duplicate names
-    } else if(nameIdx[key].id() != (*accList_t).id()) {
-      key = (*accList_t).name() + "[%1]";
-      int dup = 2;
-      while(!nameIdx[key.arg(dup)].id().isEmpty()
-             && nameIdx[key.arg(dup)].id() != (*accList_t).id())
-        ++dup;
-      nameIdx[key.arg(dup)] = *accList_t;
-    }
+  for ( ; accList_t != accList.end(); ++accList_t ) {
+    d->addNameIndex(nameIdx, *accList_t);
   }
 
   if(nameIdx.count() > 0) {
     int i = 0;
 
     int colspan = 1;
-    //get begin day
+    // get begin day
     int beginDay = QDate::currentDate().daysTo(m_forecast.beginForecastDate());
-    //if begin day is today skip to next cycle
+    // if begin day is today skip to next cycle
     if(beginDay == 0)
       beginDay = m_forecast.accountsCycle();
 
@@ -1200,51 +1203,25 @@ void KHomeView::showAssetsLiabilities(void)
   // get list of all accounts
   file->accountList(accounts);
   for(it = accounts.begin(); it != accounts.end();) {
-    if(!(*it).isClosed()) {
+    if(!(*it).isClosed() && (file->transactionCount((*it).id()) > 0)) {
       switch((*it).accountType()) {
-        //group all assets into one list
+        // group all assets into one list
         case MyMoneyAccount::Checkings:
         case MyMoneyAccount::Savings:
         case MyMoneyAccount::Cash:
         case MyMoneyAccount::Investment:
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::AssetLoan:
-        {
-          //add it to a map to have it ordered by name
-          QString key = (*it).name();
-          if(nameAssetsIdx[key].id().isEmpty()) {
-            nameAssetsIdx[key] = *it;
-            //take care of accounts with duplicate names
-          } else if(nameAssetsIdx[key].id() != (*it).id()) {
-            key = (*it).name() + "[%1]";
-            int dup = 2;
-            while(!nameAssetsIdx[key.arg(dup)].id().isEmpty()
-                   && nameAssetsIdx[key.arg(dup)].id() != (*it).id())
-              ++dup;
-            nameAssetsIdx[key.arg(dup)] = *it;
-          }
+          d->addNameIndex(nameAssetsIdx, *it);
           break;
-        }
-        //group the liabilities into the other
+
+        // group the liabilities into the other
         case MyMoneyAccount::CreditCard:
         case MyMoneyAccount::Liability:
         case MyMoneyAccount::Loan:
-        {
-          //add it to a map to have it ordered by name
-          QString key = (*it).name();
-          if(nameLiabilitiesIdx[key].id().isEmpty()) {
-            nameLiabilitiesIdx[key] = *it;
-            //take care of duplicate account names
-          } else if(nameLiabilitiesIdx[key].id() != (*it).id()) {
-            key = (*it).name() + "[%1]";
-            int dup = 2;
-            while(!nameLiabilitiesIdx[key.arg(dup)].id().isEmpty()
-                   && nameLiabilitiesIdx[key.arg(dup)].id() != (*it).id())
-              ++dup;
-            nameLiabilitiesIdx[key.arg(dup)] = *it;
-          }
+          d->addNameIndex(nameLiabilitiesIdx, *it);
           break;
-        }
+
         default:
           break;
       }
