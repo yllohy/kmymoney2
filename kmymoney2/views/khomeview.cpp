@@ -1203,23 +1203,32 @@ void KHomeView::showAssetsLiabilities(void)
   // get list of all accounts
   file->accountList(accounts);
   for(it = accounts.begin(); it != accounts.end();) {
-    if(!(*it).isClosed() && (file->transactionCount((*it).id()) > 0)) {
+    if(!(*it).isClosed()) {
       switch((*it).accountType()) {
-        // group all assets into one list
+        // group all assets into one list but make sure that investment accounts always show up
+        case MyMoneyAccount::Investment:
+          d->addNameIndex(nameAssetsIdx, *it);
+          break;
+
         case MyMoneyAccount::Checkings:
         case MyMoneyAccount::Savings:
         case MyMoneyAccount::Cash:
-        case MyMoneyAccount::Investment:
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::AssetLoan:
-          d->addNameIndex(nameAssetsIdx, *it);
+          // list account if it's the last in the hierarchy or has transactions in it
+          if((*it).accountList().isEmpty() || (file->transactionCount((*it).id()) > 0)) {
+            d->addNameIndex(nameAssetsIdx, *it);
+          }
           break;
 
         // group the liabilities into the other
         case MyMoneyAccount::CreditCard:
         case MyMoneyAccount::Liability:
         case MyMoneyAccount::Loan:
-          d->addNameIndex(nameLiabilitiesIdx, *it);
+          // list account if it's the last in the hierarchy or has transactions in it
+          if((*it).accountList().isEmpty() || (file->transactionCount((*it).id()) > 0)) {
+            d->addNameIndex(nameLiabilitiesIdx, *it);
+          }
           break;
 
         default:
