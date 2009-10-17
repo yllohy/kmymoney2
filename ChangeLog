@@ -1,4 +1,7 @@
 
+2009-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed German translation (patch provided by Mark Drexelius)
+
 2009-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show accounts without transactions associated on the home page
 

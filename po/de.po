@@ -9,18 +9,19 @@
 # yllohy <yllohy@googlemail.com>, 2008, 2009.
 # Thomas Baumgart <ipwizard@users.sourceforge.net>, 2006, 2007, 2008, 2009.
 # Thomas Baumgart <thb@net-bembel.de>, 2009.
+# Markus Drexelius <markusd112@web.de>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-06-25 19:22+0200\n"
-"Last-Translator: Thomas Baumgart <thb@net-bembel.de>\n"
-"Language-Team:  <en@li.org>\n"
+"PO-Revision-Date: 2009-10-17 11:11+0200\n"
+"Last-Translator: Markus Drexelius <markusd112@web.de>\n"
+"Language-Team: Deutsch <kde-i18n-de@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: wizards/wizardpages/rc.cpp:1
@@ -13367,7 +13368,7 @@ msgstr "<p>Wählen Sie diese Option um die Abgleichspalte anzuzeigen.</p>"
 
 #: widgets/rc.cpp:121
 msgid "Include only Loan accounts"
-msgstr "Verwende nur Investmentkonten"
+msgstr "Verwende nur Kreditkonten"
 
 #: widgets/rc.cpp:122
 msgid "Include only Investment accounts"
@@ -13669,4 +13670,5 @@ msgstr "Letzte 3 Monate bis nächste 3 Monate"
 #: widgets/kmymoneycombo.cpp:691
 msgid "User defined"
 msgstr "Benutzerdefiniert"
+
 
