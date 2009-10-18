@@ -1043,7 +1043,8 @@ void PivotTable::convertToBaseCurrency( void )
 void PivotTable::convertToDeepCurrency( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
-
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
   int fraction;
 
   PivotGrid::iterator it_outergroup = m_grid.begin();
@@ -1067,11 +1068,15 @@ void PivotTable::convertToDeepCurrency( void )
           MyMoneyMoney conversionfactor = it_row.key().deepCurrencyPrice(valuedate);
 
           //use the fraction relevant to the account at hand
-          fraction = it_row.key().fraction();
+          if(it_row.key().isInvest()) {
+            fraction = file->currency(it_row.key().currency().tradingCurrency()).smallestAccountFraction();
+          } else {
+            fraction = it_row.key().currency().smallestAccountFraction();
+          }
 
           //use base currency fraction if not initialized
           if(fraction == -1)
-            fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+            fraction = file->baseCurrency().smallestAccountFraction();
 
           //convert to deep currency
           MyMoneyMoney oldval = it_row.data()[eActual][column];

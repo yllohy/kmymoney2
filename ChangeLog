@@ -1,4 +1,7 @@
 
+2009-10-17 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed rounding up of stock reports using trading currency
+
 2009-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed German translation (patch provided by Mark Drexelius)
 
