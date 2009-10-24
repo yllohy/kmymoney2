@@ -2271,7 +2271,7 @@ msgstr "Konto aktualisieren..."
 
 #: kmymoney2.cpp:373
 msgid "Update all accounts..."
-msgstr "Konto aktualisieren..."
+msgstr "Alle Konten aktualisieren..."
 
 #: kmymoney2.cpp:378
 msgid "New category..."

@@ -1,4 +1,8 @@
 
+2009-10-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added icons to the file info dialog button
+  * Fixed German translation
+
 2009-10-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed rounding up of stock reports using trading currency
 
