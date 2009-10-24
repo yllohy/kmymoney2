@@ -44,6 +44,7 @@
 #include "../mymoney/mymoneyreport.h"
 #include "../mymoney/mymoneyexception.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneyglobalsettings.h"
 #include "reportaccount.h"
 #include "reportdebug.h"
 #include "querytable.h"
@@ -524,8 +525,8 @@ void QueryTable::constructTransactionTable(void)
       MyMoneyMoney xr;
       ReportAccount splitAcc = (* it_split).accountId();
 
-      //get fraction for account
-      int fraction = splitAcc.fraction();
+      //use the fraction relevant to the account at hand
+      int fraction = splitAcc.currency().smallestAccountFraction();
 
       //use base currency fraction if not initialized
       if(fraction == -1)
@@ -553,7 +554,7 @@ void QueryTable::constructTransactionTable(void)
 
         qA["action"] = (*it_split).action();
         qA["shares"] = shares.isZero() ? "" : (*it_split).shares().toString();
-        qA["price"] = shares.isZero() ? "" : xr.toString();
+        qA["price"] = shares.isZero() ? "" : xr.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
 
         if (((*it_split).action() == MyMoneySplit::ActionBuyShares) && (*it_split).shares().isNegative())
           qA["action"] = "Sell";
@@ -569,7 +570,7 @@ void QueryTable::constructTransactionTable(void)
 
         transaction_text = m_config.match(&(*it_split));
 
-        qA["price"] = xr.toString();
+        qA["price"] = xr.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
         qA["account"] = splitAcc.name();
         qA["accountid"] = splitAcc.id();
         qA["topaccount"] = splitAcc.topParentName();
@@ -815,17 +816,17 @@ void QueryTable::constructTransactionTable(void)
 
   QMap<QString, MyMoneyAccount>::const_iterator it_account, accts_end;
   for (it_account = accts.begin(); it_account != accts.end(); ++it_account) {
-
     TableRow qA;
 
     ReportAccount account = (* it_account);
 
     //get fraction for account
-    int fraction = account.fraction();
+    int fraction = account.currency().smallestAccountFraction();
 
     //use base currency fraction if not initialized
     if(fraction == -1)
       fraction = file->baseCurrency().smallestAccountFraction();
+
     QString institution = account.institutionId();
 
     // use the institution of the parent for stock accounts
@@ -860,7 +861,7 @@ void QueryTable::constructTransactionTable(void)
     qA["institution"] = institution.isEmpty() ? i18n("No Institution") : file->institution(institution).name();
     qA["rank"] = "-2";
 
-    qA["price"] = startPrice.toString();
+    qA["price"] = startPrice.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
     if (account.isInvest()) {
       qA["shares"] = startShares.toString();
     }
@@ -872,7 +873,7 @@ void QueryTable::constructTransactionTable(void)
     m_rows += qA;
 
     //ending balance
-    qA["price"] = endPrice.toString();
+    qA["price"] = endPrice.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
 
     if (account.isInvest()) {
       qA["shares"] = endShares.toString();
@@ -891,6 +892,9 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneySecurity security = file->security(account.currencyId());
 
   result["equitytype"] = KMyMoneyUtils::securityTypeToString(security.securityType());
+
+  //set fraction
+  int fraction = account.currency().smallestAccountFraction();
 
   //
   // Calculate performance
@@ -944,7 +948,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
 
   //convert to lowest fraction
-  startingBal = startingBal.convert(account.fraction());
+  startingBal = startingBal.convert(fraction);
 
   //calculate ending balance
   if ( m_config.isConvertCurrency() ) {
@@ -955,7 +959,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
 
   //convert to lowest fraction
-  endingBal = endingBal.convert(account.fraction());
+  endingBal = endingBal.convert(fraction);
 
   //add start balance to calculate return on investment
   MyMoneyMoney returnInvestment = startingBal;
@@ -996,7 +1000,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       }
       returnInvestment += value;
         //convert to lowest fraction
-      returnInvestment = returnInvestment.convert(account.fraction());
+      returnInvestment = returnInvestment.convert(fraction);
     } else if ( action == MyMoneySplit::ActionReinvestDividend ) {
       reinvestincome += CashFlowListItem( (*it_transaction).postDate(), value );
     } else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield ) {
@@ -1015,7 +1019,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() * price);
-        paidDividend += ((-(*it_split).value()) * price).convert(account.fraction());
+        paidDividend += ((-(*it_split).value()) * price).convert(fraction);
       }
     } else {
       //if the split does not match any action above, add it as buy or sell depending on sign
@@ -1098,9 +1102,9 @@ void QueryTable::constructAccountTable(void)
     ReportAccount account = *it_account;
 
     //get fraction for account
-    int fraction = account.fraction();
+    int fraction = account.currency().smallestAccountFraction();
 
-      //use base currency fraction if not initialized
+    //use base currency fraction if not initialized
     if(fraction == -1)
       fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
 
@@ -1139,7 +1143,7 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["shares"] = shares.toString();
 
       MyMoneyMoney netprice = account.deepCurrencyPrice(m_config.toDate()).reduce() * displayprice;
-      qaccountrow["price"] = ( netprice.reduce() ).convert(fraction).toString();
+      qaccountrow["price"] = ( netprice.reduce() ).convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
       qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).convert(fraction).toString();
 
       QString iid = (*it_account).institutionId();
@@ -1281,7 +1285,7 @@ void QueryTable::constructSplitsTable(void)
       ReportAccount splitAcc = (* it_split).accountId();
 
       //get fraction for account
-      int fraction = splitAcc.fraction();
+      int fraction = splitAcc.currency().smallestAccountFraction();
 
       //use base currency fraction if not initialized
       if(fraction == -1)
@@ -1310,7 +1314,7 @@ void QueryTable::constructSplitsTable(void)
 
         qA["action"] = (*it_split).action();
         qA["shares"] = shares.isZero() ? "" : (*it_split).shares().toString();
-        qA["price"] = shares.isZero() ? "" : xr.toString();
+        qA["price"] = shares.isZero() ? "" : xr.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
 
         if (((*it_split).action() == MyMoneySplit::ActionBuyShares) && (*it_split).shares().isNegative())
           qA["action"] = "Sell";
@@ -1324,7 +1328,7 @@ void QueryTable::constructSplitsTable(void)
 
       transaction_text = m_config.match(&(*it_split));
 
-      qA["price"] = xr.toString();
+      qA["price"] = xr.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
       qA["account"] = splitAcc.name();
       qA["accountid"] = splitAcc.id();
       qA["topaccount"] = splitAcc.topParentName();
@@ -1444,17 +1448,17 @@ void QueryTable::constructSplitsTable(void)
 
   QMap<QString, MyMoneyAccount>::const_iterator it_account, accts_end;
   for (it_account = accts.begin(); it_account != accts.end(); ++it_account) {
-
     TableRow qA;
 
     ReportAccount account = (* it_account);
 
     //get fraction for account
-    int fraction = account.fraction();
+    int fraction = account.currency().smallestAccountFraction();
 
     //use base currency fraction if not initialized
     if(fraction == -1)
       fraction = file->baseCurrency().smallestAccountFraction();
+
     QString institution = account.institutionId();
 
     // use the institution of the parent for stock accounts
@@ -1489,7 +1493,7 @@ void QueryTable::constructSplitsTable(void)
     qA["institution"] = institution.isEmpty() ? i18n("No Institution") : file->institution(institution).name();
     qA["rank"] = "-2";
 
-    qA["price"] = startPrice.toString();
+    qA["price"] = startPrice.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
     if (account.isInvest()) {
       qA["shares"] = startShares.toString();
     }
@@ -1501,7 +1505,7 @@ void QueryTable::constructSplitsTable(void)
     m_rows += qA;
 
     //ending balance
-    qA["price"] = endPrice.toString();
+    qA["price"] = endPrice.convert(MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision())).toString();
 
     if (account.isInvest()) {
       qA["shares"] = endShares.toString();

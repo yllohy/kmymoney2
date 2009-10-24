@@ -1,4 +1,7 @@
 
+2009-10-24 Alvaro Soliverez <asoliverez@gmail.com>
+  * More currency rounding fixes for the reports
+
 2009-10-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added icons to the file info dialog button
   * Fixed German translation

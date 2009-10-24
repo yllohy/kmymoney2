@@ -1045,8 +1045,6 @@ void PivotTable::convertToDeepCurrency( void )
   DEBUG_ENTER(__PRETTY_FUNCTION__);
   MyMoneyFile* file = MyMoneyFile::instance();
   
-  int fraction;
-
   PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
@@ -1068,11 +1066,7 @@ void PivotTable::convertToDeepCurrency( void )
           MyMoneyMoney conversionfactor = it_row.key().deepCurrencyPrice(valuedate);
 
           //use the fraction relevant to the account at hand
-          if(it_row.key().isInvest()) {
-            fraction = file->currency(it_row.key().currency().tradingCurrency()).smallestAccountFraction();
-          } else {
-            fraction = it_row.key().currency().smallestAccountFraction();
-          }
+          int fraction = it_row.key().currency().smallestAccountFraction();
 
           //use base currency fraction if not initialized
           if(fraction == -1)
@@ -1385,7 +1379,7 @@ QString PivotTable::renderCSV( void ) const
       while ( it_row != (*it_innergroup).end() )
       {
         ReportAccount rowname = it_row.key();
-        int fraction = rowname.fraction(rowname.currency());
+        int fraction = rowname.currency().smallestAccountFraction();
 
         //
         // Columns
