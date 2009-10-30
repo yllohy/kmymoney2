@@ -1,4 +1,7 @@
 
+2009-10-30 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed price precision display in transaction reports
+
 2009-10-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added two files provided by Allan Anderson to the contrib directory
 
