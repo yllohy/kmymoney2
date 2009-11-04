@@ -1,3 +1,5 @@
+2009-11-04 Tony Bloomfield <gandalf1189@users.sourceforge.net>
+  * Fix SQL generation so it will work
 
 2009-11-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added one file provided by Allan Anderson to the contrib directory

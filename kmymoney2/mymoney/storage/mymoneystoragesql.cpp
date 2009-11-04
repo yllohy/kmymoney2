@@ -4114,10 +4114,75 @@ void MyMoneyDbDef::Balances(void){
 const QString MyMoneyDbDef::generateSQL (const QString& driver) const {
   QString retval;
   databaseTypeE dbType = m_drivers.driverToType(driver);
-  QMapConstIterator<QString, MyMoneyDbTable> tt = m_tables.begin();
-  while (tt != m_tables.end()) {
+  table_iterator tt = tableBegin();
+  while (tt != tableEnd()) {
     retval += (*tt).generateCreateSQL(dbType) + '\n';
     ++tt;
+  }
+  view_iterator vt = viewBegin();
+  while (vt != viewEnd()) {
+    retval += (*vt).createString() + '\n';
+    ++vt;
+  }
+  retval += '\n';
+
+  MyMoneyDbTable fi = m_tables["kmmFileInfo"];
+  QString qs = fi.insertString();
+  MyMoneyDbTable::field_iterator fit;
+  for (fit = fi.begin(); fit != fi.end(); ++fit) {
+    QString toReplace = (*fit)->name();
+    toReplace.prepend(':');
+    QString replace = "NULL";
+    if ((*fit)->name() == "version")
+      replace = QString::number(m_currentVersion);
+    if ((*fit)->name() == "fixLevel")
+      replace =  QString::number
+          (MyMoneyFile::instance()->storage()->currentFixVersion());
+    if ((*fit)->name() == "created")
+      replace = QDate::currentDate().toString(Qt::ISODate);
+    if ((*fit)->name() == "lastModified")
+      replace = QDate::currentDate().toString(Qt::ISODate);
+    if ((*fit)->name() == "updateInProgress")
+      replace = enclose("N");
+    qs.replace(toReplace, replace);
+  }
+  qs += "\n\n";
+  retval += qs;
+
+  qs = QString();
+  unsigned int i;
+  QValueList<MyMoneyAccount> stdList;
+  stdList.append (MyMoneyFile::instance()->asset());
+  stdList.append (MyMoneyFile::instance()->equity());
+  stdList.append (MyMoneyFile::instance()->expense());
+  stdList.append (MyMoneyFile::instance()->income());
+  stdList.append (MyMoneyFile::instance()->liability());
+  for (i = 0; i < stdList.count(); ++i) {
+    MyMoneyAccount* pac = &stdList[i];
+    MyMoneyDbTable ac = m_tables["kmmAccounts"];
+    qs = ac.insertString();
+    MyMoneyDbTable::field_iterator act;
+    // do the following in reverse so the 'formatted' fields are
+    // correctly handled.
+    // Hmm, how does one use a QValueListIterator in reverse
+    // It'll be okay in Qt4 with QListIterator
+    for (act = ac.end(), --act; act != ac.begin(); --act) {
+      QString toReplace = (*act)->name();
+      toReplace.prepend(':');
+      QString replace = "NULL";
+      if ((*act)->name() == "accountType")
+        replace = QString::number(pac->accountType());
+      if ((*act)->name() == "accountTypeString")
+        replace = enclose(pac->name());
+      if ((*act)->name() == "isStockAccount")
+        replace = enclose("N");
+      if ((*act)->name() == "accountName")
+        replace = enclose(pac->name());
+      qs.replace(toReplace, replace);
+    }
+    qs.replace (":id", enclose(pac->id())); // a real kludge
+    qs += "\n\n";
+    retval += qs;
   }
   return retval;
 }
