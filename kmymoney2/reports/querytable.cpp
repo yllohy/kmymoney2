@@ -624,7 +624,7 @@ void QueryTable::constructTransactionTable(void)
           }
 
           // track accts that will need opening and closing balances
-          //FIXME in some cases it will show the opening and closing 
+          //FIXME in some cases it will show the opening and closing
           //balances but no transactions if the splits are all filtered out -- asoliverez
           accts.insert (splitAcc.id(), splitAcc);
         }
@@ -679,7 +679,7 @@ void QueryTable::constructTransactionTable(void)
               qA["split"] = ((-(*it_split).shares()) * xr).convert(fraction).toString();
               qA["rank"] = "1";
             } else {
-              //this applies when the transaction has only 2 splits, or each split is going to be 
+              //this applies when the transaction has only 2 splits, or each split is going to be
               //shown separately, eg. transactions by category
 
               qA["split"] = "";
