@@ -694,9 +694,11 @@ QWidget* InvestTransactionEditor::firstWidget(void) const
   return 0; // let the creator use the first widget in the tab order
 }
 
-bool InvestTransactionEditor::isComplete(void) const
+bool InvestTransactionEditor::isComplete(QString& reason) const
 {
-  return d->m_activity->isComplete();
+  reason = QString();
+  // reason.clear();  // for Qt4
+  return d->m_activity->isComplete(reason);
 }
 
 MyMoneyMoney InvestTransactionEditor::subtotal(const QValueList<MyMoneySplit>& splits) const

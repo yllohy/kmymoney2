@@ -228,7 +228,8 @@ void TransactionEditor::slotNumberChanged(const QString& txt)
 
 void TransactionEditor::slotUpdateButtonState(void)
 {
-  emit transactionDataSufficient(isComplete());
+  QString reason;
+  emit transactionDataSufficient(isComplete(reason));
 }
 
 QWidget* TransactionEditor::haveWidget(const QString& name) const
@@ -1736,11 +1737,15 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
   return amount;
 }
 
-bool StdTransactionEditor::isComplete(void) const
+bool StdTransactionEditor::isComplete(QString& reason) const
 {
+  reason = QString();
+  // reason.clear();  // for Qt4
+
   QMap<QString, QWidget*>::const_iterator it_w;
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
   if(postDate->date().isValid() && (postDate->date() < m_account.openingDate())) {
+    reason = i18n("Cannot enter transaction with postdate prior to account's opening date.");
     return false;
   }
 

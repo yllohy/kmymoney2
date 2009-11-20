@@ -39,7 +39,7 @@
 using namespace Invest;
 using namespace KMyMoneyRegister;
 
-bool Activity::isComplete(void) const
+bool Activity::isComplete(QString& reason) const
 {
   bool rc = false;
   KMyMoneySecurity* security = dynamic_cast<KMyMoneySecurity*>(haveWidget("security"));
@@ -201,9 +201,9 @@ void Buy::showWidgets(void) const
   setLabelText("total-label", i18n("Total"));
 }
 
-bool Buy::isComplete(void) const
+bool Buy::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveAssetAccount();
   rc &= haveFees(true);
   rc &= haveInterest(true);
@@ -219,7 +219,8 @@ bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
@@ -289,9 +290,9 @@ void Sell::showWidgets(void) const
   setLabelText("total-label", i18n("Total"));
 }
 
-bool Sell::isComplete(void) const
+bool Sell::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveAssetAccount();
   rc &= haveFees(true);
   rc &= haveInterest(true);
@@ -305,7 +306,8 @@ bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpl
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
@@ -368,7 +370,7 @@ void Div::showWidgets(void) const
   setLabelText("total-label", i18n("Total"));
 }
 
-bool Div::isComplete(void) const
+bool Div::isComplete(QString& reason) const
 {
   bool rc = haveAssetAccount();
   rc &= haveInterest(false);
@@ -381,7 +383,8 @@ bool Div::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   s0.setAction(MyMoneySplit::Dividend);
@@ -426,9 +429,9 @@ void Reinvest::showWidgets(void) const
   setLabelText("total-label", i18n("Total"));
 }
 
-bool Reinvest::isComplete(void) const
+bool Reinvest::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveCategoryAndAmount("interest-account", QString(), false);
   rc &= haveFees(true);
   rc &= haveShares();
@@ -442,7 +445,8 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
@@ -504,9 +508,9 @@ void Add::showWidgets(void) const
   setLabelText("shares-label", i18n("Shares"));
 }
 
-bool Add::isComplete(void) const
+bool Add::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveShares();
   return rc;
 }
@@ -520,7 +524,8 @@ bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
@@ -544,9 +549,9 @@ void Remove::showWidgets(void) const
   setLabelText("shares-label", i18n("Shares"));
 }
 
-bool Remove::isComplete(void) const
+bool Remove::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveShares();
   return rc;
 }
@@ -560,7 +565,8 @@ bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneyS
   Q_UNUSED(security);
   Q_UNUSED(currency);
 
-  if(!isComplete())
+  QString reason;
+  if(!isComplete(reason))
     return false;
 
   kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
@@ -586,9 +592,9 @@ void Split::showWidgets(void) const
   setLabelText("shares-label", i18n("Ratio 1/"));
 }
 
-bool Split::isComplete(void) const
+bool Split::isComplete(QString& reason) const
 {
-  bool rc = Activity::isComplete();
+  bool rc = Activity::isComplete(reason);
   rc &= haveShares();
   return rc;
 }
