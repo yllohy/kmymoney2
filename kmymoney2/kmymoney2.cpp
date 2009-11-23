@@ -4398,7 +4398,9 @@ void KMyMoney2App::slotTransactionsNew(void)
     if(myMoneyView->createNewTransaction()) {
       m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
       KMyMoneyPayeeCombo* payeeEdit = dynamic_cast<KMyMoneyPayeeCombo*>(m_transactionEditor->haveWidget("payee"));
-      if(payeeEdit && !d->m_lastPayeeEntered.isEmpty()) {
+      if(payeeEdit
+      && !d->m_lastPayeeEntered.isEmpty()
+      && KMyMoneyGlobalSettings::autoReusePayee()) {
         // in case we entered a new transaction before and used a payee,
         // we reuse it here. Save the text to the edit widget, select it
         // so that hitting any character will start entering another payee.

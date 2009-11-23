@@ -1,4 +1,7 @@
 
+2009-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added AutoReusePayee option which defaults to true. No GUI available (yet)
+
 2009-11-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show a tooltip over the Enter button in case it is disabled due to
     post date prior to account's opening date

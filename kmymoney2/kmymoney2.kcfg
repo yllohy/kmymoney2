@@ -11,6 +11,10 @@
    <label>Auto fill with previous transaction data</label>
    <default>1</default>
   </entry>
+  <entry name="AutoReusePayee" type="Bool">
+    <label>Prefill payee with previous used value</label>
+    <default>true</default>
+  </entry>
   <entry name="AutoFillDifference" type="Int">
     <label>Treat two transactions as identical, if amount differs less than</label>
     <default>10</default>
