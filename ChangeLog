@@ -1,4 +1,8 @@
 
+2009-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Show post date in red if prior to opening date of account. Attach
+    tooltip to date edit widget as well
+
 2009-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added AutoReusePayee option which defaults to true. No GUI available (yet)
 

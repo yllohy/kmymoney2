@@ -142,6 +142,15 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
 }
 
+void kMyMoneyDateInput::markAsBadDate(bool bad, const QColor& color)
+{
+  if(dateEdit->focusProxy()) {
+    dateEdit->focusProxy()->setPaletteForegroundColor(paletteForegroundColor());
+    if(bad)
+      dateEdit->focusProxy()->setPaletteForegroundColor(color);
+  }
+}
+
 void kMyMoneyDateInput::show(void)
 {
   // don't forget the standard behaviour  ;-)

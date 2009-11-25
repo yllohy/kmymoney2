@@ -23,6 +23,7 @@
 #include <qeventloop.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
+#include <qtooltip.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -1744,9 +1745,15 @@ bool StdTransactionEditor::isComplete(QString& reason) const
 
   QMap<QString, QWidget*>::const_iterator it_w;
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
-  if(postDate->date().isValid() && (postDate->date() < m_account.openingDate())) {
-    reason = i18n("Cannot enter transaction with postdate prior to account's opening date.");
-    return false;
+  if(postDate) {
+    postDate->markAsBadDate();
+    QToolTip::remove(postDate);
+    if(postDate->date().isValid() && (postDate->date() < m_account.openingDate())) {
+      postDate->markAsBadDate(true, KMyMoneyGlobalSettings::listNegativeValueColor());
+      reason = i18n("Cannot enter transaction with postdate prior to account's opening date.");
+      QToolTip::add(postDate, reason);
+      return false;
+    }
   }
 
   for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {

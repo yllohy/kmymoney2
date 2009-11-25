@@ -77,6 +77,7 @@ public:
   void resetDate(void);
   QWidget* focusWidget(void) const;
   virtual void setRange(const QDate & min, const QDate & max) { dateEdit->setRange(min, max); }
+  void markAsBadDate(bool bad = false, const QColor& = QColor());
 
 public slots:
   virtual void show(void);
