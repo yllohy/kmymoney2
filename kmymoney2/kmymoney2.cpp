@@ -2115,7 +2115,11 @@ void KMyMoney2App::slotQifProfileEditor(void)
 
 void KMyMoney2App::slotToolsStartKCalc(void)
 {
-  KRun::runCommand("kcalc");
+  QString cmd = KMyMoneyGlobalSettings::externalCalculator();
+  // if none is present, we fall back to the default
+  if(cmd.isEmpty())
+    cmd = "kcalc";
+  KRun::runCommand(cmd);
 }
 
 void KMyMoney2App::slotFindTransaction(void)

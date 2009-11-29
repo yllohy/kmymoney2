@@ -1,4 +1,8 @@
 
+2009-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added option [General Options]/ExternalCalculator to allow starting
+    any external calculator program and not only kcalc (the default)
+
 2009-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show post date in red if prior to opening date of account. Attach
     tooltip to date edit widget as well
