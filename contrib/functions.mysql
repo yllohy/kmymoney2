@@ -11,6 +11,7 @@ DROP FUNCTION IF EXISTS toDecimal//
 CREATE
  FUNCTION toDecimal(mymoneymoney VARCHAR(32))
  RETURNS DECIMAL(12,6)
+ READS SQL DATA
   BEGIN
    /* Converts a MyMoneyMoney numerator/denominator string to a decimal number */
    DECLARE result DECIMAL (12,6);
@@ -25,6 +26,7 @@ DROP FUNCTION IF EXISTS cashBalance//
 CREATE
  FUNCTION cashBalance(acctId VARCHAR(32))
  RETURNS DECIMAL(12,2)
+ READS SQL DATA
   BEGIN
   /* Returns the cash balance as of today of an account specified by internal id.*/
   /* to determine id - SELECT id FROM kmmAccounts WHERE accountName = 'whatever';
@@ -44,6 +46,7 @@ delimiter //
 DROP PROCEDURE IF EXISTS listBalances//
 CREATE
  PROCEDURE listBalances(IN parent varchar(32))
+ READS SQL DATA
  BEGIN
   /* Lists the balances of all accounts subsidiary to a named account. NOTE: not recursive 
      Sample usage: - CALL listBalances('Asset'); */
@@ -59,6 +62,7 @@ DROP FUNCTION IF EXISTS latestPrice//
 CREATE
  FUNCTION latestPrice(secId VARCHAR(32))
  RETURNS DECIMAL(12,6)
+ READS SQL DATA
   BEGIN
    /* Returns the latest price for a security identified by internal id. */
    /* to determine id - SELECT id FROM kmmSecurities WHERE name = 'whatever'; */
@@ -76,6 +80,7 @@ DROP FUNCTION IF EXISTS shareBalance//
 CREATE
  FUNCTION shareBalance(acctId VARCHAR(32))
  RETURNS DECIMAL(12,6)
+ READS SQL DATA
   BEGIN
   /* Returns the share balance for an Stock account identified by internal id.
      NOTE: similar to cashBalance but with greater precision */
@@ -92,6 +97,7 @@ DROP FUNCTION IF EXISTS valuation//
 CREATE
  FUNCTION valuation(acctId VARCHAR(32))
  RETURNS DECIMAL(12,2)
+ READS SQL DATA
   BEGIN
    /* Returns the current value of a Stock account identified by internal id */
    DECLARE result DECIMAL(12,2);
@@ -106,8 +112,8 @@ delimiter ;
 
 delimiter //
 DROP PROCEDURE IF EXISTS listValues//
-CREATE
- PROCEDURE listValues(IN parent varchar(32))
+CREATE PROCEDURE listValues(IN parent varchar(32))
+  READS SQL DATA
  BEGIN
   /* Lists the current values of all stocks subsidiary to a named Investment account. NOTE: not recursive */
   SELECT parent AS 'Portfolio';
@@ -125,6 +131,7 @@ DROP FUNCTION IF EXISTS payeeName//
 CREATE
  FUNCTION payeeName(payeeId VARCHAR(32))
  RETURNS MEDIUMTEXT
+ READS SQL DATA
   BEGIN
   /* Returns payee name from id, with NULL test */
    DECLARE result MEDIUMTEXT;
@@ -141,6 +148,7 @@ DROP FUNCTION IF EXISTS categoryName//
 CREATE
  FUNCTION categoryName(categoryId VARCHAR(32))
  RETURNS MEDIUMTEXT
+ READS SQL DATA
   BEGIN
   /* Returns fully qualified category name from its id */
    DECLARE result MEDIUMTEXT;
