@@ -1,4 +1,7 @@
 
+2009-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated British translation by Ian Neal
+
 2009-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option [General Options]/ExternalCalculator to allow starting
     any external calculator program and not only kcalc (the default)
