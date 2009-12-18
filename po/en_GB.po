@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: en_GB\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-06-25 19:04+0200\n"
-"PO-Revision-Date: 2009-12-16 23:54+0100\n"
+"PO-Revision-Date: 2009-12-17 21:36+0100\n"
 "Last-Translator: Ian Neal <ianrsn70@users.sourceforge.net>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1659,9 +1659,7 @@ msgstr "Account %1 contains an opening balance. Please use a KMyMoney version >=
 msgid ""
 "_: Brokerage (suffix for account names)\n"
 "Brokerage"
-msgstr ""
-"_: Brokerage (suffix for account names)\n"
-"Brokerage"
+msgstr "Brokerage"
 
 #: kmymoneyutils.cpp:74
 #: mymoney/mymoneyaccount.cpp:726
@@ -2117,17 +2115,13 @@ msgstr "Reconcile..."
 msgid ""
 "_: Finish reconciliation\n"
 "Finish"
-msgstr ""
-"_: Finish reconciliation\n"
-"Finish"
+msgstr "Finalise reconciliation"
 
 #: kmymoney2.cpp:357
 msgid ""
 "_: Postpone reconciliation\n"
 "Postpone"
-msgstr ""
-"_: Postpone reconciliation\n"
-"Postpone"
+msgstr "Postpone reconciliation"
 
 #: kmymoney2.cpp:358
 msgid "Edit account..."
@@ -2236,57 +2230,43 @@ msgstr "&Show tip of the day"
 msgid ""
 "_: New transaction button\n"
 "New"
-msgstr ""
-"_: New transaction button\n"
-"New"
+msgstr "New"
 
 #: kmymoney2.cpp:415
 msgid ""
 "_: Edit transaction button\n"
 "Edit"
-msgstr ""
-"_: Edit transaction button\n"
-"Edit"
+msgstr "Edit"
 
 #: kmymoney2.cpp:417
 msgid ""
 "_: Enter transaction\n"
 "Enter"
-msgstr ""
-"_: Enter transaction\n"
-"Enter"
+msgstr "Enter"
 
 #: kmymoney2.cpp:420
 msgid ""
 "_: Edit split button\n"
 "Edit splits"
-msgstr ""
-"_: Edit split button\n"
-"Edit splits"
+msgstr "Edit splits"
 
 #: kmymoney2.cpp:421
 msgid ""
 "_: Cancel transaction edit\n"
 "Cancel"
-msgstr ""
-"_: Cancel transaction edit\n"
-"Cancel"
+msgstr "Cancel"
 
 #: kmymoney2.cpp:422
 msgid ""
 "_: Delete transaction\n"
 "Delete"
-msgstr ""
-"_: Delete transaction\n"
-"Delete"
+msgstr "Delete"
 
 #: kmymoney2.cpp:423
 msgid ""
 "_: Duplicate transaction\n"
 "Duplicate"
-msgstr ""
-"_: Duplicate transaction\n"
-"Duplicate"
+msgstr "Duplicate"
 
 #: kmymoney2.cpp:425
 #: kmymoney2.cpp:4826
@@ -2294,57 +2274,43 @@ msgstr ""
 msgid ""
 "_: Button text for match transaction\n"
 "Match"
-msgstr ""
-"_: Button text for match transaction\n"
-"Match"
+msgstr "Match"
 
 #: kmymoney2.cpp:426
 msgid ""
 "_: Accept 'imported' and 'matched' transaction\n"
 "Accept"
-msgstr ""
-"_: Accept 'imported' and 'matched' transaction\n"
-"Accept"
+msgstr "Accept"
 
 #: kmymoney2.cpp:428
 msgid ""
 "_: Toggle reconciliation flag\n"
 "Toggle"
-msgstr ""
-"_: Toggle reconciliation flag\n"
-"Toggle"
+msgstr "Toggle"
 
 #: kmymoney2.cpp:429
 msgid ""
 "_: Mark transaction cleared\n"
 "Cleared"
-msgstr ""
-"_: Mark transaction cleared\n"
-"Cleared"
+msgstr "Cleared"
 
 #: kmymoney2.cpp:430
 msgid ""
 "_: Mark transaction reconciled\n"
 "Reconciled"
-msgstr ""
-"_: Mark transaction reconciled\n"
-"Reconciled"
+msgstr "Reconciled"
 
 #: kmymoney2.cpp:431
 msgid ""
 "_: Mark transaction not reconciled\n"
 "Not reconciled"
-msgstr ""
-"_: Mark transaction not reconciled\n"
-"Not reconciled"
+msgstr "Not reconciled"
 
 #: kmymoney2.cpp:432
 msgid ""
 "_: Select all transactions\n"
 "Select all"
-msgstr ""
-"_: Select all transactions\n"
-"Select all"
+msgstr "Select all"
 
 #: kmymoney2.cpp:434
 #: kmymoney2.cpp:5497
@@ -2368,9 +2334,7 @@ msgstr "Assign next number"
 msgid ""
 "_: Combine transactions\n"
 "Combine"
-msgstr ""
-"_: Combine transactions\n"
-"Combine"
+msgstr "Combine"
 
 #: kmymoney2.cpp:440
 msgid "New investment"
@@ -2452,9 +2416,7 @@ msgstr "Change budget year"
 msgid ""
 "_: Budget based on forecast\n"
 "Forecast"
-msgstr ""
-"_: Budget based on forecast\n"
-"Forecast"
+msgstr "Forecast"
 
 #: kmymoney2.cpp:467
 #: kmymoney2.cpp:3990
@@ -2564,25 +2526,19 @@ msgstr "No encryption"
 msgid ""
 "_: KMyMoney (Filefilter)\n"
 "KMyMoney files"
-msgstr ""
-"_: KMyMoney (Filefilter)\n"
-"KMyMoney files"
+msgstr "KMyMoney files"
 
 #: kmymoney2.cpp:1103
 msgid ""
 "_: XML (Filefilter)\n"
 "XML files"
-msgstr ""
-"_: XML (Filefilter)\n"
-"XML files"
+msgstr "XML files"
 
 #: kmymoney2.cpp:1104
 msgid ""
 "_: Anonymous (Filefilter)\n"
 "Anonymous files"
-msgstr ""
-"_: Anonymous (Filefilter)\n"
-"Anonymous files"
+msgstr "Anonymous files"
 
 #: kmymoney2.cpp:1105
 msgid "All files"
@@ -3110,9 +3066,7 @@ msgstr "Unable to remove scheduled transaction '%1'"
 msgid ""
 "_: Copy of scheduled transaction name\n"
 "Copy of %1"
-msgstr ""
-"_: Copy of scheduled transaction name\n"
-"Copy of %1"
+msgstr "Copy of %1"
 
 #: kmymoney2.cpp:3581
 #: kmymoney2.cpp:4352
@@ -3371,9 +3325,7 @@ msgstr "Duplicate the current selected transactions"
 msgid ""
 "_: Button text for unmatch transaction\n"
 "Unmatch"
-msgstr ""
-"_: Button text for unmatch transaction\n"
-"Unmatch"
+msgstr "Unmatch"
 
 #: kmymoney2.cpp:5451
 #: kmymoney2.cpp:5473
@@ -3559,97 +3511,73 @@ msgstr "Unable to update price for %1"
 msgid ""
 "_: Category name\n"
 "Reinvested dividend"
-msgstr ""
-"_: Category name\n"
-"Reinvested dividend"
+msgstr "Reinvested dividend"
 
 #: converter/mymoneyqifreader.cpp:173
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (long term)"
-msgstr ""
-"_: Category name\n"
-"Reinvested dividend (long term)"
+msgstr "Reinvested dividend (long term)"
 
 #: converter/mymoneyqifreader.cpp:176
 msgid ""
 "_: Category name\n"
 "Reinvested dividend (short term)"
-msgstr ""
-"_: Category name\n"
-"Reinvested dividend (short term)"
+msgstr "Reinvested dividend (short term)"
 
 #: converter/mymoneyqifreader.cpp:179
 msgid ""
 "_: Category name\n"
 "Dividend"
-msgstr ""
-"_: Category name\n"
-"Dividend"
+msgstr "Dividend"
 
 #: converter/mymoneyqifreader.cpp:182
 msgid ""
 "_: Category name\n"
 "Interest"
-msgstr ""
-"_: Category name\n"
-"Interest"
+msgstr "Interest"
 
 #: converter/mymoneyqifreader.cpp:185
 msgid ""
 "_: Category name\n"
 "Capital Gain (short term)"
-msgstr ""
-"_: Category name\n"
-"Capital Gain (short term)"
+msgstr "Capital Gain (short term)"
 
 #: converter/mymoneyqifreader.cpp:188
 msgid ""
 "_: Category name\n"
 "Capital Gain (mid term)"
-msgstr ""
-"_: Category name\n"
-"Capital Gain (mid term)"
+msgstr "Capital Gain (mid term)"
 
 #: converter/mymoneyqifreader.cpp:191
 msgid ""
 "_: Category name\n"
 "Capital Gain (long term)"
-msgstr ""
-"_: Category name\n"
-"Capital Gain (long term)"
+msgstr "Capital Gain (long term)"
 
 #: converter/mymoneyqifreader.cpp:194
 msgid ""
 "_: Category name\n"
 "Returned capital"
-msgstr ""
-"_: Category name\n"
-"Returned capital"
+msgstr "Returned capital"
 
 #: converter/mymoneyqifreader.cpp:197
 msgid ""
 "_: Category name\n"
 "Miscellaneous income"
-msgstr ""
-"_: Category name\n"
-"Miscellaneous income"
+msgstr "Miscellaneous income"
 
 #: converter/mymoneyqifreader.cpp:200
 msgid ""
 "_: Category name\n"
 "Miscellaneous expense"
-msgstr ""
-"_: Category name\n"
-"Miscellaneous expense"
+msgstr "Miscellaneous expense"
 
 #: converter/mymoneyqifreader.cpp:203
 msgid ""
 "_: Category name\n"
 "Investment fees"
-msgstr ""
-"_: Category name\n"
-"Investment fees"
+msgstr "Investment fees"
 
 #: converter/mymoneyqifreader.cpp:205
 #, c-format
@@ -3688,49 +3616,37 @@ msgstr "Unable to add transactions"
 msgid ""
 "_: QIF tag for liability account\n"
 "Oth L"
-msgstr ""
-"_: QIF tag for liability account\n"
-"Oth L"
+msgstr "Oth L"
 
 #: converter/mymoneyqifreader.cpp:572
 msgid ""
 "_: QIF tag for category\n"
 "Cat"
-msgstr ""
-"_: QIF tag for category\n"
-"Cat"
+msgstr "Cat"
 
 #: converter/mymoneyqifreader.cpp:575
 msgid ""
 "_: QIF tag for security\n"
 "Security"
-msgstr ""
-"_: QIF tag for security\n"
-"Security"
+msgstr "Security"
 
 #: converter/mymoneyqifreader.cpp:578
 msgid ""
 "_: QIF tag for investment account\n"
 "Invst"
-msgstr ""
-"_: QIF tag for investment account\n"
-"Invst"
+msgstr "Invst"
 
 #: converter/mymoneyqifreader.cpp:581
 msgid ""
 "_: QIF tag for prices\n"
 "Prices"
-msgstr ""
-"_: QIF tag for prices\n"
-"Prices"
+msgstr "Prices"
 
 #: converter/mymoneyqifreader.cpp:599
 msgid ""
 "_: QIF tag for a class\n"
 "Class"
-msgstr ""
-"_: QIF tag for a class\n"
-"Class"
+msgstr "Class"
 
 #: converter/mymoneyqifreader.cpp:753
 #: converter/mymoneyqifreader.cpp:2203
@@ -4387,68 +4303,52 @@ msgstr "Unable to load schedule details"
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
-msgstr ""
-"_: Reconcile state 'Not reconciled'\n"
-"Not reconciled"
+msgstr "Not reconciled"
 
 #: kmymoneyutils.cpp:393
 #: widgets/register.cpp:476
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
-msgstr ""
-"_: Reconcile state 'Cleared'\n"
-"Cleared"
+msgstr "Cleared"
 
 #: kmymoneyutils.cpp:396
 #: widgets/register.cpp:479
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
-msgstr ""
-"_: Reconcile state 'Reconciled'\n"
-"Reconciled"
+msgstr "Reconciled"
 
 #: kmymoneyutils.cpp:399
 #: widgets/register.cpp:482
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
-msgstr ""
-"_: Reconcile state 'Frozen'\n"
-"Frozen"
+msgstr "Frozen"
 
 #: kmymoneyutils.cpp:410
 msgid ""
 "_: Reconcile flag C\n"
 "C"
-msgstr ""
-"_: Reconcile flag C\n"
-"C"
+msgstr "C"
 
 #: kmymoneyutils.cpp:413
 msgid ""
 "_: Reconcile flag R\n"
 "R"
-msgstr ""
-"_: Reconcile flag R\n"
-"R"
+msgstr "R"
 
 #: kmymoneyutils.cpp:416
 msgid ""
 "_: Reconcile flag F\n"
 "F"
-msgstr ""
-"_: Reconcile flag F\n"
-"F"
+msgstr "F"
 
 #: kmymoneyutils.cpp:419
 msgid ""
 "_: Flag for unknown reconciliation state\n"
 "?"
-msgstr ""
-"_: Flag for unknown reconciliation state\n"
-"?"
+msgstr "?"
 
 #: _tips.cpp:3
 msgid ""
@@ -4618,9 +4518,7 @@ msgstr ""
 msgid ""
 "_: Report date range\n"
 "%1 through %2"
-msgstr ""
-"_: Report date range\n"
-"%1 through %2"
+msgstr "%1 through %2"
 
 #: reports/listtable.cpp:171
 #: reports/pivottable.cpp:1571
@@ -5693,9 +5591,7 @@ msgstr "Loan payment from %1"
 msgid ""
 "_: Split transaction (category replacement)\n"
 "Split transaction"
-msgstr ""
-"_: Split transaction (category replacement)\n"
-"Split transaction"
+msgstr "Split transaction"
 
 #: views/kreportsview.cpp:262
 msgid ""
@@ -5769,17 +5665,13 @@ msgstr "Include Stylesheet"
 msgid ""
 "_: CSV (Filefilter)\n"
 "CSV files"
-msgstr ""
-"_: CSV (Filefilter)\n"
-"CSV files"
+msgstr "CSV files"
 
 #: views/kreportsview.cpp:586
 msgid ""
 "_: HTML (Filefilter)\n"
 "HTML files"
-msgstr ""
-"_: HTML (Filefilter)\n"
-"HTML files"
+msgstr "HTML files"
 
 #: views/kreportsview.cpp:591
 msgid "Export as"
@@ -8487,9 +8379,7 @@ msgstr "The transaction you are about to enter has a post date in the future.<br
 msgid ""
 "_: Dialog caption for 'Enter or schedule' dialog\n"
 "Enter or schedule?"
-msgstr ""
-"_: Dialog caption for 'Enter or schedule' dialog\n"
-"Enter or schedule?"
+msgstr "Enter or schedule?"
 
 #: dialogs/transactioneditor.cpp:671
 msgid "The balance of account <b>%1</b> dropped below the warning balance of %2."
@@ -9388,9 +9278,7 @@ msgstr "Two transactions are usually treated identical for autofill, if they ref
 msgid ""
 "_: Same transaction if amount differs less than percent.\n"
 "percent."
-msgstr ""
-"_: Same transaction if amount differs less than percent.\n"
-"percent."
+msgstr "percent."
 
 #: dialogs/settings/rc.cpp:161
 msgid "with previously most often used transaction for the payee"
@@ -9588,9 +9476,7 @@ msgstr "Delete ..."
 msgid ""
 "_: Duplicate split\n"
 "CTRL+c"
-msgstr ""
-"_: Duplicate split\n"
-"CTRL+c"
+msgstr "CTRL+c"
 
 #: dialogs/kmymoneysplittable.cpp:562
 msgid "will be calculated"
@@ -9636,9 +9522,7 @@ msgstr "Device options"
 msgid ""
 "_: This is the mount point\n"
 "Mount Point:"
-msgstr ""
-"_: This is the mount point\n"
-"Mount Point:"
+msgstr "Mount Point:"
 
 #: dialogs/rc.cpp:11
 msgid "Choose..."
@@ -10251,17 +10135,13 @@ msgstr "Range"
 msgid ""
 "_: To (Date)\n"
 "To"
-msgstr ""
-"_: To (Date)\n"
-"To"
+msgstr "To"
 
 #: dialogs/rc.cpp:211
 msgid ""
 "_: From (Date)\n"
 "From"
-msgstr ""
-"_: From (Date)\n"
-"From"
+msgstr "From"
 
 #: dialogs/rc.cpp:213
 msgid "Search this amount"
@@ -10275,17 +10155,13 @@ msgstr "Search amount in the range"
 msgid ""
 "_: to (amount)\n"
 "to"
-msgstr ""
-"_: to (amount)\n"
-"to"
+msgstr "to"
 
 #: dialogs/rc.cpp:216
 msgid ""
 "_: from (amount)\n"
 "from"
-msgstr ""
-"_: from (amount)\n"
-"from"
+msgstr "from"
 
 #: dialogs/rc.cpp:220
 msgid "Select transactions without payees"
@@ -10339,17 +10215,13 @@ msgstr "Search number in range"
 msgid ""
 "_: to (number)\n"
 "to"
-msgstr ""
-"_: to (number)\n"
-"to"
+msgstr "to"
 
 #: dialogs/rc.cpp:241
 msgid ""
 "_: from (number)\n"
 "from"
-msgstr ""
-"_: from (number)\n"
-"from"
+msgstr "from"
 
 #: dialogs/rc.cpp:242
 msgid "text"
@@ -11775,9 +11647,7 @@ msgstr "Security detail wizard"
 msgid ""
 "_: default price mode\n"
 "<default>"
-msgstr ""
-"_: default price mode\n"
-"<default>"
+msgstr "<default>"
 
 #: dialogs/knewaccountdlg.cpp:122
 #: dialogs/knewinvestmentwizard.cpp:110
@@ -12235,9 +12105,7 @@ msgstr "You have entered budget values using a different base which would result
 msgid ""
 "_: Auto assignment (caption)\n"
 "Auto assignment"
-msgstr ""
-"_: Auto assignment (caption)\n"
-"Auto assignment"
+msgstr "Auto assignment"
 
 #: widgets/kbudgetvalues.cpp:206
 msgid "You have entered budget values using a different base which would result in a yearly budget of <b>%1</b>. Should this value be used to fill the monthly budget?"
@@ -12295,83 +12163,63 @@ msgstr "Reconcile state"
 msgid ""
 "_: Deposits onto account\n"
 "Deposits"
-msgstr ""
-"_: Deposits onto account\n"
-"Deposits"
+msgstr "Deposits"
 
 #: widgets/register.cpp:442
 msgid ""
 "_: Payments towards credit card\n"
 "Payments"
-msgstr ""
-"_: Payments towards credit card\n"
-"Payments"
+msgstr "Payments"
 
 #: widgets/register.cpp:446
 msgid ""
 "_: Payments made from account\n"
 "Payments"
-msgstr ""
-"_: Payments made from account\n"
-"Payments"
+msgstr "Payments"
 
 #: widgets/register.cpp:448
 msgid ""
 "_: Payments made with credit card\n"
 "Charges"
-msgstr ""
-"_: Payments made with credit card\n"
-"Charges"
+msgstr "Charges"
 
 #: widgets/register.cpp:736
 msgid ""
 "_: Payment made from account\n"
 "Payment"
-msgstr ""
-"_: Payment made from account\n"
-"Payment"
+msgstr "Payment"
 
 #: widgets/register.cpp:737
 msgid ""
 "_: Deposit into account\n"
 "Deposit"
-msgstr ""
-"_: Deposit into account\n"
-"Deposit"
+msgstr "Deposit"
 
 #: widgets/register.cpp:813
 msgid ""
 "_: Payment made with credit card\n"
 "Charge"
-msgstr ""
-"_: Payment made with credit card\n"
-"Charge"
+msgstr "Charge"
 
 #: widgets/register.cpp:814
 msgid ""
 "_: Payment towards credit card\n"
 "Payment"
-msgstr ""
-"_: Payment towards credit card\n"
-"Payment"
+msgstr "Payment"
 
 #: widgets/register.cpp:818
 #: widgets/register.cpp:824
 msgid ""
 "_: Decrease of asset/liability value\n"
 "Decrease"
-msgstr ""
-"_: Decrease of asset/liability value\n"
-"Decrease"
+msgstr "Decrease"
 
 #: widgets/register.cpp:819
 #: widgets/register.cpp:823
 msgid ""
 "_: Increase of asset/liability value\n"
 "Increase"
-msgstr ""
-"_: Increase of asset/liability value\n"
-"Increase"
+msgstr "Increase"
 
 #: widgets/register.cpp:2280
 msgid "Prior transactions possibly filtered"
@@ -12447,25 +12295,19 @@ msgstr "Next fiscal year"
 msgid ""
 "_: Unknown payee\n"
 "Unknown"
-msgstr ""
-"_: Unknown payee\n"
-"Unknown"
+msgstr "Unknown"
 
 #: widgets/register.cpp:2368
 msgid ""
 "_: Unknown category\n"
 "Unknown"
-msgstr ""
-"_: Unknown category\n"
-"Unknown"
+msgstr "Unknown"
 
 #: widgets/register.cpp:2387
 msgid ""
 "_: Unknown security\n"
 "Unknown"
-msgstr ""
-"_: Unknown security\n"
-"Unknown"
+msgstr "Unknown"
 
 #: widgets/klistviewsearchline.cpp:249
 msgid "Search Columns"
@@ -12479,9 +12321,7 @@ msgstr "All Visible Columns"
 msgid ""
 "_: Column number %1\n"
 "Column No. %1"
-msgstr ""
-"_: Column number %1\n"
-"Column No. %1"
+msgstr "Column No. %1"
 
 #: widgets/klistviewsearchline.cpp:461
 #: widgets/registersearchline.cpp:286
@@ -12526,9 +12366,7 @@ msgstr "Total Value"
 msgid ""
 "_: label for status combo\n"
 "Stat&us"
-msgstr ""
-"_: label for status combo\n"
-"Stat&us"
+msgstr "Stat&us"
 
 #: widgets/registersearchline.cpp:79
 msgid "Any status"
@@ -12554,17 +12392,13 @@ msgstr "Not marked"
 msgid ""
 "_: Column heading for category in tax report\n"
 "Tax"
-msgstr ""
-"_: Column heading for category in tax report\n"
-"Tax"
+msgstr "Tax"
 
 #: widgets/kmymoneyaccounttree.cpp:58
 msgid ""
 "_: Column heading for VAT category\n"
 "VAT"
-msgstr ""
-"_: Column heading for VAT category\n"
-"VAT"
+msgstr "VAT"
 
 #: widgets/kmymoneywizard.cpp:101
 msgid "Continue with next page"
@@ -12594,9 +12428,7 @@ msgstr "Step %1 of %2"
 msgid ""
 "_: Enter todays date into date input widget\n"
 "T"
-msgstr ""
-"_: Enter today's date into date input widget\n"
-"T"
+msgstr "T"
 
 #: widgets/transactionform.cpp:302
 msgid "&Deposit"
@@ -12761,9 +12593,7 @@ msgstr "Convert values to base currency"
 msgid ""
 "_: Convert 'em!!\n"
 "<p>Select this option to convert all values in the report to your base currency.</p><p>Leave it unchecked if you'd like to see values in their original currency.</p><p>If currencies are not converted, then subtotals will not be shown.</p>"
-msgstr ""
-"_: Convert 'em!!\n"
-"<p>Select this option to convert all values in the report to your base currency.</p><p>Leave it unchecked if you'd like to see values in their original currency.</p><p>If currencies are not converted, then subtotals will not be shown.</p>"
+msgstr "<p>Select this option to convert all values in the report to your base currency.</p><p>Leave it unchecked if you'd like to see values in their original currency.</p><p>If currencies are not converted, then subtotals will not be shown.</p>"
 
 #: widgets/rc.cpp:60
 msgid "Mark as a favorite report"
@@ -13041,17 +12871,13 @@ msgstr "Sort order"
 msgid ""
 "_: Sunday\n"
 "Sun"
-msgstr ""
-"_: Sunday\n"
-"Sun"
+msgstr "Sun"
 
 #: widgets/kmymoneydatetbl.cpp:131
 msgid ""
 "_: Saturday\n"
 "Sat"
-msgstr ""
-"_: Saturday\n"
-"Sat"
+msgstr "Sat"
 
 #: widgets/kmymoneydatetbl.cpp:171
 #: widgets/kmymoneydatetbl.cpp:178
@@ -13074,17 +12900,13 @@ msgstr "Cheque"
 msgid ""
 "_: Activity for expense categories\n"
 "Paid"
-msgstr ""
-"_: Activity for expense categories\n"
-"Paid"
+msgstr "Paid"
 
 #: widgets/kmymoneycombo.cpp:470
 msgid ""
 "_: Activity for income categories\n"
 "Received"
-msgstr ""
-"_: Activity for income categories\n"
-"Received"
+msgstr "Received"
 
 #: widgets/kmymoneycombo.cpp:519
 msgid "Reinvest dividend"
