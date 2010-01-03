@@ -144,7 +144,7 @@ public:
     *
     *    "9C59DB40B75DD3BA:Thomas Baumgart <ipwizard@users.sourceforge.net>"
     */
-  static void publicKeyList(QStringList& list);
+  static void publicKeyList(QStringList& list, const QString& pattern = QString());
 
 #ifdef KMM_DEBUG
   void dumpUngetBuffer(void);

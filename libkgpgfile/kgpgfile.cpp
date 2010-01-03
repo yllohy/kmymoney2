@@ -528,22 +528,12 @@ bool KGPGFile::GPGAvailable(void)
 
 bool KGPGFile::keyAvailable(const QString& name)
 {
-  QString output;
-  char  buffer[1024];
-  Q_LONG len;
-
-  KGPGFile file;
-  QString args = QString("--list-keys --list-options no-show-photos %1").arg(name);
-  file.open(IO_ReadOnly, args, true);
-  while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
-    buffer[len] = 0;
-    output += QString(buffer);
-  }
-  file.close();
-  return !output.isEmpty();
+  QStringList list;
+  publicKeyList(list, name);
+  return !list.isEmpty();
 }
 
-void KGPGFile::publicKeyList(QStringList& list)
+void KGPGFile::publicKeyList(QStringList& list, const QString& pattern)
 {
   QMap<QString, QString> map;
   QString output;
@@ -552,7 +542,10 @@ void KGPGFile::publicKeyList(QStringList& list)
 
   list.clear();
   KGPGFile file;
-  file.open(IO_ReadOnly, "--list-keys --with-colons", true);
+  QString args("--list-keys --with-colons");
+  if(!pattern.isEmpty())
+    args += QString(" %1").arg(pattern);
+  file.open(IO_ReadOnly, args, true);
   while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
     buffer[len] = 0;
     output += QString(buffer);
@@ -575,9 +568,14 @@ void KGPGFile::publicKeyList(QStringList& list)
     QStringList fields = QStringList::split(":", (*it), true);
     QString val;
     if(fields[0] == "pub") {
-      currentKey = fields[4];
-      val = QString("%1:%2").arg(currentKey).arg(fields[9]);
-      map[val] = val;
+      QDate expiration = QDate::fromString(fields[6], Qt::ISODate);
+      if(expiration >  QDate::currentDate()) {
+        currentKey = fields[4];
+        val = QString("%1:%2").arg(currentKey).arg(fields[9]);
+        map[val] = val;
+      } else {
+        qDebug("'%s' is expired", fields[9].data());
+      }
     } else if(fields[0] == "uid") {
       val = QString("%1:%2").arg(currentKey).arg(fields[9]);
       map[val] = val;
