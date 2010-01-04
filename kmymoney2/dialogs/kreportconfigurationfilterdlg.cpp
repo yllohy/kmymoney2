@@ -203,7 +203,7 @@ void KReportConfigurationFilterDlg::slotSearch(void)
     } else {
       m_currentState.setBudget(QString(), false);
     }
-    
+
     //set moving average days
     if(m_tab2->m_movingAverageDays->isEnabled()) {
       m_currentState.setMovingAverageDays( m_tab2->m_movingAverageDays->value() );
@@ -652,6 +652,14 @@ void KReportConfigurationFilterDlg::slotReset(void)
   }
 
   slotRightSize();
+}
+
+void KReportConfigurationFilterDlg::slotDateChanged(void)
+{
+  m_dateRange->blockSignals(true);
+  m_dateRange->setCurrentItem(MyMoneyTransactionFilter::userDefined);
+  m_dateRange->blockSignals(false);
+  slotUpdateSelections();
 }
 
 void KReportConfigurationFilterDlg::slotShowHelp(void)
