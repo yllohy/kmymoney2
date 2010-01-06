@@ -1,4 +1,7 @@
 
+2010-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed report configuration for non-user-defined reports
+
 2010-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Keep a user defined date filter for reports as user defined even if
     it matches one of the predefined ranges
