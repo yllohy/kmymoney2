@@ -1,4 +1,8 @@
 
+2010-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow assignment of category after all splits of a
+    multi-split transactions have been removed
+
 2010-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed report configuration for non-user-defined reports
 
