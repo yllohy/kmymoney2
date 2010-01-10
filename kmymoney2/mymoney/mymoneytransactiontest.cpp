@@ -187,32 +187,57 @@ void MyMoneyTransactionTest::testModifySplits() {
 }
 
 void MyMoneyTransactionTest::testDeleteSplits() {
-	testAddSplits();
-	MyMoneySplit split;
+        testAddSplits();
+        MyMoneySplit split;
 
-	split.setId("S00000000");
-	// this one should fail, because the ID is invalid
-	try {
-		m->modifySplit(split);
-		CPPUNIT_FAIL("Exception expected");
-	} catch(MyMoneyException *e) {
-		delete e;
-	}
+        // add a third split
+        split.setAccountId("A000003");
+        split.setValue(MyMoneyMoney(300));
+        try {
+          m->addSplit(split);
+        } catch(MyMoneyException *e) {
+                CPPUNIT_FAIL("Unexpected exception!");
+                delete e;
+        }
 
-	// set id to correct value, and check that it worked
-	split.setId("S0001");
-	try {
-		m->removeSplit(split);
+        split.setId("S00000000");
+        // this one should fail, because the ID is invalid
+        try {
+                m->modifySplit(split);
+                CPPUNIT_FAIL("Exception expected");
+        } catch(MyMoneyException *e) {
+                delete e;
+        }
+
+        // set id to correct value, and check that it worked
+        split.setId("S0002");
+        try {
+                m->removeSplit(split);
+                CPPUNIT_ASSERT(m->splitCount() == 2);
+                CPPUNIT_ASSERT(m->splits()[0].accountId() == "A000001");
+                CPPUNIT_ASSERT(m->accountReferenced("A000002") == false);
+                CPPUNIT_ASSERT(m->accountReferenced("A000001") == true);
+                CPPUNIT_ASSERT(m->accountReferenced("A000003") == true);
+                CPPUNIT_ASSERT(m->splits()[0].id() == "S0001");
+
+        } catch(MyMoneyException *e) {
+                CPPUNIT_FAIL("Unexpected exception!");
+                delete e;
+        }
+
+        // set id to the other correct value, and check that it worked
+        split.setId("S0003");
+        try {
+                m->removeSplit(split);
                 CPPUNIT_ASSERT(m->splitCount() == 1);
-                CPPUNIT_ASSERT(m->splits()[0].accountId() == "A000002");
-                CPPUNIT_ASSERT(m->accountReferenced("A000001") == false);
-                CPPUNIT_ASSERT(m->accountReferenced("A000002") == true);
-                CPPUNIT_ASSERT(m->splits()[0].id() == "S0002");
+                CPPUNIT_ASSERT(m->accountReferenced("A000001") == true);
+                CPPUNIT_ASSERT(m->accountReferenced("A000003") == false);
+                CPPUNIT_ASSERT(m->splits()[0].id() == "S0001");
 
-	} catch(MyMoneyException *e) {
-		CPPUNIT_FAIL("Unexpected exception!");
-		delete e;
-	}
+        } catch(MyMoneyException *e) {
+                CPPUNIT_FAIL("Unexpected exception!");
+                delete e;
+        }
 }
 
 void MyMoneyTransactionTest::testDeleteAllSplits() {
