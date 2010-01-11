@@ -1,4 +1,7 @@
 
+2010-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Another update of the report configuration wrt date filters
+
 2010-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow assignment of category after all splits of a
     multi-split transactions have been removed
