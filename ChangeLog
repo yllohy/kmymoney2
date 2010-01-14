@@ -1,3 +1,5 @@
+2010-01-13 Fernando Vilas <fvilas@iname.com>
+  * Backport MyMoneyPayee::matchData update
 
 2010-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Another update of the report configuration wrt date filters
