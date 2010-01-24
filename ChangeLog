@@ -1,3 +1,7 @@
+
+2010-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Do not accept split entries without category assignment
+
 2010-01-13 Fernando Vilas <fvilas@iname.com>
   * Backport MyMoneyPayee::matchData update
 
