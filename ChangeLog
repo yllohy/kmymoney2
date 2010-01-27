@@ -1,4 +1,8 @@
 
+2010-01-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added logic to detect and repair loops in the account hierarchy to the
+    consistency check
+
 2010-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Do not accept split entries without category assignment
 
