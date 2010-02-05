@@ -2405,6 +2405,14 @@ void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount
     QString("<qt>%1</qt>").arg(i18n("The category <b>%1</b> currently does not exist. Do you want to create it?<p><i>The parent account will default to <b>%2</b> but can be changed in the following dialog</i>.").arg(account.name()).arg(parent.name())), i18n("Create category"),
     KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
     createCategory(account, parent);
+  } else {
+    // we should not keep the 'no' setting because that can confuse people like
+    // I have seen in some usability tests. So we just delete it right away.
+    KConfig *kconfig = KGlobal::config();
+    if(kconfig) {
+      kconfig->setGroup(QString::fromLatin1("Notification Messages"));
+      kconfig->deleteEntry(QString::fromLatin1("CreateNewCategories"));
+    }
   }
 }
 
@@ -2570,6 +2578,14 @@ void KMyMoney2App::slotInvestmentDelete(void)
     } catch(MyMoneyException *e) {
       KMessageBox::information(this, i18n("Unable to delete investment: %1").arg(e->what()));
       delete e;
+    }
+  } else {
+    // we should not keep the 'no' setting because that can confuse people like
+    // I have seen in some usability tests. So we just delete it right away.
+    KConfig *kconfig = KGlobal::config();
+    if(kconfig) {
+      kconfig->setGroup(QString::fromLatin1("Notification Messages"));
+      kconfig->deleteEntry(QString::fromLatin1("DeleteInvestment"));
     }
   }
 }
@@ -3756,9 +3772,17 @@ void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QString& id)
   if(newnameBase != i18n("New Payee")) {
     // Ask the user if that is what he intended to do?
     QString msg = QString("<qt>") + i18n("Do you want to add <b>%1</b> as payer/receiver ?").arg(newnameBase) + QString("</qt>");
-
-    if(KMessageBox::questionYesNo(this, msg, i18n("New payee/receiver"), KStdGuiItem::yes(), KStdGuiItem::no(), "NewPayee") == KMessageBox::No)
+    const QString dontAskAgain = QString::fromLatin1("NewPayee");
+    if(KMessageBox::questionYesNo(this, msg, i18n("New payee/receiver"), KStdGuiItem::yes(), KStdGuiItem::no(), dontAskAgain) == KMessageBox::No) {
       doit = false;
+      // we should not keep the 'no' setting because that can confuse people like
+      // I have seen in some usability tests. So we just delete it right away.
+      KConfig *kconfig = KGlobal::config();
+      if(kconfig) {
+        kconfig->setGroup(QString::fromLatin1("Notification Messages"));
+        kconfig->deleteEntry(dontAskAgain);
+      }
+    }
   }
 
   if(doit) {

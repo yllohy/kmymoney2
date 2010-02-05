@@ -1,4 +1,9 @@
 
+2010-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't suppress some questions upon specific answers even if
+    selected by the user. A usability video showed that this can
+    confuse the user
+
 2010-01-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to detect and repair loops in the account hierarchy to the
     consistency check
