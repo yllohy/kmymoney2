@@ -2,6 +2,8 @@
 2010-02-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed BKO #224027 (investment transaction editor problem with
     negative interest)
+  * Fxied BKO #225085 (Clicking on category doesn't show that category
+    in ledger view)
 
 2010-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't suppress some questions upon specific answers even if
