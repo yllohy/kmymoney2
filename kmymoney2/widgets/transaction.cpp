@@ -1594,7 +1594,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveFees()) {
             if((fieldEditable = !m_feeCategory.isEmpty()) == true) {
-              txt = m_feeAmount.abs().formatMoney(m_currency);
+              txt = m_feeAmount.formatMoney(m_currency);
             }
           }
           break;
@@ -1626,7 +1626,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveInterest()) {
             if((fieldEditable = !m_interestCategory.isEmpty()) == true) {
-              txt = m_interestAmount.abs().formatMoney(m_currency);
+              txt = (-m_interestAmount).formatMoney(m_currency);
             }
           }
           break;
@@ -1729,7 +1729,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
             txt = m_assetAccountSplit.value().abs().formatMoney(m_currency);
 
           } else if(haveInterest()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency);
+            txt = (-m_interestAmount).formatMoney(m_currency);
           }
           break;
 
@@ -1765,9 +1765,9 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
             // txt = m_interestAmount.abs().formatMoney(m_currency);
           } else if(haveInterest() && m_interestSplits.count()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency);
+            txt = (-m_interestAmount).formatMoney(m_currency);
           } else if(haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency);
+            txt = m_feeAmount.formatMoney(m_currency);
           }
           break;
 
@@ -1793,9 +1793,9 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency);
+            txt = (-m_interestAmount).formatMoney(m_currency);
           } else if(haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency);
+            txt = m_feeAmount.formatMoney(m_currency);
           }
           break;
 
@@ -1821,7 +1821,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
           && haveInterest() && m_interestSplits.count()
           && haveFees() && m_feeSplits.count()) {
-            txt = m_feeAmount.abs().formatMoney(m_currency);
+            txt = m_feeAmount.formatMoney(m_currency);
           }
           break;
 

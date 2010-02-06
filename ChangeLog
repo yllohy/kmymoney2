@@ -1,4 +1,8 @@
 
+2010-02-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed BKO #224027 (investment transaction editor problem with
+    negative interest)
+
 2010-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't suppress some questions upon specific answers even if
     selected by the user. A usability video showed that this can
