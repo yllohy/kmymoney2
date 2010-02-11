@@ -339,8 +339,13 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   QValueList<int> sizes = config->readIntListEntry("KPayeesViewSplitterSize");
-  if(sizes.size() == 2)
+  if(sizes.size() == 2) {
+    if(!sizes[0] || !sizes[1]) {
+      sizes[0] = 1;
+      sizes[1] = 2;
+    }
     m_splitter->setSizes(sizes);
+  }
 
   m_transactionView->setSorting(-1);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);

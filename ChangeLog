@@ -1,4 +1,7 @@
 
+2010-02-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Backported fix from KDE4 version so that the payee view cannot disappear
+
 2010-02-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed BKO #224027 (investment transaction editor problem with
     negative interest)
