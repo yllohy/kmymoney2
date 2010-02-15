@@ -1,4 +1,7 @@
 
+2010-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Released 1.0.3
+
 2010-02-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Backported fix from KDE4 version so that the payee view cannot disappear
 
