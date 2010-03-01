@@ -116,26 +116,29 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
   m_num = 0;
   m_denom = 1;
 
-  QRegExp regExp;
+  // an empty string is zero
+  if (pszAmount.isEmpty())
+    return;
 
   // take care of prices given in the form "8 5/16"
-  regExp.setPattern("(\\d+)\\s+(\\d+/\\d+)");
-  if(regExp.search(pszAmount) > -1) {
-    *this = MyMoneyMoney(regExp.cap(1)) + MyMoneyMoney(regExp.cap(2));
+  // and our own internal represenation
+  QRegExp regExp("^((\\d+)\\s+|-)?(\\d+)/(\\d+)");
+  //                +-#2-+        +-#3-+ +-#4-+
+  //               +-----#1-----+
+  if (regExp.search(pszAmount) > -1) {
+    m_num = regExp.cap(3).toLongLong();
+    m_denom = regExp.cap(4).toLongLong();
+    const QString& part1 = regExp.cap(1);
+    if(!part1.isEmpty()) {
+      if(part1 == QString("-")) {
+        m_num = -m_num;
+
+      } else {
+        *this += MyMoneyMoney(regExp.cap(2));
+      }
+    }
     return;
   }
-
-  // take care of our internal representation
-  regExp.setPattern("(\\-?\\d+)/(\\d+)");
-  if(regExp.search(pszAmount) > -1) {
-    // string matches the internal representation
-    fromString(pszAmount);
-    return;
-  }
-
-  // an empty string is zero
-  if(pszAmount.length() == 0)
-    return;
 
   QString res = pszAmount;
   // get rid of anything that is not
@@ -337,19 +340,6 @@ const QString MyMoneyMoney::toString(void) const
     tmp /= 10;
   }
   return res + "/" + resf;
-}
-
-void MyMoneyMoney::fromString(const QString& str)
-{
-  m_num = 0;
-  m_denom = 1;
-
-  QRegExp regExp("(\\-?\\d+)/(\\d+)");
-  int pos = regExp.search(str);
-  if(pos > -1) {
-    m_num = atoll(regExp.cap(1));
-    m_denom = atoll(regExp.cap(2));
-  }
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &_money)

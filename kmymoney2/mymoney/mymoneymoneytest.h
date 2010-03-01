@@ -56,7 +56,6 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testDoubleConstructor);
 	CPPUNIT_TEST(testAbsoluteFunction);
 	CPPUNIT_TEST(testToString);
-	CPPUNIT_TEST(testFromString);
 	CPPUNIT_TEST(testNegativeSignPos);
 	CPPUNIT_TEST(testPositiveSignPos);
 	CPPUNIT_TEST(testNegativeStringConstructor);
@@ -90,7 +89,6 @@ public:
 	void testDoubleConstructor();
 	void testAbsoluteFunction();
 	void testToString();
-	void testFromString();
 	void testNegativeSignPos();
 	void testPositiveSignPos();
 	void testNegativeStringConstructor();

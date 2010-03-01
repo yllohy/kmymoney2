@@ -158,7 +158,6 @@ public:
   static int denomToPrec(signed64 fract);
 
   const QString toString(void) const;
-  void fromString(const QString& str);
   const MyMoneyMoney convert(const signed64 denom = 100, const roundingMethod how = RndRound) const;
   static signed64 precToDenom(int prec);
   double toDouble(void) const;

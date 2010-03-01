@@ -467,24 +467,6 @@ void MyMoneyMoneyTest::testToString()
   CPPUNIT_ASSERT(m3.toString() == QString("0/1"));
 }
 
-void MyMoneyMoneyTest::testFromString()
-{
-  MyMoneyMoney m;
-
-  m.fromString("-100/100");
-  CPPUNIT_ASSERT(m.m_num == LLCONST(-100));
-  CPPUNIT_ASSERT(m.m_denom == LLCONST(100));
-  m.fromString("1234/100");
-  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
-  CPPUNIT_ASSERT(m.m_denom == LLCONST(100));
-  m.fromString("1234/10");
-  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
-  CPPUNIT_ASSERT(m.m_denom == LLCONST(10));
-  m.fromString("1234/2");
-  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
-  CPPUNIT_ASSERT(m.m_denom == LLCONST(2));
-}
-
 void MyMoneyMoneyTest::testNegativeSignPos(void)
 {
   MyMoneyMoney m("-123456/100");
