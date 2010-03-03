@@ -1,4 +1,7 @@
 
+2010-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed iterator problem in loop (backport from KDE4)
+
 2010-02-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Optimized MyMoneyMoney(QString) ctor (backport from KDE4)
 
