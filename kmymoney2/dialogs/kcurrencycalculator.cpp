@@ -122,7 +122,10 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   MyMoneyFile* file = MyMoneyFile::instance();
 
   m_dateFrame->hide();
-  m_dateEdit->setDate(date);
+  if(date.isValid())
+    m_dateEdit->setDate(date);
+  else
+    m_dateEdit->setDate(QDate::currentDate());
 
   m_fromCurrencyText->setText(m_fromCurrency.isCurrency() ? m_fromCurrency.id() : m_fromCurrency.tradingSymbol());
   m_toCurrencyText->setText(m_toCurrency.isCurrency() ? m_toCurrency.id() : m_toCurrency.tradingSymbol());
@@ -182,7 +185,6 @@ KCurrencyCalculator::~KCurrencyCalculator()
 void KCurrencyCalculator::setupPriceEditor(void)
 {
   m_dateFrame->show();
-  m_dateEdit->setDate(QDate::currentDate());
   m_amountDateFrame->hide();
   m_updateButton->setChecked(true);
   m_updateButton->hide();
