@@ -1,4 +1,9 @@
 
+2010-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved anonymizer
+  * Fixed transaction loader for XML file
+  * Added testcases
+
 2010-03-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't preset date in currency calculator to today in all cases
     (backport from 3.96 by Ian Neal)

@@ -42,8 +42,8 @@
 #include "../mymoneyreport.h"
 #include "../mymoneyinstitution.h"
 
-QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term,kmm-online-source,kmm-brokerage-account,lastStatementDate,kmm-sort-reconcile,kmm-sort-std,kmm-iconpos,mm-closed,payee,schedule,term");
-QStringList MyMoneyStorageANON::zKvpXNumber = QStringList::split(",","final-payment,loan-amount,periodic-payment");
+QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term,kmm-online-source,kmm-brokerage-account,lastStatementDate,kmm-sort-reconcile,kmm-sort-std,kmm-iconpos,mm-closed,payee,schedule,term,lastImportedTransactionDate,VatAccount,VatRate,kmm-matched-tx,Imported");
+QStringList MyMoneyStorageANON::zKvpXNumber = QStringList::split(",","final-payment,loan-amount,periodic-payment,lastStatementBalance");
 
 
 MyMoneyStorageANON::MyMoneyStorageANON() :
@@ -115,6 +115,7 @@ void MyMoneyStorageANON::writePayee(QDomElement& payee, const MyMoneyPayee& _p)
   p.setPostcode(hideString(p.postcode()));
   p.setState(hideString(p.state()));
   p.setTelephone(hideString(p.telephone()));
+  p.setNotes(hideString(p.notes()));
   bool ignoreCase;
   QStringList keys;
   MyMoneyPayee::payeeMatchType matchType = p.matchData(ignoreCase, keys);
@@ -158,6 +159,14 @@ void MyMoneyStorageANON::fakeTransaction(MyMoneyTransaction& tx)
       s.setShares((s.shares() * m_factor));
     }
     s.setNumber(hideString(s.number()));
+
+    // obfuscate a possibly matched transaction as well
+    if(s.isMatched()) {
+      MyMoneyTransaction t = s.matchedTransaction();
+      fakeTransaction(t);
+      s.removeMatch();
+      s.addMatch(t);
+    }
     tn.modifySplit(s);
   }
   tx = tn;
@@ -198,7 +207,7 @@ void MyMoneyStorageANON::writeSchedule(QDomElement& scheduledTx, const MyMoneySc
   fakeTransaction(tn);
 
   sn.setName(sx.id());
-  sn.setTransaction(tn);
+  sn.setTransaction(tn, true);
 
   MyMoneyStorageXML::writeSchedule(scheduledTx, sn);
 }

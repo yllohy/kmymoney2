@@ -39,6 +39,8 @@
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneyobject.h>
 
+class MyMoneyStorageANON;
+
 /**
   * @author Michael Edwardes
   */
@@ -52,6 +54,7 @@
   */
 class KMYMONEY_EXPORT MyMoneySchedule : public MyMoneyObject
 {
+  friend class MyMoneyStorageANON;
 public:
   /**
     * This enum is used to describe all the possible schedule frequencies.
