@@ -531,6 +531,7 @@ void MyMoneyTransactionTest::testReadXMLEx()
 	try {
 		t = MyMoneyTransaction(node);
 		CPPUNIT_ASSERT(t.pairs().count() == 0);
+		CPPUNIT_ASSERT(t.splits().count() == 2);
 		CPPUNIT_ASSERT(t.splits()[0].pairs().count() == 3);
 		CPPUNIT_ASSERT(t.splits()[1].pairs().count() == 0);
 		CPPUNIT_ASSERT(t.splits()[0].isMatched());
