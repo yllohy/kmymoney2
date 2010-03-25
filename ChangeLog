@@ -1,4 +1,8 @@
 
+2010-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied backport patch provided by Ian Neal (adjustedDate.diff and
+    adjustedNextPayment.diff)
+
 2010-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved anonymizer
   * Fixed transaction loader for XML file

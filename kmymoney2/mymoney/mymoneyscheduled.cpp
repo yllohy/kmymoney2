@@ -253,35 +253,33 @@ const QDate& MyMoneySchedule::nextDueDate(void) const
 
 QDate MyMoneySchedule::adjustedNextDueDate(void) const
 {
-  QDate date(nextDueDate());
-
   if(isFinished())
     return QDate();
 
-  if(weekendOption() != MyMoneySchedule::MoveNothing) {
-    int dayOfWeek = date.dayOfWeek();
-    if (dayOfWeek >= 6) {
-      if (weekendOption() == MyMoneySchedule::MoveFriday) {
-        if (dayOfWeek == 7)
-          date = date.addDays(-2);
-        else
-          date = date.addDays(-1);
-      } else {
-        if (dayOfWeek == 6)
-          date = date.addDays(2);
-        else
-          date = date.addDays(1);
-      }
-    }
-  }
+  return adjustedDate(nextDueDate(), weekendOption());
+}
+
+QDate MyMoneySchedule::adjustedDate(QDate date, weekendOptionE option) const
+{
+  if (option == MyMoneySchedule::MoveNothing)
+    return date;
+
+  int step = 1;
+  if (option == MyMoneySchedule::MoveFriday)
+    step = -1;
+
+  while (date.dayOfWeek() > 5)
+    date = date.addDays(step);
+
   return date;
 }
 
 void MyMoneySchedule::setNextDueDate(const QDate& date)
 {
-  m_transaction.setPostDate(date);
-  if(date.isValid())
+  if(date.isValid()) {
+    m_transaction.setPostDate(date);
     m_startDate = date;
+  }
 }
 
 void MyMoneySchedule::setLastPayment(const QDate& date)
@@ -393,6 +391,12 @@ void MyMoneySchedule::validate(bool id_check) const
   }
 }
 
+QDate MyMoneySchedule::adjustedNextPayment(const QDate& refDate) const
+{
+  QDate date(nextPayment(refDate));
+  return date.isValid() ? adjustedDate(date, weekendOption()) : date;
+}
+
 QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 {
   // if the enddate is valid and it is before the reference date,
@@ -481,80 +485,75 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const Q
   if ( willEnd() && m_endDate < endDate )
     endDate = m_endDate;
 
+  weekendOptionE option(weekendOption());
+  QDate start_date(adjustedDate(startDate(), option));
   // if the period specified by the parameters and the period
   // defined for this schedule don't overlap, then the list remains empty
   if ((willEnd() && m_endDate < _startDate)
-  || startDate() > endDate)
+  || start_date > endDate)
     return theDates;
+
+  QDate date(adjustedDate(paymentDate, option));
 
   switch (m_occurence)
   {
     case OCCUR_ONCE:
-      if (startDate() >= _startDate && startDate() <= endDate)
-        theDates.append(startDate());
+      if (start_date >= _startDate && start_date <= endDate)
+        theDates.append(start_date);
       break;
 
     case OCCUR_DAILY:
-      if (paymentDate < _startDate)
+      while (date.isValid() && (date <= endDate))
       {
-        int daysMod = paymentDate.daysTo(_startDate) % m_occurenceMultiplier;
-        paymentDate = (daysMod==0) ? _startDate : _startDate.addDays( m_occurenceMultiplier -daysMod );
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
+        if (date >= _startDate)
+          theDates.append(date);
         paymentDate = paymentDate.addDays(m_occurenceMultiplier);
+        date = adjustedDate(paymentDate, option);
       }
       break;
 
     case OCCUR_WEEKLY:
       {
         int step = 7*m_occurenceMultiplier;
-        while (paymentDate < _startDate)
-          paymentDate = paymentDate.addDays(step);
-        while (paymentDate <= endDate)
+        while (date.isValid() && (date <= endDate))
         {
-          theDates.append(paymentDate);
+          if (date >= _startDate)
+            theDates.append(date);
           paymentDate = paymentDate.addDays(step);
+          date = adjustedDate(paymentDate, option);
         }
       }
       break;
 
     case OCCUR_EVERYHALFMONTH:
-      while (paymentDate < _startDate)
+      while (date.isValid() && (date <= endDate))
       {
+        if (date >= _startDate)
+          theDates.append(date);
         paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
-      }
-      while (paymentDate <= endDate)
-      {
-        theDates.append(paymentDate);
-        paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
+        date = adjustedDate(paymentDate, option);
       }
       break;
 
     case OCCUR_MONTHLY:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
+      while (date.isValid() && (date <= endDate))
       {
-        theDates.append(paymentDate);
+        if (date >= _startDate)
+          theDates.append(date);
         paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
         fixDate(paymentDate);
+        date = adjustedDate(paymentDate, option);
       }
       break;
 
     case OCCUR_YEARLY:
-      while (paymentDate < _startDate) {
-        paymentDate = paymentDate.addYears(m_occurenceMultiplier);
-        fixDate(paymentDate);
-      }
-      while (paymentDate <= endDate)
+      while (date.isValid() && (date <= endDate))
       {
-        theDates.append(paymentDate);
+        if (date >= _startDate)
+          theDates.append(date);
         paymentDate = paymentDate.addYears(m_occurenceMultiplier);
         fixDate(paymentDate);
+        date = adjustedDate(paymentDate, option);
       }
       break;
 

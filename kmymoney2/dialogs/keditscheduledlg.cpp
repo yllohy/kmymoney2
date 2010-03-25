@@ -384,29 +384,6 @@ MyMoneyTransaction KEditScheduleDlg::transaction(void) const
   t.setEntryDate(QDate());
   return t;
 }
-#if 0
-QDate KEditScheduleDlg::adjustDate(const QDate& _date) const
-{
-  QDate date(_date);
-  if (d->m_schedule.weekendOption() != MyMoneySchedule::MoveNothing) {
-    int dayOfWeek = date.dayOfWeek();
-    if (dayOfWeek >= 6) {
-      if (d->m_schedule.weekendOption() == MyMoneySchedule::MoveFriday) {
-        if (dayOfWeek == 7)
-          date = date.addDays(-2);
-        else
-          date = date.addDays(-1);
-      } else {
-        if (dayOfWeek == 6)
-          date = date.addDays(2);
-        else
-          date = date.addDays(1);
-      }
-    }
-  }
-  return date;
-}
-#endif
 
 bool KEditScheduleDlg::focusNextPrevChild(bool next)
 {

@@ -660,12 +660,18 @@ void MyMoneyForecast::addScheduledTransactions (void)
       if(it == schedule.end())
         break;
 
-      QDate nextDate = (*it).nextPayment((*it).lastPayment());
-      if(!nextDate.isValid()) {
+      if((*it).isFinished()) {
+        schedule.erase(it);
+        continue;
+      }
+
+      QDate date = (*it).nextPayment((*it).lastPayment());
+      if(!date.isValid()) {
         schedule.remove(it);
         continue;
       }
 
+      QDate nextDate = (*it).adjustedNextPayment((*it).lastPayment());
       if (nextDate > forecastEndDate()) {
         // We're done with this schedule, let's move on to the next
         schedule.remove(it);
@@ -732,7 +738,7 @@ void MyMoneyForecast::addScheduledTransactions (void)
               }
             }
           }
-          (*it).setLastPayment(nextDate);
+          (*it).setLastPayment(date);
 
         } catch(MyMoneyException* e) {
           kdDebug(2) << __func__ << " Schedule " << (*it).id() << " (" << (*it).name() << "): " << e->what() << endl;

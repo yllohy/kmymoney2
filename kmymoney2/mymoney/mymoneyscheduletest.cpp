@@ -678,7 +678,8 @@ void MyMoneyScheduleTest::testPaymentDates()
 		CPPUNIT_ASSERT(list.count() == 3);
 		CPPUNIT_ASSERT(list[0] == QDate(2006,2,28));
 		CPPUNIT_ASSERT(list[1] == QDate(2006,3,31));
-		CPPUNIT_ASSERT(list[2] == QDate(2006,4,30));
+		// Would fall on a Sunday so gets moved back to 28th.
+		CPPUNIT_ASSERT(list[2] == QDate(2006,4,28));
 
 		// Add tests for each possible occurence.
 		// Check how paymentDates is meant to work
@@ -702,14 +703,17 @@ void MyMoneyScheduleTest::testPaymentDates()
                 CPPUNIT_ASSERT(list.count() == 5);
  		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 1));
  		CPPUNIT_ASSERT(list[1] == QDate(2009, 1, 2));
- 		CPPUNIT_ASSERT(list[2] == QDate(2009, 1, 3));
- 		CPPUNIT_ASSERT(list[3] == QDate(2009, 1, 4));
+		// Would fall on Saturday so gets moved to 2nd.
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 1, 2));
+		// Would fall on Sunday so gets moved to 2nd.
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 1, 2));
  		CPPUNIT_ASSERT(list[4] == QDate(2009, 1, 5));
 		// MyMoneySchedule::OCCUR_DAILY with multiplier 2
 		sch.setOccurenceMultiplier(2);
                 list = sch.paymentDates(startDate.addDays(1),endDate);
                 CPPUNIT_ASSERT(list.count() == 2);
- 		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 3));
+		// Would fall on Sunday so gets moved to 2nd.
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 1, 2));
  		CPPUNIT_ASSERT(list[1] == QDate(2009, 1, 5));
 		sch.setOccurenceMultiplier(1);
 		// MyMoneySchedule::OCCUR_WEEKLY
@@ -745,12 +749,17 @@ void MyMoneyScheduleTest::testPaymentDates()
 		sch.setStartDate(startDate);
                 sch.setNextDueDate(startDate);
                 list = sch.paymentDates(startDate,endDate);
-                CPPUNIT_ASSERT(list.count() == 5);
- 		CPPUNIT_ASSERT(list[0] == QDate(2009, 4, 4));
- 		CPPUNIT_ASSERT(list[1] == QDate(2009, 4,18));
- 		CPPUNIT_ASSERT(list[2] == QDate(2009, 5, 2));
- 		CPPUNIT_ASSERT(list[3] == QDate(2009, 5,16));
- 		CPPUNIT_ASSERT(list[4] == QDate(2009, 5,30));
+		CPPUNIT_ASSERT(list.count() == 4);
+		// First one would fall on a Saturday and would get moved
+		// to 3rd which is before start date so is not in list.
+		// Would fall on a Saturday so gets moved to 17th.
+ 		CPPUNIT_ASSERT(list[0] == QDate(2009, 4,17));
+		// Would fall on a Saturday so gets moved to 1st.
+ 		CPPUNIT_ASSERT(list[1] == QDate(2009, 5, 1));
+		// Would fall on a Saturday so gets moved to 15th.
+ 		CPPUNIT_ASSERT(list[2] == QDate(2009, 5,15));
+		// Would fall on a Saturday so gets moved to 29th.
+ 		CPPUNIT_ASSERT(list[3] == QDate(2009, 5,29));
 		// MyMoneySchedule::OCCUR_EVERYHALFMONTH
 		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYHALFMONTH);
 		startDate.setYMD(2009,6,1);
@@ -763,7 +772,8 @@ void MyMoneyScheduleTest::testPaymentDates()
  		CPPUNIT_ASSERT(list[1] == QDate(2009, 6,16));
  		CPPUNIT_ASSERT(list[2] == QDate(2009, 7, 1));
  		CPPUNIT_ASSERT(list[3] == QDate(2009, 7,16));
- 		CPPUNIT_ASSERT(list[4] == QDate(2009, 8, 1));
+		// Would fall on a Saturday so gets moved to 31st.
+ 		CPPUNIT_ASSERT(list[4] == QDate(2009, 7, 31));
 		// MyMoneySchedule::OCCUR_EVERYTHREEWEEKS
 		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
 		startDate.setYMD(2009,8,12);
@@ -799,10 +809,12 @@ void MyMoneyScheduleTest::testPaymentDates()
                 list = sch.paymentDates(startDate,endDate);
                 CPPUNIT_ASSERT(list.count() == 5);
  		CPPUNIT_ASSERT(list[0] == QDate(2010, 3,19));
- 		CPPUNIT_ASSERT(list[1] == QDate(2010, 4,18));
+		// Would fall on a Sunday so gets moved to 16th.
+ 		CPPUNIT_ASSERT(list[1] == QDate(2010, 4,16));
  		CPPUNIT_ASSERT(list[2] == QDate(2010, 5,18));
  		CPPUNIT_ASSERT(list[3] == QDate(2010, 6,17));
- 		CPPUNIT_ASSERT(list[4] == QDate(2010, 7,17));
+		// Would fall on a Saturday so gets moved to 16th.
+ 		CPPUNIT_ASSERT(list[4] == QDate(2010, 7,16));
 		// MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS
 		sch.setOccurence(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
 		startDate.setYMD(2010,7,26);
@@ -825,7 +837,8 @@ void MyMoneyScheduleTest::testPaymentDates()
                 list = sch.paymentDates(startDate,endDate);
                 CPPUNIT_ASSERT(list.count() == 5);
  		CPPUNIT_ASSERT(list[0] == QDate(2011, 3,14));
- 		CPPUNIT_ASSERT(list[1] == QDate(2011, 5,14));
+		// Would fall on a Saturday so gets moved to 13th.
+ 		CPPUNIT_ASSERT(list[1] == QDate(2011, 5,13));
  		CPPUNIT_ASSERT(list[2] == QDate(2011, 7,14));
  		CPPUNIT_ASSERT(list[3] == QDate(2011, 9,14));
  		CPPUNIT_ASSERT(list[4] == QDate(2011,11,14));
@@ -867,7 +880,8 @@ void MyMoneyScheduleTest::testPaymentDates()
  		CPPUNIT_ASSERT(list[1] == QDate(2014, 3,21));
  		CPPUNIT_ASSERT(list[2] == QDate(2014, 7,21));
  		CPPUNIT_ASSERT(list[3] == QDate(2014,11,21));
- 		CPPUNIT_ASSERT(list[4] == QDate(2015, 3,21));
+		// Would fall on a Saturday so gets moved to 20th.
+ 		CPPUNIT_ASSERT(list[4] == QDate(2015, 3,20));
 		// MyMoneySchedule::OCCUR_TWICEYEARLY
 		sch.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
 		startDate.setYMD(2015, 3,22);
@@ -875,12 +889,13 @@ void MyMoneyScheduleTest::testPaymentDates()
 		sch.setStartDate(startDate);
                 sch.setNextDueDate(startDate);
                 list = sch.paymentDates(startDate,endDate);
-                CPPUNIT_ASSERT(list.count() == 5);
- 		CPPUNIT_ASSERT(list[0] == QDate(2015, 3,22));
- 		CPPUNIT_ASSERT(list[1] == QDate(2015, 9,22));
- 		CPPUNIT_ASSERT(list[2] == QDate(2016, 3,22));
- 		CPPUNIT_ASSERT(list[3] == QDate(2016, 9,22));
- 		CPPUNIT_ASSERT(list[4] == QDate(2017, 3,22));
+		CPPUNIT_ASSERT(list.count() == 4);
+		// First date would fall on a Sunday which would get moved
+		// to 20th which is before start date so not in list.
+ 		CPPUNIT_ASSERT(list[0] == QDate(2015, 9,22));
+ 		CPPUNIT_ASSERT(list[1] == QDate(2016, 3,22));
+ 		CPPUNIT_ASSERT(list[2] == QDate(2016, 9,22));
+ 		CPPUNIT_ASSERT(list[3] == QDate(2017, 3,22));
 		// MyMoneySchedule::OCCUR_YEARLY
 		sch.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
 		startDate.setYMD(2017, 3,23);
@@ -891,7 +906,8 @@ void MyMoneyScheduleTest::testPaymentDates()
                 CPPUNIT_ASSERT(list.count() == 5);
  		CPPUNIT_ASSERT(list[0] == QDate(2017, 3,23));
  		CPPUNIT_ASSERT(list[1] == QDate(2018, 3,23));
- 		CPPUNIT_ASSERT(list[2] == QDate(2019, 3,23));
+		// Would fall on a Saturday so gets moved to 22nd.
+ 		CPPUNIT_ASSERT(list[2] == QDate(2019, 3,22));
  		CPPUNIT_ASSERT(list[3] == QDate(2020, 3,23));
  		CPPUNIT_ASSERT(list[4] == QDate(2021, 3,23));
 		// MyMoneySchedule::OCCUR_EVERYOTHERYEAR
@@ -906,7 +922,8 @@ void MyMoneyScheduleTest::testPaymentDates()
  		CPPUNIT_ASSERT(list[1] == QDate(2023, 3,24));
  		CPPUNIT_ASSERT(list[2] == QDate(2025, 3,24));
  		CPPUNIT_ASSERT(list[3] == QDate(2027, 3,24));
- 		CPPUNIT_ASSERT(list[4] == QDate(2029, 3,24));
+		// Would fall on a Saturday so gets moved to 23rd.
+ 		CPPUNIT_ASSERT(list[4] == QDate(2029, 3,23));
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -1847,4 +1864,46 @@ void MyMoneyScheduleTest::testSimpleToFromCompoundOccurence()
   occ = MyMoneySchedule::OCCUR_YEARLY; mult = 2;
   MyMoneySchedule::compoundToSimpleOccurence(mult, occ);
   CPPUNIT_ASSERT( occ == MyMoneySchedule::OCCUR_EVERYOTHERYEAR && mult == 1 );
+}
+
+void MyMoneyScheduleTest::testPaidEarlyOneTime()
+{
+// this tries to figure out what's wrong with
+// https://bugs.kde.org/show_bug.cgi?id=231029
+
+  MyMoneySchedule sch;
+  QDate paymentInFuture = QDate::currentDate().addDays(7);
+
+  QString ref_ok = QString(
+                     "<!DOCTYPE TEST>\n"
+                     "<SCHEDULE-CONTAINER>\n"
+                     " <SCHEDULED_TX startDate=\"%1\" autoEnter=\"0\" weekendOption=\"1\" lastPayment=\"%2\" paymentType=\"2\" endDate=\"%3\" type=\"4\" id=\"SCH0042\" name=\"A Name\" fixed=\"1\" occurenceMultiplier=\"1\" occurence=\"32\" >\n"
+                     "  <PAYMENTS/>\n"
+                     "  <TRANSACTION postdate=\"\" memo=\"\" id=\"\" commodity=\"GBP\" entrydate=\"\" >\n"
+                     "   <SPLITS>\n"
+                     "    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Transfer\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" id=\"S0001\" account=\"A000076\" />\n"
+                     "    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"Transfer\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"-96379/100\" id=\"S0002\" account=\"A000276\" />\n"
+                     "   </SPLITS>\n"
+                     "  </TRANSACTION>\n"
+                     " </SCHEDULED_TX>\n"
+                     "</SCHEDULE-CONTAINER>\n"
+                   ).arg(paymentInFuture.toString(Qt::ISODate))
+                   .arg(paymentInFuture.toString(Qt::ISODate))
+                   .arg(paymentInFuture.toString(Qt::ISODate));
+
+  QDomDocument doc;
+  QDomElement node;
+  doc.setContent(ref_ok);
+  node = doc.documentElement().firstChild().toElement();
+
+  try {
+    sch = MyMoneySchedule(node);
+    CPPUNIT_ASSERT(sch.isFinished() == true);
+    CPPUNIT_ASSERT(sch.occurencePeriod() == MyMoneySchedule::OCCUR_MONTHLY);
+    CPPUNIT_ASSERT(sch.paymentDates(QDate::currentDate(), QDate::currentDate().addDays(21)).count() == 0);
+  } catch (MyMoneyException *e) {
+    delete e;
+    CPPUNIT_FAIL("Unexpected exception");
+  }
+
 }

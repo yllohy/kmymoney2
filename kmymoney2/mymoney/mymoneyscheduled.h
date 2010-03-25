@@ -89,7 +89,7 @@ public:
   /**
     * This enum is used by the auto-commit functionality.
     *
-    * Depending upon the value of m_weekdayOption the schedule can
+    * Depending upon the value of m_weekendOption the schedule can
     * be entered on a different date
   **/
   enum weekendOptionE { MoveFriday=0, MoveMonday=1, MoveNothing=2 };
@@ -238,8 +238,17 @@ public:
     *         returns an invalid QDate.
     *
     * @sa weekendOption()
+    * @sa adjustedDate()
     */
   QDate adjustedNextDueDate(void) const;
+
+  /**
+    * This method adjusts returns the date adjusted according to the
+    * rules specified by the schedule's weekend option.
+    *
+    * @return QDate containing the adjusted date.
+    */
+  QDate adjustedDate(QDate date, weekendOptionE option) const;
 
   /**
     * Get the weekendOption that determines how the schedule check code
@@ -389,14 +398,28 @@ public:
   void validate(bool id_check=true) const;
 
   /**
+    * Calculates the date of the next payment adjusted according to the
+    * rules specified by the schedule's weekend option.
+    *
+    * @param refDate The reference date from which the next payment
+    *                date will be calculated (defaults to current date)
+    *
+    * @return QDate The adjusted date the next payment is due. This date is
+    *               always past @a refDate.  In case of an error or if there
+    *               are no more payments then an empty/invalid QDate() will
+    *               be returned.
+    */
+  QDate adjustedNextPayment(const QDate& refDate = QDate::currentDate()) const;
+
+  /**
     * Calculates the date of the next payment.
     *
-    * @param refDate the reference date from which the next payment
+    * @param refDate The reference date from which the next payment
     *                date will be calculated (defaults to current date)
     *
     * @return QDate The date the next payment is due. This date is
     *         always past @a refDate.  In case of an error or
-    *         if there is no more payment then an empty/invalid QDate()
+    *         if there is no more payments then an empty/invalid QDate()
     *         will be returned.
     */
   QDate nextPayment(const QDate& refDate = QDate::currentDate()) const;
@@ -666,7 +689,7 @@ private:
   /// The recorded payments
   QValueList<QDate> m_recordedPayments;
 
-  /// The weekday option
+  /// The weekend option
   weekendOptionE m_weekendOption;
 };
 #endif

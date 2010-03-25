@@ -58,6 +58,7 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testStringToOccurence);
 	CPPUNIT_TEST(testOccurencePeriod);
         CPPUNIT_TEST(testSimpleToFromCompoundOccurence);
+        CPPUNIT_TEST(testPaidEarlyOneTime);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -99,6 +100,7 @@ public:
 	void testStringToOccurence();
 	void testOccurencePeriod();
         void testSimpleToFromCompoundOccurence();
+        void testPaidEarlyOneTime();
 };
 
 #endif
