@@ -1,4 +1,9 @@
 
+2010-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use users character set encoding for reports
+    (backported from 3.97)
+  * Fixed OFX plugin X-KDE-PluginInfo-Name setting
+
 2010-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied backport patch provided by Ian Neal (adjustedDate.diff and
     adjustedNextPayment.diff)
