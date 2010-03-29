@@ -1,4 +1,7 @@
 
+2010-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Finnish translation by Mikael Kujanpaa
+
 2010-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use users character set encoding for reports
     (backported from 3.97)
