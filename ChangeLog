@@ -1,4 +1,8 @@
 
+2010-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Backported encoding patch from KDE4 version
+  * Bumped version number
+
 2010-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Finnish translation by Mikael Kujanpaa
 

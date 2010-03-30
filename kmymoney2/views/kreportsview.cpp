@@ -155,7 +155,8 @@ void KReportsView::KReportTab::saveAs( const QString& filename, bool includeCSS 
     }
     else {
       QTextStream stream(&file);
-      QRegExp exp("(.*)(<link.*css\" href=)\"(.*)\">(<meta.*utf-8\" />)(.*)");
+      
+      QRegExp exp(QString("(.*)(<link.*css\" href=)\"(.*)\">(<meta.*%1\" />)(.*)").arg(KGlobal::locale()->encoding()));
       QString table = createTable();
       if(exp.search(table) != -1 && includeCSS) {
         QFile cssFile(exp.cap(3));
