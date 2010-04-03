@@ -1,4 +1,7 @@
 
+2010-04-03 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed loop in payments of the home page when a schedule is set to end by date
+
 2010-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Backported encoding patch from KDE4 version
   * Bumped version number

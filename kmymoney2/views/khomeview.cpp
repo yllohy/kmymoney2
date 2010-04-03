@@ -595,6 +595,13 @@ void KHomeView::showPayments(void)
           schedule.remove(it);
           continue;
         }
+        
+        //if nextPayment returns an invalid date, setNextDueDate will just skip it, resulting in a loop
+        //we check the resulting date and erase the schedule if invalid
+        if(!((*it).nextPayment((*it).nextDueDate())).isValid()) {
+          schedule.remove(it);
+          continue;
+        }
 
         (*it).setNextDueDate((*it).nextPayment((*it).nextDueDate()));
         qBubbleSort(schedule);
