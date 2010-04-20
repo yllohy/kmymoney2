@@ -1,10 +1,16 @@
 
+2010-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Backported fix from Ian Neal to solve problems when opening the ledger
+    with specific scheduled transactions
+
 2010-04-03 Alvaro Soliverez <asoliverez@gmail.com>
-  * Fixed loop in payments of the home page when a schedule is set to end by date
+  * Fixed loop in payments of the home page when a schedule is set to
+    end by date
 
 2010-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Backported encoding patch from KDE4 version
   * Bumped version number
+  * Released 1.0.4
 
 2010-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Finnish translation by Mikael Kujanpaa
