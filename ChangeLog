@@ -1,4 +1,11 @@
 
+2010-05-03 Alvaro Soliverez <asoliverez@gmail.com>
+  * Add all overdue schedules when calculating forecast
+  * Do not show accounts of institutions if it has been selected
+    in the general settings to Do not show closed accounts
+  * Do not show an institution if it has no visible accounts and
+    it has been selected to not show closed accounts
+
 2010-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Backported fix from Ian Neal to solve problems when opening the ledger
     with specific scheduled transactions
