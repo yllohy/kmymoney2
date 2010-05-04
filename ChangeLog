@@ -1,4 +1,11 @@
 
+2010-05-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * replace all new line characters because we only have one line
+    available for the displayed data (backported from KDE4)
+  * Don't allow import of investment transactions that don't have a share
+    amount. This used to end in a div by zero when calculating the price.
+    (Backported from KDE4)
+
 2010-05-03 Alvaro Soliverez <asoliverez@gmail.com>
   * Add all overdue schedules when calculating forecast
   * Do not show accounts of institutions if it has been selected
