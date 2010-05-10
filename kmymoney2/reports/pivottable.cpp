@@ -825,9 +825,27 @@ void PivotTable::calculateBudgetMapping( void )
     //
     // It will choose the first budget in the list for the start year of the report if no budget is select
     MyMoneyBudget budget = MyMoneyBudget();
+    
+    QValueList<MyMoneyBudget> budgets = file->budgetList();
+    bool validBudget = false;
+    
+    //check that the selected budget is valid
+    if (m_config_f.budget() != "Any") {
+      QValueList<MyMoneyBudget>::const_iterator budgets_it = budgets.begin();
+      while( budgets_it != budgets.end() ) {
+        //pick the budget by id
+        if ((*budgets_it).id() == m_config_f.budget()) {
+          budget = file->budget((*budgets_it).id());
+          validBudget = true;
+          break;
+        }
+        ++budgets_it;
+      }
+    }
+    
     //if no budget has been selected
-    if (m_config_f.budget() == "Any" ) {
-      QValueList<MyMoneyBudget> budgets = file->budgetList();
+    if (!validBudget ) {
+      
       QValueList<MyMoneyBudget>::const_iterator budgets_it = budgets.begin();
       while( budgets_it != budgets.end() ) {
         //pick the first budget that matches the report start year
@@ -843,9 +861,6 @@ void PivotTable::calculateBudgetMapping( void )
 
       //assign the budget to the report
       m_config_f.setBudget(budget.id(), m_config_f.isIncludingBudgetActuals());
-    } else {
-      //pick the budget selected by the user
-      budget = file->budget( m_config_f.budget());
     }
 
     // Dump the budget

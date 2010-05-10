@@ -1,4 +1,7 @@
 
+2010-05-09 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed a crash when a budget selected for a report is no longer present
+
 2010-05-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * replace all new line characters because we only have one line
     available for the displayed data (backported from KDE4)
