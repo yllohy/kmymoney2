@@ -1,4 +1,7 @@
 
+2010-05-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Released 1.0.5
+
 2010-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed the way to calculate balance variation for the linear regression
     forecast method (backported from KDE4)
