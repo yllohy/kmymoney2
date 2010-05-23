@@ -38,6 +38,7 @@
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/export.h>
 #include "mymoneyutils.h"
 class MyMoneyTransaction;
