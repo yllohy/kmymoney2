@@ -467,14 +467,6 @@ void KHomeView::showPayments(void)
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       showPaymentEntry(*it, cnt);
       m_part->write("</tr>");
-      // make sure to not repeat overdues later again
-      for(it_f = schedule.begin(); it_f != schedule.end();) {
-        if((*it).id() == (*it_f).id()) {
-          it_f = schedule.remove(it_f);
-          continue;
-        }
-        ++it_f;
-      }
     }
     m_part->write("</table>");
   }
@@ -582,25 +574,29 @@ void KHomeView::showPayments(void)
           needMoreLess = true;
           break;
         }
-        if(cnt > 0)
-          --cnt;
 
-        m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
-        showPaymentEntry(*it);
-        m_part->write("</tr>");
+        if(!(*it).isOverdue()) {
+          if(cnt > 0)
+            --cnt;
 
-        // for single occurence we have reported everything so we
-        // better get out of here.
-        if((*it).occurence() == MyMoneySchedule::OCCUR_ONCE) {
-          schedule.remove(it);
-          continue;
-        }
+          m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+          showPaymentEntry(*it);
+          m_part->write("</tr>");
+
+          // for single occurence we have reported everything so we
+          // better get out of here.
+          if((*it).occurence() == MyMoneySchedule::OCCUR_ONCE) {
+            schedule.remove(it);
+            continue;
+          }
         
-        //if nextPayment returns an invalid date, setNextDueDate will just skip it, resulting in a loop
-        //we check the resulting date and erase the schedule if invalid
-        if(!((*it).nextPayment((*it).nextDueDate())).isValid()) {
-          schedule.remove(it);
-          continue;
+          // if nextPayment returns an invalid date, setNextDueDate will
+          // just skip it, resulting in a loop
+          // we check the resulting date and erase the schedule if invalid
+          if(!((*it).nextPayment((*it).nextDueDate())).isValid()) {
+            schedule.remove(it);
+            continue;
+          }
         }
 
         (*it).setNextDueDate((*it).nextPayment((*it).nextDueDate()));
