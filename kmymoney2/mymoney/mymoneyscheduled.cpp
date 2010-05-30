@@ -608,12 +608,17 @@ bool MyMoneySchedule::operator ==(const MyMoneySchedule& right) const
 
 int MyMoneySchedule::transactionsRemaining(void) const
 {
+  return transactionsRemainingUntil(m_endDate);
+}
+
+int MyMoneySchedule::transactionsRemainingUntil(const QDate& endDate) const
+{
   int counter=0;
 
-  if (m_endDate.isValid())
+  QDate startDate = m_lastPayment.isValid() ? m_lastPayment : m_startDate;
+  if (startDate.isValid() && endDate.isValid())
   {
-    QValueList<QDate> dates = paymentDates(m_lastPayment, m_endDate);
-    // Dont include the last payment so -1
+    QValueList<QDate> dates = paymentDates(startDate, endDate);
     counter = dates.count();
   }
   return counter;

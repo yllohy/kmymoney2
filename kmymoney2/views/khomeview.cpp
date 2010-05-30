@@ -453,16 +453,8 @@ void KHomeView::showPayments(void)
 
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       // determine number of overdue payments
-      QDate nextDate = (*it).adjustedNextDueDate();
-      int cnt = 0;
-      while(nextDate.isValid() && nextDate < QDate::currentDate()) {
-        ++cnt;
-        nextDate = (*it).nextPayment(nextDate);
-        // for single occurence nextDate will not change, so we
-        // better get out of here.
-        if((*it).occurence() == MyMoneySchedule::OCCUR_ONCE)
-          break;
-      }
+      int cnt =
+        (*it).transactionsRemainingUntil(QDate::currentDate().addDays(-1));
 
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       showPaymentEntry(*it, cnt);
