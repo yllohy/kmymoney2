@@ -393,70 +393,94 @@ void MyMoneySchedule::validate(bool id_check) const
 
 QDate MyMoneySchedule::adjustedNextPayment(const QDate& refDate) const
 {
-  QDate date(nextPayment(refDate));
-  return date.isValid() ? adjustedDate(date, weekendOption()) : date;
+  return nextPaymentDate(true, refDate);
 }
 
 QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 {
+  return nextPaymentDate(false, refDate);
+}
+
+QDate MyMoneySchedule::nextPaymentDate(const bool& adjust, const QDate& refDate) const
+{
+  weekendOptionE option(adjust ? weekendOption() :
+                        MyMoneySchedule::MoveNothing);
+
   // if the enddate is valid and it is before the reference date,
   // then there will be no more payments.
-  if(m_endDate.isValid() && m_endDate < refDate) {
+  if (m_endDate.isValid() && m_endDate < refDate)
     return QDate();
-  }
 
-  QDate paymentDate(nextDueDate());
+  QDate dueDate(nextDueDate());
+  QDate paymentDate(adjustedDate(dueDate, option));
 
-  if(refDate >= paymentDate) {
+  if (paymentDate.isValid() &&
+      (paymentDate <= refDate || m_recordedPayments.contains(dueDate))) {
     switch (m_occurence)
     {
       case OCCUR_ONCE:
-        // if the lastPayment is already set, then there will be no more payments
-        // otherwise, the start date is the payment date
-        if(m_lastPayment.isValid())
-          return QDate();
-        // if the only payment should have been prior to the reference date,
-        // then don't show it
-        if(paymentDate < refDate)
-          return QDate();
+        // If the lastPayment is already set or the payment should have been
+        // prior to the reference date then invalidate the payment date.
+        if (m_lastPayment.isValid() || paymentDate <= refDate)
+          paymentDate = QDate();
         break;
 
       case OCCUR_DAILY:
-        paymentDate = refDate.addDays(m_occurenceMultiplier);
+        {
+          int step = m_occurenceMultiplier;
+          do {
+            dueDate = dueDate.addDays(step);
+            paymentDate = adjustedDate(dueDate, option);
+          }
+          while (paymentDate.isValid() &&
+                 (paymentDate <= refDate ||
+                  m_recordedPayments.contains(dueDate)));
+        }
         break;
 
       case OCCUR_WEEKLY:
         {
-          int step = 7*m_occurenceMultiplier;
+          int step = 7 * m_occurenceMultiplier;
           do {
-            paymentDate = paymentDate.addDays(step);
+            dueDate = dueDate.addDays(step);
+            paymentDate = adjustedDate(dueDate, option);
           }
-          while (paymentDate <= refDate);
+          while (paymentDate.isValid() &&
+                 (paymentDate <= refDate ||
+                  m_recordedPayments.contains(dueDate)));
         }
         break;
 
       case OCCUR_EVERYHALFMONTH:
-        do
-        {
-           paymentDate = addHalfMonths(paymentDate,m_occurenceMultiplier);
+        do {
+          dueDate = addHalfMonths(dueDate, m_occurenceMultiplier);
+          paymentDate = adjustedDate(dueDate, option);
         }
-        while (paymentDate <= refDate);
+        while (paymentDate.isValid() &&
+               (paymentDate <= refDate ||
+                m_recordedPayments.contains(dueDate)));
         break;
 
       case OCCUR_MONTHLY:
         do {
-          paymentDate = paymentDate.addMonths(m_occurenceMultiplier);
-          fixDate(paymentDate);
+          dueDate = dueDate.addMonths(m_occurenceMultiplier);
+          fixDate(dueDate);
+          paymentDate = adjustedDate(dueDate, option);
         }
-        while (paymentDate <= refDate);
+        while (paymentDate.isValid() &&
+               (paymentDate <= refDate ||
+                m_recordedPayments.contains(dueDate)));
         break;
 
       case OCCUR_YEARLY:
         do {
-          paymentDate = paymentDate.addYears(m_occurenceMultiplier);
-          fixDate(paymentDate);
+          dueDate = dueDate.addYears(m_occurenceMultiplier);
+          fixDate(dueDate);
+          paymentDate = adjustedDate(dueDate, option);
         }
-        while (paymentDate <= refDate);
+        while (paymentDate.isValid() &&
+               (paymentDate <= refDate ||
+                m_recordedPayments.contains(dueDate)));
         break;
 
       case OCCUR_ANY:
@@ -465,14 +489,8 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
         break;
     }
   }
-  if(paymentDate.isValid()) {
-    if(m_endDate.isValid() && paymentDate > m_endDate)
-      paymentDate = QDate();
-  }
-
-  if (paymentDate.isValid() && m_recordedPayments.contains(paymentDate))
-    paymentDate = nextPayment(paymentDate);
-
+  if (paymentDate.isValid() && m_endDate.isValid() && paymentDate > m_endDate)
+    paymentDate = QDate();
   return paymentDate;
 }
 
