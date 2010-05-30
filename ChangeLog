@@ -3,6 +3,9 @@
   * Backported schedule patch provided by Ian Neal (bko #238937)
   * Backported home view patch (bko #239942)
   * Backported schedule patch provided by Ian Neal (bko #237964)
+  * Use minimum balance in case maximum credit is not set to calculate
+    'the end of money' for credit card and checking accounts in the home view
+    Backported from the KDE4 version
 
 2010-05-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Added include to allow compilation in gcc 4.5.0
