@@ -967,9 +967,12 @@ void MyMoneyQifProfile::scanNumeric(const QString& txt, QChar& decimal, QChar& t
   QChar first, second;
   QRegExp numericChars("[0-9-()]");
   for(unsigned int i = 0; i < txt.length(); ++i) {
-    if(numericChars.search(txt[i]) == -1) {
-      first = second;
-      second = txt[i];
+    const QChar& c = txt[i];
+    if(numericChars.search(c) == -1) {
+      if(c == '.' || c == ',') {
+        first = second;
+        second = c;
+      }
     }
   }
   if(!second.isNull())

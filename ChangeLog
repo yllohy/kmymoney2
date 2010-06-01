@@ -1,4 +1,7 @@
 
+2010-06-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bko #238167 (incorrect values imported with illformed qif)
+
 2010-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Backported schedule patch provided by Ian Neal (bko #238937)
   * Backported home view patch (bko #239942)
