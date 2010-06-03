@@ -1,4 +1,8 @@
 
+2010-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #3010963 (Problems creating scheduled transaction from ledger) by
+    applying a patch provided from Ian Neal based on the KDE4 changes
+
 2010-06-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bko #238167 (incorrect values imported with illformed qif)
   * Re-activated date and monetary symbol pages in QIF profile editor
