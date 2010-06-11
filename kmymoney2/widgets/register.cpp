@@ -1672,7 +1672,8 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
     }
 
     if(buttonState & Qt::LeftButton) {
-      if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
+      if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))
+      || (m_selectAnchor == 0)) {
         if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
           emit aboutToSelectItem(item, okToSelect);
           if(okToSelect) {

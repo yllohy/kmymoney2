@@ -1,4 +1,7 @@
 
+2010-06-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed BKO #240831 (Crash when deleting numerous transactions)
+
 2010-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #3010963 (Problems creating scheduled transaction from ledger) by
     applying a patch provided from Ian Neal based on the KDE4 changes
